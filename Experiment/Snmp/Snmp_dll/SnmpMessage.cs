@@ -30,7 +30,7 @@ namespace Snmp_dll
         /// </summary>
         public void GetRequest(List<string> PduList, string Community, SnmpType SnmpType)
         {
-
+            return;
         }
 
         public void Type_GetRequest()
