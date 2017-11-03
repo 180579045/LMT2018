@@ -14,6 +14,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Sockets;
+using System.Net;
+using SnmpSharpNet;
 
 namespace Snmp_dll
 {
@@ -21,9 +24,7 @@ namespace Snmp_dll
 
     public class SnmpMessage
     {
-        private string m_IPAddr;
-        private string m_Community;
-        private List<string> m_PduList;
+        public List<string> Result;
 
         /// <summary>
         /// GetRequest的对外接口，前三个参数为Snmp报文所必须的，最后一个是GetRequest的模式
@@ -33,59 +34,74 @@ namespace Snmp_dll
             SnmpType(PduList, Community, IpAddress);
         }
 
-        public static void Type_GetRequest_V2c(List<string> PduList, string Community, string IpAddress)
+        public List<string> Type_GetRequest_V2c(List<string> PduList, string Community, string IpAddr)
         {
-            // SNMP community name
-            OctetString community = new OctetString("public");
-
-            // Define agent parameters class
+            OctetString community = new OctetString(Community);
             AgentParameters param = new AgentParameters(community);
-            // Set SNMP version to 1 (or 2)
             param.Version = SnmpVersion.Ver2;
-            // Construct the agent address object
-            // IpAddress class is easy to use here because
-            //  it will try to resolve constructor parameter if it doesn't
-            //  parse to an IP address
-            IpAddress agent = new IpAddress("172.27.245.92");
+            IpAddress agent = new IpAddress(IpAddr);
 
             // Construct target
             UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
 
             // Pdu class used for all requests
             Pdu pdu = new Pdu(PduType.Get);
-            pdu.VbList.Add("1.3.6.1.4.1.5105.100.1.9.4.7.0");
+            foreach(string pdulist in PduList)
+            {
+                pdu.VbList.Add(pdulist);
+            }
 
             // Make SNMP request
-            SnmpV2Packet result = (SnmpV2Packet)target.Request(pdu, param);
+            m_Result = (SnmpV2Packet)target.Request(pdu, param);
 
             // If result is null then agent didn't reply or we couldn't parse the reply.
-            if (result != null)
+            if (m_Result != null)
             {
                 // ErrorStatus other then 0 is an error returned by 
                 // the Agent - see SnmpConstants for error definitions
-                if (result.Pdu.ErrorStatus != 0)
+                if (m_Result.Pdu.ErrorStatus != 0)
                 {
                     // agent reported an error with the request
                     Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-                        result.Pdu.ErrorStatus,
-                        result.Pdu.ErrorIndex);
+                        m_Result.Pdu.ErrorStatus,
+                        m_Result.Pdu.ErrorIndex);
+                    Result.Clear();
+                    Result.Add(m_Result.Pdu.ErrorIndex.ToString());
                 }
                 else
                 {
                     // Reply variables are returned in the same order as they were added
                     //  to the VbList
                     Console.WriteLine("sysDescr({0}) ({1}): {2}",
-                        result.Pdu.VbList[0].Oid.ToString(),
-                        SnmpConstants.GetTypeName(result.Pdu.VbList[0].Value.Type),
-                        result.Pdu.VbList[0].Value.ToString());
+                        m_Result.Pdu.VbList[0].Oid.ToString(),
+                        SnmpConstants.GetTypeName(m_Result.Pdu.VbList[0].Value.Type),
+                        m_Result.Pdu.VbList[0].Value.ToString());
+
+                    Result.Clear();
+                    for(int i = 0; i < m_Result.Pdu.VbCount; i++ )
+                    {
+                        Result.Add(m_Result.Pdu.VbList[i].Value.ToString());
+                    }
+                    
                 }
             }
             else
             {
                 Console.WriteLine("No response received from SNMP agent.");
+                Result.Clear();
+                Result.Add("No response received from SNMP agent.");
             }
+
             target.Close();
+            return Result;
         }
+
+
+        private string m_IPAddr;              // 代理目标IP地址
+        private string m_Community;           // 代理目标的Community
+        private List<string> m_PduList;       // Snmp报文的Pdu列表
+        private SnmpV2Packet m_Result;        // 返回结果;
+        private string m_ErrorStatus;         // 错误码;
 
 
     }
