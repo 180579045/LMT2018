@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Snmp_dll;
 using System.Threading;
+using System.ComponentModel;
 
 namespace SnmpWindow
 {
@@ -24,9 +25,14 @@ namespace SnmpWindow
     {
         public MainWindow()
         {
-            var ThreadTrap = new Thread(WaitTrap);
-            ThreadTrap.Start();
             InitializeComponent();
+            TrapMessage.SetNodify(this);
+            TrapMessage.WaitforTrap.Start();
+
+            MyTextshow mtextshow = new MyTextshow();
+            mtextshow.show = TrapShow;
+            TrapText.DataContext = mtextshow;//textBox为控件名
+
         }
 
         private void button_Click(object sender, RoutedEventArgs e)
@@ -35,16 +41,15 @@ namespace SnmpWindow
             List<string> inputoid = new List<string>();
             string[] OidList;
             Dictionary<string, string> Ret;
-
-            RetText.Text = "\\n";
+            
             OidList = a.Split(';');
             foreach(string temp in OidList)
             {
                 inputoid.Add(temp);
             }
 
-            SnmpMessage snmpmsg = new SnmpMessage();
-            Ret = snmpmsg.Type_GetRequest_V2c(inputoid, "public", "172.27.245.92");
+            SnmpMessageV2c snmpmsg = new SnmpMessageV2c();
+            Ret = snmpmsg.GetRequest(inputoid, "public", "172.27.245.92");
 
             foreach(var RetShow in Ret)
             {
@@ -52,9 +57,18 @@ namespace SnmpWindow
             }
         }
 
-        static void WaitTrap()
+    }
+
+    public class Observer 
+    {
+        public TextBox obj;
+        public Observer(TextBox obj)
         {
-            TrapMessage.WaitTrap();
+
+        }
+        public void UpdateTrap(string TrapContent)
+        {
+            TrapText.Text = TrapContent;
         }
     }
 }

@@ -13,7 +13,7 @@
 
         <Label x:Name="label" Content="Trap:" HorizontalAlignment="Left" Margin="360,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="RetText" HorizontalAlignment="Left" Height="172" Margin="10,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="326"/>
-        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="362" Margin="360,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="318"/>
+        <TextBox x:Name="TrapText" HorizontalAlignment="Left" Height="362" Margin="360,41,0,0" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" VerticalAlignment="Top" Width="318"/>
 
     </Grid>
 </Window>

@@ -6,22 +6,38 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using SnmpSharpNet;
+using System.Threading;
+using System.Windows.Controls;
 
 namespace Snmp_dll
 {
     public class TrapMessage : SnmpMessage
     {
-        TrapMessage
-        
         public List<string> TrapContent { get; set; }        // Trap返回的具体内容;
+        public static Thread WaitforTrap = new Thread(WaitTrap);
 
+        // 此处后边可以更为为观察者列表;
+        private static Window TrapShow;
 
-        public TrapMessage NodifyTrap(TrapMessage TrapContent)
+        /// <summary>
+        /// 设置观察者列表;
+        /// </summary>
+        /// <param name="obj">需要被添加的观察者</param>
+        public static void SetNodify(MainWindow obj)
         {
-            return TrapContent;
+            TrapShow = obj;
         }
 
-        static public void WaitTrap()
+        /// <summary>
+        /// 同一调用观察者的Update方法;
+        /// </summary>
+        /// <param name="Ret"></param>
+        static public void Nodify(List<string> Ret)
+        {
+            TrapShow.
+        }
+
+        static private void WaitTrap()
         {
             // Construct a socket and bind it to the trap manager port 162 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
@@ -57,7 +73,6 @@ namespace Snmp_dll
                 {
                     // Check protocol version int 
                     int ver = SnmpPacket.GetProtocolVersion(indata, inlen);
-                    TrapMessage TrapRet = new TrapMessage();
                     if (ver == (int)SnmpVersion.Ver1)
                     {
                         Console.WriteLine("** Receive SNMP Version 1 TRAP data.");
@@ -81,10 +96,10 @@ namespace Snmp_dll
                             {
                                 Console.WriteLine("**** {0} {1}: {2}",
                                    v.Oid.ToString(), SnmpConstants.GetTypeName(v.Value.Type), v.Value.ToString());
-                                string temp = "**** Oid:" + v.Oid.ToString() + "Name:" + SnmpConstants.GetTypeName(v.Value.Type) + "Value" + v.Value.ToString();
-                                TrapRet.TrapContent.Add(temp);
-                                TrapRet.NodifyTrap(TrapRet);
+                                string temp = "**** Oid:" + v.Oid.ToString() + ", Name:" + SnmpConstants.GetTypeName(v.Value.Type) + ", Value" + v.Value.ToString();
+                                Ret.Add(temp);
                             }
+                            Nodify(Ret);
                         }
                     }
                 }
@@ -95,6 +110,11 @@ namespace Snmp_dll
                 }
 
             }
+        }
+
+        public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress)
+        {
+            throw new NotImplementedException();
         }
 
     }

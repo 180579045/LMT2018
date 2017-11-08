@@ -20,9 +20,7 @@ using SnmpSharpNet;
 
 namespace Snmp_dll
 {
-    public delegate void SnmpType(List<string> PduList, string Community, string IpAddress);
-
-    public class SnmpMessage
+    abstract public class SnmpMessage
     {
         public Dictionary<string, string> Response { get; set; }        // Get返回的结果;
         public string IPAddr { get; set; }                              // 代理目标IP地址
@@ -32,17 +30,18 @@ namespace Snmp_dll
         public string ErrorStatus { get; set; }                         // 错误码;
 
         /// <summary>
-        /// GetRequest的对外接口，前三个参数为Snmp报文所必须的，最后一个是GetRequest的模式
+        /// GetRequest的对外接口，前三个参数为Snmp报文所必须的
         /// </summary>
-        public void GetRequest(List<string> PduList, string Community, string IpAddress, SnmpType SnmpType)
-        {
-            SnmpType(PduList, Community, IpAddress);
-        }
+        public abstract Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress);
 
+    }
+
+    public class SnmpMessageV2c : SnmpMessage
+    {
         /// <summary>
         /// V2c版本的GetRequest
         /// </summary>
-        public Dictionary<string, string> Type_GetRequest_V2c(List<string> PduList, string Community, string IpAddr)
+        public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddr)
         {
             OctetString community = new OctetString(Community);
             AgentParameters param = new AgentParameters(community);
@@ -55,41 +54,42 @@ namespace Snmp_dll
 
             // Pdu请求形式Get;
             Pdu pdu = new Pdu(PduType.Get);
-            foreach(string pdulist in PduList)
+            foreach (string pdulist in PduList)
             {
                 pdu.VbList.Add(pdulist);
             }
 
             // 接收结果;
-            m_Result = (SnmpV2Packet)target.Request(pdu, param);
+            Result = (SnmpV2Packet)target.Request(pdu, param);
 
             // 如果结果为空,则认为Agent没有回响应;
-            if (m_Result != null)
+            if (Result != null)
             {
                 // ErrorStatus other then 0 is an error returned by 
                 // the Agent - see SnmpConstants for error definitions
-                if (m_Result.Pdu.ErrorStatus != 0)
+                if (Result.Pdu.ErrorStatus != 0)
                 {
                     // agent reported an error with the request
                     Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-                        m_Result.Pdu.ErrorStatus,
-                        m_Result.Pdu.ErrorIndex);
-                    rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
+                        Result.Pdu.ErrorStatus,
+                        Result.Pdu.ErrorIndex);
+
+                    rest.Add(Result.Pdu.ErrorIndex.ToString(), Result.Pdu.ErrorStatus.ToString());
                 }
                 else
                 {
                     // Reply variables are returned in the same order as they were added
                     //  to the VbList
                     Console.WriteLine("sysDescr({0}) ({1}): {2}",
-                        m_Result.Pdu.VbList[0].Oid.ToString(),
-                        SnmpConstants.GetTypeName(m_Result.Pdu.VbList[0].Value.Type),
-                        m_Result.Pdu.VbList[0].Value.ToString());
-                    
-                    for(int i = 0; i < m_Result.Pdu.VbCount; i++ )
+                        Result.Pdu.VbList[0].Oid.ToString(),
+                        SnmpConstants.GetTypeName(Result.Pdu.VbList[0].Value.Type),
+                        Result.Pdu.VbList[0].Value.ToString());
+
+                    for (int i = 0; i < Result.Pdu.VbCount; i++)
                     {
-                        rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
+                        rest.Add(Result.Pdu.VbList[i].Oid.ToString(), Result.Pdu.VbList[i].Value.ToString());
                     }
-                    
+
                 }
             }
             else
@@ -100,16 +100,6 @@ namespace Snmp_dll
             target.Close();
             return rest;
         }
-
-
-        private string m_IPAddr;              // 代理目标IP地址
-        private string m_Community;           // 代理目标的Community
-        private List<string> m_PduList;       // Snmp报文的Pdu列表
-        private SnmpV2Packet m_Result;        // 返回结果;
-        private string m_ErrorStatus;         // 错误码;
-        private int m_Timeout;                // 超时时间;
-
-
     }
 
 }
