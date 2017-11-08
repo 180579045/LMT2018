@@ -24,7 +24,12 @@ namespace Snmp_dll
 
     public class SnmpMessage
     {
-        public Dictionary<string, string> Result { get; set; }          // Get返回的结果;
+        public Dictionary<string, string> Response { get; set; }        // Get返回的结果;
+        public string IPAddr { get; set; }                              // 代理目标IP地址
+        public string Community { get; set; }                           // 代理目标的Community
+        public List<string> PduList { get; set; }                       // Snmp报文的Pdu列表
+        public SnmpV2Packet Result { get; set; }                        // 返回结果;
+        public string ErrorStatus { get; set; }                         // 错误码;
 
         /// <summary>
         /// GetRequest的对外接口，前三个参数为Snmp报文所必须的，最后一个是GetRequest的模式
@@ -106,4 +111,5 @@ namespace Snmp_dll
 
 
     }
+
 }

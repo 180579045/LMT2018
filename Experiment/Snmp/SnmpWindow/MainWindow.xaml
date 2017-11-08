@@ -5,12 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnmpWindow"
         mc:Ignorable="d"
-        Title="SnmpExperiment" Height="482" Width="522.5">
+        Title="SnmpExperiment" Height="482" Width="706.5">
     <Grid>
-        <Button x:Name="button" Content="获取数值" HorizontalAlignment="Left" Margin="432,420,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <TextBox x:Name="oid" TextWrapping="Wrap" Text="Input Oid" Height="28" VerticalAlignment="Top" Margin="10,41,10,0"/>
+        <Button x:Name="button" Content="获取数值" HorizontalAlignment="Left" Margin="261,420,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <TextBox x:Name="oid" TextWrapping="Wrap" Text="Input Oid" Height="28" VerticalAlignment="Top" Margin="10,41,362,0"/>
         <Label x:Name="List1" Content="List1:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="RetText" Content="" HorizontalAlignment="Left" Margin="10,256,0,0" VerticalAlignment="Top" Width="35"/>
+
+        <Label x:Name="label" Content="Trap:" HorizontalAlignment="Left" Margin="360,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="RetText" HorizontalAlignment="Left" Height="172" Margin="10,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="326"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="362" Margin="360,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="318"/>
 
     </Grid>
 </Window>

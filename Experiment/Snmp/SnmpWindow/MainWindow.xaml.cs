@@ -13,16 +13,19 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Snmp_dll;
+using System.Threading;
 
 namespace SnmpWindow
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// MainWindow.xaml 的交互逻辑;
     /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
+            var ThreadTrap = new Thread(WaitTrap);
+            ThreadTrap.Start();
             InitializeComponent();
         }
 
@@ -33,7 +36,7 @@ namespace SnmpWindow
             string[] OidList;
             Dictionary<string, string> Ret;
 
-            RetText.Content = "";
+            RetText.Text = "\\n";
             OidList = a.Split(';');
             foreach(string temp in OidList)
             {
@@ -45,8 +48,13 @@ namespace SnmpWindow
 
             foreach(var RetShow in Ret)
             {
-                RetText.Content += RetShow.Value +",";
+                RetText.Text += RetShow.Value +",";
             }
+        }
+
+        static void WaitTrap()
+        {
+            TrapMessage.WaitTrap();
         }
     }
 }
