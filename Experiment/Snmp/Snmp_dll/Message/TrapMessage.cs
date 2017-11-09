@@ -7,39 +7,44 @@ using System.Net.Sockets;
 using System.Net;
 using SnmpSharpNet;
 using System.Threading;
-using System.Windows.Controls;
 
 namespace Snmp_dll
 {
+    public delegate void UpdateTrap(List<string> stringlist);
+
     public class TrapMessage : SnmpMessage
     {
-        public List<string> TrapContent { get; set; }        // Trap返回的具体内容;
-        public static Thread WaitforTrap = new Thread(WaitTrap);
-
-        // 此处后边可以更为为观察者列表;
-        private static Window TrapShow;
+        public List<string> TrapContent { get; set; }               // Trap返回的具体内容;
+        public static Thread WaitforTrap = new Thread(WaitTrap);    // 执行Trap接收的线程;
+        private static List<UpdateTrap> TrapShow = new List<UpdateTrap>();                   // 观察者列表;
 
         /// <summary>
         /// 设置观察者列表;
         /// </summary>
         /// <param name="obj">需要被添加的观察者</param>
-        public static void SetNodify(MainWindow obj)
+        public static void SetNodify(UpdateTrap obj)
         {
-            TrapShow = obj;
+            TrapShow.Add(obj);
         }
 
         /// <summary>
-        /// 同一调用观察者的Update方法;
+        /// 统一调用观察者的Update方法;
         /// </summary>
         /// <param name="Ret"></param>
         static public void Nodify(List<string> Ret)
         {
-            TrapShow.
+            foreach(UpdateTrap update in TrapShow)
+            {
+                update(Ret);
+            }
         }
 
+        /// <summary>
+        /// 接收Trap信息;
+        /// </summary>
         static private void WaitTrap()
         {
-            // Construct a socket and bind it to the trap manager port 162 
+            // 建立一个Socket实例，接收所有网口的IP地址，并绑定162端口; 
             Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 162);
             EndPoint ep = (EndPoint)ipep;
@@ -96,9 +101,10 @@ namespace Snmp_dll
                             {
                                 Console.WriteLine("**** {0} {1}: {2}",
                                    v.Oid.ToString(), SnmpConstants.GetTypeName(v.Value.Type), v.Value.ToString());
-                                string temp = "**** Oid:" + v.Oid.ToString() + ", Name:" + SnmpConstants.GetTypeName(v.Value.Type) + ", Value" + v.Value.ToString();
+                                string temp = "**** Oid:" + v.Oid.ToString() + ", Name:" + SnmpConstants.GetTypeName(v.Value.Type) + ", Value:" + v.Value.ToString();
                                 Ret.Add(temp);
                             }
+                            // 通知观察者;
                             Nodify(Ret);
                         }
                     }

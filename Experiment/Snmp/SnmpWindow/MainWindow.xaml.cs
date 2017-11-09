@@ -26,49 +26,87 @@ namespace SnmpWindow
         public MainWindow()
         {
             InitializeComponent();
-            TrapMessage.SetNodify(this);
+            TrapMessage.SetNodify(this.UpdateTrapText);
             TrapMessage.WaitforTrap.Start();
-
-            MyTextshow mtextshow = new MyTextshow();
-            mtextshow.show = TrapShow;
-            TrapText.DataContext = mtextshow;//textBox为控件名
-
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// TrapMessage线程收到Trap后调用,更新TrapText;
+        /// </summary>
+        /// <param name="TrapContent">TrapMessage的Trap监听线程返回的结果</param>
+        public void UpdateTrapText(List<string> TrapContent)
         {
-            string a = oid.Text;
-            List<string> inputoid = new List<string>();
-            string[] OidList;
-            Dictionary<string, string> Ret;
+            this.TrapText.Dispatcher.Invoke(
+               new Action(
+                    delegate
+                    {
+                        foreach (string content in TrapContent)
+                        {
+                            TrapText.Text += content;
+                        }
+                    }
+               )
+            );
+        }
+
+        /// <summary>
+        /// 获取基站数值按钮事件;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GetValue_Click(object sender, RoutedEventArgs e)
+        {
+            string UserInputList1 = oid1.Text;
+            string UserInputList2 = oid2.Text;
+            string UserInputList3 = oid3.Text;
+
+            List<string> inputoid1 = new List<string>();
+            List<string> inputoid2 = new List<string>();
+            List<string> inputoid3 = new List<string>();
+            string[] OidList1, OidList2, OidList3;
+            Dictionary<string, string> Ret1, Ret2, Ret3;
             
-            OidList = a.Split(';');
-            foreach(string temp in OidList)
+            // 获取用户输入的OIDList1;
+            OidList1 = UserInputList1.Split(';');
+            foreach(string temp in OidList1)
             {
-                inputoid.Add(temp);
+                inputoid1.Add(temp);
             }
 
-            SnmpMessageV2c snmpmsg = new SnmpMessageV2c();
-            Ret = snmpmsg.GetRequest(inputoid, "public", "172.27.245.92");
+            // 获取用户输入的OIDList2;
+            OidList2 = UserInputList2.Split(';');
+            foreach (string temp in OidList2)
+            {
+                inputoid2.Add(temp);
+            }
 
-            foreach(var RetShow in Ret)
+            // 获取用户输入的OIDList2;
+            OidList3 = UserInputList3.Split(';');
+            foreach (string temp in OidList3)
+            {
+                inputoid3.Add(temp);
+            }
+
+            // 获取基站中对应数值;
+            SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
+            Ret1 = snmpmsg1.GetRequest(inputoid1, "public", "172.27.245.92");
+
+            // 获取基站中对应数值;
+            SnmpMessageV2c snmpmsg2 = new SnmpMessageV2c();
+            Ret2 = snmpmsg2.GetRequest(inputoid2, "public", "172.27.245.92");
+
+            // 获取基站中对应数值;
+            SnmpMessageV2c snmpmsg3 = new SnmpMessageV2c();
+            Ret3 = snmpmsg3.GetRequest(inputoid3, "public", "172.27.245.92");
+
+            var RetTemp = Ret1.Union(Ret2);
+            var AllRet = RetTemp.Union(Ret3);
+
+            foreach (var RetShow in AllRet)
             {
                 RetText.Text += RetShow.Value +",";
             }
         }
 
-    }
-
-    public class Observer 
-    {
-        public TextBox obj;
-        public Observer(TextBox obj)
-        {
-
-        }
-        public void UpdateTrap(string TrapContent)
-        {
-            TrapText.Text = TrapContent;
-        }
     }
 }

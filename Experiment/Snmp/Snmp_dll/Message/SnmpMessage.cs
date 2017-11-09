@@ -20,6 +20,9 @@ using SnmpSharpNet;
 
 namespace Snmp_dll
 {
+    /// <summary>
+    /// 抽象SNMP报文，以便后续扩展SNMPV3;
+    /// </summary>
     abstract public class SnmpMessage
     {
         public Dictionary<string, string> Response { get; set; }        // Get返回的结果;
@@ -36,6 +39,9 @@ namespace Snmp_dll
 
     }
 
+    /// <summary>
+    /// Snmp报文V2c版本
+    /// </summary>
     public class SnmpMessageV2c : SnmpMessage
     {
         /// <summary>
