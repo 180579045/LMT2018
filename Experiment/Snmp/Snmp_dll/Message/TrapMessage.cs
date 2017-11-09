@@ -1,4 +1,15 @@
-﻿using System;
+﻿/*----------------------------------------------------------------
+// Copyright (C) 2017 大唐移动通信设备有限公司 版权所有;
+//
+// 文件名：TrapMessage.cs
+// 文件功能描述：Snmp报文Trap类;
+// 创建人：郭亮;
+// 版本：V1.0
+// 创建标识：创建文件;
+// 时间：2017-11-6
+//----------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,9 +25,9 @@ namespace Snmp_dll
 
     public class TrapMessage : SnmpMessage
     {
-        public List<string> TrapContent { get; set; }               // Trap返回的具体内容;
-        public static Thread WaitforTrap = new Thread(WaitTrap);    // 执行Trap接收的线程;
-        private static List<UpdateTrap> TrapShow = new List<UpdateTrap>();                   // 观察者列表;
+        public List<string> TrapContent { get; set; }                              // Trap返回的具体内容;
+        public static Thread WaitforTrap = new Thread(WaitTrap);                   // 执行Trap接收的线程;
+        private static List<UpdateTrap> TrapNodifyList = new List<UpdateTrap>();   // 观察者列表;
 
         /// <summary>
         /// 设置观察者列表;
@@ -24,7 +35,7 @@ namespace Snmp_dll
         /// <param name="obj">需要被添加的观察者</param>
         public static void SetNodify(UpdateTrap obj)
         {
-            TrapShow.Add(obj);
+            TrapNodifyList.Add(obj);
         }
 
         /// <summary>
@@ -33,7 +44,7 @@ namespace Snmp_dll
         /// <param name="Ret"></param>
         static public void Nodify(List<string> Ret)
         {
-            foreach(UpdateTrap update in TrapShow)
+            foreach(UpdateTrap update in TrapNodifyList)
             {
                 update(Ret);
             }
@@ -101,7 +112,8 @@ namespace Snmp_dll
                             {
                                 Console.WriteLine("**** {0} {1}: {2}",
                                    v.Oid.ToString(), SnmpConstants.GetTypeName(v.Value.Type), v.Value.ToString());
-                                string temp = "**** Oid:" + v.Oid.ToString() + ", Name:" + SnmpConstants.GetTypeName(v.Value.Type) + ", Value:" + v.Value.ToString();
+                                string temp = "**** Oid:" + v.Oid.ToString() + ", Name:" + 
+                                    SnmpConstants.GetTypeName(v.Value.Type) + ", Value:" + v.Value.ToString();
                                 Ret.Add(temp);
                             }
                             // 通知观察者;
@@ -119,6 +131,11 @@ namespace Snmp_dll
         }
 
         public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress)
         {
             throw new NotImplementedException();
         }

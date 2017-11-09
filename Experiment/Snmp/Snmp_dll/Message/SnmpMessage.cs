@@ -29,13 +29,25 @@ namespace Snmp_dll
         public string IPAddr { get; set; }                              // 代理目标IP地址
         public string Community { get; set; }                           // 代理目标的Community
         public List<string> PduList { get; set; }                       // Snmp报文的Pdu列表
-        public SnmpV2Packet Result { get; set; }                        // 返回结果;
         public string ErrorStatus { get; set; }                         // 错误码;
+        protected SnmpV2Packet Result { get; set; }                     // 返回结果;
 
         /// <summary>
-        /// GetRequest的对外接口，前三个参数为Snmp报文所必须的
+        /// GetRequest的对外接口
         /// </summary>
+        /// <param name="PduList">需要查询的Pdu列表</param>
+        /// <param name="Community">需要设置的Community</param>
+        /// <param name="IpAddress">需要设置的IP地址</param>
+        /// <returns></returns>
         public abstract Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress);
+
+        /// <summary>
+        /// SetRequest的对外接口
+        /// </summary>
+        /// <param name="PduList">需要查询的Pdu列表</param>
+        /// <param name="Community">需要设置的Community</param>
+        /// <param name="IpAddress">需要设置的IP地址</param>
+        public abstract void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress);
 
     }
 
@@ -45,8 +57,12 @@ namespace Snmp_dll
     public class SnmpMessageV2c : SnmpMessage
     {
         /// <summary>
-        /// V2c版本的GetRequest
+        /// GetRequest的SnmpV2c版本
         /// </summary>
+        /// <param name="PduList">需要查询的Pdu列表</param>
+        /// <param name="Community">需要设置的Community</param>
+        /// <param name="IpAddr">需要设置的IP地址</param>
+        /// <returns></returns>
         public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddr)
         {
             OctetString community = new OctetString(Community);
@@ -86,10 +102,10 @@ namespace Snmp_dll
                 {
                     // Reply variables are returned in the same order as they were added
                     //  to the VbList
-                    Console.WriteLine("sysDescr({0}) ({1}): {2}",
-                        Result.Pdu.VbList[0].Oid.ToString(),
-                        SnmpConstants.GetTypeName(Result.Pdu.VbList[0].Value.Type),
-                        Result.Pdu.VbList[0].Value.ToString());
+//                     Console.WriteLine("sysDescr({0}) ({1}): {2}",
+//                         Result.Pdu.VbList[0].Oid.ToString(),
+//                         SnmpConstants.GetTypeName(Result.Pdu.VbList[0].Value.Type),
+//                         Result.Pdu.VbList[0].Value.ToString());
 
                     for (int i = 0; i < Result.Pdu.VbCount; i++)
                     {
@@ -105,6 +121,17 @@ namespace Snmp_dll
 
             target.Close();
             return rest;
+        }
+
+        /// <summary>
+        /// SetRequest的SnmpV2c版本
+        /// </summary>
+        /// <param name="PduList">需要查询的Pdu列表</param>
+        /// <param name="Community">需要设置的Community</param>
+        /// <param name="IpAddress">需要设置的IP地址</param>
+        public override void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress)
+        {
+            throw new NotImplementedException();
         }
     }
 

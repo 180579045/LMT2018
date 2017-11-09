@@ -23,6 +23,7 @@ namespace SnmpWindow
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool GetValueStatus = false;
         public MainWindow()
         {
             InitializeComponent();
@@ -105,6 +106,39 @@ namespace SnmpWindow
             foreach (var RetShow in AllRet)
             {
                 RetText.Text += RetShow.Value +",";
+            }
+        }
+
+        private void GetValue_Continue_Click(object sender, RoutedEventArgs e)
+        {
+            if (GetValueStatus)
+                GetValueStatus = false;
+            else if (!GetValueStatus)
+                GetValueStatus = true;
+            StartGetValueContinue();
+
+        }
+
+        private void StartGetValueContinue()
+        {
+            SnmpMessageV2c snmpmsg = new SnmpMessageV2c();
+            Dictionary<string, string> Ret;
+            List<string> inputpdu = new List<string>();
+            inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.4.0.0.1");
+            inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.5.0.0.1");
+            inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.6.0.0.1");
+            inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.7.0.0.1");
+            inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.8.0.0.1");
+
+            while (GetValueStatus)
+            {
+                Ret = snmpmsg.GetRequest(inputpdu, "public", "172.27.245.92");
+                string temp = "";
+                foreach (var RetShow in Ret)
+                {
+                    temp += RetShow.Value + ",";
+                }
+                Console.WriteLine(temp);
             }
         }
 
