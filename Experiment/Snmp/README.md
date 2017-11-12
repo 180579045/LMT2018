@@ -7,6 +7,6 @@
 - 实现snmp基本功能，即SetRequest、GetRequest和Trap接收功能
 - 主界面直接使用OID进行节点的查询或设置
 
-![Version1主界面](http://192.168.5.20:2080/guoliang3/LMT2018/raw/4bc80e7ba6f71dce9e3f5da73c773af5d4155d08/Experiment/Snmp/ReadMePicture/MainScreenShoot.png)
+![Version1主界面](ReadMePicture/MainScreenShoot.png)
 
 # API接口说明
