@@ -142,5 +142,23 @@ namespace SnmpWindow
             }
         }
 
+        private void SetValue_Click(object sender, RoutedEventArgs e)
+        {
+            string oid1 = this.SetOId1.Text;
+            string oid2 = this.SetOId2.Text;
+            string oid3 = this.SetOId3.Text;
+
+            string value1 = this.SetValue1.Text;
+            string value2 = this.SetValue2.Text;
+            string value3 = this.SetValue3.Text;
+
+            Dictionary<string, string> Pdulist1 = new Dictionary<string, string>();
+            Pdulist1.Add(oid1, value1);
+            Pdulist1.Add(oid2, value2);
+            Pdulist1.Add(oid3, value3);
+
+            SnmpMessageV2c SetValue = new SnmpMessageV2c();
+            SetValue.SetRequest(Pdulist1, "public", "172.27.245.92");
+        }
     }
 }

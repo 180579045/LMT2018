@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnmpWindow"
         mc:Ignorable="d"
-        Title="SnmpExperiment" Height="470" Width="913.5">
+        Title="SnmpExperiment" Height="651" Width="913.5">
     <Grid>
         <Label x:Name="List1" Content="List1:" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="oid1" TextWrapping="Wrap" Text="Input Oid" Height="28" VerticalAlignment="Top" Margin="10,41,570,0"/>
@@ -16,13 +16,26 @@
         <Label x:Name="label3" Content="List3:" HorizontalAlignment="Left" Margin="10,128,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="oid3" HorizontalAlignment="Left" Height="28" Margin="10,159,0,0" TextWrapping="Wrap" Text="Input Oid" VerticalAlignment="Top" Width="326"/>
 
-        <Label x:Name="label1" Content="结果:" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="Retlabel" Content="结果:" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="RetText" HorizontalAlignment="Left" Height="172" Margin="10,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="326"/>
         <Button x:Name="Getvalue" Content="获取数值" HorizontalAlignment="Left" Margin="261,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Click"/>
         <Button x:Name="GetValue_Continue" Content="持续获取" HorizontalAlignment="Left" Margin="181,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Continue_Click"/>
 
-        <Label x:Name="label" Content="Trap:" HorizontalAlignment="Left" Margin="341,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="TrapText" HorizontalAlignment="Left" Height="362" Margin="341,41,0,0" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" VerticalAlignment="Top" Width="555"/>
+        <Label x:Name="Traplabel" Content="Trap:" HorizontalAlignment="Left" Margin="341,10,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="TrapText" HorizontalAlignment="Left" Height="533" Margin="341,41,0,0" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" VerticalAlignment="Top" Width="555"/>
+        <Label x:Name="SetOidLabel" Content="要设置的Oid" HorizontalAlignment="Left" Margin="10,433,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="SetValueLabel" Content="要设置的值" HorizontalAlignment="Left" Margin="216,433,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.575,0.346"/>
         
+        <TextBox x:Name="SetOId1" HorizontalAlignment="Left" Height="23" Margin="10,464,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="193"/>
+        <TextBox x:Name="SetValue1" HorizontalAlignment="Left" Height="23" Margin="221,464,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="115"/>
+        <TextBox x:Name="SetOId2" HorizontalAlignment="Left" Height="23" Margin="10,492,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="193"/>
+        <TextBox x:Name="SetValue2" HorizontalAlignment="Left" Height="23" Margin="221,492,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="115"/>
+        <TextBox x:Name="SetOId3" HorizontalAlignment="Left" Height="23" Margin="10,520,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="193"/>
+        <TextBox x:Name="SetValue3" HorizontalAlignment="Left" Height="23" Margin="221,520,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="115"/>
+        <Button x:Name="SetValue" Content="设置" HorizontalAlignment="Left" Margin="261,552,0,0" VerticalAlignment="Top" Width="75" Click="SetValue_Click"/>
+
+
+        <Label x:Name="NodeBAccessStatus" Content="" HorizontalAlignment="Left" Margin="830,579,0,0" VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

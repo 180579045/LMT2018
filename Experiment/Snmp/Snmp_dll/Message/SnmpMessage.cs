@@ -131,7 +131,51 @@ namespace Snmp_dll
         /// <param name="IpAddress">需要设置的IP地址</param>
         public override void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress)
         {
-            throw new NotImplementedException();
+            // Prepare target
+            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(IpAddress));
+            // Create a SET PDU
+            Pdu pdu = new Pdu(PduType.Set);
+            foreach(var list in PduList)
+            {
+                pdu.VbList.Add(new Oid(list.Key), new OctetString(list.Value));
+            }
+            
+            // Set Agent security parameters
+            AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(Community));
+            // Response packet
+            SnmpV2Packet response;
+            try
+            {
+                // Send request and wait for response
+                response = target.Request(pdu, aparam) as SnmpV2Packet;
+            }
+            catch (Exception ex)
+            {
+                // If exception happens, it will be returned here
+                Console.WriteLine(String.Format("Request failed with exception: {0}", ex.Message));
+                target.Close();
+                return;
+            }
+            // Make sure we received a response
+            if (response == null)
+            {
+                Console.WriteLine("Error in sending SNMP request.");
+            }
+            else
+            {
+                // Check if we received an SNMP error from the agent
+                if (response.Pdu.ErrorStatus != 0)
+                {
+                    Console.WriteLine(String.Format("SNMP agent returned ErrorStatus {0} on index {1}",
+                        response.Pdu.ErrorStatus, response.Pdu.ErrorIndex));
+                }
+                else
+                {
+                    // Everything is ok. Agent will return the new value for the OID we changed
+                    Console.WriteLine(String.Format("Agent response {0}: {1}",
+                        response.Pdu[0].Oid.ToString(), response.Pdu[0].Value.ToString()));
+                }
+            }
         }
     }
 
