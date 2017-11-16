@@ -109,6 +109,11 @@ namespace SnmpWindow
             }
         }
 
+        /// <summary>
+        /// 持续获取基站数值压力测试按钮;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void GetValue_Continue_Click(object sender, RoutedEventArgs e)
         {
             if (GetValueStatus)
@@ -119,6 +124,9 @@ namespace SnmpWindow
 
         }
 
+        /// <summary>
+        /// 持续获取基站数值;
+        /// </summary>
         private void StartGetValueContinue()
         {
             SnmpMessageV2c snmpmsg = new SnmpMessageV2c();
@@ -142,6 +150,11 @@ namespace SnmpWindow
             }
         }
 
+        /// <summary>
+        /// 设置基站数值按钮事件;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
             string oid1 = this.SetOId1.Text;
