@@ -29,6 +29,19 @@ namespace SnmpWindow
             InitializeComponent();
             TrapMessage.SetNodify(this.UpdateTrapText);
             TrapMessage.WaitforTrap.Start();
+//             Thread T2 = new Thread(NumPlus);
+//             T2.Start();
+        }
+
+        public void NumPlus()
+        {
+            int Num = 0;
+            while(true)
+            {
+                Thread.Sleep(1000);
+                Action action = () => TrapText.Text += "另外一个线程;" + (Num++).ToString();
+                TrapText.Dispatcher.BeginInvoke(action);
+            }
         }
 
         /// <summary>
@@ -37,17 +50,22 @@ namespace SnmpWindow
         /// <param name="TrapContent">TrapMessage的Trap监听线程返回的结果</param>
         public void UpdateTrapText(List<string> TrapContent)
         {
-            this.TrapText.Dispatcher.Invoke(
-               new Action(
-                    delegate
-                    {
-                        foreach (string content in TrapContent)
+            // 如果当前运行的线程不是UI线程才写入到控件中;
+            if(System.Threading.Thread.CurrentThread != this.TrapText.Dispatcher.Thread)
+            {
+                this.TrapText.Dispatcher.Invoke(
+                   new Action(
+                        delegate
                         {
-                            TrapText.Text += content;
+                            foreach (string content in TrapContent)
+                            {
+                                TrapText.Text += content;
+                            }
                         }
-                    }
-               )
-            );
+                   )
+                );
+            }
+            
         }
 
         /// <summary>
@@ -173,5 +191,7 @@ namespace SnmpWindow
             SnmpMessageV2c SetValue = new SnmpMessageV2c();
             SetValue.SetRequest(Pdulist1, "public", "172.27.245.92");
         }
+        
     }
+
 }
