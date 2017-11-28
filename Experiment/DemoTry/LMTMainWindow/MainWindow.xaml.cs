@@ -12,23 +12,17 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Newtonsoft.Json;
 
-namespace MainWindow
+namespace LMTMainWindow
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑;
+    /// MainWindow.xaml 的交互逻辑
     /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-        }
-
-        public void func()
-        {
-            
         }
     }
 }
