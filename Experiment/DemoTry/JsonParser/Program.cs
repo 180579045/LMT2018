@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 
 namespace JsonParser
 {
@@ -20,35 +21,30 @@ namespace JsonParser
         static void LoadJsonFile()
         {
             JObject Obj = new JObject();
+            // 通过文件读取JSON对象,将JSON对象保存到JObject;
             using (StreamReader reader = File.OpenText(@"Data\Tree_Reference2.json"))
             {
                 Obj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
             }
-            string ret1 = (string)Obj["ObjTree"]["version"];
 
-            // 数组中是这样访问;
-            var ret = from p in Obj["ObjTree"]["Nodes"][2]["Nodes"]
-                      where (string)p["name"] == "设备软件许可控制"
-                      select (string)p["id"];
+            // 1、直接通过数组下标访问JSON对象;
+            Console.WriteLine(Obj.First.Next.First[1]);
 
-            var SftChdCnt = from cnt in Obj["ObjTree"]["Nodes"]
-                            where (int)cnt["childrencount"] == 1
-                            select (string)cnt["name"];
+            // 2、通过JSON键值对访问数值;
+            Console.WriteLine("The ObjName is: " + Obj.First.Next.First[1]["ObjName"]);
 
-            foreach(var a in Obj)
-            {
+            Console.WriteLine("-----------------------------------------------------");
 
-            }
-
-            foreach (var iter in ret)
-            {
-                Console.WriteLine(iter);
-            }
-            foreach(var iter in SftChdCnt)
-            {
-                Console.WriteLine(iter);
-            }
+            // 3、通过Linq查询对应的内容;
+            IEnumerable<string> ret = from p in Obj["NodeList"]
+                      where (string)p["ObjName"] == "设备软件许可控制"
+                      select (string)p["ObjID"];
             
+            foreach (string iter in ret)
+            {
+                Console.WriteLine(iter);
+            }
+
         }
     }
 }

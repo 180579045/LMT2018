@@ -59,6 +59,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DevControl\NodeBControl.cs" />
+    <Compile Include="MibData\Mib.cs" />
+    <Compile Include="MibData\MibCommand.cs" />
     <Compile Include="View\ObjTree.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

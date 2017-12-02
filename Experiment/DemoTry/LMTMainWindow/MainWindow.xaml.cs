@@ -16,13 +16,17 @@ using System.Windows.Shapes;
 namespace LMTMainWindow
 {
     /// <summary>
-    /// MainWindow.xaml 的交互逻辑
+    /// MainWindow.xaml 的交互逻辑;
     /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public void InitView()
+        {
         }
     }
 }

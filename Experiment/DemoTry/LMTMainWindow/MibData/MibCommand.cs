@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace LMTMainWindow
 {
-    interface Component
+    class MibCommand
     {
-        void Add(Component obj);
-        void Remove(Component obj);
-        void TraversetoList(int depth);
+
     }
 }
