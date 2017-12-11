@@ -5,8 +5,51 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:LMTMainWindow"
         mc:Ignorable="d"
-        Title="MainWindow" Height="768" Width="1024">
+        Title="MainWindow" Height="768" Width="1300" ResizeMode="NoResize" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo/>
+    </Window.TaskbarItemInfo>
+
     <Grid>
-        
+        <!--左侧工具栏-->
+        <StackPanel HorizontalAlignment="Left" Height="740" VerticalAlignment="Top" Width="81">
+        </StackPanel>
+        <!--搜索框-->
+        <Label x:Name="label" Content="搜索：" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="86,6,0,0"/>
+        <TextBox x:Name="Search_textBox" HorizontalAlignment="Left" Height="23" Margin="137,9,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="199"/>
+        <!--主程序树形结构-->
+        <TreeView Name="ObjTree_Tv" Width="250" Height="700" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"  
+                  Margin="86,37,0,0" BorderThickness="0" 
+            SelectedItemChanged="ObjTree_Tv_SelectedItemChanged">
+            <TreeView.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <LinearGradientBrush.RelativeTransform>
+                        <TransformGroup>
+                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                            <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </LinearGradientBrush.RelativeTransform>
+                    <GradientStop Color="White" Offset="0.5"/>
+                    <GradientStop Color="#FFFDFDFD"/>
+                    <GradientStop Color="#FFFDFDFD" Offset="1"/>
+                </LinearGradientBrush>
+            </TreeView.Background>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type local:ObjNode}" ItemsSource="{Binding Path=SubObj_Lsit}" >
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock VerticalAlignment="Center" Text="{Binding ObjName}"></TextBlock>
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+        <!--MIB节点显示表-->
+        <Grid HorizontalAlignment="Left" Height="599" Margin="336,0,0,0" VerticalAlignment="Top" Width="958"/>
+        <!--信息打印窗口-->
+        <TextBox x:Name="NBInfoShow" HorizontalAlignment="Left" Height="108" Margin="336,599,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                 Width="948" AutomationProperties.IsOffscreenBehavior="Onscreen" VerticalScrollBarVisibility="Auto"/>
+
     </Grid>
+
 </Window>

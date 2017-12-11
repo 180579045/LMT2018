@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snmp_dll", "Snmp_dll\Snmp_d
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonParser", "JsonParser\JsonParser.csproj", "{0DD095BD-CBA9-48F3-853E-A22C587A780B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonParser_dll", "JsonParser_dll\JsonParser_dll.csproj", "{45ECC0DC-0C9E-4744-9A4B-026CAE10A4C6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMTMainWindow", "LMTMainWindow\LMTMainWindow.csproj", "{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}"
 EndProject
 Global
@@ -31,10 +29,6 @@ Global
 		{0DD095BD-CBA9-48F3-853E-A22C587A780B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DD095BD-CBA9-48F3-853E-A22C587A780B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DD095BD-CBA9-48F3-853E-A22C587A780B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45ECC0DC-0C9E-4744-9A4B-026CAE10A4C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45ECC0DC-0C9E-4744-9A4B-026CAE10A4C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45ECC0DC-0C9E-4744-9A4B-026CAE10A4C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45ECC0DC-0C9E-4744-9A4B-026CAE10A4C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}.Release|Any CPU.ActiveCfg = Release|Any CPU

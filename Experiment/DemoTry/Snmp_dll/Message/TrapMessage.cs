@@ -36,6 +36,12 @@ namespace Snmp_dll
         public static void SetNodify(UpdateTrap obj)
         {
             TrapNodifyList.Add(obj);
+
+            // 如果是第一次设置SetNodify，则启动Trap监听线程;
+            if(TrapNodifyList.Count == 1)
+            {
+                TrapMessage.WaitforTrap.Start();
+            }
         }
 
         /// <summary>
@@ -112,8 +118,9 @@ namespace Snmp_dll
                             {
                                 Console.WriteLine("**** {0} {1}: {2}",
                                    v.Oid.ToString(), SnmpConstants.GetTypeName(v.Value.Type), v.Value.ToString());
-                                string temp = "**** Oid:" + v.Oid.ToString() + ", Name:" + 
+                                string temp = "接收到Trap: Oid:" + v.Oid.ToString() + ", TypeName:" + 
                                     SnmpConstants.GetTypeName(v.Value.Type) + ", Value:" + v.Value.ToString();
+
                                 Ret.Add(temp);
                             }
                             // 通知观察者;

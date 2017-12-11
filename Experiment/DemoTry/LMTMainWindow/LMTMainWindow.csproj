@@ -60,9 +60,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DevControl\NodeBControl.cs" />
-    <Compile Include="MibData\Mib.cs" />
+    <Compile Include="MibData\MibNode.cs" />
     <Compile Include="MibData\MibCommand.cs" />
-    <Compile Include="View\ObjTree.cs" />
+    <Compile Include="View\ConsoleOutput.cs" />
+    <Compile Include="View\ObjTreeNode.cs" />
+    <Compile Include="View\ObjTreeNode_Control.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -108,6 +110,12 @@
   <ItemGroup>
     <Folder Include="Communication\" />
     <Folder Include="DataParser\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Snmp_dll\Snmp_dll.csproj">
+      <Project>{e7ceb301-3a34-49d2-aa69-e3963dd1ac21}</Project>
+      <Name>Snmp_dll</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

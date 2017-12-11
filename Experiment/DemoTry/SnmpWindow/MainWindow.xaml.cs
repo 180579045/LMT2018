@@ -59,7 +59,7 @@ namespace SnmpWindow
                         {
                             foreach (string content in TrapContent)
                             {
-                                TrapText.Text += content;
+                                TrapText.Text += content + "\r\n";
                             }
                         }
                    )

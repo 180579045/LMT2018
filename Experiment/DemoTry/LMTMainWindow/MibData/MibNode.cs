@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMTMainWindow.MibData
+namespace LMTMainWindow
 {
-    class Mib
+    class MibNode
     {
     }
 }
