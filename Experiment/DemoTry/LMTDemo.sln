@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonParser", "JsonParser\Js
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMTMainWindow", "LMTMainWindow\LMTMainWindow.csproj", "{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFView", "WPFView\WPFView.csproj", "{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

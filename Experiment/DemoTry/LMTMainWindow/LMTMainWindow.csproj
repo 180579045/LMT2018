@@ -9,11 +9,12 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>LMTMainWindow</RootNamespace>
     <AssemblyName>LMTMainWindow</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,9 +51,11 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -60,6 +63,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DevControl\NodeBControl.cs" />
+    <Compile Include="MainWindowVM.cs" />
     <Compile Include="MibData\MibNode.cs" />
     <Compile Include="MibData\MibCommand.cs" />
     <Compile Include="View\ConsoleOutput.cs" />
@@ -115,6 +119,10 @@
     <ProjectReference Include="..\Snmp_dll\Snmp_dll.csproj">
       <Project>{e7ceb301-3a34-49d2-aa69-e3963dd1ac21}</Project>
       <Name>Snmp_dll</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WPFView\WPFView.csproj">
+      <Project>{f5dbbc65-f7d3-4a0d-8a9f-3dafd3deb7ed}</Project>
+      <Name>WPFView</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

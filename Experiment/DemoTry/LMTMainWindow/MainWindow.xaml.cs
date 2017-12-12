@@ -23,13 +23,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Snmp_dll;
+using Arthas.Controls.Metro;
+using Arthas.Utility.Media;
 
 namespace LMTMainWindow
 {
     /// <summary>
     /// MainWindow.xaml 的交互逻辑;
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         public MainWindow()
         {
@@ -47,6 +49,8 @@ namespace LMTMainWindow
             ObjNodeControl Ctrl = new ObjNodeControl(node);            // 初始化一个对象树管理;
             this.ObjTree_Tv.ItemsSource = Ctrl.m_RootNode;             // 将根节点的树添加到树形控件中;
             TrapMessage.SetNodify(this.Update_NBInfoShow);             // 注册Trap监听;
+
+            //exit.Click += delegate { Close(); };
         }
 
         /// <summary>
