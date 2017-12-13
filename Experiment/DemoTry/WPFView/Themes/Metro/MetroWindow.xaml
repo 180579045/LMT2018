@@ -113,7 +113,7 @@
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="2">
-                                    <ContentPresenter Content="{TemplateBinding Menu}" Margin="0,32,-120,0"/>
+                                    <ContentPresenter Content="{TemplateBinding Menu}" Margin="0,32,0,0" HorizontalAlignment="Center"/>
                                 </Grid>
                                 <Grid Grid.Row="1" Grid.ColumnSpan="4" Background="{TemplateBinding Background}">
                                     <AdornerDecorator>

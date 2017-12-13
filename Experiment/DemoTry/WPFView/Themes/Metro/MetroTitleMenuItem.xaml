@@ -8,18 +8,22 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style TargetType="{x:Type Metro:MetroTitleMenuItem}">
+        
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="SnapsToDevicePixels" Value="True"/>
 
         <Setter Property="Height" Value="32"/>
         <Setter Property="Background" Value="{StaticResource Brush}"/>
+        
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Metro:MetroTitleMenuItem}">
+                    
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="0"/>
+
                         </Grid.ColumnDefinitions>
                         <Rectangle x:Name="backRectangle" Fill="#ffffff" Opacity="0"/>
                         <Grid x:Name="title" Background="#00000000" VerticalAlignment="Center" Shell:WindowChrome.IsHitTestVisibleInChrome="True">
@@ -47,6 +51,7 @@
                             </Grid>
                         </Popup>
                     </Grid>
+                    
                     <ControlTemplate.Triggers>
                         <Trigger Property="Icon" Value="{x:Null}">
                             <Setter TargetName="iconWidth" Property="Width" Value="0"/>

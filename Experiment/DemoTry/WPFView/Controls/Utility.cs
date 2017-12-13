@@ -42,6 +42,7 @@ namespace Arthas.Controls
                 if (control is MetroTextBox) { (control as MetroTextBox).BorderBrush = mw.BorderBrush; }
                 if (control is MetroButton) { (control as MetroButton).Background = mw.BorderBrush; }
                 if (control is MetroMenuTabControl) { (control as MetroMenuTabControl).BorderBrush = mw.BorderBrush; }
+                if (control is MetroMenuHorTabControl) { (control as MetroMenuHorTabControl).BorderBrush = mw.BorderBrush; }
                 if (control is MetroRichTextBox) { (control as MetroRichTextBox).MouseMoveThemeBorderBrush = mw.BorderBrush; }
                 if (control is MetroCanvasGrid) { if ((control as MetroCanvasGrid).IsApplyTheme) (control as MetroCanvasGrid).Background = new RgbaColor(mw.BorderBrush).OpaqueSolidColorBrush; }
                 if (control is MetroColorPicker) { (control as MetroColorPicker).BorderBrush = mw.BorderBrush; }

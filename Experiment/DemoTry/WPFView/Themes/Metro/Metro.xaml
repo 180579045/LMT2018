@@ -29,5 +29,6 @@
         <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroExpander.xaml"/>
         <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroCanvasGrid.xaml"/>
         <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroPath.xaml"/>
+        <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroMenuHorTabControl.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

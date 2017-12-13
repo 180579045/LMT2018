@@ -140,6 +140,8 @@
                             </Grid.RowDefinitions>
                             <Rectangle Fill="#000000" Grid.RowSpan="2" Opacity="0.06"/>
                             <Metro:MetroFocusButton BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroMenuTabControl.IconModeClickCommand"/>
+                            
+                            <!--隐藏显示按钮-->
                             <Grid Width="44" Height="40" HorizontalAlignment="Left" IsHitTestVisible="False">
                                 <Grid VerticalAlignment="Center" HorizontalAlignment="Center" Width="23" Height="23" Opacity="0.9">
                                     <Rectangle x:Name="rectangle1" Width="22" Height="1" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="#FFFFFF" Margin="0,0,0,11" RenderTransformOrigin="0.5,0.5">
@@ -159,7 +161,7 @@
                                     </Rectangle>
                                 </Grid>
                             </Grid>
-                            <Metro:MetroScrollViewer Grid.Row="1" BorderBrush="White" VerticalAlignment="{TemplateBinding TabPanelVerticalAlignment}" Margin="{TemplateBinding Padding}">
+                            <Metro:MetroScrollViewer Grid.Row="1" BorderBrush="White" VerticalAlignment="Top" Margin="{TemplateBinding Padding}">
                                 <Canvas x:Name="canvas" Height="{Binding ActualHeight,ElementName=tabWidth}">
                                     <Grid x:Name="tabWidth">
                                         <TabPanel x:Name="headerPanel" IsItemsHost="true"/>

@@ -101,7 +101,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -121,9 +123,22 @@
       <Name>Snmp_dll</Name>
     </ProjectReference>
     <ProjectReference Include="..\WPFView\WPFView.csproj">
-      <Project>{f5dbbc65-f7d3-4a0d-8a9f-3dafd3deb7ed}</Project>
+      <Project>{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}</Project>
       <Name>WPFView</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\editIcon.png" />
+    <Resource Include="Resources\icon.png" />
+    <Resource Include="Resources\iconMove.png" />
+    <Resource Include="Resources\tabIcon.png" />
+    <Resource Include="Resources\titleMuenIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\NetPlan.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\NodeB_List.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

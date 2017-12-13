@@ -50,7 +50,7 @@ namespace LMTMainWindow
             this.ObjTree_Tv.ItemsSource = Ctrl.m_RootNode;             // 将根节点的树添加到树形控件中;
             TrapMessage.SetNodify(this.Update_NBInfoShow);             // 注册Trap监听;
 
-            //exit.Click += delegate { Close(); };
+            var a = MainHorizenTab.Name;
         }
 
         /// <summary>
