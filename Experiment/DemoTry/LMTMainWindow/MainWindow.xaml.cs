@@ -36,7 +36,7 @@ namespace LMTMainWindow
         public MainWindow()
         {
             InitializeComponent();
-            InitView();                                                // 初始化界面;
+            //InitView();                                                // 初始化界面;
         }
 
         /// <summary>

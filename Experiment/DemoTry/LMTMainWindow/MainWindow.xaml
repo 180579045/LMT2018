@@ -58,18 +58,30 @@
 
         <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
 
-            <Metro:MetroMenuTabItem Header="控件" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
-                <Grid>
-                    <Label Content="123123" />
-                    <Button Content="sd" Width="20" Height="20"/>
+            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+                <Grid  Height="50">
+                    <Button Content="123" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
             
-            <Metro:MetroMenuTabItem Header="内嵌文档浏览器" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+            <Metro:MetroMenuTabItem Header="网络规划" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
                 <Grid>
+                    <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
-            
+
+            <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+                <Grid>
+                    <Button Content="321" Height="19" Width="20"></Button>
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="日志管理" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+                <Grid>
+                    <Button Content="321" Height="19" Width="20"></Button>
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
         </Metro:MetroMenuHorTabControl>
 
         <!--主程序树形结构-->

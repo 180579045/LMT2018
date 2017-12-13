@@ -38,9 +38,11 @@
                         <Image x:Name="icon" Width="24" Height="24" Margin="10,8" Source="{TemplateBinding Icon}"/>
                         <Metro:MetroTextBlock x:Name="title" Grid.Column="2" Text="{TemplateBinding Header}" Foreground="#E5FFFFFF" Margin="0,0,15,0" VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding TextHorizontalAlignment}"/>
                     </Grid>
+                   
                     <ControlTemplate.Triggers>
                         <Trigger Property="Selector.IsSelected" Value="True">
                             <Setter TargetName="back" Property="Opacity" Value="1"/>
+                            <!--字体选中改变颜色-->
                             <Setter TargetName="title" Property="Foreground" Value="#A5000000"/>
                             <Setter TargetName="icon" Property="Opacity" Value="0"/>
                             <Setter TargetName="iconMove" Property="Opacity" Value="1"/>
