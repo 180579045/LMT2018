@@ -18,12 +18,12 @@
             <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
                 <Metro:MetroMenuItem Header="添加基站" />
                 <Metro:MetroMenuSeparator />
-                <Metro:MetroMenuItem Header="基站一" Icon="Resources/titleMuenIcon.png" >
+                <Metro:MetroMenuItem Header="基站—居民楼1" Icon="Resources/titleMuenIcon.png" >
                     <Metro:MetroMenuItem Header="配置消息抄送" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
                 </Metro:MetroMenuItem>
-                <Metro:MetroMenuItem Header="基站二" Icon="Resources/titleMuenIcon.png">
+                <Metro:MetroMenuItem Header="基站—居民楼室内" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="配置消息抄送" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
@@ -35,11 +35,6 @@
                 </Metro:MetroMenuItem>
             </Metro:MetroTitleMenuItem>
             
-            <Metro:MetroTitleMenuItem Header="网络规划" Icon="Resources/NetPlan.png" />
-            <Metro:MetroTitleMenuItem Header="文件管理" Icon="Resources/titleMuenIcon.png" />
-            <Metro:MetroTitleMenuItem Header="告警管理" Icon="Resources/titleMuenIcon.png" />
-            <Metro:MetroTitleMenuItem Header="日志管理" Icon="Resources/titleMuenIcon.png" />
-
             <Metro:MetroTitleMenuItem Header="">
                 <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
                 <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png" />
@@ -58,9 +53,210 @@
 
         <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
 
-            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
-                <Grid  Height="50">
-                    <Button Content="123" Height="19" Width="20"></Button>
+            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/icon.png" IconMove="Resources/iconMove.png" Grid.Column="3">
+                <Grid>
+                    
+                    <!--设置整个页面行列个个数和格式-->
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition MinWidth="160" Width="Auto"/>
+                        <ColumnDefinition MinWidth="160" Width="200"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+
+                    <!--动画属性
+                    <VisualStateManager.VisualStateGroups>
+                        <VisualStateGroup>
+                            <VisualState x:Name="CommMME_Click">
+                                <Storyboard>
+                                    <ThicknessAnimation Storyboard.TargetName="Comm_Content" Storyboard.TargetProperty="(Visibility)" To="Hidden" Duration="0:0:1"/>
+                                </Storyboard>
+                            </VisualState>
+                        </VisualStateGroup>
+                    </VisualStateManager.VisualStateGroups>
+                    -->
+                    
+                    <!--对象树模型-->
+                    <Metro:MetroScrollViewer>
+                        <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
+                            <StackPanel x:Name="lists">
+
+                                <Metro:MetroExpander x:Name="Favorite" Header="收藏节点" Icon="Resources/Star.png" />
+
+                                <Metro:MetroExpander x:Name="M_Root" Header="基站信息" Hint="提示"  />
+
+                                <Metro:MetroExpander Header="公共链路信息">
+                                    <StackPanel>
+                                        <Metro:MetroExpander Header="  局向" HintBackground="#FFF15151">
+                                            <StackPanel>
+                                                <Metro:MetroExpander Header="MME" Icon="Resources/tabIcon.png" Click="CommMME_Click" />
+                                                <Metro:MetroExpander Header="邻基站" Icon="Resources/tabIcon.png" />
+                                                <Metro:MetroExpander Header="基站管理信息" Icon="Resources/tabIcon.png" />
+                                                <Metro:MetroExpander Header="基站校准节点" Icon="Resources/tabIcon.png"/>
+                                                <Metro:MetroExpander Header="时钟信息" Icon="Resources/tabIcon.png"/>
+                                            </StackPanel>
+                                        </Metro:MetroExpander>
+                                    </StackPanel>
+                                </Metro:MetroExpander>
+
+                                <Metro:MetroExpander Header="物理设备" Hint="告警" HintBackground="#FFF15151">
+                                    <StackPanel>
+                                        <Metro:MetroExpander Header="板卡" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="射频单元" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="天线" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="器件库" Icon="Resources/tabIcon.png"/>
+                                        <Metro:MetroExpander Header="环境监控" Icon="Resources/tabIcon.png"/>
+                                    </StackPanel>
+                                </Metro:MetroExpander>
+
+                                <Metro:MetroExpander Header="TD-LTE业务" IsExpanded="False">
+                                    <StackPanel>
+                                        <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="性能管理" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="跟踪管理" Icon="Resources/tabIcon.png"/>
+                                        <Metro:MetroExpander Header="信令软彩" Icon="Resources/tabIcon.png"/>
+                                    </StackPanel>
+                                </Metro:MetroExpander>
+
+                                <Metro:MetroExpander Header="FDD业务" Hint="告警" HintBackground="#FFACB403">
+                                    <StackPanel>
+                                        <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="性能管理" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="跟踪管理" Icon="Resources/tabIcon.png"/>
+                                        <Metro:MetroExpander Header="信令软彩" Icon="Resources/tabIcon.png"/>
+                                    </StackPanel>
+                                </Metro:MetroExpander>
+
+                                <Metro:MetroExpander Header="5G业务" Hint="1/5">
+                                    <StackPanel>
+                                        <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="性能管理" Icon="Resources/tabIcon.png" />
+                                        <Metro:MetroExpander Header="跟踪管理" Icon="Resources/tabIcon.png"/>
+                                        <Metro:MetroExpander Header="信令软彩" Icon="Resources/tabIcon.png"/>
+                                    </StackPanel>
+                                </Metro:MetroExpander>
+
+                            </StackPanel>
+                        </Border>
+                    </Metro:MetroScrollViewer>
+
+                    <!--收藏模型-->
+                    <Metro:MetroFavScrollViewer Grid.Column="1" Margin="0,40,0,0">
+                        <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
+                            <StackPanel x:Name="FavLists">
+                                <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
+                                        ButtonTitle="搜索" PopupHint="Length is more than 10!" Icon="Resources/editIcon.png" />
+                                
+                                <Metro:MetroExpander Header="基本信息" Click="MetroExpander_Click_1"  />
+                                <Metro:MetroExpander Header="公共链路信息" Click="MetroExpander_Click"/>
+                                <Metro:MetroExpander Header="物理设备"/>
+                                <Metro:MetroExpander Header="TD-LTE业务"/>
+                                <Metro:MetroExpander Header="FDD业务"/>
+                                <Metro:MetroExpander Header="5G业务"/>
+                                
+                            </StackPanel>
+                        </Border>
+                    </Metro:MetroFavScrollViewer>
+
+
+                    <!--右侧状态栏-->
+                    <Metro:MetroTabControl x:Name="tabc" Grid.Column="2" Margin="0,30,0,0">
+                        <Metro:MetroTabItem Header="基站—居民楼1" Icon="Resources/tabIcon.png">
+                            
+                            <Grid  x:Name="Content">
+
+                                <Metro:MetroScrollViewer>
+                                <Metro:MetroWaterfallFlow x:Name="waterfallFlow" ListWidth="300">
+
+                                    <Grid>
+                                        <Metro:MetroGroupBox Header="多选框">
+                                            <Grid>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <CheckBox Content="CheckBox" Margin="5" IsEnabled="False" />
+                                                        <CheckBox Content="CheckBox" Margin="5" />
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <CheckBox Content="CheckBox" Margin="5" IsEnabled="False" IsChecked="True" />
+                                                        <CheckBox Content="CheckBox" Margin="5" IsChecked="True" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Metro:MetroGroupBox>
+                                    </Grid>
+                                    <Grid>
+                                        <Metro:MetroGroupBox Header="开关">
+                                            <StackPanel>
+                                                <Metro:MetroSwitch Content="关闭禁用" Margin="10" IsEnabled="False" />
+                                                <Metro:MetroSwitch Content="打开禁用" IsChecked="true" Margin="10" IsEnabled="False" />
+                                                <Metro:MetroSwitch Content="可以修改对齐方式" IsChecked="true" Margin="10" TextHorizontalAlignment="Right" />
+                                                <Metro:MetroSwitch x:Name="ts" Content="特殊动画" Margin="10" CornerRadius="100" />
+                                                <Metro:MetroSwitch Content="方块模式" Margin="10" CornerRadius="2" BorderCornerRadius="3" />
+                                            </StackPanel>
+                                        </Metro:MetroGroupBox>
+                                    </Grid>
+                                    <Grid>
+                                        <Metro:MetroGroupBox Header="等待">
+                                            <Grid>
+                                                <StackPanel Background="#00000000">
+                                                    <Metro:MetroProgressBar Title="MetroProgressBar 等待禁用" Margin="60,5,5,5" ProgressBarState="Wait" IsEnabled="False" />
+                                                    <Metro:MetroProgressBar x:Name="vis" Title="MetroProgressBar 等待" Margin="5" ProgressBarState="Wait" />
+                                                    <Metro:MetroVisualElement Visual="{Binding ElementName=vis}" VisualOpacity="0.5" VisualBlurRadius="10" Width="{Binding ActualWidth,ElementName=vis}" Height="{Binding ActualHeight,ElementName=vis}" />
+                                                    <Metro:MetroProgressBar Title="MetroProgressBar 等待调整大小" Margin="5,5,60,5" ProgressBarState="Wait" ProgressBarHeight="30" CornerRadius="15" />
+                                                </StackPanel>
+                                            </Grid>
+                                        </Metro:MetroGroupBox>
+                                    </Grid>
+                                    <Grid>
+                                        <Metro:MetroGroupBox Header="单选框">
+                                            <Grid>
+                                                <StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" />
+                                                        <RadioButton Content="CheckBox" Margin="5" />
+                                                    </StackPanel>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" IsChecked="True" />
+                                                        <RadioButton Content="CheckBox" Margin="5" IsChecked="True" />
+                                                    </StackPanel>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Metro:MetroGroupBox>
+                                    </Grid>
+
+                                    <Grid>
+                                        <Metro:MetroGroupBox Header="按钮">
+                                            <StackPanel HorizontalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Metro:MetroButton MetroButtonState="None" Content="默认颜色" IsEnabled="False" Margin="10" />
+                                                    <Metro:MetroButton MetroButtonState="None" Content="默认颜色" Command="{Binding CmdSample}" IsEnabled="{Binding BtnEnabled}" Margin="10" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Metro:MetroButton MetroButtonState="Red" Content="错误颜色" IsEnabled="False" Margin="10" />
+                                                    <Metro:MetroButton MetroButtonState="Red" Content="错误颜色" Command="{Binding CmdSampleWithParam}" CommandParameter="Bad" IsEnabled="{Binding BtnEnabled}" Margin="10" />
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Metro:MetroButton MetroButtonState="Green" Content="正确颜色" IsEnabled="False" Margin="10" />
+                                                    <Metro:MetroButton MetroButtonState="Green" Content="正确颜色" Command="{Binding CmdSampleWithParam}" CommandParameter="Good" IsEnabled="{Binding BtnEnabled}" Margin="10" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Metro:MetroGroupBox>
+                                    </Grid>
+                                </Metro:MetroWaterfallFlow>
+                                </Metro:MetroScrollViewer>
+                            </Grid>
+                        </Metro:MetroTabItem>
+                        
+                        
+                        <Metro:MetroTabItem Header="基站—居民楼室内" />
+
+                    </Metro:MetroTabControl>
                 </Grid>
             </Metro:MetroMenuTabItem>
             
@@ -82,39 +278,46 @@
                 </Grid>
             </Metro:MetroMenuTabItem>
 
+            
+            
+            <Metro:MetroMenuTabItem Header="备份" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+                <Grid>
+                    <!--主程序树形结构-->
+                    <TreeView Name="ObjTree_Tv" Width="250" Height="300" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"  
+                              Margin="0,0,0,0" BorderThickness="0" SelectedItemChanged="ObjTree_Tv_SelectedItemChanged">               
+                        <TreeView.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <LinearGradientBrush.RelativeTransform>
+                                    <TransformGroup>
+                                        <ScaleTransform CenterY="0.5" CenterX="0.5"/>
+                                        <SkewTransform CenterY="0.5" CenterX="0.5"/>
+                                        <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
+                                        <TranslateTransform/>
+                                    </TransformGroup>
+                                </LinearGradientBrush.RelativeTransform>
+                                <GradientStop Color="White" Offset="0.5"/>
+                                <GradientStop Color="#FFFDFDFD"/>
+                                <GradientStop Color="#FFFDFDFD" Offset="1"/>
+                            </LinearGradientBrush>
+                        </TreeView.Background>
+                        <TreeView.ItemTemplate>
+                            <HierarchicalDataTemplate DataType="{x:Type local:ObjNode}" ItemsSource="{Binding Path=SubObj_Lsit}" >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock VerticalAlignment="Center" Text="{Binding ObjName}"></TextBlock>
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.ItemTemplate>
+                    </TreeView>
+
+                    <!--信息打印窗口-->
+                    <TextBox x:Name="NBInfoShow" HorizontalAlignment="Left" Height="108" Margin="632,602,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
+                 Width="948" AutomationProperties.IsOffscreenBehavior="Onscreen" VerticalScrollBarVisibility="Auto"/>
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
         </Metro:MetroMenuHorTabControl>
 
-        <!--主程序树形结构-->
-        <TreeView Name="ObjTree_Tv" Width="250" Height="300" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"  
-                  Margin="339,500,0,0" BorderThickness="0" 
-            SelectedItemChanged="ObjTree_Tv_SelectedItemChanged">
-            <TreeView.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <LinearGradientBrush.RelativeTransform>
-                        <TransformGroup>
-                            <ScaleTransform CenterY="0.5" CenterX="0.5"/>
-                            <SkewTransform CenterY="0.5" CenterX="0.5"/>
-                            <RotateTransform Angle="90" CenterY="0.5" CenterX="0.5"/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </LinearGradientBrush.RelativeTransform>
-                    <GradientStop Color="White" Offset="0.5"/>
-                    <GradientStop Color="#FFFDFDFD"/>
-                    <GradientStop Color="#FFFDFDFD" Offset="1"/>
-                </LinearGradientBrush>
-            </TreeView.Background>
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type local:ObjNode}" ItemsSource="{Binding Path=SubObj_Lsit}" >
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock VerticalAlignment="Center" Text="{Binding ObjName}"></TextBlock>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
         
-        <!--信息打印窗口-->
-        <TextBox x:Name="NBInfoShow" HorizontalAlignment="Left" Height="108" Margin="632,602,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
-                 Width="948" AutomationProperties.IsOffscreenBehavior="Onscreen" VerticalScrollBarVisibility="Auto"/>
 
     </Grid>
 

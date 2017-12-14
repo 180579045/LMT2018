@@ -161,6 +161,7 @@
                                     </Rectangle>
                                 </Grid>
                             </Grid>
+                            <!--标签页-->
                             <Metro:MetroScrollViewer Grid.Row="1" BorderBrush="White" VerticalAlignment="Top" Margin="{TemplateBinding Padding}">
                                 <Canvas x:Name="canvas" Height="{Binding ActualHeight,ElementName=tabWidth}">
                                     <Grid x:Name="tabWidth">

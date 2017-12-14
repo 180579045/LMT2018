@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LMTMainWindow
+namespace LMTMainWindow.View
 {
-    class ConsoleOutput
+    class CommonContent
     {
     }
 }

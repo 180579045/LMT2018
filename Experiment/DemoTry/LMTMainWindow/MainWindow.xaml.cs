@@ -25,6 +25,7 @@ using System.Windows.Shapes;
 using Snmp_dll;
 using Arthas.Controls.Metro;
 using Arthas.Utility.Media;
+using System.Reflection;
 
 namespace LMTMainWindow
 {
@@ -36,7 +37,7 @@ namespace LMTMainWindow
         public MainWindow()
         {
             InitializeComponent();
-            //InitView();                                                // 初始化界面;
+            InitView();                                                // 初始化界面;
         }
 
         /// <summary>
@@ -49,8 +50,8 @@ namespace LMTMainWindow
             ObjNodeControl Ctrl = new ObjNodeControl(node);            // 初始化一个对象树管理;
             this.ObjTree_Tv.ItemsSource = Ctrl.m_RootNode;             // 将根节点的树添加到树形控件中;
             TrapMessage.SetNodify(this.Update_NBInfoShow);             // 注册Trap监听;
+            //web1.Document = ResObj.GetString(Assembly.GetExecutingAssembly(), "Resources.about.html");
 
-            var a = MainHorizenTab.Name;
         }
 
         /// <summary>
@@ -86,6 +87,29 @@ namespace LMTMainWindow
                    )
                 );
             }
+        }
+
+        /// <summary>
+        /// Demo阶段得点击事件，先不考虑解耦合;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CommMME_Click(object sender, EventArgs e)
+        {
+//             Base_Content.Visibility = Visibility.Hidden;
+//             Comm_Content.Visibility = Visibility.Visible;
+        }
+
+        private void MetroExpander_Click_1(object sender, EventArgs e)
+        {
+//             Base_Content.Visibility = Visibility.Visible;
+//             Comm_Content.Visibility = Visibility.Hidden;
+        }
+
+        private void MetroExpander_Click(object sender, EventArgs e)
+        {
+//             Base_Content.Visibility = Visibility.Hidden;
+//             Comm_Content.Visibility = Visibility.Visible;
         }
     }
 }

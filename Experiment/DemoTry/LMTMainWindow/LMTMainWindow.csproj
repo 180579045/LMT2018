@@ -62,13 +62,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DevControl\NodeBControl.cs" />
+    <Compile Include="Controls\NodeB_Control.cs" />
     <Compile Include="MainWindowVM.cs" />
-    <Compile Include="MibData\MibNode.cs" />
-    <Compile Include="MibData\MibCommand.cs" />
-    <Compile Include="View\ConsoleOutput.cs" />
-    <Compile Include="View\ObjTreeNode.cs" />
-    <Compile Include="View\ObjTreeNode_Control.cs" />
+    <Compile Include="Component\Mib\MibNode.cs" />
+    <Compile Include="Component\Mib\MibCommand.cs" />
+    <Compile Include="Component\View\BaseContent.cs" />
+    <Compile Include="Component\View\CommonContent.cs" />
+    <Compile Include="Component\View\ConsoleOutput.cs" />
+    <Compile Include="Component\View\ObjTreeNode.cs" />
+    <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,7 +79,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Common\BasicPattern\Tree_Composite.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -114,8 +115,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Communication\" />
-    <Folder Include="DataParser\" />
+    <Folder Include="Pages\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Snmp_dll\Snmp_dll.csproj">
@@ -139,6 +139,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\NodeB_List.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Star.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\about.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -22,6 +22,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Metro:MetroExpander}">
                             <Grid Background="#7FFFFFFF">
+                                
                                 <VisualStateManager.VisualStateGroups>
                                     <VisualStateGroup>
                                         <VisualState x:Name="Normal">
@@ -50,10 +51,12 @@
                                         </VisualState>
                                     </VisualStateGroup>
                                 </VisualStateManager.VisualStateGroups>
+                                
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
+                                
                                 <Border BorderBrush="#e6e6e6" BorderThickness="0,0,0,1">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
@@ -62,11 +65,15 @@
                                             <ColumnDefinition x:Name="hintWidth" Width="Auto"/>
                                             <ColumnDefinition x:Name="algleWidth" Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Image Width="12" Height="12" Margin="10,0,0,0" VerticalAlignment="Center" Source="{TemplateBinding Icon}" Opacity="0.7"/>
+                                        
+                                        <Image Width="15" Height="15" Margin="10,0,0,0" VerticalAlignment="Center" Source="{TemplateBinding Icon}" Opacity="0.7"/>
+                                        
                                         <Metro:MetroTextBlock Grid.Column="1" Text="{TemplateBinding Header}" Margin="10,8,5,8" VerticalAlignment="Center" HorizontalAlignment="Left" Opacity="0.65"/>
+                                        
                                         <Metro:MetroBorder    Grid.Column="2" AutoCornerRadius="True" Margin="0,0,5,0" VerticalAlignment="Center" Background="{TemplateBinding HintBackground}">
                                             <Metro:MetroTextBlock VerticalAlignment="Center" Margin="8,1" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}"/>
                                         </Metro:MetroBorder>
+                                        
                                         <Grid Grid.Column="3" Margin="10,0" VerticalAlignment="Center">
                                             <Polyline Points="0,0 5,5 0,10" Stroke="#000000" RenderTransformOrigin="0.5,0.5" Opacity="0.65">
                                                 <Polyline.RenderTransform>
@@ -76,9 +83,11 @@
                                                 </Polyline.RenderTransform>
                                             </Polyline>
                                         </Grid>
+                                        
                                         <Metro:MetroFocusButton Grid.ColumnSpan="4" Foreground="#00000000" MouseMoveForeground="#0C000000" BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroExpander.ButtonClickCommand"/>
                                     </Grid>
                                 </Border>
+                                
                                 <Grid x:Name="height" Grid.Row="1" Background="#00000000" Height="{Binding ActualHeight,ElementName=content}" ClipToBounds="True">
                                     <Canvas x:Name="canvas" Height="{Binding ActualHeight,ElementName=content}" MinWidth="{Binding ActualWidth,ElementName=content}">
                                         <Grid x:Name="content" ClipToBounds="True" MinWidth="{Binding ActualWidth,ElementName=canvas}">
@@ -86,7 +95,9 @@
                                         </Grid>
                                     </Canvas>
                                 </Grid>
+                                
                             </Grid>
+                            
                             <ControlTemplate.Triggers>
                                 <Trigger Property="Hint" Value="{x:Null}">
                                     <Setter TargetName="hintWidth" Property="Width" Value="0"/>

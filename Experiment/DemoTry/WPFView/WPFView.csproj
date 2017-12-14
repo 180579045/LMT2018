@@ -65,6 +65,7 @@
     <Compile Include="Controls\Converter\DoubleFactor.cs" />
     <Compile Include="Controls\Converter\DoubleToThickness.cs" />
     <Compile Include="Controls\Converter\StringToVisibility.cs" />
+    <Compile Include="Controls\Metro\MetroFavScrollViewer.cs" />
     <Compile Include="Controls\Metro\MetroMenuHorTabControl.cs" />
     <Compile Include="Controls\Metro\MetroPath.cs" />
     <Compile Include="Controls\Metro\MetroBorder.cs" />
@@ -156,6 +157,10 @@
     <Page Include="Themes\Metro\MetroCanvasGrid.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Metro\MetroFavScrollViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Metro\MetroMenuHorTabControl.xaml">
       <SubType>Designer</SubType>

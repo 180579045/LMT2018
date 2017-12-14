@@ -30,5 +30,6 @@
         <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroCanvasGrid.xaml"/>
         <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroPath.xaml"/>
         <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroMenuHorTabControl.xaml"/>
+        <ResourceDictionary Source="/Arthas;component/Themes/Metro/MetroFavScrollViewer.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

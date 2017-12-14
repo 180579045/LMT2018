@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace LMTMainWindow
 {
-    interface Component
+    /// <summary>
+    /// 控制台打印基类;
+    /// </summary>
+    class ConsoleOutput
     {
-        void Add(Component obj);
-        void Remove(Component obj);
-        void TraversetoList(int depth);
     }
 }
