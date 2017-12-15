@@ -145,6 +145,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\about.html" />
+    <Resource Include="Resources\File.png" />
+    <Resource Include="Resources\FileB.png" />
+    <Resource Include="Resources\Alarm.png" />
+    <Resource Include="Resources\alarmB.png" />
+    <Resource Include="Resources\Log.png" />
+    <Resource Include="Resources\LogB.png" />
+    <Resource Include="Resources\BaseInfo.png" />
+    <Resource Include="Resources\BaseInfoB.png" />
+    <Resource Include="Resources\NetPlanB.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

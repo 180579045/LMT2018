@@ -25,7 +25,7 @@ namespace LMTMainWindow
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string _title = "DTMobile LMT2018 Demo";
+        private string _title = "DTMobile Station Combine Maintain Tool";
 
         public string Title
         {

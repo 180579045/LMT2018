@@ -80,7 +80,7 @@
                             <Metro:MetroFocusButton BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroMenuTabControl.IconModeClickCommand"/>
 
                             <!--选项卡-->
-                            <Metro:MetroScrollViewer Margin="50,0,0,0"  BorderBrush="White" VerticalAlignment="Center" Grid.RowSpan="1" Grid.Row="1" >
+                            <Metro:MetroScrollViewer Margin="180,0,0,0"  BorderBrush="White" VerticalAlignment="Center" Grid.RowSpan="1" Grid.Row="1" >
                                 <Canvas x:Name="canvas" Height="{Binding ActualHeight,ElementName=tabWidth}">
                                     <Grid x:Name="tabWidth">
                                         <TabPanel x:Name="headerPanel" IsItemsHost="true"/>

@@ -27,6 +27,10 @@ using Arthas.Controls.Metro;
 using Arthas.Utility.Media;
 using System.Reflection;
 
+using System.Data;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+
 namespace LMTMainWindow
 {
     /// <summary>
@@ -51,6 +55,10 @@ namespace LMTMainWindow
             this.ObjTree_Tv.ItemsSource = Ctrl.m_RootNode;             // 将根节点的树添加到树形控件中;
             TrapMessage.SetNodify(this.Update_NBInfoShow);             // 注册Trap监听;
             //web1.Document = ResObj.GetString(Assembly.GetExecutingAssembly(), "Resources.about.html");
+
+            ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();
+            
+            DG1.DataContext = custdata;
 
         }
 
@@ -96,20 +104,60 @@ namespace LMTMainWindow
         /// <param name="e"></param>
         private void CommMME_Click(object sender, EventArgs e)
         {
-//             Base_Content.Visibility = Visibility.Hidden;
-//             Comm_Content.Visibility = Visibility.Visible;
+            Content_Base.Visibility = Visibility.Hidden;
+            Content_Comm.Visibility = Visibility.Visible;
         }
 
         private void MetroExpander_Click_1(object sender, EventArgs e)
         {
-//             Base_Content.Visibility = Visibility.Visible;
-//             Comm_Content.Visibility = Visibility.Hidden;
+            Content_Base.Visibility = Visibility.Visible;
+            Content_Comm.Visibility = Visibility.Hidden;
         }
 
         private void MetroExpander_Click(object sender, EventArgs e)
         {
-//             Base_Content.Visibility = Visibility.Hidden;
-//             Comm_Content.Visibility = Visibility.Visible;
+            Content_Base.Visibility = Visibility.Hidden;
+            Content_Comm.Visibility = Visibility.Visible;
+        }
+
+        private void MetroExpander_Click_2(object sender, EventArgs e)
+        {
+            Content_Base.Visibility = Visibility.Hidden;
+            Content_Comm.Visibility = Visibility.Visible;
         }
     }
+
+    public enum OrderStatus { None, New, Processing, Shipped, Received };
+
+    public class AlarmGrid
+    {
+        public string AlarmNo { get; set; }
+        public string AlarmName { get; set; }
+        public string AlarmTime { get; set; }
+
+        public AlarmGrid(string AlmNo, string AlmName, string AlmTime)
+        {
+            AlarmNo = AlmNo;
+            AlarmName = AlmName;
+            AlarmTime = AlmTime;
+        }
+
+        public static ObservableCollection<AlarmGrid> GetData()
+        {
+            ObservableCollection<AlarmGrid> ret = new ObservableCollection<AlarmGrid>();
+            AlarmGrid a = new AlarmGrid("7001", "无线链路建立失败", DateTime.Now.ToString());
+            AlarmGrid b = new AlarmGrid("1003", "设备进入不稳定状态", DateTime.Now.ToString());
+            AlarmGrid c = new AlarmGrid("1004", "单板软件启动失败", DateTime.Now.ToString());
+            AlarmGrid d = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
+
+            ret.Add(a);
+            ret.Add(b);
+            ret.Add(c);
+            ret.Add(d);
+
+            return ret;
+        }
+
+    }
+
 }

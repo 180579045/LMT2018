@@ -34,8 +34,8 @@
                             </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
                         <Rectangle x:Name="back" Grid.ColumnSpan="2" Fill="#f3f3f3" Opacity="0"/>
-                        <Image x:Name="iconMove" Width="24" Height="24" Margin="10,8" Source="{TemplateBinding IconMove}" Opacity="0"/>
-                        <Image x:Name="icon" Width="24" Height="24" Margin="10,8" Source="{TemplateBinding Icon}"/>
+                        <Image x:Name="iconMove" Width="28" Height="28" Margin="10,8" Source="{TemplateBinding IconMove}" Opacity="0"/>
+                        <Image x:Name="icon" Width="28" Height="28" Margin="10,8" Source="{TemplateBinding Icon}"/>
                         <Metro:MetroTextBlock x:Name="title" Grid.Column="2" Text="{TemplateBinding Header}" Foreground="#E5FFFFFF" Margin="0,0,15,0" VerticalAlignment="Center" HorizontalAlignment="{TemplateBinding TextHorizontalAlignment}"/>
                     </Grid>
                    

@@ -8,28 +8,35 @@
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None">
     
+    
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
     </Metro:MetroWindow.DataContext>
 
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
-            
+
+            <Metro:MetroTitleMenuItem Header="Demo 2017.12">
+            </Metro:MetroTitleMenuItem>
+
             <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
                 <Metro:MetroMenuItem Header="添加基站" />
                 <Metro:MetroMenuSeparator />
                 <Metro:MetroMenuItem Header="基站—居民楼1" Icon="Resources/titleMuenIcon.png" >
                     <Metro:MetroMenuItem Header="配置消息抄送" Icon="Resources/titleMuenIcon.png" />
+                    <Metro:MetroMenuItem Header="下发打桩文件" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
                 </Metro:MetroMenuItem>
                 <Metro:MetroMenuItem Header="基站—居民楼室内" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="配置消息抄送" Icon="Resources/titleMuenIcon.png" />
+                    <Metro:MetroMenuItem Header="下发打桩文件" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
                 </Metro:MetroMenuItem>
                 <Metro:MetroMenuItem Header="基站三" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="配置消息抄送" IsEnabled="False" Icon="Resources/titleMuenIcon.png" />
+                    <Metro:MetroMenuItem Header="下发打桩文件" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
                     <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
                 </Metro:MetroMenuItem>
@@ -53,7 +60,7 @@
 
         <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
 
-            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/icon.png" IconMove="Resources/iconMove.png" Grid.Column="3">
+            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" Grid.Column="3">
                 <Grid>
                     
                     <!--设置整个页面行列个个数和格式-->
@@ -62,7 +69,7 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MinWidth="160" Width="Auto"/>
+                        <ColumnDefinition Width="180" />
                         <ColumnDefinition MinWidth="160" Width="200"/>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
@@ -79,7 +86,7 @@
                     </VisualStateManager.VisualStateGroups>
                     -->
                     
-                    <!--对象树模型-->
+                    <!--对象树模型(对象树节点只到父节点级别)-->
                     <Metro:MetroScrollViewer>
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
                             <StackPanel x:Name="lists">
@@ -156,7 +163,7 @@
                                 <Metro:MetroExpander Header="基本信息" Click="MetroExpander_Click_1"  />
                                 <Metro:MetroExpander Header="公共链路信息" Click="MetroExpander_Click"/>
                                 <Metro:MetroExpander Header="物理设备"/>
-                                <Metro:MetroExpander Header="TD-LTE业务"/>
+                                <Metro:MetroExpander Header="TD-LTE业务" Click="MetroExpander_Click_2"/>
                                 <Metro:MetroExpander Header="FDD业务"/>
                                 <Metro:MetroExpander Header="5G业务"/>
                                 
@@ -164,92 +171,163 @@
                         </Border>
                     </Metro:MetroFavScrollViewer>
 
-
                     <!--右侧状态栏-->
                     <Metro:MetroTabControl x:Name="tabc" Grid.Column="2" Margin="0,30,0,0">
                         <Metro:MetroTabItem Header="基站—居民楼1" Icon="Resources/tabIcon.png">
                             
                             <Grid  x:Name="Content">
 
-                                <Metro:MetroScrollViewer>
-                                <Metro:MetroWaterfallFlow x:Name="waterfallFlow" ListWidth="300">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="200"/>
+                                </Grid.RowDefinitions>
+                                
+                                <Metro:MetroScrollViewer Grid.Row="0" x:Name="Content_Base">
+                                    <Grid>
+                                        
+                                        <Metro:MetroWaterfallFlow x:Name="waterfallFlow" ListWidth="300" Grid.Column="0">
+                                            <Grid>
+                                                <Metro:MetroGroupBox Header="消息抄送">
+                                                    <Grid>
+                                                        <TabControl>
+                                                            <TabItem>
+                                                                <TabItem.Header>
+                                                                    <StackPanel Orientation="Horizontal">
+                                                                        <Ellipse Width="10" Height="10" Fill="DarkGray"/>
+                                                                        <TextBlock>板卡级消息</TextBlock>
+                                                                    </StackPanel>
+                                                                </TabItem.Header>
+                                                                <StackPanel Grid.Column="1">
+                                                                    <Metro:MetroSwitch Content="0槽位-SCTF" Margin="10" CornerRadius="2" BorderCornerRadius="3" />
+                                                                    <Metro:MetroSwitch Content="4槽位-BPOI" Margin="10" CornerRadius="2" BorderCornerRadius="3" />
+                                                                </StackPanel>
+                                                            </TabItem>
+                                                            <TabItem Header="小区级消息">
+                                                                <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
+                                                            </TabItem>
+                                                        </TabControl>
 
-                                    <Grid>
-                                        <Metro:MetroGroupBox Header="多选框">
-                                            <Grid>
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <CheckBox Content="CheckBox" Margin="5" IsEnabled="False" />
-                                                        <CheckBox Content="CheckBox" Margin="5" />
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <CheckBox Content="CheckBox" Margin="5" IsEnabled="False" IsChecked="True" />
-                                                        <CheckBox Content="CheckBox" Margin="5" IsChecked="True" />
-                                                    </StackPanel>
-                                                </StackPanel>
+                                                    </Grid>
+                                                </Metro:MetroGroupBox>
                                             </Grid>
-                                        </Metro:MetroGroupBox>
-                                    </Grid>
-                                    <Grid>
-                                        <Metro:MetroGroupBox Header="开关">
-                                            <StackPanel>
-                                                <Metro:MetroSwitch Content="关闭禁用" Margin="10" IsEnabled="False" />
-                                                <Metro:MetroSwitch Content="打开禁用" IsChecked="true" Margin="10" IsEnabled="False" />
-                                                <Metro:MetroSwitch Content="可以修改对齐方式" IsChecked="true" Margin="10" TextHorizontalAlignment="Right" />
-                                                <Metro:MetroSwitch x:Name="ts" Content="特殊动画" Margin="10" CornerRadius="100" />
-                                                <Metro:MetroSwitch Content="方块模式" Margin="10" CornerRadius="2" BorderCornerRadius="3" />
-                                            </StackPanel>
-                                        </Metro:MetroGroupBox>
-                                    </Grid>
-                                    <Grid>
-                                        <Metro:MetroGroupBox Header="等待">
-                                            <Grid>
-                                                <StackPanel Background="#00000000">
-                                                    <Metro:MetroProgressBar Title="MetroProgressBar 等待禁用" Margin="60,5,5,5" ProgressBarState="Wait" IsEnabled="False" />
-                                                    <Metro:MetroProgressBar x:Name="vis" Title="MetroProgressBar 等待" Margin="5" ProgressBarState="Wait" />
-                                                    <Metro:MetroVisualElement Visual="{Binding ElementName=vis}" VisualOpacity="0.5" VisualBlurRadius="10" Width="{Binding ActualWidth,ElementName=vis}" Height="{Binding ActualHeight,ElementName=vis}" />
-                                                    <Metro:MetroProgressBar Title="MetroProgressBar 等待调整大小" Margin="5,5,60,5" ProgressBarState="Wait" ProgressBarHeight="30" CornerRadius="15" />
-                                                </StackPanel>
-                                            </Grid>
-                                        </Metro:MetroGroupBox>
-                                    </Grid>
-                                    <Grid>
-                                        <Metro:MetroGroupBox Header="单选框">
-                                            <Grid>
-                                                <StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" />
-                                                        <RadioButton Content="CheckBox" Margin="5" />
-                                                    </StackPanel>
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" IsChecked="True" />
-                                                        <RadioButton Content="CheckBox" Margin="5" IsChecked="True" />
-                                                    </StackPanel>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Metro:MetroGroupBox>
-                                    </Grid>
 
-                                    <Grid>
-                                        <Metro:MetroGroupBox Header="按钮">
-                                            <StackPanel HorizontalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Metro:MetroButton MetroButtonState="None" Content="默认颜色" IsEnabled="False" Margin="10" />
-                                                    <Metro:MetroButton MetroButtonState="None" Content="默认颜色" Command="{Binding CmdSample}" IsEnabled="{Binding BtnEnabled}" Margin="10" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Metro:MetroButton MetroButtonState="Red" Content="错误颜色" IsEnabled="False" Margin="10" />
-                                                    <Metro:MetroButton MetroButtonState="Red" Content="错误颜色" Command="{Binding CmdSampleWithParam}" CommandParameter="Bad" IsEnabled="{Binding BtnEnabled}" Margin="10" />
-                                                </StackPanel>
-                                                <StackPanel Orientation="Horizontal">
-                                                    <Metro:MetroButton MetroButtonState="Green" Content="正确颜色" IsEnabled="False" Margin="10" />
-                                                    <Metro:MetroButton MetroButtonState="Green" Content="正确颜色" Command="{Binding CmdSampleWithParam}" CommandParameter="Good" IsEnabled="{Binding BtnEnabled}" Margin="10" />
-                                                </StackPanel>
-                                            </StackPanel>
-                                        </Metro:MetroGroupBox>
+                                            <Grid>
+                                                <Metro:MetroGroupBox Header="快捷开关">
+                                                    <StackPanel>
+                                                        <Metro:MetroSwitch Content="无时钟源启动" Margin="10" />
+                                                        <Metro:MetroSwitch Content="无MME启动" IsChecked="true" Margin="10"  />
+                                                        <Metro:MetroSwitch Content="无RNC启动" IsChecked="true" Margin="10" IsEnabled="False" />
+                                                        <Metro:MetroSwitch x:Name="ts" Content="有无邻eNB" Margin="10" CornerRadius="100" />
+                                                    </StackPanel>
+                                                </Metro:MetroGroupBox>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Metro:MetroGroupBox Header="单选框">
+                                                    <Grid>
+                                                        <StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" />
+                                                                <RadioButton Content="CheckBox" Margin="5" />
+                                                            </StackPanel>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" IsChecked="True" />
+                                                                <RadioButton Content="CheckBox" Margin="5" IsChecked="True" />
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Metro:MetroGroupBox>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Metro:MetroGroupBox Header="按钮">
+                                                    <StackPanel HorizontalAlignment="Center">
+                                                        <Metro:MetroButton MetroButtonState="Green" Content="" Command="{Binding CmdSampleWithParam}" CommandParameter="Good" IsEnabled="{Binding BtnEnabled}" Margin="10" />
+
+                                                    </StackPanel>
+                                                </Metro:MetroGroupBox>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Metro:MetroGroupBox Header="当前活跃告警">
+                                                    <Grid>
+                                                        <DataGrid Name="DG1" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                                            <DataGrid.Columns>
+                                                                <DataGridTextColumn Header="编号"  Binding="{Binding AlarmNo}"/>
+                                                                <DataGridTextColumn Header="内容" Binding="{Binding AlarmName}" />
+                                                                <DataGridHyperlinkColumn Header="产生时间" Binding="{Binding AlarmTime}"  />
+                                                            </DataGrid.Columns>
+                                                        </DataGrid>
+                                                    </Grid>
+                                                </Metro:MetroGroupBox>
+                                            </Grid>
+
+                                        </Metro:MetroWaterfallFlow>
+
+
+
                                     </Grid>
-                                </Metro:MetroWaterfallFlow>
+                                    
                                 </Metro:MetroScrollViewer>
+
+                                <Grid Grid.Row="0" x:Name="Content_Comm">
+                                    
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition Width="180"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <DataGrid   ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="实例描述"  Binding="{Binding AlarmNo}"/>
+                                            <DataGridTextColumn Header="小区ID" Binding="{Binding AlarmName}" />
+                                            <DataGridTextColumn Header="小区友好名" Binding="{Binding AlarmTime}"  />
+                                            <DataGridTextColumn Header="小区物理ID" Binding="{Binding AlarmTime}"  />
+                                            <DataGridTextColumn Header="E-UTRA工作频段" Binding="{Binding AlarmTime}"  />
+                                            <DataGridTextColumn Header="小区中心频点" Binding="{Binding AlarmTime}"  />
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+
+                                    <Grid Grid.Column="1">
+                                        <TabControl>
+                                            <TabItem>
+                                                <TabItem.Header>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Ellipse Width="10" Height="10" Fill="DarkGray"/>
+                                                        <TextBlock>消息列表</TextBlock>
+                                                    </StackPanel>
+                                                </TabItem.Header>
+                                                <TextBox Text="11111111"></TextBox>
+                                            </TabItem>
+                                            <TabItem Header="Tab2">
+                                                <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
+                                            </TabItem>
+                                        </TabControl>
+
+                                    </Grid>
+                                    
+                                </Grid>
+
+                                <Grid Grid.Row="1">
+                                    <TabControl>
+                                        <TabItem>
+                                            <TabItem.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="10" Height="10" Fill="DarkGray"/>
+                                                    <TextBlock>基站Console</TextBlock>
+                                                </StackPanel>
+                                            </TabItem.Header>
+                                            <TextBox Text="普通信息(92:172.27.245.92):2017-12-15 11:06:14 Sync processer(0,5,3) failed! result(0)"></TextBox>
+                                        </TabItem>
+                                        <TabItem Header="消息内容">
+                                            <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
+                                        </TabItem>
+                                    </TabControl>
+
+                                </Grid>
+
+
+
                             </Grid>
                         </Metro:MetroTabItem>
                         
@@ -259,28 +337,34 @@
                     </Metro:MetroTabControl>
                 </Grid>
             </Metro:MetroMenuTabItem>
-            
-            <Metro:MetroMenuTabItem Header="网络规划" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+
+            <Metro:MetroMenuTabItem Header="小区规划" Icon="Resources/NetPlan.png" IconMove="Resources/NetPlanB.png">
                 <Grid>
                     <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+            <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/Alarm.png" IconMove="Resources/AlarmB.png">
                 <Grid>
                     <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="日志管理" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+            <Metro:MetroMenuTabItem Header="日志管理" Icon="Resources/Log.png" IconMove="Resources/LogB.png">
                 <Grid>
                     <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            
-            
-            <Metro:MetroMenuTabItem Header="备份" Icon="Resources/icon.png" IconMove="Resources/iconMove.png">
+            <Metro:MetroMenuTabItem Header="文件管理" Icon="Resources/File.png" IconMove="Resources/FileB.png">
+                <Grid>
+                    <Button Content="321" Height="19" Width="20"></Button>
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+
+
+            <Metro:MetroMenuTabItem Header="备份" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png">
                 <Grid>
                     <!--主程序树形结构-->
                     <TreeView Name="ObjTree_Tv" Width="250" Height="300" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"  
