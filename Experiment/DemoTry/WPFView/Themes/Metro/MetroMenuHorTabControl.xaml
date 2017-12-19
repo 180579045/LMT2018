@@ -83,9 +83,12 @@
                             <Metro:MetroScrollViewer Margin="180,0,0,0"  BorderBrush="White" VerticalAlignment="Center" Grid.RowSpan="1" Grid.Row="1" >
                                 <Canvas x:Name="canvas" Height="{Binding ActualHeight,ElementName=tabWidth}">
                                     <Grid x:Name="tabWidth">
-                                        <TabPanel x:Name="headerPanel" IsItemsHost="true"/>
+                                        <TabPanel x:Name="headerPanel" IsItemsHost="true"></TabPanel>
                                     </Grid>
                                 </Canvas>
+                                
+
+                                
                             </Metro:MetroScrollViewer>
                         </Grid>
 

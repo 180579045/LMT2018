@@ -149,6 +149,8 @@
     </Style>
 
     <Style TargetType="{x:Type Metro:MetroFavScrollViewer}">
+        
+        <!--设置背景颜色-->
         <Setter Property="Background">
             <Setter.Value>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -193,8 +195,20 @@
                             <ColumnDefinition/>
                             <ColumnDefinition x:Name="width" Width="0"/>
                         </Grid.ColumnDefinitions>
-                        <ScrollContentPresenter Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}"/>
-                        
+
+                        <ScrollContentPresenter Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}">
+                            <!--二级菜单-->
+                            <ScrollContentPresenter.ContextMenu>
+                                <Metro:MetroContextMenu>
+                                    <Metro:MetroMenuItem Header="导出配置" />
+                                    <Metro:MetroMenuItem Header="批量查询" />
+                                    <Metro:MetroMenuSeparator />
+                                    <Metro:MetroMenuItem Header="置顶" />
+                                    <Metro:MetroMenuItem Header="取消收藏" />
+                                </Metro:MetroContextMenu>
+                            </ScrollContentPresenter.ContextMenu>
+                        </ScrollContentPresenter>
+
                         <!--
                         <Rectangle VerticalAlignment="Top" Height="5" IsHitTestVisible="False">
                             <Rectangle.Fill>
@@ -213,14 +227,15 @@
                             </Rectangle.Fill>
                         </Rectangle>
                         -->
-                        
+
                         <ScrollBar x:Name="PART_VerticalScrollBar"   Margin="{TemplateBinding VerticalMargin}" MinWidth="10" MaxWidth="10"  
                                    BorderBrush="{TemplateBinding BorderBrush}" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Grid.Row="0" 
                                    Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" 
                                    Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" 
                                    Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" 
                                    ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource scrollBarStyle}" HorizontalAlignment="Right"/>
-                        
+
+
                         <ScrollBar x:Name="PART_HorizontalScrollBar" Margin="{TemplateBinding HorizontalMargin}" MinHeight="10" MaxHeight="10" 
                                    BorderBrush="{TemplateBinding BorderBrush}" AutomationProperties.AutomationId="HorizontalScrollBar" Grid.Column="0" Grid.Row="1" 
                                    Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}" Maximum="{TemplateBinding ScrollableWidth}" 

@@ -149,11 +149,15 @@ namespace LMTMainWindow
             AlarmGrid b = new AlarmGrid("1003", "设备进入不稳定状态", DateTime.Now.ToString());
             AlarmGrid c = new AlarmGrid("1004", "单板软件启动失败", DateTime.Now.ToString());
             AlarmGrid d = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
+            AlarmGrid e = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
+            AlarmGrid f = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
 
             ret.Add(a);
             ret.Add(b);
             ret.Add(c);
             ret.Add(d);
+            ret.Add(e);
+            ret.Add(f);
 
             return ret;
         }

@@ -109,7 +109,7 @@
                                     </StackPanel>
                                 </Metro:MetroExpander>
 
-                                <Metro:MetroExpander Header="物理设备" Hint="告警" HintBackground="#FFF15151">
+                                <Metro:MetroExpander Header="物理设备" Hint="告警 3" HintBackground="#FFF15151">
                                     <StackPanel>
                                         <Metro:MetroExpander Header="板卡" Icon="Resources/tabIcon.png" />
                                         <Metro:MetroExpander Header="射频单元" Icon="Resources/tabIcon.png" />
@@ -129,7 +129,7 @@
                                     </StackPanel>
                                 </Metro:MetroExpander>
 
-                                <Metro:MetroExpander Header="FDD业务" Hint="告警" HintBackground="#FFACB403">
+                                <Metro:MetroExpander Header="FDD业务" Hint="告警 20" HintBackground="#FFACB403">
                                     <StackPanel>
                                         <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
                                         <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
@@ -181,11 +181,12 @@
                                     <RowDefinition/>
                                     <RowDefinition Height="200"/>
                                 </Grid.RowDefinitions>
-                                
+
+                                <!--基本信息栏-->
                                 <Metro:MetroScrollViewer Grid.Row="0" x:Name="Content_Base">
                                     <Grid>
-                                        
                                         <Metro:MetroWaterfallFlow x:Name="waterfallFlow" ListWidth="300" Grid.Column="0">
+
                                             <Grid>
                                                 <Metro:MetroGroupBox Header="消息抄送">
                                                     <Grid>
@@ -223,7 +224,7 @@
                                             </Grid>
 
                                             <Grid>
-                                                <Metro:MetroGroupBox Header="单选框">
+                                                <Metro:MetroGroupBox Header="基站基本信息">
                                                     <Grid>
                                                         <StackPanel>
                                                             <StackPanel Orientation="Horizontal">
@@ -240,16 +241,16 @@
                                             </Grid>
 
                                             <Grid>
-                                                <Metro:MetroGroupBox Header="按钮">
+                                                <Metro:MetroGroupBox Header="已规划小区">
                                                     <StackPanel HorizontalAlignment="Center">
-                                                        <Metro:MetroButton MetroButtonState="Green" Content="" Command="{Binding CmdSampleWithParam}" CommandParameter="Good" IsEnabled="{Binding BtnEnabled}" Margin="10" />
-
+                                                        <Metro:MetroButton MetroButtonState="Green" Content="" Command="{Binding CmdSampleWithParam}" 
+                                                                           CommandParameter="Good" IsEnabled="{Binding BtnEnabled}" Margin="10" />
                                                     </StackPanel>
                                                 </Metro:MetroGroupBox>
                                             </Grid>
 
                                             <Grid>
-                                                <Metro:MetroGroupBox Header="当前活跃告警">
+                                                <Metro:MetroGroupBox Header="当前活跃告警" MaxHeight="150">
                                                     <Grid>
                                                         <DataGrid Name="DG1" ItemsSource="{Binding}" AutoGenerateColumns="False" >
                                                             <DataGrid.Columns>
@@ -263,20 +264,17 @@
                                             </Grid>
 
                                         </Metro:MetroWaterfallFlow>
-
-
-
                                     </Grid>
-                                    
                                 </Metro:MetroScrollViewer>
 
+                                <!--基站内容栏与消息列表栏-->
                                 <Grid Grid.Row="0" x:Name="Content_Comm">
-                                    
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition></ColumnDefinition>
                                         <ColumnDefinition Width="180"></ColumnDefinition>
                                     </Grid.ColumnDefinitions>
                                     
+                                    <!--基站内容栏-->
                                     <DataGrid   ItemsSource="{Binding}" AutoGenerateColumns="False" >
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="实例描述"  Binding="{Binding AlarmNo}"/>
@@ -286,8 +284,21 @@
                                             <DataGridTextColumn Header="E-UTRA工作频段" Binding="{Binding AlarmTime}"  />
                                             <DataGridTextColumn Header="小区中心频点" Binding="{Binding AlarmTime}"  />
                                         </DataGrid.Columns>
+                                        
+                                        <DataGrid.ContextMenu>
+                                            <Metro:MetroContextMenu>
+                                                <Metro:MetroMenuItem Header="新增参数"  />
+                                                <Metro:MetroMenuItem Header="新增 小区信息" />
+                                                <Metro:MetroMenuItem Header="修改 小区信息" />
+                                                <Metro:MetroMenuSeparator />
+                                                <Metro:MetroMenuItem Header="查看UE列表" />
+                                                <Metro:MetroMenuItem Header="显示绘图"/>
+                                            </Metro:MetroContextMenu>
+                                        </DataGrid.ContextMenu>
+                                        
                                     </DataGrid>
 
+                                    <!--消息列表栏-->
                                     <Grid Grid.Column="1">
                                         <TabControl>
                                             <TabItem>
@@ -297,18 +308,27 @@
                                                         <TextBlock>消息列表</TextBlock>
                                                     </StackPanel>
                                                 </TabItem.Header>
-                                                <TextBox Text="11111111"></TextBox>
+                                                <StackPanel>
+                                                    <Metro:MetroTextBox Width="170" x:Name="check3" Text="筛选" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
+                                                                        ButtonTitle="筛选" PopupHint="" Icon="Resources/editIcon.png" />
+                                                    <TextBox Text="11111111"></TextBox>
+                                                </StackPanel>
                                             </TabItem>
                                             <TabItem Header="Tab2">
-                                                <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
+                                                <StackPanel>
+                                                    <Metro:MetroTextBox Width="170" x:Name="check4" Text="筛选" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
+                                                                        ButtonTitle="筛选" PopupHint="" Icon="Resources/editIcon.png" />
+                                                    <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
+                                                </StackPanel>
                                             </TabItem>
                                         </TabControl>
-
                                     </Grid>
                                     
                                 </Grid>
 
+                                <!--基站Console栏与重要过程打印-->
                                 <Grid Grid.Row="1">
+
                                     <TabControl>
                                         <TabItem>
                                             <TabItem.Header>
@@ -325,13 +345,11 @@
                                     </TabControl>
 
                                 </Grid>
-
-
-
+                                
                             </Grid>
                         </Metro:MetroTabItem>
                         
-                        
+                        <!--Demo中的第二个基站,暂不显示-->
                         <Metro:MetroTabItem Header="基站—居民楼室内" />
 
                     </Metro:MetroTabControl>
@@ -339,6 +357,25 @@
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="小区规划" Icon="Resources/NetPlan.png" IconMove="Resources/NetPlanB.png">
+                <Grid>
+
+                    <TextBox Name="textBox2" TextWrapping="Wrap" Margin="10, 10, 5, 5" Grid.Row="7" Height="20" Width="500">
+                            The quick brown fox jumps over the lazy dog.
+                        <TextBox.ContextMenu>
+                            <ContextMenu>
+                            <MenuItem Header="_Bold"  />
+                            <MenuItem Header="_Italic"  />
+                                <Separator />
+                                <MenuItem Header="I_ncrease Font Size" />
+                                <MenuItem Header="_Decrease Font Size"  />
+                            </ContextMenu>
+                        </TextBox.ContextMenu>
+                    </TextBox>
+                    
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="流程图" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
                 <Grid>
                     <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
