@@ -1,9 +1,9 @@
-﻿<Metro:MetroWindow x:Class="LMTMainWindow.MainWindow"
+﻿<Metro:MetroWindow x:Class="SCMTMainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:LMTMainWindow"
+        xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None">
@@ -88,85 +88,31 @@
                     
                     <!--对象树模型(对象树节点只到父节点级别)-->
                     <Metro:MetroScrollViewer>
+                        
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
                             <StackPanel x:Name="lists">
 
                                 <Metro:MetroExpander x:Name="Favorite" Header="收藏节点" Icon="Resources/Star.png" />
 
-                                <Metro:MetroExpander x:Name="M_Root" Header="基站信息" Hint="提示"  />
+                                <Metro:MetroExpander Header="基本信息" Click="MetroExpander_Click_1"  />
 
-                                <Metro:MetroExpander Header="公共链路信息">
-                                    <StackPanel>
-                                        <Metro:MetroExpander Header="  局向" HintBackground="#FFF15151">
-                                            <StackPanel>
-                                                <Metro:MetroExpander Header="MME" Icon="Resources/tabIcon.png" Click="CommMME_Click" />
-                                                <Metro:MetroExpander Header="邻基站" Icon="Resources/tabIcon.png" />
-                                                <Metro:MetroExpander Header="基站管理信息" Icon="Resources/tabIcon.png" />
-                                                <Metro:MetroExpander Header="基站校准节点" Icon="Resources/tabIcon.png"/>
-                                                <Metro:MetroExpander Header="时钟信息" Icon="Resources/tabIcon.png"/>
-                                            </StackPanel>
-                                        </Metro:MetroExpander>
-                                    </StackPanel>
-                                </Metro:MetroExpander>
+                                <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" Icon="Resources/Star.png" />
 
-                                <Metro:MetroExpander Header="物理设备" Hint="告警 3" HintBackground="#FFF15151">
-                                    <StackPanel>
-                                        <Metro:MetroExpander Header="板卡" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="射频单元" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="天线" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="器件库" Icon="Resources/tabIcon.png"/>
-                                        <Metro:MetroExpander Header="环境监控" Icon="Resources/tabIcon.png"/>
-                                    </StackPanel>
-                                </Metro:MetroExpander>
-
-                                <Metro:MetroExpander Header="TD-LTE业务" IsExpanded="False">
-                                    <StackPanel>
-                                        <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="性能管理" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="跟踪管理" Icon="Resources/tabIcon.png"/>
-                                        <Metro:MetroExpander Header="信令软彩" Icon="Resources/tabIcon.png"/>
-                                    </StackPanel>
-                                </Metro:MetroExpander>
-
-                                <Metro:MetroExpander Header="FDD业务" Hint="告警 20" HintBackground="#FFACB403">
-                                    <StackPanel>
-                                        <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="性能管理" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="跟踪管理" Icon="Resources/tabIcon.png"/>
-                                        <Metro:MetroExpander Header="信令软彩" Icon="Resources/tabIcon.png"/>
-                                    </StackPanel>
-                                </Metro:MetroExpander>
-
-                                <Metro:MetroExpander Header="5G业务" Hint="1/5">
-                                    <StackPanel>
-                                        <Metro:MetroExpander Header="小区" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="全局参数配置" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="性能管理" Icon="Resources/tabIcon.png" />
-                                        <Metro:MetroExpander Header="跟踪管理" Icon="Resources/tabIcon.png"/>
-                                        <Metro:MetroExpander Header="信令软彩" Icon="Resources/tabIcon.png"/>
-                                    </StackPanel>
-                                </Metro:MetroExpander>
+                                <Metro:MetroExpander Header="一单开站" Icon="Resources/Star.png"/>
 
                             </StackPanel>
                         </Border>
                     </Metro:MetroScrollViewer>
 
                     <!--收藏模型-->
-                    <Metro:MetroFavScrollViewer Grid.Column="1" Margin="0,40,0,0">
+                    <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="1" Margin="0,40,0,0">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
-                            <StackPanel x:Name="FavLists">
+                            <StackPanel x:Name="FavLeaf_Lists">
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                         ButtonTitle="搜索" PopupHint="Length is more than 10!" Icon="Resources/editIcon.png" />
+
                                 
-                                <Metro:MetroExpander Header="基本信息" Click="MetroExpander_Click_1"  />
-                                <Metro:MetroExpander Header="公共链路信息" Click="MetroExpander_Click"/>
-                                <Metro:MetroExpander Header="物理设备"/>
-                                <Metro:MetroExpander Header="TD-LTE业务" Click="MetroExpander_Click_2"/>
-                                <Metro:MetroExpander Header="FDD业务"/>
-                                <Metro:MetroExpander Header="5G业务"/>
-                                
+
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
@@ -204,7 +150,6 @@
                                                                 </StackPanel>
                                                             </TabItem>
                                                             <TabItem Header="小区级消息">
-                                                                <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
                                                             </TabItem>
                                                         </TabControl>
 
@@ -311,14 +256,25 @@
                                                 <StackPanel>
                                                     <Metro:MetroTextBox Width="170" x:Name="check3" Text="筛选" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                                                         ButtonTitle="筛选" PopupHint="" Icon="Resources/editIcon.png" />
-                                                    <TextBox Text="11111111"></TextBox>
+                                                    
+                                                    <DataGrid   ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                                        <DataGrid.Columns>
+                                                            <DataGridTextColumn Header="SourceID" Binding="{Binding AlarmName}" />
+                                                            <DataGridTextColumn Header="OpCode" Binding="{Binding AlarmTime}" />
+                                                            <DataGridTextColumn Header="DestID" Binding="{Binding AlarmTime}" />
+                                                        </DataGrid.Columns>
+
+                                                        <DataGrid.ContextMenu>
+                                                            <Metro:MetroContextMenu>
+                                                                <Metro:MetroMenuItem Header="查看详细内容" />
+                                                            </Metro:MetroContextMenu>
+                                                        </DataGrid.ContextMenu>
+
+                                                    </DataGrid>
                                                 </StackPanel>
                                             </TabItem>
-                                            <TabItem Header="Tab2">
+                                            <TabItem Header="启站流程">
                                                 <StackPanel>
-                                                    <Metro:MetroTextBox Width="170" x:Name="check4" Text="筛选" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
-                                                                        ButtonTitle="筛选" PopupHint="" Icon="Resources/editIcon.png" />
-                                                    <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
                                                 </StackPanel>
                                             </TabItem>
                                         </TabControl>
@@ -340,7 +296,6 @@
                                             <TextBox Text="普通信息(92:172.27.245.92):2017-12-15 11:06:14 Sync processer(0,5,3) failed! result(0)"></TextBox>
                                         </TabItem>
                                         <TabItem Header="消息内容">
-                                            <TextBlock Text="{Binding ElementName=textBox1, Path=Text}"/>
                                         </TabItem>
                                     </TabControl>
 
@@ -405,7 +360,8 @@
                 <Grid>
                     <!--主程序树形结构-->
                     <TreeView Name="ObjTree_Tv" Width="250" Height="300" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"  
-                              Margin="0,0,0,0" BorderThickness="0" SelectedItemChanged="ObjTree_Tv_SelectedItemChanged">               
+                              Margin="0,0,0,0" BorderThickness="0" SelectedItemChanged="ObjTree_Tv_SelectedItemChanged">
+                        
                         <TreeView.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <LinearGradientBrush.RelativeTransform>
@@ -421,6 +377,7 @@
                                 <GradientStop Color="#FFFDFDFD" Offset="1"/>
                             </LinearGradientBrush>
                         </TreeView.Background>
+                        
                         <TreeView.ItemTemplate>
                             <HierarchicalDataTemplate DataType="{x:Type local:ObjNode}" ItemsSource="{Binding Path=SubObj_Lsit}" >
                                 <StackPanel Orientation="Horizontal">

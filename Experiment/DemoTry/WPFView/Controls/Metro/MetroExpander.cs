@@ -1,5 +1,6 @@
 ﻿using Arthas.Utility.Element;
 using System;
+using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -18,6 +19,7 @@ namespace Arthas.Controls.Metro
         public static readonly DependencyProperty IconProperty = ElementBase.Property<MetroExpander, ImageSource>(nameof(IconProperty), null);
 
         public static RoutedUICommand ButtonClickCommand = ElementBase.Command<MetroExpander>(nameof(ButtonClickCommand));
+        public static RoutedUICommand ButtonClickCommand2 = ElementBase.Command<MetroExpander>(nameof(ButtonClickCommand2));
 
         public bool IsExpanded { get { return (bool)GetValue(IsExpandedProperty); } set { SetValue(IsExpandedProperty, value); ElementBase.GoToState(this, IsExpanded ? "Expand" : "Normal"); } }
         public bool CanHide { get { return (bool)GetValue(CanHideProperty); } set { SetValue(CanHideProperty, value); } }
@@ -26,6 +28,8 @@ namespace Arthas.Controls.Metro
         public Brush HintBackground { get { return (Brush)GetValue(HintBackgroundProperty); } set { SetValue(HintBackgroundProperty, value); } }
         public Brush HintForeground { get { return (Brush)GetValue(HintForegroundProperty); } set { SetValue(HintForegroundProperty, value); } }
         public ImageSource Icon { get { return (ImageSource)GetValue(IconProperty); } set { SetValue(IconProperty, value); } }
+        public StackPanel SubExpender { get; set; }
+        public object obj_type { get; set; }
 
         public event EventHandler Click;
 
@@ -52,6 +56,11 @@ namespace Arthas.Controls.Metro
                 {
                     IsExpanded = !IsExpanded;
                 }
+            }));
+
+            CommandBindings.Add(new CommandBinding(ButtonClickCommand2, delegate
+            {
+
                 if (Click != null) { Click(this, null); }
             }));
         }
@@ -61,6 +70,9 @@ namespace Arthas.Controls.Metro
             Content = new StackPanel();
         }
 
+        /// <summary>
+        /// 所包含的孩子节点;
+        /// </summary>
         public UIElementCollection Children
         {
             get
@@ -76,7 +88,7 @@ namespace Arthas.Controls.Metro
                 return null;
             }
         }
-
+        
         public void Add(FrameworkElement element)
         {
             if (!(Content is StackPanel))
@@ -85,7 +97,7 @@ namespace Arthas.Controls.Metro
             }
             (Content as StackPanel).Children.Add(element);
         }
-
+        
         static MetroExpander()
         {
             ElementBase.DefaultStyle<MetroExpander>(DefaultStyleKeyProperty);

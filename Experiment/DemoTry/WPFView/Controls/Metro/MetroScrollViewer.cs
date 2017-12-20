@@ -1,4 +1,7 @@
-﻿using Arthas.Utility.Element;
+﻿/*
+ * 对象树容器
+ */
+using Arthas.Utility.Element;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

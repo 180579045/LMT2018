@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snmp_dll", "Snmp_dll\Snmp_dll.csproj", "{E7CEB301-3A34-49D2-AA69-E3963DD1AC21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LMTMainWindow", "LMTMainWindow\LMTMainWindow.csproj", "{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMTMainWindow", "LMTMainWindow\SCMTMainWindow.csproj", "{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFView", "WPFView\WPFView.csproj", "{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}"
 EndProject

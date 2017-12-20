@@ -12,8 +12,11 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.ComponentModel;
+using System.Data;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
-namespace LMTMainWindow
+namespace SCMTMainWindow
 {
 
     public class MainWindowVM : INotifyPropertyChanged
@@ -129,4 +132,43 @@ namespace LMTMainWindow
         }
     }
     #endregion
+
+
+    public enum OrderStatus { None, New, Processing, Shipped, Received };
+
+    public class AlarmGrid
+    {
+        public string AlarmNo { get; set; }
+        public string AlarmName { get; set; }
+        public string AlarmTime { get; set; }
+
+        public AlarmGrid(string AlmNo, string AlmName, string AlmTime)
+        {
+            AlarmNo = AlmNo;
+            AlarmName = AlmName;
+            AlarmTime = AlmTime;
+        }
+
+        public static ObservableCollection<AlarmGrid> GetData()
+        {
+            ObservableCollection<AlarmGrid> ret = new ObservableCollection<AlarmGrid>();
+            AlarmGrid a = new AlarmGrid("7001", "无线链路建立失败", DateTime.Now.ToString());
+            AlarmGrid b = new AlarmGrid("1003", "设备进入不稳定状态", DateTime.Now.ToString());
+            AlarmGrid c = new AlarmGrid("1004", "单板软件启动失败", DateTime.Now.ToString());
+            AlarmGrid d = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
+            AlarmGrid e = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
+            AlarmGrid f = new AlarmGrid("3201", "BBU板卡温度异常", DateTime.Now.ToString());
+
+            ret.Add(a);
+            ret.Add(b);
+            ret.Add(c);
+            ret.Add(d);
+            ret.Add(e);
+            ret.Add(f);
+
+            return ret;
+        }
+
+    }
+
 }

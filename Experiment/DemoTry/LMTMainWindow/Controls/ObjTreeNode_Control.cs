@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 
-namespace LMTMainWindow
+namespace SCMTMainWindow
 {
     /// <summary>
     /// 对象树管理类;
@@ -88,7 +88,7 @@ namespace LMTMainWindow
         public static List<ObjNode> ArrangeParentage(List<ObjNode> NodeList)
         {
             List<ObjNode> RootNodeShow = new List<ObjNode>();
-            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "NodeB");
+            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "基站节点列表");
 
             // 遍历所有节点确认亲子关系;
             foreach (ObjNode iter in NodeList)

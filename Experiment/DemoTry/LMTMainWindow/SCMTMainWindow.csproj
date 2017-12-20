@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\NodeB_Control.cs" />
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Mib\MibNode.cs" />
@@ -110,11 +111,14 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Component\NodeB\" />
+    <Folder Include="Component\Thread\" />
     <Folder Include="Pages\" />
   </ItemGroup>
   <ItemGroup>

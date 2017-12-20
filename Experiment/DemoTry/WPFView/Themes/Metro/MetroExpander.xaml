@@ -15,7 +15,6 @@
         <Setter Property="Hint" Value="{x:Null}"/>
         <Setter Property="HintBackground" Value="#7F000000"/>
         <Setter Property="HintForeground" Value="#FFFFFF"/>
-
         <Style.Triggers>
             <Trigger Property="CanHide" Value="True">
                 <Setter Property="Template">
@@ -39,13 +38,11 @@
                                         </VisualState>
                                         <VisualState x:Name="Expand">
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="height" Storyboard.TargetProperty="(Height)" To="{Binding ElementName=content,Path=ActualHeight}" Duration="0:0:0.15"/>
                                                 <DoubleAnimation Storyboard.TargetName="angle" Storyboard.TargetProperty="(Angle)" To="90" Duration="0:0:0.15"/>
                                             </Storyboard>
                                         </VisualState>
                                         <VisualState x:Name="StartExpand">
                                             <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="height" Storyboard.TargetProperty="(Height)" To="{Binding ElementName=content,Path=ActualHeight}" Duration="0:0:0"/>
                                                 <DoubleAnimation Storyboard.TargetName="angle" Storyboard.TargetProperty="(Angle)" To="90" Duration="0:0:0"/>
                                             </Storyboard>
                                         </VisualState>
@@ -61,21 +58,16 @@
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition x:Name="iconWidth" Width="Auto"/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition x:Name="hintWidth" Width="Auto"/>
                                             <ColumnDefinition x:Name="algleWidth" Width="Auto"/>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition x:Name="hintWidth" Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         
                                         <Image Width="15" Height="15" Margin="10,0,0,0" VerticalAlignment="Center" Source="{TemplateBinding Icon}" Opacity="0.7"/>
-                                        
-                                        <Metro:MetroTextBlock Grid.Column="1" Text="{TemplateBinding Header}" Margin="10,8,5,8" VerticalAlignment="Center" HorizontalAlignment="Left" Opacity="0.65"/>
-                                        
-                                        <Metro:MetroBorder    Grid.Column="2" AutoCornerRadius="True" Margin="0,0,5,0" VerticalAlignment="Center" Background="{TemplateBinding HintBackground}">
-                                            <Metro:MetroTextBlock VerticalAlignment="Center" Margin="8,1" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}"/>
-                                        </Metro:MetroBorder>
-                                        
-                                        <Grid Grid.Column="3" Margin="10,0" VerticalAlignment="Center">
-                                            <Polyline Points="0,0 5,5 0,10" Stroke="#000000" RenderTransformOrigin="0.5,0.5" Opacity="0.65">
+
+                                        <!--小箭头-->
+                                        <Grid Grid.Column="1" Margin="10,8,5,8" VerticalAlignment="Center">
+                                            <Polyline Points="0,0 5,5 0,10" Stroke="#000000" RenderTransformOrigin="0,0.5" Opacity="0.65">
                                                 <Polyline.RenderTransform>
                                                     <TransformGroup>
                                                         <RotateTransform x:Name="angle" Angle="0"/>
@@ -83,8 +75,18 @@
                                                 </Polyline.RenderTransform>
                                             </Polyline>
                                         </Grid>
-                                        
-                                        <Metro:MetroFocusButton Grid.ColumnSpan="4" Foreground="#00000000" MouseMoveForeground="#0C000000" BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroExpander.ButtonClickCommand"/>
+
+                                        <Metro:MetroFocusButton Grid.ColumnSpan="2" Foreground="#00000000" MouseMoveForeground="#0C000000" BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroExpander.ButtonClickCommand"/>
+
+                                        <!--内容-->
+                                        <Metro:MetroTextBlock Grid.Column="2" Text="{TemplateBinding Header}" Margin="10,8,5,8" VerticalAlignment="Center" HorizontalAlignment="Left" Opacity="0.65"/>
+
+                                        <Metro:MetroBorder    Grid.Column="3" AutoCornerRadius="True" Margin="0,0,5,0" VerticalAlignment="Center" Background="{TemplateBinding HintBackground}">
+                                            <Metro:MetroTextBlock VerticalAlignment="Center" Margin="8,1" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}"/>
+                                        </Metro:MetroBorder>
+
+                                        <Metro:MetroFocusButton Grid.Column="2" Foreground="#00000000" MouseMoveForeground="#0C000000" BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroExpander.ButtonClickCommand2"/>
+
                                     </Grid>
                                 </Border>
                                 
@@ -136,7 +138,7 @@
                                         </Metro:MetroBorder>
                                     </Grid>
                                 </Border>
-                                <Border Grid.Row="1" Background="#7FFFFFFF" BorderBrush="#e6e6e6" BorderThickness="0,0,0,1">
+                                <Border Grid.Row="1" Background="#7FFFFFFF" BorderBrush="#e6e6e6" BorderThickness="0,0,0,0">
                                     <ContentPresenter/>
                                 </Border>
                             </Grid>

@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace SCMTMainWindow
 {
-    public class MibCommand
+    class FavoriteNode_Control
     {
-
     }
 }

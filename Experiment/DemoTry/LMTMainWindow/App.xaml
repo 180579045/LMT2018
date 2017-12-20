@@ -1,7 +1,7 @@
-﻿<Application x:Class="LMTMainWindow.App"
+﻿<Application x:Class="SCMTMainWindow.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:LMTMainWindow"
+             xmlns:local="clr-namespace:SCMTMainWindow"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

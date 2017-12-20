@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace LMTMainWindow.Properties {
+namespace SCMTMainWindow.Properties {
     using System;
     
     
