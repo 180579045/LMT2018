@@ -74,31 +74,19 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <!--动画属性
-                    <VisualStateManager.VisualStateGroups>
-                        <VisualStateGroup>
-                            <VisualState x:Name="CommMME_Click">
-                                <Storyboard>
-                                    <ThicknessAnimation Storyboard.TargetName="Comm_Content" Storyboard.TargetProperty="(Visibility)" To="Hidden" Duration="0:0:1"/>
-                                </Storyboard>
-                            </VisualState>
-                        </VisualStateGroup>
-                    </VisualStateManager.VisualStateGroups>
-                    -->
-                    
                     <!--对象树模型(对象树节点只到父节点级别)-->
                     <Metro:MetroScrollViewer>
                         
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
                             <StackPanel x:Name="lists">
 
-                                <Metro:MetroExpander x:Name="Favorite" Header="收藏节点" Icon="Resources/Star.png" />
+                                <Metro:MetroExpander Header="收藏节点" Icon="Resources/Star.png" />
 
-                                <Metro:MetroExpander Header="基本信息" Click="MetroExpander_Click_1"  />
+                                <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" Click="MetroExpander_Click_BaseInfo"  />
 
-                                <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" Icon="Resources/Star.png" />
+                                <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
 
-                                <Metro:MetroExpander Header="一单开站" Icon="Resources/Star.png"/>
+                                <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" />
 
                             </StackPanel>
                         </Border>
@@ -110,8 +98,6 @@
                             <StackPanel x:Name="FavLeaf_Lists">
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                         ButtonTitle="搜索" PopupHint="Length is more than 10!" Icon="Resources/editIcon.png" />
-
-                                
 
                             </StackPanel>
                         </Border>
@@ -135,6 +121,7 @@
 
                                             <Grid>
                                                 <Metro:MetroGroupBox Header="消息抄送">
+                                                    
                                                     <Grid>
                                                         <TabControl>
                                                             <TabItem>
@@ -220,7 +207,9 @@
                                     </Grid.ColumnDefinitions>
                                     
                                     <!--基站内容栏-->
-                                    <DataGrid   ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                    <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                        
+                                        <!--内容-->
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="实例描述"  Binding="{Binding AlarmNo}"/>
                                             <DataGridTextColumn Header="小区ID" Binding="{Binding AlarmName}" />
@@ -230,6 +219,7 @@
                                             <DataGridTextColumn Header="小区中心频点" Binding="{Binding AlarmTime}"  />
                                         </DataGrid.Columns>
                                         
+                                        <!--鼠标右键-->
                                         <DataGrid.ContextMenu>
                                             <Metro:MetroContextMenu>
                                                 <Metro:MetroMenuItem Header="新增参数"  />
@@ -326,7 +316,8 @@
                             </ContextMenu>
                         </TextBox.ContextMenu>
                     </TextBox>
-                    
+
+
                 </Grid>
             </Metro:MetroMenuTabItem>
 
@@ -358,7 +349,7 @@
 
             <Metro:MetroMenuTabItem Header="备份" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png">
                 <Grid>
-                    <!--主程序树形结构-->
+                    <!--主程序树形结构
                     <TreeView Name="ObjTree_Tv" Width="250" Height="300" Padding="0" HorizontalAlignment="Left" VerticalAlignment="Top"  
                               Margin="0,0,0,0" BorderThickness="0" SelectedItemChanged="ObjTree_Tv_SelectedItemChanged">
                         
@@ -386,10 +377,10 @@
                             </HierarchicalDataTemplate>
                         </TreeView.ItemTemplate>
                     </TreeView>
-
-                    <!--信息打印窗口-->
+                    
                     <TextBox x:Name="NBInfoShow" HorizontalAlignment="Left" Height="108" Margin="632,602,0,0" TextWrapping="Wrap" VerticalAlignment="Top" 
                  Width="948" AutomationProperties.IsOffscreenBehavior="Onscreen" VerticalScrollBarVisibility="Auto"/>
+                    -->
                 </Grid>
             </Metro:MetroMenuTabItem>
 

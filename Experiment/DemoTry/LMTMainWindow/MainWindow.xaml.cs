@@ -51,88 +51,37 @@ namespace SCMTMainWindow
         public void InitView()
         {
             NodeB node = new NodeB("172.27.245.92");                          // 初始化一个基站节点(Demo程序,暂时只连接一个基站);
-            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 初始化一个对象树管理;
-            this.RefreshObj(Ctrl.m_RootNode);
+            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 初始化一个对象树;
+            this.RefreshObj(Ctrl.m_RootNode);                                 // 将对象树加入到Expender容器中
 
-            TrapMessage.SetNodify(this.Update_NBInfoShow);                    // 注册Trap监听;
+            //TrapMessage.SetNodify(this.Update_NBInfoShow);                  // 注册Trap监听;
 
+            // Demo数据;
             ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
             DG1.DataContext = custdata;                                       // 将告警信息加入控件;
-            
         }
-
+        
         /// <summary>
-        /// 树形结构被选择后触发的处理;
+        /// 更新对象树模型以及叶节点模型;
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void ObjTree_Tv_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            ObjNode SelectedItem = this.ObjTree_Tv.SelectedItem as ObjNode;
-        }
-
-        /// <summary>
-        /// 在控制台窗口打印Trap信息;
-        /// </summary>
-        /// <param name="TrapContent"></param>
-        private void Update_NBInfoShow(List<string> TrapContent)
-        {
-            // 如果当前运行的线程不是UI线程才写入到控件中;
-            if (System.Threading.Thread.CurrentThread != NBInfoShow.Dispatcher.Thread)
-            {
-                NBInfoShow.Dispatcher.Invoke(
-                   new Action(
-                        delegate
-                        {
-                            foreach (string content in TrapContent)
-                            {
-                                NBInfoShow.Text += DateTime.Now + " " + content + "\r\n";
-                                NBInfoShow.ScrollToEnd();
-                            }
-                        }
-                   )
-                );
-            }
-        }
-
+        /// <param name="ItemsSource">对象树列表</param>
         private void RefreshObj(IList<ObjNode> ItemsSource)
         {
             StackPanel FavLeafList = new StackPanel();
+
+            // 将右侧叶节点容器容器加入到对象树子容器中;
             this.Obj_Root.SubExpender = this.FavLeaf_Lists;
-            FavLeafList = FavLeaf_Lists;
+
             foreach (ObjNode items in ItemsSource)
             {
                 items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0);
             }
         }
-
-        /// <summary>
-        /// Demo阶段得点击事件，先不考虑解耦合;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void CommMME_Click(object sender, EventArgs e)
-        {
-            Content_Base.Visibility = Visibility.Hidden;
-            Content_Comm.Visibility = Visibility.Visible;
-        }
-
-        private void MetroExpander_Click_1(object sender, EventArgs e)
+        
+        private void MetroExpander_Click_BaseInfo(object sender, EventArgs e)
         {
             Content_Base.Visibility = Visibility.Visible;
             Content_Comm.Visibility = Visibility.Hidden;
-        }
-
-        private void MetroExpander_Click(object sender, EventArgs e)
-        {
-            Content_Base.Visibility = Visibility.Hidden;
-            Content_Comm.Visibility = Visibility.Visible;
-        }
-
-        private void MetroExpander_Click_2(object sender, EventArgs e)
-        {
-            Content_Base.Visibility = Visibility.Hidden;
-            Content_Comm.Visibility = Visibility.Visible;
         }
     }
 

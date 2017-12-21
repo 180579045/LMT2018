@@ -149,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\about.html" />
+    <Resource Include="Resources\EasyNB.png" />
+    <Resource Include="Resources\Baseinfo2.png" />
     <Resource Include="Resources\Wave.png" />
     <Resource Include="Resources\WaveB.png" />
     <Resource Include="Resources\File.png" />

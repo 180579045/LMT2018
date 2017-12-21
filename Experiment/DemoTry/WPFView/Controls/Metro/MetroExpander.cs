@@ -1,6 +1,5 @@
 ﻿using Arthas.Utility.Element;
 using System;
-using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,6 +27,7 @@ namespace Arthas.Controls.Metro
         public Brush HintBackground { get { return (Brush)GetValue(HintBackgroundProperty); } set { SetValue(HintBackgroundProperty, value); } }
         public Brush HintForeground { get { return (Brush)GetValue(HintForegroundProperty); } set { SetValue(HintForegroundProperty, value); } }
         public ImageSource Icon { get { return (ImageSource)GetValue(IconProperty); } set { SetValue(IconProperty, value); } }
+
         public StackPanel SubExpender { get; set; }
         public object obj_type { get; set; }
 
@@ -60,7 +60,6 @@ namespace Arthas.Controls.Metro
 
             CommandBindings.Add(new CommandBinding(ButtonClickCommand2, delegate
             {
-
                 if (Click != null) { Click(this, null); }
             }));
         }

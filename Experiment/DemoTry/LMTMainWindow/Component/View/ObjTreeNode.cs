@@ -7,6 +7,7 @@
 // 版本：V1.0
 // 创建时间：2017-11-20
 //----------------------------------------------------------------*/
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,6 @@ using System.Windows;
 
 namespace SCMTMainWindow
 {
-    public delegate void OnNodeClick();
     /// <summary>
     /// 对象树节点抽象类;
     /// 说明:由此可衍生出各种类型的节点，诸如普通查询\小区\传输\分制式显示;
@@ -38,21 +38,30 @@ namespace SCMTMainWindow
 
         public event EventHandler IsExpandedChanged;             // 树形结构展开时;
         public event EventHandler IsSelectedChanged;             // 树形结构节点被选择时;
+
+        /// <summary>
+        /// 对象树点击事件;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected abstract void ClickObjNode(object sender, EventArgs e);
         
         /// <summary>
         /// 将所有节点填入对象树中;
         /// </summary>
         public void TraverseChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths)
         {
-            foreach(var items in SubObj_Lsit)
+            // 遍历所有对象树节点;
+            foreach(var Obj_Node in SubObj_Lsit)
             {
-                if (items is ObjTreeNode)
+                // 只有枝节点才能够加入对象树;
+                if (Obj_Node is ObjTreeNode)
                 {
                     MetroExpander item = new MetroExpander();
                     
-
+                    // 判断孩子中是否还包含枝节点;
                     bool NotContainTree = true;
-                    foreach(var isTree in items.SubObj_Lsit)
+                    foreach(var isTree in Obj_Node.SubObj_Lsit)
                     {
                         if(isTree is ObjTreeNode)
                         {
@@ -60,27 +69,25 @@ namespace SCMTMainWindow
                         }
                     }
                     
+                    // 将孩子没有枝节点的节点进行缩进处理;
                     if (NotContainTree)
                     {
-                        item.Header = "   " + items.ObjName;
+                        item.Header = "   " + Obj_Node.ObjName;
                     }
                     else
                     {
-                        item.Header = items.ObjName;
+                        item.Header = Obj_Node.ObjName;
                     }
-                    item.SubExpender = Lists;
-                    item.obj_type = items;
-                    item.Click += IsSelectedChanged;
+
+                    item.SubExpender = Lists;                        // 增加容器;
+                    item.obj_type = Obj_Node;                        // 将节点添加到容器中;
+                    item.Click += IsSelectedChanged;                 // 点击事件;
 
                     Obj_Tree.Add(item);
-                    items.TraverseChildren(item, Lists, depths + 5);
+
+                    // 递归孩子节点;
+                    Obj_Node.TraverseChildren(item, Lists, depths + 5);
                 }
-//                 else if (items is ObjLeafNode)
-//                 {
-//                     MetroExpander item = new MetroExpander();
-//                     item.Header = items.ObjName;
-//                     Lists.Children.Add(item);
-//                 }
                 
             }
         }
@@ -94,6 +101,7 @@ namespace SCMTMainWindow
             this.ObjID = id;
             this.ObjParentID = pid;
             this.ObjName = name;
+            IsSelectedChanged += ClickObjNode;
         }
         
     }
@@ -106,14 +114,19 @@ namespace SCMTMainWindow
             : base(id, pid, version, name)
         {
             SubObj_Lsit = new List<ObjNode>();
-            IsSelectedChanged += ObjTreeNode_IsSelectedChanged;
         }
 
-        private void ObjTreeNode_IsSelectedChanged(object sender, EventArgs e)
+        /// <summary>
+        /// 点击枝节点时，在右侧列表中更新叶子节点;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected override void ClickObjNode(object sender, EventArgs e)
         {
             Console.WriteLine("TreeNode Clicked!");
             MetroExpander items = sender as MetroExpander;
             items.SubExpender.Children.Clear();
+
             foreach (var iter in (items.obj_type as ObjNode).SubObj_Lsit )
             {
                 MetroExpander subitems = new MetroExpander();
@@ -159,10 +172,9 @@ namespace SCMTMainWindow
         public ObjLeafNode(int id, int pid, string version, string name)
             : base(id, pid, version, name)
         {
-            IsSelectedChanged += ObjLeafNode_IsSelectedChanged;
         }
 
-        private void ObjLeafNode_IsSelectedChanged(object sender, EventArgs e)
+        protected override void ClickObjNode(object sender, EventArgs e)
         {
             Console.WriteLine("LeafNode Clicked!");
         }
@@ -194,6 +206,11 @@ namespace SCMTMainWindow
         public ObjCellSetupNode(int id, int pid, string version, string name)
             : base(id, pid, version, name)
         {
+        }
+
+        protected override void ClickObjNode(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         public override void Add(ObjNode obj)
