@@ -18,7 +18,6 @@ using System.Diagnostics;
 
 namespace SCMTMainWindow
 {
-
     public class MainWindowVM : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -27,7 +26,7 @@ namespace SCMTMainWindow
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
+        
         private string _title = "DTMobile Station Combine Maintain Tool";
 
         public string Title

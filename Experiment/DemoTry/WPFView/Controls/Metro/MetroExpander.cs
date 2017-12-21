@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.ComponentModel;
 
 namespace Arthas.Controls.Metro
 {
@@ -12,6 +13,8 @@ namespace Arthas.Controls.Metro
         public static readonly DependencyProperty IsExpandedProperty = ElementBase.Property<MetroExpander, bool>(nameof(IsExpandedProperty));
         public static readonly DependencyProperty CanHideProperty = ElementBase.Property<MetroExpander, bool>(nameof(CanHideProperty));
         public static readonly DependencyProperty HeaderProperty = ElementBase.Property<MetroExpander, string>(nameof(HeaderProperty));
+        public static readonly DependencyProperty MarginProperty = ElementBase.Property<MetroExpander, Thickness>(nameof(MarginProperty));
+        public static readonly DependencyProperty ARMarginProperty = ElementBase.Property<MetroExpander, Thickness>(nameof(ARMarginProperty));
         public static readonly DependencyProperty HintProperty = ElementBase.Property<MetroExpander, string>(nameof(HintProperty));
         public static readonly DependencyProperty HintBackgroundProperty = ElementBase.Property<MetroExpander, Brush>(nameof(HintBackgroundProperty));
         public static readonly DependencyProperty HintForegroundProperty = ElementBase.Property<MetroExpander, Brush>(nameof(HintForegroundProperty));
@@ -23,14 +26,19 @@ namespace Arthas.Controls.Metro
         public bool IsExpanded { get { return (bool)GetValue(IsExpandedProperty); } set { SetValue(IsExpandedProperty, value); ElementBase.GoToState(this, IsExpanded ? "Expand" : "Normal"); } }
         public bool CanHide { get { return (bool)GetValue(CanHideProperty); } set { SetValue(CanHideProperty, value); } }
         public string Header { get { return (string)GetValue(HeaderProperty); } set { SetValue(HeaderProperty, value); } }
+        public Thickness Margin { get { return (Thickness)GetValue(MarginProperty); } set { SetValue(MarginProperty, value); } }
+        public Thickness ARMargin { get { return (Thickness)GetValue(ARMarginProperty); } set { SetValue(ARMarginProperty, value); } }
         public string Hint { get { return (string)GetValue(HintProperty); } set { SetValue(HintProperty, value); } }
         public Brush HintBackground { get { return (Brush)GetValue(HintBackgroundProperty); } set { SetValue(HintBackgroundProperty, value); } }
         public Brush HintForeground { get { return (Brush)GetValue(HintForegroundProperty); } set { SetValue(HintForegroundProperty, value); } }
         public ImageSource Icon { get { return (ImageSource)GetValue(IconProperty); } set { SetValue(IconProperty, value); } }
-
-        public StackPanel SubExpender { get; set; }
-        public object obj_type { get; set; }
-
+        
+        public StackPanel SubExpender { get; set; }                // 右侧叶子节点容器;
+        public object obj_type { get; set; }                       // 保存对象;
+        public static Grid NBContent_Grid { get; set; }            // 显示内容的容器;
+        public static MetroScrollViewer NBBase_Grid { get; set; }  // 显示基本信息的容器;
+        public DataGrid NBContent_DataGrid { get; set; }           // 基站内容Gird
+        
         public event EventHandler Click;
 
         public MetroExpander()

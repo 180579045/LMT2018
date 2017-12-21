@@ -42,25 +42,38 @@ namespace SCMTMainWindow
         {
             InitializeComponent();
             InitView();                                                       // 初始化界面;
+            RegisterFunction();                                               // 注册功能;
+            InitDemoData();
         }
 
         /// <summary>
         /// 初始化用户界面;
         /// Demo阶段，先假设只连接一个基站;
         /// </summary>
-        public void InitView()
+        private void InitView()
         {
             NodeB node = new NodeB("172.27.245.92");                          // 初始化一个基站节点(Demo程序,暂时只连接一个基站);
             ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 初始化一个对象树;
             this.RefreshObj(Ctrl.m_RootNode);                                 // 将对象树加入到Expender容器中
+            MetroExpander.NBContent_Grid = this.Content_Comm;                 // 将显示的容器加入到对象树属性中;
+            MetroExpander.NBBase_Grid = this.Content_Base;                    // 将基站基本信息的容奇加入到对象树属性中;
+        }
 
+        /// <summary>
+        /// 注册所有所需要的基础功能;
+        /// </summary>
+        private void RegisterFunction()
+        {
             //TrapMessage.SetNodify(this.Update_NBInfoShow);                  // 注册Trap监听;
+        }
 
-            // Demo数据;
+        private void InitDemoData()
+        {
+            // 添加Demo数据;
             ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
             DG1.DataContext = custdata;                                       // 将告警信息加入控件;
         }
-        
+
         /// <summary>
         /// 更新对象树模型以及叶节点模型;
         /// </summary>

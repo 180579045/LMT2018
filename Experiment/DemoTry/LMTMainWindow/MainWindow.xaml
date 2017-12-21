@@ -207,7 +207,7 @@
                                     </Grid.ColumnDefinitions>
                                     
                                     <!--基站内容栏-->
-                                    <DataGrid ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                    <DataGrid Name="Content_NB" ItemsSource="{Binding}" AutoGenerateColumns="False" >
                                         
                                         <!--内容-->
                                         <DataGrid.Columns>
@@ -303,7 +303,6 @@
 
             <Metro:MetroMenuTabItem Header="小区规划" Icon="Resources/NetPlan.png" IconMove="Resources/NetPlanB.png">
                 <Grid>
-
                     <TextBox Name="textBox2" TextWrapping="Wrap" Margin="10, 10, 5, 5" Grid.Row="7" Height="20" Width="500">
                             The quick brown fox jumps over the lazy dog.
                         <TextBox.ContextMenu>
@@ -317,13 +316,12 @@
                         </TextBox.ContextMenu>
                     </TextBox>
 
-
                 </Grid>
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="流程图" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
                 <Grid>
-                    <Button Content="321" Height="19" Width="20"></Button>
+                    <TextBlock Text="{Binding Path=Title}" Width="100" Height="20"/>
                 </Grid>
             </Metro:MetroMenuTabItem>
 

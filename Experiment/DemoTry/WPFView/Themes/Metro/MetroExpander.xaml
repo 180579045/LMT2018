@@ -15,6 +15,9 @@
         <Setter Property="Hint" Value="{x:Null}"/>
         <Setter Property="HintBackground" Value="#7F000000"/>
         <Setter Property="HintForeground" Value="#FFFFFF"/>
+        <Setter Property="Margin" Value="10,8,5,8"/>
+        <Setter Property="ARMargin" Value="10,0"/>
+        
         <Style.Triggers>
             <Trigger Property="CanHide" Value="True">
                 <Setter Property="Template">
@@ -66,7 +69,7 @@
                                         <Image Width="15" Height="15" Margin="10,0,0,0" VerticalAlignment="Center" Source="{TemplateBinding Icon}" Opacity="0.7"/>
 
                                         <!--小箭头-->
-                                        <Grid Grid.Column="1" Margin="10,8,5,8" VerticalAlignment="Center">
+                                        <Grid Grid.Column="1" Margin="{TemplateBinding ARMargin}" VerticalAlignment="Center">
                                             <Polyline Points="0,0 5,5 0,10" Stroke="#000000" RenderTransformOrigin="0,0.5" Opacity="0.65">
                                                 <Polyline.RenderTransform>
                                                     <TransformGroup>
@@ -79,7 +82,7 @@
                                         <Metro:MetroFocusButton Grid.ColumnSpan="2" Foreground="#00000000" MouseMoveForeground="#0C000000" BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroExpander.ButtonClickCommand"/>
 
                                         <!--内容-->
-                                        <Metro:MetroTextBlock Grid.Column="2" Text="{TemplateBinding Header}" Margin="10,8,5,8" VerticalAlignment="Center" HorizontalAlignment="Left" Opacity="0.65"/>
+                                        <Metro:MetroTextBlock Grid.Column="2" Text="{TemplateBinding Header}" Margin="{TemplateBinding Margin}" VerticalAlignment="Center" HorizontalAlignment="Left" Opacity="0.65"/>
 
                                         <Metro:MetroBorder    Grid.Column="3" AutoCornerRadius="True" Margin="0,0,5,0" VerticalAlignment="Center" Background="{TemplateBinding HintBackground}">
                                             <Metro:MetroTextBlock VerticalAlignment="Center" Margin="8,1" Text="{TemplateBinding Hint}" Foreground="{TemplateBinding HintForeground}"/>

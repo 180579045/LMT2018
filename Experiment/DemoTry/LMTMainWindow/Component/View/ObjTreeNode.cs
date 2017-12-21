@@ -44,15 +44,16 @@ namespace SCMTMainWindow
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        protected abstract void ClickObjNode(object sender, EventArgs e);
+        public abstract void ClickObjNode(object sender, EventArgs e);
         
         /// <summary>
         /// 将所有节点填入对象树中;
         /// </summary>
         public void TraverseChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths)
         {
+            Thickness margin = new Thickness();
             // 遍历所有对象树节点;
-            foreach(var Obj_Node in SubObj_Lsit)
+            foreach (var Obj_Node in SubObj_Lsit)
             {
                 // 只有枝节点才能够加入对象树;
                 if (Obj_Node is ObjTreeNode)
@@ -72,13 +73,20 @@ namespace SCMTMainWindow
                     // 将孩子没有枝节点的节点进行缩进处理;
                     if (NotContainTree)
                     {
-                        item.Header = "   " + Obj_Node.ObjName;
+                        margin.Left = 35 + depths;
+                        margin.Top = 8;
+                        margin.Bottom = 8;
+                        item.Margin = margin;
                     }
                     else
                     {
-                        item.Header = Obj_Node.ObjName;
+                        margin.Left = 20 + depths;
+                        margin.Top = 8;
+                        margin.Bottom = 8;
+                        item.ARMargin = margin;
                     }
 
+                    item.Header = Obj_Node.ObjName;
                     item.SubExpender = Lists;                        // 增加容器;
                     item.obj_type = Obj_Node;                        // 将节点添加到容器中;
                     item.Click += IsSelectedChanged;                 // 点击事件;
@@ -86,7 +94,7 @@ namespace SCMTMainWindow
                     Obj_Tree.Add(item);
 
                     // 递归孩子节点;
-                    Obj_Node.TraverseChildren(item, Lists, depths + 5);
+                    Obj_Node.TraverseChildren(item, Lists, depths + 15);
                 }
                 
             }
@@ -119,18 +127,28 @@ namespace SCMTMainWindow
         /// <summary>
         /// 点击枝节点时，在右侧列表中更新叶子节点;
         /// </summary>
-        /// <param name="sender"></param>
+        /// <param name="sender">对应的容器</param>
         /// <param name="e"></param>
-        protected override void ClickObjNode(object sender, EventArgs e)
+        public override void ClickObjNode(object sender, EventArgs e)
         {
             Console.WriteLine("TreeNode Clicked!");
+
             MetroExpander items = sender as MetroExpander;
             items.SubExpender.Children.Clear();
 
+            // 将叶子节点加入右侧容器;
             foreach (var iter in (items.obj_type as ObjNode).SubObj_Lsit )
             {
+                if (iter is ObjTreeNode)
+                {
+                    continue;
+                }
+
+                // 初始化对应的内容;
                 MetroExpander subitems = new MetroExpander();
                 subitems.Header = iter.ObjName;
+                subitems.Click += iter.ClickObjNode;
+                subitems.obj_type = iter;
                 items.SubExpender.Children.Add(subitems);
             }
             
@@ -174,17 +192,14 @@ namespace SCMTMainWindow
         {
         }
 
-        protected override void ClickObjNode(object sender, EventArgs e)
+        public override void ClickObjNode(object sender, EventArgs e)
         {
-            Console.WriteLine("LeafNode Clicked!");
-        }
+            MetroExpander item = sender as MetroExpander;
+            ObjNode node = item.obj_type as ObjNode;
 
-        /// <summary>
-        /// 点击叶子节点时的处理方法;
-        /// </summary>
-        public void ObjLeafNode_Click()
-        {
-            Console.WriteLine("LeafNode Clicked!");
+            Console.WriteLine("LeafNode Clicked!" + node.ObjName);
+            MetroExpander.NBContent_Grid.Visibility = Visibility.Visible;
+            MetroExpander.NBBase_Grid.Visibility = Visibility.Hidden;
         }
         
         public override void Add(ObjNode obj)
@@ -208,7 +223,7 @@ namespace SCMTMainWindow
         {
         }
 
-        protected override void ClickObjNode(object sender, EventArgs e)
+        public override void ClickObjNode(object sender, EventArgs e)
         {
             throw new NotImplementedException();
         }
