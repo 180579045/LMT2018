@@ -1,0 +1,120 @@
+{
+	"version": "1.0",
+	"NodeList": [
+		{
+			"ObjID": 1,
+			"ObjParentID": 0,
+			"ChildRenCount":0,
+			"ObjName": "启动模式",
+			"ObjNameEn": "StartMode",
+			"MIBList": [
+				{
+					"OID" : "2.2.1.1.1",
+					"Index" : false,
+					"MIBName" : "系统时钟源启动模式"
+				},
+				{
+					"OID" : "2.2.1.1.2",
+					"Index" : false,
+					"MIBName" : "S1链路建立模式"
+				},
+				{
+					"OID" : "2.2.1.1.3",
+					"Index" : false,
+					"MIBName" : "X2链路建立模式"
+				}
+			]
+		},
+		{
+			"ObjID": 2,
+			"ObjParentID": 0,
+			"ChildRenCount":0,
+			"ObjName": "基站信息",
+			"ObjNameEn": "nodeBInfo"
+		},
+		{
+			"ObjID": 3,
+			"ObjParentID": 0,
+			"ChildRenCount":1,
+			"ObjName": "设备信息公共部分",
+			"ObjNameEn": "equipComm"
+		},
+		{
+			"ObjID": 4,
+			"ObjParentID": 3,
+			"ChildRenCount":0,
+			"ObjName": "设备软件许可控制",
+			"ObjNameEn": "equipLicenseInfo"
+		},
+		{
+			"ObjID": 6,
+			"ObjParentID": 0,
+			"ChildRenCount":0,
+			"ObjName": "基站校准节点",
+			"ObjNameEn": "calibNode"
+		},
+		{
+			"ObjID": 7,
+			"ObjParentID": 0,
+			"ChildRenCount":0,
+			"ObjName": "链路公共信息",
+			"ObjNameEn": "linkComm"
+		},
+		{
+			"ObjID": 8,
+			"ObjParentID": 0,
+			"ChildRenCount":3,
+			"ObjName": "局向",
+			"ObjNameEn": "Office"
+		},
+		{
+			"ObjID": 9,
+			"ObjParentID": 8,
+			"ChildRenCount":0,
+			"ObjName": "MME",
+			"ObjNameEn": "MME"
+		},
+		{
+			"ObjID": 10,
+			"ObjParentID": 8,
+			"ChildRenCount":0,
+			"ObjName": "邻基站",
+			"ObjNameEn": "AdjeNB"
+		},
+		{
+			"ObjID": 11,
+			"ObjParentID": 8,
+			"ChildRenCount":2,
+			"ObjName": "管理站信息",
+			"ObjNameEn": "ManagerInfo"
+		},
+		{
+			"ObjID": 12,
+			"ObjParentID": 11,
+			"ChildRenCount":0,
+			"ObjName": "操作维护链路",
+			"ObjNameEn": "OMLink"
+		},
+		{
+			"ObjID": 13,
+			"ObjParentID": 11,
+			"ChildRenCount":1,
+			"ObjName": "管理站",
+			"ObjNameEn": "Manager"
+		},
+		{
+			"ObjID": 14,
+			"ObjParentID": 13,
+			"ChildRenCount":0,
+			"ObjName": "文件服务器",
+			"ObjNameEn": "ftpServer"
+		},
+		{
+			"ObjID": 15,
+			"ObjParentID": 0,
+			"ChildRenCount":0,
+			"ObjName": "传输管理",
+			"ObjNameEn": "transport"
+		}
+	]
+}
