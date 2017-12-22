@@ -30,6 +30,8 @@ using System.Reflection;
 using System.Data;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using LineChart;
+using Specialized3DChart;
 
 namespace SCMTMainWindow
 {
@@ -38,6 +40,10 @@ namespace SCMTMainWindow
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        private ChartStyle2D cs;
+        private DataSeriesSurface ds;
+        private Draw3DChart d3c;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -67,13 +73,6 @@ namespace SCMTMainWindow
             //TrapMessage.SetNodify(this.Update_NBInfoShow);                  // 注册Trap监听;
         }
 
-        private void InitDemoData()
-        {
-            // 添加Demo数据;
-            ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
-            DG1.DataContext = custdata;                                       // 将告警信息加入控件;
-        }
-
         /// <summary>
         /// 更新对象树模型以及叶节点模型;
         /// </summary>
@@ -91,11 +90,56 @@ namespace SCMTMainWindow
             }
         }
         
+        //                                                    以下为Demo处理;
+        // ------------------------------------------------------------------
         private void MetroExpander_Click_BaseInfo(object sender, EventArgs e)
         {
             Content_Base.Visibility = Visibility.Visible;
             Content_Comm.Visibility = Visibility.Hidden;
         }
+
+        private void UEList_Click(object sender, RoutedEventArgs e)
+        {
+            UEList UEWindow = new UEList();
+            UEWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            UEWindow.Show();
+        }
+
+        private void InitDemoData()
+        {
+            // 添加Demo数据;
+            ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
+            DG1.DataContext = custdata;                                       // 将告警信息加入控件;
+        }
+
+        private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            chartCanvas.Width = chartGrid.ActualWidth;
+            chartCanvas.Height = chartGrid.ActualHeight;
+            AddChart();
+        }
+
+        private void AddChart()
+        {
+            chartCanvas.Children.Clear();
+            cs = new ChartStyle2D();
+            cs.ChartCanvas = this.chartCanvas;
+            cs.GridlinePattern = Specialized3DChart.ChartStyle.GridlinePatternEnum.Solid;
+            cs.IsColorBar = true;
+            cs.Title = "No Title";
+            ds = new DataSeriesSurface();
+            ds.LineColor = Brushes.Black;
+            Utility.Peak3D(cs, ds);
+
+            d3c = new Draw3DChart();
+            d3c.Colormap.ColormapBrushType = ColormapBrush.ColormapBrushEnum.Jet;
+            d3c.ChartType = Draw3DChart.ChartTypeEnum.SurfaceFillContour3D;
+            d3c.IsLineColorMatch = false;
+            d3c.NumberContours = 15;
+            d3c.AddChart(cs, ds);
+        }
+
+
     }
 
    

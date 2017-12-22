@@ -1,0 +1,126 @@
+﻿<Metro:MetroWindow x:Class="SCMTMainWindow.UEList"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SCMTMainWindow"
+        xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
+        mc:Ignorable="d"
+        Title="UEList" Height="500" Width="800">
+
+    <Grid>
+        <Metro:MetroMenuTabControl x:Name="UEtab" IconMode="True">
+           
+            <Metro:MetroMenuTabItem Header="UE列表" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                <Grid>
+
+                    <!--基站内容栏-->
+                    <DataGrid Name="Content_NB" ItemsSource="{Binding}" AutoGenerateColumns="False" >
+
+                        <!--内容-->
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="所在小区" />
+                            <DataGridTextColumn Header="小区内UE索引"  />
+                            <DataGridTextColumn Header="ENB内UE索引" />
+                            <DataGridTextColumn Header="DRB个数" />
+                            <DataGridTextColumn Header="DRB索引" />
+                            <DataGridTextColumn Header="逻辑信道ID" />
+
+                            <DataGridTextColumn Header="DRP:QCI" />
+                            <DataGridTextColumn Header="GBR下行"  />
+                            <DataGridTextColumn Header="GBR上行" />
+                            <DataGridTextColumn Header="DRB模式标志" />
+                            <DataGridTextColumn Header="AMBR下行" />
+                            <DataGridTextColumn Header="AMBR上行" />
+
+                        </DataGrid.Columns>
+
+                        <!--鼠标右键-->
+                        <DataGrid.ContextMenu>
+                            <Metro:MetroContextMenu>
+                                <Metro:MetroMenuItem Header="释放用户"  />
+                                <Metro:MetroMenuItem Header="测量配置信息" />
+                                <Metro:MetroMenuItem Header="业务面信息" />
+                                <Metro:MetroMenuItem Header="设置数据图形" />
+                            </Metro:MetroContextMenu>
+                        </DataGrid.ContextMenu>
+
+                    </DataGrid>
+
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="AOA粗搜索结果图形" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                
+                <Grid Name="grid1" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Name="column1" Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Name="row1" Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Margin="2" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" 
+                                RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" 
+                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" 
+                                Text="Title"/>
+
+                    <TextBlock Margin="2" x:Name="tbXLabel" Grid.Column="1" Grid.Row="2" 
+                               RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+                               Text="X Axis"/>
+
+                    <TextBlock Margin="2" Name="tbYLabel" Grid.Column="0" Grid.Row="1" 
+                                RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+                                Text="Y Axis">
+                        <TextBlock.LayoutTransform>
+                            <RotateTransform Angle="-90"/>
+                        </TextBlock.LayoutTransform>
+                    </TextBlock>
+
+                    <Grid  Margin="0,0,0,0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1"
+			                ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
+                    </Grid>
+                    <Canvas Margin="2" Name="textCanvas" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
+                        <Canvas Name="chartCanvas" ClipToBounds="True"/>
+                    </Canvas>
+                </Grid>
+                
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="AOA角度图形" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                <Grid>
+
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="CCE利用率" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                <Grid>
+
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="CCE统计画图" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                <Grid>
+
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="CQI平均误检率" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                <Grid>
+
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            <Metro:MetroMenuTabItem Header="M1总功率图形" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+                <Grid>
+
+                </Grid>
+            </Metro:MetroMenuTabItem>
+
+            
+
+        </Metro:MetroMenuTabControl>
+    </Grid>
+</Metro:MetroWindow>

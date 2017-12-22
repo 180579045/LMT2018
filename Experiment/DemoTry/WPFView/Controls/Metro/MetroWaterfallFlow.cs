@@ -49,28 +49,28 @@ namespace Arthas.Controls.Metro
             Refresh();
         }
 
-        public class Point
+        public class MetroPoint
         {
             public int Index { get; set; }
             public double Buttom { get; set; }
             public double Height { get; set; }
-            public Point(int index, double height, double buttom) { Index = index;Height = height; Buttom = buttom; }
+            public MetroPoint(int index, double height, double buttom) { Index = index;Height = height; Buttom = buttom; }
         }
 
         public void Refresh()
         {
             // 初始化参数
             var maxHeight = 0.0;
-            var list = new Dictionary<int, Point>();
-            var nlist = new Dictionary<int, Dictionary<int, Point>>();
+            var list = new Dictionary<int, MetroPoint>();
+            var nlist = new Dictionary<int, Dictionary<int, MetroPoint>>();
             for (int i = 0; i < Children.Count; i++)
             {
                 (Children[i] as FrameworkElement).UpdateLayout();
-                list.Add(i, new Point(i,(Children[i] as FrameworkElement).ActualHeight, 0.0));
+                list.Add(i, new MetroPoint(i,(Children[i] as FrameworkElement).ActualHeight, 0.0));
             }
             for (int i = 0; i < column; i++)
             {
-                nlist.Add(i, new Dictionary<int, Point>());
+                nlist.Add(i, new Dictionary<int, MetroPoint>());
             }
 
             // 智能排序到 nlist

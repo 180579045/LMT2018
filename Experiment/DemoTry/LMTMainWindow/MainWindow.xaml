@@ -8,7 +8,6 @@
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None">
     
-    
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
     </Metro:MetroWindow.DataContext>
@@ -86,6 +85,8 @@
 
                                 <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
 
+                                <Metro:MetroExpander Header="小区信息" Icon="Resources/NetPLanB.png"/>
+
                                 <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" />
 
                             </StackPanel>
@@ -98,7 +99,6 @@
                             <StackPanel x:Name="FavLeaf_Lists">
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                         ButtonTitle="搜索" PopupHint="Length is more than 10!" Icon="Resources/editIcon.png" />
-
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
@@ -107,7 +107,7 @@
                     <Metro:MetroTabControl x:Name="tabc" Grid.Column="2" Margin="0,30,0,0">
                         <Metro:MetroTabItem Header="基站—居民楼1" Icon="Resources/tabIcon.png">
                             
-                            <Grid  x:Name="Content">
+                            <Grid x:Name="Content">
 
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
@@ -159,14 +159,37 @@
                                                 <Metro:MetroGroupBox Header="基站基本信息">
                                                     <Grid>
                                                         <StackPanel>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" />
-                                                                <RadioButton Content="CheckBox" Margin="5" />
-                                                            </StackPanel>
-                                                            <StackPanel Orientation="Horizontal">
-                                                                <RadioButton Content="CheckBox" Margin="5" IsEnabled="False" IsChecked="True" />
-                                                                <RadioButton Content="CheckBox" Margin="5" IsChecked="True" />
-                                                            </StackPanel>
+
+                                                            <Metro:MetroRichTextBox Margin="0" MaxHeight="100" BorderThickness="0" CornerRadius="0" Background="#00000000">
+                                                                <FlowDocument>
+                                                                    <Paragraph>
+                                                                        <Run Text="运行状态：" />
+                                                                        <Run Text="故障" />
+                                                                    </Paragraph>
+                                                                </FlowDocument>
+                                                            </Metro:MetroRichTextBox>
+
+                                                            <Metro:MetroRichTextBox Margin="0" MaxHeight="100" BorderThickness="0" CornerRadius="0" Background="#00000000">
+                                                                <FlowDocument>
+                                                                    <Paragraph>
+                                                                        <Run Text="基站软件版本：" />
+                                                                    </Paragraph>
+                                                                    <Paragraph>
+                                                                        <Run Text="FDD V6.00.61.03_20171226" />
+                                                                    </Paragraph>
+                                                                </FlowDocument>
+                                                            </Metro:MetroRichTextBox>
+
+                                                            <Metro:MetroRichTextBox Margin="0" MaxHeight="100" BorderThickness="0" CornerRadius="0" Background="#00000000">
+                                                                <FlowDocument>
+                                                                    <Paragraph>
+                                                                        <Run Text="RRU软件版本：" />
+                                                                    </Paragraph>
+                                                                    <Paragraph>
+                                                                        <Run Text="FDD V6.00.61.03_20171226" />
+                                                                    </Paragraph>
+                                                                </FlowDocument>
+                                                            </Metro:MetroRichTextBox>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Metro:MetroGroupBox>
@@ -226,7 +249,7 @@
                                                 <Metro:MetroMenuItem Header="新增 小区信息" />
                                                 <Metro:MetroMenuItem Header="修改 小区信息" />
                                                 <Metro:MetroMenuSeparator />
-                                                <Metro:MetroMenuItem Header="查看UE列表" />
+                                                <Metro:MetroMenuItem Header="查看UE列表" Click="UEList_Click" />
                                                 <Metro:MetroMenuItem Header="显示绘图"/>
                                             </Metro:MetroContextMenu>
                                         </DataGrid.ContextMenu>
@@ -319,10 +342,31 @@
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="流程图" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
-                <Grid>
-                    <TextBlock Text="{Binding Path=Title}" Width="100" Height="20"/>
+            <Metro:MetroMenuTabItem Header="数据图表" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
+                <Grid Margin="0,40,0,0">
+                    <Metro:MetroTabControl>
+                        <Metro:MetroTabItem Header="上行底噪信息">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid x:Name="chartGrid" SizeChanged="chartGrid_SizeChanged" Margin="20" Grid.Row="0" Grid.Column="0">
+                                    <Canvas x:Name="chartCanvas" Background="Transparent" ClipToBounds="True"/>
+                                </Grid>
+                            </Grid>
+                        </Metro:MetroTabItem>
+
+                        <Metro:MetroTabItem Header="流程图">
+                            
+                        </Metro:MetroTabItem>
+                    </Metro:MetroTabControl>
                 </Grid>
+                
+                
+              
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/Alarm.png" IconMove="Resources/AlarmB.png">

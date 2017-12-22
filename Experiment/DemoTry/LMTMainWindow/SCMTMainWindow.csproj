@@ -7,8 +7,8 @@
     <ProjectGuid>{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LMTMainWindow</RootNamespace>
-    <AssemblyName>LMTMainWindow</AssemblyName>
+    <RootNamespace>SCMTMainWindow</RootNamespace>
+    <AssemblyName>SCMTMainWindow</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -84,8 +84,22 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\DataGrhic_Selected.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UEList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\DataGrhic_Selected.xaml.cs">
+      <DependentUpon>DataGrhic_Selected.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UEList.xaml.cs">
+      <DependentUpon>UEList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -119,9 +133,16 @@
   <ItemGroup>
     <Folder Include="Component\NodeB\" />
     <Folder Include="Component\Thread\" />
-    <Folder Include="Pages\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\3DChart\Specialized3DChart.csproj">
+      <Project>{14de85f2-4fa8-4ba5-ad44-68a7401f1bbe}</Project>
+      <Name>Specialized3DChart</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LineChart\LineChart.csproj">
+      <Project>{736fd4f8-936f-46e9-a766-c9937f359e3a}</Project>
+      <Name>LineChart</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Snmp_dll\Snmp_dll.csproj">
       <Project>{e7ceb301-3a34-49d2-aa69-e3963dd1ac21}</Project>
       <Name>Snmp_dll</Name>

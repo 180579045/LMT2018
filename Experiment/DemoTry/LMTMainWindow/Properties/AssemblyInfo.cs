@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("LMTMainWindow")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("大唐移动通信设备有限公司")]
 [assembly: AssemblyProduct("LMTMainWindow")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]

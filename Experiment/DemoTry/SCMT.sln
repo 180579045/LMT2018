@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMTMainWindow", "LMTMainWi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFView", "WPFView\WPFView.csproj", "{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specialized3DChart", "3DChart\Specialized3DChart.csproj", "{14DE85F2-4FA8-4BA5-AD44-68A7401F1BBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineChart", "LineChart\LineChart.csproj", "{736FD4F8-936F-46E9-A766-C9937F359E3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14DE85F2-4FA8-4BA5-AD44-68A7401F1BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14DE85F2-4FA8-4BA5-AD44-68A7401F1BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14DE85F2-4FA8-4BA5-AD44-68A7401F1BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14DE85F2-4FA8-4BA5-AD44-68A7401F1BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
