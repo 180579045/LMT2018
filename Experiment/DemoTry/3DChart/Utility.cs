@@ -52,8 +52,8 @@ namespace Specialized3DChart
 
         public static void Peak3D(ChartStyle cs, DataSeriesSurface ds)
         {
-            cs.Xmin = -3;
-            cs.Xmax = 3;
+            cs.Xmin = 0;
+            cs.Xmax = 6;
             cs.Ymin = -3;
             cs.Ymax = 3;
             cs.Zmin = -8;
@@ -76,10 +76,12 @@ namespace Specialized3DChart
                 {
                     double x = ds.XLimitMin + i * ds.XSpacing;
                     double y = ds.YLimitMin + j * ds.YSpacing;
+
                     double z = 3 * Math.Pow((1 - x), 2) * 	Math.Exp(-x * x - (y + 1) * (y + 1)) - 10 * 
                         (0.2 * x - Math.Pow(x, 3) - Math.Pow(y, 5)) * Math.Exp(-x * x - y * y) - 1 / 3 * 
 					    Math.Exp(-(x + 1) * (x + 1) - y * y);
                     pts[i, j] = new Point3D(x, y, z);
+
                 }
             }
             ds.PointArray = pts;

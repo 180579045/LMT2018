@@ -5,8 +5,80 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
         mc:Ignorable="d"
-        Title="DataGraphic_Selected" Height="300" Width="300">
+        Title="DataGraphic_Selected" Height="600" Width="500">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="300"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="500"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
         
+        <ScrollViewer Grid.Column="0" Grid.Row="0">
+            <ListView >
+                <ListViewItem>
+                    <CheckBox Content="AOA粗搜索结果图形" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="AOA角度图形" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="CCE利用率" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="CCE统计画图" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="CQI平均误检率" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="M1总功率图" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="MAC上行功控PH图" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="MAC上行吞吐量小区级图形" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="MAC上行吞吐量用户级图形" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="MAC下行MIMO次数统计" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="MAC下行吞吐量小区级图形" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="MAC下行吞吐量用户级图形" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="NBIOT上行单用户R值" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="NBIOT下行单用户R值" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="NBIOT的M1功率图" />
+                </ListViewItem>
+                <ListViewItem>
+                    <CheckBox Content="NBIOT用户功率图" />
+                </ListViewItem>
+            </ListView>
+        </ScrollViewer>
+        <Grid Grid.Column="1" Grid.Row="0">
+            
+        </Grid>
+
+        <Grid Grid.Column="1" Grid.Row="1">
+
+            <StackPanel Orientation="Horizontal">
+                <Button Content="取消" Height="30" Width="100" Margin="10,0,0,0"/>
+                <Button Content="确定" Height="30" Width="100" Margin="40,0,0,0"/>
+            </StackPanel>
+        </Grid>
     </Grid>
 </Window>

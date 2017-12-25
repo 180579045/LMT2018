@@ -12,8 +12,8 @@ namespace Specialized3DChart
     {
         #region Private fields:
         private Canvas chartCanvas;
-        private double xmin = -5;
-        private double xmax = 5;
+        private double xmin = 0;
+        private double xmax = 10;
         private double ymin = -3;
         private double ymax = 3;
         private double zmin = -6;
@@ -28,9 +28,9 @@ namespace Specialized3DChart
         private FontFamily titleFont = new FontFamily("Arial Narrow");
         private double titleFontSize = (double)new FontSizeConverter().ConvertFrom("14pt");
         private Brush titleColor = Brushes.Black;
-        private string xLabel = "X Axis";
-        private string yLabel = "Y Axis";
-        private string zLabel = "Z Axis";
+        private string xLabel = "小区索引";
+        private string yLabel = "时间";
+        private string zLabel = "上行底噪";
         private FontFamily labelFont = new FontFamily("Arial Narrow");
         private double labelFontSize = (double)new FontSizeConverter().ConvertFrom("10pt");
         private Brush labelColor = Brushes.Black;

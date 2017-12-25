@@ -88,6 +88,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\NodeB_Recover.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Simulation_Download.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ToolBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\UEList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -96,6 +108,15 @@
   <ItemGroup>
     <Compile Include="Pages\DataGrhic_Selected.xaml.cs">
       <DependentUpon>DataGrhic_Selected.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NodeB_Recover.xaml.cs">
+      <DependentUpon>NodeB_Recover.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Simulation_Download.xaml.cs">
+      <DependentUpon>Simulation_Download.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ToolBox.xaml.cs">
+      <DependentUpon>ToolBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\UEList.xaml.cs">
       <DependentUpon>UEList.xaml</DependentUpon>
@@ -170,6 +191,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\about.html" />
+    <Resource Include="Resources\ToolBox.png" />
     <Resource Include="Resources\EasyNB.png" />
     <Resource Include="Resources\Baseinfo2.png" />
     <Resource Include="Resources\Wave.png" />

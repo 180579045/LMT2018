@@ -41,7 +41,7 @@
                                 <Metro:MetroMenuItem Header="释放用户"  />
                                 <Metro:MetroMenuItem Header="测量配置信息" />
                                 <Metro:MetroMenuItem Header="业务面信息" />
-                                <Metro:MetroMenuItem Header="设置数据图形" />
+                                <Metro:MetroMenuItem Header="设置数据图形" Click="ShowUEGraphic_Click" />
                             </Metro:MetroContextMenu>
                         </DataGrid.ContextMenu>
 

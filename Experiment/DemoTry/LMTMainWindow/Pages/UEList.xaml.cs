@@ -83,5 +83,12 @@ namespace SCMTMainWindow
             textCanvas.Children.RemoveRange(1, textCanvas.Children.Count - 1);
             AddChart();
         }
+
+        private void ShowUEGraphic_Click(object sender, RoutedEventArgs e)
+        {
+            DataGraphic_Selected Gs = new DataGraphic_Selected();
+            Gs.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            Gs.Show();
+        }
     }
 }

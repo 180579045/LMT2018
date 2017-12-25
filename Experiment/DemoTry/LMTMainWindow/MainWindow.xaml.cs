@@ -139,7 +139,11 @@ namespace SCMTMainWindow
             d3c.AddChart(cs, ds);
         }
 
-
+        private void SimFile1_Click(object sender, RoutedEventArgs e)
+        {
+            Simulation_Download Sd1 = new Simulation_Download();
+            Sd1.Show();
+        }
     }
 
    
