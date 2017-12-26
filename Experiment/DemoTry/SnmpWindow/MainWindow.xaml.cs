@@ -28,7 +28,6 @@ namespace SnmpWindow
         {
             InitializeComponent();
             TrapMessage.SetNodify(this.UpdateTrapText);
-            TrapMessage.WaitforTrap.Start();
 //             Thread T2 = new Thread(NumPlus);
 //             T2.Start();
         }

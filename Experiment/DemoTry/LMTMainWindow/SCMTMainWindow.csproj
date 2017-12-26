@@ -88,6 +88,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Message_Setter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\NodeB_Recover.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -108,6 +112,9 @@
   <ItemGroup>
     <Compile Include="Pages\DataGrhic_Selected.xaml.cs">
       <DependentUpon>DataGrhic_Selected.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Message_Setter.xaml.cs">
+      <DependentUpon>Message_Setter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\NodeB_Recover.xaml.cs">
       <DependentUpon>NodeB_Recover.xaml</DependentUpon>

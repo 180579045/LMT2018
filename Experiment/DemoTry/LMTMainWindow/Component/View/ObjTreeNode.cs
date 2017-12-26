@@ -87,7 +87,7 @@ namespace SCMTMainWindow
                     }
 
                     item.Header = Obj_Node.ObjName;
-                    item.SubExpender = Lists;                        // 增加容器;
+                    item.SubExpender = Lists;                        // 增加叶子节点的容器;
                     item.obj_type = Obj_Node;                        // 将节点添加到容器中;
                     item.Click += IsSelectedChanged;                 // 点击事件;
 

@@ -79,8 +79,6 @@ namespace SCMTMainWindow
         /// <param name="ItemsSource">对象树列表</param>
         private void RefreshObj(IList<ObjNode> ItemsSource)
         {
-            StackPanel FavLeafList = new StackPanel();
-
             // 将右侧叶节点容器容器加入到对象树子容器中;
             this.Obj_Root.SubExpender = this.FavLeaf_Lists;
 
@@ -143,6 +141,44 @@ namespace SCMTMainWindow
         {
             Simulation_Download Sd1 = new Simulation_Download();
             Sd1.Show();
+        }
+
+        private void DemoSCTF_Checked(object sender, RoutedEventArgs e)
+        {
+            Message_Setter Ms = new Message_Setter();
+            Ms.Show();
+        }
+
+        private void Easy_NB_Click(object sender, EventArgs e)
+        {
+            this.FavLeaf_Lists.Children.Clear();
+            MetroExpander Easy1 = new MetroExpander();
+            MetroExpander Easy2 = new MetroExpander();
+            MetroExpander Easy3 = new MetroExpander();
+            MetroExpander Easy4 = new MetroExpander();
+            MetroExpander Easy5 = new MetroExpander();
+            MetroExpander Easy6 = new MetroExpander();
+
+            Easy1.Header = "链路查询";
+            Easy2.Header = "时钟查询";
+            Easy3.Header = "LTE基带资源";
+            Easy4.Header = "射频资源";
+            Easy5.Header = "光模块";
+            Easy6.Header = "LTE小区信息";
+
+            this.FavLeaf_Lists.Children.Add(Easy1);
+            this.FavLeaf_Lists.Children.Add(Easy2);
+            this.FavLeaf_Lists.Children.Add(Easy3);
+            this.FavLeaf_Lists.Children.Add(Easy4);
+            this.FavLeaf_Lists.Children.Add(Easy5);
+            this.FavLeaf_Lists.Children.Add(Easy6);
+
+        }
+
+        private void MainWindow_Cell_Click(object sender, EventArgs e)
+        {
+            Content_Base.Visibility = Visibility.Hidden;
+            Content_Comm.Visibility = Visibility.Visible;
         }
     }
 

@@ -87,11 +87,17 @@
 
                                 <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" Click="MetroExpander_Click_BaseInfo"  />
 
-                                <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
+                                <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png" Click="Easy_NB_Click"/>
 
-                                <Metro:MetroExpander Header="小区信息" Icon="Resources/NetPLanB.png"/>
+                                <Metro:MetroExpander Header="小区信息" Icon="Resources/NetPLanB.png" Click="MainWindow_Cell_Click" />
 
-                                <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" />
+                                <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
+                                    <Metro:MetroExpander.ContextMenu>
+                                        <Metro:MetroContextMenu>
+                                            <Metro:MetroMenuItem Header="添加到收藏"  />
+                                        </Metro:MetroContextMenu>
+                                    </Metro:MetroExpander.ContextMenu>
+                                </Metro:MetroExpander>
 
                             </StackPanel>
                         </Border>
@@ -102,9 +108,12 @@
                     <!--收藏模型-->
                     <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2" Margin="0,40,0,0">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
-                            <StackPanel x:Name="FavLeaf_Lists">
+                            <StackPanel>
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                         ButtonTitle="搜索" PopupHint="Length is more than 10!" Icon="Resources/editIcon.png" />
+                                <StackPanel x:Name="FavLeaf_Lists">
+                                    
+                                </StackPanel>
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
@@ -139,7 +148,7 @@
                                                                 </TabItem.Header>
                                                                 <StackPanel Grid.Column="1">
                                                                     <Metro:MetroSwitch Content="0槽位-SCTF" Margin="10" CornerRadius="2" BorderCornerRadius="3" />
-                                                                    <Metro:MetroSwitch Content="4槽位-BPOI" Margin="10" CornerRadius="2" BorderCornerRadius="3" />
+                                                                    <Metro:MetroSwitch Content="4槽位-BPOI" Margin="10" CornerRadius="2" BorderCornerRadius="3" Checked="DemoSCTF_Checked" />
                                                                 </StackPanel>
                                                             </TabItem>
                                                             <TabItem Header="小区级消息">
@@ -215,10 +224,46 @@
 
                                             <Grid>
                                                 <Metro:MetroGroupBox Header="已规划小区">
-                                                    <StackPanel HorizontalAlignment="Center">
-                                                        <Metro:MetroButton MetroButtonState="Green" Content="" Command="{Binding CmdSampleWithParam}" 
-                                                                           CommandParameter="Good" IsEnabled="{Binding BtnEnabled}" Margin="10" />
-                                                    </StackPanel>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition/>
+                                                            <ColumnDefinition/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackPanel Grid.Column="0">
+                                                            <Metro:MetroSwitch Content="No.1 FDD小区" Margin="10" />
+                                                            <Metro:MetroSwitch Content="No.3 NBIOT小区" IsChecked="true" Margin="10"  />
+                                                            <Metro:MetroSwitch Content="No.4 5G小区" IsChecked="true" Margin="10" IsEnabled="False" />
+                                                            <Metro:MetroSwitch Content="No.5 TDD小区" Margin="10" CornerRadius="100" />
+                                                        </StackPanel>
+
+                                                        <StackPanel Grid.Column="1">
+                                                            <Metro:MetroSwitch Content="No.7 5G小区" Margin="10" />
+                                                            <Metro:MetroSwitch Content="No.8 5G小区" IsChecked="true" Margin="10"  />
+                                                            <Metro:MetroSwitch Content="No.9 5G小区" IsChecked="true" Margin="10" />
+                                                            <Metro:MetroSwitch Content="No.15 TDD小区" Margin="10" CornerRadius="100" />
+                                                            <Metro:MetroSwitch Content="No.16 TDD小区" Margin="10" CornerRadius="100" />
+                                                        </StackPanel>
+
+
+                                                    </Grid>
+                                                </Metro:MetroGroupBox>
+                                            </Grid>
+
+                                            <Grid>
+                                                <Metro:MetroGroupBox Header="启站进度">
+                                                    <Grid>
+                                                        <StackPanel Background="#00000000">
+                                                            <StackPanel>
+                                                                <Label>OM链路建立：成功</Label>
+                                                                <Label>时钟资源：可用</Label>
+                                                                <Label>基带资源：不可用</Label>
+                                                                <Label>传输资源：不可用</Label>
+                                                                <Label>射频资源：可用</Label>
+                                                            </StackPanel>
+                                                            <Metro:MetroProgressBar Margin="5" Value="60" ProgressBarState="Error" />
+                                                        </StackPanel>
+                                                    </Grid>
                                                 </Metro:MetroGroupBox>
                                             </Grid>
 
