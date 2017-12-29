@@ -33,6 +33,10 @@ namespace SCMTMainWindow
         public List<MibCommand> MibCmdLsit { get; set; }         // 节点包含命令列表;
         public List<ObjNode> SubObj_Lsit { get; set; }           // 孩子节点列表;
 
+        public Grid m_NB_ContentGrid { get; set; }               // 对应的MIB内容容器;
+        public MetroScrollViewer m_NB_Base_Contain { get; set; } // 对应的基站基本信息容器;
+        public DataGrid m_NB_Content { get; set; }               // 对应的MIB内容;
+
         abstract public void Add(ObjNode obj);                   // 增加孩子节点;
         abstract public void Remove(ObjNode obj);                // 删除孩子节点;
 
@@ -40,24 +44,27 @@ namespace SCMTMainWindow
         public event EventHandler IsSelectedChanged;             // 树形结构节点被选择时;
 
         /// <summary>
-        /// 对象树点击事件;
+        /// 对象树节点点击事件;
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public abstract void ClickObjNode(object sender, EventArgs e);
         
         /// <summary>
-        /// 将所有节点填入对象树中;
+        /// 递归某个节点的所有孩子节点，并填入对象树容器中;
         /// </summary>
-        public void TraverseChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths)
+        public void TraverseChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths, Grid ContentGrid, MetroScrollViewer NB_Base_Container)
         {
             Thickness margin = new Thickness();
             // 遍历所有对象树节点;
             foreach (var Obj_Node in SubObj_Lsit)
             {
+                Obj_Node.m_NB_Base_Contain = NB_Base_Container;
+                Obj_Node.m_NB_ContentGrid = ContentGrid;
                 // 只有枝节点才能够加入对象树;
                 if (Obj_Node is ObjTreeNode)
                 {
+                    // 新建一个对象树节点容器控件;
                     MetroExpander item = new MetroExpander();
                     
                     // 判断孩子中是否还包含枝节点;
@@ -85,16 +92,16 @@ namespace SCMTMainWindow
                         margin.Bottom = 8;
                         item.ARMargin = margin;
                     }
-
-                    item.Header = Obj_Node.ObjName;
-                    item.SubExpender = Lists;                        // 增加叶子节点的容器;
-                    item.obj_type = Obj_Node;                        // 将节点添加到容器中;
-                    item.Click += IsSelectedChanged;                 // 点击事件;
+                    
+                    item.Header = Obj_Node.ObjName;    
+                    item.SubExpender = Lists;                           // 增加子容器,保存叶子节点;
+                    item.obj_type = Obj_Node;                           // 将节点添加到容器控件中;
+                    item.Click += IsSelectedChanged;                    // 点击事件;
 
                     Obj_Tree.Add(item);
 
                     // 递归孩子节点;
-                    Obj_Node.TraverseChildren(item, Lists, depths + 15);
+                    Obj_Node.TraverseChildren(item, Lists, depths + 15, ContentGrid, NB_Base_Container);
                 }
                 
             }
@@ -134,17 +141,20 @@ namespace SCMTMainWindow
             Console.WriteLine("TreeNode Clicked!");
 
             MetroExpander items = sender as MetroExpander;
+
+            // 清理掉之前填入的Children节点;
             items.SubExpender.Children.Clear();
 
             // 将叶子节点加入右侧容器;
             foreach (var iter in (items.obj_type as ObjNode).SubObj_Lsit )
             {
+                // 子节点如果是枝节点跳过;
                 if (iter is ObjTreeNode)
                 {
                     continue;
                 }
 
-                // 初始化对应的内容;
+                // 初始化对应的内容,并加入到容器中;
                 MetroExpander subitems = new MetroExpander();
                 subitems.Header = iter.ObjName;
                 subitems.Click += iter.ClickObjNode;
@@ -198,8 +208,10 @@ namespace SCMTMainWindow
             ObjNode node = item.obj_type as ObjNode;
 
             Console.WriteLine("LeafNode Clicked!" + node.ObjName);
-            MetroExpander.NBContent_Grid.Visibility = Visibility.Visible;
-            MetroExpander.NBBase_Grid.Visibility = Visibility.Hidden;
+            item.NBBase_Grid = node.m_NB_Base_Contain;
+            item.NBContent_Grid = node.m_NB_ContentGrid;
+            item.NBBase_Grid.Visibility = Visibility.Hidden;
+            item.NBContent_Grid.Visibility = Visibility.Visible;
         }
         
         public override void Add(ObjNode obj)

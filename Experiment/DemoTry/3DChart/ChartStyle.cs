@@ -24,7 +24,7 @@ namespace Specialized3DChart
         private FontFamily tickFont = new FontFamily("Arial Narrow");
         private double tickFontSize = (double)new FontSizeConverter().ConvertFrom("8pt");
         private Brush tickColor = Brushes.Black;
-        private string title = "My 3D Chart";
+        private string title = "3D Chart";
         private FontFamily titleFont = new FontFamily("Arial Narrow");
         private double titleFontSize = (double)new FontSizeConverter().ConvertFrom("14pt");
         private Brush titleColor = Brushes.Black;

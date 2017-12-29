@@ -35,9 +35,8 @@ namespace Arthas.Controls.Metro
         
         public StackPanel SubExpender { get; set; }                // 右侧叶子节点容器;
         public object obj_type { get; set; }                       // 保存对象;
-        public static Grid NBContent_Grid { get; set; }            // 显示内容的容器;
-        public static MetroScrollViewer NBBase_Grid { get; set; }  // 显示基本信息的容器;
-        public DataGrid NBContent_DataGrid { get; set; }           // 基站内容Gird
+        public Grid NBContent_Grid { get; set; }                   // 显示内容的容器;
+        public MetroScrollViewer NBBase_Grid { get; set; }         // 显示基本信息的容器;
         
         public event EventHandler Click;
 
@@ -68,7 +67,10 @@ namespace Arthas.Controls.Metro
 
             CommandBindings.Add(new CommandBinding(ButtonClickCommand2, delegate
             {
-                if (Click != null) { Click(this, null); }
+                if (Click != null)
+                {
+                    Click(this, null);
+                }
             }));
         }
 

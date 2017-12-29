@@ -59,10 +59,9 @@ namespace SCMTMainWindow
         private void InitView()
         {
             NodeB node = new NodeB("172.27.245.92");                          // 初始化一个基站节点(Demo程序,暂时只连接一个基站);
-            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 初始化一个对象树;
-            this.RefreshObj(Ctrl.m_RootNode);                                 // 将对象树加入到Expender容器中
-            MetroExpander.NBContent_Grid = this.Content_Comm;                 // 将显示的容器加入到对象树属性中;
-            MetroExpander.NBBase_Grid = this.Content_Base;                    // 将基站基本信息的容奇加入到对象树属性中;
+            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 从JSON文件中初始化一个对象树;
+            this.RefreshObj(Ctrl.m_RootNode,                                  // 将对象树加入到Expender容器中
+                            this.Content_Comm, this.Content_Base);
         }
 
         /// <summary>
@@ -77,14 +76,14 @@ namespace SCMTMainWindow
         /// 更新对象树模型以及叶节点模型;
         /// </summary>
         /// <param name="ItemsSource">对象树列表</param>
-        private void RefreshObj(IList<ObjNode> ItemsSource)
+        private void RefreshObj(IList<ObjNode> ItemsSource, Grid NB_Content, MetroScrollViewer NB_Base)
         {
             // 将右侧叶节点容器容器加入到对象树子容器中;
             this.Obj_Root.SubExpender = this.FavLeaf_Lists;
 
             foreach (ObjNode items in ItemsSource)
             {
-                items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0);
+                items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0, this.Content_Comm, this.Content_Base);
             }
         }
         
