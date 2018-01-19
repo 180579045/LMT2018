@@ -18,9 +18,11 @@ using System.Net.Sockets;
 using System.Net;
 using SnmpSharpNet;
 using System.Threading;
+using System.Windows;
 
 namespace Snmp_dll
 {
+    // 后续变成泛型委托;
     public delegate void UpdateTrap(List<string> stringlist);
 
     public class TrapMessage : SnmpMessage
@@ -28,6 +30,7 @@ namespace Snmp_dll
         public List<string> TrapContent { get; set; }                              // Trap返回的具体内容;
         public static Thread WaitforTrap = new Thread(WaitTrap);                   // 执行Trap接收的线程;
         private static List<UpdateTrap> TrapNodifyList = new List<UpdateTrap>();   // 观察者列表;
+        public static bool WaitTrapRunstate;                                       // 接收Trap的标志位;
 
         /// <summary>
         /// 设置观察者列表;
@@ -69,11 +72,13 @@ namespace Snmp_dll
             socket.Bind(ep);
             // Disable timeout processing. Just block until packet is received 
             socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 0);
-            bool run = true;
+            
             int inlen = -1;
             List<string> Ret = new List<string>();
 
-            while (run)
+            WaitTrapRunstate = true;
+
+            while (WaitTrapRunstate)
             {
                 byte[] indata = new byte[16 * 1024];
                 // 16KB receive buffer int inlen = 0;

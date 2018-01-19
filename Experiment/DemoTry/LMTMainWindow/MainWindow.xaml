@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None">
+        Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed">
 
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>

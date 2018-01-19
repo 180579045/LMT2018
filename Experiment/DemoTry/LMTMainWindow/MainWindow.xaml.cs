@@ -32,6 +32,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using LineChart;
 using Specialized3DChart;
+using System.Threading;
 
 namespace SCMTMainWindow
 {
@@ -69,7 +70,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void RegisterFunction()
         {
-            //TrapMessage.SetNodify(this.Update_NBInfoShow);                  // 注册Trap监听;
+            TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
         }
 
         /// <summary>
@@ -87,6 +88,8 @@ namespace SCMTMainWindow
             }
         }
         
+
+
         //                                                    以下为Demo处理;
         // ------------------------------------------------------------------
         private void MetroExpander_Click_BaseInfo(object sender, EventArgs e)
@@ -179,8 +182,24 @@ namespace SCMTMainWindow
             Content_Base.Visibility = Visibility.Hidden;
             Content_Comm.Visibility = Visibility.Visible;
         }
+
+        private void PrintTrap(List<string> Trapinfo)
+        {
+            foreach(string prt in Trapinfo)
+            {
+                Console.WriteLine(prt);
+            }
+        }
+
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            TrapMessage.WaitTrapRunstate = false;
+            Thread.Sleep(200);
+            TrapMessage.WaitforTrap.Abort();
+        }
     }
 
+    
    
 
 }
