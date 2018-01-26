@@ -59,6 +59,10 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitView()
         {
+            this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
+            this.MinWidth = 1366;
+            this.MinHeight = 768;
+            this.Content.Height = System.Windows.SystemParameters.PrimaryScreenHeight - 80;
             NodeB node = new NodeB("172.27.245.92");                          // 初始化一个基站节点(Demo程序,暂时只连接一个基站);
             ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 从JSON文件中初始化一个对象树;
             this.RefreshObj(Ctrl.m_RootNode,                                  // 将对象树加入到Expender容器中
@@ -70,7 +74,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void RegisterFunction()
         {
-            TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
+            //TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
         }
 
         /// <summary>

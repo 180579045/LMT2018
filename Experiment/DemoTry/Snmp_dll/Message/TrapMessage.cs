@@ -30,7 +30,7 @@ namespace Snmp_dll
         public List<string> TrapContent { get; set; }                              // Trap返回的具体内容;
         public static Thread WaitforTrap = new Thread(WaitTrap);                   // 执行Trap接收的线程;
         private static List<UpdateTrap> TrapNodifyList = new List<UpdateTrap>();   // 观察者列表;
-        public static bool WaitTrapRunstate;                                       // 接收Trap的标志位;
+        public static bool WaitTrapRunstate;                                       // 是否接收Trap的标志位;
 
         /// <summary>
         /// 设置观察者列表;

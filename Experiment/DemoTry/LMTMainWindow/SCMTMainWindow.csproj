@@ -108,6 +108,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\UEList_NodeB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Pages\DataGrhic_Selected.xaml.cs">
@@ -127,6 +131,9 @@
     </Compile>
     <Compile Include="Pages\UEList.xaml.cs">
       <DependentUpon>UEList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UEList_NodeB.xaml.cs">
+      <DependentUpon>UEList_NodeB.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -28,9 +28,18 @@ namespace SCMTMainWindow
         public UEList()
         {
             InitializeComponent();
+            this.WindowState = System.Windows.WindowState.Maximized;
         }
 
+        /// <summary>
+        /// 模拟数据;
+        /// </summary>
         private void AddChart()
+        {
+            DrawMainGraph1();            // 主界面图1;
+        }
+
+        private void DrawMainGraph1()
         {
             cs = new ChartStyleGridlines();
             dc = new DataCollection();
@@ -38,7 +47,7 @@ namespace SCMTMainWindow
 
             cs.ChartCanvas = chartCanvas;
             cs.TextCanvas = textCanvas;
-            cs.Title = "Sine and Cosine Chart";
+            cs.Title = "BLER";
             cs.Xmin = 0;
             cs.Xmax = 50;
             cs.Ymin = -1.5;

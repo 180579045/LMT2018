@@ -141,9 +141,9 @@
                             <Grid x:Name="Content">
 
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="auto" />
-                                    <RowDefinition Height="5"/>
-                                    <RowDefinition Height="auto" />
+                                    <RowDefinition MaxHeight="800"/>                   <!--基本信息显示-->
+                                    <RowDefinition Height="5"/>                        <!--中间的分割线-->
+                                    <RowDefinition Height="200" MaxHeight="900" />     <!--基站Conso和消息内容-->
                                 </Grid.RowDefinitions>
 
                                 <Grid Grid.Row="0">
@@ -305,6 +305,7 @@
 
                                     <!--基站内容栏与消息列表栏-->
                                     <Grid x:Name="Content_Comm">
+                                        
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition ></ColumnDefinition>
                                             <ColumnDefinition Width="5"></ColumnDefinition>
@@ -381,24 +382,35 @@
                                 </Grid>
                                 
 
-                                <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch" />
+                                <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" />
 
                                 <!--基站Console栏与重要过程打印-->
                                 <Grid Grid.Row="2">
+
                                     <TabControl>
                                         <TabItem>
                                             <TabItem.Header>
                                                 <StackPanel Orientation="Horizontal">
                                                     <Ellipse Width="10" Height="10" Fill="DarkGray"/>
-                                                    <TextBlock>基站Console</TextBlock>
+                                                    <TextBlock>基站Consol</TextBlock>
+                                                </StackPanel>
+
+                                            </TabItem.Header>
+
+                                            <StackPanel x:Name="NodebConsole">
+
+                                            </StackPanel>
+                                        </TabItem>
+
+                                        <TabItem>
+                                            <TabItem.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Ellipse Width="10" Height="10" Fill="DarkGray"/>
+                                                    <TextBlock>消息内容</TextBlock>
                                                 </StackPanel>
                                             </TabItem.Header>
-                                            <TextBlock />
-                                        </TabItem>
-                                        <TabItem Header="消息内容">
                                         </TabItem>
                                     </TabControl>
-
                                 </Grid>
 
                             </Grid>
