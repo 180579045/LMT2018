@@ -50,7 +50,7 @@ namespace SCMTMainWindow
             InitializeComponent();
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
-            InitDemoData();
+            InitDemoData();                                                   // 更新主界面Demo数据;
         }
 
         /// <summary>
@@ -60,9 +60,8 @@ namespace SCMTMainWindow
         private void InitView()
         {
             this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
-            this.MinWidth = 1366;
-            this.MinHeight = 768;
-            this.Content.Height = System.Windows.SystemParameters.PrimaryScreenHeight - 80;
+            this.MinWidth = 1366;                                             // 设置一个最小分辨率;
+            this.MinHeight = 768;                                             // 设置一个最小分辨率;
             NodeB node = new NodeB("172.27.245.92");                          // 初始化一个基站节点(Demo程序,暂时只连接一个基站);
             ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 从JSON文件中初始化一个对象树;
             this.RefreshObj(Ctrl.m_RootNode,                                  // 将对象树加入到Expender容器中
@@ -91,11 +90,17 @@ namespace SCMTMainWindow
                 items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0, this.Content_Comm, this.Content_Base);
             }
         }
+
+        //                                                                                     以下为Demo处理;
+        // ---------------------------------------------------------------------------------------------------
         
+        private void InitDemoData()
+        {
+            // 添加Demo数据;
+            ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
+            DG1.DataContext = custdata;                                       // 将告警信息加入控件;
+        }
 
-
-        //                                                    以下为Demo处理;
-        // ------------------------------------------------------------------
         private void MetroExpander_Click_BaseInfo(object sender, EventArgs e)
         {
             Content_Base.Visibility = Visibility.Visible;
@@ -107,13 +112,6 @@ namespace SCMTMainWindow
             UEList UEWindow = new UEList();
             UEWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             UEWindow.Show();
-        }
-
-        private void InitDemoData()
-        {
-            // 添加Demo数据;
-            ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
-            DG1.DataContext = custdata;                                       // 将告警信息加入控件;
         }
 
         private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -187,7 +185,7 @@ namespace SCMTMainWindow
             Content_Comm.Visibility = Visibility.Visible;
         }
 
-        private void PrintTrap(List<string> Trapinfo)
+        private void PrintTrapInConsole(List<string> Trapinfo)
         {
             foreach(string prt in Trapinfo)
             {
@@ -197,9 +195,6 @@ namespace SCMTMainWindow
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            TrapMessage.WaitTrapRunstate = false;
-            Thread.Sleep(200);
-            TrapMessage.WaitforTrap.Abort();
         }
     }
 

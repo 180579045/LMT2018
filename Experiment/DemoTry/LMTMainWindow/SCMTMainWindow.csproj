@@ -151,6 +151,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config">
       <SubType>Designer</SubType>
@@ -204,7 +205,21 @@
     <Resource Include="Resources\Star.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\A.png" />
     <Content Include="Resources\about.html" />
+    <Resource Include="Resources\A_Move.png" />
+    <Resource Include="Resources\B.png" />
+    <Resource Include="Resources\B_Move.png" />
+    <Resource Include="Resources\C.png" />
+    <Resource Include="Resources\C_Move.png" />
+    <Resource Include="Resources\D.png" />
+    <Resource Include="Resources\D_Move.png" />
+    <Resource Include="Resources\E.png" />
+    <Resource Include="Resources\E_Move.png" />
+    <Resource Include="Resources\F.png" />
+    <Resource Include="Resources\F_Move.png" />
+    <Resource Include="Resources\G.png" />
+    <Resource Include="Resources\G_Move.png" />
     <Resource Include="Resources\ToolBox.png" />
     <Resource Include="Resources\EasyNB.png" />
     <Resource Include="Resources\Baseinfo2.png" />

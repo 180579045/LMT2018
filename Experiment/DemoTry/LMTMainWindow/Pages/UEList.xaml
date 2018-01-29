@@ -6,17 +6,17 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="UEList" Height="600" Width="800">
+        Title="UEList" Height="1000" Width="1920">
 
     <Grid>
         <Metro:MetroMenuTabControl x:Name="UEtab" IconMode="True">
            
-            <Metro:MetroMenuTabItem Header="小区UE基本信息" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="小区UE基本信息" Icon="../Resources/A.png" IconMove="../Resources/A_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
                     
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" MaxWidth="500"/>   <!--左侧消息列表与基本信息-->
-                        <ColumnDefinition />                             <!--右侧UE列表与图表-->
+                        <ColumnDefinition Width="300" MaxWidth="500"/>      <!--左侧消息列表与基本信息-->
+                        <ColumnDefinition />                                <!--右侧UE列表与图表-->
                     </Grid.ColumnDefinitions>
 
                     <!--左侧消息列表与基本信息-->
@@ -25,7 +25,7 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="500" MaxHeight="500" />  <!--消息列表-->
                             <RowDefinition Height="3"/>
-                            <RowDefinition />               <!--小区基本信息-->
+                            <RowDefinition />                               <!--小区基本信息-->
                         </Grid.RowDefinitions>
 
                         <!--消息列表-->
@@ -55,14 +55,14 @@
                     <Grid Grid.Column="2">
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="150" MaxHeight="150"/>
-                            <RowDefinition Height="3"/>
-                            <RowDefinition Height="150"/>
-                            <RowDefinition />
+                            <RowDefinition Height="150" MaxHeight="150"/>        <!--UE列表-->
+                            <RowDefinition Height="3"/>                          <!--分隔符-->
+                            <RowDefinition />                                    <!--各种图形和UE信息表格-->
                         </Grid.RowDefinitions>
 
                         <!--UE列表-->
                         <DataGrid Name="Content_NB" Height="150" Grid.Row="0" ItemsSource="{Binding}" AutoGenerateColumns="False" VerticalAlignment="Top" >
+                            
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="小区内UE索引"  />
                                 <DataGridTextColumn Header="ENB内UE索引" />
@@ -91,46 +91,104 @@
 
                         <GridSplitter Grid.Row="1" Height="3"  HorizontalAlignment="Stretch"/>
 
-                        <Grid Name="grid2" Grid.Row="2">
+                        <Grid Grid.Row="2">
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Name="column2" Width="800"/>
+                                <ColumnDefinition Width="850"></ColumnDefinition>                   <!--各种图-->
+                                <ColumnDefinition></ColumnDefinition>                               <!--表格-->
                             </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="20"/>
-                                <RowDefinition Name="row2" Height="100"/>
-                                <RowDefinition Height="20"/>
-                            </Grid.RowDefinitions>
 
-                            <TextBlock Margin="2" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" 
-                                RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" 
-                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" 
-                                Text="Title"/>
+                            <Grid Grid.Column="0">
 
-                            <TextBlock Margin="2" Name="tbYLabel" Grid.Column="0" Grid.Row="1" 
-                                RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
-                                Text="Y Axis">
-                                <TextBlock.LayoutTransform>
-                                    <RotateTransform Angle="-90"/>
-                                </TextBlock.LayoutTransform>
-                            </TextBlock>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="150"></RowDefinition>
+                                    <RowDefinition Height="150"></RowDefinition>
+                                </Grid.RowDefinitions>
 
-                            <TextBlock Margin="2" x:Name="tbXLabel" Grid.Column="1" Grid.Row="2" 
-                               RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
-                               Text="X Axis"/>
+                                <!--第一个图形-->
+                                <Grid Name="grid2" Grid.Row="0">
 
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Name="column2" Width="800"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="20"/>
+                                        <RowDefinition Name="row2" Height="100"/>
+                                        <RowDefinition Height="20"/>
+                                    </Grid.RowDefinitions>
 
-                            <Grid  Margin="0,0,0,0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1"
-			                    ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
+                                    <TextBlock Margin="2" x:Name="tbTitle" Grid.Column="1" Grid.Row="0" 
+                                                RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" 
+                                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" 
+                                                Text="Title"/>
+
+                                    <TextBlock Margin="2" Name="tbYLabel" Grid.Column="0" Grid.Row="1" 
+                                                RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+                                                Text="Y Axis">
+                                        <TextBlock.LayoutTransform>
+                                            <RotateTransform Angle="-90"/>
+                                        </TextBlock.LayoutTransform>
+                                    </TextBlock>
+
+                                    <TextBlock Margin="2" x:Name="tbXLabel" Grid.Column="1" Grid.Row="2" 
+                                               RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+                                               Text="X Axis"/>
+
+                                    <Grid  Margin="0,0,0,0" x:Name ="chartGrid" Grid.Column="1" Grid.Row="1"
+			                                ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
+                                    </Grid>
+
+                                    <Canvas Margin="2" Name="textCanvas" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
+                                        <Canvas Name="chartCanvas" ClipToBounds="True"/>
+                                    </Canvas>
+
+                                </Grid>
+
+                                <!--第二个图形-->
+                                <Grid Name="gird3" Grid.Row="1">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Name="column3" Width="800"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="20"/>
+                                        <RowDefinition Name="row3" Height="100"/>
+                                        <RowDefinition Height="20"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Margin="2" x:Name="tbTitle1" Grid.Column="1" Grid.Row="0" 
+				                                RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" 
+				                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" 
+				                                Text="Title"/>
+
+                                    <TextBlock Margin="2" Name="tbYLabel1" Grid.Column="0" Grid.Row="1" 
+				                                RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+				                                Text="Y Axis">
+                                        <TextBlock.LayoutTransform>
+                                            <RotateTransform Angle="-90"/>
+                                        </TextBlock.LayoutTransform>
+                                    </TextBlock>
+
+                                    <TextBlock Margin="2" x:Name="tbXLabel1" Grid.Column="1" Grid.Row="2" 
+			                                   RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+			                                   Text="X Axis"/>
+
+                                    <Grid  Margin="0,0,0,0" x:Name ="chartGrid1" Grid.Column="1" Grid.Row="1"
+			                                ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
+                                    </Grid>
+
+                                    <Canvas Margin="2" Name="textCanvas1" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
+                                        <Canvas Name="chartCanvas1" ClipToBounds="True"/>
+                                    </Canvas>
+
+                                </Grid>
+
                             </Grid>
-                            <Canvas Margin="2" Name="textCanvas" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
-                                <Canvas Name="chartCanvas" ClipToBounds="True"/>
-                            </Canvas>
-
-
+                            
                         </Grid>
-
+                        
                     </Grid>
                     
                    
@@ -138,7 +196,7 @@
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="BLER分析" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="BLER分析" Icon="../Resources/B.png" IconMove="../Resources/B_Move.png" Height="40" VerticalAlignment="Top">
 
                 <Grid Name="grid1" Grid.Row="1">
 
@@ -155,31 +213,31 @@
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="单用户功率查看" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="单用户功率查看" Icon="../Resources/C.png" IconMove="../Resources/C_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
 
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="单用户接入流程" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="单用户接入流程" Icon="../Resources/D.png" IconMove="../Resources/D_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
 
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="自定义模板A" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="自定义模板A" Icon="../Resources/E.png" IconMove="../Resources/E_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
 
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="自定义模板B" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="自定义模板B" Icon="../Resources/F.png" IconMove="../Resources/F_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
 
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            <Metro:MetroMenuTabItem Header="自定义模板C" Icon="../Resources/Log.png" IconMove="../Resources/iconMove.png" Height="40" VerticalAlignment="Top">
+            <Metro:MetroMenuTabItem Header="自定义模板C" Icon="../Resources/G.png" IconMove="../Resources/G_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
 
                 </Grid>
