@@ -1,0 +1,13 @@
+Release/
+Debug/
+/Release/
+/Debug/
+ipch/
+_ReSharper.Caches/
+SimpleTpfLog/
+*.user
+*.sdf
+*.suo
+*.opensdf
+*.pch
+*.obj
