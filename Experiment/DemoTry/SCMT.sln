@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Specialized3DChart", "3DCha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineChart", "LineChart\LineChart.csproj", "{736FD4F8-936F-46E9-A766-C9937F359E3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnmpWindow", "SnmpWindow\SnmpWindow.csproj", "{F05BB468-E359-41A7-937A-7849C16DD5A6}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{736FD4F8-936F-46E9-A766-C9937F359E3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F05BB468-E359-41A7-937A-7849C16DD5A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F05BB468-E359-41A7-937A-7849C16DD5A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F05BB468-E359-41A7-937A-7849C16DD5A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F05BB468-E359-41A7-937A-7849C16DD5A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

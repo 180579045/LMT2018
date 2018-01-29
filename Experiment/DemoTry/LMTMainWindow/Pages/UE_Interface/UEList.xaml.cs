@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Media;
 using LineChart;
 using System.Threading;
+using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace SCMTMainWindow
 {
@@ -29,40 +31,32 @@ namespace SCMTMainWindow
         public UEList()
         {
             InitializeComponent();
+            AddCellBaseinfo();
+
+            MetroMenuTabItem abc = new MetroMenuTabItem();
+            abc.Header = "111";
+            abc.Height = 40;
+            abc.Icon = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A.png"));
+            abc.IconMove = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A_Move.png"));
+            abc.VerticalAlignment = VerticalAlignment.Top;
+            this.UEtab.Items.Add(abc);
+
             this.WindowState = System.Windows.WindowState.Maximized;
         }
 
         /// <summary>
-        /// 模拟数据;
+        /// 绘制折线图并开启模拟数据线程;
         /// </summary>
         private void AddChart()
         {
             DrawMainGraph1();                                 // 主界面图1;
-            DrawMainGraph2();                                 // 主界面图1;
+            DrawMainGraph2();                                 // 主界面图2;
 
             // 启动一个线程，每隔2秒返回一个点;
             Thread DrawPic1 = new Thread(CreatePoint);
             DrawPic1.Start();
         }
 
-        private void drawcallback(int y, int y2)
-        {
-            x1++;
-            x2++;
-
-            Dispatcher.BeginInvoke(new Action(delegate
-            {
-                ds.LineSeries.Points.Add(new Point(x1 * 3, y));
-                dc.DataList.Add(ds);
-                dc.AddPoint(cs, ds);
-
-                ds2.LineSeries.Points.Add(new Point(x2 * 3, y2));
-                dc2.DataList.Add(ds2);
-                dc2.AddPoint(cs2, ds2);
-            }));
-
-        }
-        
         /// <summary>
         /// 图一初始化;
         /// </summary>
@@ -122,6 +116,31 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
+        /// 将返回的数值回填到折线图空间中;
+        /// </summary>
+        /// <param name="y"></param>
+        /// <param name="y2"></param>
+        private void drawcallback(int y, int y2)
+        {
+            x1++;
+            x2++;
+
+            Dispatcher.BeginInvoke(new Action(delegate
+            {
+                ds.LineSeries.Points.Add(new Point(x1 * 3, y));
+                dc.DataList.Clear();
+                dc.DataList.Add(ds);
+                dc.AddPoint(cs, ds);
+
+                ds2.LineSeries.Points.Add(new Point(x2 * 3, y2));
+                dc2.DataList.Clear();
+                dc2.DataList.Add(ds2);
+                dc2.AddPoint(cs2, ds2);
+            }));
+
+        }
+
+        /// <summary>
         /// 子线程，每隔2s给主线程反馈一个数字;
         /// </summary>
         private void CreatePoint()
@@ -131,10 +150,15 @@ namespace SCMTMainWindow
             while (true)
             {
                 drawcallback(rd.Next(0,50), rd2.Next(0,20));
-                Thread.Sleep(100);
+                Thread.Sleep(3000);
             }
         }
 
+        /// <summary>
+        /// 折线图初始化函数;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             textCanvas.Width = chartGrid.ActualWidth;
@@ -157,5 +181,37 @@ namespace SCMTMainWindow
             Gs.WindowState = System.Windows.WindowState.Maximized;
             Gs.Show();
         }
+
+        private void AddCellBaseinfo()
+        {
+
+            List<UECellBaseContent> CellBaseCnt = new List<UECellBaseContent>();
+
+            CellBaseCnt.Add(new UECellBaseContent("小区制式", "5G II"));
+            CellBaseCnt.Add(new UECellBaseContent("小区频点", "18400"));
+            CellBaseCnt.Add(new UECellBaseContent("小区用户数", "3"));
+
+            this.CellBaseInfo.ItemsSource = CellBaseCnt;
+        }
+
+        private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            UEList_Setting a = new UEList_Setting();
+            a.Show();
+        }
     }
+
+
+    class UECellBaseContent
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+
+        public UECellBaseContent(string title, string content)
+        {
+            Title = title;
+            Content = content;
+        }
+    }
+
 }
