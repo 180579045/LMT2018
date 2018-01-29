@@ -131,7 +131,7 @@ namespace SCMTMainWindow
             while (true)
             {
                 drawcallback(rd.Next(0,50), rd2.Next(0,20));
-                Thread.Sleep(500);
+                Thread.Sleep(100);
             }
         }
 
