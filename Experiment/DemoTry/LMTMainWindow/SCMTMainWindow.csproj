@@ -104,11 +104,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\UEList.xaml">
+    <Page Include="Pages\UE_Interface\UEList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\UEList_NodeB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\UE_Interface\UEList_Setting.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -129,11 +133,14 @@
     <Compile Include="Pages\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\UEList.xaml.cs">
+    <Compile Include="Pages\UE_Interface\UEList.xaml.cs">
       <DependentUpon>UEList.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\UEList_NodeB.xaml.cs">
       <DependentUpon>UEList_NodeB.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\UE_Interface\UEList_Setting.xaml.cs">
+      <DependentUpon>UEList_Setting.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
