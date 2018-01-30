@@ -7,6 +7,10 @@ using System.Windows.Media;
 
 namespace LineChart
 {
+
+    /// <summary>
+    /// 折线图数据集;
+    /// </summary>
     public class DataCollection
     {
         private List<DataSeries> dataList;

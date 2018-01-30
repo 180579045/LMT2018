@@ -17,30 +17,25 @@ namespace SCMTMainWindow
     public partial class UEList : MetroWindow
     {
         // 图一的模拟数据;
-        private ChartStyleGridlines cs;
-        private DataCollection dc;
-        private DataSeries ds;
+        private ChartStyleGridlines cs;            // 表格;
+        private DataCollection dc;                 // 折线图数据集;
+        private DataSeries ds;                     // 折线图;
         private int x1 = 0;
 
         // 图二的模拟数据;
         private ChartStyleGridlines cs2;
-        private DataCollection dc2;
         private DataSeries ds2;
         private int x2 = 0;
+
+        // 图三的模拟数据;
+        private ChartStyleGridlines cs3;
+        private DataSeries ds3;
 
         public UEList()
         {
             InitializeComponent();
             AddCellBaseinfo();
-
-            MetroMenuTabItem abc = new MetroMenuTabItem();
-            abc.Header = "111";
-            abc.Height = 40;
-            abc.Icon = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A.png"));
-            abc.IconMove = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A_Move.png"));
-            abc.VerticalAlignment = VerticalAlignment.Top;
-            this.UEtab.Items.Add(abc);
-
+            
             this.WindowState = System.Windows.WindowState.Maximized;
         }
 
@@ -51,9 +46,9 @@ namespace SCMTMainWindow
         {
             DrawMainGraph1();                                 // 主界面图1;
             DrawMainGraph2();                                 // 主界面图2;
-
-            // 启动一个线程，每隔2秒返回一个点;
-            Thread DrawPic1 = new Thread(CreatePoint);
+            DrawMainGraph3();                                 // 主界面图3;
+            
+            Thread DrawPic1 = new Thread(CreatePoint);        // 启动一个线程，每隔2秒返回一个点;
             DrawPic1.Start();
         }
 
@@ -92,7 +87,6 @@ namespace SCMTMainWindow
         private void DrawMainGraph2()
         {
             cs2 = new ChartStyleGridlines();
-            dc2 = new DataCollection();
             ds2 = new DataSeries();
 
             // 设置画布;
@@ -116,6 +110,50 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
+        /// 图三初始化;
+        /// </summary>
+        private void DrawMainGraph3()
+        {
+            cs3 = new ChartStyleGridlines();
+            ds3 = new DataSeries();
+
+            // 设置画布;
+            cs3.ChartCanvas = chartCanvas2;
+            cs3.TextCanvas = textCanvas2;
+            cs3.Title = "BLER";
+            cs3.Xmin = 0;
+            cs3.Xmax = 100;
+            cs3.Ymin = 0;
+            cs3.Ymax = 5;
+            cs3.YTick = 1;
+
+            cs3.GridlinePattern = ChartStyleGridlines.GridlinePatternEnum.Dot;
+            cs3.GridlineColor = Brushes.Black;
+            cs3.AddChartStyle(tbTitle, tbXLabel, tbYLabel);
+
+            // 绘制图形;
+            ds3.LineColor = Brushes.Black;
+            ds3.LinePattern = DataSeries.LinePatternEnum.Solid;
+            ds3.LineThickness = 3;
+
+        }
+
+        /// <summary>
+        /// 添加小区基本信息的模拟数据;
+        /// </summary>
+        private void AddCellBaseinfo()
+        {
+
+            List<UECellBaseContent> CellBaseCnt = new List<UECellBaseContent>();
+
+            CellBaseCnt.Add(new UECellBaseContent("小区制式", "5G II"));
+            CellBaseCnt.Add(new UECellBaseContent("小区频点", "18400"));
+            CellBaseCnt.Add(new UECellBaseContent("小区用户数", "3"));
+
+            this.CellBaseInfo.ItemsSource = CellBaseCnt;
+        }
+
+        /// <summary>
         /// 将返回的数值回填到折线图空间中;
         /// </summary>
         /// <param name="y"></param>
@@ -133,9 +171,14 @@ namespace SCMTMainWindow
                 dc.AddPoint(cs, ds);
 
                 ds2.LineSeries.Points.Add(new Point(x2 * 3, y2));
-                dc2.DataList.Clear();
-                dc2.DataList.Add(ds2);
-                dc2.AddPoint(cs2, ds2);
+                dc.DataList.Clear();
+                dc.DataList.Add(ds2);
+                dc.AddPoint(cs2, ds2);
+
+                ds3.LineSeries.Points.Add(new Point(x2, y2));
+                dc.DataList.Clear();
+                dc.DataList.Add(ds3);
+                dc.AddPoint(cs3, ds3);
             }));
 
         }
@@ -150,7 +193,7 @@ namespace SCMTMainWindow
             while (true)
             {
                 drawcallback(rd.Next(0,50), rd2.Next(0,20));
-                Thread.Sleep(3000);
+                Thread.Sleep(5000);
             }
         }
 
@@ -171,6 +214,11 @@ namespace SCMTMainWindow
             chartCanvas1.Children.Clear();
             textCanvas1.Children.RemoveRange(1, textCanvas1.Children.Count - 1);
 
+            textCanvas2.Width = chartGrid.ActualWidth;
+            textCanvas2.Height = chartGrid.ActualHeight;
+            chartCanvas2.Children.Clear();
+            textCanvas2.Children.RemoveRange(1, textCanvas2.Children.Count - 1);
+
             AddChart();
         }
 
@@ -181,23 +229,18 @@ namespace SCMTMainWindow
             Gs.WindowState = System.Windows.WindowState.Maximized;
             Gs.Show();
         }
+        
 
-        private void AddCellBaseinfo()
-        {
-
-            List<UECellBaseContent> CellBaseCnt = new List<UECellBaseContent>();
-
-            CellBaseCnt.Add(new UECellBaseContent("小区制式", "5G II"));
-            CellBaseCnt.Add(new UECellBaseContent("小区频点", "18400"));
-            CellBaseCnt.Add(new UECellBaseContent("小区用户数", "3"));
-
-            this.CellBaseInfo.ItemsSource = CellBaseCnt;
-        }
-
-        private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
+        private void UEGraphSetting_Click(object sender, RoutedEventArgs e)
         {
             UEList_Setting a = new UEList_Setting();
+            a.m_PassToMain += A_m_PassToMain;
             a.Show();
+        }
+
+        private void A_m_PassToMain(object sender, GraphSelectorPassValEventArg e)
+        {
+            this.UEtab.Items.Add(e.m_tab);
         }
     }
 

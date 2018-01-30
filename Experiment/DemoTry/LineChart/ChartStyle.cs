@@ -13,6 +13,7 @@ namespace LineChart
         private double ymax = 10;
         private Canvas chartCanvas;
 
+        // 画布;
         public Canvas ChartCanvas
         {
             get { return chartCanvas; }

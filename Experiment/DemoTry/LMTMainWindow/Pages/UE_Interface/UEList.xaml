@@ -13,7 +13,7 @@
 
             <Metro:MetroTitleMenuItem Header="更多">
                 <Metro:MetroMenuItem Header="导出数据" />
-                <Metro:MetroMenuItem Header="设置" Click="MetroMenuItem_Click"/>
+                <Metro:MetroMenuItem Header="设置" Click="UEGraphSetting_Click"/>
             </Metro:MetroTitleMenuItem>
         </Metro:MetroTitleMenu>
     </Metro:MetroWindow.Menu>
@@ -206,6 +206,44 @@
 
                                     <Canvas Margin="2" Name="textCanvas1" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
                                         <Canvas Name="chartCanvas1" ClipToBounds="True"/>
+                                    </Canvas>
+
+                                </Grid>
+
+                                <!--第三个图形-->
+                                <Grid Name="gird4" Grid.Row="2">
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="20"/>
+                                        <ColumnDefinition Name="column4" Width="800"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="20"/>
+                                        <RowDefinition Name="row4" Height="100"/>
+                                        <RowDefinition Height="20"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Margin="2" x:Name="tbTitle2" Grid.Column="1" Grid.Row="0" 
+				                                RenderTransformOrigin="0.5,0.5" FontSize="14" FontWeight="Bold" 
+				                                HorizontalAlignment="Stretch" VerticalAlignment="Stretch" TextAlignment="Center" Text="Title"/>
+
+                                    <TextBlock Margin="2" Name="tbYLabel2" Grid.Column="0" Grid.Row="1" 
+				                                RenderTransformOrigin="0.5,0.5" TextAlignment="Center" 
+				                                Text="Y Axis">
+                                        <TextBlock.LayoutTransform>
+                                            <RotateTransform Angle="-90"/>
+                                        </TextBlock.LayoutTransform>
+                                    </TextBlock>
+
+                                    <TextBlock Margin="2" x:Name="tbXLabel2" Grid.Column="1" Grid.Row="2" 
+			                                   RenderTransformOrigin="0.5,0.5" TextAlignment="Center" Text="X Axis"/>
+
+                                    <Grid Margin="0,0,0,0" x:Name ="chartGrid2" Grid.Column="1" Grid.Row="1"
+			                                ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
+                                    </Grid>
+
+                                    <Canvas Margin="2" Name="textCanvas2" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
+                                        <Canvas Name="chartCanvas2" ClipToBounds="True"/>
                                     </Canvas>
 
                                 </Grid>

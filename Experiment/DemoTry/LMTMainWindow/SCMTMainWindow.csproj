@@ -212,6 +212,7 @@
     <Resource Include="Resources\Star.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\Add1.png" />
     <Resource Include="Resources\A.png" />
     <Content Include="Resources\about.html" />
     <Resource Include="Resources\A_Move.png" />

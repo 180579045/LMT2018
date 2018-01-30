@@ -6,8 +6,130 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="UEList_Setting" Height="566" Width="600">
+        Title="UEList_Setting" Height="350" Width="600">
     <Grid>
+        <Grid Name="Grid1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="2"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="200"></RowDefinition>
+            </Grid.RowDefinitions>
 
+            <Grid Grid.Row="0" Height="50" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <Button BorderThickness="0" Height="50" Width="50"  Grid.Column="0" GotFocus="Button_GotFocus" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SCMTMainWindow;component/Resources/A_Move.png"/>
+                    </Button.Background>
+                </Button>
+                
+                <Button BorderThickness="0" Height="50" Width="50"  Grid.Column="1" GotFocus="Button2_GotFocus" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SCMTMainWindow;component/Resources/B_Move.png"/>
+                    </Button.Background>
+                </Button>
+
+                <Button BorderThickness="0" Height="50" Width="50"  Grid.Column="2" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SCMTMainWindow;component/Resources/C_Move.png"/>
+                    </Button.Background>
+                </Button>
+
+                <Button BorderThickness="0" Height="50" Width="50"  Grid.Column="3" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SCMTMainWindow;component/Resources/D_Move.png"/>
+                    </Button.Background>
+                </Button>
+                
+            </Grid>
+
+            <Grid Name="GridRow2" Grid.Row="2" Height="50" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                    <ColumnDefinition></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                
+                <Button BorderThickness="0" Height="50" Width="50"  Grid.Column="0" >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SCMTMainWindow;component/Resources/E_Move.png"/>
+                    </Button.Background>
+                </Button>
+
+                <Button Name="Addbutton" BorderThickness="0" Height="50" Width="50"  Grid.Column="1" Click="Button_Click"  >
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SCMTMainWindow;component/Resources/Add1.png"/>
+                    </Button.Background>
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="3" VerticalAlignment="Top">
+
+                <StackPanel Orientation="Vertical">
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label x:Name="label" Content="名称:                                                   " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <TextBox Name="TabName" Width="200"></TextBox>
+                    </StackPanel>
+                    
+                    <Label x:Name="labe2" Content="请选择你要在该界面显示的图形" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="图形一：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <ComboBox>
+                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="图形二：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <ComboBox>
+                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="图形三：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <ComboBox>
+                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Label Content="图形四：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                        <ComboBox>
+                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
+                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Margin="0,20">
+
+                        <Button Content="确定" Height="30" Width="200" Click="Button_Click_1" ></Button>
+                        
+                    </StackPanel>
+
+                </StackPanel>
+
+                
+            </Grid>
+            
+        </Grid>
+        
     </Grid>
 </Metro:MetroWindow>
