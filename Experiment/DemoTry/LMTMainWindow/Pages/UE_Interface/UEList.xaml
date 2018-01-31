@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="UEList" Height="1000" Width="1920">
+        Title="UEList" Height="1000" Width="1250">
 
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
@@ -20,31 +20,45 @@
 
     <Grid>
         <Metro:MetroMenuTabControl x:Name="UEtab" IconMode="True">
-           
+
             <Metro:MetroMenuTabItem Header="小区UE基本信息" Icon="../../Resources/A.png" IconMove="../../Resources/A_Move.png" Height="40" VerticalAlignment="Top">
                 <Grid>
-                    
+
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="300" MaxWidth="500"/>      <!--左侧消息列表与基本信息-->
-                        <ColumnDefinition />                                <!--右侧UE列表与图表-->
+                        <ColumnDefinition Width="300" MaxWidth="500"/>
+                        <!--左侧消息列表与基本信息-->
+                        <ColumnDefinition Width="900" />
+                        <!--右侧UE列表与图表-->
                     </Grid.ColumnDefinitions>
 
                     <!--左侧消息列表与基本信息-->
                     <Grid Grid.Column="0">
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="500" MaxHeight="500" MinHeight="400" />  <!--消息列表-->
+                            <RowDefinition Height="500" MaxHeight="500" MinHeight="400" />
+                            <!--消息列表-->
                             <RowDefinition Height="3"/>
-                            <RowDefinition />                                               <!--小区基本信息-->
+                            <RowDefinition />
+                            <!--小区基本信息-->
                         </Grid.RowDefinitions>
 
                         <!--消息列表-->
-                        <DataGrid Name="UEMessage" Grid.Row="0" >
-                            <DataGrid.Columns>
-                                <DataGridTextColumn Header="接收时间"  />
-                                <DataGridTextColumn Header="消息内容" Width="100" />
-                            </DataGrid.Columns>
-                        </DataGrid>
+                        <ListView Grid.Row="0" Name="UEMessageGrid">
+
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="接收时间" Width="120" DisplayMemberBinding="{Binding MsgTime}" />
+                                    <GridViewColumn Header="消息内容" Width="200">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock  Text="{Binding MsgContent}" Foreground="Blue" Cursor="Hand" />
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+
+                        </ListView>
 
                         <GridSplitter Grid.Row="1"  HorizontalAlignment="Stretch"/>
 
@@ -77,33 +91,29 @@
 
 
                     </Grid>
-                    
+
                     <GridSplitter Grid.Column="1" />
-                    
+
                     <!--右侧UE列表与图表-->
                     <Grid Grid.Column="2">
 
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="150" MaxHeight="150"/>        <!--UE列表-->
-                            <RowDefinition Height="3"/>                          <!--分隔符-->
-                            <RowDefinition />                                    <!--各种图形和UE信息表格-->
+                            <RowDefinition Height="150" MaxHeight="150"/>
+                            <!--UE列表-->
+                            <RowDefinition Height="3"/>
+                            <!--分隔符-->
+                            <RowDefinition />
+                            <!--各种图形和UE信息表格-->
                         </Grid.RowDefinitions>
 
                         <!--UE列表-->
-                        <DataGrid Name="Content_NB" Height="150" Grid.Row="0" ItemsSource="{Binding}" AutoGenerateColumns="False" VerticalAlignment="Top" >
-                            
+                        <DataGrid Name="UEListGrid" Height="150" Grid.Row="0" ItemsSource="{Binding}" AutoGenerateColumns="False" VerticalAlignment="Top" >
+
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="小区内UE索引"  />
-                                <DataGridTextColumn Header="ENB内UE索引" />
-                                <DataGridTextColumn Header="DRB个数" />
-                                <DataGridTextColumn Header="DRB索引" />
-                                <DataGridTextColumn Header="逻辑信道ID" />
-                                <DataGridTextColumn Header="DRP:QCI" />
-                                <DataGridTextColumn Header="GBR下行"  />
-                                <DataGridTextColumn Header="GBR上行" />
-                                <DataGridTextColumn Header="DRB模式标志" />
-                                <DataGridTextColumn Header="AMBR下行" />
-                                <DataGridTextColumn Header="AMBR上行" />
+                                <DataGridTextColumn Header="First Name"  Binding="{Binding FirstName}"/>
+                                <DataGridTextColumn Header="Last Name" Binding="{Binding LastName}" />
+                                <DataGridHyperlinkColumn Header="Email" Binding="{Binding Email}" />
+                                <DataGridCheckBoxColumn Header="Member?" Binding="{Binding IsMember}" />
                             </DataGrid.Columns>
 
                             <!--鼠标右键-->
@@ -123,8 +133,10 @@
                         <Grid Grid.Row="2">
 
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="850"></ColumnDefinition>                   <!--各种图-->
-                                <ColumnDefinition></ColumnDefinition>                               <!--表格-->
+                                <ColumnDefinition Width="850"></ColumnDefinition>
+                                <!--各种图-->
+                                <ColumnDefinition></ColumnDefinition>
+                                <!--表格-->
                             </Grid.ColumnDefinitions>
 
                             <Grid Grid.Column="0">
@@ -133,6 +145,7 @@
                                     <RowDefinition Height="150"></RowDefinition>
                                     <RowDefinition Height="150"></RowDefinition>
                                     <RowDefinition Height="150"></RowDefinition>
+                                    <RowDefinition Height="300"></RowDefinition>
                                 </Grid.RowDefinitions>
 
                                 <!--第一个图形-->
@@ -238,8 +251,7 @@
                                     <TextBlock Margin="2" x:Name="tbXLabel2" Grid.Column="1" Grid.Row="2" 
 			                                   RenderTransformOrigin="0.5,0.5" TextAlignment="Center" Text="X Axis"/>
 
-                                    <Grid Margin="0,0,0,0" x:Name ="chartGrid2" Grid.Column="1" Grid.Row="1"
-			                                ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
+                                    <Grid  x:Name ="chartGrid2" Grid.Column="1" Grid.Row="1" ClipToBounds="False" Background="Transparent" SizeChanged="chartGrid_SizeChanged">
                                     </Grid>
 
                                     <Canvas Margin="2" Name="textCanvas2" Grid.Column="1" Grid.Row="1" ClipToBounds="True">
@@ -248,13 +260,390 @@
 
                                 </Grid>
 
+                                <Grid Grid.Row="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition></ColumnDefinition>
+                                        <ColumnDefinition Width="3"></ColumnDefinition>
+                                        <ColumnDefinition></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Grid Grid.Column="0">
+                                        <!--类似日历的图形1-->
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Grid.Row="0" Grid.Column="3">
+
+                                            <Label Content="ULMSC"></Label>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="3" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="7" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="2" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="1" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="3" Background="#FFFFA5A5" >
+                                            <Label Content="200" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="6" >
+                                        </Grid>
+
+                                        <Grid Grid.Row="3" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="8" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="4" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="1" Background="#FFFF4F4F" >
+                                            <Label Content="500" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="3" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="6" >
+                                        </Grid>
+
+                                        <Grid Grid.Row="5" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="15" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="17" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="18" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="19" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="21" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="6" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="1" >
+                                            
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="3" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="6" Background="#FF86FF63"  >
+                                            <Label Content="100" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="7" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="22" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="23" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="26" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="27" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="28" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="8" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="1" Background="#FFFF4F4F" >
+                                            <Label Content="500" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="3" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="6" >
+                                        </Grid>
+
+                                    </Grid>
+
+                                    <Grid Grid.Column="2">
+                                        <!--类似日历的图形2-->
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition Height="25"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
+
+                                        <Grid Grid.Row="0" Grid.Column="3">
+
+                                            <Label Content="ULMSC"></Label>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="1" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="3" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="5" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="1" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="7" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="2" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="1" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="3" Background="#FFFFA5A5" >
+                                            <Label Content="200" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="2" Grid.Column="6" >
+                                        </Grid>
+
+                                        <Grid Grid.Row="3" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="8" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="9" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="11" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="12" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="13" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="3" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="4" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="1" Background="#FFFF4F4F" >
+                                            <Label Content="500" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="3" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="4" Grid.Column="6" >
+                                        </Grid>
+
+                                        <Grid Grid.Row="5" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="15" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="17" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="18" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="19" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="20" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="5" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="21" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="6" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="1" >
+
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="3" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="6" Grid.Column="6" Background="#FF86FF63"  >
+                                            <Label Content="100" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="7" Grid.Column="0" Background="#FFA4FFDE">
+                                            <Label Content="22" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="1" Background="#FFA4FFDE">
+                                            <Label Content="23" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="2" Background="#FFA4FFDE">
+                                            <Label Content="24" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="3" Background="#FFA4FFDE">
+                                            <Label Content="25" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="4" Background="#FFA4FFDE">
+                                            <Label Content="26" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="5" Background="#FFA4FFDE">
+                                            <Label Content="27" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="7" Grid.Column="6" Background="#FFA4FFDE">
+                                            <Label Content="28" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+
+                                        <Grid Grid.Row="8" Grid.Column="0" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="1" Background="#FFFF4F4F" >
+                                            <Label Content="500" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="2" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="3" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="4" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="5" >
+                                        </Grid>
+                                        <Grid Grid.Row="8" Grid.Column="6" >
+                                        </Grid>
+
+                                    </Grid>
+
+                                </Grid>
+
                             </Grid>
-                            
+
                         </Grid>
-                        
+
                     </Grid>
-                    
-                   
+
+
 
                 </Grid>
             </Metro:MetroMenuTabItem>
@@ -306,7 +695,7 @@
                 </Grid>
             </Metro:MetroMenuTabItem>
 
-            
+
 
         </Metro:MetroMenuTabControl>
     </Grid>

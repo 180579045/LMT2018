@@ -23,7 +23,7 @@
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
 
-            <Metro:MetroTitleMenuItem Header="Demo 2017.12">
+            <Metro:MetroTitleMenuItem Header="Demo 2018.1">
             </Metro:MetroTitleMenuItem>
 
             <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
@@ -79,7 +79,7 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="180" MaxWidth="180" />
+                        <ColumnDefinition Width="200" MaxWidth="200" />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition MinWidth="160" Width="200"/>
                         <ColumnDefinition />

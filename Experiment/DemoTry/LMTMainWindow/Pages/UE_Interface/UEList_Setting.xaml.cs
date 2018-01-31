@@ -31,7 +31,6 @@ namespace SCMTMainWindow
         
         private void Button_GotFocus(object sender, RoutedEventArgs e)
         {
-
             Console.WriteLine("1111111111");
         }
 
@@ -54,7 +53,6 @@ namespace SCMTMainWindow
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-        
             MetroMenuTabItem abc = new MetroMenuTabItem();
             abc.Header = TabName.Text;
             abc.Height = 40;

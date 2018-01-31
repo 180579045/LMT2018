@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Component\Msg\UEMessage.cs" />
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\NodeB_Control.cs" />
     <Compile Include="MainWindowVM.cs" />

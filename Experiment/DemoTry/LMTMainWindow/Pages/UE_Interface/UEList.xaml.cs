@@ -5,7 +5,9 @@ using System.Windows.Media;
 using LineChart;
 using System.Threading;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
+using System.Data;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace SCMTMainWindow
 {
@@ -30,13 +32,30 @@ namespace SCMTMainWindow
         // 图三的模拟数据;
         private ChartStyleGridlines cs3;
         private DataSeries ds3;
+        
 
         public UEList()
         {
             InitializeComponent();
             AddCellBaseinfo();
-            
-            this.WindowState = System.Windows.WindowState.Maximized;
+
+            ObservableCollection<NodeBUser> custdata = GetData();
+            //Bind the DataGrid to the customer data
+            UEListGrid.DataContext = custdata;
+        }
+
+        private ObservableCollection<NodeBUser> GetData()
+        {
+            ObservableCollection<NodeBUser> ret = new ObservableCollection<NodeBUser>();
+            ret.Add(new NodeBUser("1", "2", "3"));
+            ret.Add(new NodeBUser("1", "2", "3"));
+            ret.Add(new NodeBUser("1", "2", "3"));
+            ret.Add(new NodeBUser("1", "2", "3"));
+            ret.Add(new NodeBUser("1", "2", "3"));
+            ret.Add(new NodeBUser("1", "2", "3"));
+
+
+            return ret; 
         }
 
         /// <summary>
@@ -47,9 +66,12 @@ namespace SCMTMainWindow
             DrawMainGraph1();                                 // 主界面图1;
             DrawMainGraph2();                                 // 主界面图2;
             DrawMainGraph3();                                 // 主界面图3;
-            
+
             Thread DrawPic1 = new Thread(CreatePoint);        // 启动一个线程，每隔2秒返回一个点;
             DrawPic1.Start();
+
+            Thread WriteMessage = new Thread(CreateMsg);
+            WriteMessage.Start();
         }
 
         /// <summary>
@@ -149,9 +171,26 @@ namespace SCMTMainWindow
             CellBaseCnt.Add(new UECellBaseContent("小区制式", "5G II"));
             CellBaseCnt.Add(new UECellBaseContent("小区频点", "18400"));
             CellBaseCnt.Add(new UECellBaseContent("小区用户数", "3"));
+            CellBaseCnt.Add(new UECellBaseContent("小区激活状态", "激活"));
+
+            UECellBaseContent abc = new UECellBaseContent("111", "222");
 
             this.CellBaseInfo.ItemsSource = CellBaseCnt;
+            //this.CellBaseInfo.Items.Add(abc);
         }
+
+        private void AddMsgRoll()
+        {
+            
+            this.UEMessageGrid.Dispatcher.Invoke(new Action(
+                delegate
+                {
+                    this.UEMessageGrid.Items.Add(new UEMessage(DateTime.Now.ToString(), "Message" + x1));
+                }
+                ));
+        }
+
+
 
         /// <summary>
         /// 将返回的数值回填到折线图空间中;
@@ -193,6 +232,15 @@ namespace SCMTMainWindow
             while (true)
             {
                 drawcallback(rd.Next(0,50), rd2.Next(0,20));
+                Thread.Sleep(5000);
+            }
+        }
+
+        private void CreateMsg()
+        {
+            while(true)
+            {
+                AddMsgRoll();
                 Thread.Sleep(5000);
             }
         }
@@ -255,6 +303,21 @@ namespace SCMTMainWindow
             Title = title;
             Content = content;
         }
+    }
+
+    public class NodeBUser
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string IsMember { get; set; }
+
+        public NodeBUser(string name, string name2, string name3)
+        {
+            FirstName = name;
+            LastName = name2;
+            IsMember = name3;
+        }
+
     }
 
 }
