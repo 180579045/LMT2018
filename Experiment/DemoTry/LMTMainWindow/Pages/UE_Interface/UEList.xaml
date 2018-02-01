@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="UEList" Height="1000" Width="1250">
+        Title="UEList" Height="1000" Width="1280">
 
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
-
             <Metro:MetroTitleMenuItem Header="更多">
-                <Metro:MetroMenuItem Header="导出数据" />
+                <Metro:MetroMenuItem Header="导出数据" Click="MetroMenuItem_Click" />
                 <Metro:MetroMenuItem Header="设置" Click="UEGraphSetting_Click"/>
             </Metro:MetroTitleMenuItem>
         </Metro:MetroTitleMenu>
@@ -664,9 +663,7 @@
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="单用户功率查看" Icon="../../Resources/C.png" IconMove="../../Resources/C_Move.png" Height="40" VerticalAlignment="Top">
-                <Grid>
-
-                </Grid>
+                <Frame Source="UEList2.xaml"></Frame>
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="单用户接入流程" Icon="../../Resources/D.png" IconMove="../../Resources/D_Move.png" Height="40" VerticalAlignment="Top">
