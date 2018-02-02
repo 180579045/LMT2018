@@ -485,7 +485,7 @@
                                 <Metro:MetroTabItem Header="流程图"  GotFocus="MetroTabItem_GotFocus" LostFocus="MetroTabItem_LostFocus">
                                      <FlowChart:DrawingCanvasView x:Name="drawingCanvas" />
                                 </Metro:MetroTabItem>
-                                <Metro:MetroTabItem Header="图表" GotFocus="MetroTabItem_GotFocus_1">
+                                <Metro:MetroTabItem Header="图表" GotFocus="MetroTabItem_GotFocus_1" Visibility="Hidden">
                                     <FlowChart:DynamicChartCanvas x:Name="dynamicChar"/>
                                 </Metro:MetroTabItem>
                             </Metro:MetroTabControl>
