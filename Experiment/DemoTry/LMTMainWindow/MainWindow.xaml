@@ -356,11 +356,14 @@
                                                         <Metro:MetroTextBox Width="170" x:Name="check3" Text="筛选" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                                                     ButtonTitle="筛选" PopupHint="" Icon="Resources/editIcon.png" />
 
-                                                        <DataGrid   ItemsSource="{Binding}" AutoGenerateColumns="False" >
+                                                        <DataGrid x:Name="ATP_MSG_GRID" ItemsSource="{Binding AtpMessageInfo}" AutoGenerateColumns="False" SelectionUnit="FullRow">
                                                             <DataGrid.Columns>
-                                                                <DataGridTextColumn Header="SourceID" Binding="{Binding AlarmName}" />
-                                                                <DataGridTextColumn Header="OpCode" Binding="{Binding AlarmTime}" />
-                                                                <DataGridTextColumn Header="DestID" Binding="{Binding AlarmTime}" />
+                                                                <DataGridTextColumn Header="No" Binding="{Binding No}" />
+                                                                <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
+                                                                <DataGridTextColumn Header="SourceID" Binding="{Binding SourceID}" />
+                                                                <DataGridTextColumn Header="OpCode" Binding="{Binding OpCode}" />
+                                                                <DataGridTextColumn Header="DestID" Binding="{Binding DestID}" />
+                                                                <DataGridTextColumn Header="Length" Binding="{Binding Length}" />
                                                             </DataGrid.Columns>
 
                                                             <DataGrid.ContextMenu>

@@ -35,6 +35,7 @@ using Specialized3DChart;
 using System.Threading;
 using System.Windows.Threading;
 using DT.Tools.FlowChart;
+using AtpMessage;
 
 namespace SCMTMainWindow
 {
@@ -58,6 +59,9 @@ namespace SCMTMainWindow
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
             InitDemoData();                                                   // 更新主界面Demo数据;
+            AtpMessageInfo.func = recvMsg;
+            AtpMessageInfo.SendAtpMessage.Start();
+            
         }
 
         /// <summary>
@@ -265,6 +269,26 @@ namespace SCMTMainWindow
         private void MetroTabItem_GotFocus_1(object sender, RoutedEventArgs e)
         {
             this.dynamicChar.drawingDynamicChart();
+        }
+        public void recvMsg(AtpMessageInfo arg)
+        {
+            Console.WriteLine("内容:" + arg.OpCode);
+
+            this.ATP_MSG_GRID.Dispatcher.Invoke(
+                new Action(
+                    delegate {
+                        Console.WriteLine("atp message count is :" + this.ATP_MSG_GRID.Items.Count);
+                        if (this.ATP_MSG_GRID.Items.Count > 25)
+                        {
+                            //限制显示行数，后期作优化:最新的显示在上面
+                            this.ATP_MSG_GRID.Items.RemoveAt(0);
+                        }
+                        // 回填到控件中
+                        this.ATP_MSG_GRID.Items.Add(arg);
+                        
+                        }
+                    )
+                );
         }
     }
 

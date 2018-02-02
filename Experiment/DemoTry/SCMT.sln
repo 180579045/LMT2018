@@ -1,13 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snmp_dll", "Snmp_dll\Snmp_dll.csproj", "{E7CEB301-3A34-49D2-AA69-E3963DD1AC21}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMTMainWindow", "LMTMainWindow\SCMTMainWindow.csproj", "{317DC3C4-6C5C-4EF2-829F-E5B3CE2E6575}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8EBE8C08-D5D9-4F98-930F-D930C19A44B3} = {8EBE8C08-D5D9-4F98-930F-D930C19A44B3}
+		{47E80563-D3E6-4039-BD2B-63480BBD0525} = {47E80563-D3E6-4039-BD2B-63480BBD0525}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFView", "WPFView\WPFView.csproj", "{F5DBBC65-F7D3-4A0D-8A9F-3DAFD3DEB7ED}"
@@ -19,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnmpWindow", "SnmpWindow\SnmpWindow.csproj", "{F05BB468-E359-41A7-937A-7849C16DD5A6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DT.Tools.FlowChart", "DT.Tool\DT.Tools.FlowChart.csproj", "{8EBE8C08-D5D9-4F98-930F-D930C19A44B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtpMessage", "AtpMessage\AtpMessage.csproj", "{47E80563-D3E6-4039-BD2B-63480BBD0525}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +57,10 @@ Global
 		{8EBE8C08-D5D9-4F98-930F-D930C19A44B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EBE8C08-D5D9-4F98-930F-D930C19A44B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EBE8C08-D5D9-4F98-930F-D930C19A44B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
