@@ -60,6 +60,12 @@ namespace SCMTMainWindow
             abc.IconMove = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A_Move.png"));
             abc.VerticalAlignment = VerticalAlignment.Top;
 
+            Frame newframe = new Frame();
+            
+
+            abc.Content = newframe;
+            
+
             GraphSelectorPassValEventArg arg = new GraphSelectorPassValEventArg(abc);
             m_PassToMain(this, arg);
 

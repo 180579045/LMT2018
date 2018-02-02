@@ -1,22 +1,28 @@
-﻿using Arthas.Controls.Metro;
-using System;
-using System.Windows;
-using System.Windows.Media;
-using LineChart;
-using System.Threading;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using LineChart;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Threading;
+
 
 namespace SCMTMainWindow
 {
-    delegate void GenerateNum(int y);
     /// <summary>
-    /// UEList.xaml 的交互逻辑;
-    /// 此处均为Demo数据专门编写
+    /// UEList2.xaml 的交互逻辑
     /// </summary>
-    public partial class UEList : MetroWindow
+    public partial class UEList2 : Page
     {
         // 图一的模拟数据;
         private ChartStyleGridlines cs;            // 表格;
@@ -32,9 +38,9 @@ namespace SCMTMainWindow
         // 图三的模拟数据;
         private ChartStyleGridlines cs3;
         private DataSeries ds3;
-        
 
-        public UEList()
+
+        public UEList2()
         {
             InitializeComponent();
             AddCellBaseinfo();
@@ -55,7 +61,7 @@ namespace SCMTMainWindow
             ret.Add(new NodeBUser("1", "2", "3"));
 
 
-            return ret; 
+            return ret;
         }
 
         /// <summary>
@@ -86,7 +92,7 @@ namespace SCMTMainWindow
             // 设置画布;
             cs.ChartCanvas = chartCanvas;
             cs.TextCanvas = textCanvas;
-            cs.Title = "BLER"; 
+            cs.Title = "BLER";
             cs.Xmin = 0;
             cs.Xmax = 100;
             cs.Ymin = 0;
@@ -184,7 +190,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void AddMsgRoll()
         {
-            
+
             this.UEMessageGrid.Dispatcher.Invoke(new Action(
                 delegate
                 {
@@ -192,7 +198,7 @@ namespace SCMTMainWindow
                 }
                 ));
         }
-        
+
         /// <summary>
         /// 将返回的数值回填到折线图空间中;
         /// </summary>
@@ -232,17 +238,41 @@ namespace SCMTMainWindow
             Random rd2 = new Random();
             while (true)
             {
-                drawcallback(rd.Next(0,50), rd2.Next(0,20));
+                drawcallback(rd.Next(0, 50), rd2.Next(0, 20));
                 Thread.Sleep(5000);
             }
         }
 
         private void CreateMsg()
         {
-            while(true)
+            while (true)
             {
                 AddMsgRoll();
                 Thread.Sleep(5000);
+            }
+        }
+
+
+
+        private void ShowUEGraphic_Click(object sender, RoutedEventArgs e)
+        {
+            DataGraphic_Selected Gs = new DataGraphic_Selected();
+            Gs.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            Gs.WindowState = System.Windows.WindowState.Maximized;
+            Gs.Show();
+        }
+
+
+        private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                Filter = "Excel Files (*.sql)|*.sql"
+            };
+            var result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+
             }
         }
 
@@ -251,7 +281,7 @@ namespace SCMTMainWindow
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void chartGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void chartGrid2_SizeChanged2(object sender, SizeChangedEventArgs e)
         {
             textCanvas.Width = chartGrid.ActualWidth;
             textCanvas.Height = chartGrid.ActualHeight;
@@ -270,68 +300,5 @@ namespace SCMTMainWindow
 
             AddChart();
         }
-
-        private void ShowUEGraphic_Click(object sender, RoutedEventArgs e)
-        {
-            DataGraphic_Selected Gs = new DataGraphic_Selected();
-            Gs.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-            Gs.WindowState = System.Windows.WindowState.Maximized;
-            Gs.Show();
-        }
-        
-
-        private void UEGraphSetting_Click(object sender, RoutedEventArgs e)
-        {
-            UEList_Setting a = new UEList_Setting();
-            a.m_PassToMain += A_m_PassToMain;
-            a.Show();
-        }
-
-        private void A_m_PassToMain(object sender, GraphSelectorPassValEventArg e)
-        {
-            this.UEtab.Items.Add(e.m_tab);
-        }
-
-        private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
-            {
-                Filter = "Excel Files (*.sql)|*.sql"
-            };
-            var result = openFileDialog.ShowDialog();
-            if (result == true)
-            {
-                
-            }
-        }
     }
-
-
-    class UECellBaseContent
-    {
-        public string Title { get; set; }
-        public string Content { get; set; }
-
-        public UECellBaseContent(string title, string content)
-        {
-            Title = title;
-            Content = content;
-        }
-    }
-
-    public class NodeBUser
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string IsMember { get; set; }
-
-        public NodeBUser(string name, string name2, string name3)
-        {
-            FirstName = name;
-            LastName = name2;
-            IsMember = name3;
-        }
-
-    }
-
 }
