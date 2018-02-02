@@ -161,6 +161,24 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Data\Mib_Data.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Mib_Templat.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\ObjTree.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\RRU_Data.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Tree_Reference.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Data\Tree_Reference2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
@@ -182,6 +200,10 @@
     <ProjectReference Include="..\3DChart\Specialized3DChart.csproj">
       <Project>{14de85f2-4fa8-4ba5-ad44-68a7401f1bbe}</Project>
       <Name>Specialized3DChart</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DT.Tool\DT.Tools.FlowChart.csproj">
+      <Project>{8ebe8c08-d5d9-4f98-930f-d930c19a44b3}</Project>
+      <Name>DT.Tools.FlowChart</Name>
     </ProjectReference>
     <ProjectReference Include="..\LineChart\LineChart.csproj">
       <Project>{736fd4f8-936f-46e9-a766-c9937f359e3a}</Project>

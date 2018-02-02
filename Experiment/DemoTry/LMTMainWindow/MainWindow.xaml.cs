@@ -33,6 +33,8 @@ using System.Diagnostics;
 using LineChart;
 using Specialized3DChart;
 using System.Threading;
+using System.Windows.Threading;
+using DT.Tools.FlowChart;
 
 namespace SCMTMainWindow
 {
@@ -44,6 +46,11 @@ namespace SCMTMainWindow
         private ChartStyle2D cs;
         private DataSeriesSurface ds;
         private Draw3DChart d3c;
+
+        private List<BasicMessage> lb = new List<BasicMessage>();
+        private List<String> ne = new List<String>();
+        private DispatcherTimer timer = new DispatcherTimer();
+        private int i = 0;
 
         public MainWindow()
         {
@@ -195,6 +202,69 @@ namespace SCMTMainWindow
 
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
+        }
+
+        private void MetroTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Click_Flow(object sender, MouseButtonEventArgs e)
+        {
+            if(e.LeftButton== MouseButtonState.Pressed)
+            {
+                ne.Add("UE");
+                ne.Add("eNB");
+                ne.Add("eNBjd");
+                ne.Add("MME");
+                timer.Interval = TimeSpan.FromSeconds(1);
+                timer.Tick += new EventHandler(AnimatedPlot);
+                timer.IsEnabled = true;
+             }
+        }
+        private void AnimatedPlot(object sender, EventArgs e)
+        {
+            BasicMessage bm = new BasicMessage();
+            bm.Name = "GOOF" + Convert.ToString(i);
+            bm.OID = i;
+            bm.ParserId = i;
+            bm.DestinationElement = "UE";
+            bm.SourceElement = "eNB";
+            bm.TimeStamp = "0000000";
+            if (lb.Count >= 50)
+            {
+                lb.RemoveAt(0);
+            }
+            lb.Add(bm);
+            this.drawingCanvas.Clean();
+
+            this.drawingCanvas.DrawingFlowChart(ne, lb);
+            i++;
+        }
+
+        private void MetroTabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ne.Add("UE");
+            ne.Add("eNB");
+            ne.Add("eNBjd");
+            ne.Add("MME");
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += new EventHandler(AnimatedPlot);
+            timer.IsEnabled = true;
+        }
+
+        private void MetroTabItem_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ne.Clear();
+            lb.Clear();
+            timer.IsEnabled = false;
+            i = 0;           
+            this.drawingCanvas.Clean();
+        }
+
+        private void MetroTabItem_GotFocus_1(object sender, RoutedEventArgs e)
+        {
+            this.dynamicChar.drawingDynamicChart();
         }
     }
 

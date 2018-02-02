@@ -1,4 +1,4 @@
-﻿<Metro:MetroWindow x:Class="SCMTMainWindow.MainWindow"
+﻿<Metro:MetroWindow xmlns:FlowChart1="clr-namespace:DT.Tools.FlowChart;assembly=DT.Tool"    xmlns:FlowChart="clr-namespace:DT.Tools.FlowChart;assembly=DT.Tool"  x:Class="SCMTMainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -482,8 +482,11 @@
 
                                 </Metro:MetroTabItem>
 
-                                <Metro:MetroTabItem Header="流程图">
-
+                                <Metro:MetroTabItem Header="流程图"  GotFocus="MetroTabItem_GotFocus" LostFocus="MetroTabItem_LostFocus">
+                                     <FlowChart:DrawingCanvasView x:Name="drawingCanvas" />
+                                </Metro:MetroTabItem>
+                                <Metro:MetroTabItem Header="图表" GotFocus="MetroTabItem_GotFocus_1">
+                                    <FlowChart:DynamicChartCanvas x:Name="dynamicChar"/>
                                 </Metro:MetroTabItem>
                             </Metro:MetroTabControl>
                         </Metro:MetroMenuTabItem>
