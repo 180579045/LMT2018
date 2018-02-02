@@ -290,6 +290,12 @@ namespace SCMTMainWindow
                     )
                 );
         }
+        private void EventShowAtpMsgContent(object sender, RoutedEventArgs e)
+        {
+  
+            this.TextBlockAtpContent.Text = DateTime.Now.ToString();
+       
+        }
     }
 
     

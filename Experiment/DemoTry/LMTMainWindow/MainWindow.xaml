@@ -356,7 +356,12 @@
                                                         <Metro:MetroTextBox Width="170" x:Name="check3" Text="筛选" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
                                                                     ButtonTitle="筛选" PopupHint="" Icon="Resources/editIcon.png" />
 
-                                                        <DataGrid x:Name="ATP_MSG_GRID" ItemsSource="{Binding AtpMessageInfo}" AutoGenerateColumns="False" SelectionUnit="FullRow">
+                                                        <DataGrid x:Name="ATP_MSG_GRID" ItemsSource="{Binding AtpMessageInfo}" AutoGenerateColumns="False" SelectionUnit="FullRow" IsReadOnly="True">
+                                                            <DataGrid.RowStyle>
+                                                                <Style  TargetType="DataGridRow">
+                                                                    <EventSetter Event="GotFocus" Handler="EventShowAtpMsgContent"/>
+                                                                </Style>
+                                                            </DataGrid.RowStyle>
                                                             <DataGrid.Columns>
                                                                 <DataGridTextColumn Header="No" Binding="{Binding No}" />
                                                                 <DataGridTextColumn Header="Time" Binding="{Binding Time}" />
@@ -410,8 +415,15 @@
                                                 <StackPanel Orientation="Horizontal">
                                                     <Ellipse Width="10" Height="10" Fill="DarkGray"/>
                                                     <TextBlock>消息内容</TextBlock>
+
                                                 </StackPanel>
+                                                
                                             </TabItem.Header>
+                                            <StackPanel x:Name="PanelAtpContent">
+                                                <TextBlock x:Name="TextBlockAtpContent">
+
+                                                </TextBlock>
+                                            </StackPanel>
                                         </TabItem>
                                     </TabControl>
                                 </Grid>
