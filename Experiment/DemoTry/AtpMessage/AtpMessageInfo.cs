@@ -69,6 +69,7 @@ namespace AtpMessage
             //模拟1s发送一条消息
             //后期应该是监听基站的消息
             Random rd = new Random();
+            
             AtpMessageInfo tempMessage = new AtpMessageInfo(Num.ToString(),
                 DateTime.Now.ToString(), "0:0:1:0:70", rd.Next(1, 2000).ToString(), "0:0:4:0:72", rd.Next(16,100).ToString());
             Num++;

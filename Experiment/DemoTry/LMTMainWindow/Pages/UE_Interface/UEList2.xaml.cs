@@ -59,7 +59,8 @@ namespace SCMTMainWindow
             ret.Add(new NodeBUser("1", "2", "3"));
             ret.Add(new NodeBUser("1", "2", "3"));
             ret.Add(new NodeBUser("1", "2", "3"));
-
+            
+            
 
             return ret;
         }

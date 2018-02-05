@@ -30,7 +30,6 @@
 
             <!--消息列表-->
             <ListView Grid.Row="0" Name="UEMessageGrid">
-
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="接收时间" Width="120" DisplayMemberBinding="{Binding MsgTime}" />
@@ -43,7 +42,6 @@
                         </GridViewColumn>
                     </GridView>
                 </ListView.View>
-
             </ListView>
 
             <GridSplitter Grid.Row="1"  HorizontalAlignment="Stretch"/>
@@ -66,7 +64,7 @@
                         <GridViewColumn Header="值" Width="150">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock  Text="{Binding Content}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
+                                    <TextBlock Text="{Binding Content}" TextDecorations="Underline" Foreground="Blue" Cursor="Hand" />
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
@@ -74,7 +72,6 @@
                 </ListView.View>
 
             </ListView>
-
 
         </Grid>
 

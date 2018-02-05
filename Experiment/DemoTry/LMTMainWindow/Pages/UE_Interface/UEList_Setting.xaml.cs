@@ -53,18 +53,20 @@ namespace SCMTMainWindow
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            // 添加一个页签;
             MetroMenuTabItem abc = new MetroMenuTabItem();
             abc.Header = TabName.Text;
             abc.Height = 40;
             abc.Icon = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A.png"));
             abc.IconMove = new BitmapImage(new Uri(System.Environment.CurrentDirectory + @"..\..\..\Resources\A_Move.png"));
             abc.VerticalAlignment = VerticalAlignment.Top;
-
-            Frame newframe = new Frame();
             
+            // 向页签中添加显示页;
+            Frame newframe = new Frame();
+            Uri aaa = new Uri("UEList2.xaml", UriKind.Relative);
+            newframe.Source = new Uri(@"Pages\UE_Interface\UEList2.xaml", UriKind.Relative);
 
             abc.Content = newframe;
-            
 
             GraphSelectorPassValEventArg arg = new GraphSelectorPassValEventArg(abc);
             m_PassToMain(this, arg);
