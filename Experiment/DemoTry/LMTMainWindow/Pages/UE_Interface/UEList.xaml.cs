@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace SCMTMainWindow
 {
@@ -42,6 +43,17 @@ namespace SCMTMainWindow
             ObservableCollection<NodeBUser> custdata = GetData();
             //Bind the DataGrid to the customer data
             UEListGrid.DataContext = custdata;
+
+            this.grid2.AllowDrop = true;
+            grid2.PreviewMouseMove += new MouseEventHandler(grid2Move);
+        }
+
+        private void grid2Move(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Console.WriteLine("123321123321");
+            }
         }
 
         private ObservableCollection<NodeBUser> GetData()
@@ -165,7 +177,6 @@ namespace SCMTMainWindow
         /// </summary>
         private void AddCellBaseinfo()
         {
-
             List<UECellBaseContent> CellBaseCnt = new List<UECellBaseContent>();
 
             CellBaseCnt.Add(new UECellBaseContent("小区制式", "5G II"));
@@ -184,7 +195,6 @@ namespace SCMTMainWindow
         /// </summary>
         private void AddMsgRoll()
         {
-            
             this.UEMessageGrid.Dispatcher.Invoke(new Action(
                 delegate
                 {
@@ -302,6 +312,14 @@ namespace SCMTMainWindow
             if (result == true)
             {
                 
+            }
+        }
+
+        private void grid2_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+
             }
         }
     }

@@ -20,6 +20,7 @@ namespace LineChart
             dataList = new List<DataSeries>();
         }
 
+        // 一张图中可支持多条线;
         public List<DataSeries> DataList
         {
             get { return dataList; }

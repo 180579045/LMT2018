@@ -170,4 +170,37 @@ namespace SCMTMainWindow
 
     }
 
+    public class DataGrid
+    {
+        public string Data1 { get; set; }
+        public string Data2 { get; set; }
+        public string Data3 { get; set; }
+        public string Data4 { get; set; }
+
+        public DataGrid(string data1, string data2, string data3, string data4)
+        {
+            Data1 = data1;
+            Data2 = data2;
+            Data3 = data3;
+            Data4 = data4;
+        }
+
+        public static ObservableCollection<DataGrid> GetData()
+        {
+            ObservableCollection<DataGrid> ret = new ObservableCollection<DataGrid>();
+            DataGrid a = new DataGrid("1", "FDD", DateTime.Now.ToString(), "91500");
+            DataGrid b = new DataGrid("2", "NBIOT", DateTime.Now.ToString(), "91500");
+            DataGrid c = new DataGrid("3", "5G II", DateTime.Now.ToString(), "91500");
+            DataGrid d = new DataGrid("3201", "TDD-3DMIMO", DateTime.Now.ToString(), "91500");
+
+            ret.Add(a);
+            ret.Add(b);
+            ret.Add(c);
+            ret.Add(d);
+
+            return ret;
+        }
+
+    }
+
 }

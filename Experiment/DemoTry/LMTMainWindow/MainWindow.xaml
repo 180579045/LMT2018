@@ -317,12 +317,10 @@
 
                                             <!--内容-->
                                             <DataGrid.Columns>
-                                                <DataGridTextColumn Header="实例描述"  Binding="{Binding AlarmNo}"/>
-                                                <DataGridTextColumn Header="小区ID" Binding="{Binding AlarmName}" />
-                                                <DataGridTextColumn Header="小区友好名" Binding="{Binding AlarmTime}"  />
-                                                <DataGridTextColumn Header="小区物理ID" Binding="{Binding AlarmTime}"  />
-                                                <DataGridTextColumn Header="E-UTRA工作频段" Binding="{Binding AlarmTime}"  />
-                                                <DataGridTextColumn Header="小区中心频点" Binding="{Binding AlarmTime}"  />
+                                                <DataGridTextColumn Header="小区ID"  Binding="{Binding Data1}"/>
+                                                <DataGridTextColumn Header="小区类型" Binding="{Binding Data2}" />
+                                                <DataGridTextColumn Header="小区建立时间" Binding="{Binding Data3}"  />
+                                                <DataGridTextColumn Header="E-UTRA频点" Binding="{Binding Data4}"  />
                                             </DataGrid.Columns>
 
                                             <!--鼠标右键-->

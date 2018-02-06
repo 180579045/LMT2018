@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="UEList_Setting" Height="350" Width="600">
+        Title="UE信息配置" Height="400" Width="600">
     <Grid>
         <Grid Name="Grid1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"></RowDefinition>
                 <RowDefinition Height="2"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
-                <RowDefinition Height="200"></RowDefinition>
+                <RowDefinition Height="300"></RowDefinition>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0" Height="50" VerticalAlignment="Top">
@@ -85,36 +85,52 @@
                     <StackPanel Orientation="Horizontal">
                         <Label Content="图形一：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <ComboBox>
-                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                            <ComboBoxItem IsSelected="True">AOA粗搜索结果图形</ComboBoxItem>
+                            <ComboBoxItem>AOA角度图形</ComboBoxItem>
+                            <ComboBoxItem>CCE利用率</ComboBoxItem>
+                            <ComboBoxItem>M1总功率图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行功控PH图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行吞吐量小区级图形</ComboBoxItem>
+                            <ComboBoxItem>MAC下行MIMO次数统计</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <Label Content="图形二：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <ComboBox>
-                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                            <ComboBoxItem IsSelected="True">AOA粗搜索结果图形</ComboBoxItem>
+                            <ComboBoxItem>AOA角度图形</ComboBoxItem>
+                            <ComboBoxItem>CCE利用率</ComboBoxItem>
+                            <ComboBoxItem>M1总功率图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行功控PH图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行吞吐量小区级图形</ComboBoxItem>
+                            <ComboBoxItem>MAC下行MIMO次数统计</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <Label Content="图形三：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <ComboBox>
-                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                            <ComboBoxItem IsSelected="True">AOA粗搜索结果图形</ComboBoxItem>
+                            <ComboBoxItem>AOA角度图形</ComboBoxItem>
+                            <ComboBoxItem>CCE利用率</ComboBoxItem>
+                            <ComboBoxItem>M1总功率图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行功控PH图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行吞吐量小区级图形</ComboBoxItem>
+                            <ComboBoxItem>MAC下行MIMO次数统计</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal">
                         <Label Content="图形四：                                            " HorizontalAlignment="Left"  VerticalAlignment="Top"/>
                         <ComboBox>
-                            <ComboBoxItem IsSelected="True">ComboBox Item #1</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #2</ComboBoxItem>
-                            <ComboBoxItem>ComboBox Item #3</ComboBoxItem>
+                            <ComboBoxItem IsSelected="True">AOA粗搜索结果图形</ComboBoxItem>
+                            <ComboBoxItem>AOA角度图形</ComboBoxItem>
+                            <ComboBoxItem>CCE利用率</ComboBoxItem>
+                            <ComboBoxItem>M1总功率图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行功控PH图</ComboBoxItem>
+                            <ComboBoxItem>MAC上行吞吐量小区级图形</ComboBoxItem>
+                            <ComboBoxItem>MAC下行MIMO次数统计</ComboBoxItem>
                         </ComboBox>
                     </StackPanel>
 

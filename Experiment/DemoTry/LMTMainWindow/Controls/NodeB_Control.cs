@@ -15,7 +15,7 @@ namespace SCMTMainWindow
         public NodeB(string IPAddr)
         {
             this.m_IPAddr = IPAddr;
-            this.m_ObjTreeDataPath = @"Data\Tree_Reference2.json";
+            this.m_ObjTreeDataPath = @"Data\Tree_Reference3.json";
 
             // 此后的动作;
             // 1、创建数据库保存路径,并保存到对应的属性成员中;

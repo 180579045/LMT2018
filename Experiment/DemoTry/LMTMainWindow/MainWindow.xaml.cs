@@ -110,6 +110,9 @@ namespace SCMTMainWindow
             // 添加Demo数据;
             ObservableCollection<AlarmGrid> custdata = AlarmGrid.GetData();   // 初始化基本信息中的告警信息;
             DG1.DataContext = custdata;                                       // 将告警信息加入控件;
+
+            ObservableCollection<DataGrid> custdata2 = DataGrid.GetData();   // 初始化基本信息中的告警信息;
+            Content_NB.DataContext = custdata2;
         }
 
         private void MetroExpander_Click_BaseInfo(object sender, EventArgs e)

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
         mc:Ignorable="d"
-        Title="UEList" Height="1000" Width="1280">
+        Title="UEList" Height="800" Width="1280">
 
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
@@ -146,7 +146,7 @@
                                 </Grid.RowDefinitions>
 
                                 <!--第一个图形-->
-                                <Grid Name="grid2" Grid.Row="0">
+                                <Grid Name="grid2" Grid.Row="0" MouseLeftButtonDown="grid2_MouseLeftButtonDown">
 
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="20"/>
