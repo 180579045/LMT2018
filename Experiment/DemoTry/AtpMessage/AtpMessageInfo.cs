@@ -16,7 +16,7 @@ namespace AtpMessage
         public static Thread SendAtpMessage = new Thread(StartTimer);
         private static int Num = 0;
         public static UpdateMsg func;
-        public static System.Threading.Timer timer;
+        private static System.Threading.Timer timer;
         public string No
         {
             get;
@@ -47,6 +47,7 @@ namespace AtpMessage
             get;
             set;
         }
+
         AtpMessageInfo(string No, string Time, string SourceID, string OpCode, string DestID, string Length)
         {
             this.No = No;
@@ -56,14 +57,14 @@ namespace AtpMessage
             this.DestID = DestID;
             this.Length = Length;
         }
+
         static private void StartTimer()
         {
             //启动1s定时器
             timer = new System.Threading.Timer(
                 new System.Threading.TimerCallback(SimSendMessage), null, 0, 1000);
-            
-
         }
+
         static private void SimSendMessage(object value)
         {
             //模拟1s发送一条消息
@@ -75,10 +76,16 @@ namespace AtpMessage
             Num++;
             func(tempMessage);
         }
+
         static public void StartThread()
         {
             //应该是需要判断跟踪开关打开则启动线程，暂时未做
             AtpMessageInfo.SendAtpMessage.Start();
+        }
+
+        static public void RequestStop()
+        {
+            timer.Dispose();
         }
 
     }

@@ -30,7 +30,8 @@ namespace Snmp_dll
         public List<string> TrapContent { get; set; }                              // Trap返回的具体内容;
         public static Thread WaitforTrap = new Thread(WaitTrap);                   // 执行Trap接收的线程;
         private static List<UpdateTrap> TrapNodifyList = new List<UpdateTrap>();   // 观察者列表;
-        public static bool WaitTrapRunstate;                                       // 是否接收Trap的标志位;
+        private static volatile bool WaitTrapRunstate = true;                      // 是否接收Trap的标志位;
+        private static Socket socket;
 
         /// <summary>
         /// 设置观察者列表;
@@ -65,7 +66,7 @@ namespace Snmp_dll
         static private void WaitTrap()
         {
             // 建立一个Socket实例，接收所有网口的IP地址，并绑定162端口; 
-            Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
             IPEndPoint ipep = new IPEndPoint(IPAddress.Any, 162);
             EndPoint ep = (EndPoint)ipep;
 
@@ -75,9 +76,7 @@ namespace Snmp_dll
             
             int inlen = -1;
             List<string> Ret = new List<string>();
-
-            WaitTrapRunstate = true;
-
+            
             while (WaitTrapRunstate)
             {
                 byte[] indata = new byte[16 * 1024];
@@ -140,6 +139,13 @@ namespace Snmp_dll
                 }
 
             }
+            Console.WriteLine("Trap waiting thread: terminating gracefully.");
+        }
+
+        public static void RequestStop()
+        {
+            socket.Dispose();                             // 释放线程;
+            WaitTrapRunstate = false;                     // 释放监听套接字;
         }
 
         public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress)

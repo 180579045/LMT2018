@@ -84,7 +84,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void RegisterFunction()
         {
-            //TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
+            TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
         }
 
         /// <summary>
@@ -102,9 +102,15 @@ namespace SCMTMainWindow
             }
         }
 
+        private void MetroWindow_Closed(object sender, EventArgs e)
+        {
+            TrapMessage.RequestStop();
+            AtpMessageInfo.RequestStop();
+        }
+
         //                                                                                     以下为Demo处理;
         // ---------------------------------------------------------------------------------------------------
-        
+
         private void InitDemoData()
         {
             // 添加Demo数据;
@@ -113,6 +119,16 @@ namespace SCMTMainWindow
 
             ObservableCollection<DataGrid> custdata2 = DataGrid.GetData();   // 初始化基本信息中的告警信息;
             Content_NB.DataContext = custdata2;
+        }
+
+        private void PrintTrap(List<string> TrapMsg)
+        {
+            Dispatcher.Invoke(new Action(
+                delegate
+                {
+                    foreach(string content in TrapMsg)
+                    Console.WriteLine("Trap Content is" + content);
+                }));
         }
 
         private void MetroExpander_Click_BaseInfo(object sender, EventArgs e)
@@ -206,11 +222,7 @@ namespace SCMTMainWindow
                 Console.WriteLine(prt);
             }
         }
-
-        private void MetroWindow_Closed(object sender, EventArgs e)
-        {
-        }
-
+        
         private void MetroTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -229,6 +241,7 @@ namespace SCMTMainWindow
                 timer.IsEnabled = true;
              }
         }
+
         private void AnimatedPlot(object sender, EventArgs e)
         {
             BasicMessage bm = new BasicMessage();
@@ -273,26 +286,25 @@ namespace SCMTMainWindow
         {
             this.dynamicChar.drawingDynamicChart();
         }
+
         public void recvMsg(AtpMessageInfo arg)
         {
-            Console.WriteLine("内容:" + arg.OpCode);
-
             this.ATP_MSG_GRID.Dispatcher.Invoke(
                 new Action(
                     delegate {
-                        Console.WriteLine("atp message count is :" + this.ATP_MSG_GRID.Items.Count);
                         if (this.ATP_MSG_GRID.Items.Count > 25)
                         {
-                            //限制显示行数，后期作优化:最新的显示在上面
+                            //限制显示行数，后期作优化:最新的显示在上面;
                             this.ATP_MSG_GRID.Items.RemoveAt(0);
                         }
-                        // 回填到控件中
+                        // 回填到控件中;
                         this.ATP_MSG_GRID.Items.Add(arg);
                         
                         }
                     )
                 );
         }
+
         private void EventShowAtpMsgContent(object sender, RoutedEventArgs e)
         {
   

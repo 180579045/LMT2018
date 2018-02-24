@@ -65,8 +65,7 @@ namespace SCMTMainWindow
             ret.Add(new NodeBUser("1", "2", "3"));
             ret.Add(new NodeBUser("1", "2", "3"));
             ret.Add(new NodeBUser("1", "2", "3"));
-
-
+            
             return ret; 
         }
 
@@ -112,7 +111,6 @@ namespace SCMTMainWindow
             // 绘制图形;
             ds.LineColor = Brushes.Red;
             ds.LineThickness = 1;
-
         }
 
         /// <summary>
@@ -140,7 +138,6 @@ namespace SCMTMainWindow
             // 绘制图形;
             ds2.LineColor = Brushes.Blue;
             ds2.LineThickness = 1;
-
         }
 
         /// <summary>
@@ -169,7 +166,6 @@ namespace SCMTMainWindow
             ds3.LineColor = Brushes.Black;
             ds3.LinePattern = DataSeries.LinePatternEnum.Solid;
             ds3.LineThickness = 3;
-
         }
 
         /// <summary>
