@@ -30,33 +30,12 @@
             <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
                 <Metro:MetroMenuItem Header="添加基站" />
                 <Metro:MetroMenuSeparator />
-                <Metro:MetroMenuItem Header="基站—居民楼1" Icon="Resources/titleMuenIcon.png" >
-                    <Metro:MetroMenuItem Header="配置消息抄送" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="下发打桩文件" Icon="Resources/titleMuenIcon.png" Click="SimFile1_Click" />
-                    <Metro:MetroMenuItem Header="参数一键恢复" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
-                </Metro:MetroMenuItem>
-                <Metro:MetroMenuItem Header="基站—居民楼室内" Icon="Resources/titleMuenIcon.png">
-                    <Metro:MetroMenuItem Header="配置消息抄送" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="下发打桩文件" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="参数一键恢复" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
-                </Metro:MetroMenuItem>
-                <Metro:MetroMenuItem Header="基站三" Icon="Resources/titleMuenIcon.png">
-                    <Metro:MetroMenuItem Header="配置消息抄送" IsEnabled="False" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="下发打桩文件" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="参数一键恢复" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="修改基本信息" Icon="Resources/titleMuenIcon.png" />
-                    <Metro:MetroMenuItem Header="删除基站节点" Icon="Resources/titleMuenIcon.png" />
-                </Metro:MetroMenuItem>
+
             </Metro:MetroTitleMenuItem>
 
             <Metro:MetroTitleMenuItem Header="">
                 <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
                 <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png" />
-
                 <Metro:MetroMenuItem Header="帮助" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png"/>
                     <Metro:MetroMenuItem Header="使用帮助" Icon="Resources/titleMuenIcon.png"/>
@@ -127,10 +106,9 @@
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                             <StackPanel>
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
-                                        ButtonTitle="搜索" PopupHint="Length is more than 10!" Icon="Resources/editIcon.png" />
-                                <StackPanel x:Name="FavLeaf_Lists">
+                                        ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
 
-                                </StackPanel>
+                                <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
