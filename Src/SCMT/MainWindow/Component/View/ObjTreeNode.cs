@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Arthas.Controls.Metro;
+using UICore.Controls.Metro;
 using System.Windows.Controls;
 using System.Windows;
 

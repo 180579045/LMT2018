@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 
-namespace Arthas.Utility.Element
+namespace UICore.Utility.Element
 {
     public class VisualObj
     {

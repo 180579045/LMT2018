@@ -1,4 +1,4 @@
-﻿namespace Arthas.Utility.Computer
+﻿namespace UICore.Utility.Computer
 {
     /// <summary>
     /// 任务栏位置

@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Arthas.Controls.Metro
+namespace UICore.Controls.Metro
 {
     public partial class MetroWebBrowser : UserControl
     {

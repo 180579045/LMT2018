@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
-        xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
+        xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         xmlns:FlowChart="clr-namespace:DT.Tools.FlowChart;assembly=FlowChart"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed">

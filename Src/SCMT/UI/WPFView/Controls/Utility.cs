@@ -1,9 +1,9 @@
-﻿using Arthas.Controls.Metro;
-using Arthas.Utility.Media;
+﻿using UICore.Controls.Metro;
+using UICore.Utility.Media;
 using System.ComponentModel;
 using System.Windows;
 
-namespace Arthas.Controls
+namespace UICore.Controls
 {
     public class Utility
     {

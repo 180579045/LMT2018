@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace Arthas.Utility.Element
+namespace UICore.Utility.Element
 {
     public class ElementBase
     {

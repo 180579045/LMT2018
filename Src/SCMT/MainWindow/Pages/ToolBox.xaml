@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
         mc:Ignorable="d"
-        xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
+        xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         Title="ToolBox" Height="300" Width="300">
     <Grid>
         

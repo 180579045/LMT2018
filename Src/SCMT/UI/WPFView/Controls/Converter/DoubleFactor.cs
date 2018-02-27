@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace Arthas.Controls.Converter
+namespace UICore.Controls.Converter
 {
     public class DoubleFactor : IValueConverter
     {

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Arthas.Utility.Computer
+namespace UICore.Utility.Computer
 {
     public class Screen
     {

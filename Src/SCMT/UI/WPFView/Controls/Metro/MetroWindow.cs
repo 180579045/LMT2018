@@ -1,11 +1,11 @@
-﻿using Arthas.Themes;
-using Arthas.Utility.Element;
+﻿using UICore.Themes;
+using UICore.Utility.Element;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Arthas.Controls.Metro
+namespace UICore.Controls.Metro
 {
     public class MetroWindow : Window
     {

@@ -1,4 +1,4 @@
-﻿using Arthas.Controls.Metro;
+﻿using UICore.Controls.Metro;
 using System;
 using System.Windows;
 using System.Windows.Media;

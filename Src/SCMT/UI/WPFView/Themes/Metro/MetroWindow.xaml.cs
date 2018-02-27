@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Arthas.Themes.Metro
+namespace UICore.Themes.Metro
 {
     public partial class MetroWindow
     {

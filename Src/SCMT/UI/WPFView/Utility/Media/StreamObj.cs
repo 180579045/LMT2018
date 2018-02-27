@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace Arthas.Utility.Media
+namespace UICore.Utility.Media
 {
     public class StreamObj
     {

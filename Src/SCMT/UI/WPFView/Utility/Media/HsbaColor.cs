@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace Arthas.Utility.Media
+namespace UICore.Utility.Media
 {
     public class HsbaColor
     {

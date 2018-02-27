@@ -1,10 +1,10 @@
-﻿using Arthas.Utility.Media;
+﻿using UICore.Utility.Media;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Arthas.Controls.Metro
+namespace UICore.Controls.Metro
 {
     public partial class MetroColorPicker : UserControl
     {

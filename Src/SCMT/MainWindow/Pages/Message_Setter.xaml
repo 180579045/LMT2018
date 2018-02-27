@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
+        xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         xmlns:local="clr-namespace:SCMTMainWindow"
         mc:Ignorable="d"
         Title="Message_Setter" Height="620" Width="600">

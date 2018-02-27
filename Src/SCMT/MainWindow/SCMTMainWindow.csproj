@@ -272,9 +272,9 @@
       <Project>{736fd4f8-936f-46e9-a766-c9937f359e3a}</Project>
       <Name>LineChart</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UI\WPFView\WPFView.csproj">
+    <ProjectReference Include="..\UI\WPFView\UICore.csproj">
       <Project>{f5dbbc65-f7d3-4a0d-8a9f-3dafd3deb7ed}</Project>
-      <Name>WPFView</Name>
+      <Name>UICore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -10,29 +10,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Snmp_dll;
-using Arthas.Controls.Metro;
-using Arthas.Utility.Media;
-using System.Reflection;
-
-using System.Data;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using LineChart;
+
+using Snmp_dll;
+using UICore.Controls.Metro;
 using Specialized3DChart;
-using System.Threading;
 using System.Windows.Threading;
 using DT.Tools.FlowChart;
 using AtpMessage;

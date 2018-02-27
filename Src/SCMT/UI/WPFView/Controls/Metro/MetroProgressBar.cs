@@ -1,8 +1,8 @@
-﻿using Arthas.Utility.Element;
+﻿using UICore.Utility.Element;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace Arthas.Controls.Metro
+namespace UICore.Controls.Metro
 {
     public enum ProgressBarState
     {

@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
-namespace Arthas.Utility.Media
+namespace UICore.Utility.Media
 {
     /// <summary>
     /// 实用工具

@@ -1,10 +1,10 @@
-﻿using Arthas.Utility.Element;
-using Arthas.Utility.Media;
+﻿using UICore.Utility.Element;
+using UICore.Utility.Media;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace Arthas.Controls.Metro
+namespace UICore.Controls.Metro
 {
     public class MetroImage : ContentControl
     {

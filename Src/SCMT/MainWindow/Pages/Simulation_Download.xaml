@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
-        xmlns:Metro="clr-namespace:Arthas.Controls.Metro;assembly=Arthas"
+        xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         mc:Ignorable="d"
         Title="Simulation_Download" Height="520" Width="500">
     

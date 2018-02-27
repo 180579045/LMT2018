@@ -57,7 +57,7 @@ namespace SCMTMainWindow
             BtnEnabled = false;
             //do something
             await Task.Delay(2000);
-            Title = "Arthas.Demo";
+            Title = "UICore.Demo";
             BtnEnabled = true;
         }));
 
@@ -68,7 +68,7 @@ namespace SCMTMainWindow
             BtnEnabled = false;
             //do something
             await Task.Delay(2000);
-            Title = "Arthas.Demo";
+            Title = "UICore.Demo";
             BtnEnabled = true;
         }));
     }
