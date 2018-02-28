@@ -10,8 +10,8 @@ namespace SCMTOperationCore
 {
     public abstract class Element
     {
-        public IPAddress m_IPAddress { get; set; }                    // 对端IP地址;
-        public ConnectionState m_ConnectionState { get; set; }        // 连接状态;
+        public IPAddress m_IPAddress { get; set; }                      // 对端IP地址;
+        public ConnectionState m_ConnectionState { get; set; }          // 连接状态;
 
         public Element()
         {

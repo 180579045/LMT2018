@@ -7,23 +7,22 @@ using System.Net;
 
 namespace SCMTOperationCore
 {
-    class NodeBElement : Element, IElement
+    public class NodeBElement : Element, IElement
     {
         public int m_NodeBTcpPort { get; set; }                         // 对端TCP端口号;
         public int m_SnmpPort { get; set; }                             // 对端Snmp端口号;
         public IPEndPoint m_Point { get; set; }                         // 对端实体;
-        private IConnection m_connect { get; set; }                     // Tcp连接;
-        
+        private TcpConnection m_connect { get; set; }                   // Tcp连接;
+
         public NodeBElement()
         {
             m_NodeBTcpPort = 5000;
             m_SnmpPort = 161;
-
-            m_Point = new IPEndPoint(m_IPAddress, m_NodeBTcpPort);
         }
 
         public void Connect()
         {
+            m_connect = new TcpConnection();
             // 接下来要搞这个,调用TcpConnection，而TcpConnection依赖于Core的Client;
             m_connect.CreateConnection(this);
         }

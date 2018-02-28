@@ -27,10 +27,7 @@ namespace Client
 
         public abstract void Close();
 
-        public void Connect()
-        {
-            
-        }
+        public abstract void Connect();
 
         public void Send(IList<ArraySegment<byte>> segments)
         {

@@ -20,7 +20,7 @@ namespace SCMTOperationCore
             throw new NotImplementedException();
         }
 
-        private void ConnectEvent(object sender, EventArgs args)
+        public void ConnectEvent(object sender, EventArgs args)
         {
             throw new NotImplementedException();
         }

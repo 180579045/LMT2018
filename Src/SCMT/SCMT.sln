@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Core\Proxy\TcpCli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "ServerSession\Server.csproj", "{B6AF30DB-A8E2-4D5B-854B-19D02BEA6DA3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TryConsole", "Control\Experiment\TryConsole\TryConsole.csproj", "{E276A704-D582-4CA9-9A27-5F324371F4D5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,10 @@ Global
 		{B6AF30DB-A8E2-4D5B-854B-19D02BEA6DA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6AF30DB-A8E2-4D5B-854B-19D02BEA6DA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6AF30DB-A8E2-4D5B-854B-19D02BEA6DA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E276A704-D582-4CA9-9A27-5F324371F4D5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E276A704-D582-4CA9-9A27-5F324371F4D5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E276A704-D582-4CA9-9A27-5F324371F4D5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E276A704-D582-4CA9-9A27-5F324371F4D5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,5 +123,6 @@ Global
 		{0BCF9EDE-4A78-422A-87DE-4350DD480A43} = {0E9D7CD9-6145-4FB8-AED5-69A94EF06A19}
 		{E8BFB370-07FD-443D-A61D-CE023D590A1F} = {22CFF59C-8FE7-40D7-98B6-229D605CF81F}
 		{B6AF30DB-A8E2-4D5B-854B-19D02BEA6DA3} = {22CFF59C-8FE7-40D7-98B6-229D605CF81F}
+		{E276A704-D582-4CA9-9A27-5F324371F4D5} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 	EndGlobalSection
 EndGlobal
