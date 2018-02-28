@@ -42,11 +42,18 @@
   <ItemGroup>
     <Compile Include="Connection\IConnection.cs" />
     <Compile Include="Connection\TcpConnection.cs" />
-    <Compile Include="Element\BaseElement.cs" />
+    <Compile Include="Connection\UdpConnection.cs" />
+    <Compile Include="Element\Element.cs" />
     <Compile Include="Element\GtsaElement.cs" />
     <Compile Include="Element\IElement.cs" />
     <Compile Include="Element\NodeBElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Proxy\TcpClient\Client.csproj">
+      <Project>{e8bfb370-07fd-443d-a61d-ce023d590a1f}</Project>
+      <Name>Client</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
