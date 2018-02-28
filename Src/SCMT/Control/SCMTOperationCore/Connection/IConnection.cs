@@ -14,7 +14,8 @@ namespace SCMTOperationCore
     {
         event EventHandler Connected;
         event EventHandler DisConnected;
-        void CreateConnection(BaseElement ele, int port);
+        void CreateConnection(Element ele, int port);
+        void CreateConnection(Element ele);
         void Disconnect();
     }
 }

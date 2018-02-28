@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMTOperationCore.Element
+namespace SCMTOperationCore
 {
     interface IElement
     {
         void Connect();
         void DisConnect();
+
+        void ConnectEvent(object sender, EventArgs args);
+        void DisConnectEvent(object sender, EventArgs args);
     }
 }

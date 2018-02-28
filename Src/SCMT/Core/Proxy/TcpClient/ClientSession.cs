@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 
-namespace TcpClient
+namespace Client
 {
+    /// <summary>
+    /// 客户端连接抽象类;
+    /// </summary>
     public abstract class ClientSession : IClientSession
     {
-        protected Socket m_Client { get; set; }
-        protected EndPoint m_RemoteEndPoint { get; set; }
-        protected int m_ReceiveBufferSize { get; set; }
+        protected Socket m_Client { get; set; }                    // Socket连接;
+        protected EndPoint m_RemoteEndPoint { get; set; }          // 对端;
+        protected int m_ReceiveBufferSize { get; set; }            // 接收缓冲区大小;
 
         public event EventHandler Closed;
         public event EventHandler Connected;
@@ -22,14 +25,11 @@ namespace TcpClient
             m_RemoteEndPoint = remoteEndPoint;
         }
 
-        public void Close()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void Close();
 
         public void Connect()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void Send(IList<ArraySegment<byte>> segments)

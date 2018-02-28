@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMTOperationCore.Element
+namespace SCMTOperationCore
 {
-    class GtsaElement : BaseElement, IElement
+    class GtsaElement : Element, IElement
     {
         public int m_GtsaPort { get; set; }
 
@@ -16,6 +16,16 @@ namespace SCMTOperationCore.Element
         }
 
         public void DisConnect()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void ConnectEvent(object sender, EventArgs args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisConnectEvent(object sender, EventArgs args)
         {
             throw new NotImplementedException();
         }

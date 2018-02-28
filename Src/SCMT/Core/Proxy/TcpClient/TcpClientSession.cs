@@ -5,12 +5,17 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TcpClient
+namespace Client
 {
-    class TcpClientSession : ClientSession
+    public class TcpClientSession : ClientSession
     {
         public TcpClientSession(EndPoint remoteEndPoint) : base(remoteEndPoint)
         {
+        }
+
+        public override void Close()
+        {
+            throw new NotImplementedException();
         }
     }
 }
