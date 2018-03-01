@@ -16,6 +16,7 @@ namespace Client
 
         public event EventHandler Closed;
         public event EventHandler Connected;
+        public ConnectedCallback m_Connectedcallback;
 
         public ClientSession(EndPoint remoteEndPoint)
         {

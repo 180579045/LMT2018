@@ -8,6 +8,9 @@ using System.Collections;
 
 namespace SCMTOperationCore
 {
+    /// <summary>
+    /// 所有网元类型的基类;
+    /// </summary>
     public abstract class Element
     {
         public IPAddress m_IPAddress { get; set; }                      // 对端IP地址;
@@ -15,6 +18,11 @@ namespace SCMTOperationCore
 
         public Element()
         {
+        }
+
+        public Element(IPAddress ip)
+        {
+            m_IPAddress = ip;
         }
         
     }

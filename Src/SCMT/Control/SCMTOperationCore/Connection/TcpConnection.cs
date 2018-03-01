@@ -2,6 +2,7 @@
 using System.Net;
 using Client;
 using System.Net.Sockets;
+using System.IO;
 
 namespace SCMTOperationCore
 {
@@ -12,17 +13,14 @@ namespace SCMTOperationCore
     {
         public event EventHandler Connected;                       // 连接成功后处理;
         public event EventHandler DisConnected;                    // 连接断开后处理;
+        public ConnectionState m_ConnectionState { get; set; }     // 当前连接状态; 
 
         private TcpClientSession m_TcpSession { get; set; }        // Tcp连接会话;
-        private const string m_RequestTemplate = "CONNECT {0}:{1} HTTP/1.1\r\nHost: {0}:{1}\r\nProxy-Connection: Keep-Alive\r\n\r\n";
+        private const string m_RequestTemplate = "Connection";
+        private Stream m_Stream { get; set; }
 
         public TcpConnection()
         {
-        }
-
-        public void CreateConnection(Element ele, int port)
-        {
-
         }
 
         /// <summary>
@@ -32,18 +30,14 @@ namespace SCMTOperationCore
         public void CreateConnection(Element ele)
         {
             ele.m_ConnectionState = ConnectionState.Connecting;
-            (ele as NodeBElement).m_Point = new IPEndPoint(ele.m_IPAddress, (ele as NodeBElement).m_NodeBTcpPort);
-            m_TcpSession = new TcpClientSession((ele as NodeBElement).m_Point);
-            m_TcpSession.Connected += M_TcpSession_Connected;
+            (ele as SiElement).m_Point = new IPEndPoint(ele.m_IPAddress, (ele as SiElement).m_NodeBTcpPort);
+
+            m_TcpSession = new TcpClientSession((ele as SiElement).m_Point);
             m_TcpSession.m_Connectedcallback += ProcessConnect;
+            m_TcpSession.DataReceived += M_TcpSession_DataReceived;
             m_TcpSession.Connect();
         }
-
-        private void M_TcpSession_Connected(object sender, EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public void Disconnect()
         {
             throw new NotImplementedException();
@@ -69,10 +63,19 @@ namespace SCMTOperationCore
                 Console.WriteLine("socket is null");
                 return;
             }
-            
+
+            m_ConnectionState = ConnectionState.Connencted;
+            m_Stream = new NetworkStream(socket); 
+
             Console.WriteLine("Receive Socket content" +request);
-
-
+            
         }
+
+        private void M_TcpSession_DataReceived(object sender, DataEventArgs e)
+        {
+            Console.WriteLine("Receive Data");
+        }
+
+
     }
 }

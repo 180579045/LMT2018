@@ -19,9 +19,25 @@ namespace Client
         public ConnectedCallback Callback { get; set; }
     }
 
+    public class DataEventArgs : EventArgs
+    {
+        public byte[] Data { get; set; }
+
+        public int Offset { get; set; }
+
+        public int Length { get; set; }
+    }
+
     public class TcpClientSession : ClientSession
     {
-        public ConnectedCallback m_Connectedcallback;
+        private EventHandler<DataEventArgs> m_DataReceived;
+        private DataEventArgs m_DataArgs = new DataEventArgs();
+
+        public event EventHandler<DataEventArgs> DataReceived
+        {
+            add { m_DataReceived += value; }
+            remove { m_DataReceived -= value; }
+        }
 
         public TcpClientSession(EndPoint remoteEndPoint) : base(remoteEndPoint)
         {
@@ -33,10 +49,11 @@ namespace Client
         public override void Connect()
         {
             // 注册连接结果的回调函数;
-            var e = CreateSocketAsyncEventArgs(m_RemoteEndPoint, m_Connectedcallback, 0);
+            var SocketArg = CreateSocketAsyncEventArgs(m_RemoteEndPoint, m_Connectedcallback, 0);
             var socket = new Socket(m_RemoteEndPoint.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             
-            socket.ConnectAsync(e);
+            
+            socket.ConnectAsync(SocketArg);
         }
         
         /// <summary>
@@ -70,12 +87,39 @@ namespace Client
             return e;
         }
 
-        private static void SocketAsyncEventCompleted(object sender, SocketAsyncEventArgs e)
+        /// <summary>
+        /// Socket建链后的处理;
+        /// 1、开始接收消息;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SocketAsyncEventCompleted(object sender, SocketAsyncEventArgs e)
         {
-            e.Completed -= SocketAsyncEventCompleted;
+            if (e.SocketError != SocketError.Success)
+            {
+                return;
+            }
+            
+            OnDataReceived(e.Buffer, e.Offset, e.BytesTransferred);
+            
             var token = (ConnectToken)e.UserToken;
             e.UserToken = null;
+            
             token.Callback(sender as Socket, token.State, e);
+
+        }
+
+        private void OnDataReceived(byte[] data, int offset, int length)
+        {
+            var handler = m_DataReceived;
+            if (handler == null)
+                return;
+
+            m_DataArgs.Data = data;
+            m_DataArgs.Offset = offset;
+            m_DataArgs.Length = length;
+
+            handler(this, m_DataArgs);
         }
     }
 }

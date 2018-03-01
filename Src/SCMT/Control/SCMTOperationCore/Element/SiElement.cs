@@ -7,14 +7,18 @@ using System.Net;
 
 namespace SCMTOperationCore
 {
-    public class NodeBElement : Element, IElement
+    public class SiElement : Element, IElement
     {
         public int m_NodeBTcpPort { get; set; }                         // 对端TCP端口号;
         public int m_SnmpPort { get; set; }                             // 对端Snmp端口号;
         public IPEndPoint m_Point { get; set; }                         // 对端实体;
+        public ConnectionState m_IsConnected                            // 获取连接状态;
+        {
+            get { return m_connect.m_ConnectionState; }
+        }
         private TcpConnection m_connect { get; set; }                   // Tcp连接;
 
-        public NodeBElement()
+        public SiElement()
         {
             m_NodeBTcpPort = 5000;
             m_SnmpPort = 161;
@@ -23,8 +27,7 @@ namespace SCMTOperationCore
         public void Connect()
         {
             m_connect = new TcpConnection();
-            // 接下来要搞这个,调用TcpConnection，而TcpConnection依赖于Core的Client;
-            m_connect.CreateConnection(this);
+            m_connect.CreateConnection(this);                           // 建立连接;
         }
 
         public void DisConnect()
@@ -34,7 +37,7 @@ namespace SCMTOperationCore
 
         public void ConnectEvent(object sender, EventArgs args)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("SI Connection success!");
         }
 
         public void DisConnectEvent(object sender, EventArgs args)

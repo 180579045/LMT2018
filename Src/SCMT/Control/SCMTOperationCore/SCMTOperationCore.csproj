@@ -46,7 +46,7 @@
     <Compile Include="Element\Element.cs" />
     <Compile Include="Element\GtsaElement.cs" />
     <Compile Include="Element\IElement.cs" />
-    <Compile Include="Element\NodeBElement.cs" />
+    <Compile Include="Element\SiElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
