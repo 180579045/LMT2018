@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMTOperationCore
+namespace SCMTOperation
 {
-    interface IElement
+    public class Class1
     {
-        void Connect();
-        void DisConnect();
     }
 }

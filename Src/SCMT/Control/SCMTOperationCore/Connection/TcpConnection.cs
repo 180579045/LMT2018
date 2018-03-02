@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
+using SCMTOperationCore.Elements;
 
 namespace SCMTOperationCore
 {
@@ -27,9 +28,7 @@ namespace SCMTOperationCore
         public void CreateConnection(Element ele)
         {
             SiElement TcpEle = ele as SiElement;
-
-            TcpEle.m_ConnectionState = ConnectionState.Connecting;
-
+            
             m_TcpSession = new TcpClient();
             m_TcpSession.BeginConnect(TcpEle.m_IPAddress, TcpEle.m_NodeBTcpPort, ConnectEvent, TcpEle);
 
@@ -44,8 +43,8 @@ namespace SCMTOperationCore
         private void ConnectEvent(IAsyncResult ar)
         {
             SiElement RecState = ar.AsyncState as SiElement;
-            Console.WriteLine("Receive Data" + RecState.m_IPAddress.ToString());
-
+            Console.WriteLine("Receive Data From:" + RecState.m_IPAddress.ToString());
+            
             SiArgs args = new SiArgs();
             args.a = 10;
             RecState.m_ConnectionState = ConnectionState.Connencted;

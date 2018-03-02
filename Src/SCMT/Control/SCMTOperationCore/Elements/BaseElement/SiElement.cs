@@ -5,8 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 
-namespace SCMTOperationCore
+namespace SCMTOperationCore.Elements
 {
+    /// <summary>
+    /// Si元素的基类,可拓展诸如NodeB这类的基于SI消息的网元;
+    /// </summary>
     public class SiElement : Element, IElement
     {
         public int m_NodeBTcpPort { get; set; }                         // 对端TCP端口号;

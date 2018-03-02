@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Collections;
 
-namespace SCMTOperationCore
+namespace SCMTOperationCore.Elements
 {
     /// <summary>
     /// 所有网元类型的基类;
