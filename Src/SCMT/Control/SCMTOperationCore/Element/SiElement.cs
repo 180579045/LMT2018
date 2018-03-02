@@ -28,21 +28,23 @@ namespace SCMTOperationCore
         {
             m_connect = new TcpConnection();
             m_connect.CreateConnection(this);                           // 建立连接;
+            m_connect.Connected += M_connect_Connected;
         }
 
         public void DisConnect()
         {
             throw new NotImplementedException();
         }
-
-        public void ConnectEvent(object sender, EventArgs args)
+        
+        private void M_connect_Connected(object sender, EventArgs e)
         {
-            Console.WriteLine("SI Connection success!");
+            Console.WriteLine("Element Receive" + (e as SiArgs).a);
         }
+    }
 
-        public void DisConnectEvent(object sender, EventArgs args)
-        {
-            throw new NotImplementedException();
-        }
+    public class SiArgs : EventArgs
+    {
+        public int a;
+        int b;
     }
 }

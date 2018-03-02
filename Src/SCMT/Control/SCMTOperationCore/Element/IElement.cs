@@ -10,8 +10,5 @@ namespace SCMTOperationCore
     {
         void Connect();
         void DisConnect();
-
-        void ConnectEvent(object sender, EventArgs args);
-        void DisConnectEvent(object sender, EventArgs args);
     }
 }

@@ -97,9 +97,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Snmp_dll\SnmpMessage.csproj">
+    <ProjectReference Include="..\Message\SnmpMessage\SnmpMessage.csproj">
       <Project>{e7ceb301-3a34-49d2-aa69-e3963dd1ac21}</Project>
-      <Name>Snmp_dll</Name>
+      <Name>SnmpMessage</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

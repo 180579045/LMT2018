@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Net;
-using Client;
 using System.Net.Sockets;
 using System.IO;
 
 namespace SCMTOperationCore
 {
     /// <summary>
-    /// 负责Tcp连接的夹层业务流程;
+    /// 负责Tcp连接的夹层业务流程的类型;
     /// </summary>
     class TcpConnection : IConnection
     {
@@ -15,9 +14,7 @@ namespace SCMTOperationCore
         public event EventHandler DisConnected;                    // 连接断开后处理;
         public ConnectionState m_ConnectionState { get; set; }     // 当前连接状态; 
 
-        private TcpClientSession m_TcpSession { get; set; }        // Tcp连接会话;
-        private const string m_RequestTemplate = "Connection";
-        private Stream m_Stream { get; set; }
+        private TcpClient m_TcpSession { get; set; }               // Tcp连接会话;
 
         public TcpConnection()
         {
@@ -29,13 +26,14 @@ namespace SCMTOperationCore
         /// <param name="ele">需要连接的对端网元</param>
         public void CreateConnection(Element ele)
         {
-            ele.m_ConnectionState = ConnectionState.Connecting;
-            (ele as SiElement).m_Point = new IPEndPoint(ele.m_IPAddress, (ele as SiElement).m_NodeBTcpPort);
+            SiElement TcpEle = ele as SiElement;
 
-            m_TcpSession = new TcpClientSession((ele as SiElement).m_Point);
-            m_TcpSession.m_Connectedcallback += ProcessConnect;
-            m_TcpSession.DataReceived += M_TcpSession_DataReceived;
-            m_TcpSession.Connect();
+            TcpEle.m_ConnectionState = ConnectionState.Connecting;
+
+            m_TcpSession = new TcpClient();
+            m_TcpSession.BeginConnect(TcpEle.m_IPAddress, TcpEle.m_NodeBTcpPort, ConnectEvent, TcpEle);
+
+            // 此处涉及链接业务需求分析,比如建立Tcp连接不成功，尝试重连几次等等;
         }
         
         public void Disconnect()
@@ -43,39 +41,18 @@ namespace SCMTOperationCore
             throw new NotImplementedException();
         }
 
-        public void ConnectEvent(object sender, EventArgs arg)
+        private void ConnectEvent(IAsyncResult ar)
         {
+            SiElement RecState = ar.AsyncState as SiElement;
+            Console.WriteLine("Receive Data" + RecState.m_IPAddress.ToString());
 
+            SiArgs args = new SiArgs();
+            args.a = 10;
+            RecState.m_ConnectionState = ConnectionState.Connencted;
+            this.Connected(this, args);
         }
 
-        private void ProcessConnect(Socket socket, object targetEndPoint, SocketAsyncEventArgs e)
-        {
-            string request = "";
-            
-            if (e == null)
-            {
-                Console.WriteLine("e is null");
-                return;
-            }
-
-            if (socket == null)
-            {
-                Console.WriteLine("socket is null");
-                return;
-            }
-
-            m_ConnectionState = ConnectionState.Connencted;
-            m_Stream = new NetworkStream(socket); 
-
-            Console.WriteLine("Receive Socket content" +request);
-            
-        }
-
-        private void M_TcpSession_DataReceived(object sender, DataEventArgs e)
-        {
-            Console.WriteLine("Receive Data");
-        }
-
+        
 
     }
 }

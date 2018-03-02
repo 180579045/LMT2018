@@ -49,12 +49,6 @@
     <Compile Include="Element\SiElement.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Core\Proxy\TcpClient\Client.csproj">
-      <Project>{e8bfb370-07fd-443d-a61d-ce023d590a1f}</Project>
-      <Name>Client</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
