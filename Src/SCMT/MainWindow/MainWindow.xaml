@@ -59,7 +59,7 @@
                     </Grid.RowDefinitions>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200" MaxWidth="200" />
+                        <ColumnDefinition Width="220" MaxWidth="220" />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition MinWidth="160" Width="200"/>
                         <ColumnDefinition />
@@ -77,7 +77,9 @@
 
                                 <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
 
-                                <Metro:MetroExpander Header="小区信息" Icon="Resources/NetPLanB.png" />
+                                <Metro:MetroExpander Header="图表模板" Icon="Resources/NetPLanB.png" />
+
+                                <Metro:MetroExpander Header="消息模板" Icon="Resources/NetPLanB.png" />
 
                                 <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
                                     <Metro:MetroExpander.ContextMenu>

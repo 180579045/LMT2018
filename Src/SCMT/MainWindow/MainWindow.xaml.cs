@@ -17,8 +17,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using SCMTOperationCore.Message.SNMP;
+using SCMTOperationCore.Elements;
 
 namespace SCMTMainWindow
 {
@@ -33,22 +33,22 @@ namespace SCMTMainWindow
         public MainWindow()
         {
             InitializeComponent();
+            this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
+            this.MinWidth = 1366;                                             // 设置一个最小分辨率;
+            this.MinHeight = 768;                                             // 设置一个最小分辨率;
+            
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
         }
 
         /// <summary>
         /// 初始化用户界面;
-        /// Demo阶段，先假设只连接一个基站;
         /// </summary>
         private void InitView()
         {
-            this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
-            this.MinWidth = 1366;                                             // 设置一个最小分辨率;
-            this.MinHeight = 768;                                             // 设置一个最小分辨率;
-            NodeB node = new NodeB("172.27.245.92");                          // 初始化一个基站节点(第一个版本,暂时只连接一个基站);
-            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 从JSON文件中初始化一个对象树;
-            this.RefreshObj(Ctrl.m_RootNode, this.Content_Comm);              // 将对象树加入到Expender容器中
+            NodeB node = new NodeB("172.27.245.92", "NodeB");                 // 1、初始化一个基站节点(第一个版本,暂时只连接一个基站);
+            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 2、解析基站对象树初始化信息;
+            this.RefreshObj(Ctrl.m_RootNode, this.Content_Comm);              // 3、更新对象树;
 
         }
 
@@ -59,6 +59,9 @@ namespace SCMTMainWindow
         {
             //TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
         }
+
+
+        //______________________________________________________________________主界面动态刷新____
 
         /// <summary>
         /// 更新对象树模型以及叶节点模型;
@@ -79,10 +82,12 @@ namespace SCMTMainWindow
         {
             TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
         }
-
-        //                                                                                     以下为Demo处理;
-        // ---------------------------------------------------------------------------------------------------
         
+        /// <summary>
+        /// 将对象树添加到收藏;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddToCollect_Click(object sender, RoutedEventArgs e)
         {
             string StrName = StrNodeName;
@@ -93,7 +98,7 @@ namespace SCMTMainWindow
             //}
 
             //bool bcollect = false;
-            NodeB node = new NodeB("172.27.245.92");
+            NodeB node = new NodeB("172.27.245.92", "NodeB");
             string cfgFile = node.m_ObjTreeDataPath;
             //JsonSerializer serialiser = new JsonSerializer();
             //string newContent = string.Empty;
@@ -166,7 +171,7 @@ namespace SCMTMainWindow
             List<ObjNode> m_NodeList = new List<ObjNode>();
             List<ObjNode> RootNodeShow = new List<ObjNode>();
             ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点");
-            NodeB node = new NodeB("172.27.245.92");
+            NodeB node = new NodeB("172.27.245.92", "NodeB");
             string cfgFile = node.m_ObjTreeDataPath;
             StreamReader reader = File.OpenText(cfgFile);
             JObject JObj = new JObject();

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SCMTOperationCore.Message.SI
 {
-    class SiMessage
+    abstract class SiMessage
     {
     }
 }

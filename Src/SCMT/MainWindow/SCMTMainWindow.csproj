@@ -65,7 +65,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Component\Msg\UEMessage.cs" />
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\NodeB_Control.cs" />
     <Compile Include="MainWindowVM.cs" />
@@ -88,49 +87,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Pages\DataGrhic_Selected.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Message_Setter.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\NodeB_Recover.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\Simulation_Download.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\ToolBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\UEList_NodeB.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Pages\DataGrhic_Selected.xaml.cs">
-      <DependentUpon>DataGrhic_Selected.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Message_Setter.xaml.cs">
-      <DependentUpon>Message_Setter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\NodeB_Recover.xaml.cs">
-      <DependentUpon>NodeB_Recover.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Simulation_Download.xaml.cs">
-      <DependentUpon>Simulation_Download.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Pages\ToolBox.xaml.cs">
       <DependentUpon>ToolBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\UEList_NodeB.xaml.cs">
-      <DependentUpon>UEList_NodeB.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -163,9 +127,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Tree_Reference.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Data\Tree_Reference2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">

@@ -97,13 +97,6 @@ namespace SCMTOperationCore.Message.SNMP
                 }
                 else
                 {
-                    // Reply variables are returned in the same order as they were added
-                    //  to the VbList
-                    //                     Console.WriteLine("sysDescr({0}) ({1}): {2}",
-                    //                         m_Result.Pdu.VbList[0].Oid.ToString(),
-                    //                         SnmpConstants.GetTypeName(m_Result.Pdu.VbList[0].Value.Type),
-                    //                         m_Result.Pdu.VbList[0].Value.ToString());
-
                     for (int i = 0; i < m_Result.Pdu.VbCount; i++)
                     {
                         rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
