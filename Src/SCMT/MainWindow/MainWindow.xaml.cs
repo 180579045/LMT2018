@@ -22,6 +22,11 @@ using Specialized3DChart;
 using System.Windows.Threading;
 using DT.Tools.FlowChart;
 using AtpMessage;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
 namespace SCMTMainWindow
 {
@@ -39,6 +44,9 @@ namespace SCMTMainWindow
         private DispatcherTimer timer = new DispatcherTimer();
         private int i = 0;
 
+        public static string StrNodeName;
+        private List<string> CollectList = new List<string>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -47,7 +55,7 @@ namespace SCMTMainWindow
             InitDemoData();                                                   // 更新主界面Demo数据;
             AtpMessageInfo.func = recvMsg;
             AtpMessageInfo.SendAtpMessage.Start();
-            
+
         }
 
         /// <summary>
@@ -112,8 +120,8 @@ namespace SCMTMainWindow
             Dispatcher.Invoke(new Action(
                 delegate
                 {
-                    foreach(string content in TrapMsg)
-                    Console.WriteLine("Trap Content is" + content);
+                    foreach (string content in TrapMsg)
+                        Console.WriteLine("Trap Content is" + content);
                 }));
         }
 
@@ -203,12 +211,12 @@ namespace SCMTMainWindow
 
         private void PrintTrapInConsole(List<string> Trapinfo)
         {
-            foreach(string prt in Trapinfo)
+            foreach (string prt in Trapinfo)
             {
                 Console.WriteLine(prt);
             }
         }
-        
+
         private void MetroTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
@@ -216,7 +224,7 @@ namespace SCMTMainWindow
 
         private void Click_Flow(object sender, MouseButtonEventArgs e)
         {
-            if(e.LeftButton== MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 ne.Add("UE");
                 ne.Add("eNB");
@@ -225,7 +233,7 @@ namespace SCMTMainWindow
                 timer.Interval = TimeSpan.FromSeconds(1);
                 timer.Tick += new EventHandler(AnimatedPlot);
                 timer.IsEnabled = true;
-             }
+            }
         }
 
         private void AnimatedPlot(object sender, EventArgs e)
@@ -264,7 +272,7 @@ namespace SCMTMainWindow
             ne.Clear();
             lb.Clear();
             timer.IsEnabled = false;
-            i = 0;           
+            i = 0;
             this.drawingCanvas.Clean();
         }
 
@@ -277,7 +285,8 @@ namespace SCMTMainWindow
         {
             this.ATP_MSG_GRID.Dispatcher.Invoke(
                 new Action(
-                    delegate {
+                    delegate
+                    {
                         if (this.ATP_MSG_GRID.Items.Count > 25)
                         {
                             //限制显示行数，后期作优化:最新的显示在上面;
@@ -285,21 +294,187 @@ namespace SCMTMainWindow
                         }
                         // 回填到控件中;
                         this.ATP_MSG_GRID.Items.Add(arg);
-                        
-                        }
+
+                    }
                     )
                 );
         }
 
         private void EventShowAtpMsgContent(object sender, RoutedEventArgs e)
         {
-  
+
             this.TextBlockAtpContent.Text = DateTime.Now.ToString();
-       
+
         }
+        private void AddToCollect_Click(object sender, RoutedEventArgs e)
+        {
+            string StrName = StrNodeName;
+            //string StrNameExit = CollectList.Find(o => o == StrName);
+            //if (StrNameExit == null)
+            //{
+            //    CollectList.Add(StrName);
+            //}
+
+            //bool bcollect = false;
+            NodeB node = new NodeB("172.27.245.92");
+            string cfgFile = node.m_ObjTreeDataPath;
+            //JsonSerializer serialiser = new JsonSerializer();
+            //string newContent = string.Empty;
+            //string qwe = File.ReadAllText(cfgFile);
+            //using (StreamReader reader = new StreamReader(cfgFile))
+            //{
+            //    string json = reader.ReadToEnd();
+
+            //    dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            //    int nn = (int)jsonObj["NodeList"][11]["ChildRenCount"];
+            //    jsonObj["NodeList"][11]["ChildRenCount"] = "3";
+            //    nn = (int)jsonObj["NodeList"][11]["ChildRenCount"];
+            //    //File.WriteAllText(cfgFile, JsonConvert.SerializeObject(jsonObj));
+            //    reader.Close();
+            //    string fdsf = JsonConvert.SerializeObject(jsonObj);
+            //    File.WriteAllText(cfgFile, fdsf, Encoding.UTF8);
+            //}
+
+
+
+
+
+
+
+            StreamReader reader = File.OpenText(cfgFile);
+            JObject JObj = new JObject();
+            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            IEnumerable<int> AllNodes = from nodes in JObj.First.Next.First
+                                        select (int)nodes["ObjID"];
+            int TempCount = 0;
+            foreach (var iter in AllNodes)
+            {
+                var name = (string)JObj.First.Next.First[TempCount]["ObjName"];
+                if ((name == StrName))
+                {
+                    if (JObj.First.Next.First[TempCount]["ObjCollect"] != null)
+                    {
+                        int ObjIsCollect = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
+
+
+                        int nn = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
+                        JObj.First.Next.First[TempCount]["ObjCollect"] = "1";
+                        nn = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
+                        break;
+
+                    }
+                    else
+                    {
+                        //JObject child = new JObject("ObjCollect", 1);
+                        //var collectJason = JObject.Parse(@"""ObjCollect"": 1");
+                        //var collectToken = collectJason as JToken;
+                        JObj.First.Next.First[TempCount].AddAfterSelf(new JObject(new JProperty("ObjCollect", 1)));
+                        //int nn = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
+                        break;
+                    }
+                }
+                TempCount++;
+            }
+            reader.Close();
+            File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
+
+        }
+
+        private void Collect_Node_Click(object sender, EventArgs e)
+        {
+            //this.FavLeaf_Lists.Children.Clear();
+            //foreach (string iter in CollectList)
+            //{
+            //    MetroExpander Easy = new MetroExpander();
+            //    Easy.Header = iter;
+            //    this.FavLeaf_Lists.Children.Add(Easy);
+            //}
+            //this.FavLeaf_Lists.Children.Clear();
+
+            ObjNode Objnode;
+            List<ObjNode> m_NodeList = new List<ObjNode>();
+            List<ObjNode> RootNodeShow = new List<ObjNode>();
+            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点");
+            NodeB node = new NodeB("172.27.245.92");
+            string cfgFile = node.m_ObjTreeDataPath;
+            StreamReader reader = File.OpenText(cfgFile);
+            JObject JObj = new JObject();
+            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            IEnumerable<int> AllNodes = from nodes in JObj.First.Next.First
+                                        select (int)nodes["ObjID"];
+            int TempCount = 0;
+            foreach (var iter in AllNodes)
+            {
+                var ObjParentNodes = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
+                var name = (string)JObj.First.Next.First[TempCount]["ObjName"];
+                var version = (string)JObj.First.First;
+                if (JObj.First.Next.First[TempCount]["ObjCollect"] == null)
+                {
+                    TempCount++;
+                    continue;
+                }
+                int ObjCollect = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
+
+
+                Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name);
+                //if ((int)JObj.First.Next.First[TempCount]["ChildRenCount"] != 0)
+                //{
+                //    Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name);
+                //}
+                //else
+                //{
+                //    Objnode = new ObjLeafNode(iter, ObjParentNodes, version, name);
+                //}
+                if (ObjCollect == 1)
+                {
+                    int index = m_NodeList.IndexOf(Objnode);
+                    if (index < 0)
+                    //int opper = m_NodeList.BinarySearch(Objnode);
+                    //ObjNode iuy = m_NodeList.Find(t => t.Equals(Objnode));
+                    //if (opper != 0)
+                    {
+                        m_NodeList.Add(Objnode);
+                    }
+
+                }
+
+                TempCount++;
+            }
+            ObjNodeControl Ctrl = new ObjNodeControl(node);
+            // 遍历所有节点确认亲子关系;
+            foreach (ObjNode iter in m_NodeList)
+            {
+                //Root.Add(iter);
+                // 遍历所有节点确认亲子关系;
+                foreach (ObjNode iter1 in Ctrl.m_NodeList)
+                {
+                    if (iter1.ObjID == iter.ObjID)
+                    {
+                        Root.Add(iter1);
+                    }
+                    else if (iter1.ObjID > iter.ObjID)
+                    {
+                        foreach (ObjNode iterParent in Ctrl.m_NodeList)
+                        {
+                            if (iterParent.ObjID == iter1.ObjParentID)
+                            {
+                                iterParent.Add(iter1);
+                            }
+                        }
+                    }
+                }
+            }
+            RootNodeShow.Add(Root);
+
+            // 将右侧叶节点容器容器加入到对象树子容器中;
+            this.Obj_Collect.Clear();
+            this.Obj_Collect.SubExpender = this.FavLeaf_Lists;
+
+            foreach (ObjNode items in RootNodeShow)
+            {
+                items.TraverseCollectChildren(this.Obj_Collect, this.FavLeaf_Lists, 0, this.Content_Comm, this.Content_Base);
+            }
+        }
+
     }
-
-    
-   
-
 }
