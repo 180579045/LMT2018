@@ -40,6 +40,8 @@ namespace UICore.Controls.Metro
         
         public event EventHandler Click;
 
+        public event MouseButtonEventHandler RightClick;
+
         public MetroExpander()
         {
             Utility.Refresh(this);
