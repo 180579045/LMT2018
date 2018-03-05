@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMTOperationCore
+namespace SCMTOperationCore.Elements
 {
     class GtsaElement : Element, IElement
     {
@@ -20,7 +20,7 @@ namespace SCMTOperationCore
             throw new NotImplementedException();
         }
 
-        private void ConnectEvent(object sender, EventArgs args)
+        public void ConnectEvent(object sender, EventArgs args)
         {
             throw new NotImplementedException();
         }

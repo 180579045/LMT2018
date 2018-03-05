@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>b6af30db-a8e2-4d5b-854b-19d02bea6da3</ProjectGuid>
+    <ProjectGuid>f8be0744-6799-4c05-a204-9c4ba378a73d</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ServerSession</RootNamespace>
-    <AssemblyName>ServerSession</AssemblyName>
+    <RootNamespace>SCMTOperation</RootNamespace>
+    <AssemblyName>SCMTOperation</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

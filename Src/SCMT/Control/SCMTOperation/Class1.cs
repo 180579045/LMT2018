@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ServerSession
+namespace SCMTOperation
 {
     public class Class1
     {

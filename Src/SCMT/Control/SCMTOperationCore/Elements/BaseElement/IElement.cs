@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMTOperationCore
+namespace SCMTOperationCore.Elements
 {
+    /// <summary>
+    /// 所有网元类型接口;
+    /// </summary>
     interface IElement
     {
         void Connect();
         void DisConnect();
-
-        void ConnectEvent(object sender, EventArgs args);
-        void DisConnectEvent(object sender, EventArgs args);
     }
 }

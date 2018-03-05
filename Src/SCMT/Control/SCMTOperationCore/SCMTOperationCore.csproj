@@ -30,6 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationFramework" />
+    <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SnmpSharpNet.0.9.5\lib\SnmpSharpNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,17 +48,21 @@
     <Compile Include="Connection\IConnection.cs" />
     <Compile Include="Connection\TcpConnection.cs" />
     <Compile Include="Connection\UdpConnection.cs" />
-    <Compile Include="Element\Element.cs" />
-    <Compile Include="Element\GtsaElement.cs" />
-    <Compile Include="Element\IElement.cs" />
-    <Compile Include="Element\NodeBElement.cs" />
+    <Compile Include="Elements\BaseElement\Element.cs" />
+    <Compile Include="Elements\BaseElement\GtsaElement.cs" />
+    <Compile Include="Elements\BaseElement\IElement.cs" />
+    <Compile Include="Elements\NodeB.cs" />
+    <Compile Include="Elements\BaseElement\SiElement.cs" />
+    <Compile Include="Message\SI\SiMessage.cs" />
+    <Compile Include="Message\SNMP\SnmpMessage.cs" />
+    <Compile Include="Message\SNMP\TrapMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Core\Proxy\TcpClient\Client.csproj">
-      <Project>{e8bfb370-07fd-443d-a61d-ce023d590a1f}</Project>
-      <Name>Client</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Message\GTSA\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

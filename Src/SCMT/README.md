@@ -1,12 +1,19 @@
 # 概览
 ## 项目综述
-该项目旨在为后续LMT的SNMP模块设计起到一个实验的作用，且在snmp_window项目中实现了一个LMT微客户端的功能，即可以在该界面下直接查询或设置基站对应节点数值
+SCMT主界面以及核心功能
 
-## 迭代记录
-### V1.0 ：全部使用OID进行查询设置
-- 实现snmp基本功能，即SetRequest、GetRequest和Trap接收功能
-- 主界面直接使用OID进行节点的查询或设置
+## 项目划分以及职责
+| 项目名称 | 综述 | 职能 | 依赖项目
+| --- | --- | --- | --- |
+| SCMTOperationCore | LMT基础业务入口 | 1、实现Tcp与Udp连接<br> 2、定义基站操作网元 <br>3、定义基站所有消息类型 | 无
+| UICore | 界面与控件 | 1、界面窗体风格<br>2、基础控件（例如按钮、对象树、页签等） | 无
+| LineChart | 笛卡尔坐标系线图 |  1、Y轴坐标可定制的实时滚动坐标系<br>2、可查看详细信息的坐标系 | 无
 
-![Version1主界面](ReadMePicture/MainScreenShoot.png)
-
-# API接口说明
+## 开发环境说明
+首先需要准备以下软件，才能够正常查看库中所有的文件
+- Visual Studio 2015
+    - .NetFrameWork4.5
+    - WindowsSDK
+- XMind
+- EnterpriseArchitect
+- Mockplus
