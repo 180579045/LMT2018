@@ -144,8 +144,17 @@ namespace Snmp_dll
 
         public static void RequestStop()
         {
-            socket.Dispose();                             // 释放线程;
-            WaitTrapRunstate = false;                     // 释放监听套接字;
+            // 只有在有人注册了监听时，才会释放Socket连接;
+            if(TrapNodifyList.Count != 0)
+            {
+                socket.Dispose();                             // 释放线程;
+                WaitTrapRunstate = false;                     // 释放监听套接字;
+                return;
+            }
+            else
+            {
+                return;
+            }
         }
 
         public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress)

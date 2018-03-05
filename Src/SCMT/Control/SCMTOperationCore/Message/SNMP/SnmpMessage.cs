@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Net;
 using SnmpSharpNet;
 
-namespace SCMTOperationCore.Message
+namespace SCMTOperationCore.Message.SNMP
 {
     /// <summary>
     /// 抽象SNMP报文，以便后续扩展SNMPV3;
