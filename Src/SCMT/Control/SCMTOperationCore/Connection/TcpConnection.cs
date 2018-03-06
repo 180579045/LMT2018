@@ -22,7 +22,7 @@ namespace SCMTOperationCore
         }
 
         /// <summary>
-        /// 创建连接;
+        /// 根据一个网元实例创建连接;
         /// </summary>
         /// <param name="ele">需要连接的对端网元</param>
         public void CreateConnection(Element ele)

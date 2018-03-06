@@ -5,21 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
-        xmlns:FlowChart="clr-namespace:DT.Tools.FlowChart;assembly=FlowChart"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed">
 
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
     </Metro:MetroWindow.DataContext>
-
-    <Window.Resources>
-        <RotateTransform3D x:Key="rotate">
-            <RotateTransform3D.Rotation>
-                <AxisAngleRotation3D Axis="0,1,0" Angle="{Binding ElementName=slider, Path=Value, Mode=TwoWay}" />
-            </RotateTransform3D.Rotation>
-        </RotateTransform3D>
-    </Window.Resources>
 
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
@@ -28,9 +19,7 @@
             </Metro:MetroTitleMenuItem>
 
             <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
-                <Metro:MetroMenuItem Header="添加基站" />
-                <Metro:MetroMenuSeparator />
-
+                <Metro:MetroMenuItem Header="添加基站" Click="AddNodeB_Click" />
             </Metro:MetroTitleMenuItem>
 
             <Metro:MetroTitleMenuItem Header="">
@@ -117,7 +106,7 @@
 
                     <!--右侧状态栏-->
                     <Metro:MetroTabControl x:Name="tabc" Grid.Column="3" Margin="0,30,0,0">
-                        <Metro:MetroTabItem Header="基站—居民楼1" Icon="Resources/tabIcon.png">
+                        <Metro:MetroTabItem x:Name="NodebName" Header="" Icon="Resources/tabIcon.png">
 
                             <Grid x:Name="Content">
 
@@ -129,9 +118,8 @@
 
                                 <Grid Grid.Row="0">
                                     <!--基本信息栏-->
-                                    
+
                                     <Metro:MetroScrollViewer x:Name="Content_Base">
-                                        
                                     </Metro:MetroScrollViewer>
                                     
                                     <!--自由栏-->
@@ -139,7 +127,18 @@
                                         
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition ></ColumnDefinition>
+                                            <ColumnDefinition ></ColumnDefinition>
                                         </Grid.ColumnDefinitions>
+
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid Grid.Row="0" Grid.Column="1">
+
+
+                                        </Grid>
 
                                     </Grid>
                                 </Grid>
@@ -147,9 +146,6 @@
 
                             </Grid>
                         </Metro:MetroTabItem>
-
-                        <!--Demo中的第二个基站,暂不显示-->
-                        <Metro:MetroTabItem Header="基站—居民楼室内" />
 
                     </Metro:MetroTabControl>
                 </Grid>

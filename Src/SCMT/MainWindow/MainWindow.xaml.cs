@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
+using SCMTOperationCore.Control;
 
 namespace SCMTMainWindow
 {
@@ -29,6 +30,8 @@ namespace SCMTMainWindow
     {
         public static string StrNodeName;
         private List<string> CollectList = new List<string>();
+        public NodeBControl NBControler;
+        public NodeB node;
 
         public MainWindow()
         {
@@ -46,10 +49,8 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitView()
         {
-            NodeB node = new NodeB("172.27.245.92", "NodeB");                 // 1、初始化一个基站节点(第一个版本,暂时只连接一个基站);
-            ObjNodeControl Ctrl = new ObjNodeControl(node);                   // 2、解析基站对象树初始化信息;
-            this.RefreshObj(Ctrl.m_RootNode, this.Content_Comm);              // 3、更新对象树;
-
+            NBControler = new NodeBControl();
+            
         }
 
         /// <summary>
@@ -58,6 +59,11 @@ namespace SCMTMainWindow
         private void RegisterFunction()
         {
             //TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
+        }
+
+        private void AddNodeBPageToWindow()
+        {
+            
         }
 
 
@@ -91,31 +97,8 @@ namespace SCMTMainWindow
         private void AddToCollect_Click(object sender, RoutedEventArgs e)
         {
             string StrName = StrNodeName;
-            //string StrNameExit = CollectList.Find(o => o == StrName);
-            //if (StrNameExit == null)
-            //{
-            //    CollectList.Add(StrName);
-            //}
-
-            //bool bcollect = false;
             NodeB node = new NodeB("172.27.245.92", "NodeB");
             string cfgFile = node.m_ObjTreeDataPath;
-            //JsonSerializer serialiser = new JsonSerializer();
-            //string newContent = string.Empty;
-            //string qwe = File.ReadAllText(cfgFile);
-            //using (StreamReader reader = new StreamReader(cfgFile))
-            //{
-            //    string json = reader.ReadToEnd();
-
-            //    dynamic jsonObj = JsonConvert.DeserializeObject(json);
-            //    int nn = (int)jsonObj["NodeList"][11]["ChildRenCount"];
-            //    jsonObj["NodeList"][11]["ChildRenCount"] = "3";
-            //    nn = (int)jsonObj["NodeList"][11]["ChildRenCount"];
-            //    //File.WriteAllText(cfgFile, JsonConvert.SerializeObject(jsonObj));
-            //    reader.Close();
-            //    string fdsf = JsonConvert.SerializeObject(jsonObj);
-            //    File.WriteAllText(cfgFile, fdsf, Encoding.UTF8);
-            //}
             
             StreamReader reader = File.OpenText(cfgFile);
             JObject JObj = new JObject();
@@ -141,11 +124,7 @@ namespace SCMTMainWindow
                     }
                     else
                     {
-                        //JObject child = new JObject("ObjCollect", 1);
-                        //var collectJason = JObject.Parse(@"""ObjCollect"": 1");
-                        //var collectToken = collectJason as JToken;
                         JObj.First.Next.First[TempCount].AddAfterSelf(new JObject(new JProperty("ObjCollect", 1)));
-                        //int nn = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
                         break;
                     }
                 }
@@ -158,15 +137,6 @@ namespace SCMTMainWindow
 
         private void Collect_Node_Click(object sender, EventArgs e)
         {
-            //this.FavLeaf_Lists.Children.Clear();
-            //foreach (string iter in CollectList)
-            //{
-            //    MetroExpander Easy = new MetroExpander();
-            //    Easy.Header = iter;
-            //    this.FavLeaf_Lists.Children.Add(Easy);
-            //}
-            //this.FavLeaf_Lists.Children.Clear();
-
             ObjNode Objnode;
             List<ObjNode> m_NodeList = new List<ObjNode>();
             List<ObjNode> RootNodeShow = new List<ObjNode>();
@@ -193,21 +163,10 @@ namespace SCMTMainWindow
 
 
                 Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name);
-                //if ((int)JObj.First.Next.First[TempCount]["ChildRenCount"] != 0)
-                //{
-                //    Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name);
-                //}
-                //else
-                //{
-                //    Objnode = new ObjLeafNode(iter, ObjParentNodes, version, name);
-                //}
                 if (ObjCollect == 1)
                 {
                     int index = m_NodeList.IndexOf(Objnode);
                     if (index < 0)
-                    //int opper = m_NodeList.BinarySearch(Objnode);
-                    //ObjNode iuy = m_NodeList.Find(t => t.Equals(Objnode));
-                    //if (opper != 0)
                     {
                         m_NodeList.Add(Objnode);
                     }
@@ -252,5 +211,32 @@ namespace SCMTMainWindow
             }
         }
 
+        private void MetroMenuSeparator_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+
+        }
+        
+        private void AddNodeB_Click(object sender, RoutedEventArgs e)
+        {
+            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
+            AddNodeB.NewInstance(this).ShowDialog();
+        }
+
+        private void AddNB_Closed(object sender, EventArgs e)
+        {
+            if(!(e is NodeBArgs))
+            {
+                return;
+            }
+            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);                   // 象树树信息;
+            node = (e as NodeBArgs).m_NodeB;
+
+            RefreshObj(Ctrl.m_RootNode, this.Content_Comm);                   // 1、更新对象树;
+            AddNodeBPageToWindow();                                           // 2、将所有基站添加到窗口页签中;
+            if (node != null)
+            {
+                node.Connect();                                               // 3、连接基站(第一个版本，暂时只连接一个基站);
+            }
+        }
     }
 }
