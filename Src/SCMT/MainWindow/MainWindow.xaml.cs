@@ -228,14 +228,14 @@ namespace SCMTMainWindow
             {
                 return;
             }
-            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);                   // 象树树信息;
+            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
             node = (e as NodeBArgs).m_NodeB;
 
-            RefreshObj(Ctrl.m_RootNode, this.Content_Comm);                   // 1、更新对象树;
-            AddNodeBPageToWindow();                                           // 2、将所有基站添加到窗口页签中;
+            RefreshObj(Ctrl.m_RootNode, this.Content_Comm);                      // 1、更新对象树;
+            AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
             if (node != null)
             {
-                node.Connect();                                               // 3、连接基站(第一个版本，暂时只连接一个基站);
+                node.Connect();                                                  // 3、连接基站(第一个版本，暂时只连接一个基站);
             }
         }
     }
