@@ -99,7 +99,7 @@ namespace SCMTMainWindow
                     item.SubExpender = Lists;                           // 增加子容器,保存叶子节点;
                     item.obj_type = Obj_Node;                           // 将节点添加到容器控件中;
                     item.Click += IsSelectedChanged;                    // 点击事件;
-                    item.RightClick += IsRightMouseDown;
+                    item.MouseRightButtonDown += IsRightMouseDown;
 
                     Obj_Tree.Add(item);
 
@@ -192,6 +192,7 @@ namespace SCMTMainWindow
             this.ObjParentID = pid;
             this.ObjName = name;
             IsSelectedChanged += ClickObjNode;
+            IsRightMouseDown += ObjNode_IsRightMouseDown;
         }
 
         private void ObjNode_IsRightMouseDown(object sender, MouseButtonEventArgs e)
