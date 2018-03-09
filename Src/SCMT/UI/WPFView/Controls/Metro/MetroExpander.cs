@@ -40,7 +40,7 @@ namespace UICore.Controls.Metro
         
         public event EventHandler Click;
 
-        public event MouseButtonEventHandler RightClick;
+        //public event MouseButtonEventHandler RightClick;
 
         public MetroExpander()
         {
