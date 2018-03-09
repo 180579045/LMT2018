@@ -124,7 +124,24 @@ namespace SCMTMainWindow
                     }
                     else
                     {
-                        JObj.First.Next.First[TempCount].AddAfterSelf(new JObject(new JProperty("ObjCollect", 1)));
+                        var ObjNodesId = (int)JObj.First.Next.First[TempCount]["ObjID"];
+                        var ObjParentNodesId = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
+                        var ObjChildRenCount = (int)JObj.First.Next.First[TempCount]["ChildRenCount"];
+                        var ObjNameEn = (string)JObj.First.Next.First[TempCount]["ObjNameEn"];
+                        var ObjMibList = (string)JObj.First.Next.First[TempCount]["MIBList"];
+                        JObject NewObjNodes = new JObject(new JProperty("ObjID", ObjNodesId),
+                            new JProperty("ObjParentID", ObjParentNodesId),
+                            new JProperty("ChildRenCount", ObjChildRenCount),
+                            new JProperty("ObjName", name),
+                            new JProperty("ObjNameEn", ObjNameEn),
+                            new JProperty("MIBList", ObjMibList),
+                            new JProperty("ObjCollect",1));
+                        JObj.First.Next.First[TempCount].Remove();
+                        //JObject child = new JObject("ObjCollect", 1);
+                        //var collectJason = JObject.Parse(@"""ObjCollect"": 1");
+                        //var collectToken = collectJason as JToken;
+                        //JObj.First.Next.First[TempCount].AddAfterSelf(new JObject(new JProperty("ObjCollect", 1)));
+                        JObj.First.Next.First[TempCount].AddBeforeSelf(NewObjNodes);
                         break;
                     }
                 }
