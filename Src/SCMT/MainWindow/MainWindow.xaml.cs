@@ -150,6 +150,7 @@ namespace SCMTMainWindow
             reader.Close();
             File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
 
+
         }
 
         private void Collect_Node_Click(object sender, EventArgs e)
