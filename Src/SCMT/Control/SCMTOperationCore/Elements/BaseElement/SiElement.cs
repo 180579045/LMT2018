@@ -12,8 +12,6 @@ namespace SCMTOperationCore.Elements
     /// </summary>
     public class SiElement : Element, IElement
     {
-        public int m_NodeBTcpPort { get; set; }                         // 对端TCP端口号;
-        public int m_SnmpPort { get; set; }                             // 对端Snmp端口号;
         public IPEndPoint m_Point { get; set; }                         // 对端实体;
         public ConnectionState m_IsConnected                            // 获取连接状态;
         {
@@ -23,15 +21,16 @@ namespace SCMTOperationCore.Elements
 
         public SiElement()
         {
-            m_NodeBTcpPort = 5000;
-            m_SnmpPort = 161;
+            // Si消息得默认端口号是5000;
+            m_Port = 5000;
         }
 
         public void Connect()
         {
+            // Si是Tcp连接;
             m_connect = new TcpConnection();
             m_connect.CreateConnection(this);                           // 建立连接;
-            m_connect.Connected += M_connect_Connected;
+            m_connect.Connected += M_connect_Connected;                 // 注册连接成功事件;
         }
 
         public void DisConnect()
@@ -41,13 +40,13 @@ namespace SCMTOperationCore.Elements
         
         private void M_connect_Connected(object sender, EventArgs e)
         {
-            Console.WriteLine("Element Receive" + (e as SiArgs).a);
+            Console.WriteLine("Element Receive" + (e as SiConnectedArgs).a);
         }
     }
 
-    public class SiArgs : EventArgs
+    public class SiConnectedArgs : EventArgs
     {
         public int a;
-        int b;
+        public int b;
     }
 }

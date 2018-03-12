@@ -228,7 +228,9 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 点击枝节点时，在右侧列表中更新叶子节点;
+        /// 点击枝节点时;
+        /// 1、在右侧列表中更新叶子节点;
+        /// 2、触发SNMP的GetNext查询;
         /// </summary>
         /// <param name="sender">对应的容器</param>
         /// <param name="e"></param>

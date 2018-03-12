@@ -3,6 +3,9 @@ using System.Net;
 
 namespace SCMTOperationCore.Elements
 {
+    /// <summary>
+    /// NodeB是基于SI的连接;
+    /// </summary>
     public class NodeB : SiElement
     {
         public string m_Name { get; set; }

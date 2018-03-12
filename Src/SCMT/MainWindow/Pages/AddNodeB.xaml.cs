@@ -17,7 +17,9 @@ using System.ComponentModel;
 
 namespace SCMTMainWindow
 {
-
+    /// <summary>
+    /// 窗口关闭事件参数;
+    /// </summary>
     class NodeBArgs : EventArgs
     {
         public NodeB m_NodeB { get; set; }
@@ -36,6 +38,9 @@ namespace SCMTMainWindow
         private static NodeBControl m_NBControl { get; set; }
         private static NodeB m_nb { get; set; }
 
+        /// <summary>
+        ///  单例，防止窗口被多次打开;
+        /// </summary>
         private AddNodeB()
         {
             InitializeComponent();
@@ -46,7 +51,7 @@ namespace SCMTMainWindow
             if(m_AddNB == null)
             {
                 m_AddNB = new AddNodeB();
-                m_AddNB.Closed += M_AddNB_Closed;
+                m_AddNB.Closed += M_AddNB_Closed;            // 注册窗口关闭时得处理;
                 m_AddNB.ShowInTaskbar = false;
                 m_AddNB.IsSubWindowShow = true;
                 m_NBControl = obj.NBControler;
@@ -70,6 +75,7 @@ namespace SCMTMainWindow
             // 判断是否是合理的IP地址;
 
             // 判断友好名是否为空;
+
             NodeB nodeb = new NodeB(this.IpAddress.Text.ToString(), this.FriendName.Text.ToString());
             // 后续需要用Control类管理，第一版只连接一个基站;
             this.Close();

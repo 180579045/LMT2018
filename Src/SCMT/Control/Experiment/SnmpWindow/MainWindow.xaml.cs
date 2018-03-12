@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Snmp_dll;
 using System.Threading;
+using SCMTOperationCore.Message.SNMP;
 using System.ComponentModel;
 
 namespace SnmpWindow
@@ -133,12 +133,32 @@ namespace SnmpWindow
         /// <param name="e"></param>
         private void GetValue_Continue_Click(object sender, RoutedEventArgs e)
         {
-            if (GetValueStatus)
-                GetValueStatus = false;
-            else if (!GetValueStatus)
-                GetValueStatus = true;
-            StartGetValueContinue();
+            string UserInputList1 = oid1.Text;
+            string UserInputList2 = oid2.Text;
+            string UserInputList3 = oid3.Text;
 
+            List<string> inputoid1 = new List<string>();
+            string[] OidList1, OidList2, OidList3;
+            Dictionary<string, string> Ret1, Ret2, Ret3;
+
+            // 获取用户输入的OIDList1;
+            OidList1 = UserInputList1.Split(';');
+            foreach (string temp in OidList1)
+            {
+                inputoid1.Add(temp);
+            }
+
+
+            // 获取基站中对应数值;
+            SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
+            snmpmsg1.GetRequest(AsyncGetSNMP, inputoid1, "public", "172.27.245.92");
+
+        }
+
+        private void AsyncGetSNMP(IAsyncResult ar)
+        {
+            SnmpMessageResult res = ar as SnmpMessageResult;
+            Dictionary<string, string> temp = res.AsyncState as Dictionary<string,string>;
         }
 
         /// <summary>

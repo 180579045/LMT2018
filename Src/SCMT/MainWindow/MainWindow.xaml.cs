@@ -240,8 +240,14 @@ namespace SCMTMainWindow
             AddNodeB.NewInstance(this).ShowDialog();
         }
 
+        /// <summary>
+        /// 当窗口关闭得时候进行得处理;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNB_Closed(object sender, EventArgs e)
         {
+            // 如果参数为空，则表示没有基站;
             if(!(e is NodeBArgs))
             {
                 return;

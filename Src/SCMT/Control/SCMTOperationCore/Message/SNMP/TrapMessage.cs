@@ -156,6 +156,7 @@ namespace SCMTOperationCore.Message.SNMP
             }
         }
 
+        //______________________________________________________________________Trap不需要获取数据，以下全部不继承____
         public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress)
         {
             throw new NotImplementedException();
@@ -166,5 +167,9 @@ namespace SCMTOperationCore.Message.SNMP
             throw new NotImplementedException();
         }
 
+        public override void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddress)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

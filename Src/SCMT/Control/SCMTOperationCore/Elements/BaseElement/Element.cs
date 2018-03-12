@@ -14,6 +14,7 @@ namespace SCMTOperationCore.Elements
     public abstract class Element
     {
         public IPAddress m_IPAddress { get; set; }                      // 对端IP地址;
+        public int m_Port { get; set; }                                 // 对端TCP端口号;
         public ConnectionState m_ConnectionState { get; set; }          // 连接状态;
 
         public Element()

@@ -75,6 +75,7 @@
     <Compile Include="Elements\NodeB.cs" />
     <Compile Include="Elements\BaseElement\SiElement.cs" />
     <Compile Include="Message\SI\SiMessage.cs" />
+    <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />
     <Compile Include="Message\SNMP\TrapMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

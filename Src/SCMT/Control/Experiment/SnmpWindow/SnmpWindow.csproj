@@ -117,9 +117,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Message\SnmpMessage\SnmpMessage.csproj">
-      <Project>{e7ceb301-3a34-49d2-aa69-e3963dd1ac21}</Project>
-      <Name>SnmpMessage</Name>
+    <ProjectReference Include="..\..\SCMTOperationCore\SCMTOperationCore.csproj">
+      <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
+      <Name>SCMTOperationCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

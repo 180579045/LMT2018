@@ -19,7 +19,7 @@
         <Label x:Name="Retlabel" Content="结果:" HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="RetText" HorizontalAlignment="Left" Height="172" Margin="10,231,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="326"/>
         <Button x:Name="Getvalue" Content="获取数值" HorizontalAlignment="Left" Margin="261,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Click"/>
-        <Button x:Name="GetValue_Continue" Content="持续获取" HorizontalAlignment="Left" Margin="181,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Continue_Click"/>
+        <Button x:Name="GetValue_Continue" Content="异步获取" HorizontalAlignment="Left" Margin="181,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Continue_Click"/>
 
         <Label x:Name="Traplabel" Content="Trap:" HorizontalAlignment="Left" Margin="341,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TrapText" HorizontalAlignment="Left" Height="533" Margin="341,41,0,0" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" VerticalAlignment="Top" Width="555"/>

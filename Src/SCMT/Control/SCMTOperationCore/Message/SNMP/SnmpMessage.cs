@@ -12,6 +12,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using SnmpSharpNet;
 
 namespace SCMTOperationCore.Message.SNMP
@@ -39,12 +40,71 @@ namespace SCMTOperationCore.Message.SNMP
         public abstract Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress);
 
         /// <summary>
+        /// GetRequest的对外接口，客户端通过异步回调获取数据;
+        /// </summary>
+        /// <param name="callback">异步回调方法</param>
+        /// <param name="PduList">需要查询的Pdu列表</param>
+        /// <param name="Community">需要设置的Community</param>
+        /// <param name="IpAddress">需要设置的IP地址</param>
+        public abstract void GetRequest(AsyncCallback callback, List<string>PduList, string Community, string IpAddress);
+
+        /// <summary>
         /// SetRequest的对外接口
         /// </summary>
         /// <param name="PduList">需要查询的Pdu列表</param>
         /// <param name="Community">需要设置的Community</param>
         /// <param name="IpAddress">需要设置的IP地址</param>
         public abstract void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress);
+
+
+        /// <summary>
+        /// GetNext的对外接口;
+        /// </summary>
+        //public abstract void GetNext();
+
+    }
+
+    public class SnmpMessageResult : IAsyncResult
+    {
+        private Dictionary<string, string> m_Result;
+
+        public void SetSNMPReslut(Dictionary<string, string> res)
+        {
+            this.m_Result = res;
+        }
+
+        public object AsyncState
+        {
+            get
+            {
+                return m_Result;
+            }
+        }
+
+        public WaitHandle AsyncWaitHandle
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool CompletedSynchronously
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool IsCompleted
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
 
     }
 
@@ -111,6 +171,64 @@ namespace SCMTOperationCore.Message.SNMP
 
             target.Close();
             return rest;
+        }
+
+        public override void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddr)
+        {
+            // 当确认全部获取SNMP数据后，调用callback回调;
+            SnmpMessageResult res = new SnmpMessageResult();
+
+            OctetString community = new OctetString(Community);
+            AgentParameters param = new AgentParameters(community);
+            param.Version = SnmpVersion.Ver2;
+            IpAddress agent = new IpAddress(IpAddr);
+            Dictionary<string, string> rest = new Dictionary<string, string>();
+
+            // 创建代理(基站);
+            UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+
+            // Pdu请求形式Get;
+            Pdu pdu = new Pdu(PduType.Get);
+            foreach (string pdulist in PduList)
+            {
+                pdu.VbList.Add(pdulist);
+            }
+
+            // 接收结果;
+            m_Result = (SnmpV2Packet)target.Request(pdu, param);
+
+            if (m_Result != null)
+            {
+                // ErrorStatus other then 0 is an error returned by 
+                // the Agent - see SnmpConstants for error definitions
+                if (m_Result.Pdu.ErrorStatus != 0)
+                {
+                    // agent reported an error with the request
+                    Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
+                        m_Result.Pdu.ErrorStatus,
+                        m_Result.Pdu.ErrorIndex);
+
+                    rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
+                    res.SetSNMPReslut(rest);
+                    callback(res);
+                }
+                else
+                {
+                    for (int i = 0; i < m_Result.Pdu.VbCount; i++)
+                    {
+                        rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
+                        res.SetSNMPReslut(rest);
+                        callback(res);
+                    }
+
+                }
+            }
+            else
+            {
+                Console.WriteLine("No response received from SNMP agent.");
+            }
+
+            target.Close();
         }
 
         /// <summary>
