@@ -32,7 +32,7 @@ namespace SCMTMainWindow
         private List<string> CollectList = new List<string>();
         public NodeBControl NBControler;
         public NodeB node;
-
+        bool bIsRepeat;
         public MainWindow()
         {
             InitializeComponent();
@@ -148,11 +148,30 @@ namespace SCMTMainWindow
                 TempCount++;
             }
             reader.Close();
-            File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
-
+            FileStream fs = new FileStream(cfgFile, FileMode.OpenOrCreate);
+            StreamWriter sw = new StreamWriter(fs);
+            sw.Write(JObj);
+            sw.Close();
+            //File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
 
         }
-
+        private void IsRepeatNode(ObjNode iter, List<ObjNode> listIter)
+        {
+            foreach(ObjNode iterListSub in listIter)
+            {
+                if(iter.ObjName == iterListSub.ObjName)
+                {
+                    bIsRepeat = true;
+                }
+                else
+                {
+                    if(iterListSub.SubObj_Lsit != null)
+                    {
+                        IsRepeatNode(iter, iterListSub.SubObj_Lsit);
+                    }
+                }
+            }
+        }
         private void Collect_Node_Click(object sender, EventArgs e)
         {
             ObjNode Objnode;
@@ -193,11 +212,21 @@ namespace SCMTMainWindow
 
                 TempCount++;
             }
+            reader.Close();
             ObjNodeControl Ctrl = new ObjNodeControl(node);
             // 遍历所有节点确认亲子关系;
             foreach (ObjNode iter in m_NodeList)
             {
                 //Root.Add(iter);
+                if (Root.SubObj_Lsit != null)
+                {
+                    bIsRepeat = false;
+                    IsRepeatNode(iter, Root.SubObj_Lsit);
+                    if (bIsRepeat)
+                    {
+                        continue;
+                    }
+                }
                 // 遍历所有节点确认亲子关系;
                 foreach (ObjNode iter1 in Ctrl.m_NodeList)
                 {
