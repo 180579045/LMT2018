@@ -151,7 +151,7 @@ namespace SnmpWindow
 
             // 获取基站中对应数值;
             SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-            snmpmsg1.GetRequest(AsyncGetSNMP, inputoid1, "public", "172.27.245.92");
+            snmpmsg1.GetRequest(new AsyncCallback(AsyncGetSNMP), inputoid1, "public", "172.27.245.92");
 
         }
 
@@ -169,6 +169,7 @@ namespace SnmpWindow
             SnmpMessageV2c snmpmsg = new SnmpMessageV2c();
             Dictionary<string, string> Ret;
             List<string> inputpdu = new List<string>();
+            // 这个是板卡表;
             inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.4.0.0.1");
             inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.5.0.0.1");
             inputpdu.Add("1.3.6.1.4.1.5105.100.1.9.5.1.1.6.0.0.1");
@@ -218,7 +219,32 @@ namespace SnmpWindow
             List<string> inputoid1 = new List<string>();
             
             SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");
-            Dictionary<string,string> ret = msg.GetNext(UserInputList1);
+            //Dictionary<string,string> ret = msg.GetNext(UserInputList1);
+        }
+
+        private void GetNextAsync_Click(object sender, RoutedEventArgs e)
+        {
+            string oid = oid1.Text;
+            string[] oids = oid.Split(';');
+            List<string> OidsArgs = new List<string>();
+
+            foreach(string iter in oids)
+            {
+                OidsArgs.Add(iter);
+            }
+
+            SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");
+            msg.GetNextRequest(new AsyncCallback(ReceiveRes), OidsArgs);
+        }
+
+        void ReceiveRes(IAsyncResult ar)
+        {
+            SnmpMessageResult res = ar as SnmpMessageResult;
+
+            foreach(KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string> )
+            {
+                Console.WriteLine("NextIndex" + iter.Key.ToString()+ "Value:" + iter.Value.ToString());
+            }
         }
     }
 

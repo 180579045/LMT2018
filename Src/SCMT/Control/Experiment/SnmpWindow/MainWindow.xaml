@@ -21,6 +21,7 @@
         <Button x:Name="Getvalue" Content="获取数值" HorizontalAlignment="Left" Margin="261,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Click"/>
         <Button x:Name="GetValue_Continue" Content="异步获取" HorizontalAlignment="Left" Margin="181,408,0,0" VerticalAlignment="Top" Width="75" Click="GetValue_Continue_Click"/>
         <Button x:Name="GetNext" Content="GetNext" HorizontalAlignment="Left" Margin="101,408,0,0" VerticalAlignment="Top" Width="75" Click="GetNext_Click" />
+        <Button x:Name="GetNextAsync" Content="GetNextAsync" HorizontalAlignment="Left" Margin="14,408,0,0" VerticalAlignment="Top" Width="75" Click="GetNextAsync_Click" />
 
         <Label x:Name="Traplabel" Content="Trap:" HorizontalAlignment="Left" Margin="341,10,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="TrapText" HorizontalAlignment="Left" Height="533" Margin="341,41,0,0" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" VerticalAlignment="Top" Width="555"/>

@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using SnmpSharpNet;
+using System.Threading.Tasks;
 
 namespace SCMTOperationCore.Message.SNMP
 {
@@ -27,7 +28,7 @@ namespace SCMTOperationCore.Message.SNMP
         public string m_Community { get; set; }                           // 代理目标的Community
         public string m_ErrorStatus { get; set; }                         // 错误码;
         protected SnmpV2Packet m_Result { get; set; }                     // 返回结果;
-        public SnmpVersion m_Version { get { return SnmpVersion.Ver2; } } // SNMP版本;
+        public SnmpVersion m_Version { get { return SnmpVersion.Ver2; } } // SNMP版本,当前基站使用SNMP固定为Ver.2;
         public List<string> PduList { get; set; }                         // Snmp报文的Pdu列表
 
         public SnmpMessage(string Commnuity, string ipaddr)
@@ -74,11 +75,19 @@ namespace SCMTOperationCore.Message.SNMP
         /// <param name="IpAddress">需要设置的IP地址</param>
         public abstract void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress);
 
+        /// <summary>
+        /// SetRequest的对外接口;
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="PduList"></param>
+        public abstract void SetRequest(AsyncCallback callback, List<string>PduList);
 
         /// <summary>
-        /// GetNext的对外接口;
+        /// GetRequest的对外接口;
         /// </summary>
-        public abstract Dictionary<string, string> GetNext(string oid);
+        /// <param name="callback">获得结果后的异步回调</param>
+        /// <param name="PduList">最开始的入参</param>
+        public abstract void GetNextRequest(AsyncCallback callback, List<string> PduList);
 
         /// <summary>
         /// 连接代理;
@@ -97,6 +106,38 @@ namespace SCMTOperationCore.Message.SNMP
             // 创建代理(基站);
             UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
             return target;
+        }
+
+        /// <summary>
+        /// GetNext;
+        /// </summary>
+        protected Dictionary<string, string> GetNext(List<string> oid)
+        {
+            SimpleSnmp SnmpMsg = new SimpleSnmp(this.m_IPAddr, this.m_Community);
+            Dictionary<string, string> Res = new Dictionary<string, string>();
+            List<string> NextOids = new List<string>();
+            Dictionary<Oid, AsnType> TempRes = new Dictionary<Oid, AsnType>();
+            string[] oidargs;
+
+            if(oid.Count != 0)
+            {
+                oidargs = oid.ToArray();
+                TempRes = SnmpMsg.GetNext(this.m_Version, oidargs);
+                if (TempRes != null)
+                {
+                    oid.Clear();
+                    foreach (KeyValuePair<Oid, AsnType> entry in TempRes)
+                    {
+                        Res.Add(entry.Key.ToString(), entry.Value.ToString());
+                        oid.Add(entry.Key.ToString());
+                    }
+                }
+                else
+                {
+                    oid.Clear();
+                }
+            }
+            return Res;
         }
 
     }
@@ -244,42 +285,48 @@ namespace SCMTOperationCore.Message.SNMP
             {
                 pdu.VbList.Add(pdulist);
             }
+            
+            Task tsk = Task.Factory.StartNew(()=> {
+                
+                // 接收结果;
+                m_Result = (SnmpV2Packet)target.Request(pdu, param);
 
-            // 接收结果;
-            m_Result = (SnmpV2Packet)target.Request(pdu, param);
-
-            if (m_Result != null)
-            {
-                // ErrorStatus other then 0 is an error returned by 
-                // the Agent - see SnmpConstants for error definitions
-                if (m_Result.Pdu.ErrorStatus != 0)
+                if (m_Result != null)
                 {
-                    // agent reported an error with the request
-                    Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-                        m_Result.Pdu.ErrorStatus,
-                        m_Result.Pdu.ErrorIndex);
+                    // ErrorStatus other then 0 is an error returned by 
+                    // the Agent - see SnmpConstants for error definitions
+                    if (m_Result.Pdu.ErrorStatus != 0)
+                    {
+                        // agent reported an error with the request
+                        Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
+                            m_Result.Pdu.ErrorStatus,
+                            m_Result.Pdu.ErrorIndex);
 
-                    rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
-                    res.SetSNMPReslut(rest);
-                    callback(res);
+                        rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
+                        res.SetSNMPReslut(rest);
+                        Thread.Sleep(3111);
+                        callback(res);
+                    }
+                    else
+                    {
+                        for (int i = 0; i < m_Result.Pdu.VbCount; i++)
+                        {
+                            rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
+                            res.SetSNMPReslut(rest);
+                            Thread.Sleep(3111);
+                            callback(res);
+                        }
+
+                    }
                 }
                 else
                 {
-                    for (int i = 0; i < m_Result.Pdu.VbCount; i++)
-                    {
-                        rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
-                        res.SetSNMPReslut(rest);
-                        callback(res);
-                    }
-
+                    Console.WriteLine("No response received from SNMP agent.");
                 }
-            }
-            else
-            {
-                Console.WriteLine("No response received from SNMP agent.");
-            }
 
-            target.Close();
+                target.Close();
+            });
+            
         }
 
         /// <summary>
@@ -347,35 +394,45 @@ namespace SCMTOperationCore.Message.SNMP
             }
         }
 
-        /// <summary>
-        /// GetNext方法;
-        /// </summary>
-        /// <param name="oid"></param>
-        /// <returns></returns>
-        public override Dictionary<string, string> GetNext(string oid)
+        public override void SetRequest(AsyncCallback callback, List<string> PduList)
         {
-            SimpleSnmp SnmpMsg = new SimpleSnmp(this.m_IPAddr, this.m_Community);
-            Dictionary<Oid,AsnType> TempRes = SnmpMsg.GetNext(this.m_Version, new string[] { oid });
-            Dictionary<string, string> Res = new Dictionary<string, string>();
-
-            if(TempRes != null)
-            {
-                foreach (KeyValuePair<Oid, AsnType> entry in TempRes)
-                {
-                    Console.WriteLine("{0} = {1}: {2}", entry.Key.ToString(), SnmpConstants.GetTypeName(entry.Value.Type),
-                                        entry.Value.ToString());
-                    Res.Add(entry.Key.ToString(), entry.Value.ToString());
-                }
-            }
-            else
-            {
-                // null
-            }
-            
-
-            return Res;
+            throw new NotImplementedException();
         }
+        
+        /// <summary>
+        /// GetNext的对外接口
+        /// 该函数会在第一次收到客户端请求后;
+        /// 在每次收到基站的GetResponse之后，都会调用客户端注册的回调函数
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="PduList"></param>
+        public override void GetNextRequest(AsyncCallback callback, List<string> PduList)
+        {
+            SnmpMessageResult res = new SnmpMessageResult();
+            if ((PduList.Count == 0) && (PduList == null))
+            {
+                return;
+            }
+            Task tsk = Task.Factory.StartNew(()=>
+            {
+                Dictionary<string, string> NextRest = new Dictionary<string, string>();
+                List<List<string>> AllList = new List<List<string>>();
 
+                AllList.Add(PduList);
+                for(int i = 0; i <= AllList.Count; )
+                {
+                    NextRest = this.GetNext(AllList[i]);        // 返回结果，同时更新下一个有效的OidList;
+                    if(AllList[i].Count != 0)
+                    {
+                        AllList.Add(AllList[i]);
+                        i++;
+                    }
+                        
+                    res.SetSNMPReslut(NextRest);
+                    callback(res);
+                }
+            });
+        }
     }
 
 }

@@ -183,8 +183,13 @@ namespace SCMTOperationCore.Message.SNMP
         {
             throw new NotImplementedException();
         }
+     
+        public override void SetRequest(AsyncCallback callback, List<string> PduList)
+        {
+            throw new NotImplementedException();
+        }
 
-        public override Dictionary<string, string> GetNext(string oid)
+        public override void GetNextRequest(AsyncCallback callback, List<string> PduList)
         {
             throw new NotImplementedException();
         }
