@@ -33,6 +33,13 @@ namespace SCMTOperationCore.Message.SNMP
         private static volatile bool WaitTrapRunstate = true;                      // 是否接收Trap的标志位;
         private static Socket socket;
 
+        public TrapMessage(string Commnuity, string ipaddr) : base(Commnuity, ipaddr)
+        {
+        }
+        public TrapMessage()
+        {
+        }
+
         /// <summary>
         /// 设置观察者列表;
         /// </summary>
@@ -168,6 +175,16 @@ namespace SCMTOperationCore.Message.SNMP
         }
 
         public override void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Dictionary<string, string> GetRequest(List<string> PduList)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Dictionary<string, string> GetNext(string oid)
         {
             throw new NotImplementedException();
         }

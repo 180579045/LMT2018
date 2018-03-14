@@ -27,8 +27,19 @@ namespace SCMTOperationCore.Message.SNMP
         public string m_Community { get; set; }                           // 代理目标的Community
         public string m_ErrorStatus { get; set; }                         // 错误码;
         protected SnmpV2Packet m_Result { get; set; }                     // 返回结果;
-
+        public SnmpVersion m_Version { get { return SnmpVersion.Ver2; } } // SNMP版本;
         public List<string> PduList { get; set; }                         // Snmp报文的Pdu列表
+
+        public SnmpMessage(string Commnuity, string ipaddr)
+        {
+            this.m_IPAddr = ipaddr;
+            this.m_Community = Commnuity;
+        }
+
+        public SnmpMessage()
+        {
+
+        }
 
         /// <summary>
         /// GetRequest的对外接口
@@ -49,6 +60,13 @@ namespace SCMTOperationCore.Message.SNMP
         public abstract void GetRequest(AsyncCallback callback, List<string>PduList, string Community, string IpAddress);
 
         /// <summary>
+        /// GetRequest的对外接口，入参只有Pdulist
+        /// </summary>
+        /// <param name="PduList"></param>
+        /// <returns></returns>
+        public abstract Dictionary<string,string> GetRequest(List<string> PduList);
+
+        /// <summary>
         /// SetRequest的对外接口
         /// </summary>
         /// <param name="PduList">需要查询的Pdu列表</param>
@@ -60,10 +78,31 @@ namespace SCMTOperationCore.Message.SNMP
         /// <summary>
         /// GetNext的对外接口;
         /// </summary>
-        //public abstract void GetNext();
+        public abstract Dictionary<string, string> GetNext(string oid);
+
+        /// <summary>
+        /// 连接代理;
+        /// </summary>
+        /// <param name="Community"></param>
+        /// <param name="IpAddr"></param>
+        /// <returns></returns>
+        protected UdpTarget ConnectToAgent(string Community, string IpAddr)
+        {
+            OctetString community = new OctetString(Community);
+            AgentParameters param = new AgentParameters(community);
+            param.Version = SnmpVersion.Ver2;
+            IpAddress agent = new IpAddress(IpAddr);
+            Dictionary<string, string> rest = new Dictionary<string, string>();
+
+            // 创建代理(基站);
+            UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+            return target;
+        }
 
     }
-
+    /// <summary>
+    /// 异步获取SNMP结果参数;
+    /// </summary>
     public class SnmpMessageResult : IAsyncResult
     {
         private Dictionary<string, string> m_Result;
@@ -113,8 +152,16 @@ namespace SCMTOperationCore.Message.SNMP
     /// </summary>
     public class SnmpMessageV2c : SnmpMessage
     {
+        public SnmpMessageV2c(string Commnuity, string ipaddr) : base(Commnuity, ipaddr)
+        {
+        }
+
+        public SnmpMessageV2c()
+        {
+        }
+
         /// <summary>
-        /// GetRequest的SnmpV2c版本
+        /// GetRequest
         /// </summary>
         /// <param name="PduList">需要查询的Pdu列表</param>
         /// <param name="Community">需要设置的Community</param>
@@ -122,16 +169,15 @@ namespace SCMTOperationCore.Message.SNMP
         /// <returns>返回一个字典,键值为OID,值为MIB值;</returns>
         public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddr)
         {
+            Dictionary<string, string> rest = new Dictionary<string, string>();
             OctetString community = new OctetString(Community);
             AgentParameters param = new AgentParameters(community);
             param.Version = SnmpVersion.Ver2;
-            IpAddress agent = new IpAddress(IpAddr);
-            Dictionary<string, string> rest = new Dictionary<string, string>();
 
             // 创建代理(基站);
-            UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+            UdpTarget target = ConnectToAgent(Community, IpAddr);
 
-            // Pdu请求形式Get;
+            // 填写Pdu请求;
             Pdu pdu = new Pdu(PduType.Get);
             foreach (string pdulist in PduList)
             {
@@ -173,19 +219,24 @@ namespace SCMTOperationCore.Message.SNMP
             return rest;
         }
 
+        /// <summary>
+        /// 带有异步回调的GetResponse;
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="PduList"></param>
+        /// <param name="Community"></param>
+        /// <param name="IpAddr"></param>
         public override void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddr)
         {
             // 当确认全部获取SNMP数据后，调用callback回调;
             SnmpMessageResult res = new SnmpMessageResult();
-
             OctetString community = new OctetString(Community);
             AgentParameters param = new AgentParameters(community);
-            param.Version = SnmpVersion.Ver2;
-            IpAddress agent = new IpAddress(IpAddr);
             Dictionary<string, string> rest = new Dictionary<string, string>();
+            param.Version = SnmpVersion.Ver2;
 
             // 创建代理(基站);
-            UdpTarget target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+            UdpTarget target = ConnectToAgent(Community,IpAddr);
 
             // Pdu请求形式Get;
             Pdu pdu = new Pdu(PduType.Get);
@@ -229,6 +280,16 @@ namespace SCMTOperationCore.Message.SNMP
             }
 
             target.Close();
+        }
+
+        /// <summary>
+        /// 只需要填入Pdulist的GetResponse;
+        /// </summary>
+        /// <param name="PduList"></param>
+        /// <returns></returns>
+        public override Dictionary<string, string> GetRequest(List<string> PduList)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -285,6 +346,36 @@ namespace SCMTOperationCore.Message.SNMP
                 }
             }
         }
+
+        /// <summary>
+        /// GetNext方法;
+        /// </summary>
+        /// <param name="oid"></param>
+        /// <returns></returns>
+        public override Dictionary<string, string> GetNext(string oid)
+        {
+            SimpleSnmp SnmpMsg = new SimpleSnmp(this.m_IPAddr, this.m_Community);
+            Dictionary<Oid,AsnType> TempRes = SnmpMsg.GetNext(this.m_Version, new string[] { oid });
+            Dictionary<string, string> Res = new Dictionary<string, string>();
+
+            if(TempRes != null)
+            {
+                foreach (KeyValuePair<Oid, AsnType> entry in TempRes)
+                {
+                    Console.WriteLine("{0} = {1}: {2}", entry.Key.ToString(), SnmpConstants.GetTypeName(entry.Value.Type),
+                                        entry.Value.ToString());
+                    Res.Add(entry.Key.ToString(), entry.Value.ToString());
+                }
+            }
+            else
+            {
+                // null
+            }
+            
+
+            return Res;
+        }
+
     }
 
 }

@@ -210,7 +210,16 @@ namespace SnmpWindow
             SnmpMessageV2c SetValue = new SnmpMessageV2c();
             SetValue.SetRequest(Pdulist1, "public", "172.27.245.92");
         }
-        
+
+        private void GetNext_Click(object sender, RoutedEventArgs e)
+        {
+            string UserInputList1 = oid1.Text;
+
+            List<string> inputoid1 = new List<string>();
+            
+            SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");
+            Dictionary<string,string> ret = msg.GetNext(UserInputList1);
+        }
     }
 
 }
