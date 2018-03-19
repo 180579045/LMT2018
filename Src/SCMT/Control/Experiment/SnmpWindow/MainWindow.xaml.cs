@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using System.Threading;
 using SCMTOperationCore.Message.SNMP;
 using System.ComponentModel;
+using Xceed.Wpf.AvalonDock.Layout;
+using Xceed.Wpf.AvalonDock;
 
 namespace SnmpWindow
 {
@@ -245,6 +247,15 @@ namespace SnmpWindow
             {
                 Console.WriteLine("NextIndex" + iter.Key.ToString()+ "Value:" + iter.Value.ToString());
             }
+        }
+
+        private void shownewpanel(object sender, RoutedEventArgs e)
+        {
+            LayoutAnchorable sub = new LayoutAnchorable();
+            this.pane1.Children.Add(sub);
+            sub.Title = "aa";
+            sub.IsVisible = true;
+            sub.Float();
         }
     }
 

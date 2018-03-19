@@ -431,6 +431,7 @@ namespace SCMTOperationCore.Message.SNMP
                     res.SetSNMPReslut(NextRest);
                     callback(res);
                 }
+                return;
             });
         }
     }
