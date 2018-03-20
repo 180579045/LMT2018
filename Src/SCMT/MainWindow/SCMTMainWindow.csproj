@@ -299,14 +299,6 @@
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UI\Chart\FlowChart\FlowChart.csproj">
-      <Project>{8ebe8c08-d5d9-4f98-930f-d930c19a44b3}</Project>
-      <Name>FlowChart</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UI\Chart\LineChart\LineChart.csproj">
-      <Project>{736fd4f8-936f-46e9-a766-c9937f359e3a}</Project>
-      <Name>LineChart</Name>
-    </ProjectReference>
     <ProjectReference Include="..\UI\WPFView\UICore.csproj">
       <Project>{f5dbbc65-f7d3-4a0d-8a9f-3dafd3deb7ed}</Project>
       <Name>UICore</Name>

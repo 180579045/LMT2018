@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:avalon="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed">
 
@@ -39,10 +40,11 @@
     <Grid>
 
         <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
-
+            
             <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" Grid.Column="3">
+                
+               
                 <Grid>
-
                     <!--设置整个页面行列个个数和格式-->
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -78,7 +80,7 @@
                                         </Metro:MetroContextMenu>
                                     </Metro:MetroExpander.ContextMenu>
                                 </Metro:MetroExpander>
-
+                                
                             </StackPanel>
                         </Border>
                     </Metro:MetroScrollViewer>
@@ -98,75 +100,47 @@
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                             <StackPanel>
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
-                                        ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
+                                                    ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
 
                                 <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
 
-                    <!--右侧状态栏-->
+                                <!--右侧状态栏-->
                     <Metro:MetroTabControl x:Name="tabc" Grid.Column="3" Margin="0,30,0,0">
                         <Metro:MetroTabItem x:Name="NodebName" Header="" Icon="Resources/tabIcon.png">
 
-                            <Grid x:Name="Content">
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition MaxHeight="800"/>                   <!--基本信息显示-->
-                                    <RowDefinition Height="5"/>                        <!--中间的分割线-->
-                                    <RowDefinition Height="200" MaxHeight="900" />     <!--基站Conso和消息内容-->
-                                </Grid.RowDefinitions>
-
-                                <Grid Grid.Row="0">
-                                    <!--基本信息栏-->
-
-                                    <Metro:MetroScrollViewer x:Name="Content_Base">
-                                    </Metro:MetroScrollViewer>
-                                    
-                                    <!--自由栏-->
-                                    <Grid x:Name="Content_Comm">
+                            <avalon:DockingManager x:Name="avaManager">
+                                <avalon:LayoutRoot x:Name="avaRoot">
+                                    <avalon:LayoutPanel Orientation="Vertical">
                                         
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition ></ColumnDefinition>
-                                            <ColumnDefinition ></ColumnDefinition>
-                                            <ColumnDefinition ></ColumnDefinition>
-                                        </Grid.ColumnDefinitions>
+                                        <!--基本信息栏-->
+                                        <avalon:LayoutDocumentPane ShowHeader="False">
+                                            <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanTogglePin="False" CanAutoHide="False">
+                                                <Grid x:Name="Content">
 
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
-                                            <RowDefinition></RowDefinition>
-                                        </Grid.RowDefinitions>
+                                                    <Grid>
+                                                        <Metro:MetroScrollViewer x:Name="Content_Base">
+                                                        </Metro:MetroScrollViewer>
+                                                        <!--自由栏-->
+                                                        <Grid x:Name="Content_Comm">
+                                                        </Grid>
+                                                    </Grid>
+                                                    
+                                                </Grid>
 
-                                        <Grid Grid.Row="0" Grid.Column="0">
-                                            <cefSharp:ChromiumWebBrowser Address="http:\\www.baidu.com" />
-                                        </Grid>
+                                            </avalon:LayoutAnchorable>
+                                        </avalon:LayoutDocumentPane>
 
-                                        <Grid Grid.Row="0" Grid.Column="1">
-                                            <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
-                                        </Grid>
-
-                                        <Grid Grid.Row="0" Grid.Column="2">
-                                            <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
-                                        </Grid>
-
-                                        <Grid Grid.Row="1" Grid.Column="0">
-                                            <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
-                                        </Grid>
-
-                                        <Grid Grid.Row="1" Grid.Column="1">
-                                            <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
-                                        </Grid>
-
-                                    </Grid>
-                                </Grid>
-                                
-
-                            </Grid>
+                                    </avalon:LayoutPanel>
+                                </avalon:LayoutRoot>
+                            </avalon:DockingManager>
                         </Metro:MetroTabItem>
 
                     </Metro:MetroTabControl>
                 </Grid>
+                
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="小区规划" Icon="Resources/NetPlan.png" IconMove="Resources/NetPlanB.png">

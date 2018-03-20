@@ -140,8 +140,7 @@ namespace SnmpWindow
             string UserInputList3 = oid3.Text;
 
             List<string> inputoid1 = new List<string>();
-            string[] OidList1, OidList2, OidList3;
-            Dictionary<string, string> Ret1, Ret2, Ret3;
+            string[] OidList1;
 
             // 获取用户输入的OIDList1;
             OidList1 = UserInputList1.Split(';');

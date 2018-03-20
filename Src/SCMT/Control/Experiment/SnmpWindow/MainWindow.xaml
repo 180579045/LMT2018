@@ -21,6 +21,7 @@
 
             <avalon:LayoutRoot x:Name="avaRoot">
                 <avalon:LayoutPanel Orientation="Vertical">
+                    
                     <avalon:LayoutDocumentPane>
                         <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanTogglePin="False" CanAutoHide="False">
                             <Grid>
