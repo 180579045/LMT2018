@@ -55,14 +55,12 @@ namespace SCMTMainWindow
         /// <summary>
         /// 递归某个节点的所有孩子节点，并填入对象树容器中;
         /// </summary>
-        public void TraverseChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths, Grid ContentGrid, MetroScrollViewer NB_Base_Container)
+        public void TraverseChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths)
         {
             Thickness margin = new Thickness();
             // 遍历所有对象树节点;
             foreach (var Obj_Node in SubObj_Lsit)
             {
-                Obj_Node.m_NB_Base_Contain = NB_Base_Container;
-                Obj_Node.m_NB_ContentGrid = ContentGrid;
                 // 只有枝节点才能够加入对象树;
                 if (Obj_Node is ObjTreeNode)
                 {
@@ -104,19 +102,18 @@ namespace SCMTMainWindow
                     Obj_Tree.Add(item);
 
                     // 递归孩子节点;
-                    Obj_Node.TraverseChildren(item, Lists, depths + 15, ContentGrid, NB_Base_Container);
+                    Obj_Node.TraverseChildren(item, Lists, depths + 15);
                 }
                 
             }
         }
-        public void TraverseCollectChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths, Grid ContentGrid, MetroScrollViewer NB_Base_Container)
+
+        public void TraverseCollectChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths)
         {
             Thickness margin = new Thickness();
             // 遍历所有对象树节点;
             foreach (var Obj_Node in SubObj_Lsit)
             {
-                Obj_Node.m_NB_Base_Contain = NB_Base_Container;
-                Obj_Node.m_NB_ContentGrid = ContentGrid;
                 // 只有枝节点才能够加入对象树;
                 if (Obj_Node is ObjTreeNode)
                 {
@@ -159,7 +156,7 @@ namespace SCMTMainWindow
 
                     Obj_Tree.Add(item);
                     // 递归孩子节点;
-                    Obj_Node.TraverseChildren(item, Lists, depths + 15, ContentGrid, NB_Base_Container);
+                    Obj_Node.TraverseChildren(item, Lists, depths + 15);
                 }
                 else
                 {
@@ -268,10 +265,6 @@ namespace SCMTMainWindow
                 ObjNode node = item.obj_type as ObjNode;
 
                 Console.WriteLine("LeafNode Clicked!" + node.ObjName);
-                item.NBBase_Grid = node.m_NB_Base_Contain;
-                item.NBContent_Grid = node.m_NB_ContentGrid;
-                item.NBBase_Grid.Visibility = Visibility.Hidden;
-                item.NBContent_Grid.Visibility = Visibility.Visible;
             }
 
         }
@@ -290,7 +283,7 @@ namespace SCMTMainWindow
             }
             else
             {
-                Console.WriteLine("添加重复节点");
+                Console.WriteLine("添加重复节点;");
             }
             //SubObj_Lsit.Add(obj);
         }
@@ -330,10 +323,6 @@ namespace SCMTMainWindow
             ObjNode node = item.obj_type as ObjNode;
 
             Console.WriteLine("LeafNode Clicked!" + node.ObjName);
-            item.NBBase_Grid = node.m_NB_Base_Contain;
-            item.NBContent_Grid = node.m_NB_ContentGrid;
-            item.NBBase_Grid.Visibility = Visibility.Hidden;
-            item.NBContent_Grid.Visibility = Visibility.Visible;
         }
         
         public override void Add(ObjNode obj)

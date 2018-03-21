@@ -63,15 +63,21 @@
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
                             <StackPanel x:Name="lists">
 
-                                <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" Icon="Resources/Star.png" Click="Collect_Node_Click" />
-
                                 <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" />
 
                                 <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
-
-                                <Metro:MetroExpander Header="图表模板" Icon="Resources/NetPLanB.png" />
-
+                                
                                 <Metro:MetroExpander Header="消息模板" Icon="Resources/NetPLanB.png" />
+
+                                <Metro:MetroExpander Header="图表模板" >
+                                    <StackPanel>
+                                        <Metro:MetroExpander Header="数据表" />
+                                        <Metro:MetroExpander Header="折线图" Click="Show_LineChart" />
+                                        <Metro:MetroExpander Header="流程图" />
+                                    </StackPanel>
+                                </Metro:MetroExpander>
+
+                                <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" Click="Collect_Node_Click" />
 
                                 <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
                                     <Metro:MetroExpander.ContextMenu>
@@ -107,32 +113,16 @@
                         </Border>
                     </Metro:MetroFavScrollViewer>
 
-                                <!--右侧状态栏-->
+                    <!--右侧状态栏-->
                     <Metro:MetroTabControl x:Name="tabc" Grid.Column="3" Margin="0,30,0,0">
                         <Metro:MetroTabItem x:Name="NodebName" Header="" Icon="Resources/tabIcon.png">
 
                             <avalon:DockingManager x:Name="avaManager">
                                 <avalon:LayoutRoot x:Name="avaRoot">
-                                    <avalon:LayoutPanel Orientation="Vertical">
-                                        
-                                        <!--基本信息栏-->
-                                        <avalon:LayoutDocumentPane ShowHeader="False">
-                                            <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanTogglePin="False" CanAutoHide="False">
-                                                <Grid x:Name="Content">
-
-                                                    <Grid>
-                                                        <Metro:MetroScrollViewer x:Name="Content_Base">
-                                                        </Metro:MetroScrollViewer>
-                                                        <!--自由栏-->
-                                                        <Grid x:Name="Content_Comm">
-                                                        </Grid>
-                                                    </Grid>
-                                                    
-                                                </Grid>
-
-                                            </avalon:LayoutAnchorable>
+                                    <!--可自由布局的信息栏-->
+                                    <avalon:LayoutPanel>
+                                        <avalon:LayoutDocumentPane x:Name="Pane">
                                         </avalon:LayoutDocumentPane>
-
                                     </avalon:LayoutPanel>
                                 </avalon:LayoutRoot>
                             </avalon:DockingManager>

@@ -73,22 +73,29 @@ namespace SCMTMainWindow
         /// 更新对象树模型以及叶节点模型;
         /// </summary>
         /// <param name="ItemsSource">对象树列表</param>
-        private void RefreshObj(IList<ObjNode> ItemsSource, Grid NB_Content)
+        private void RefreshObj(IList<ObjNode> ItemsSource)
         {
             // 将右侧叶节点容器容器加入到对象树子容器中;
             this.Obj_Root.SubExpender = this.FavLeaf_Lists;
 
             foreach (ObjNode items in ItemsSource)
             {
-                items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0, this.Content_Comm, this.Content_Base);
+                items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0);
             }
         }
 
+        /// <summary>
+        /// 窗口关闭;
+        /// 关闭先前注册的服务;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
             TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
         }
         
+
         /// <summary>
         /// 将对象树添加到收藏;
         /// </summary>
@@ -137,10 +144,6 @@ namespace SCMTMainWindow
                             new JProperty("MIBList", ObjMibList),
                             new JProperty("ObjCollect",1));
                         JObj.First.Next.First[TempCount].Remove();
-                        //JObject child = new JObject("ObjCollect", 1);
-                        //var collectJason = JObject.Parse(@"""ObjCollect"": 1");
-                        //var collectToken = collectJason as JToken;
-                        //JObj.First.Next.First[TempCount].AddAfterSelf(new JObject(new JProperty("ObjCollect", 1)));
                         JObj.First.Next.First[TempCount].AddBeforeSelf(NewObjNodes);
                         break;
                     }
@@ -155,6 +158,7 @@ namespace SCMTMainWindow
             //File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
 
         }
+
         private void IsRepeatNode(ObjNode iter, List<ObjNode> listIter)
         {
             foreach(ObjNode iterListSub in listIter)
@@ -172,6 +176,7 @@ namespace SCMTMainWindow
                 }
             }
         }
+
         private void Collect_Node_Click(object sender, EventArgs e)
         {
             ObjNode Objnode;
@@ -254,15 +259,15 @@ namespace SCMTMainWindow
 
             foreach (ObjNode items in RootNodeShow)
             {
-                items.TraverseCollectChildren(this.Obj_Collect, this.FavLeaf_Lists, 0, this.Content_Comm, this.Content_Base);
+                items.TraverseCollectChildren(this.Obj_Collect, this.FavLeaf_Lists, 0);
             }
         }
-
-        private void MetroMenuSeparator_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-
-        }
         
+        /// <summary>
+        /// 添加基站;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddNodeB_Click(object sender, RoutedEventArgs e)
         {
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
@@ -284,12 +289,19 @@ namespace SCMTMainWindow
             ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
             node = (e as NodeBArgs).m_NodeB;
 
-            RefreshObj(Ctrl.m_RootNode, this.Content_Comm);                      // 1、更新对象树;
+            RefreshObj(Ctrl.m_RootNode);                      // 1、更新对象树;
             AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
             if (node != null)
             {
                 node.Connect();                                                  // 3、连接基站(第一个版本，暂时只连接一个基站);
             }
+        }
+
+        private void Show_LineChart(object sender, EventArgs e)
+        {
+//             LineChart lc = new LineChart();
+//             this.Pane.Children.Add(lc.linechart);
+//             lc.Flot();
         }
     }
 }
