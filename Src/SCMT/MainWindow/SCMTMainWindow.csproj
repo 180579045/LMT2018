@@ -182,11 +182,14 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Mib\MibNode.cs" />
     <Compile Include="Component\Mib\MibCommand.cs" />
-    <Compile Include="Component\View\BaseContent.cs" />
-    <Compile Include="Component\View\CommonContent.cs" />
-    <Compile Include="Component\View\ConsoleOutput.cs" />
     <Compile Include="Component\View\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Compile Include="UIComponent\LineChart.xaml.cs">
+      <DependentUpon>LineChart.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UIComponent\LineChartContent.xaml.cs">
+      <DependentUpon>LineChartContent.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -204,6 +207,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\ToolBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIComponent\LineChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UIComponent\LineChartContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -262,7 +273,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Component\NodeB\" />
     <Folder Include="Component\Thread\" />
   </ItemGroup>
   <ItemGroup>

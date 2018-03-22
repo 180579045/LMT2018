@@ -20,6 +20,7 @@ using System.Linq;
 using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
+using SCMTMainWindow.UIComponent;
 
 namespace SCMTMainWindow
 {
@@ -33,13 +34,17 @@ namespace SCMTMainWindow
         public NodeBControl NBControler;
         public NodeB node;
         bool bIsRepeat;
+
+        private List<LineChart> LineChartList = new List<LineChart>();
+
+
         public MainWindow()
         {
             InitializeComponent();
             this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
             this.MinWidth = 1366;                                             // 设置一个最小分辨率;
             this.MinHeight = 768;                                             // 设置一个最小分辨率;
-            
+
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
         }
@@ -232,6 +237,7 @@ namespace SCMTMainWindow
                         continue;
                     }
                 }
+
                 // 遍历所有节点确认亲子关系;
                 foreach (ObjNode iter1 in Ctrl.m_NodeList)
                 {
@@ -289,7 +295,7 @@ namespace SCMTMainWindow
             ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
             node = (e as NodeBArgs).m_NodeB;
 
-            RefreshObj(Ctrl.m_RootNode);                      // 1、更新对象树;
+            RefreshObj(Ctrl.m_RootNode);                                         // 1、更新对象树;
             AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
             if (node != null)
             {
@@ -299,9 +305,30 @@ namespace SCMTMainWindow
 
         private void Show_LineChart(object sender, EventArgs e)
         {
-//             LineChart lc = new LineChart();
-//             this.Pane.Children.Add(lc.linechart);
-//             lc.Flot();
+            LineChart lc = new LineChart();
+            this.Pane.Children.Add(lc.linechart);
+            LineChartList.Add(lc);
+        }
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            this.AllContent.Width = this.ActualWidth - 5;
+        }
+
+        private void Lost_Nodeb_Focus(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Base lost focus");
+        }
+
+        private void Load_Nodeb(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Base Load");
+        }
+
+        private void Get_Nodeb_Focus(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Get Nodeb Focus");
+
         }
     }
 }

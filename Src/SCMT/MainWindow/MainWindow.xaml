@@ -8,7 +8,7 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:avalon="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
-        Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200"  MinWidth="1" MinHeight="1" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed">
+        Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
 
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
@@ -41,34 +41,24 @@
 
         <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
             
-            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" Grid.Column="3">
-                
-               
-                <Grid>
-                    <!--设置整个页面行列个个数和格式-->
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
+            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
 
+                <Grid x:Name="AllContent">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="220" MaxWidth="220" />
+                        <ColumnDefinition Width="250" MaxWidth="250" />
                         <ColumnDefinition Width="5" />
-                        <ColumnDefinition MinWidth="160" Width="200"/>
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
                     <!--对象树模型(对象树节点只到父节点级别)-->
-                    <Metro:MetroScrollViewer>
-
+                    <Metro:MetroScrollViewer Grid.Column="0">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
                             <StackPanel x:Name="lists">
 
                                 <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" />
-
                                 <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
-                                
                                 <Metro:MetroExpander Header="消息模板" Icon="Resources/NetPLanB.png" />
-
                                 <Metro:MetroExpander Header="图表模板" >
                                     <StackPanel>
                                         <Metro:MetroExpander Header="数据表" />
@@ -76,9 +66,7 @@
                                         <Metro:MetroExpander Header="流程图" />
                                     </StackPanel>
                                 </Metro:MetroExpander>
-
                                 <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" Click="Collect_Node_Click" />
-
                                 <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
                                     <Metro:MetroExpander.ContextMenu>
                                         <Metro:MetroContextMenu>
@@ -91,6 +79,7 @@
                         </Border>
                     </Metro:MetroScrollViewer>
 
+                    <!--拖动分割线-->
                     <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" >
                         <GridSplitter.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -101,34 +90,16 @@
                         </GridSplitter.Background>
                     </GridSplitter>
 
-                    <!--收藏模型-->
+                    <!--第二级对象树模型-->
                     <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2" Margin="0,40,0,0">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                             <StackPanel>
-                                <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1" Grid.Row="0"
+                                <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1"
                                                     ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
-
                                 <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
-
-                    <!--右侧状态栏-->
-                    <Metro:MetroTabControl x:Name="tabc" Grid.Column="3" Margin="0,30,0,0">
-                        <Metro:MetroTabItem x:Name="NodebName" Header="" Icon="Resources/tabIcon.png">
-
-                            <avalon:DockingManager x:Name="avaManager">
-                                <avalon:LayoutRoot x:Name="avaRoot">
-                                    <!--可自由布局的信息栏-->
-                                    <avalon:LayoutPanel>
-                                        <avalon:LayoutDocumentPane x:Name="Pane">
-                                        </avalon:LayoutDocumentPane>
-                                    </avalon:LayoutPanel>
-                                </avalon:LayoutRoot>
-                            </avalon:DockingManager>
-                        </Metro:MetroTabItem>
-
-                    </Metro:MetroTabControl>
                 </Grid>
                 
             </Metro:MetroMenuTabItem>
@@ -139,25 +110,33 @@
 
             <Metro:MetroMenuTabItem Header="基站数据" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
                 <Grid Margin="0,40,0,0">
-
+                    <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
                 </Grid>
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/Alarm.png" IconMove="Resources/AlarmB.png">
                 <Grid>
-                    <Button Content="321" Height="19" Width="20"></Button>
+                    <!--可自由布局的信息栏-->
+                    <avalon:DockingManager x:Name="avaManager"  Margin="0,40,0,0">
+                        <avalon:LayoutRoot x:Name="avaRoot" >
+                            <avalon:LayoutPanel x:Name="Panel" >
+                                <!--现有一个默认得Pane，基站级别默认使用pane，模块使用LayoutAnchorable-->
+                                <avalon:LayoutAnchorablePane x:Name="Pane">
+                                    <avalon:LayoutAnchorable Content="123"></avalon:LayoutAnchorable>
+                                </avalon:LayoutAnchorablePane>
+                            </avalon:LayoutPanel>
+                        </avalon:LayoutRoot>
+                    </avalon:DockingManager>
                 </Grid>
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="日志管理" Icon="Resources/Log.png" IconMove="Resources/LogB.png">
                 <Grid>
-                    <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
 
             <Metro:MetroMenuTabItem Header="文件管理" Icon="Resources/File.png" IconMove="Resources/FileB.png">
                 <Grid>
-                    <Button Content="321" Height="19" Width="20"></Button>
                 </Grid>
             </Metro:MetroMenuTabItem>
 

@@ -51,8 +51,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "LineChart_JS", "LineChart_J
 		UI\Chart\LineChart_JS\LinChart.html = UI\Chart\LineChart_JS\LinChart.html
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChartContainer", "UI\Chart\ChartContainer\ChartContainer.csproj", "{C85E1CD1-9064-488F-BC4E-E37585EAD47F}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -173,14 +171,6 @@ Global
 		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Release|x64.Build.0 = Release|x64
 		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Release|x86.ActiveCfg = Release|x86
 		{47E80563-D3E6-4039-BD2B-63480BBD0525}.Release|x86.Build.0 = Release|x86
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Debug|x64.ActiveCfg = Debug|x64
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Debug|x64.Build.0 = Debug|x64
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Debug|x86.ActiveCfg = Debug|x86
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Debug|x86.Build.0 = Debug|x86
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Release|x64.ActiveCfg = Release|Any CPU
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Release|x64.Build.0 = Release|Any CPU
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Release|x86.ActiveCfg = Release|x86
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,6 +194,5 @@ Global
 		{B42DA179-3976-44A1-A54F-0B5E0046DDBC} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 		{47E80563-D3E6-4039-BD2B-63480BBD0525} = {F3A714C8-2F67-4D68-AB27-B38C9A66E003}
 		{4D004F37-3F66-49CC-8614-AFCAB9606B6C} = {C6FBF87E-C3A1-4656-B435-B3DECDEF885D}
-		{C85E1CD1-9064-488F-BC4E-E37585EAD47F} = {CA0EE529-842C-4A19-9E2E-0BDE267EDDBA}
 	EndGlobalSection
 EndGlobal

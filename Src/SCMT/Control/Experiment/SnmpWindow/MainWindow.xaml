@@ -10,110 +10,111 @@
     
     
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <Button Grid.Row="0" Height="19" Width="50" Content="123" Click="shownewpanel"></Button>
-        
-        <avalon:DockingManager Grid.Row="1" x:Name="avaManager">
+        <TabControl>
+            <TabItem Header="123">
+                <Grid>
+                    <Button Content="123"></Button>
+                </Grid>
+            </TabItem>
+            <TabItem Header="321">
+                
+                <avalon:DockingManager Grid.Row="0" x:Name="avaManager">
 
-            <avalon:LayoutRoot x:Name="avaRoot">
-                <avalon:LayoutPanel Orientation="Vertical">
-                    
-                    <avalon:LayoutDocumentPane>
-                        <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanTogglePin="False" CanAutoHide="False">
-                            <Grid>
-                                <StackPanel>
-                                    <Label x:Name="List1" Content="List1:" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
-                                    <TextBox x:Name="oid1" TextWrapping="Wrap" Text="Input Oid" Height="28" VerticalAlignment="Top"/>
+                    <avalon:LayoutRoot x:Name="avaRoot">
+                        <avalon:LayoutPanel>
 
-                                    <Label x:Name="label2" Content="List2:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="oid2" TextWrapping="Wrap" Text="Input Oid" Height="28"  VerticalAlignment="Top"/>
+                            <avalon:LayoutDocumentPane>
+                                <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanTogglePin="False" CanAutoHide="False">
+                                    <Grid>
+                                        <StackPanel>
+                                            <Button Grid.Row="0" Height="19" Width="50" Content="123" Click="shownewpanel"></Button>
+                                            <Label x:Name="List1" Content="List1:" HorizontalAlignment="Left"  VerticalAlignment="Top"/>
+                                            <TextBox x:Name="oid1" TextWrapping="Wrap" Text="Input Oid" Height="28" VerticalAlignment="Top"/>
 
-                                    <Label x:Name="label3" Content="List3:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="oid3" Height="28" TextWrapping="Wrap" Text="Input Oid" VerticalAlignment="Top"/>
+                                            <Label x:Name="label2" Content="List2:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="oid2" TextWrapping="Wrap" Text="Input Oid" Height="28"  VerticalAlignment="Top"/>
 
-                                    <Label x:Name="Retlabel" Content="结果:"/>
-                                    <TextBox x:Name="RetText" Height="172"  TextWrapping="Wrap" VerticalAlignment="Top" />
+                                            <Label x:Name="label3" Content="List3:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="oid3" Height="28" TextWrapping="Wrap" Text="Input Oid" VerticalAlignment="Top"/>
 
-                                    <StackPanel Orientation="Horizontal" >
-                                        <Button x:Name="Getvalue" Content="获取数值" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetValue_Click"/>
-                                        <Button x:Name="GetValue_Continue" Content="异步获取" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetValue_Continue_Click"/>
-                                        <Button x:Name="GetNext" Content="GetNext" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetNext_Click" />
-                                        <Button x:Name="GetNextAsync" Content="GetNextAsync" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetNextAsync_Click" />
-                                    </StackPanel>
+                                            <Label x:Name="Retlabel" Content="结果:"/>
+                                            <TextBox x:Name="RetText" Height="172"  TextWrapping="Wrap" VerticalAlignment="Top" />
 
-                                </StackPanel>
+                                            <StackPanel Orientation="Horizontal" >
+                                                <Button x:Name="Getvalue" Content="获取数值" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetValue_Click"/>
+                                                <Button x:Name="GetValue_Continue" Content="异步获取" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetValue_Continue_Click"/>
+                                                <Button x:Name="GetNext" Content="GetNext" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetNext_Click" />
+                                                <Button x:Name="GetNextAsync" Content="GetNextAsync" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="GetNextAsync_Click" />
+                                            </StackPanel>
 
-                            </Grid>
-                        </avalon:LayoutAnchorable>
+                                        </StackPanel>
 
-                        
+                                    </Grid>
+                                </avalon:LayoutAnchorable>
+                            </avalon:LayoutDocumentPane>
 
-                        
-                    </avalon:LayoutDocumentPane>
+                            <avalon:LayoutDocumentPane x:Name="pane1">
+                                <avalon:LayoutAnchorable Title="Trap" CanHide="False" CanTogglePin="False" CanAutoHide="False">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30"></RowDefinition>
+                                            <RowDefinition Height="*"></RowDefinition>
+                                        </Grid.RowDefinitions>
 
-                    <avalon:LayoutDocumentPane x:Name="pane1">
-                        <avalon:LayoutAnchorable Title="Trap" CanHide="False" CanTogglePin="False" CanAutoHide="False">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"></RowDefinition>
-                                    <RowDefinition Height="*"></RowDefinition>
-                                </Grid.RowDefinitions>
+                                        <Label x:Name="Traplabel" Content="Trap:" Grid.Row="0" />
+                                        <TextBox x:Name="TrapText" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" Grid.Row="1"  />
+                                    </Grid>
+                                </avalon:LayoutAnchorable>
 
-                                <Label x:Name="Traplabel" Content="Trap:" Grid.Row="0" />
-                                <TextBox x:Name="TrapText" TextWrapping="Wrap" Text="{Binding Path=Show, Mode=TwoWay}" Grid.Row="1"  />
-                            </Grid>
-                        </avalon:LayoutAnchorable>
+                                <avalon:LayoutAnchorable Title="input" CanTogglePin="False" CanHide="False" CanAutoHide="False" CanFloat="True">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition></ColumnDefinition>
+                                            <ColumnDefinition></ColumnDefinition>
+                                        </Grid.ColumnDefinitions>
 
-                        <avalon:LayoutAnchorable Title="input" CanTogglePin="False" CanHide="False" CanAutoHide="False" CanFloat="True">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition></ColumnDefinition>
-                                    <ColumnDefinition></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <Label x:Name="SetOidLabel" Content="要设置的Oid" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="SetOId1" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="SetOId2" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="SetOId3" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                                        </StackPanel>
 
-                                <StackPanel Grid.Column="0">
-                                    <Label x:Name="SetOidLabel" Content="要设置的Oid" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="SetOId1" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="SetOId2" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="SetOId3" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-                                </StackPanel>
+                                        <StackPanel Grid.Column="1">
+                                            <Label x:Name="SetValueLabel" Content="要设置的值" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
-                                <StackPanel Grid.Column="1">
-                                    <Label x:Name="SetValueLabel" Content="要设置的值" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-                                    <TextBox x:Name="SetValue1" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="SetValue2" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-                                    <TextBox x:Name="SetValue3" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
-                                    <Button x:Name="SetValue" Content="设置" Width="75" Click="SetValue_Click"/>
+                                            <TextBox x:Name="SetValue1" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="SetValue2" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                                            <TextBox x:Name="SetValue3" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                                            <Button x:Name="SetValue" Content="设置" Width="75" Click="SetValue_Click"/>
 
 
-                                    <Label x:Name="NodeBAccessStatus" Content="" HorizontalAlignment="Left" Margin="830,579,0,0" VerticalAlignment="Top"/>
-                                </StackPanel>
-                            </Grid>
-                        </avalon:LayoutAnchorable>
+                                            <Label x:Name="NodeBAccessStatus" Content="" HorizontalAlignment="Left" Margin="830,579,0,0" VerticalAlignment="Top"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </avalon:LayoutAnchorable>
 
 
-                    </avalon:LayoutDocumentPane>
+                            </avalon:LayoutDocumentPane>
 
-                    <avalon:LayoutDocumentPane ShowHeader="False">
+                            <avalon:LayoutDocumentPane ShowHeader="False">
 
-                        <avalon:LayoutAnchorable Title="input" CanTogglePin="False" CanHide="False" CanAutoHide="False" CanFloat="True">
-                            <Grid>
-                              
-                            </Grid>
-                        </avalon:LayoutAnchorable>
-                        
-                    </avalon:LayoutDocumentPane>
-                    
-                </avalon:LayoutPanel>
+                                <avalon:LayoutAnchorable Title="input" CanTogglePin="False" CanHide="False" CanAutoHide="False" CanFloat="True">
+                                    <Grid>
+
+                                    </Grid>
+                                </avalon:LayoutAnchorable>
+
+                            </avalon:LayoutDocumentPane>
+
+                        </avalon:LayoutPanel>
 
 
-            </avalon:LayoutRoot>
-        </avalon:DockingManager>
+                    </avalon:LayoutRoot>
+                </avalon:DockingManager>
+            </TabItem>
+
+        </TabControl>
 
     </Grid>
 </Window>

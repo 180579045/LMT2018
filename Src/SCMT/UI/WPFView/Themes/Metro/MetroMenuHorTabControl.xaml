@@ -86,9 +86,6 @@
                                         <TabPanel x:Name="headerPanel" IsItemsHost="true"></TabPanel>
                                     </Grid>
                                 </Canvas>
-                                
-
-                                
                             </Metro:MetroScrollViewer>
                         </Grid>
 
