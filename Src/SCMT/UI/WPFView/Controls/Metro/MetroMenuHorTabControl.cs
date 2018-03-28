@@ -40,30 +40,30 @@ namespace UICore.Controls.Metro
 
         void GoToState()
         {
-            ElementBase.GoToState(this, IconMode ? "EnterIconMode" : "ExitIconMode");
+            //ElementBase.GoToState(this, IconMode ? "EnterIconMode" : "ExitIconMode");
         }
 
         void SelectionState()
         {
-            if (IconMode)
-            {
-                ElementBase.GoToState(this, "SelectionStartIconMode");
-                ElementBase.GoToState(this, "SelectionEndIconMode");
-            }
-            else
-            {
-                ElementBase.GoToState(this, "SelectionStart");
-                ElementBase.GoToState(this, "SelectionEnd");
-            }
+//             if (IconMode)
+//             {
+//                 ElementBase.GoToState(this, "SelectionStartIconMode");
+//                 ElementBase.GoToState(this, "SelectionEndIconMode");
+//             }
+//             else
+//             {
+//                 ElementBase.GoToState(this, "SelectionStart");
+//                 ElementBase.GoToState(this, "SelectionEnd");
+//             }
         }
 
         public MetroMenuHorTabControl()
         {
-            Loaded += delegate { GoToState(); ElementBase.GoToState(this, IconMode ? "SelectionLoadedIconMode" : "SelectionLoaded"); };
-            SelectionChanged += delegate (object sender, SelectionChangedEventArgs e) { if (e.Source is MetroMenuHorTabControl) { SelectionState(); } };
-            CommandBindings.Add(new CommandBinding(IconModeClickCommand, delegate { IconMode = !IconMode; GoToState(); }));
+            //Loaded += delegate { GoToState(); ElementBase.GoToState(this, IconMode ? "SelectionLoadedIconMode" : "SelectionLoaded"); };
+            //SelectionChanged += delegate (object sender, SelectionChangedEventArgs e) { if (e.Source is MetroMenuHorTabControl) { SelectionState(); } };
+            //CommandBindings.Add(new CommandBinding(IconModeClickCommand, delegate { IconMode = !IconMode; GoToState(); }));
             
-            Utility.Refresh(this);
+            //Utility.Refresh(this);
         }
 
         static MetroMenuHorTabControl()

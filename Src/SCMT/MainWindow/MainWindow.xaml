@@ -100,6 +100,19 @@
                             </StackPanel>
                         </Border>
                     </Metro:MetroFavScrollViewer>
+
+                    <!--可自由布局的信息栏-->
+                    <avalon:DockingManager Grid.Column="3" x:Name="avaManager"  Margin="0,40,0,0">
+                        <avalon:LayoutRoot x:Name="avaRoot" >
+                            <avalon:LayoutPanel x:Name="Panel" >
+                                <!--现有一个默认得Pane，基站级别默认使用pane，模块使用LayoutAnchorable-->
+                                <avalon:LayoutAnchorablePane x:Name="Pane">
+                                    <avalon:LayoutAnchorable x:Name="baseLayoutAnchorable" Content=""></avalon:LayoutAnchorable>
+                                </avalon:LayoutAnchorablePane>
+                            </avalon:LayoutPanel>
+                        </avalon:LayoutRoot>
+                    </avalon:DockingManager>
+                    
                 </Grid>
                 
             </Metro:MetroMenuTabItem>
@@ -116,17 +129,7 @@
 
             <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/Alarm.png" IconMove="Resources/AlarmB.png">
                 <Grid>
-                    <!--可自由布局的信息栏-->
-                    <avalon:DockingManager x:Name="avaManager"  Margin="0,40,0,0">
-                        <avalon:LayoutRoot x:Name="avaRoot" >
-                            <avalon:LayoutPanel x:Name="Panel" >
-                                <!--现有一个默认得Pane，基站级别默认使用pane，模块使用LayoutAnchorable-->
-                                <avalon:LayoutAnchorablePane x:Name="Pane">
-                                    <avalon:LayoutAnchorable Content="123"></avalon:LayoutAnchorable>
-                                </avalon:LayoutAnchorablePane>
-                            </avalon:LayoutPanel>
-                        </avalon:LayoutRoot>
-                    </avalon:DockingManager>
+                    
                 </Grid>
             </Metro:MetroMenuTabItem>
 

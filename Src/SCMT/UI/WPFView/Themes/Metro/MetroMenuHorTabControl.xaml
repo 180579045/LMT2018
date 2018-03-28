@@ -70,7 +70,10 @@
                         <Metro:MetroFocusButton BorderThickness="0" MouseMoveBorderThickness="0" Command="Metro:MetroMenuTabControl.IconModeClickCommand"/>
 
                         <!--控件布局-->
-                        <Grid x:Name="tab" Width="{TemplateBinding ActualWidth}" Height="{Binding ActualHeight,ElementName=tabWidth}"  Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1" Background="{TemplateBinding BorderBrush}" VerticalAlignment="Top" HorizontalAlignment="Center">
+                        <Grid x:Name="tab" Width="{TemplateBinding ActualWidth}" Height="{Binding ActualHeight,ElementName=tabWidth}"  
+                              Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1" Background="{TemplateBinding BorderBrush}" 
+                              VerticalAlignment="Top" HorizontalAlignment="Center">
+                            
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition/>

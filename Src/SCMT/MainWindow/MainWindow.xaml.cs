@@ -21,6 +21,7 @@ using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
 using SCMTMainWindow.UIComponent;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SCMTMainWindow
 {
@@ -305,9 +306,18 @@ namespace SCMTMainWindow
 
         private void Show_LineChart(object sender, EventArgs e)
         {
-            LineChart lc = new LineChart();
-            this.Pane.Children.Add(lc.linechart);
-            LineChartList.Add(lc);
+            LayoutAnchorable sub = new LayoutAnchorable();
+            this.Pane.Children.Add(sub);
+            sub.Title = "折线图";
+            sub.IsVisible = true;
+            sub.FloatingHeight = 300;
+            sub.FloatingWidth = 300;
+            sub.CanAutoHide = false;
+            sub.CanTogglePin = false;
+            
+            sub.Content = new LineChartContent();
+            this.baseLayoutAnchorable.Hide();
+            sub.Float();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
