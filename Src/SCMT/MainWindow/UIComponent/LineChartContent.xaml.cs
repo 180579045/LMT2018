@@ -23,6 +23,7 @@ namespace SCMTMainWindow.UIComponent
         public LineChartContent()
         {
             InitializeComponent();
+            
         }
     }
 }

@@ -21,7 +21,6 @@ using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
 using SCMTMainWindow.UIComponent;
-using Xceed.Wpf.AvalonDock.Layout;
 
 namespace SCMTMainWindow
 {
@@ -45,9 +44,15 @@ namespace SCMTMainWindow
             this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
             this.MinWidth = 1366;                                             // 设置一个最小分辨率;
             this.MinHeight = 768;                                             // 设置一个最小分辨率;
+            this.MainHorizenTab.SelectionChanged += MainHorizenTab_SelectionChanged;
 
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
+        }
+
+        private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Console.WriteLine("1");
         }
 
         /// <summary>
@@ -306,18 +311,7 @@ namespace SCMTMainWindow
 
         private void Show_LineChart(object sender, EventArgs e)
         {
-            LayoutAnchorable sub = new LayoutAnchorable();
-            this.Pane.Children.Add(sub);
-            sub.Title = "折线图";
-            sub.IsVisible = true;
-            sub.FloatingHeight = 300;
-            sub.FloatingWidth = 300;
-            sub.CanAutoHide = false;
-            sub.CanTogglePin = false;
-            
-            sub.Content = new LineChartContent();
-            this.baseLayoutAnchorable.Hide();
-            sub.Float();
+            //this.baseLayoutAnchorable.Hide();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)

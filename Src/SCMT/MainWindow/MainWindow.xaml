@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
-        xmlns:avalon="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
 
@@ -101,18 +101,18 @@
                         </Border>
                     </Metro:MetroFavScrollViewer>
 
-                    <!--可自由布局的信息栏-->
-                    <avalon:DockingManager Grid.Column="3" x:Name="avaManager"  Margin="0,40,0,0">
-                        <avalon:LayoutRoot x:Name="avaRoot" >
-                            <avalon:LayoutPanel x:Name="Panel" >
-                                <!--现有一个默认得Pane，基站级别默认使用pane，模块使用LayoutAnchorable-->
-                                <avalon:LayoutAnchorablePane x:Name="Pane">
-                                    <avalon:LayoutAnchorable x:Name="baseLayoutAnchorable" Content=""></avalon:LayoutAnchorable>
-                                </avalon:LayoutAnchorablePane>
-                            </avalon:LayoutPanel>
-                        </avalon:LayoutRoot>
-                    </avalon:DockingManager>
-                    
+                    <xcad:DockingManager Grid.Column="3" AllowMixedOrientation="True"  Margin="0,40,0,0">
+                        <xcad:LayoutRoot x:Name="_layoutRoot">
+                            <xcad:LayoutPanel Orientation="Horizontal">
+                                <xcad:LayoutAnchorablePane>
+                                    <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False" CanClose="False">
+                                        <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
+                                    </xcad:LayoutAnchorable>
+                                </xcad:LayoutAnchorablePane>
+                            </xcad:LayoutPanel>
+                        </xcad:LayoutRoot>
+                    </xcad:DockingManager>
+
                 </Grid>
                 
             </Metro:MetroMenuTabItem>
