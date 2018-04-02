@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
-        xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:Cef="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
@@ -44,6 +44,7 @@
             <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
 
                 <Grid x:Name="AllContent">
+                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" MaxWidth="250" />
                         <ColumnDefinition Width="5" />
@@ -101,17 +102,106 @@
                         </Border>
                     </Metro:MetroFavScrollViewer>
 
-                    <xcad:DockingManager Grid.Column="3" AllowMixedOrientation="True"  Margin="0,40,0,0">
-                        <xcad:LayoutRoot x:Name="_layoutRoot">
-                            <xcad:LayoutPanel Orientation="Horizontal">
-                                <xcad:LayoutAnchorablePane>
-                                    <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False" CanClose="False">
-                                        <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
-                                    </xcad:LayoutAnchorable>
-                                </xcad:LayoutAnchorablePane>
-                            </xcad:LayoutPanel>
-                        </xcad:LayoutRoot>
-                    </xcad:DockingManager>
+                    <Grid Grid.Column="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="1"
+                                    Text="Usage:"/>
+
+                        <xcad:DockingManager Grid.Row="2"
+                         MaxHeight="395"
+                         AllowMixedOrientation="True"
+                         BorderBrush="Black"
+                         BorderThickness="1">
+
+                            <xcad:DockingManager.DocumentHeaderTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                    </StackPanel>
+                                </DataTemplate>
+                            </xcad:DockingManager.DocumentHeaderTemplate>
+
+                            <xcad:LayoutRoot x:Name="_layoutRoot">
+                                <xcad:LayoutPanel Orientation="Horizontal">
+
+                                    <xcad:LayoutAnchorablePane DockWidth="200">
+                                        <xcad:LayoutAnchorable ContentId="properties"
+                                               Title="Properties"
+                                               CanHide="False"
+                                               CanClose="False"
+                                               AutoHideWidth="240">
+                                           
+                                        </xcad:LayoutAnchorable>
+
+                                    </xcad:LayoutAnchorablePane>
+                                    <xcad:LayoutDocumentPaneGroup>
+                                        <xcad:LayoutDocumentPane>
+                                            <xcad:LayoutDocument ContentId="document1"
+                                                                Title="Document 1">
+                                                <Button Content="Document 1 Content"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center" />
+                                            </xcad:LayoutDocument>
+                                            <xcad:LayoutDocument ContentId="document2"
+                                                               Title="Document 2">         
+                                                <TextBox Text="Document 2 Content"
+                                                            AcceptsReturn="True" />
+                                            </xcad:LayoutDocument>
+                                        </xcad:LayoutDocumentPane>
+                                    </xcad:LayoutDocumentPaneGroup >
+                                    <xcad:LayoutAnchorablePaneGroup DockWidth="125">
+                                        <xcad:LayoutAnchorablePane>
+                                            <xcad:LayoutAnchorable ContentId="alarms"
+                                                                     Title="Alarms"
+                                                                     CanClose="True">
+                                            </xcad:LayoutAnchorable>
+                                            <xcad:LayoutAnchorable ContentId="journal"
+                                                                    Title="Journal">
+                                                <RichTextBox>
+                                                    <FlowDocument>
+                                                        <Paragraph FontSize="14"
+                                                                    FontFamily="Segoe">
+                                                            This is the content of the Journal Pane.
+                                                            <LineBreak />
+                                                            A
+                                                            <Bold>RichTextBox</Bold> has been added here
+                                                        </Paragraph>
+                                                    </FlowDocument>
+                                                </RichTextBox>
+                                            </xcad:LayoutAnchorable>
+                                        </xcad:LayoutAnchorablePane>
+                                    </xcad:LayoutAnchorablePaneGroup>
+                                </xcad:LayoutPanel>
+
+                                <xcad:LayoutRoot.LeftSide>
+                                    <xcad:LayoutAnchorSide>
+                                        <xcad:LayoutAnchorGroup>
+                                            <xcad:LayoutAnchorable Title="Agenda"
+                                                             ContentId="agenda" >              
+                                                <TextBlock Text="Agenda Content"
+                                                           Margin="10"
+                                                           FontSize="18"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap" />
+                                            </xcad:LayoutAnchorable>
+                                            <xcad:LayoutAnchorable Title="Contacts"
+                                     ContentId="contacts">
+                                                <TextBlock Text="Contacts Content"
+                                                           Margin="10"
+                                                           FontSize="18"
+                                                           FontWeight="Black"
+                                                           TextWrapping="Wrap" />
+                                            </xcad:LayoutAnchorable>
+                                        </xcad:LayoutAnchorGroup>
+                                    </xcad:LayoutAnchorSide>
+                                </xcad:LayoutRoot.LeftSide>
+                            </xcad:LayoutRoot>
+                        </xcad:DockingManager>
+                    </Grid>
 
                 </Grid>
                 
@@ -123,7 +213,6 @@
 
             <Metro:MetroMenuTabItem Header="基站数据" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
                 <Grid Margin="0,40,0,0">
-                    <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
                 </Grid>
             </Metro:MetroMenuTabItem>
 

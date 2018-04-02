@@ -20,7 +20,6 @@ using System.Linq;
 using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
-using SCMTMainWindow.UIComponent;
 
 namespace SCMTMainWindow
 {
@@ -34,10 +33,7 @@ namespace SCMTMainWindow
         public NodeBControl NBControler;
         public NodeB node;
         bool bIsRepeat;
-
-        private List<LineChart> LineChartList = new List<LineChart>();
-
-
+        
         public MainWindow()
         {
             InitializeComponent();
