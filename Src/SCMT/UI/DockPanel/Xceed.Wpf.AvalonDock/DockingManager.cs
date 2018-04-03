@@ -37,17 +37,17 @@ namespace Xceed.Wpf.AvalonDock
   [TemplatePart( Name = "PART_AutoHideArea" )]
   public class DockingManager : Control, IOverlayWindowHost//, ILogicalChildrenContainer
   {
-    private ResourceDictionary currentThemeResourceDictionary; // = null
+        private ResourceDictionary currentThemeResourceDictionary; // = null
 
-    static DockingManager()
-    {
-      DefaultStyleKeyProperty.OverrideMetadata( typeof( DockingManager ), new FrameworkPropertyMetadata( typeof( DockingManager ) ) );
-      FocusableProperty.OverrideMetadata( typeof( DockingManager ), new FrameworkPropertyMetadata( false ) );
-      HwndSource.DefaultAcquireHwndFocusInMenuMode = false;
-    }
+        static DockingManager()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(DockingManager), new FrameworkPropertyMetadata(typeof(DockingManager)));
+            FocusableProperty.OverrideMetadata(typeof(DockingManager), new FrameworkPropertyMetadata(false));
+            HwndSource.DefaultAcquireHwndFocusInMenuMode = false;
+        }
 
 
-    public DockingManager()
+        public DockingManager()
     {
 #if !VS2008
       Layout = new LayoutRoot() { RootPanel = new LayoutPanel( new LayoutDocumentPaneGroup( new LayoutDocumentPane() ) ) };
