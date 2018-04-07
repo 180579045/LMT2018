@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow"
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
-        xmlns:Cef="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
+        xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
         Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
@@ -14,16 +14,19 @@
         <local:MainWindowVM/>
     </Metro:MetroWindow.DataContext>
 
+    <!-- Title中的菜单 -->
     <Metro:MetroWindow.Menu>
         <Metro:MetroTitleMenu>
 
-            <Metro:MetroTitleMenuItem Header="Ver0.1">
-            </Metro:MetroTitleMenuItem>
+            <!-- 版本号 -->
+            <Metro:MetroTitleMenuItem Header="Ver0.1"/>
 
+            <!-- 基站列表 -->
             <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
                 <Metro:MetroMenuItem Header="添加基站" Click="AddNodeB_Click" />
             </Metro:MetroTitleMenuItem>
 
+            <!-- 菜单栏 -->
             <Metro:MetroTitleMenuItem Header="">
                 <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
                 <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png" />
@@ -37,14 +40,28 @@
         </Metro:MetroTitleMenu>
     </Metro:MetroWindow.Menu>
 
+    <!-- 软件主界面 -->
     <Grid>
 
+        <!-- 页签的基础控件 -->
         <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
             
+            <!-- 页签一：MIB数据操作配置页签 -->
+            
+            <!--
+            ——————————————————————
+            |      |                                    |
+            |      |                                    |
+            |      |                                    |
+            |      |                                    |
+            |      |                                    |
+            |      |                                    |
+            |      |                                    |
+            ——————————————————————
+            -->
+            
             <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
-
                 <Grid x:Name="AllContent">
-                    
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" MaxWidth="250" />
                         <ColumnDefinition Width="5" />
@@ -52,14 +69,17 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <!--对象树模型(对象树节点只到父节点级别)-->
+                    <!-- 软件左侧导航菜单 -->
                     <Metro:MetroScrollViewer Grid.Column="0">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
                             <StackPanel x:Name="lists">
 
                                 <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" />
+                                
                                 <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
+                                
                                 <Metro:MetroExpander Header="消息模板" Icon="Resources/NetPLanB.png" />
+                                
                                 <Metro:MetroExpander Header="图表模板" >
                                     <StackPanel>
                                         <Metro:MetroExpander Header="数据表" />
@@ -67,7 +87,10 @@
                                         <Metro:MetroExpander Header="流程图" />
                                     </StackPanel>
                                 </Metro:MetroExpander>
+                                
                                 <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" Click="Collect_Node_Click" />
+
+                                <!--对象树模型(对象树节点只到父节点级别)-->
                                 <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
                                     <Metro:MetroExpander.ContextMenu>
                                         <Metro:MetroContextMenu>
@@ -91,7 +114,7 @@
                         </GridSplitter.Background>
                     </GridSplitter>
 
-                    <!--第二级对象树模型-->
+                    <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
                     <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2" Margin="0,40,0,0">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                             <StackPanel>
@@ -102,105 +125,38 @@
                         </Border>
                     </Metro:MetroFavScrollViewer>
 
-                    <Grid Grid.Column="3">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                        </Grid.RowDefinitions>
+                    <!-- 主要的显示界面 -->
+                    <Grid Grid.Column="3" Margin="0,40">
 
-                        <TextBlock Grid.Row="1"
-                                    Text="Usage:"/>
-
-                        <xcad:DockingManager Grid.Row="2"
-                         MaxHeight="395"
-                         AllowMixedOrientation="True"
-                         BorderBrush="Black"
-                         BorderThickness="1">
+                        <xcad:DockingManager  AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1">
 
                             <xcad:DockingManager.DocumentHeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal"></StackPanel>
                                 </DataTemplate>
                             </xcad:DockingManager.DocumentHeaderTemplate>
 
                             <xcad:LayoutRoot x:Name="_layoutRoot">
+
                                 <xcad:LayoutPanel Orientation="Horizontal">
 
-                                    <xcad:LayoutAnchorablePane DockWidth="200">
-                                        <xcad:LayoutAnchorable ContentId="properties"
-                                               Title="Properties"
-                                               CanHide="False"
-                                               CanClose="False"
-                                               AutoHideWidth="240">
-                                           
-                                        </xcad:LayoutAnchorable>
-
-                                    </xcad:LayoutAnchorablePane>
                                     <xcad:LayoutDocumentPaneGroup>
-                                        <xcad:LayoutDocumentPane>
-                                            <xcad:LayoutDocument ContentId="document1"
-                                                                Title="Document 1">
-                                                <Button Content="Document 1 Content"
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center" />
+                                        
+                                        <xcad:LayoutDocumentPane x:Name="Pane">
+                                            <!-- 
+                                            <xcad:LayoutDocument ContentId="document1" Title="Document1" IconSource="Resources/document.png" >
+                                                <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
                                             </xcad:LayoutDocument>
-                                            <xcad:LayoutDocument ContentId="document2"
-                                                               Title="Document 2">         
-                                                <TextBox Text="Document 2 Content"
-                                                            AcceptsReturn="True" />
-                                            </xcad:LayoutDocument>
+                                            -->
                                         </xcad:LayoutDocumentPane>
                                     </xcad:LayoutDocumentPaneGroup >
-                                    <xcad:LayoutAnchorablePaneGroup DockWidth="125">
-                                        <xcad:LayoutAnchorablePane>
-                                            <xcad:LayoutAnchorable ContentId="alarms"
-                                                                     Title="Alarms"
-                                                                     CanClose="True">
-                                            </xcad:LayoutAnchorable>
-                                            <xcad:LayoutAnchorable ContentId="journal"
-                                                                    Title="Journal">
-                                                <RichTextBox>
-                                                    <FlowDocument>
-                                                        <Paragraph FontSize="14"
-                                                                    FontFamily="Segoe">
-                                                            This is the content of the Journal Pane.
-                                                            <LineBreak />
-                                                            A
-                                                            <Bold>RichTextBox</Bold> has been added here
-                                                        </Paragraph>
-                                                    </FlowDocument>
-                                                </RichTextBox>
-                                            </xcad:LayoutAnchorable>
-                                        </xcad:LayoutAnchorablePane>
-                                    </xcad:LayoutAnchorablePaneGroup>
+                                    
                                 </xcad:LayoutPanel>
-
-                                <xcad:LayoutRoot.LeftSide>
-                                    <xcad:LayoutAnchorSide>
-                                        <xcad:LayoutAnchorGroup>
-                                            <xcad:LayoutAnchorable Title="Agenda"
-                                                             ContentId="agenda" >              
-                                                <TextBlock Text="Agenda Content"
-                                                           Margin="10"
-                                                           FontSize="18"
-                                                           FontWeight="Black"
-                                                           TextWrapping="Wrap" />
-                                            </xcad:LayoutAnchorable>
-                                            <xcad:LayoutAnchorable Title="Contacts"
-                                     ContentId="contacts">
-                                                <TextBlock Text="Contacts Content"
-                                                           Margin="10"
-                                                           FontSize="18"
-                                                           FontWeight="Black"
-                                                           TextWrapping="Wrap" />
-                                            </xcad:LayoutAnchorable>
-                                        </xcad:LayoutAnchorGroup>
-                                    </xcad:LayoutAnchorSide>
-                                </xcad:LayoutRoot.LeftSide>
+                                
                             </xcad:LayoutRoot>
                         </xcad:DockingManager>
+
+
                     </Grid>
 
                 </Grid>
@@ -213,6 +169,7 @@
 
             <Metro:MetroMenuTabItem Header="基站数据" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
                 <Grid Margin="0,40,0,0">
+                    
                 </Grid>
             </Metro:MetroMenuTabItem>
 

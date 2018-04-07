@@ -20,6 +20,9 @@ using System.Linq;
 using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
+using CefSharp.Wpf;
+using Xceed.Wpf.AvalonDock.Layout;
+using SCMTMainWindow.Component.View;
 
 namespace SCMTMainWindow
 {
@@ -57,7 +60,6 @@ namespace SCMTMainWindow
         private void InitView()
         {
             NBControler = new NodeBControl();
-            
         }
 
         /// <summary>
@@ -307,7 +309,17 @@ namespace SCMTMainWindow
 
         private void Show_LineChart(object sender, EventArgs e)
         {
-            //this.baseLayoutAnchorable.Hide();
+            LayoutDocument sub = new LayoutDocument();
+            LinechartContent content = new LinechartContent();
+
+            // 当前的问题：这个Title显示不出来;
+            sub.Title = "Doc1";
+            sub.FloatingHeight = 280;
+            sub.FloatingWidth = 350;
+            sub.Content = content;
+
+            this.Pane.Children.Add(sub);
+            sub.Float();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
