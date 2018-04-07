@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
+        <cefSharp:ChromiumWebBrowser x:Name="chrome" />
     </Grid>
 </UserControl>

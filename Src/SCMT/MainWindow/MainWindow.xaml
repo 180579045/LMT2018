@@ -128,6 +128,7 @@
                     <!-- 主要的显示界面 -->
                     <Grid Grid.Column="3" Margin="0,40">
 
+                        <!-- 自由布局Dock -->
                         <xcad:DockingManager  AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1">
 
                             <xcad:DockingManager.DocumentHeaderTemplate>
