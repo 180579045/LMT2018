@@ -21,6 +21,9 @@
         WindowStyle="None"
         Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
 
+    <Window.Resources>
+    </Window.Resources>
+
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
     </Metro:MetroWindow.DataContext>
@@ -55,7 +58,7 @@
     <Grid>
 
         <!-- 页签的基础控件 -->
-        <Metro:MetroMenuHorTabControl IconMode="True" x:Name="MainHorizenTab">
+        <TabControl x:Name="MainHorizenTab" TabStripPlacement="Top" Style="{StaticResource TabControlStyle}">
             
             <!-- 页签一：MIB数据操作配置页签 -->
             
@@ -70,8 +73,8 @@
             |      |                                    |
             ——————————————————————
             -->
-            
-            <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
+
+            <TabItem Header="基本信息"  Style="{StaticResource TabItemStyle}"  LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
                 
                 <Grid x:Name="AllContent">
                     <Grid.ColumnDefinitions>
@@ -83,7 +86,7 @@
 
                     <!-- 软件左侧导航菜单 -->
                     <Metro:MetroScrollViewer Grid.Column="0">
-                        <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" Margin="0,40,0,0">
+                        <Border BorderBrush="#19000000" BorderThickness="0,0,1,0">
                             <StackPanel x:Name="lists">
 
                                 <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" />
@@ -127,7 +130,7 @@
                     </GridSplitter>
 
                     <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
-                    <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2" Margin="0,40,0,0">
+                    <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
                         <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                             <StackPanel>
                                 <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1"
@@ -138,7 +141,7 @@
                     </Metro:MetroFavScrollViewer>
 
                     <!-- 主要的显示界面 -->
-                    <Grid Grid.Column="3" Margin="0,45,0,0">
+                    <Grid Grid.Column="3">
 
                         <!-- 自由布局Dock -->
                         <xcad:DockingManager  BorderBrush="Blue" >
@@ -157,11 +160,10 @@
 
                                 <xcad:LayoutPanel Orientation="Horizontal">
 
-                                    <xcad:LayoutAnchorablePane x:Name="Pane" DockWidth="200">
+                                    <xcad:LayoutAnchorablePane x:Name="Pane">
+                                        <!--  -->
                                         <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False">
-                                            <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
                                         </xcad:LayoutAnchorable>
-
                                     </xcad:LayoutAnchorablePane>
 
                                 </xcad:LayoutPanel>
@@ -173,37 +175,19 @@
 
                 </Grid>
                 
-            </Metro:MetroMenuTabItem>
+            </TabItem>
 
-            <Metro:MetroMenuTabItem Header="小区规划" Icon="Resources/NetPlan.png" IconMove="Resources/NetPlanB.png">
+            <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">
                 <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
-            </Metro:MetroMenuTabItem>
+            </TabItem>
 
-            <Metro:MetroMenuTabItem Header="基站数据" Icon="Resources/Wave.png" IconMove="Resources/WaveB.png">
+            <TabItem Header="基站数据" Style="{StaticResource TabItemStyle}">
                 <Grid Margin="0,40,0,0">
                     
                 </Grid>
-            </Metro:MetroMenuTabItem>
+            </TabItem>
 
-            <Metro:MetroMenuTabItem Header="告警管理" Icon="Resources/Alarm.png" IconMove="Resources/AlarmB.png">
-                <Grid>
-                    
-                </Grid>
-            </Metro:MetroMenuTabItem>
-
-            <Metro:MetroMenuTabItem Header="日志管理" Icon="Resources/Log.png" IconMove="Resources/LogB.png">
-                <Grid>
-                </Grid>
-            </Metro:MetroMenuTabItem>
-
-            <Metro:MetroMenuTabItem Header="文件管理" Icon="Resources/File.png" IconMove="Resources/FileB.png">
-                <Grid>
-                </Grid>
-            </Metro:MetroMenuTabItem>
-
-
-
-            <Metro:MetroMenuTabItem Header="工具箱" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png">
+            <TabItem Header="工具箱" Style="{StaticResource TabItemStyle}">
                 <Grid Margin="0,40,0,0">
                     
                     <Metro:MetroMenuTabControl x:Name="Tooltab" IconMode="False">
@@ -314,9 +298,9 @@
                     </Metro:MetroMenuTabControl>
 
                 </Grid>
-            </Metro:MetroMenuTabItem>
+            </TabItem>
 
-        </Metro:MetroMenuHorTabControl>
+        </TabControl>
 
 
 
