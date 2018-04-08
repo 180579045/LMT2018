@@ -161,6 +161,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Option.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="Pages\AddNodeB.xaml.cs">
       <DependentUpon>AddNodeB.xaml</DependentUpon>
     </Compile>
