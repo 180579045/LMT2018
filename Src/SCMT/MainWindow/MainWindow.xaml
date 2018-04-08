@@ -1,4 +1,12 @@
-﻿<Metro:MetroWindow x:Class="SCMTMainWindow.MainWindow"
+﻿<!--*************************************************************************************
+
+   SCMT for NodeB operation,management and 
+
+   2018 DatangMobile Inc.
+
+  ***********************************************************************************-->
+    
+<Metro:MetroWindow x:Class="SCMTMainWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -8,7 +16,10 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
-        Title="{Binding Title}" d:DesignWidth="1600" d:DesignHeight="1200" BorderThickness="1" WindowStyle="None" Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
+        Height="778" Width="1300"
+        Title="{Binding Title}"
+        WindowStyle="None"
+        Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
 
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
@@ -61,12 +72,13 @@
             -->
             
             <Metro:MetroMenuTabItem Header="基本信息" Icon="Resources/BaseInfo.png" IconMove="Resources/BaseInfoB.png" LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
+                
                 <Grid x:Name="AllContent">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="250" MaxWidth="250" />
                         <ColumnDefinition Width="5" />
                         <ColumnDefinition Width="200"/>
-                        <ColumnDefinition/>
+                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
                     <!-- 软件左侧导航菜单 -->
@@ -126,37 +138,36 @@
                     </Metro:MetroFavScrollViewer>
 
                     <!-- 主要的显示界面 -->
-                    <Grid Grid.Column="3" Margin="0,40">
+                    <Grid Grid.Column="3" Margin="0,45,0,0">
 
                         <!-- 自由布局Dock -->
-                        <xcad:DockingManager  AllowMixedOrientation="True" BorderBrush="Black" BorderThickness="1">
+                        <xcad:DockingManager  BorderBrush="Blue" >
 
+                            <!-- 表头格式 -->
                             <xcad:DockingManager.DocumentHeaderTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal"></StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Title}" />
+                                    </StackPanel>
                                 </DataTemplate>
                             </xcad:DockingManager.DocumentHeaderTemplate>
 
+                            <!-- 根页签 -->
                             <xcad:LayoutRoot x:Name="_layoutRoot">
 
                                 <xcad:LayoutPanel Orientation="Horizontal">
 
-                                    <xcad:LayoutDocumentPaneGroup>
-                                        
-                                        <xcad:LayoutDocumentPane x:Name="Pane">
-                                            <!-- 
-                                            <xcad:LayoutDocument ContentId="document1" Title="Document1" IconSource="Resources/document.png" >
-                                                <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
-                                            </xcad:LayoutDocument>
-                                            -->
-                                        </xcad:LayoutDocumentPane>
-                                    </xcad:LayoutDocumentPaneGroup >
-                                    
+                                    <xcad:LayoutAnchorablePane x:Name="Pane" DockWidth="200">
+                                        <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False">
+                                            <cefSharp:ChromiumWebBrowser Address="E:\Workspace\DatangMobile\Tools_LMT\LMT2018\Src\SCMT\UI\Chart\LineChart_JS\LinChart.html" />
+                                        </xcad:LayoutAnchorable>
+
+                                    </xcad:LayoutAnchorablePane>
+
                                 </xcad:LayoutPanel>
-                                
+
                             </xcad:LayoutRoot>
                         </xcad:DockingManager>
-
 
                     </Grid>
 

@@ -8,6 +8,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <cefSharp:ChromiumWebBrowser x:Name="chrome" />
+        <cefSharp:ChromiumWebBrowser x:Name="address" />
     </Grid>
 </UserControl>

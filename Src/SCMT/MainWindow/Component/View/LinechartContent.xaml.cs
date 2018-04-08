@@ -23,8 +23,8 @@ namespace SCMTMainWindow.Component.View
         public LinechartContent()
         {
             InitializeComponent();
-            this.chrome.Address = System.Environment.CurrentDirectory + @"\LineChart_JS\LinChart.html";
-            this.chrome.BeginInit();
+            this.address.Address = System.Environment.CurrentDirectory + @"\LineChart_JS\LinChart.html";
+            this.address.BeginInit();
         }
     }
 }

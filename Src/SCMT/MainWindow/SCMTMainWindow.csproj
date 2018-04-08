@@ -216,7 +216,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Component\Thread\" />
-    <Folder Include="UIComponent\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\editIcon.png" />
@@ -271,6 +270,10 @@
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UI\DataGrid\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>Xceed.Wpf.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\UI\DockPanel\Xceed.Wpf.AvalonDock.Themes.Aero\Xceed.Wpf.AvalonDock.Themes.Aero.csproj">
       <Project>{ba72cce0-a9fb-4995-b496-7fec5c87b85b}</Project>

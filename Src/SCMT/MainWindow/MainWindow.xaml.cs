@@ -43,7 +43,8 @@ namespace SCMTMainWindow
             this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
             this.MinWidth = 1366;                                             // 设置一个最小分辨率;
             this.MinHeight = 768;                                             // 设置一个最小分辨率;
-            this.MainHorizenTab.SelectionChanged += MainHorizenTab_SelectionChanged;
+            this.MainHorizenTab.SelectionChanged += 
+                MainHorizenTab_SelectionChanged;                              // Tab选择改变后的事件;
 
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
@@ -51,7 +52,6 @@ namespace SCMTMainWindow
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Console.WriteLine("1");
         }
 
         /// <summary>
@@ -104,7 +104,6 @@ namespace SCMTMainWindow
             TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
         }
         
-
         /// <summary>
         /// 将对象树添加到收藏;
         /// </summary>
@@ -309,7 +308,8 @@ namespace SCMTMainWindow
 
         private void Show_LineChart(object sender, EventArgs e)
         {
-            LayoutDocument sub = new LayoutDocument();
+            // 后续需要有一个界面元素管理类;
+            LayoutAnchorable sub = new LayoutAnchorable();
             LinechartContent content = new LinechartContent();
 
             // 当前的问题：这个Title显示不出来;
