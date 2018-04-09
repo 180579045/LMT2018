@@ -317,6 +317,10 @@ namespace SCMTMainWindow
             sub.FloatingHeight = 280;
             sub.FloatingWidth = 350;
             sub.Content = content;
+            sub.FloatingLeft = 200;
+            sub.FloatingTop = 200;
+            sub.CanClose = true;
+            sub.CanAutoHide = false;
 
             this.Pane.Children.Add(sub);
             sub.Float();
@@ -324,7 +328,6 @@ namespace SCMTMainWindow
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            this.AllContent.Width = this.ActualWidth - 5;
         }
 
         private void Lost_Nodeb_Focus(object sender, RoutedEventArgs e)
@@ -341,6 +344,12 @@ namespace SCMTMainWindow
         {
             Console.WriteLine("Get Nodeb Focus");
 
+        }
+
+        private void AddeNB(object sender, EventArgs e)
+        {
+            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
+            AddNodeB.NewInstance(this).ShowDialog();
         }
     }
 }

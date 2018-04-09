@@ -16,7 +16,7 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         mc:Ignorable="d"
-        Height="778" Width="1300"
+        Height="778" Width="1024"
         Title="{Binding Title}"
         WindowStyle="None"
         Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
@@ -35,11 +35,6 @@
             <!-- 版本号 -->
             <Metro:MetroTitleMenuItem Header="Ver0.1"/>
 
-            <!-- 基站列表 -->
-            <Metro:MetroTitleMenuItem Header="基站列表" Icon="Resources/NodeB_List.png">
-                <Metro:MetroMenuItem Header="添加基站" Click="AddNodeB_Click" />
-            </Metro:MetroTitleMenuItem>
-
             <!-- 菜单栏 -->
             <Metro:MetroTitleMenuItem Header="">
                 <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
@@ -57,92 +52,88 @@
     <!-- 软件主界面 -->
     <Grid>
 
-        <!-- 页签的基础控件 -->
-        <TabControl x:Name="MainHorizenTab" TabStripPlacement="Top" Style="{StaticResource TabControlStyle}">
-            
-            <!-- 页签一：MIB数据操作配置页签 -->
-            
-            <!--
-            ——————————————————————
-            |      |                                    |
-            |      |                                    |
-            |      |                                    |
-            |      |                                    |
-            |      |                                    |
-            |      |                                    |
-            |      |                                    |
-            ——————————————————————
-            -->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" MaxWidth="250" />
+            <ColumnDefinition Width="5" />
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-            <TabItem Header="基本信息"  Style="{StaticResource TabItemStyle}"  LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
-                
-                <Grid x:Name="AllContent">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="250" MaxWidth="250" />
-                        <ColumnDefinition Width="5" />
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
+        <!-- 软件左侧导航菜单(后续还是改成TreeView，应该会比较稳定) -->
+        <Metro:MetroScrollViewer Grid.Column="0">
+            <Border BorderBrush="#19000000" BorderThickness="0,0,1,0">
+                <StackPanel x:Name="lists">
 
-                    <!-- 软件左侧导航菜单 -->
-                    <Metro:MetroScrollViewer Grid.Column="0">
-                        <Border BorderBrush="#19000000" BorderThickness="0,0,1,0">
-                            <StackPanel x:Name="lists">
+                    <Metro:MetroExpander Header="基站列表">
+                        <StackPanel Margin="20,0,0,0">
+                            <Metro:MetroExpander Header="添加基站"  Icon="Resources/BaseInfo2.png"  Click="AddeNB" />
+                        </StackPanel>
+                    </Metro:MetroExpander>
 
-                                <Metro:MetroExpander Header="基本信息" Icon="Resources/BaseInfo2.png" />
-                                
-                                <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
-                                
-                                <Metro:MetroExpander Header="消息模板" Icon="Resources/NetPLanB.png" />
-                                
-                                <Metro:MetroExpander Header="图表模板" >
-                                    <StackPanel>
-                                        <Metro:MetroExpander Header="数据表" />
-                                        <Metro:MetroExpander Header="折线图" Click="Show_LineChart" />
-                                        <Metro:MetroExpander Header="流程图" />
-                                    </StackPanel>
-                                </Metro:MetroExpander>
-                                
-                                <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" Click="Collect_Node_Click" />
+                    <!--
+                    <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
+                    -->
 
-                                <!--对象树模型(对象树节点只到父节点级别)-->
-                                <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
-                                    <Metro:MetroExpander.ContextMenu>
-                                        <Metro:MetroContextMenu>
-                                            <Metro:MetroMenuItem Header="添加到收藏" Click="AddToCollect_Click"  />
-                                        </Metro:MetroContextMenu>
-                                    </Metro:MetroExpander.ContextMenu>
-                                </Metro:MetroExpander>
-                                
-                            </StackPanel>
-                        </Border>
-                    </Metro:MetroScrollViewer>
+                    <Metro:MetroExpander Header="消息模板" />
 
-                    <!--拖动分割线-->
-                    <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" >
-                        <GridSplitter.Background>
-                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                                <GradientStop Color="#FFE8E8E8" Offset="0"/>
-                                <GradientStop Color="#FFE6E6E6" Offset="1"/>
-                                <GradientStop Color="#FFBFBFBF" Offset="0.478"/>
-                            </LinearGradientBrush>
-                        </GridSplitter.Background>
-                    </GridSplitter>
+                    <Metro:MetroExpander Header="窗口图表模板" >
+                        <StackPanel Margin="20,0,0,0">
+                            <Metro:MetroExpander Header="基站数据表" Icon="Resources/NetPLanB.png" />
+                            <Metro:MetroExpander Header="基站控制台" Icon="Resources/NetPLanB.png"/>
+                            <Metro:MetroExpander Header="折线图" Click="Show_LineChart" Icon="Resources/NetPLanB.png" />
+                            <Metro:MetroExpander Header="流程图" Icon="Resources/NetPLanB.png"/>
+                        </StackPanel>
+                    </Metro:MetroExpander>
 
-                    <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
-                    <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
-                        <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
-                            <StackPanel>
-                                <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..." Grid.Column="1"
+                    <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" />
+
+                    <!--对象树模型(对象树节点只到父节点级别)-->
+                    <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点列表" >
+                        <Metro:MetroExpander.ContextMenu>
+                            <Metro:MetroContextMenu>
+                                <Metro:MetroMenuItem Header="添加到收藏" Click="AddToCollect_Click"  />
+                            </Metro:MetroContextMenu>
+                        </Metro:MetroExpander.ContextMenu>
+                    </Metro:MetroExpander>
+
+                </StackPanel>
+            </Border>
+        </Metro:MetroScrollViewer>
+
+        <!--拖动分割线-->
+        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" >
+            <GridSplitter.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE8E8E8" Offset="0"/>
+                    <GradientStop Color="#FFE6E6E6" Offset="1"/>
+                    <GradientStop Color="#FFBFBFBF" Offset="0.478"/>
+                </LinearGradientBrush>
+            </GridSplitter.Background>
+        </GridSplitter>
+
+        <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
+        <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
+            <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
+                <StackPanel>
+                    <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..."
                                                     ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
-                                <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
-                            </StackPanel>
-                        </Border>
-                    </Metro:MetroFavScrollViewer>
+                    <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
+                </StackPanel>
+            </Border>
+        </Metro:MetroFavScrollViewer>
 
-                    <!-- 主要的显示界面 -->
-                    <Grid Grid.Column="3">
+        <!-- 页签的基础控件 -->
+        <!-- 遗留问题：
+             1：Avalon长度比窗体宽
+        -->
+        <Grid Grid.Column="3">
+            <TabControl x:Name="MainHorizenTab" TabStripPlacement="Top" Style="{StaticResource TabControlStyle}" >
 
+                <!-- 页签一：MIB数据操作配置页签 -->
+                <TabItem Header="基本信息"  Style="{StaticResource TabItemStyle}"  LostFocus="Lost_Nodeb_Focus" Loaded="Load_Nodeb" GotFocus="Get_Nodeb_Focus">
+
+                    <Grid x:Name="AllContent">
+                        <!-- 主要的显示界面 -->
                         <!-- 自由布局Dock -->
                         <xcad:DockingManager  BorderBrush="Blue" >
 
@@ -157,101 +148,41 @@
 
                             <!-- 根页签 -->
                             <xcad:LayoutRoot x:Name="_layoutRoot">
-
                                 <xcad:LayoutPanel Orientation="Horizontal">
-
                                     <xcad:LayoutAnchorablePane x:Name="Pane">
-                                        <!--  -->
-                                        <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False">
-                                        </xcad:LayoutAnchorable>
+                                        <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False" CanAutoHide="False"/>
                                     </xcad:LayoutAnchorablePane>
-
                                 </xcad:LayoutPanel>
-
                             </xcad:LayoutRoot>
                         </xcad:DockingManager>
 
                     </Grid>
+                </TabItem>
 
-                </Grid>
-                
-            </TabItem>
+                <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">
+                    <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
+                </TabItem>
 
-            <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">
-                <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
-            </TabItem>
+                <TabItem Header="基站数据" Style="{StaticResource TabItemStyle}">
+                    <Grid Margin="0,40,0,0">
 
-            <TabItem Header="基站数据" Style="{StaticResource TabItemStyle}">
-                <Grid Margin="0,40,0,0">
-                    
-                </Grid>
-            </TabItem>
+                    </Grid>
+                </TabItem>
 
-            <TabItem Header="工具箱" Style="{StaticResource TabItemStyle}">
-                <Grid Margin="0,40,0,0">
-                    
-                    <Metro:MetroMenuTabControl x:Name="Tooltab" IconMode="False">
+                <TabItem Header="工具箱" Style="{StaticResource TabItemStyle}">
+                    <Grid Margin="0,40,0,0">
 
-                        <Metro:MetroMenuTabItem Header="基站" Height="40" VerticalAlignment="Top">
-                            <Grid>
-                                <Metro:MetroScrollViewer>
-                                    <Metro:MetroWaterfallFlow x:Name="waterfallFlow2" ListWidth="300">
-                                        <Grid>
-                                            <Metro:MetroGroupBox Header="工具一">
-                                                <Grid>
-                                                    <StackPanel>
-                                                        <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                        <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Metro:MetroGroupBox>
-                                        </Grid>
+                        <Metro:MetroMenuTabControl x:Name="Tooltab" IconMode="False">
 
-                                        <Grid>
-                                            <Metro:MetroGroupBox Header="工具二">
-                                                <Grid>
-                                                    <StackPanel>
-                                                        <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                        <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Metro:MetroGroupBox>
-                                        </Grid>
-
-                                        <Grid>
-                                            <Metro:MetroGroupBox Header="工具三">
-                                                <Grid>
-                                                    <StackPanel>
-                                                        <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                        <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
-                                                    </StackPanel>
-                                                </Grid>
-                                            </Metro:MetroGroupBox>
-                                        </Grid>
-                                    </Metro:MetroWaterfallFlow>
-                                </Metro:MetroScrollViewer>
-
-                            </Grid>
-                        </Metro:MetroMenuTabItem>
-
-                        <Metro:MetroMenuTabItem Header="通用"  Height="40" VerticalAlignment="Top">
-                            <Grid>
-
-                            </Grid>
-                        </Metro:MetroMenuTabItem>
-
-                        <Metro:MetroMenuTabItem Header="日志解析"  Height="40" VerticalAlignment="Top">
-
-                            <Grid>
-
+                            <Metro:MetroMenuTabItem Header="基站" Height="40" VerticalAlignment="Top">
                                 <Grid>
                                     <Metro:MetroScrollViewer>
-                                        <Metro:MetroWaterfallFlow x:Name="waterfallFlow4" ListWidth="300">
+                                        <Metro:MetroWaterfallFlow x:Name="waterfallFlow2" ListWidth="300">
                                             <Grid>
-                                                <Metro:MetroGroupBox Header="告警日志解析">
+                                                <Metro:MetroGroupBox Header="工具一">
                                                     <Grid>
                                                         <StackPanel>
-                                                            <Metro:MetroTextBlock Text="可解析基站活跃告警日志、基站历史告警日志、基站异常日志" />
+                                                            <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
                                                             <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                         </StackPanel>
                                                     </Grid>
@@ -283,24 +214,78 @@
                                     </Metro:MetroScrollViewer>
 
                                 </Grid>
+                            </Metro:MetroMenuTabItem>
 
-                            </Grid>
+                            <Metro:MetroMenuTabItem Header="通用"  Height="40" VerticalAlignment="Top">
+                                <Grid>
 
-                        </Metro:MetroMenuTabItem>
+                                </Grid>
+                            </Metro:MetroMenuTabItem>
 
-                        <Metro:MetroMenuTabItem Header="性能解析" Height="40" VerticalAlignment="Top">
-                            <Grid>
+                            <Metro:MetroMenuTabItem Header="日志解析"  Height="40" VerticalAlignment="Top">
 
-                            </Grid>
-                        </Metro:MetroMenuTabItem>
+                                <Grid>
+
+                                    <Grid>
+                                        <Metro:MetroScrollViewer>
+                                            <Metro:MetroWaterfallFlow x:Name="waterfallFlow4" ListWidth="300">
+                                                <Grid>
+                                                    <Metro:MetroGroupBox Header="告警日志解析">
+                                                        <Grid>
+                                                            <StackPanel>
+                                                                <Metro:MetroTextBlock Text="可解析基站活跃告警日志、基站历史告警日志、基站异常日志" />
+                                                                <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Metro:MetroGroupBox>
+                                                </Grid>
+
+                                                <Grid>
+                                                    <Metro:MetroGroupBox Header="工具二">
+                                                        <Grid>
+                                                            <StackPanel>
+                                                                <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
+                                                                <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Metro:MetroGroupBox>
+                                                </Grid>
+
+                                                <Grid>
+                                                    <Metro:MetroGroupBox Header="工具三">
+                                                        <Grid>
+                                                            <StackPanel>
+                                                                <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
+                                                                <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Metro:MetroGroupBox>
+                                                </Grid>
+                                            </Metro:MetroWaterfallFlow>
+                                        </Metro:MetroScrollViewer>
+
+                                    </Grid>
+
+                                </Grid>
+
+                            </Metro:MetroMenuTabItem>
+
+                            <Metro:MetroMenuTabItem Header="性能解析" Height="40" VerticalAlignment="Top">
+                                <Grid>
+
+                                </Grid>
+                            </Metro:MetroMenuTabItem>
 
 
-                    </Metro:MetroMenuTabControl>
+                        </Metro:MetroMenuTabControl>
 
-                </Grid>
-            </TabItem>
+                    </Grid>
+                </TabItem>
 
-        </TabControl>
+            </TabControl>
+
+        </Grid>
+        
 
 
 

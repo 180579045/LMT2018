@@ -2,8 +2,6 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:SCMTMainWindow.Style">
 
-    <SolidColorBrush x:Key="SampleDefaultBrush">#FFC72035</SolidColorBrush>
-
     <Style x:Key="TabControlStyle" TargetType="{x:Type TabControl}">
         
         <Setter Property="Template">
@@ -42,7 +40,7 @@
                     
                     <Grid Height="33">
                         <Border x:Name="border" Background="#e8e8e8" Margin="3,0,3,0" />
-                        <TextBlock x:Name="textBlock" HorizontalAlignment="Center"  Margin="19,0,19,0"  VerticalAlignment="Center"  FontFamily="Segoe UI"
+                        <TextBlock x:Name="textBlock" HorizontalAlignment="Center"  Margin="19,0,19,0"  VerticalAlignment="Center"
                                    FontSize="14" FontWeight="SemiBold"  Foreground="Black" Text="{TemplateBinding Header}" TextWrapping="Wrap" />
                     </Grid>
                     
