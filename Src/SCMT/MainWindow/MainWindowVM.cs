@@ -15,6 +15,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Windows;
+using System.Windows.Threading;
+using System.Collections.Generic;
+using System.Collections;
+using System.Linq;
 
 namespace SCMTMainWindow
 {
@@ -136,5 +141,78 @@ namespace SCMTMainWindow
     public enum OrderStatus { None, New, Processing, Shipped, Received };
 
 
-    
+    public class CallbackObjectForJs
+    {
+        private DispatcherTimer timer = new DispatcherTimer();
+        private int i=0;
+
+        // 生成 option 配置项，并转成 JSON 字符串
+        private string option = OptionJsonString();
+        public static string OptionJsonString() {
+
+            List<string> aaa = new List<string>();
+            aaa.Add("想怎么配");
+            aaa.Add("就怎么配");
+            legend legend = new legend(aaa);
+
+            // 生成 series 里面的 data 数据 ( 重要 )
+            double[] al1 = randomArr(36);
+            double[] al2 = randomArr(72);
+            series series = new series("想怎么配", "line", false, "circle", "", al1);
+            series series1 = new series("就怎么配", "line", false, "circle", "", al2);
+            List<series> ser1 = new List<series>();
+            ser1.Add(series);
+            ser1.Add(series1);
+
+            // 生成 xAxis 中的 data 属性 ( date 的格式很重要 )
+            string[] data = { "16:49:01", "16:49:02", "16:49:03", "16:49:04", "16:49:05", "16:49:06" };
+            xAxis xaxis = new xAxis(data);
+            Option option = new Option(legend, ser1, xaxis);
+
+            return SCMTMainWindow.Option.ObjectToJson(option);
+        }
+
+        // 生成double随机数的一维数组
+        static private double[] randomArr(int num)
+        {
+            Array arr = System.Array.CreateInstance(typeof(double), num);
+            double[] doubleArr = { };
+            Random rnd = new Random();
+
+            // 生成随机数
+            for (int i = 0; i < num; i++)
+            {
+                arr.SetValue(Math.Round(rnd.NextDouble()*20, 2), i);
+            }
+
+            // 数组强转
+            doubleArr = (double[])arr;
+            return doubleArr;
+        }
+
+        public string Option
+        {
+            get
+            {
+                return option;
+            }
+
+            set
+            {
+                option = value;
+            }
+        }
+
+        //public void startTime() {
+        //    timer.Interval = TimeSpan.FromMilliseconds(1000);
+        //    timer.Tick += this.AddPoint;
+        //    timer.IsEnabled = true;
+        //}
+        //private void AddPoint(object sender, EventArgs e)
+        //{
+        //    name = Convert.ToString(i);
+        //    i++;            
+        //}
+
+    }
 }

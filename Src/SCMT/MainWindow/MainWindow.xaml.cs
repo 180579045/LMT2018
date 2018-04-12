@@ -48,6 +48,8 @@ namespace SCMTMainWindow
 
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
+            CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+            this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
         }
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
