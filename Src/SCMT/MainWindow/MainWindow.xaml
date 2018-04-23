@@ -24,6 +24,7 @@
     <Window.Resources>
     </Window.Resources>
 
+    <!-- 绑定VM层 -->
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
     </Metro:MetroWindow.DataContext>
