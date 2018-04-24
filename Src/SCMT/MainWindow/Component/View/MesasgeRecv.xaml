@@ -19,6 +19,7 @@
             <ColumnDefinition MinWidth="300"></ColumnDefinition>
             <ColumnDefinition Width="2"></ColumnDefinition>
             <ColumnDefinition MinWidth="100"></ColumnDefinition>
+            <ColumnDefinition Width="2"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
@@ -28,7 +29,10 @@
                     <DataGridTextColumn Header="Column1"  Binding="{Binding FirstName}"/>
                     <DataGridTextColumn Header="Column2" Binding="{Binding LastName}" />
                     <DataGridHyperlinkColumn Header="Column3" Binding="{Binding Email}"  />
-                    <DataGridCheckBoxColumn Header="Column4?" Binding="{Binding IsMember}" />
+                    <DataGridCheckBoxColumn Header="Column4" Binding="{Binding IsMember}" />
+                    <DataGridTextColumn Header="Column1"  Binding="{Binding FirstName}"/>
+                    <DataGridTextColumn Header="Column2" Binding="{Binding LastName}" />
+                    <DataGridHyperlinkColumn Header="Column3" Binding="{Binding Email}"  />
                 </DataGrid.Columns>
             </DataGrid>
         </Grid>
@@ -44,7 +48,35 @@
         </GridSplitter>
 
         <Grid Grid.Column="2" >
+            <TreeView>
+                <TreeViewItem Header="消息">
+                    <TreeViewItem Header="消息内容:65535">
+                        <Label>source port:Asn.1</Label>
+                        <Label>Destination port:10</Label>
+                        <Label>********************</Label>
+                    </TreeViewItem>
+                </TreeViewItem>
+            </TreeView>
+        </Grid>
 
+        <GridSplitter Grid.Column="3" Width="2" HorizontalAlignment="Stretch" >
+            <GridSplitter.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFE8E8E8" Offset="0"/>
+                    <GradientStop Color="#FFE6E6E6" Offset="1"/>
+                    <GradientStop Color="#FFBFBFBF" Offset="0.478"/>
+                </LinearGradientBrush>
+            </GridSplitter.Background>
+        </GridSplitter>
+
+        <Grid Grid.Column="4">
+            <StackPanel>
+                <Label>0000 00 03 09 01 5F 10 13 25 69 B2 10</Label>
+                <Label>0001 00 03 09 01 5F 10 13 25 69 B2 10</Label>
+                <Label>0002 00 03 09 01 5F 10 13 25 69 B2 10</Label>
+                <Label>0003 00 03 09 01 5F 10 13 25 69 B2 10</Label>
+                <Label>0004 00 03 09 01 5F 10 13 25 69 B2 10</Label>
+            </StackPanel>
         </Grid>
 
     </Grid>

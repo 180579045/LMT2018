@@ -148,11 +148,14 @@ namespace SCMTMainWindow
 
         // 生成 option 配置项，并转成 JSON 字符串
         private string option = OptionJsonString();
-        public static string OptionJsonString() {
+
+        public static string OptionJsonString()
+        {
 
             List<string> aaa = new List<string>();
             aaa.Add("想怎么配");
             aaa.Add("就怎么配");
+
             legend legend = new legend(aaa);
 
             // 生成 series 里面的 data 数据 ( 重要 )
@@ -161,6 +164,7 @@ namespace SCMTMainWindow
             series series = new series("想怎么配", "line", false, "circle", "", al1);
             series series1 = new series("就怎么配", "line", false, "circle", "", al2);
             List<series> ser1 = new List<series>();
+
             ser1.Add(series);
             ser1.Add(series1);
 

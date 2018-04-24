@@ -24,7 +24,10 @@ namespace SCMTMainWindow.Component.View
         {
             InitializeComponent();
             this.address.Address = System.Environment.CurrentDirectory + @"\LineChart_JS\LinChart.html";
+            CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+            this.address.RegisterJsObject("JsObj", new CallbackObjectForJs());
             this.address.BeginInit();
+
         }
     }
 }

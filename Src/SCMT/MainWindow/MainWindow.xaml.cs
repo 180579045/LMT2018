@@ -335,8 +335,8 @@ namespace SCMTMainWindow
             MesasgeRecv content = new MesasgeRecv();
 
             sub.Content = content;
-            sub.FloatingHeight = 400;
-            sub.FloatingWidth = 400;
+            sub.FloatingHeight = 300;
+            sub.FloatingWidth = 800;
 
             this.Pane.Children.Add(sub);
             sub.Float();
