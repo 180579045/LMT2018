@@ -15,6 +15,7 @@
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:xgrid="http://schemas.xceed.com/wpf/xaml/datagrid"
         mc:Ignorable="d"
         Height="778" Width="1024"
         Title="{Binding Title}"
@@ -75,7 +76,17 @@
                     <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
                     -->
 
-                    <Metro:MetroExpander Header="消息模板" />
+                    <Metro:MetroExpander Header="消息模板" >
+                        <StackPanel Margin="20,0,0,0">
+                            <Metro:MetroExpander Header="HL消息">
+                                <StackPanel Margin="20,0,0,0">
+                                    <Metro:MetroExpander Header="终端消息" Icon="Resources/NetPLanB.png" Click="ShowMessage_Click"></Metro:MetroExpander>
+                                    <Metro:MetroExpander Header="eNB消息" Icon="Resources/NetPLanB.png"></Metro:MetroExpander>
+                                    <Metro:MetroExpander Header="gNB消息" Icon="Resources/NetPLanB.png"></Metro:MetroExpander>
+                                </StackPanel>
+                            </Metro:MetroExpander>
+                        </StackPanel>
+                    </Metro:MetroExpander>
 
                     <Metro:MetroExpander Header="窗口图表模板" >
                         <StackPanel Margin="20,0,0,0">
@@ -151,10 +162,11 @@
                             <xcad:LayoutRoot x:Name="_layoutRoot">
                                 <xcad:LayoutPanel Orientation="Horizontal">
                                     <xcad:LayoutAnchorablePane x:Name="Pane">
-                                        <xcad:LayoutAnchorable ContentId="properties" Title="Properties" CanHide="False" CanAutoHide="False"/>
+                                        <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False"/>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>
                             </xcad:LayoutRoot>
+                            
                         </xcad:DockingManager>
 
                     </Grid>

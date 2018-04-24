@@ -129,6 +129,9 @@
     <Compile Include="Component\View\LinechartContent.xaml.cs">
       <DependentUpon>LinechartContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\View\MesasgeRecv.xaml.cs">
+      <DependentUpon>MesasgeRecv.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Mib\MibNode.cs" />
@@ -136,6 +139,10 @@
     <Compile Include="Component\View\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Page Include="Component\View\LinechartContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\View\MesasgeRecv.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -282,6 +289,10 @@
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UI\DataGrid\Xceed.Wpf.DataGrid\Xceed.Wpf.DataGrid.csproj">
+      <Project>{63648392-6ce9-4a60-96d4-f9fd718d29b0}</Project>
+      <Name>Xceed.Wpf.DataGrid</Name>
+    </ProjectReference>
     <ProjectReference Include="..\UI\DataGrid\Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
       <Name>Xceed.Wpf.Toolkit</Name>
@@ -318,6 +329,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

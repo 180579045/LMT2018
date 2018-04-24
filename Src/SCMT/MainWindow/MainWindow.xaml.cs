@@ -41,7 +41,7 @@ namespace SCMTMainWindow
         {
             InitializeComponent();
             this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
-            this.MinWidth = 1366;                                             // 设置一个最小分辨率;
+            this.MinWidth = 1024;                                             // 设置一个最小分辨率;
             this.MinHeight = 768;                                             // 设置一个最小分辨率;
             this.MainHorizenTab.SelectionChanged += 
                 MainHorizenTab_SelectionChanged;                              // Tab选择改变后的事件;
@@ -49,7 +49,7 @@ namespace SCMTMainWindow
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-            this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
+            //this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
         }
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -315,7 +315,7 @@ namespace SCMTMainWindow
             LinechartContent content = new LinechartContent();
 
             // 当前的问题：这个Title显示不出来;
-            sub.Title = "Doc1";
+            sub.Title = "折线图";
             sub.FloatingHeight = 280;
             sub.FloatingWidth = 350;
             sub.Content = content;
@@ -323,6 +323,20 @@ namespace SCMTMainWindow
             sub.FloatingTop = 200;
             sub.CanClose = true;
             sub.CanAutoHide = false;
+
+            this.Pane.Children.Add(sub);
+            sub.Float();
+        }
+
+        private void ShowMessage_Click(object sender, EventArgs e)
+        {
+            // 后续需要有一个界面元素管理类;
+            LayoutAnchorable sub = new LayoutAnchorable();
+            MesasgeRecv content = new MesasgeRecv();
+
+            sub.Content = content;
+            sub.FloatingHeight = 400;
+            sub.FloatingWidth = 400;
 
             this.Pane.Children.Add(sub);
             sub.Float();

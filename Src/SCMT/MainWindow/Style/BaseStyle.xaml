@@ -3,5 +3,5 @@
                     xmlns:local="clr-namespace:SCMTMainWindow.Style">
 
     <SolidColorBrush x:Key="SampleDefaultBrush">#6d819a</SolidColorBrush>
-    
+
 </ResourceDictionary>
