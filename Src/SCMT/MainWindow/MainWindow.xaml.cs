@@ -376,7 +376,6 @@ namespace SCMTMainWindow
             AddNodeB.NewInstance(this).ShowDialog();
         }
 
-<<<<<<< HEAD
         private void ShowFlowChart(object sender, EventArgs e)
         {
             LayoutAnchorable sub = new LayoutAnchorable();
@@ -388,7 +387,8 @@ namespace SCMTMainWindow
 
             this.Pane.Children.Add(sub);
             sub.Float();
-=======
+        }
+
         private void OpenFileButtonClick(object sender, RoutedEventArgs e)
         {
             var dialog = new OpenFileDialog { Filter = "CDL Log|*.txt" + "|All Files|*.*", Multiselect = true};
@@ -611,7 +611,6 @@ namespace SCMTMainWindow
             {
       
             }
->>>>>>> bd0bb87d4046334d0a115c247dfe5c016c2650d5
         }
     }
 }
