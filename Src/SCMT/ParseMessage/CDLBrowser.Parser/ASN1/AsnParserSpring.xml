@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+  <!--默认版本的解码函数-->
+  <object id="RRCDefaultVersion" type="CDLBrowser.Parser.ASN1.Implement.DefaultVersion.RRCDecoder,CDLBrowser.Parser" >
+  </object>
+
+  <object id="S1DefaultVersion" type="CDLBrowser.Parser.ASN1.Implement.DefaultVersion.S1Decoder,CDLBrowser.Parser" >
+  </object>
+
+  <object id="X2DefaultVersion" type="CDLBrowser.Parser.ASN1.Implement.DefaultVersion.X2Decoder,CDLBrowser.Parser" >
+  </object>
+
+  <object id="NasDefaultVersion" type="CDLBrowser.Parser.ASN1.Implement.DefaultVersion.NasDecoder,CDLBrowser.Parser" >
+  </object>
+  
+  <!--描述不同版本对应的不同解码函数-->
+  <object id="Asn1DecoderFactory" type="CDLBrowser.Parser.ASN1.Implement.Asn1DecoderFactory,CDLBrowser.Parser">
+    <constructor-arg index="0" >
+      <dictionary key-type="string" value-type="CDLBrowser.Parser.ASN1.Interface.IAsn1Decoder">
+        <entry key="RRCDefaultVersion" value-ref="RRCDefaultVersion"/>
+        <entry key="S1DefaultVersion"  value-ref="S1DefaultVersion"/>
+        <entry key="X2DefaultVersion"  value-ref="X2DefaultVersion"/>
+        <entry key="NASDefaultVersion"  value-ref="NasDefaultVersion"/>
+      </dictionary>
+    </constructor-arg>
+  </object>
+  
+<!--解码函数end-->
+</objects>

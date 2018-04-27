@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<StatisticEvents>
+  <Events Type="UE接入统计">
+    <Event Describe="RRCConnectionRequest"/>
+    <Event Describe="RRCConnectionSetup"/>
+    <Event Describe="RRCConnectionSetupComplete"/>
+    <Event Describe="S1 Initial UE Message"/>
+    <Event Describe="S1 UE Context Setup Request"/>
+    <Event Describe="S1 UE Context Setup Command"/>
+    <Event Describe="UECapabilityEnquiry"/>
+    <Event Describe="UECapabilityInformation"/>
+    <Event Describe="S1 UE Capability Info Indication"/>
+    <Event Describe="SecurityModeCommand"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="SecurityModeComplete"/>
+    <Event Describe="RRCConnectionReconfigurationComplete"/>
+    <Event Describe="S1 Initial Context Setup Request"/>
+    <Event Describe="S1 UE Context Release Command"/>
+
+    <Event Describe="TIMER_OUT"/>
+    <Event Describe="RRC_OVERTIME"/>
+    <Event Describe="S1 Initial Context Setup Failure"/>
+    <Event Describe="SecurityModeFailure"/>
+    <Event Describe="RRCConnectionReject"/>
+  </Events>
+  
+<Events Type="RRC建立统计">
+    <Event Describe="RRCConnectionRequest"/>
+    <Event Describe="RRCConnectionSetup"/>
+    <Event Describe="RRCConnectionSetupComplete"/>
+   
+    <Event Describe="RRC_OVERTIME"/>
+    <Event Describe="RRCConnectionReject"/>
+  </Events>
+  <Events Type="ERAB建立统计">
+    <Event Describe="S1 Initial Context Setup Request"/>
+    <Event Describe="UECapabilityEnquiry"/>
+    <Event Describe="UECapabilityInformation"/>
+    <Event Describe="S1 UE Capability Info Indication"/>
+    <Event Describe="SecurityModeCommand"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="SecurityModeComplete"/>
+    <Event Describe="RRCConnectionReconfigurationComplete"/>
+    <Event Describe="S1 Initial Context Setup Response"/>
+
+    <Event Describe="S1 ERAB Setup Request"/>
+    <Event Describe="S1 ERAB Setup Response"/>
+    
+    <Event Describe="SecurityModeFailure"/>
+    <Event Describe="S1 Initial Context Setup Failure"/>
+    <Event Describe="S1 UE Context Release Request"/>
+  </Events>
+
+  <Events Type="掉话统计">
+    <Event Describe="O_INTRA_RRCRRM_MIMOCHANGE_REQ"/>
+    <Event Describe="O_INTRA_RRCRRM_SRS_PUCCH_REQ"/>
+    <Event Describe="O_INTRA_RRMRRC_SRS_PUCCH_RSP"/>
+    <Event Describe="S1 ERAB Setup Request"/>
+    <Event Describe="S1 ERAB Modify Request"/>
+    <Event Describe="S1 ERAB Release Command"/>
+    <Event Describe="MeasurementReport"/>
+    <Event Describe="O_INTRA_RRMRRC_HANDOVER_COMPLETE_RSP"/>
+    <Event Describe="S1 UE Context Modification Request"/>
+    <Event Describe="RRCConnectionRelease"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="RRCConnectionReestablishmentComplete"/>
+    <Event Describe="S1 UE Context Release Request"/>
+    <Event Describe="S1 UE Context Release Command"/>
+    <Event Describe="S1 UE Context Release Complete"/>
+    
+    <Event Describe="S1 Initial UE Message"/>
+    <Event Describe="S1 Path Switch Request"/>
+    <Event Describe="S1 Handover Request"/>
+  </Events>
+
+  <Events Type="切换统计-X2">
+  	<!--X2-->
+    <Event Describe="MeasurementReport"/>
+    <Event Describe="X2 Handover Request"/>
+    <Event Describe="X2 Handover Request Acknowledge"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="RRCConnectionReconfigurationComplete"/>
+    <Event Describe="S1 Path Switch Request"/>
+    <Event Describe="S1 Path Switch Request Acknowledge"/>
+    <Event Describe="X2 UE Context Release"/>
+
+    <Event Describe="X2 Handover Cancel"/>
+    <Event Describe="S1 UE Context Release Request"/>
+    <Event Describe="S1 UE Context Release Command"/>
+    <Event Describe="RRCConnectionRelease"/>
+    <Event Describe="X2 Handover Preparation Failure"/>
+    
+    <Event Describe="RRCConnectionReestablishmentRequest"/>
+    <Event Describe="RRCConnectionReestablishment"/>
+    <Event Describe="RRCConnectionReestablishmentComplete"/>
+    
+    <Event Describe="MSG_RRCX2AP_HandoverReq"/>
+  </Events>
+
+  <!-- S1-->
+   <Events Type="切换统计-S1">
+    <Event Describe="MeasurementReport"/>
+    <Event Describe="S1 Handover Required"/>
+    <Event Describe="S1 Handover Request"/>
+    <Event Describe="S1 Handover Request Acknowledge"/>
+    <Event Describe="S1 Handover Command"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="RRCConnectionReconfigurationComplete"/>
+    <Event Describe="S1 Handover Notify"/>
+    <Event Describe="S1 UE Context Release Command"/>
+    
+    <Event Describe="S1 Handover Cancel"/>
+    <Event Describe="RRCConnectionRelease"/>
+    <Event Describe="S1 Handover Preparation Failure"/>
+    <Event Describe="S1 UE Context Release Request"/>
+    
+    <Event Describe="RRCConnectionReestablishmentRequest"/>
+    <Event Describe="RRCConnectionReestablishment"/>
+    <Event Describe="RRCConnectionReestablishmentComplete"/>
+    
+    <Event Describe="MSG_RRCS1AP_HandoverRequired" />
+  </Events>
+
+  <!--内部切换-->
+  <Events Type="切换统计-基站内部">
+    <Event Describe="MeasurementReport"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="RRCConnectionReconfigurationComplete"/>
+
+    <Event Describe="S1 UE Context Release Request"/>
+    <Event Describe="S1 UE Context Release Command"/>
+    <Event Describe="RRCConnectionRelease"/>
+    
+    <event Describe="RRCConnectionReestablishmentRequest"/>
+    <Event Describe="RRCConnectionReestablishment"/>
+    <Event Describe="RRCConnectionReestablishmentComplete"/>
+  </Events>
+  
+    <Events Type="重建立统计">
+    <Event Describe="RRCConnectionReestablishmentRequest"/>
+    <Event Describe="RRCConnectionReestablishment"/>
+    <Event Describe="RRCConnectionReestablishmentComplete"/>
+    <Event Describe="RRCConnectionReconfiguration"/>
+    <Event Describe="RRCConnectionReconfigurationComplete"/>
+
+    <Event Describe="RRC_OVERTIME"/>
+    <Event Describe="RRCConnectionReestablishmentReject"/>
+  </Events>
+</StatisticEvents>

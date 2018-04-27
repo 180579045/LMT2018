@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="gb2312"?>
+<StatisticConfiguration>
+	<TopN>
+	  <TimeInterval>360</TimeInterval>
+	  <TopNCell>10</TopNCell>
+	  <StartDate>2013/3/17</StartDate>
+	  <EndDate>2013/3/18</EndDate>
+	</TopN>
+	<UeAccess>
+		<StartTime>0</StartTime>
+		<EndTime>600</EndTime>
+		<Interval>100</Interval>
+		<TimeThreshold>300</TimeThreshold>	
+	</UeAccess>
+  <CounterAnalyse>
+    <IntervalSet>
+      <Interval describe="5分钟" value="5" default="false"/>
+      <Interval describe="15分钟" value="15" default="true"/>
+      <Interval describe="30分钟" value="30" default="false"/>
+      <Interval describe="60分钟" value="60" default="false"/>
+    </IntervalSet>
+  </CounterAnalyse>
+</StatisticConfiguration>

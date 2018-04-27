@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--UI配置定义-->
+
+<EffectPortConfigs>
+  <S1UuPorteffectiveMsg>
+    <Item MessageType="RRCConnectionRequest"/>
+    <Item MessageType="RRCConnectionReject"/>
+    <Item MessageType="RRCConnectionSetup"/>
+    <Item MessageType="RRCConnectionSetupComplete"/>
+    <Item MessageType="RRCConnectionRelease"/>
+    <Item MessageType="ULInformationTransfer"/>
+    <Item MessageType="SecurityModeCommand"/>
+    <Item MessageType="SecurityModeComplete"/>
+    <Item MessageType="SecurityModeFailure"/>
+    <Item MessageType="RRCConnectionReconfiguration"/>
+    <Item MessageType="RRCConnectionReconfigurationComplete"/>
+    <Item MessageType="UECapabilityEnquiry"/>
+    <Item MessageType="UECapabilityInformation"/>
+    <Item MessageType="S1 Initial UE Message"/>
+    <Item MessageType="S1 UL Nas Trans"/>
+    <Item MessageType="S1 Initial Context Setup Request"/>
+    <Item MessageType="S1 Initial Context Setup Response"/>
+    <Item MessageType="S1 Initial Context Setup Failure"/>
+    <Item MessageType="S1 UE Capability Info Indication"/>
+    <Item MessageType="S1 UE Context Release Command"/>
+    <Item MessageType="S1 ERAB Setup Request"/>
+    <Item MessageType="S1 ERAB Setup Response"/>
+    <Item MessageType="RRC_OVERTIME"/>
+    <Item MessageType="TIMER_OUT"/>
+  </S1UuPorteffectiveMsg>
+  
+    <UuPortEffectiveMsg>
+    <Item MessageType="RRCConnectionReestablishmentRequest"/>
+    <Item MessageType="RRCConnectionReestablishment"/>
+    <Item MessageType="RRCConnectionReestablishmentComplete"/>
+    <Item MessageType="RRCConnectionReconfiguration"/>
+    <Item MessageType="RRCConnectionReconfigurationComplete"/>
+    <Item MessageType="RRCConnectionReestablishmentReject"/>
+    <Item MessageType="RRC_OVERTIME"/>
+  </UuPortEffectiveMsg>
+  <S1APCauseValue>
+      <Item CaseName="CauseRadioNetwork_unspecified" Value="0"/>
+      <Item CaseName="tx2relocoverall_expiry" Value="1"/>
+      <Item CaseName="successful_handover" Value="2"/>
+      <Item CaseName="release_due_to_eutran_generated_reason" Value="3"/>
+      <Item CaseName="handover_cancelled" Value="4"/>
+      <Item CaseName="partial_handover" Value="5"/>
+      <Item CaseName="ho_failure_in_target_EPC_eNB_or_target_system" Value="6"/>
+      <Item CaseName="ho_target_not_allowed" Value="7"/>
+      <Item CaseName="tS1relocoverall_expiry" Value="8"/>
+      <Item CaseName="tS1relocprep_expiry" Value="9"/>
+      <Item CaseName="cell_not_available" Value="10"/>
+      <Item CaseName="unknown_targetID" Value="11"/>
+      <Item CaseName="no_radio_resources_available_in_target_cell" Value="12"/>
+      <Item CaseName="unknown_mme_ue_s1ap_id" Value="13"/>
+      <Item CaseName="unknown_enb_ue_s1ap_id" Value="14"/>
+      <Item CaseName="unknown_pair_ue_s1ap_id" Value="15"/>
+      <Item CaseName="handover_desirable_for_radio_reason" Value="16"/>
+      <Item CaseName="time_critical_handover" Value="17"/>
+      <Item CaseName="resource_optimisation_handover" Value="18"/>
+      <Item CaseName="reduce_load_in_serving_cell" Value="19"/>
+      <Item CaseName="user_inactivity" Value="20"/>
+      <Item CaseName="radio_connection_with_ue_lost" Value="21"/>
+      <Item CaseName="load_balancing_tau_required" Value="22"/>
+      <Item CaseName="cs_fallback_triggered" Value="23"/>
+      <Item CaseName="ue_not_available_for_ps_service" Value="24"/>
+      <Item CaseName="radio_resources_not_available" Value="25"/>
+      <Item CaseName="failure_in_radio_interface_procedure" Value="26"/>
+      <Item CaseName="invalid_qos_combination" Value="27"/>
+      <Item CaseName="interrat_redirection" Value="28"/>
+      <Item CaseName="interaction_with_other_procedure" Value="29"/>
+      <Item CaseName="unknown_E_RAB_ID" Value="30"/>
+      <Item CaseName="multiple_E_RAB_ID_instances" Value="31"/>
+      <Item CaseName="encryption_and_or_integrity_protection_algorithms_not_supported" Value="32"/>
+      <Item CaseName="s1_intra_system_handover_triggered" Value="33"/>
+      <Item CaseName="s1_inter_system_handover_triggered" Value="34"/>
+      <Item CaseName="x2_handover_triggered" Value="35"/>
+  </S1APCauseValue>
+</EffectPortConfigs>

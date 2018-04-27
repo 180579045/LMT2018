@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--CDL文档结构的通用定义-->
+
+<Document>
+  <Protocols>
+    <!-- S1 -->
+    <!-- S1 ERAB Setup Request -->
+    <Protocol Name="0x00000100" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 ERAB Setup Request -->
+    
+    <!-- S1 ERAB Modify Request -->
+    <Protocol Name="0x00000102" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 ERAB Modify Request -->
+    
+    <!-- S1 ERAB Release Command -->
+    <Protocol Name="0x00000104" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 ERAB Release Command -->
+    
+    <!-- S1 Initial Context Setup Request -->
+<!--    <Protocol Name="0x00000107" Port="UERadioCapability" ID="17" DecodeDll="RRC"/>-->
+    <Protocol Name="0x00000107" Port="UERadioCapability" ID="44" DecodeDll="RRC"/>
+<!--      <Protocol Name="0x00000107" Port="ueCapabilityRAT-Container" ID="11" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000107" Port="ueCapabilityRAT-Container" ID="23" DecodeDll="RRC"/>
+    <Protocol Name="0x00000107" Port="nAS-PDU" ID="100" DecodeDll="Nas"/>
+	  <!-- S1 Initial Context Setup Request -->
+    
+    <!-- S1 Handover Required -->
+    <Protocol Name="0x00000110" Port="Source-ToTarget-TransparentContainer" ID="211" DecodeDll="S1"/>
+<!--      <Protocol Name="0x00000110" Port="rRC-Container" ID="16" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000110" Port="rRC-Container" ID="42" DecodeDll="RRC"/>
+<!--        <Protocol Name="0x00000110" Port="ueCapabilityRAT-Container" ID="11" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000110" Port="ueCapabilityRAT-Container" ID="23" DecodeDll="RRC"/>
+    <!-- S1 Handover Required -->
+    
+    <!-- S1 Handover Command -->
+    <Protocol Name="0x00000111" Port="Target-ToSource-TransparentContainer" ID="220" DecodeDll="S1"/>
+<!--      <Protocol Name="0x00000111" Port="rRC-Container" ID="15" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000111" Port="rRC-Container" ID="41" DecodeDll="RRC"/>
+    <!-- S1 Handover Command -->
+    
+    <!-- S1 Handover Request -->
+    <Protocol Name="0x00000113" Port="Source-ToTarget-TransparentContainer" ID="211" DecodeDll="S1"/>
+<!--      <Protocol Name="0x00000113" Port="rRC-Container" ID="16" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000113" Port="rRC-Container" ID="42" DecodeDll="RRC"/>
+<!--        <Protocol Name="0x00000113" Port="ueCapabilityRAT-Container" ID="11" DecodeDll="RRC"/>-->
+        <Protocol Name="0x00000113" Port="ueCapabilityRAT-Container" ID="23" DecodeDll="RRC"/>
+    <!-- S1 Handover Request -->
+    
+    <!-- S1 Handover Request Acknowledge -->
+    <Protocol Name="0x00000114" Port="Target-ToSource-TransparentContainer" ID="220" DecodeDll="S1"/>
+<!--      <Protocol Name="0x00000114" Port="rRC-Container" ID="15" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000114" Port="rRC-Container" ID="41" DecodeDll="RRC"/>
+    <!-- S1 Handover Request Acknowledge -->
+    
+    <!-- S1 Initial UE Message -->
+    <Protocol Name="0x0000011e" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 Initial UE Message -->
+    
+    <!-- S1 NAS Non Delivery Indication -->
+    <Protocol Name="0x0000011f" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 NAS Non Delivery Indication -->
+    
+    <!-- S1 UL Nas Trans -->
+    <Protocol Name="0x00000126" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 UL Nas Trans -->
+    
+    <!-- S1 DL Nas Trans -->
+    <Protocol Name="0x00000127" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!-- S1 DL Nas Trans -->
+    <!--S1 TERAB Setup Request-->
+    <Protocol Name="0x00000143" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!--S1 TERAB Setup Request-->
+    <!--S1 TS1 ERAB Modify Request-->
+    <Protocol Name="0x00000145" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!--S1 TS1 ERAB Modify Request-->
+    <!--S1 Group Context Setup Request-->
+    <Protocol Name="0x0000014a" Port="UERadioCapability" ID="44" DecodeDll="RRC"/>
+    <!--S1 Group Context Setup Request-->
+    <!--S1 TDL Nas Trans-->
+    <Protocol Name="0x00000155" Port="NAS-PDU" ID="100" DecodeDll="Nas"/>
+    <!--S1 TDL Nas Trans-->
+    <!-- S1 -->
+    
+    <!-- X2 -->
+    <!-- X2 Handover Request -->
+<!--    <Protocol Name="0x00000200" Port="rRC-Context" ID="16" DecodeDll="RRC"/>-->
+    <Protocol Name="0x00000200" Port="rRC-Context" ID="42" DecodeDll="RRC"/>
+<!--      <Protocol Name="0x00000200" Port="ueCapabilityRAT-Container" ID="11" DecodeDll="RRC"/>-->
+      <Protocol Name="0x00000200" Port="ueCapabilityRAT-Container" ID="23" DecodeDll="RRC"/>
+    <!-- X2 Handover Request -->
+    
+    <!-- X2 Handover Request Acknowledge -->
+<!--    <Protocol Name="0x00000201" Port="TargeteNBtoSource-eNBTransparentContainer" ID="15" DecodeDll="RRC"/>-->
+    <Protocol Name="0x00000201" Port="TargeteNBtoSource-eNBTransparentContainer" ID="41" DecodeDll="RRC"/>
+    <!-- X2 Handover Request Acknowledge -->
+    <!-- X2 -->
+    
+    <!-- Uu -->
+    <!-- RRCConnectionSetupComplete -->
+    <Protocol Name="0x00000302" Port="dedicatedInfoNAS" ID="100" DecodeDll="Nas"/>
+    <!-- RRCConnectionSetupComplete -->
+    
+    <!-- UECapabilityInformation -->
+<!--    <Protocol Name="0x00000309" Port="ueCapabilityRAT-Container" ID="11" DecodeDll="RRC"/>-->
+    <Protocol Name="0x00000309" Port="ueCapabilityRAT-Container" ID="23" DecodeDll="RRC"/>
+    <!-- UECapabilityInformation -->
+    
+    <!-- RRCConnectionReconfiguration -->
+    <Protocol Name="0x0000030a" Port="dedicatedInfoNASList" ID="100" DecodeDll="Nas"/>
+    <!-- RRCConnectionReconfiguration -->
+    
+    <!-- DLInformationTransfer -->
+    <Protocol Name="0x00000311" Port="dedicatedInfoNAS" ID="100" DecodeDll="Nas"/>
+    <!-- DLInformationTransfer -->
+    
+    <!-- ULInformationTransfer -->
+    <Protocol Name="0x00000312" Port="dedicatedInfoNAS" ID="100" DecodeDll="Nas"/>
+    <!-- ULInformationTransfer -->
+    <!-- Uu -->
+  </Protocols>
+</Document>

@@ -1,0 +1,106 @@
+<root>
+  <Event name="RRCConnectionSetup">
+    <ArgumentType name="schedulingRequestConfig">
+      <Argument name="sr-ConfigIndex" />
+      <Argument name="sr-PUCCH-ResourceIndex" />
+    </ArgumentType>
+    <ArgumentType name="soundingRS-UL-ConfigDelicated">
+      <Argument name="freqDomainPosition" />
+      <Argument name="srs-ConfigIndex" />
+      <Argument name="transmissionComb" />
+      <Argument name="cyclicShift" />
+    </ArgumentType>
+    <ArgumentType name="cqi-ReportPeriodic">
+      <Argument name="cqi-PUCCH-ResourceIndex" />
+      <Argument name="cqi-pmi-ConfigIndex" />
+    </ArgumentType>
+  </Event>
+  <Event name="RRCConnectionReconfiguration">
+    <ArgumentType name="measGapConfig setup">
+      <Argument name="gapOffset" />
+    </ArgumentType>
+    <ArgumentType name="soundingRS-UL-ConfigDelicated">
+      <Argument name="freqDomainPosition" />
+      <Argument name="srs-ConfigIndex" />
+      <Argument name="transmissionComb" />
+      <Argument name="cyclicShift" />
+    </ArgumentType>
+    <ArgumentType name="cqi-ReportPeriodic">
+      <Argument name="cqi-PUCCH-ResourceIndex" />
+      <Argument name="cqi-pmi-ConfigIndex" />
+    </ArgumentType>
+    <ArgumentType name="drx-Config setup :">
+      <Argument name="longDRX-CycleStartOffset" />
+      <Argument name="onDurationTimer" />
+    </ArgumentType>
+  </Event>
+  <Event name="X2 Handover Request Acknowledge">
+    <ArgumentType name="schedulingRequestConfig">
+      <Argument name="sr-ConfigIndex" />
+      <Argument name="sr-PUCCH-ResourceIndex" />
+    </ArgumentType>
+    <ArgumentType name="measGapConfig setup">
+      <Argument name="gapOffset gp1" />
+    </ArgumentType>
+    <ArgumentType name="soundingRS-UL-ConfigDelicated">
+      <Argument name="freqDomainPosition" />
+      <Argument name="srs-ConfigIndex" />
+      <Argument name="transmissionComb" />
+      <Argument name="cyclicShift" />
+    </ArgumentType>
+    <ArgumentType name="cqi-ReportPeriodic">
+      <Argument name="cqi-PUCCH-ResourceIndex" />
+      <Argument name="cqi-pmi-ConfigIndex" />
+    </ArgumentType>
+    <ArgumentType name="drx-Config setup :">
+      <Argument name="longDRX-CycleStartOffset" />
+      <Argument name="onDurationTimer" />
+    </ArgumentType>
+  </Event>
+  <Event name="S1 Handover Request Acknowledge">
+    <ArgumentType name="schedulingRequestConfig">
+      <Argument name="sr-ConfigIndex" />
+      <Argument name="sr-PUCCH-ResourceIndex" />
+    </ArgumentType>
+    <ArgumentType name="measGapConfig setup">
+      <Argument name="gapOffset gp1" />
+    </ArgumentType>
+    <ArgumentType name="soundingRS-UL-ConfigDelicated">
+      <Argument name="freqDomainPosition" />
+      <Argument name="srs-ConfigIndex" />
+      <Argument name="transmissionComb" />
+      <Argument name="cyclicShift" />
+    </ArgumentType>
+    <ArgumentType name="cqi-ReportPeriodic">
+      <Argument name="cqi-PUCCH-ResourceIndex" />
+      <Argument name="cqi-pmi-ConfigIndex" />
+    </ArgumentType>
+    <ArgumentType name="drx-Config setup :">
+      <Argument name="longDRX-CycleStartOffset" />
+      <Argument name="onDurationTimer" />
+    </ArgumentType>
+  </Event>
+  <Event name="RRCConnectionReestablishment">
+    <ArgumentType name="schedulingRequestConfig">
+      <Argument name="sr-ConfigIndex" />
+      <Argument name="sr-PUCCH-ResourceIndex" />
+    </ArgumentType>
+    <ArgumentType name="measGapConfig setup">
+      <Argument name="gapOffset gp1" />
+    </ArgumentType>
+    <ArgumentType name="soundingRS-UL-ConfigDelicated">
+      <Argument name="freqDomainPosition" />
+      <Argument name="srs-ConfigIndex" />
+      <Argument name="transmissionComb" />
+      <Argument name="cyclicShift" />
+    </ArgumentType>
+    <ArgumentType name="cqi-ReportPeriodic">
+      <Argument name="cqi-PUCCH-ResourceIndex" />
+      <Argument name="cqi-pmi-ConfigIndex" />
+    </ArgumentType>
+    <ArgumentType name="drx-Config setup :">
+      <Argument name="longDRX-CycleStartOffset" />
+      <Argument name="onDurationTimer" />
+    </ArgumentType>
+  </Event>
+</root>
