@@ -30,6 +30,7 @@ using SuperLMT.Utils;
 using CDLBrowser.Parser.DatabaseMgr;
 using CDLBrowser.Parser.Document;
 using System.Data.SQLite;
+using System.Windows.Input;
 
 namespace SCMTMainWindow
 {
@@ -334,6 +335,38 @@ namespace SCMTMainWindow
 
             this.Pane.Children.Add(sub);
             sub.Float();
+
+            //Add by Mayi
+            //实现鼠标的拖拽，这里通过一个简单的TreeView 做个演示
+            TreeView myTree = new TreeView();
+
+            var originStyle = myTree.Style;
+            var newStyle = new Style();
+            newStyle.BasedOn = originStyle;
+
+            //为鼠标移动添加事件
+            newStyle.Setters.Add(new EventSetter(MouseMoveEvent, new MouseEventHandler(TreeViewItem_MouseMove)));
+            myTree.ItemContainerStyle = newStyle;
+
+            //构造一个简单的TreeView
+            TreeViewItem RootItem1 = new TreeViewItem();
+            RootItem1.Header = "RootItem1";
+            myTree.Items.Add(RootItem1);
+
+            TreeViewItem SubItem1 = new TreeViewItem();
+            SubItem1.Header = "SubItem1";
+            RootItem1.Items.Add(SubItem1);
+
+            TreeViewItem SubSubItem1 = new TreeViewItem();
+            SubSubItem1.Header = "SubSubItem";
+            SubItem1.Items.Add(SubSubItem1);
+
+            TreeViewItem RootItem2 = new TreeViewItem();
+            RootItem2.Header = "RootItem2";
+            myTree.Items.Add(RootItem2);
+
+            //显示到主界面
+            this.FavLeaf_Lists.Children.Add(myTree);
         }
 
         private void ShowMessage_Click(object sender, EventArgs e)
@@ -612,5 +645,29 @@ namespace SCMTMainWindow
       
             }
         }
+	
+	//Add by mayi 
+        //实现  鼠标的移动事件，执行拖拽
+        private  void TreeViewItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //判断鼠标左键是否按下，否则，只要鼠标在范围内移动就会一直触发事件
+            if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+            {
+                try
+                {
+                    TreeViewItem myItem = sender as TreeViewItem;
+                    TreeView myTree = myItem.Parent as TreeView;
+                    //开始执行拖拽
+                    DragDropEffects myDropEffect = DragDrop.DoDragDrop(myTree, myTree.SelectedValue, DragDropEffects.Copy);
+
+                }
+                catch (Exception)
+                {
+                }
+
+            }//if button
+
+        }
+
     }
 }
