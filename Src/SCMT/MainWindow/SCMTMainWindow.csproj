@@ -106,6 +106,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\ParseMessage\CDLBrowser.Parser\Lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -288,6 +291,14 @@
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ParseMessage\CDLBrowser.Parser\CDLBrowser.Parser.csproj">
+      <Project>{B2F22A0D-FE3B-4773-B030-208096900E7D}</Project>
+      <Name>CDLBrowser.Parser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ParseMessage\SuperLMT.Utils\SuperLMT.Utils.csproj">
+      <Project>{24D21FC0-59B8-4208-AA1D-1B30D3F3C101}</Project>
+      <Name>SuperLMT.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\UI\DataGrid\Xceed.Wpf.DataGrid\Xceed.Wpf.DataGrid.csproj">
       <Project>{63648392-6ce9-4a60-96d4-f9fd718d29b0}</Project>

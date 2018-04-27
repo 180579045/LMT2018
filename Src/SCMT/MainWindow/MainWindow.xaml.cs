@@ -23,6 +23,13 @@ using SCMTOperationCore.Control;
 using CefSharp.Wpf;
 using Xceed.Wpf.AvalonDock.Layout;
 using SCMTMainWindow.Component.View;
+using Microsoft.Win32;
+using System.Data;
+using CDLBrowser.Parser.Document.Event;
+using SuperLMT.Utils;
+using CDLBrowser.Parser.DatabaseMgr;
+using CDLBrowser.Parser.Document;
+using System.Data.SQLite;
 
 namespace SCMTMainWindow
 {
@@ -50,6 +57,7 @@ namespace SCMTMainWindow
             RegisterFunction();                                               // 注册功能;
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
             //this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
+            deleteTempFile();
         }
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -366,6 +374,230 @@ namespace SCMTMainWindow
         {
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
+        }
+
+        private void OpenFileButtonClick(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog { Filter = "CDL Log|*.txt" + "|All Files|*.*", Multiselect = true};
+            if ((bool)dialog.ShowDialog())
+            {
+                string[] fileNames = dialog.FileNames;
+                this.textDirction.Text = fileNames[0];
+            }
+        }
+
+        private void parseFile_Click(object sender, RoutedEventArgs e)
+        {
+            List<Event> le = new List<Event>();
+            byte[] bytes = { 0x06 ,0xD6, 0x12, 0x09, 0x00, 0x20, 0xFF, 0xFF, 0xFF, 0x28,0xFF, 0xF0, 0x5A, 0xC4, 0x95, 0x6C, 0x1D, 0x36, 0xE3, 0xB4, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00, 0x5C, 0x00 };
+            IDbCommand sessionSqlCmd;
+            DbOptions opts = new DbOptions();
+            opts.ConnStr = DbConnSqlite.GetConnectString(DbConnProvider.DefaultSqliteDatabaseName); ;
+            opts.ConnType = CDLBrowser.Parser.DatabaseMgr.DbType.SQLite;
+            DbConn dbconn = new DbConn(opts);
+            int ret = dbconn.CheckDatabaseTable(typeof(Event));
+            if (ret < 0)
+            {                
+                return;
+            }
+            /*
+            dbconn.ExcuteNonQuery("PRAGMA synchronous = OFF");
+            dbconn.ExcuteNonQuery("PRAGMA journal_mode = MEMORY");
+            */
+
+            sessionSqlCmd = dbconn.BeginTransaction();
+            string sql = string.Empty;
+            EventParser parser = new EventParser();
+            parser.Version = "1.3.06659";    
+
+            EventParserManager.Instance.AddEventParser(parser.Version, parser);
+            Event newe = ParseEvent(bytes,"1.3.06659");
+            le.Add(newe);
+           sql = dbconn.CreateInsertSqlFromObject(typeof(Event), newe, "Event", true);
+          //  dbconn.ExcuteByTrans(sql, sessionSqlCmd);
+
+            IDbDataParameter dbparameterRaw = null;
+            IDbDataParameter dbparameterBody = null;
+            dbparameterRaw = new SQLiteParameter("@RawData", newe.RawData);
+            dbparameterBody = new SQLiteParameter("@MsgBody", newe.MsgBody);
+
+            IDbDataParameter[] paramsArray = new IDbDataParameter[2];
+            paramsArray[0] = dbparameterRaw;
+            paramsArray[1] = dbparameterBody;
+            dbconn.ExecuteWithParamtersByTrans(sql, paramsArray, sessionSqlCmd);
+
+
+            /*
+            for (int i = 0; i < 10; i++) {
+                EventNew ne = new EventNew();
+                ne.DisplayIndex = i;
+                ne.TimeStamp = "gggggg";
+                ne.EventName = Convert.ToString(i);
+                ne.MessageDestination = "UE";
+                ne.MessageSource = "enb";
+                le.Add(ne);
+                sql = dbconn.CreateInsertSqlFromObject(typeof(EventNew), ne, "EventNew", true);
+                dbconn.ExcuteByTrans(sql, sessionSqlCmd);
+            }*/
+
+            dbconn.CommitChanges(sessionSqlCmd);
+            dbconn.Close();
+            this.dataGrid.ItemsSource = le;
+
+        }
+
+        private Event  ParseEvent(byte[] eventsBuffer,string version) {
+            var memoryStream = new MemoryStream(eventsBuffer);
+            string timeCircleReport = String.Empty;
+            string strDateTime;
+            DateTime dtStart;
+            dtStart = DateTime.Now;
+            strDateTime = dtStart.ToString("yyyy-MM-dd hh:mm:ss.fff");
+            Event evt = null;
+            try
+            {
+                evt = new Event()
+                {
+                    HostNeid = 1,
+                    TimeStamp = "",
+                    Version = "1.3.06659",
+                    ParsingId = 1,
+                    LogFileId = 1,
+
+                    //DisplayIndex = this.eventIndex++,
+                    IsMarked = false,
+                    TickTime = ConvertTimeStamp.Singleton.ConvertTimeStampToUlong(strDateTime, 0),
+                };
+                bool binitRet = evt.InitializePersistentData(memoryStream, version);
+                if (evt.EventName != null && (evt.EventName.Equals("SYS_HL_TIME_ADJUST") || evt.EventName.Equals("SYS_L2_TIME_ADJUST")))
+                {
+                    timeCircleReport = "";
+                    //evt.Delete();
+                    return null;
+                }
+            }
+            catch (Exception exp)
+            {
+                MyLog.Log("ParseEvent EXP:" + exp.StackTrace);
+                //throw;
+            }
+
+            if (evt == null)
+            {
+                return null;
+            }
+            string evtNameForUeType = evt.EventName;
+            /**/
+            if (evtNameForUeType.Equals("S1 Initial Context Setup Request")||evtNameForUeType.Equals("UECapabilityInformation"))
+            {
+
+                var rootNode = SecondaryParser.Singleton.GetExpandNodeQuote(evt);
+                if (rootNode != null)
+                {
+                    var paraNode = rootNode.GetChildNodeById("Data[]");
+                    if (paraNode != null)
+                    {
+                        var displayContent = paraNode.DisplayContent;
+                        try
+                        {
+                            string ueType = String.Empty;
+                            if (evtNameForUeType.Equals("S1 Initial Context Setup Request"))
+                                ueType = this.FindValueFromTarget(displayContent, "UERadioCapability");
+                            else if (evtNameForUeType.Equals("UECapabilityInformation"))
+                                ueType = this.FindValueFromTarget(displayContent, "ueCapabilityRAT-Container");
+                            if (!string.IsNullOrEmpty(ueType))
+                            {
+                                int startPosition = ueType.LastIndexOf(')') + 1;
+                                int endPosition = ueType.LastIndexOf('\'');
+                                int ueTypeLength = endPosition - startPosition;
+                                ueType = ueType.Substring(startPosition, ueTypeLength);
+                                evt.UeType =
+                                    CDLBrowser.Parser.Configuration.ConfigurationManager.Singleton.GetUeTypeConfiguration().
+                                        GetUeTypeByCapabilityStr(ueType);
+                            }
+
+                        }
+                        catch (Exception ex)
+                        {                           
+                        }
+                    }
+                }
+            }
+
+
+
+
+            /**/
+
+          //  FilteredAddEvent(evt);
+            evt.DisplayIndex++;
+            IConfigNodeWrapper bodyNode = SecondaryParser.Singleton.GetExpandNodeQuote(evt);
+            if (bodyNode != null)
+            {
+                string msgbody = "";
+                ExportBodyToXml(bodyNode, ref msgbody, 0);
+                evt.MsgBody = msgbody;
+                evt.InitOtherParams();
+            }
+
+            return evt;
+
+        }
+
+        string FindValueFromTarget(string content, string keyWord)
+        {
+            var targetPosition = content.IndexOf(keyWord, StringComparison.Ordinal);
+            if (targetPosition == -1)
+            {
+                return null;
+            }
+
+            var length = keyWord.Length;
+            targetPosition = targetPosition + length - 1;
+
+            var positionBegin = content.IndexOf(':', targetPosition);
+            var positionEnd = content.IndexOf('\n', targetPosition);
+            if (positionBegin == -1 || positionBegin > positionEnd)
+            {
+                positionBegin = content.IndexOf(' ', targetPosition);
+            }
+
+            var targetValue = content.Substring(positionBegin + 1, positionEnd - positionBegin - 1);
+            targetValue = targetValue.Trim(',').Trim(' ');
+            return targetValue;
+        }
+
+        private void ExportBodyToXml(IConfigNodeWrapper root, ref string result, int level)
+        {
+
+            if (root != null)
+            {
+                string spaces = "";
+                for (int i = 0; i < level; i++)
+                {
+                    spaces += ' ';
+                }
+                result += spaces + string.Format("  {0}\n", root.DisplayContent);
+                level++;
+                foreach (var child in root.Children)
+                {
+                    ExportBodyToXml(child, ref result, level);
+                }               
+            }
+        }
+
+        private void deleteTempFile() {
+            string fileCdl = AppPathUtiliy.Singleton.GetAppPath() + "cdl.db";
+
+            if (File.Exists(fileCdl))
+            {
+     
+                File.Delete(fileCdl);
+            }
+            else
+            {
+      
+            }
         }
     }
 }
