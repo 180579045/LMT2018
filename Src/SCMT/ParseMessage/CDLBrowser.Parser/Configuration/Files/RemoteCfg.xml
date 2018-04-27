@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<root>
+	<stat name="UeAccess" table="UeAccessRecord" resultcol="AccessResult" >
+  <result ind="0" des="Ue接入成功" />
+  <result ind="1" des="RRC连接建立完成超时" />
+  <result ind="2" des="等待核心网消息超时" />
+  <result ind="3" des="等待UE能力信息超时" />
+  <result ind="4" des="等待安全模式完成超时" />
+  <result ind="5" des="等待RRC重配完成超时" />
+  <result ind="6" des="核心网触发" />
+  <result ind="7" des="传输错误" />
+  <result ind="8" des="AS安全失败" />
+  <result ind="9" des="RRC连接建立拒绝" />
+  <result ind="10" des="内部错误" />
+  <result ind="11" des="未识别流程" />
+	</stat>
+	
+	<stat name="DropCall" table="DropCallRecord" resultcol="DropcallResult" >
+  <result des="MIMO模式切换空口重配置过程超时引起的掉话" />
+  <result des="SRS_PUCCH空口重配置过程超时引起的掉话" />
+  <result des="承载建立空口重配置过程超时引起的掉话" />
+  <result des="承载修改空口重配置过程超时引起的掉话" />
+  <result des="承载删除空口重配置过程超时引起的掉话" />
+  <result des="测量上报触发空口重配置超时引起的掉话" />
+  <result des="切换完成后测量重配置超时引起的掉话" />
+  <result des="上下文修改触发空口重配置超时引起的掉话" />
+  <result des="重建立过程中空口重配置超时引起的掉话" />
+  <result des="核心网释放引起的掉话" />
+  <result des="激活检测-UE不活动" />
+  <result des="激活检测-UE丢失" />
+  <result des="重定向流程引起的掉话" />
+  <result des="其他错误引起的掉话" />
+  <result des="未识别流程" />
+	</stat>
+	
+		<stat name="RrcAccess" table="RRCAccessRecord" resultcol="AccessResult" >
+  <result des="RRC建立成功" />
+  <result des="RRC连接建立完成超时" />
+  <result des="RRC连接建立拒绝" />
+  <result des="未识别流程" />
+	</stat>
+	
+	<stat name="ErabAccess" table="ErabAccessRecord" resultcol="AccessResult" >
+  <result des="上下文建立过程" />
+  <result des="专用承载建立过程" />
+  <result des="上下文建立过程中等待UE能力信息超时" />
+  <result des="上下文建立过程中等待安全模式完成超时" />
+  <result des="上下文建立过程中等待RRC重配完成超时" />
+  <result des="上下文建立过程中AS安全失败" />
+  <result des="上下文建立过程中传输错误" />
+  <result des="上下文建立过程中内部其他错误" />
+  <result des="专用承载建立过程中等待RRC重配完成超时" />
+  <result des="未识别流程" />
+	</stat>
+	
+	<stat name="Reestablish" table="ReEstablishRecord" resultcol="ReEstabResult" >
+  <result des="重建立成功" />
+  <result des="重配置超时" />
+  <result des="重建立完成超时" />
+  <result des="重建立拒绝" />
+  <result des="重建立失败" />
+  <result des="未识别流程" />
+	</stat>
+	
+	  <stat name="Handover" table="HandOverRecord" resultcol="Result">
+  	<result des="切换正常" />
+		<result des="切换阶段空口超时" />
+		<result des="切换阶段核心网释放" />
+		<result des="切换重建立回源小区" />
+		<result des="切换重建立超时" />
+		<result des="切换重建立重配置超时" />
+		<result des="未识别流程" />
+	</stat>
+	
+  <stat name="S1Handover" table="S1HandOverRecord" resultcol="SourceSort">
+  	<result des="未识别流程" />
+  	<result des="切换源侧正常" />
+  	<result des="切换源侧取消" />
+  	<result des="切换源侧切换准备阶段核心网释放" />
+  	<result des="切换目标侧准备失败（源侧视角）" />
+  	<result des="切换源侧切换阶段超时" />
+  	<result des="切换源侧内部异常" />
+  	<result des="切换源侧切换阶段核心网释放" />
+  	<result des="切换重建立回源侧" />
+  	<result des="切换源侧重建立超时" />
+  	<result des="切换源侧重建立重配置超时" />
+	</stat>
+	
+	 <stat name="X2Handover" table="X2HandOverRecord" resultcol="SrcSort">
+  	<result des="未识别流程" />
+  	<result des="切换源侧正常" />
+  	<result des="切换源侧取消" />
+  	<result des="切换源侧切换阶段超时" />
+  	<result des="切换源侧内部异常" />
+  	<result des="切换目标侧准备失败（源侧视角）" />
+  	<result des="切换源侧切换阶段核心网释放" />
+  	<result des="切换重建立回源侧" />
+  	<result des="切换源侧重建立超时" />
+  	<result des="切换源侧重建立重配置超时" />
+	</stat>
+</root>

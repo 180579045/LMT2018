@@ -1,0 +1,88 @@
+<?xml version="1.0" standalone="yes"?>
+<SupportElement>
+  <UeAccess>
+    <Element  Name="UE"/>
+    <Element  Name="eNB"/>
+    <Element  Name="AP"/>
+    <Element  Name="RRC"/>
+    <Element  Name="EPC"/>
+  </UeAccess>
+  
+  <RRCAccess>
+    <Element  Name="UE"/>
+    <Element  Name="eNB"/>
+    <Element  Name="RRC"/>
+  </RRCAccess>
+  
+  <ErabAccess>
+    <Element  Name="UE"/>
+    <Element  Name="eNB"/>
+    <Element  Name="EPC"/>
+  </ErabAccess>
+  <Handover>
+    <Element  Name="UE"/>
+    <Element  Name="eNB"/>
+    <Element  Name="EPC"/>
+    <Element  Name="eNBAdj"/>
+  </Handover>
+  <S1Handover>
+    <Element  Name="UE"/>
+    <Element  Name="RRC"/>
+    <Element  Name="S1AP"/>
+    <Element  Name="eNB"/>
+    <Element  Name="EPC"/>
+    <Element  Name="eNBAdj"/>
+  </S1Handover>
+  <X2Handover>
+    <Element  Name="UE"/>
+    <Element  Name="RRC"/>
+    <Element  Name="X2AP"/>
+    <Element  Name="eNB"/>
+    <Element  Name="EPC"/>
+    <Element  Name="eNBAdj"/>
+  </X2Handover>
+  <ReEstab>
+    <Element  Name="UE"/>
+    <Element  Name="eNB"/>
+    <Element  Name="EPC"/>
+  </ReEstab>
+  
+ <DropCall>
+   <Element  Name="RRC"/>
+   <Element  Name="RRM"/>
+ 	 <Element  Name="S1AP"/>
+   <Element  Name="EPC"/>
+ 	 <Element  Name="eNB"/>
+   <Element  Name="UE"/>
+  </DropCall>
+  
+  <Basic>
+    <Element  Name="UE"/>
+    <Element  Name="eNB"/>
+    <Element  Name="AP"/>
+    <Element  Name="RRC"/>
+    <Element  Name="EPC"/>
+    <Element  Name="eNBAdj"/>
+  </Basic>
+  
+</SupportElement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

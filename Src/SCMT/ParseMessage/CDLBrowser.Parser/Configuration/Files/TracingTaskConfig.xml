@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TraceInfo>
+	<CommonHead Oid = "1.3.6.1.4.1.5105.100."/>
+
+	<GetTrace>
+		<ParaNode ID="IpAddrType" Oid="1.10.1.1.1.3" DisplayName="信令采集站地址类型" Range="0~未知/1~IPv4/2~IPv6" Value="1" Type="enum"/>
+    <ParaNode ID="IpAddress"  Oid="1.10.1.1.1.4" DisplayName="信令采集站的IP地址" Range="4-16" Value="127.0.0.1" Type="u8[]"/>
+    <ParaNode ID="Port"       Oid="1.10.1.1.1.5" DisplayName="信令采集站的端口号" Range="-2147483648~2147483647" Value="5000" Type="s32"/>
+    <ParaNode ID="Speed"      Oid="1.10.1.1.1.7" DisplayName="跟踪上报速率阈值" Range="10-2000" Value="512" Type="s32"/>
+    <ParaNode ID="TaskType"   Oid="1.10.1.1.1.8" DisplayName="跟踪任务类型" Range="1~S1接口/2~X2接口/3~空口/4~小区跟踪/5~UE跟踪" Value="" Type="enum"/>
+    <ParaNode ID="TracingObjectOid"   Oid="1.10.1.1.1.9" DisplayName="跟踪管理对象OID" Range="1-50" Value="" Type="s32[]"/>
+  </GetTrace>
+
+
+
+  <AddTrace>
+    <ParaNode  ID="RowStatus"        Oid="1.10.1.1.1.2" DisplayName="行状态" Range="" Value="4" Type="u8" UIType="text" Visible="hide"/>
+    <ParaNode  ID="IpAddrType"       Oid="1.10.1.1.1.3" DisplayName="信令采集站地址类型" Range="1~IPv4/2~IPv6" Value="1" Type="enum" UIType="combo" Visible="show"/>
+    <ParaNode  ID="IpAddress"        Oid="1.10.1.1.1.4" DisplayName="信令采集站的IP地址" Range="" Value="127.0.0.1" Type="u8[]" UIType="ip" Visible="show"/>
+    <ParaNode  ID="Speed"            Oid="1.10.1.1.1.7" DisplayName="跟踪上报速率阈值" Range="10-2000" Value="512" Type="s32" Unit="kbps" UIType="text" Visible="show"/>
+    <ParaNode  ID="TaskType"         Oid="1.10.1.1.1.8" DisplayName="跟踪任务类型" Range="1~S1接口/2~X2接口/3~空口/4~小区跟踪/5~UE跟踪" Value="" Type="enum" UIType="combo" Visible="show"/>
+    <ParaNode  ID="TracingObjectOid" Oid="1.10.1.1.1.9" DisplayName="跟踪管理对象OID" Range="0~SCTP0/1~SCTP1/2~SCTP2/3~SCTP3/4~SCTP4/5~SCTP5/6~SCTP6/7~SCTP7/8~SCTP8/9~SCTP9/10~SCTP10/11~SCTP11|0~SCTP0/1~SCTP1/2~SCTP2/3~SCTP3/4~SCTP4/5~SCTP5/6~SCTP6/7~SCTP7/8~SCTP8/9~SCTP9/10~SCTP10/11~SCTP11|0~Cell0/1~Cell1/2~Cell2/3~Cell3/4~Cell4/5~Cell5/6~Cell6/7~Cell7/8~Cell8/9~Cell9/10~Cell10/11~Cell11|0~Cell0/1~Cell1/2~Cell2/3~Cell3/4~Cell4/5~Cell5/6~Cell6/7~Cell7/8~Cell8/9~Cell9/10~Cell10/11~Cell11|0~Cell0/1~Cell1/2~Cell2/3~Cell3/4~Cell4/5~Cell5/6~Cell6/7~Cell7/8~Cell8/9~Cell9/10~Cell10/11~Cell11" RangeBind="跟踪任务类型" Value="" Type="s32[]" UIType="combo" Visible="show"/>
+    <ParaNode  ID="TraceLevel"       Oid="1.10.1.1.1.14" DisplayName="跟踪级别" Range="0~非管理级别/1~管理级别/2~全部跟踪" Value="" Type="enum" UIType="combo" Visible="show"/>
+    <ParaNode  ID="FilterParameter"  Oid="1.10.1.1.1.15" DisplayName="跟踪过滤参数0:IMSI" Range="" Value="" Type="s8[]" UIType="text" Visible="show" Check ="null"/>
+    <ParaNode  ID="TracingProtocol"  Oid="1.10.1.1.1.13" DisplayName="跟踪的协议层" Range="0~MAC/1~RLC/2~PDCP/3~S1/4~X2/5~RRC" Value="" Type="BITS" UIType="popup" Visible="show"/>
+  </AddTrace>
+
+  <DelTrace>
+    <ParaNode ID="RowStatus" Oid="1.10.1.1.1.2" DisplayName="行状态" Range="" Value="6" Type="u8"/>
+  </DelTrace>
+
+  <GetCellInfo>
+    <!--<ParaNode ID="CellLcId" Oid="2.7.5.1.1.1.1" DisplayName="小区本地ID" Range="0-11" Value="0" Type="s32"/>-->
+    <!--<ParaNode ID="CellCfgRowStatus" Oid="2.7.5.1.1.1.2" DisplayName="行状态" Range="4~行有效/6~行无效" Value="6" Type="enum"/>-->
+    <ParaNode ID="CellFriendName" Oid="2.7.5.1.1.1.3" DisplayName="小区友好名" Range="1-255" Value="1" Type="s8[]" UIType="text"/>
+    <ParaNode ID="CellCellID" Oid="2.7.5.1.1.1.47" DisplayName="小区ID" Range="0-254" Value="255" Type="s32"/>
+  </GetCellInfo>
+  
+</TraceInfo>

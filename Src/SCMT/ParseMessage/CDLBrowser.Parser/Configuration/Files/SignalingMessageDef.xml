@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Document>
+  <MessageCommonHead>
+    <!--messageId 无用-->
+    <HeadNode ID="U32MsgId" Describe="U32MsgId" DataType="UINT32" />
+    <!--消息版本,匹配到不同的消息定义-->
+    <HeadNode ID="U32MsgVer" Describe="U32MsgVer" DataType="UINT32" />
+    <!--设备类型，表示eNB,或者EPC-->
+    <HeadNode ID="U16DeviceType" Describe="U16DeviceType" DataType="USHORT16" />
+    <HeadNode ID="U16Reserved" Describe="U16Reserved" DataType="USHORT16" />
+    <!--消息长度-->
+    <HeadNode ID="U32MsgLen" Describe="U32MsgLen" DataType="UINT32" />
+  </MessageCommonHead>
+  
+  <!--3.0版本消息解码-->
+  <Message ID="0x00000300" Describe="30Version" MsgDirection="EPC-&gt;eNB">
+    <MessageHeader>
+      <!--无用-->
+      <ParaNode ID="U32SeqId" Describe="U32SeqId" DataType="UINT32" />
+      <ParaNode ID="U32TrcNEGlobalId" Describe="U32TrcNEGlobalId" DataType="UINT32" />
+      <!--任务Id-->
+      <ParaNode ID="U32TrcTaskId" Describe="U32TrcTaskId" DataType="UINT32" />
+      <!--跟踪类型，对应TraceInterfaceProtocols-->
+      <ParaNode ID="U32TrcType" Describe="U32TrcType" DataType="UINT32" />
+      <!--注意：此字段为协议版本号-->
+      <ParaNode ID="U32TrcProtocolID" Describe="U32TrcProtocolID" DataType="UINT32" />
+      <ParaNode ID="U8Reserved" Describe="U8Reserved" DataType="UINT8_ARRAY" DataLength="2"/>
+      <!--消息体个数-->
+      <ParaNode ID="U16TrcInfoNum" Describe="U16TrcInfoNum" DataType="USHORT16"/>
+    </MessageHeader>
+    <MessageBody TotalNum="{Binding U16TrcInfoNum}" Describe="STRU_TrcMsgInfo_V30">
+      <!--消息流水号-->
+      <ParaNode ID="U32SquenceNum" Describe="U32SquenceNum" DataType="UINT32" />
+      <!--以下两个字段要合并为时间字段-->
+      <ParaNode ID="USTime" Describe="USTime" DisplayType= "DateTime" DataType="UINT8_ARRAY" DataLength="8"/>
+      <ParaNode ID="U32Millisecond" Describe="U32Millisecond" DataType="UINT32" />
+      <!--用于ASN解码的接口类型-->
+      <ParaNode ID="U32TrcMsgInterfaceType" Describe="U32TrcMsgInterfaceType" DataType="UINT32" />
+      <ParaNode ID="U32TrcPlmn" Describe="U32TrcPlmn" DataType="UINT8_ARRAY" DataLength="8" />
+      <ParaNode ID="U16TrcRecordingSessionID" Describe="U16TrcRecordingSessionID" DataType="USHORT16"/>
+      <!--跟踪方向-->
+      <ParaNode ID="UCTrcMsgDirect" Describe="UCTrcMsgDirect" DataType="UINT8" />
+      <ParaNode ID="U8Reserved1" Describe="U8Reserved1" DataType="UINT8" />
+      <!--CellId-->
+      <ParaNode ID="U32TrcMsgCellId" Describe="U32TrcMsgCellId" DataType="UINT32" />
+      <!--SCTP Index-->
+      <ParaNode ID="U16TrcMsgSctpIndex" Describe="U16TrcMsgSctpIndex" DataType="USHORT16" />
+      <ParaNode ID="U8Reserved" Describe="U8Reserved" DataType="UINT8_ARRAY" DataLength="2"/>
+      <!--消息类型，对应NBCDLCommonDef的TraceMessageTypes-->
+      <ParaNode ID="U32TrcMsgType" Describe="U32TrcMsgType" DataType="UINT32" />
+      <!--消息体长度-->
+      <ParaNode ID="U32TrcMsgLen" Describe="U32TrcMsgLen" DataType="UINT32" />
+      <ParaNode ID="U8TrcMsgData" Describe="U8TrcMsgData" DataType="RawBuffer" DisplayType="Asn" DataLength="{Binding U32TrcMsgLen}"/>
+    </MessageBody >
+  </Message>
+</Document>

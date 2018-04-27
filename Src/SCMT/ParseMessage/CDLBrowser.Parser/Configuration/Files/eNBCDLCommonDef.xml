@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--CDL文档结构的通用定义-->
+
+<Document>
+  <Resources>
+    <!--基本数据类型-->
+    <DataTypes>
+      <DataType Name="UINT32" Length="4"/>
+      <DataType Name="INT32" Length="4"/>
+      <DataType Name="CHAR" Length="1"/>
+      <DataType Name="UINT8" Length="1"/>
+      <DataType Name="USHORT16" Length="2"/>
+      <DataType Name="SHORT16" Length="2"/>
+    </DataTypes>
+
+
+    <TraceMessageTypes>
+      <Message Name="S1AP CELL TRAFFIC TRACE"                          ID="0" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP DEACTIVATE TRAC"                             ID="1" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP DOWNLINK NAS TRANSPORT"                      ID="2" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP DOWNLINK S1 CDMA2000 TUNNELING"              ID="3" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ENB DIRECT INFORMATION TRANSFER"             ID="4" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ENB STATUS TRANSFER"                         ID="5" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ENB CONFIGURATION UPDATE"                    ID="6" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ENB CONFIGURATION UPDATE ACKNOWLEDGE"        ID="7" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ENB CONFIGURATION UPDATE FAILURE"            ID="8" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ERROR INDICATION"                            ID="9" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER CANCEL"                             ID="10" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER CANCEL ACKNOWLEDGE"                 ID="11" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER COMMAND"                            ID="12" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER FAILURE"                            ID="13" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER NOTIFY"                             ID="14" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER PREPARATION FAILURE"                ID="15" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER REQUEST"                            ID="16" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER REQUEST ACKNOWLEDGE"                ID="17" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP HANDOVER REQUIRED"                           ID="18" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP INITIAL CONTEXT SETUP FAILURE"               ID="19" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP INITIAL CONTEXT SETUP REQUEST"               ID="20" PduNum="1" DecodeDll="S1" Nas ="True" Port="nAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP INITIAL CONTEXT SETUP RESPONSE"              ID="21" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP INITIAL UE MESSAGE"                          ID="22" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP LOCATION REPORTING CONTROL"                  ID="23" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP LOCATION REPORTING FAILURE_INDICATION"       ID="24" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP LOCATION REPORT"                             ID="25" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP MME CONFIGURATION UPDATE"                    ID="26" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP MME CONFIGURATION UPDATE ACKNOWLEDGE"        ID="27" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP MME CONFIGURATION UPDATE FAILURE"            ID="28" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP MME DIRECT INFORMATION TRANSFER"             ID="29" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP MME STATUS TRANSFER"                         ID="30" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP NAS NON DELIVERY INDICATION"                 ID="31" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP OVERLOAD START"                              ID="32" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP OVERLOAD STOP"                               ID="33" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP PAGING"                                      ID="34" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP PATH SWITCH REQUEST"                         ID="35" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP PATH SWITCH REQUEST ACKNOWLEDGE"             ID="36" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP PATH SWITCH_REQUEST FAILURE"                 ID="37" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP PRIVATE MESSAGE"                             ID="38" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP RESET"                                       ID="39" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP RESET ACKNOWLEDGE"                           ID="40" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP S1 SETUP FAILURE"                            ID="41" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP S1 SETUP REQUEST"                            ID="42" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP S1 SETUP RESPONSE"                           ID="43" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP E-RAB MODIFY REQUEST"                        ID="44" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP E-RAB MODIFY RESPONSE"                       ID="45" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP E-RAB RELEASE COMMAND"                       ID="46" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP E-RAB RELEASE RESPONSE"                      ID="47" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP E_RAB RELEASE INDICATION"                    ID="48" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP E-RAB SETUP REQUEST"                         ID="49" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP E-RAB SETUP RESPONSE"                        ID="50" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP TRACE FAILURE INDICATION"                    ID="51" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP TRACE START"                                 ID="52" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CAPABILITY INFO INDICATION"               ID="53" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CONTEXT MODIFICATION FAILURE"             ID="54" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CONTEXT MODIFICATION REQUEST"             ID="55" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CONTEXT MODIFICATION RESPONSE"            ID="56" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CONTEXT RELEASE COMMAND"                  ID="57" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CONTEXT RELEASE COMPLETE"                 ID="58" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UE CONTEXT RELEASE REQUEST"                  ID="59" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP UPLINK NAS TRANSPORT"                        ID="60" PduNum="1" DecodeDll="S1" Nas ="True" Port="NAS-PDU" NasPdu ="100" Color="#FFDEB887"/>
+      <Message Name="S1AP UPLINK S1CDMA2000 TUNNELING"                 ID="61" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP WRITE REPLACE WARNING REQUEST"               ID="62" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP WRITE REPLACE WARNING RESPONSE"              ID="63" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP ENB CONFIGURATION TRANSFER"                  ID="64" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+      <Message Name="S1AP MME CONFIGURATION TRANSFER"                  ID="65" PduNum="1" DecodeDll="S1" Nas ="False" Color="#FFDEB887"/>
+
+      <Message Name="X2AP ENB CONFIGURATION UPDATE"                    ID="80" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP ENB CONFIGURATION UPDATE ACKNOWLEDGE"        ID="81" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP ENB CONFIGURATION UPDATE_FAILURE"            ID="82" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP ERROR INDICATION"                            ID="83" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP HANDOVER CANCEL"                             ID="84" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP HANDOVER PREPARATION FAILURE"                ID="85" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP HANDOVER REQUEST"                            ID="86" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP HANDOVER REQUESTACKNOWLEDGE"                 ID="87" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP LOAD INFORMATION"                            ID="88" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP PRIVATE_MESSAGE"                             ID="89" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP RESET REQUEST"                               ID="90" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP RESET RESPONSE"                              ID="91" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP RESOURCE STATUS FAILURE"                     ID="92" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP RESOURCE STATUS REQUEST"                     ID="93" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP RESOURCE STATUS RESPONSE"                    ID="94" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP RESOURCE STATUS UPDATE"                      ID="95" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP SN STATUS TRANSFER"                          ID="96" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP UE CONTEXT RELEASE"                          ID="97" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP X2 SETUP FAILURE"                            ID="98" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP X2 SETUP REQUEST"                            ID="99" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+      <Message Name="X2AP X2 SETUP RESPONSE"                           ID="100" PduNum="1" DecodeDll="X2" Nas ="False" Color="#FF00FFFF" />
+
+
+      <Message Name="RRC CONNECTION REQUEST"                      ID="120" PduNum="7" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC REESTABLISHMENT REQUEST"                 ID="121" PduNum="7" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC MEASUREMENT REPORT"                          ID="122" PduNum="8" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONNECTION RECFG COMPLETE"               ID="123" PduNum="1" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN REESTAB COMPLETE"                   ID="124" PduNum="8" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN SETUP COMPLETE"                     ID="125" PduNum="8" DecodeDll="RRC" Nas ="True" Port="dedicatedInfoNAS" NasPdu ="100" Color="#FFF0F8FF"/>
+      <Message Name="RRC UE CAPABILITY INFO"                          ID="126" PduNum="8" DecodeDll="RRC" Nas ="True" Port="ueCapabilityRAT-Container" Color="#FFF0F8FF"/>
+      <Message Name="RRC UL INFO TRANSFER"                            ID="127" PduNum="8" DecodeDll="RRC" Nas ="True" Port="dedicatedInfoNAS" NasPdu ="100" Color="#FFF0F8FF"/>
+      <Message Name="RRC SECURITY MODE COMPLETE"                      ID="128" PduNum="8" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC SECURITY MODE FAILURE"                       ID="129" PduNum="8" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN REESTAB"                            ID="130" PduNum="5" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN REESTAB REJ"                        ID="131" PduNum="5" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN SETUP"                              ID="132" PduNum="5" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC DL INFO TRANSFER"                            ID="133" PduNum="6" DecodeDll="RRC" Nas ="True" Port="dedicatedInfoNAS" NasPdu ="100" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN RECFG"                              ID="134" PduNum="6" DecodeDll="RRC" Nas ="True" Port="dedicatedInfoNASList" NasPdu ="100" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN REL"                                ID="135" PduNum="6" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC SECURITY MODE CMD"                           ID="136" PduNum="6" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC UE CAPABILITY ENQUIRY"                       ID="137" PduNum="6" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC COUNT CHECK"                                 ID="138" PduNum="6" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN REJ"                                ID="139" PduNum="5" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC SECURITY MODE FAIL"                          ID="140" PduNum="1" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC COUNTER CHECK RSP"                           ID="141" PduNum="8" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+      <Message Name="RRC CONN RECFG COMPLETE"                     ID="142" PduNum="8" DecodeDll="RRC" Nas ="False" Color="#FFF0F8FF"/>
+    </TraceMessageTypes>
+
+
+    <TraceInterfaceProtocols>
+      <Protocol Name="S1"    ID="1"      Color="#FFDEB887"/>
+      <Protocol Name="X2"    ID="2"      Color="#FF00FFFF"/>
+      <Protocol Name="UU"    ID="3"      Color="#FF8FBC8F"/>
+      <Protocol Name="Cell"  ID="4"      Color="#FF00CED1"/>
+      <Protocol Name="UE"    ID="5"      Color="#FF00BFFF"/>
+      <Protocol Name="SCTP"  ID="131072" Color="#FFF0E68C"/>
+    </TraceInterfaceProtocols>
+
+    <!--协议类型-->
+    <Protocols>
+      <Protocol Name="Uu" ID="0x01" Color="#FFF0F8FF"/>
+      <Protocol Name="S1" ID="0x02" Color="#FFDEB887"/>
+      <Protocol Name="X2" ID="0x03"  Color="#FF00FFFF" />
+      <Protocol Name="RRM" ID="0x20" Color="#FF8FBC8F" />
+      <Protocol Name="AP" ID="0x21"   Color="#FF00CED1"/>
+      <Protocol Name="RRC" ID="0x22"  Color="#FF00BFFF"/>
+      <Protocol Name="GTPU" ID="0x23" Color="#FFF0E68C"/>
+      <Protocol Name="PDCP" ID="0x24" Color="#FFF08080"/>
+      <Protocol Name="RLC" ID="0x25" Color="#FF20B2AA"/>
+      <Protocol Name="MAC" ID="0x26" Color="#FFB0C4DE"/>
+      <Protocol Name="L1" ID="0x27" Color="#FFC71585"/>
+      <Protocol Name="L3_INST" ID="0x28" Color="#FF9CF1BA"/>
+      <Protocol Name="HL_PM" ID="0x29" Color="#FFBBEEFF"/>
+      <Protocol Name="AP--GTPU" ID="0x31" Color="#FF808000"/>
+      <Protocol Name="RRC--L2" ID="0x32" Color="#FFFFA500"/>
+      <Protocol Name="RRC--L1" ID="0x33" Color="#FFFA8072"/>
+      <Protocol Name="L2--L1" ID="0x34" Color="#FF87CEEB"/>
+      <Protocol Name="OM--RRC" ID="0x35" Color="#FF00FF7F"/>
+      <Protocol Name="AP--L3" ID="0x36" Color="#FF4682B4"/>
+      <Protocol Name="AP--PDCP" ID="0x37" Color="#FF9ADA87"/>
+      <Protocol Name="OM--L2" ID="0x38" Color="#FFFFB6C1"/>
+      <Protocol Name="OM--AP" ID="0x39" Color="#FBF0AFF0"/>
+      <Protocol Name="RRC--RRM" ID="0x42"  Color="#FFF5DEB3" />
+      <Protocol Name="CPM--RAC" ID="0x43" Color="#FF9ACD32"/>
+      <Protocol Name="CPM--CSM" ID="0x47" Color="#FFAACDA2"/>
+      <Protocol Name="CPM--CPM" ID="0x48" Color="#FFBAC232"/>
+      <Protocol Name="CRM--SMO" ID="0x49" Color="#FFBAD234"/>
+      <Protocol Name="MAC--L1C" ID="0x99" Color="#FFA25222"/>
+      <Protocol Name="MAC--MAC" ID="0xA6" Color="#FF5222A2"/>
+      <Protocol Name="RRD--L2" ID="0x95" Color="#FF22A252"/>        
+      <Protocol Name="OM--L3" ID="0x81" Color="#FF46A252"/> 
+      <Protocol Name="OM--L2" ID="0x82" Color="#FF46A252"/> 
+      <Protocol Name="L3--L2" ID="0x83" Color="#FF44A257"/>    
+      <Protocol Name="L3--L1" ID="0x84" Color="#FF66A258"/>      
+      <Protocol Name="L2--L1" ID="0x85" Color="#FF66A259"/>             
+      <Protocol Name="SON--RRD" ID="0x91" Color="#FF22A652"/>
+      <Protocol Name="SON--RRM" ID="0x92" Color="#FF22A255"/> 
+      <Protocol Name="RRD--RRM" ID="0x93" Color="#FF22A253"/> 
+      <Protocol Name="RLC--MAC" ID="0x97" Color="#FF22A254"/>       
+      <Protocol Name="PDCP--RLC" ID="0x98" Color="#FF22A552"/>      
+      <Protocol Name="SON--SON" ID="0xA1" Color="#FF22A256"/>   
+      <Protocol Name="RRD--RRD" ID="0xA2" Color="#FF22B252"/>     
+      <Protocol Name="RRM--RRM" ID="0xA3" Color="#FF22D252"/>      
+      <Protocol Name="PDCP--PDCP" ID="0xA4" Color="#FF22D253"/>      
+      <Protocol Name="RLC--RLC" ID="0xA5" Color="#FF22D254"/>         
+    </Protocols>
+  </Resources>
+
+  <FileHeader>
+    <HeadNode ID="FileTag" Describe="文件类型标记" DataType="CHAR_ARRAY" DataLength="12"/>
+    <HeadNode ID="FileVer" Describe="文件格式版本" DataType="UINT32"/>
+    <HeadNode ID="ProtocalVer"  Describe="协议版本" DataType="UINT32"/>
+    <HeadNode ID="MsgVer"  Describe="消息版本" DataType="UINT8_ARRAY" DataLength="4"/>
+    <HeadNode ID="NEID"  Describe="网元标识" DataType="UINT32"/>
+    <HeadNode ID="Reserved" Describe="预留位" DataType="UINT8_ARRAY" DataLength="20"/>
+    <HeadNode ID="CellInfo" Describe="小区临区信息" DataType="UINT8_ARRAY" DataLength="19657"/>
+    
+  </FileHeader>
+
+  <Events TotalNum="*">
+    <EventsHeader>
+      <HeadNode ID="GmtTime" Describe="时间戳" DataType="DateTime" DisplayType="DateTime"/>
+      <HeadNode ID="DataLength" Describe="事件集数据长度" DataType="UINT32"/>
+    </EventsHeader>
+    <Event TotalNum="*">
+      <HyperLink LinkType="EventData" LinkHref="{Binding Path=Parent.EventHeader.EventType}"/>
+    </Event>
+  </Events>
+  <Version ver="EMB5116_TD-LTE_V3.20.00.20.05_20121127"/>
+</Document>

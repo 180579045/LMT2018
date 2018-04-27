@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Include">
+      <UniqueIdentifier>{4ab0d429-934e-4162-a64f-660b99a48a24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{bc031145-d100-4f1e-b045-5f9d86374c25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ASN.1">
+      <UniqueIdentifier>{2c73a5b1-4cb4-497e-b8c1-2aa77f2d3006}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PduDefine">
+      <UniqueIdentifier>{a6b3fdf3-b466-4f9a-a84c-2187f24e6172}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="StructConvert">
+      <UniqueIdentifier>{52697126-eeca-4dfe-9a17-1d55974197bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Nas">
+      <UniqueIdentifier>{64f3808c-3afb-4562-bb09-b1a09cad4f69}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ASN.1\asn1code.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\asn1glob.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\asn1hdr.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\asn1util.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\etype.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\iaapi.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossasn1.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossber.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\osscag.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossdll.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossexer.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossglobl.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossiaapi.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossmmgmt.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\osspasn.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossper.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\osstrace.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\osstype.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\ossxer.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="ASN.1\printasn.h">
+      <Filter>ASN.1</Filter>
+    </ClInclude>
+    <ClInclude Include="rrc.h">
+      <Filter>PduDefine</Filter>
+    </ClInclude>
+    <ClInclude Include="s1ap.h">
+      <Filter>PduDefine</Filter>
+    </ClInclude>
+    <ClInclude Include="x2ap.h">
+      <Filter>PduDefine</Filter>
+    </ClInclude>
+    <ClInclude Include="Asn1Decoder.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="CommonFunciton.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="RRCDecoder.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="S1Decoder.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="X2Decoder.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="x2_handover_decode.h">
+      <Filter>StructConvert</Filter>
+    </ClInclude>
+    <ClInclude Include="x2_handover_rrc_decode.h">
+      <Filter>StructConvert</Filter>
+    </ClInclude>
+    <ClInclude Include="cdl_common.h">
+      <Filter>StructConvert</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_adapt.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_common_stru.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_ie.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_msg.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_oam.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_public.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_tag.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="nas\nas_cbb_type.h">
+      <Filter>Nas</Filter>
+    </ClInclude>
+    <ClInclude Include="NasDecoder.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="rrc.c">
+      <Filter>PduDefine</Filter>
+    </ClCompile>
+    <ClCompile Include="s1ap.c">
+      <Filter>PduDefine</Filter>
+    </ClCompile>
+    <ClCompile Include="x2ap.c">
+      <Filter>PduDefine</Filter>
+    </ClCompile>
+    <ClCompile Include="CommonFunciton.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RRCDecoder.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Asn1Decoder.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="S1Decoder.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="X2Decoder.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="x2_handover_decode.c">
+      <Filter>StructConvert</Filter>
+    </ClCompile>
+    <ClCompile Include="x2_handover_rrc_decode.c">
+      <Filter>StructConvert</Filter>
+    </ClCompile>
+    <ClCompile Include="NasDecoder.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

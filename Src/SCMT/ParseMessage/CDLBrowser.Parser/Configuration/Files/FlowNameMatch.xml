@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<root>
+
+<flows name="X2Source">
+  <flow name="SrcNormal" des="切换源侧正常" statname="正常">
+  <msg name = "MSG_RRCX2AP_HandoverReq" />
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+  <msg name = "X2 UE Context Release"/>
+ </flow>
+
+	<flow name="SrcCancel" des="切换源侧取消" statname="X2源侧异常">
+      <msg name = "MSG_RRCX2AP_HandoverReq" />
+      <msg name = "X2 Handover Request"/>
+      <msg name = "X2 Handover Cancel"/>
+    </flow>
+    
+	<flow name="SrcOvertime" des="切换源侧切换阶段超时" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+    <msg name = "X2 Handover Request"/>
+    <msg name = "X2 Handover Request Acknowledge"/>
+    <msg name = "RRCConnectionReconfiguration"/>
+    <msg name = "MSG_S1APRRC_UeContextRelCommand"/>
+  </flow>
+  
+	<flow name="SrcInnerAbnormal" des="切换源侧内部异常" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+    <msg name = "X2 Handover Request"/>
+    <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "S1 UE Context Release Request"/>
+  <msg name = "S1 UE Context Release Command"/>
+  <msg name = "RRCConnectionRelease"/>
+  </flow>
+  
+	<flow name="SrcPreparationFailure" des="切换目标侧准备失败（源侧视角）" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+    <msg name = "X2 Handover Request"/>
+    <msg name = "X2 Handover Preparation Failure"/>
+  </flow>
+  
+	<flow name="SrcMmeReleaseInHandover" des="切换源侧切换阶段核心网释放" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+    <msg name = "X2 Handover Request"/>
+    <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+  <msg name = "S1 UE Context Release Command"/>
+  </flow>
+  
+  <flow name="SrcReestabGoSrc" des="切换重建立回源侧" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+  <msg name = "RRCConnectionReestablishmentRequest"/>
+  <msg name = "RRCConnectionReestablishment"/>
+   <msg name = "RRCConnectionReestablishmentComplete"/>
+   <msg name = "RRCConnectionReconfiguration"/>
+   <msg name = "RRCConnectionReconfigurationComplete"/>
+  </flow>
+  
+	<flow name="SrcReestab" des="切换源侧重建立超时" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+  <msg name = "RRCConnectionReestablishmentRequest"/>
+  <msg name = "RRCConnectionReestablishment"/>
+  <msg name = "S1 UE Context Release Request"/>
+  <msg name = "S1 UE Context Release Command"/>
+  </flow>
+  
+	<flow name="SrcReestabRecfg" des="切换源侧重建立重配置超时" statname="X2源侧异常">
+    <msg name = "MSG_RRCX2AP_HandoverReq" />
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+  <msg name = "RRCConnectionReestablishmentRequest"/>
+  <msg name = "RRCConnectionReestablishment"/>
+  <msg name = "RRCConnectionReestablishmentComplete"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+  <msg name = "S1 UE Context Release Request"/>
+  <msg name = "S1 UE Context Release Command"/>
+  </flow>
+</flows>
+  
+<flows name="X2Target">
+  <flow name="TarNormal" des="切换目标侧正常" statname="正常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfigurationComplete"/>
+  <msg name = "S1 Path Switch Request"/>
+  <msg name = "S1 Path Switch Request Acknowledge"/>
+  <msg name = "X2 UE Context Release"/>
+</flow>
+
+  <flow name="TarOvertime" des="切换目标侧切换定时器超时" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+</flow>
+
+  <flow name="TarSrcCancel" des="切换源侧取消（目标侧视角）" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Cancel"/>
+</flow>
+
+  <flow name="TarPreparationFailure" des="切换目标侧准备失败" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Preparation Failure"/>
+</flow>
+
+  <flow name="TarMmeOvertime" des="切换目标侧路径倒换阶段核心网响应超时" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfigurationComplete"/>
+  <msg name = "S1 Path Switch Request"/>
+  <msg name = "S1 UE Context Release Request"/>
+  <msg name = "S1 UE Context Release Command"/>
+</flow>
+
+  <flow name="TarMmeRelease" des="切换目标侧路径倒换阶段核心网释放" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReconfigurationComplete"/>
+   <msg name = "S1 Path Switch Request"/>
+  <msg name = "S1 UE Context Release Command"/>
+</flow>
+
+  <flow name="TarReestab" des="切换目标侧重建立超时" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReestablishmentRequest"/>
+  <msg name = "RRCConnectionReestablishment"/>
+</flow>
+
+  <flow name="TarReestabRecfg" des="切换目标侧重建立重配置超时" statname="X2目标侧异常">
+  <msg name = "X2 Handover Request"/>
+  <msg name = "X2 Handover Request Acknowledge"/>
+  <msg name = "RRCConnectionReestablishmentRequest"/>
+  <msg name = "RRCConnectionReestablishment"/>
+  <msg name = "RRCConnectionReestablishmentComplete"/>
+  <msg name = "RRCConnectionReconfiguration"/>
+</flow>
+  <flow name="TarReestabReject" des="切换目标侧重建立拒绝" statname="X2目标侧异常">
+    <msg name = "X2 Handover Request"/>
+    <msg name = "X2 Handover Request Acknowledge"/>
+    <msg name = "RRCConnectionReestablishmentRequest"/>
+    <msg name = "RRCConnectionReestablishmentReject"/>
+  </flow>
+</flows>
+
+<flows name ="S1Source">
+	<flow name="srcNormal" des="切换源侧正常" statname="正常">
+		<msg name="MSG_RRCS1AP_HandoverRequired" />
+		<msg name="S1 Handover Required"/>
+		<msg name="S1 Handover Command"/>
+		<msg name="RRCConnectionReconfiguration"/>
+		<msg name="S1 UE Context Release Command"/>
+	</flow>
+	
+	<flow name="srcCancel" des="切换源侧切换取消" statname="S1源侧异常">
+    	<msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Cancel"/>
+  </flow>
+
+	<flow name="srcMmeReleaseInPreparation" des="切换源侧切换准备阶段核心网释放" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 UE Context Release Command"/>
+    <msg name="RRCConnectionRelease"/>
+  </flow>
+  
+	<flow name="srcPreparationFailure" des="切换目标侧准备失败（源侧视角）" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Preparation Failure"/>
+  </flow>
+
+  <flow name="srcMmeReleaseInHandover" des="切换源侧切换阶段核心网释放" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Command"/>
+    <msg name="RRCConnectionReconfiguration"/>
+    <msg name="S1 UE Context Release Command"/>
+  </flow>
+
+  <flow name="srcOvertime" des="切换源侧切换阶段超时" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Command"/>
+    <msg name="RRCConnectionReconfiguration"/>
+    <msg name="MSG_S1APRRC_UE_CONTEXT_REL_COMMAND"/>
+  </flow>
+  
+	<flow name="srcInnerAbnormal" des="切换源侧内部异常" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Command"/>
+    <msg name="S1 UE Context Release Request"/>
+    <msg name="S1 UE Context Release Command"/>
+    <msg name="RRCConnectionRelease"/>
+  </flow>
+  
+
+  
+  	<flow name="srcReestabGoSrc" des="切换重建立回源侧" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Command"/>
+    <msg name="RRCConnectionReconfiguration"/>
+    <msg name="RRCConnectionReestablishmentRequest"/>
+    <msg name="RRCConnectionReestablishment"/>
+    <msg name="RRCConnectionReestablishmentComplete"/>
+		<msg name="RRCConnectionReconfiguration"/>
+		<msg name="RRCConnectionReconfigurationComplete"/>
+  </flow>
+  
+	<flow name="srcReestab" des="切换源侧重建立超时" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Command"/>
+    <msg name="RRCConnectionReconfiguration"/>
+    <msg name="RRCConnectionReestablishmentRequest"/>
+    <msg name="RRCConnectionReestablishment"/>
+    <msg name="S1 UE Context Release Request"/>
+    <msg name="S1 UE Context Release Command"/>
+  </flow>
+  
+	<flow name="srcReestabRecfg" des="切换源侧重建立重配置超时" statname="S1源侧异常">
+    <msg name="MSG_RRCS1AP_HandoverRequired" />
+    <msg name="S1 Handover Required"/>
+    <msg name="S1 Handover Command"/>
+    <msg name="RRCConnectionReconfiguration"/>
+    <msg name="RRCConnectionReestablishmentRequest"/>
+    <msg name="RRCConnectionReestablishment"/>
+    <msg name="RRCConnectionReestablishmentComplete"/>
+    <msg name="RRCConnectionReconfiguration"/>
+    <msg name="S1 UE Context Release Request"/>
+    <msg name="S1 UE Context Release Command"/>
+  </flow>
+</flows>
+
+<flows name="S1Target">
+	  <flow name="tarNormal" des="切换目标侧正常" statname="正常">
+    <msg name="S1 Handover Request"/>
+    <msg name="S1 Handover Request Acknowledge"/>
+    <msg name="RRCConnectionReconfigurationComplete"/>
+    <msg name="S1 Handover Notify"/>
+  </flow>
+	<flow name="tarOvertime" des="切换目标侧切换定时器超时" statname="S1目标侧异常">
+    <msg name="S1 Handover Request"/>
+    <msg name="S1 Handover Request Acknowledge"/>
+    <msg name="S1 UE Context Release Request"/>
+    <msg name="S1 UE Context Release Command"/>
+  </flow>
+  
+  <flow name="tarPreparationFailure" des="切换目标侧准备失败" statname="S1目标侧异常">
+  <msg name="S1 Handover Request"/>
+  <msg name="S1 Handover Failure"/>
+  </flow>
+
+  <flow name="tarMmeRelease" des="切换目标侧核心网释放" statname="S1目标侧异常">
+  <msg name="S1 Handover Request"/>
+  <msg name="S1 UE Context Release Command"/>
+  </flow>
+
+  <flow name="tarReestab" des="切换目标侧重建立超时" statname="S1目标侧异常">
+  <msg name="S1 Handover Request"/>
+  <msg name="S1 Handover Request Acknowledge"/>
+  <msg name="RRCConnectionReestablishmentRequest"/>
+  <msg name="RRCConnectionReestablishment"/>
+  <msg name="S1 UE Context Release Request"/>
+  <msg name="S1 UE Context Release Command"/>
+  </flow>
+
+  <flow name="tarReestabRecfg" des="切换目标侧重建立重配置超时" statname="S1目标侧异常">
+  <msg name="S1 Handover Request"/>
+  <msg name="S1 Handover Request Acknowledge"/>
+  <msg name="RRCConnectionReestablishmentRequest"/>
+  <msg name="RRCConnectionReestablishment"/>
+  <msg name="RRCConnectionReestablishmentComplete"/>
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="S1 UE Context Release Request"/>
+  <msg name="S1 UE Context Release Command"/>
+  </flow>
+</flows>
+
+<flows name="InnerHandover">
+  <flow name="Normal" des="切换正常" statname="正常">
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="RRCConnectionReconfigurationComplete"/>
+  </flow>
+
+  <flow name="Overtime" des="切换阶段空口超时" statname="基站内异常">
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="S1 UE Context Release Request"/>
+  <msg name="S1 UE Context Release Command"/>
+  </flow>
+
+  <flow name="MmeRelease" des="切换阶段核心网释放" statname="基站内异常">
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="S1 UE Context Release Command"/>
+  <msg name="RRCConnectionRelease"/>
+  </flow>
+
+  <flow name="ReestabGoSrc" des="切换重建立回源小区" statname="基站内异常">
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="RRCConnectionReestablishmentRequest" />
+  <msg name="RRCConnectionReestablishment"/>
+  <msg name="RRCConnectionReestablishmentComplete"/>
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="RRCConnectionReconfigurationComplete"/>
+  </flow>
+
+  <flow name="Reestab" des="切换重建立超时" statname="基站内异常">
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="RRCConnectionReestablishmentRequest" />
+  <msg name="RRCConnectionReestablishment"/>
+  <msg name="S1 UE Context Release Request"/>
+  <msg name="S1 UE Context Release Command"/>
+  </flow>
+
+  <flow name="ReestRecfg" des="切换重建立重配置超时" statname="基站内异常">
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="RRCConnectionReestablishmentRequest" />
+  <msg name="RRCConnectionReestablishment"/>
+  <msg name="RRCConnectionReestablishmentComplete"/>
+  <msg name="RRCConnectionReconfiguration"/>
+  <msg name="S1 UE Context Release Request"/>
+  <msg name="S1 UE Context Release Command"/>
+  </flow>
+</flows>
+
+</root>
