@@ -16,18 +16,17 @@ using System.Windows.Shapes;
 namespace SCMTMainWindow.Component.View
 {
     /// <summary>
-    /// LinechartContent.xaml 的交互逻辑
+    /// FlowChart.xaml 的交互逻辑
     /// </summary>
-    public partial class LinechartContent : UserControl
+    public partial class FlowChart : UserControl
     {
-        public LinechartContent()
+        public FlowChart()
         {
             InitializeComponent();
-            this.address.Address = System.Environment.CurrentDirectory + @"\LineChart_JS\LineChart.html";
-            CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-            this.address.RegisterJsObject("JsObj", new CallbackObjectForJs());
+            this.address.Address = System.Environment.CurrentDirectory + @"\FlowChart_JS\FlowChart.html";
+            //CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+            //this.address.RegisterJsObject("JsObj", new CallbackObjectForJs());
             this.address.BeginInit();
-
         }
     }
 }

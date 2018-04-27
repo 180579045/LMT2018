@@ -126,6 +126,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Component\View\FlowChart.xaml.cs">
+      <DependentUpon>FlowChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\View\LinechartContent.xaml.cs">
       <DependentUpon>LinechartContent.xaml</DependentUpon>
     </Compile>
@@ -134,10 +137,12 @@
     </Compile>
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="MainWindowVM.cs" />
-    <Compile Include="Component\Mib\MibNode.cs" />
-    <Compile Include="Component\Mib\MibCommand.cs" />
     <Compile Include="Component\View\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Page Include="Component\View\FlowChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Component\View\LinechartContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -176,7 +181,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Option.cs">
+    <Compile Include="Component\View\Option.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Pages\AddNodeB.xaml.cs">
@@ -233,7 +238,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Component\Thread\" />
+    <Folder Include="Component\ViewModel\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\editIcon.png" />

@@ -31,7 +31,6 @@ namespace SCMTMainWindow
         public int ObjParentID { get; set; }                     // 父节点ID;
         public string ObjName { get; set; }                      // 节点名称;
         public List<string> OIDList { get; set; }                // 节点包含OID列表;
-        public List<MibCommand> MibCmdLsit { get; set; }         // 节点包含命令列表;
         public List<ObjNode> SubObj_Lsit { get; set; }           // 孩子节点列表;
 
         public Grid m_NB_ContentGrid { get; set; }               // 对应的MIB内容容器;

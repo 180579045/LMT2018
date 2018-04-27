@@ -367,5 +367,18 @@ namespace SCMTMainWindow
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
+
+        private void ShowFlowChart(object sender, EventArgs e)
+        {
+            LayoutAnchorable sub = new LayoutAnchorable();
+            FlowChart content = new FlowChart();
+
+            sub.Content = content;
+            sub.FloatingHeight = 300;
+            sub.FloatingWidth = 800;
+
+            this.Pane.Children.Add(sub);
+            sub.Float();
+        }
     }
 }
