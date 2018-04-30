@@ -44,22 +44,34 @@ namespace AtpMessage.SessionMgr
 
 		private bool MsgSendCompleted { get; set; }
 
+		/// <summary>
+		/// 构造函数
+		/// </summary>
+		/// <param name="target">目的信息，包括地址和端口号</param>
 		public UdpSession(Target target)
 		{
 			_udpClient = new UdpClient();
 			_ipTargetEp = new IPEndPoint(IPAddress.Parse(target.addr), target.port);
 			_udpClient.Connect(_ipTargetEp);
 
-			_prefix = $"{target.addr}-{target.port}";
+			_prefix = $"{target.addr}:{target.port}";       //订阅这个消息是用于运行过程中给板卡发送信息
 			_subClient = new SubscribeClient(CommonPort.PubServerPort);
-			_subClient.AddSubscribeTopic(_prefix, OnSubscribe);
+			_subClient.AddSubscribeTopic($"to:{_prefix}", OnSubscribe);
 		}
 
+		/// <summary>
+		/// 异步发送信息回调函数
+		/// </summary>
+		/// <param name="ar"></param>
 		public void SendCallback(IAsyncResult ar)
 		{
 			MsgSendCompleted = ar.IsCompleted;
 		}
 
+		/// <summary>
+		/// 异步发送数据
+		/// </summary>
+		/// <param name="dataBytes"></param>
 		public void SendAsync(byte[] dataBytes)
 		{
 			MsgSendCompleted = false;
@@ -79,6 +91,9 @@ namespace AtpMessage.SessionMgr
 			}
 		}
 
+		/// <summary>
+		/// 启动线程接收数据
+		/// </summary>
 		public void Run()
 		{
 			_recvThread = new Thread(RecvFromBoard);
@@ -86,15 +101,19 @@ namespace AtpMessage.SessionMgr
 			_subClient.Run();
 		}
 
+		/// <summary>
+		/// 接收数据线程函数
+		/// </summary>
+		/// <param name="obj"></param>
 		private void RecvFromBoard(object obj)
 		{
-			while (true)
+			while(true)
 			{
 				try
 				{
 					var revBytes = _udpClient.Receive(ref _ipTargetEp);
 					var header = GetHeaderFromBytes.GetHeader(revBytes);
-					//PublishHelper.PublishMsg($"{_prefix}-{header.u16Opcode}", revBytes);
+					PublishHelper.PublishMsg($"from:{_prefix}", revBytes);
 				}
 				catch (SocketException e)
 				{

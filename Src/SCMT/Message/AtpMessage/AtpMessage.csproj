@@ -54,11 +54,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AtpMessageInfo.cs" />
+    <Compile Include="GtsMsgParse\GtsMsgParseService.cs" />
+    <Compile Include="GtsMsgParse\GtsMsgParseWorker.cs" />
     <Compile Include="LinkMgr\AtpDirectLink.cs" />
     <Compile Include="LinkMgr\AtpRemoteLogLink.cs" />
     <Compile Include="LinkMgr\AtpRemoteMsgLink.cs" />
     <Compile Include="LinkMgr\INetElementLink.cs" />
-    <Compile Include="LinkMgr\NeLinkBase.cs" />
+    <Compile Include="LinkMgr\LinkFactory.cs" />
+    <Compile Include="LinkMgr\LinkMgrActor.cs" />
+    <Compile Include="LinkMgr\NetElementLinkBase.cs" />
     <Compile Include="LinkMgr\NetElementConfig.cs" />
     <Compile Include="MsgDefine\AtpInternalStruct.cs" />
     <Compile Include="MsgDefine\CreateLinkMsg.cs" />

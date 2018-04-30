@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
+using MsgQueue;
 using SharpPcap;
 using SharpPcap.LibPcap;
 
 namespace AtpMessage.SessionMgr
 {
 	/// <summary>
-	/// 处理gtsa抄送的消息，抓回来的是帧数据，不是TCP也不是UDP
+	/// 处理gtsa抄送的消息，抓回来的是IP层数据
 	/// </summary>
 	class IpSession
 	{
@@ -51,7 +52,7 @@ namespace AtpMessage.SessionMgr
 		/// </summary>
 		/// <param name="localIp">本地网卡上的IP地址</param>
 		/// <param name="filter">数据包过滤filter</param>
-		/// <param name="pubTopic">收到数据包发布的topic</param>
+		/// <param name="pubTopic">收到数据包发布的topic TODO 是否合适设置topic</param>
 		/// <returns>true:启动接收成功，false:在本地网卡上没有找到对应的本地IP地址</returns>
 		public bool Init(string localIp, string filter, string pubTopic)
 		{
@@ -101,7 +102,7 @@ namespace AtpMessage.SessionMgr
 		private void OnPacketArrive(object sender, CaptureEventArgs e)
 		{
 			byte[] data = e.Packet.Data;       //TODO Data转为string，需要替换-为空字符
-			//PublishHelper.PublishMsg(_pubTopic, data);
+			PublishHelper.PublishMsg("/GtsMsgParseService", data);
 		}
 
 		private void OnStopCapture(object sender, CaptureStoppedEventStatus status)
