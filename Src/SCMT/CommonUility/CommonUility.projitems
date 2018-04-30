@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>e0d5f5b3-3253-44f9-a5cf-ae8bafed4c20</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>CommonUility</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)BitField.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IASerialize.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)JsonConvertHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NetAddrConvertHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SerializeHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />
+  </ItemGroup>
+</Project>

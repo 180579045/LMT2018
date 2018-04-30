@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{47E80563-D3E6-4039-BD2B-63480BBD0525}</ProjectGuid>
+    <ProjectGuid>{DFCC660C-1B0A-470A-9AB1-14448A33091C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AtpMessage</RootNamespace>
-    <AssemblyName>AtpMessage</AssemblyName>
+    <RootNamespace>MsgQueue</RootNamespace>
+    <AssemblyName>MsgQueue</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -32,16 +31,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AsyncIO">
-      <HintPath>..\..\..\..\..\SCMT\Src\SCMT\packages\AsyncIO.0.1.40\lib\net40\AsyncIO.dll</HintPath>
+      <HintPath>..\..\..\..\SCMT\Src\SCMT\packages\AsyncIO.0.1.40\lib\net40\AsyncIO.dll</HintPath>
     </Reference>
     <Reference Include="NetMQ">
-      <HintPath>..\..\..\..\..\SCMT\Src\SCMT\packages\NetMQ.4.0.0.156-pre\lib\net40\NetMQ.dll</HintPath>
+      <HintPath>..\..\..\..\SCMT\Src\SCMT\packages\NetMQ.4.0.0.156-pre\lib\net40\NetMQ.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\SCMT\Src\SCMT\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SharpPcap">
-      <HintPath>..\..\..\..\..\SCMT\Src\SCMT\packages\SharpPcap.4.4.0\lib\SharpPcap.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -53,38 +50,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AtpMessageInfo.cs" />
-    <Compile Include="LinkMgr\AtpDirectLink.cs" />
-    <Compile Include="LinkMgr\AtpRemoteLogLink.cs" />
-    <Compile Include="LinkMgr\AtpRemoteMsgLink.cs" />
-    <Compile Include="LinkMgr\INetElementLink.cs" />
-    <Compile Include="LinkMgr\NeLinkBase.cs" />
-    <Compile Include="LinkMgr\NetElementConfig.cs" />
-    <Compile Include="MsgDefine\AtpInternalStruct.cs" />
-    <Compile Include="MsgDefine\CreateLinkMsg.cs" />
-    <Compile Include="MsgDefine\FileDownloadMsg.cs" />
-    <Compile Include="MsgDefine\FileUploadMsg.cs" />
-    <Compile Include="MsgDefine\FilterResetMsg.cs" />
-    <Compile Include="MsgDefine\FilterRuleMsg.cs" />
-    <Compile Include="MsgDefine\GetHeaderFromBytes.cs" />
-    <Compile Include="MsgDefine\GtsHeader.cs" />
-    <Compile Include="MsgDefine\GtsMsgType.cs" />
-    <Compile Include="MsgDefine\KeepAliveMsg.cs" />
-    <Compile Include="MsgDefine\LogonMsg.cs" />
-    <Compile Include="MsgDefine\NbLinkType.cs" />
-    <Compile Include="MsgDefine\TraceCtrlMsg.cs" />
+    <Compile Include="CommonPort.cs" />
+    <Compile Include="PublisherClient.cs" />
+    <Compile Include="PublishHelper.cs" />
+    <Compile Include="PubSubServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SessionMgr\IpSession.cs" />
-    <Compile Include="SessionMgr\SessionService.cs" />
-    <Compile Include="SessionMgr\UdpSession.cs" />
+    <Compile Include="RDServer.cs" />
+    <Compile Include="RequestClient.cs" />
+    <Compile Include="ResponseServer.cs" />
+    <Compile Include="SubscribeClient.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
-      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
-      <Name>MsgQueue</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
+  <Import Project="..\CommonUility\CommonUility.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
