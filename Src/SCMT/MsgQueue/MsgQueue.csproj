@@ -59,6 +59,7 @@
     <Compile Include="RequestClient.cs" />
     <Compile Include="ResponseServer.cs" />
     <Compile Include="SubscribeClient.cs" />
+    <Compile Include="TopicManager.cs" />
   </ItemGroup>
   <Import Project="..\CommonUility\CommonUility.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

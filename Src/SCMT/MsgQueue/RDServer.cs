@@ -5,7 +5,8 @@ using NetMQ;
 using NetMQ.Sockets;
 
 //这个是 router-dealer 模式的服务端
-//router连接request端，dealer连接reponse端。
+// request1 <--> router <--> dealer <--> response1
+// request2 <------^            ^------> response2
 //router-dealer模式把同步的req-rep模式变成异步的,但对于使用者来说仍然是同步的
 //TODO 未实现完成，不要用
 namespace MsgQueue

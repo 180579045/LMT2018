@@ -31,8 +31,6 @@ namespace MsgQueue
 			return true;
 		}
 
-
-
 		public void SendReq()
 		{
 			

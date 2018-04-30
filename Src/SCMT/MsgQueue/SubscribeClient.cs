@@ -12,7 +12,6 @@ namespace MsgQueue
 	{
 		public string Topic { get; }
 
-
 		public byte[] Data { get; }
 
 		public SubscribeMsg(byte[] data, string topic)
