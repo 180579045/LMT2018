@@ -6,6 +6,15 @@ using System.Threading.Tasks;
 
 namespace AtpMessage.LinkMgr
 {
+	public enum ConnectType
+	{
+		ATP_DIRECT_LINK = 0,
+		ATP_REMOTE_LOG,
+		ATP_REMOTE_MSG,
+		OSP,
+		LMT,
+	}
+
 	//以下信息来自于nbinformation.xml
 	public class NetElementConfig
 	{
@@ -14,5 +23,7 @@ namespace AtpMessage.LinkMgr
 		public ushort Index;		//板卡ID
 		public ushort FrameNo;
 		public ushort SlotNo;
+
+		public ConnectType conType;     //连接类型
 	}
 }

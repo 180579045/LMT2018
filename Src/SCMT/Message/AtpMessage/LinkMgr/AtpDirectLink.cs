@@ -11,7 +11,7 @@ namespace AtpMessage.LinkMgr
 	/// <summary>
 	/// ATP的直连模式
 	/// </summary>
-	public class AtpDirectLink : NeLinkBase
+	public class AtpDirectLink : NetElementLinkBase
 	{
 		public override void Logon(NetElementConfig netElementAddress)
 		{

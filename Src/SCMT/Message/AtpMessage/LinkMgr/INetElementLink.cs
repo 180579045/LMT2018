@@ -19,5 +19,7 @@ namespace AtpMessage.LinkMgr
 		void Disconnect();
 
 		bool IsConnected();
+
+	    void OnLogonResult(bool bSucceed);
 	}
 }

@@ -11,7 +11,7 @@ namespace AtpMessage.LinkMgr
 	/// <summary>
 	/// 远程消息方式连接板卡
 	/// </summary>
-	public class AtpRemoteMsgLink : NeLinkBase
+	public class AtpRemoteMsgLink : NetElementLinkBase
 	{
 		public override void Logon(NetElementConfig netElementAddress)
 		{

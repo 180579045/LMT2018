@@ -9,7 +9,7 @@ namespace AtpMessage.LinkMgr
 	/// <summary>
 	/// 远程日志模式连接板卡
 	/// </summary>
-	public class AtpRemoteLogLink : NeLinkBase
+	public class AtpRemoteLogLink : NetElementLinkBase
 	{
 	}
 }
