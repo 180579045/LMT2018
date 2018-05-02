@@ -22,7 +22,8 @@ namespace CDLBrowser.Parser.BPLAN
         {
             currentID = ID;
             JsonFile jsonFile = new JsonFile();
-            JObject jObject = JObject.Parse(@".\script\script_config.json");
+            JObject jObject = JObject.Parse(jsonFile.ReadFile(@".\script\script_config.json"));
+
             //更新json配置文件中的currentId
             jObject["currentConfigId"] = ID;
             //删除再创建
