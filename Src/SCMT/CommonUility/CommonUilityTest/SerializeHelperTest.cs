@@ -92,5 +92,38 @@ namespace CommonUilityTest
 			used += SerializeHelper.DeserializeByte(data, used, ref actual);
 			Assert.AreEqual(0, actual);
 		}
+
+		[TestMethod]
+		public void TestSerializeUintArray()
+		{
+			uint[] opcodes = new uint[20];
+			for (int i = 0; i < 20; i++)
+			{
+				opcodes[i] = (uint)(i % 2);
+			}
+
+			byte[] data = new byte[90];
+
+			int used = 0;
+			used = SerializeHelper.SerializeUintArray(ref data, 0, opcodes, 0, opcodes.Length);
+			Assert.AreEqual(opcodes.Length * sizeof(uint), used);
+			Assert.AreEqual(0, data[0]);
+			Assert.AreEqual(1, data[7]);
+
+			used = SerializeHelper.SerializeUintArray(ref data, 0, opcodes, 5, 20);
+			Assert.AreEqual(-1, used);
+
+			used = SerializeHelper.SerializeUintArray(ref data, 20, opcodes, 0, opcodes.Length);
+			Assert.AreEqual(-1, used);
+		}
+
+		[TestMethod]
+		public void TestReverseUshort()
+		{
+			ushort origin = 12345;		//0x3039
+			ushort reversed = SerializeHelper.ReverseUshort(origin);
+
+			Assert.AreEqual(0x3930, reversed);
+		}
 	}
 }

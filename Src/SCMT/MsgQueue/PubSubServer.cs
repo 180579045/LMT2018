@@ -22,13 +22,12 @@ namespace MsgQueue
         /// <param name="addr">服务地址。可以运行在不同的PC上进行消息的收发</param>
         /// <param name="publiserPort">pub server port。订阅者连接到这个端口</param>
         /// <param name="subscribePort">sub server port。发布者连接到这个端口</param>
-        public void InitServer(string addr = "127.0.0.1", int publiserPort = 1234, int subscribePort = 5678)
+        public void InitServer(int publiserPort, int subscribePort, string addr = "127.0.0.1")
         {
             if (HadInited) return;
 
-            //TODO 端口先固定
-            _pubSocket = new XPublisherSocket($"@tcp://{addr}:{CommonPort.PubServerPort}");
-            _subSocket = new XSubscriberSocket($"@tcp://{addr}:{CommonPort.SubServerPort}");
+            _pubSocket = new XPublisherSocket($"@tcp://{addr}:{publiserPort}");
+            _subSocket = new XSubscriberSocket($"@tcp://{addr}:{subscribePort}");
 
             _proxy = new Proxy(_subSocket, _pubSocket);
             Task.Factory.StartNew(_proxy.Start);

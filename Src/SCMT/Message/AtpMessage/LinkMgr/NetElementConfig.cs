@@ -23,6 +23,8 @@ namespace AtpMessage.LinkMgr
 		public ushort Index;		//板卡ID
 		public ushort FrameNo;
 		public ushort SlotNo;
+		public string TargetIp;		//目的地址
+
 
 		public ConnectType conType;     //连接类型
 	}

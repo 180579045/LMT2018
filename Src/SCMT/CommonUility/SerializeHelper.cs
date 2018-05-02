@@ -26,7 +26,6 @@ namespace CommonUility
 			}
 			catch
 			{
-				//TODO 异常处理
 				return null;
 			}
 			finally
@@ -44,6 +43,11 @@ namespace CommonUility
 		/// <returns>此次序列化了几个字节</returns>
 		public static int SerializeByte(ref byte[] ret, int offset, byte value)
 		{
+			if (ret.Length <= offset)
+			{
+				return -1;
+			}
+
 			ret[offset] = value;
 			return sizeof(byte);
 		}
@@ -57,17 +61,21 @@ namespace CommonUility
 		/// <returns></returns>
 		public static int DeserializeByte(byte[] ret, int offset, ref byte value)
 		{
+			if (ret.Length <= offset)
+			{
+				return -1;
+			}
+
 			value = ret[offset];
 			return sizeof(byte);
 		}
 
-		//TODO 都没有检查数组空间是否足够
 		/// <summary>
 		/// 把一个字节数组中的所有数据copy到另外一个数组中
 		/// 这个函数序列化和反序列化都会用到，只不过是src与dst交换了位置
 		/// 把src中从src_offset开始的数据copy len个字节到dst中
 		/// </summary>
-		/// <param name="dst">保存序列换后的数据</param>
+		/// <param name="dst">保存序列化后的数据</param>
 		/// <param name="offset">字节数组偏移量，也就是从偏移量位置开始存数据</param>
 		/// <param name="src">待序列化的字节数组</param>
 		/// <param name="src_offset">字节数组偏移量，也就是从偏移量位置开始取数据</param>
@@ -75,23 +83,33 @@ namespace CommonUility
 		/// <returns>copy的长度</returns>
 		public static int SerializeBytes(ref byte[] dst, int offset, byte[] src, int src_offset, int len)
 		{
+			if ((src.Length - src_offset < len) || (dst.Length - offset < len))
+			{
+				return -1;
+			}
+
 			Buffer.BlockCopy(src, src_offset, dst, offset, len);
 			return len;
 		}
 
 		/// <summary>
-		/// 序列换双字节数组
+		/// 序列化双字节数组
 		/// </summary>
-		/// <param name="dst">保存序列换后的数据</param>
+		/// <param name="dst">保存序列化后的数据</param>
 		/// <param name="offset">字节数组偏移量，也就是从偏移量位置开始存数据</param>
 		/// <param name="src">待序列化的双字节数组</param>
 		/// <param name="src_offset">双字节数组偏移量，也就是从偏移量位置开始取数据</param>
 		/// <returns>copy的长度</returns>
-		/// TODO 没有设置要copy多少个元素
-		public static int SerializeUintArray(ref byte[] dst, int offset, uint[] src, int src_offset)
+		public static int SerializeUintArray(ref byte[] dst, int offset, uint[] src, int src_offset, int len)
 		{
-			int buflen = sizeof(uint) * (src.Length - src_offset);
-			byte[] buf = new byte[buflen];
+			int sizeCopy = len * sizeof(uint);
+
+			if ((src.Length - src_offset < len) || (dst.Length - offset < sizeCopy))
+			{
+				return -1;
+			}
+
+			byte[] buf = new byte[sizeCopy];
 			int used = 0;
 
 			for (int i = src_offset; i < src.Length; i++)
@@ -144,18 +162,23 @@ namespace CommonUility
 		/// <returns>翻转后的数据</returns>
 		public static ushort ReverseUshort(ushort value)
 		{
-			return (ushort) ((value & 0xFFU) << 8 | (value & 0xFF00U) >> 8);
+			return (ushort) ((value & 0x00FFU) << 8 | (value & 0xFF00U) >> 8);
 		}
 
 		/// <summary>
 		/// 双字节数据序列化
 		/// </summary>
-		/// <param name="ret">保存序列换后的数据</param>
+		/// <param name="ret">保存序列化后的数据</param>
 		/// <param name="offset">字节数组偏移量，也就是从偏移量位置开始存数据</param>
 		/// <param name="value">原始数据</param>
 		/// <returns>序列化数据的字节数</returns>
 		public static int SerializeUshort(ref byte[] ret, int offset, ushort value)
 		{
+			if (ret.Length - offset < sizeof(ushort))
+			{
+				return -1;
+			}
+
 			var resultBuf = BitConverter.GetBytes(ReverseUshort(value));
 			Buffer.BlockCopy(resultBuf, 0, ret, offset, resultBuf.Length);
 			return resultBuf.Length;
@@ -170,6 +193,11 @@ namespace CommonUility
 		/// <returns>序列化数据的字节数</returns>
 		public static int DeserializeUshort(byte[] ret, int offset, ref ushort value)
 		{
+			if (ret.Length - offset < sizeof(ushort))
+			{
+				return -1;
+			}
+
 			var data = BitConverter.ToUInt16(ret, offset);
 			value = ReverseUshort(data);
 			return sizeof(ushort);
@@ -189,12 +217,17 @@ namespace CommonUility
 		/// <summary>
 		/// 四字节数据序列化
 		/// </summary>
-		/// <param name="ret">保存序列换后的数据</param>
+		/// <param name="ret">保存序列化后的数据</param>
 		/// <param name="offset">字节数组偏移量，也就是从偏移量位置开始存数据</param>
 		/// <param name="value">原始数据</param>
 		/// <returns>序列化数据的字节数</returns>
 		public static int SerializeInt32(ref byte[] ret, int offset, uint value)
 		{
+			if (ret.Length - offset < sizeof(uint))
+			{
+				return -1;
+			}
+
 			var resultBuf = BitConverter.GetBytes(ReverseFourBytesData(value));
 			Buffer.BlockCopy(resultBuf, 0, ret, offset, resultBuf.Length);
 			return sizeof(int);
@@ -209,6 +242,11 @@ namespace CommonUility
 		/// <returns>序列化数据的字节数</returns>
 		public static int DeserializeInt32(byte[] ret, int offset, ref uint value)
 		{
+			if (ret.Length - offset < sizeof(uint))
+			{
+				return -1;
+			}
+
 			var data = BitConverter.ToUInt32(ret, offset);
 			value = ReverseFourBytesData(data);
 			return sizeof(uint);
@@ -236,6 +274,11 @@ namespace CommonUility
 		public static byte[] SerializeStructToBytes<T>(T obj)
 			where T : IASerialize
 		{
+			if (null == obj)
+			{
+				return null;
+			}
+
 			var sendBytes = new byte[obj.Len];
 
 			if (-1 == obj.SerializeToBytes(ref sendBytes, 0))

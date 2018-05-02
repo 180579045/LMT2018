@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonPort.cs" />
+    <Compile Include="CommonStruct.cs" />
     <Compile Include="PublisherClient.cs" />
     <Compile Include="PublishHelper.cs" />
     <Compile Include="PubSubServer.cs" />

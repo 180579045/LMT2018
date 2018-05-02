@@ -28,7 +28,7 @@ namespace AtpMessage.MsgDefine
 			used += SerializeHelper.SerializeByte(ref ret, offset + used, u8FilterNumber);
 			used += SerializeHelper.SerializeByte(ref ret, offset + used, u8DstFrame);
 			used += SerializeHelper.SerializeByte(ref ret, offset + used, u8DstSlot);
-			used += SerializeHelper.SerializeUintArray(ref ret, offset + used, u32FilterOpcode, 0);
+			used += SerializeHelper.SerializeUintArray(ref ret, offset + used, u32FilterOpcode, 0, u32FilterOpcode.Length);
 			return used;
 		}
 

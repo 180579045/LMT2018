@@ -33,7 +33,7 @@ namespace AtpMessage.LinkMgr
 			};
 			logonReq.header.u16Length = logonReq.ContentLen;
 
-			SendPackets(SerializeHelper.SerializeStructToBytes(logonReq));
+			SendPackets(SerializeHelper.SerializeStructToBytes(logonReq), true);
 
 			base.Logon(netElementAddress);
 		}
@@ -52,7 +52,7 @@ namespace AtpMessage.LinkMgr
 			};
 			logoffReq.header.u16Length = logoffReq.ContentLen;
 
-			SendPackets(SerializeHelper.SerializeStructToBytes(logoffReq));
+			SendPackets(SerializeHelper.SerializeStructToBytes(logoffReq), false);
 			base.Logoff(netElementAddress);
 		}
 	}

@@ -78,6 +78,7 @@
     <Compile Include="MsgDefine\NbLinkType.cs" />
     <Compile Include="MsgDefine\TraceCtrlMsg.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionMgr\IASession.cs" />
     <Compile Include="SessionMgr\IpSession.cs" />
     <Compile Include="SessionMgr\SessionService.cs" />
     <Compile Include="SessionMgr\UdpSession.cs" />

@@ -9,7 +9,7 @@ namespace AtpMessage.SessionMgr
 	/// <summary>
 	/// 处理gtsa抄送的消息，抓回来的是IP层数据
 	/// </summary>
-	class IpSession
+	public class IpSession : IASession
 	{
 		private LibPcapLiveDevice _deviceCapture;
 		private string _pubTopic;
@@ -101,7 +101,7 @@ namespace AtpMessage.SessionMgr
 
 		private void OnPacketArrive(object sender, CaptureEventArgs e)
 		{
-			byte[] data = e.Packet.Data;       //TODO Data转为string，需要替换-为空字符
+			byte[] data = e.Packet.Data;       //Data转为string，需要替换-为空字符
 			PublishHelper.PublishMsg("/GtsMsgParseService", data);
 		}
 
