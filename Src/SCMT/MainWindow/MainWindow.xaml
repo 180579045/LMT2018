@@ -202,6 +202,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <Button x:Name="parseFile" Content="开始解析" HorizontalAlignment="Left" Margin="437,37,0,0" VerticalAlignment="Top" Width="46" Click="parseFile_Click"/>
+                        <Button x:Name="scriptBegin" Content="脚本启动" HorizontalAlignment="Left" Margin="468,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-3.907,0.045" Click="beginParse_click"/>
                     </Grid>
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
                 </TabItem>

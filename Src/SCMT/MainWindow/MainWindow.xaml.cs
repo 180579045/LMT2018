@@ -31,6 +31,12 @@ using CDLBrowser.Parser.DatabaseMgr;
 using CDLBrowser.Parser.Document;
 using System.Data.SQLite;
 using System.Windows.Input;
+using CDLBrowser.Parser.BPLAN;
+using MsgQueue;
+using CommonUility;
+using System.Windows.Threading;
+using System.Threading;
+using System.Collections.ObjectModel;
 
 namespace SCMTMainWindow
 {
@@ -44,7 +50,15 @@ namespace SCMTMainWindow
         public NodeBControl NBControler;
         public NodeB node;
         bool bIsRepeat;
-        
+
+        //工信部测试B方案显示HL信令消息
+        SignalBPlan signalBPlanThread;
+        ObservableCollection<EventNew> hlMessageUE = new ObservableCollection<EventNew>();
+        ObservableCollection<EventNew> hlMessageeNB = new ObservableCollection<EventNew>();
+        ObservableCollection<EventNew> hlMessagegNB = new ObservableCollection<EventNew>();
+        SubscribeClient subClient;
+        SignalBPlan signalB;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +73,19 @@ namespace SCMTMainWindow
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
             //this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
             deleteTempFile();
+            //跟踪消息显示 add by tangyun
+            InitSubscribeTopic();
+
+        }
+
+        private void InitSubscribeTopic()
+        {
+            PubSubServer.GetInstance().InitServer();
+            this.dataGrid.ItemsSource = hlMessageUE;
+            signalB = new SignalBPlan();
+            subClient = new SubscribeClient(CommonPort.PubServerPort);
+            subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
+            subClient.Run();
         }
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -431,6 +458,60 @@ namespace SCMTMainWindow
                 this.textDirction.Text = fileNames[0];
             }
         }
+
+        //2018-4-30 B方案呈现HL信令消息
+        private void updateHlSingalMessageInfo(SubscribeMsg msg)
+        {
+            ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
+            EventNew UIMsg = new EventNew();
+            UIMsg.TimeStamp = scriptMessage.time;
+            UIMsg.EventName = scriptMessage.message;
+            UIMsg.MessageDestination = scriptMessage.MessageDestination;
+            UIMsg.MessageSource = scriptMessage.MessageSource;
+            UIMsg.data = scriptMessage.data;
+            int maxNumber = 0;
+            if (-1 != scriptMessage.UI.IndexOf("UE"))
+            {
+                //按照界面区分自然编号
+                maxNumber = hlMessageUE.Count;
+                UIMsg.DisplayIndex = maxNumber;              
+                this.dataGrid.Dispatcher.Invoke(new Action(()=> {
+                    hlMessageUE.Add(UIMsg);
+                }));
+            }
+            if (-1 != scriptMessage.UI.IndexOf("eNB"))
+            {
+                //按照界面区分自然编号
+                maxNumber = hlMessageeNB.Count;
+                UIMsg.DisplayIndex = maxNumber;
+                /*
+                this.dataGrid.Dispatcher.Invoke(new Action(() =>
+                {
+                    hlMessageeNB.Add(UIMsg);
+                }));
+                */
+            }
+            if (-1 != scriptMessage.UI.IndexOf("gNB"))
+            {
+                //按照界面区分自然编号
+                maxNumber = hlMessagegNB.Count;
+                UIMsg.DisplayIndex = maxNumber;
+                /*
+                this.dataGrid.Dispatcher.Invoke(new Action(() =>
+                {
+                    hlMessagegNB.Add(UIMsg);
+                })); 
+                */
+            }
+            return;
+        }
+    
+        public void beginParse_click(object sender, EventArgs e)
+        {   
+            SignalBConfig.StartByScriptXml();
+            PublishHelper.PublishMsg("StartTraceHlSignal", "");
+        }
+       
 
         private void parseFile_Click(object sender, RoutedEventArgs e)
         {
