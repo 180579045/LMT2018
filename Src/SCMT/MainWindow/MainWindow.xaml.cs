@@ -92,6 +92,8 @@ namespace SCMTMainWindow
         {
             PubSubServer.GetInstance().InitServer();
             this.dataGrid.ItemsSource = hlMessageUE;
+            this.dataGrideNB.ItemsSource = hlMessageeNB;
+            this.dataGridgNB.ItemsSource = hlMessagegNB;
             signalB = new SignalBPlan();
             subClient = new SubscribeClient(CommonPort.PubServerPort);
             subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
@@ -474,44 +476,33 @@ namespace SCMTMainWindow
         {
             ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
             EventNew UIMsg = new EventNew();
+            UIMsg.DisplayIndex = scriptMessage.NO;
             UIMsg.TimeStamp = scriptMessage.time;
             UIMsg.EventName = scriptMessage.message;
             UIMsg.MessageDestination = scriptMessage.MessageDestination;
             UIMsg.MessageSource = scriptMessage.MessageSource;
             UIMsg.data = scriptMessage.data;
-            int maxNumber = 0;
             if (-1 != scriptMessage.UI.IndexOf("UE"))
             {
-                //按照界面区分自然编号
-                maxNumber = hlMessageUE.Count;
-                UIMsg.DisplayIndex = maxNumber;              
                 this.dataGrid.Dispatcher.Invoke(new Action(()=> {
                     hlMessageUE.Add(UIMsg);
                 }));
             }
             if (-1 != scriptMessage.UI.IndexOf("eNB"))
-            {
-                //按照界面区分自然编号
-                maxNumber = hlMessageeNB.Count;
-                UIMsg.DisplayIndex = maxNumber;
-                /*
-                this.dataGrid.Dispatcher.Invoke(new Action(() =>
+            { 
+                this.dataGrideNB.Dispatcher.Invoke(new Action(() =>
                 {
                     hlMessageeNB.Add(UIMsg);
                 }));
-                */
+                
             }
             if (-1 != scriptMessage.UI.IndexOf("gNB"))
             {
-                //按照界面区分自然编号
-                maxNumber = hlMessagegNB.Count;
-                UIMsg.DisplayIndex = maxNumber;
-                /*
-                this.dataGrid.Dispatcher.Invoke(new Action(() =>
+                this.dataGridgNB.Dispatcher.Invoke(new Action(() =>
                 {
                     hlMessagegNB.Add(UIMsg);
                 })); 
-                */
+                
             }
             return;
         }
@@ -805,42 +796,42 @@ namespace SCMTMainWindow
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase2])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(2);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase3])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(3);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase4])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(4);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase5])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(5);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase6])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(6);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase7])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(7);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase8])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(8);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     else if (atomID == m_HotKeyDic[eHotKey.UserCase9])
                     {
-                        SignalBConfig.SetScriptTxt(1);
+                        SignalBConfig.SetScriptTxt(9);
                         PublishHelper.PublishMsg("StartTraceHlSignal", "");
                     }
                     handled = true;
