@@ -138,6 +138,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Component\ViewModel\HLMessageViewModel.cs" />
     <Compile Include="Component\View\FlowChart.xaml.cs">
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
@@ -152,6 +153,7 @@
       <DependentUpon>MesasgeRecv.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FavoriteNode_Control.cs" />
+    <Compile Include="Controls\PlanBParser\HLMessageParser.cs" />
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\View\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
@@ -257,9 +259,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Component\ViewModel\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="Resources\editIcon.png" />
     <Resource Include="Resources\icon.png" />

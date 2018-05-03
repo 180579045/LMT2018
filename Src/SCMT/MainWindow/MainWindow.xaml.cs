@@ -54,7 +54,8 @@ namespace SCMTMainWindow
         private IntPtr m_Hwnd = new IntPtr();                                 // 当前主窗口句柄;
         private Dictionary<eHotKey, int> m_HotKeyDic                          // 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息;
             = new Dictionary<eHotKey, int>();
-        
+        SubscribeClient subClient;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -478,7 +479,6 @@ namespace SCMTMainWindow
 
             dbconn.CommitChanges(sessionSqlCmd);
             dbconn.Close();
-            this.dataGrid.ItemsSource = le;
 
         }
 
