@@ -1,0 +1,62 @@
+[
+{
+NO:1,
+UI:"UE,eNB",
+ENBUEID:"1049769",
+MessageSource:"UE",
+MessageDestination:"eNB",
+message:"RRCConnectionRequest",
+data:
+"value UL-CCCH-Message ::= 
+{
+  message c1 : rrcConnectionRequest : 
+      {
+        criticalExtensions rrcConnectionRequest-r8 : 
+          {
+            ue-Identity randomValue : '11010110 01011010 01111111 00100001 01100011'B,
+            establishmentCause mo-Signalling,
+            spare '0'B
+          }
+      }
+}"
+},{
+NO:2,
+UI:"UE,eNB",
+ENBUEID:"1049769",
+MessageSource:"UE",
+MessageDestination:"eNB",
+message:"RRCConnectionRequest",
+data:
+"value UL-CCCH-Message ::= 
+{
+  message c1 : rrcConnectionRequest : 
+      {
+        criticalExtensions rrcConnectionRequest-r8 : 
+          {
+            ue-Identity randomValue : '11010110 01011010 01111111 00100001 01100011'B,
+            establishmentCause mo-Signalling,
+            spare '0'B
+          }
+      }
+}"
+},{
+NO:3,
+UI:"UE,eNB",
+ENBUEID:"1049769",
+MessageSource:"UE",
+MessageDestination:"eNB",
+message:"RRCConnectionRequest",
+data:
+"value UL-CCCH-Message ::= 
+{
+  message c1 : rrcConnectionRequest : 
+      {
+        criticalExtensions rrcConnectionRequest-r8 : 
+          {
+            ue-Identity randomValue : '11010110 01011010 01111111 00100001 01100011'B,
+            establishmentCause mo-Signalling,
+            spare '0'B
+          }
+      }
+}"
+}]

@@ -20,7 +20,7 @@
         Height="778" Width="1024"
         Title="{Binding Title}"
         WindowStyle="None"
-        Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged">
+        Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged" Loaded="MetroWindow_Loaded">
 
     <Window.Resources>
     </Window.Resources>
@@ -40,7 +40,9 @@
             <!-- 菜单栏 -->
             <Metro:MetroTitleMenuItem Header="">
                 <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
-                <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png" />
+                <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png">
+                    <Metro:MetroMenuItem Header="快捷键" Click="MetroMenuItem_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
+                </Metro:MetroMenuItem>
                 <Metro:MetroMenuItem Header="帮助" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png"/>
                     <Metro:MetroMenuItem Header="使用帮助" Icon="Resources/titleMuenIcon.png"/>
@@ -202,6 +204,7 @@
                             </DataGrid.Columns>
                         </DataGrid>
                         <Button x:Name="parseFile" Content="开始解析" HorizontalAlignment="Left" Margin="437,37,0,0" VerticalAlignment="Top" Width="46" Click="parseFile_Click"/>
+                        <Button x:Name="scriptBegin" Content="脚本启动" HorizontalAlignment="Left" Margin="468,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-3.907,0.045" Click="beginParse_click"/>
                     </Grid>
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
                 </TabItem>

@@ -31,6 +31,13 @@ using CDLBrowser.Parser.DatabaseMgr;
 using CDLBrowser.Parser.Document;
 using System.Data.SQLite;
 using System.Windows.Input;
+using CDLBrowser.Parser.BPLAN;
+using MsgQueue;
+using CommonUility;
+using System.Windows.Threading;
+using System.Threading;
+using System.Collections.ObjectModel;
+using System.Windows.Interop;
 
 namespace SCMTMainWindow
 {
@@ -44,7 +51,24 @@ namespace SCMTMainWindow
         public NodeBControl NBControler;
         public NodeB node;
         bool bIsRepeat;
-        
+        /// <summary>
+        /// 当前主窗口句柄
+        /// </summary>
+        private IntPtr m_Hwnd = new IntPtr();
+
+        /// <summary>
+        /// 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息
+        /// </summary>
+        private Dictionary<eHotKey, int> m_HotKeyDic = new Dictionary<eHotKey, int>();
+
+        //工信部测试B方案显示HL信令消息
+        SignalBPlan signalBPlanThread;
+        ObservableCollection<EventNew> hlMessageUE = new ObservableCollection<EventNew>();
+        ObservableCollection<EventNew> hlMessageeNB = new ObservableCollection<EventNew>();
+        ObservableCollection<EventNew> hlMessagegNB = new ObservableCollection<EventNew>();
+        SubscribeClient subClient;
+        SignalBPlan signalB;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -59,6 +83,19 @@ namespace SCMTMainWindow
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
             //this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
             deleteTempFile();
+            //跟踪消息显示 add by tangyun
+            InitSubscribeTopic();
+
+        }
+
+        private void InitSubscribeTopic()
+        {
+            PubSubServer.GetInstance().InitServer();
+            this.dataGrid.ItemsSource = hlMessageUE;
+            signalB = new SignalBPlan();
+            subClient = new SubscribeClient(CommonPort.PubServerPort);
+            subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
+            subClient.Run();
         }
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -432,6 +469,60 @@ namespace SCMTMainWindow
             }
         }
 
+        //2018-4-30 B方案呈现HL信令消息
+        private void updateHlSingalMessageInfo(SubscribeMsg msg)
+        {
+            ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
+            EventNew UIMsg = new EventNew();
+            UIMsg.TimeStamp = scriptMessage.time;
+            UIMsg.EventName = scriptMessage.message;
+            UIMsg.MessageDestination = scriptMessage.MessageDestination;
+            UIMsg.MessageSource = scriptMessage.MessageSource;
+            UIMsg.data = scriptMessage.data;
+            int maxNumber = 0;
+            if (-1 != scriptMessage.UI.IndexOf("UE"))
+            {
+                //按照界面区分自然编号
+                maxNumber = hlMessageUE.Count;
+                UIMsg.DisplayIndex = maxNumber;              
+                this.dataGrid.Dispatcher.Invoke(new Action(()=> {
+                    hlMessageUE.Add(UIMsg);
+                }));
+            }
+            if (-1 != scriptMessage.UI.IndexOf("eNB"))
+            {
+                //按照界面区分自然编号
+                maxNumber = hlMessageeNB.Count;
+                UIMsg.DisplayIndex = maxNumber;
+                /*
+                this.dataGrid.Dispatcher.Invoke(new Action(() =>
+                {
+                    hlMessageeNB.Add(UIMsg);
+                }));
+                */
+            }
+            if (-1 != scriptMessage.UI.IndexOf("gNB"))
+            {
+                //按照界面区分自然编号
+                maxNumber = hlMessagegNB.Count;
+                UIMsg.DisplayIndex = maxNumber;
+                /*
+                this.dataGrid.Dispatcher.Invoke(new Action(() =>
+                {
+                    hlMessagegNB.Add(UIMsg);
+                })); 
+                */
+            }
+            return;
+        }
+    
+        public void beginParse_click(object sender, EventArgs e)
+        {   
+            SignalBConfig.StartByScriptXml();
+            PublishHelper.PublishMsg("StartTraceHlSignal", "");
+        }
+       
+
         private void parseFile_Click(object sender, RoutedEventArgs e)
         {
             List<Event> le = new List<Event>();
@@ -669,5 +760,199 @@ namespace SCMTMainWindow
 
         }
 
+        /// <summary>
+        /// 窗体资源准备完成之后，获取当前窗口句柄，并添加消息处理程序
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            //获取窗体句柄
+            m_Hwnd = new WindowInteropHelper(this).Handle;
+            HwndSource m_HwndSource = HwndSource.FromHwnd(m_Hwnd);
+
+            //添加消息处理程序
+            if (m_HwndSource != null)
+            {
+                m_HwndSource.AddHook(WndProc);
+            }
+        }
+
+        /// <summary>
+        /// 窗体消息回调函数，负责处理热键消息
+        /// </summary>
+        /// <param name="hWnd">窗口句柄</param>
+        /// <param name="msg">消息</param>
+        /// <param name="wParam">附加参数1</param>
+        /// <param name="lParam">附加参数2</param>
+        /// <param name="handled">是否处理</param>
+        /// <returns></returns>
+        private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            switch (msg)
+            {
+                //消息是热键消息
+                case HotKeyManager.WM_HOTKEY:
+
+                    int atomID = wParam.ToInt32();
+
+                    //此处无法使用switch，因为case不是常量而是变量
+                    if (atomID == m_HotKeyDic[eHotKey.UserCase1])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase2])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase3])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase4])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase5])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase6])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase7])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase8])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    else if (atomID == m_HotKeyDic[eHotKey.UserCase9])
+                    {
+                        SignalBConfig.SetScriptTxt(1);
+                        PublishHelper.PublishMsg("StartTraceHlSignal", "");
+                    }
+                    handled = true;
+
+                    break;
+                default:
+                    break;
+            }
+            return IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// 所有控件初始化完成之后，注册快捷键
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnContentRendered(EventArgs e)
+        {
+            base.OnContentRendered(e);
+
+            InitHotKey();
+        }
+
+        /// <summary>
+        /// 初始化并注册快捷键
+        /// </summary>
+        /// <param name="listHotKeyModel">待注册的快捷键集合，初始为空，再次注册时则不为空</param>
+        /// <returns>成功 true 并保存全局变量的值  失败 false 弹出重新注册的界面</returns>
+        private bool InitHotKey(ObservableCollection<HotKeyModel> listHotKeyModel = null)
+        {
+            //参数为空，加载配置文件中的数据，否则，按照界面设置的数据进行设置
+            var listHKM = listHotKeyModel ?? HotKeyInit.Instance.LoadJsonFileInfo();
+
+            if (listHKM == null)
+            {
+                MessageBox.Show("加载配置文件失败");
+                return false;
+            }
+
+            string strFali = HotKeyManager.RegisterAllHotKey(listHKM, m_Hwnd, out m_HotKeyDic);
+
+            //返回的字符串为空则全局注册成功
+            if (string.IsNullOrEmpty(strFali))
+            {
+                //更新配置文件数据
+                File.WriteAllText("HotKey.json", JsonConvert.SerializeObject(listHKM));
+                return true;
+            }
+
+            //注册失败，弹出选择框，是否重新注册快捷键
+            MessageBoxResult mbResult = MessageBox.Show(string.Format("无法注册下列快捷键\n\r{0}是否重新注册？", strFali), "提示", MessageBoxButton.YesNo);
+
+            if (mbResult == MessageBoxResult.Yes)
+            {
+                var win = HotKeySet.CreateInstance();
+
+                if (!win.IsVisible)
+                {
+                    win.ShowDialog();
+                }
+                else
+                {
+                    win.Activate();
+                }
+
+                return false;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 窗口加载完成之后，添加注册事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            HotKeyInit.Instance.RegisterGlobalHotKeyEvent += Instance_RegisterGlobalHotKeyEvent;
+
+        }
+
+
+        /// <summary>
+        /// 事件处理函数
+        /// </summary>
+        /// <param name="listHotKeyModel"></param>
+        /// <returns></returns>
+        private bool Instance_RegisterGlobalHotKeyEvent(ObservableCollection<HotKeyModel> listHotKeyModel)
+        {
+            return InitHotKey(listHotKeyModel);
+        }
+
+
+        /// <summary>
+        /// 显示  注册界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            //显示  设置窗体
+            var win = HotKeySet.CreateInstance();
+
+            if (!win.IsVisible)
+            {
+                win.ShowDialog();
+            }
+            else
+            {
+                win.Activate();
+            }
+
+        }
     }
 }

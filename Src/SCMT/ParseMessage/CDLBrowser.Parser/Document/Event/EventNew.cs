@@ -23,5 +23,7 @@ namespace CDLBrowser.Parser.Document.Event
         public string MessageDestination { get; set; }
         [DataBaseIngoredAttribute(false)]
         public string MessageSource { get; set; }
+        [DataBaseIngoredAttribute(false)]
+        public string data { get; set; }
     }
 }
