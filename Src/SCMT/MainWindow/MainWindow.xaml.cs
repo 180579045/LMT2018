@@ -51,59 +51,22 @@ namespace SCMTMainWindow
         public NodeBControl NBControler;
         public NodeB node;
         bool bIsRepeat;
-        /// <summary>
-        /// 当前主窗口句柄
-        /// </summary>
-        private IntPtr m_Hwnd = new IntPtr();
-
-        /// <summary>
-        /// 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息
-        /// </summary>
-        private Dictionary<eHotKey, int> m_HotKeyDic = new Dictionary<eHotKey, int>();
-
-        //工信部测试B方案显示HL信令消息
-        SignalBPlan signalBPlanThread;
-        ObservableCollection<EventNew> hlMessageUE = new ObservableCollection<EventNew>();
-        ObservableCollection<EventNew> hlMessageeNB = new ObservableCollection<EventNew>();
-        ObservableCollection<EventNew> hlMessagegNB = new ObservableCollection<EventNew>();
-        SubscribeClient subClient;
-        SignalBPlan signalB;
-
+        private IntPtr m_Hwnd = new IntPtr();                                 // 当前主窗口句柄;
+        private Dictionary<eHotKey, int> m_HotKeyDic                          // 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息;
+            = new Dictionary<eHotKey, int>();
+        
         public MainWindow()
         {
             InitializeComponent();
             this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
             this.MinWidth = 1024;                                             // 设置一个最小分辨率;
             this.MinHeight = 768;                                             // 设置一个最小分辨率;
-            this.MainHorizenTab.SelectionChanged += 
-                MainHorizenTab_SelectionChanged;                              // Tab选择改变后的事件;
 
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
-            CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-            //this.LineChar1.RegisterJsObject("JsObj", new CallbackObjectForJs());
             deleteTempFile();
-            //跟踪消息显示 add by tangyun
-            InitSubscribeTopic();
-
         }
-
-        private void InitSubscribeTopic()
-        {
-            PubSubServer.GetInstance().InitServer();
-            this.dataGrid.ItemsSource = hlMessageUE;
-            this.dataGrideNB.ItemsSource = hlMessageeNB;
-            this.dataGridgNB.ItemsSource = hlMessagegNB;
-            signalB = new SignalBPlan();
-            subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
-            subClient.Run();
-        }
-
-        private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-        }
-
+        
         /// <summary>
         /// 初始化用户界面;
         /// </summary>
@@ -153,7 +116,42 @@ namespace SCMTMainWindow
         {
             TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
         }
-        
+
+        /// <summary>
+        /// 添加基站;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNodeB_Click(object sender, RoutedEventArgs e)
+        {
+            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
+            AddNodeB.NewInstance(this).ShowDialog();
+        }
+
+        /// <summary>
+        /// 当窗口关闭得时候进行的处理;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNB_Closed(object sender, EventArgs e)
+        {
+            // 如果参数为空，则表示没有基站;
+            if (!(e is NodeBArgs))
+            {
+                return;
+            }
+            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
+            node = (e as NodeBArgs).m_NodeB;
+
+            RefreshObj(Ctrl.m_RootNode);                                         // 1、更新对象树;
+            AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
+            if (node != null)
+            {
+                node.Connect();                                                  // 3、连接基站(第一个版本，暂时只连接一个基站);
+            }
+        }
+
+        #region 添加对象树收藏
         /// <summary>
         /// 将对象树添加到收藏;
         /// </summary>
@@ -321,41 +319,9 @@ namespace SCMTMainWindow
                 items.TraverseCollectChildren(this.Obj_Collect, this.FavLeaf_Lists, 0);
             }
         }
-        
-        /// <summary>
-        /// 添加基站;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddNodeB_Click(object sender, RoutedEventArgs e)
-        {
-            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-            AddNodeB.NewInstance(this).ShowDialog();
-        }
+        #endregion
 
-        /// <summary>
-        /// 当窗口关闭得时候进行得处理;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddNB_Closed(object sender, EventArgs e)
-        {
-            // 如果参数为空，则表示没有基站;
-            if(!(e is NodeBArgs))
-            {
-                return;
-            }
-            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
-            node = (e as NodeBArgs).m_NodeB;
-
-            RefreshObj(Ctrl.m_RootNode);                                         // 1、更新对象树;
-            AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
-            if (node != null)
-            {
-                node.Connect();                                                  // 3、连接基站(第一个版本，暂时只连接一个基站);
-            }
-        }
-
+        #region 显示折线图事件
         private void Show_LineChart(object sender, EventArgs e)
         {
             // 后续需要有一个界面元素管理类;
@@ -407,7 +373,9 @@ namespace SCMTMainWindow
             //显示到主界面
             this.FavLeaf_Lists.Children.Add(myTree);
         }
+        #endregion
 
+        #region 显示B方案Message列表控件
         private void ShowMessage_Click(object sender, EventArgs e)
         {
             // 后续需要有一个界面元素管理类;
@@ -421,7 +389,31 @@ namespace SCMTMainWindow
             this.Pane.Children.Add(sub);
             sub.Float();
         }
+        #endregion
 
+        #region 添加基站事件
+        private void AddeNB(object sender, EventArgs e)
+        {
+            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
+            AddNodeB.NewInstance(this).ShowDialog();
+        }
+        #endregion
+
+        #region 添加泳道图事件
+        private void ShowFlowChart(object sender, EventArgs e)
+        {
+            LayoutAnchorable sub = new LayoutAnchorable();
+            FlowChart content = new FlowChart();
+
+            sub.Content = content;
+            sub.FloatingHeight = 300;
+            sub.FloatingWidth = 800;
+
+            this.Pane.Children.Add(sub);
+            sub.Float();
+        }
+        #endregion
+        
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
         }
@@ -441,79 +433,8 @@ namespace SCMTMainWindow
             Console.WriteLine("Get Nodeb Focus");
 
         }
-
-        private void AddeNB(object sender, EventArgs e)
-        {
-            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-            AddNodeB.NewInstance(this).ShowDialog();
-        }
-
-        private void ShowFlowChart(object sender, EventArgs e)
-        {
-            LayoutAnchorable sub = new LayoutAnchorable();
-            FlowChart content = new FlowChart();
-
-            sub.Content = content;
-            sub.FloatingHeight = 300;
-            sub.FloatingWidth = 800;
-
-            this.Pane.Children.Add(sub);
-            sub.Float();
-        }
-
-        private void OpenFileButtonClick(object sender, RoutedEventArgs e)
-        {
-            var dialog = new OpenFileDialog { Filter = "CDL Log|*.txt" + "|All Files|*.*", Multiselect = true};
-            if ((bool)dialog.ShowDialog())
-            {
-                string[] fileNames = dialog.FileNames;
-                this.textDirction.Text = fileNames[0];
-            }
-        }
-
-        //2018-4-30 B方案呈现HL信令消息
-        private void updateHlSingalMessageInfo(SubscribeMsg msg)
-        {
-            ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
-            EventNew UIMsg = new EventNew();
-            UIMsg.DisplayIndex = scriptMessage.NO;
-            UIMsg.TimeStamp = scriptMessage.time;
-            UIMsg.EventName = scriptMessage.message;
-            UIMsg.MessageDestination = scriptMessage.MessageDestination;
-            UIMsg.MessageSource = scriptMessage.MessageSource;
-            UIMsg.data = scriptMessage.data;
-            if (-1 != scriptMessage.UI.IndexOf("UE"))
-            {
-                this.dataGrid.Dispatcher.Invoke(new Action(()=> {
-                    hlMessageUE.Add(UIMsg);
-                }));
-            }
-            if (-1 != scriptMessage.UI.IndexOf("eNB"))
-            { 
-                this.dataGrideNB.Dispatcher.Invoke(new Action(() =>
-                {
-                    hlMessageeNB.Add(UIMsg);
-                }));
-                
-            }
-            if (-1 != scriptMessage.UI.IndexOf("gNB"))
-            {
-                this.dataGridgNB.Dispatcher.Invoke(new Action(() =>
-                {
-                    hlMessagegNB.Add(UIMsg);
-                })); 
-                
-            }
-            return;
-        }
-    
-        public void beginParse_click(object sender, EventArgs e)
-        {   
-            SignalBConfig.StartByScriptXml();
-            PublishHelper.PublishMsg("StartTraceHlSignal", "");
-        }
-       
-
+        
+        // 开始解析;
         private void parseFile_Click(object sender, RoutedEventArgs e)
         {
             List<Event> le = new List<Event>();
@@ -553,20 +474,7 @@ namespace SCMTMainWindow
             paramsArray[0] = dbparameterRaw;
             paramsArray[1] = dbparameterBody;
             dbconn.ExecuteWithParamtersByTrans(sql, paramsArray, sessionSqlCmd);
-
-
-            /*
-            for (int i = 0; i < 10; i++) {
-                EventNew ne = new EventNew();
-                ne.DisplayIndex = i;
-                ne.TimeStamp = "gggggg";
-                ne.EventName = Convert.ToString(i);
-                ne.MessageDestination = "UE";
-                ne.MessageSource = "enb";
-                le.Add(ne);
-                sql = dbconn.CreateInsertSqlFromObject(typeof(EventNew), ne, "EventNew", true);
-                dbconn.ExcuteByTrans(sql, sessionSqlCmd);
-            }*/
+            
 
             dbconn.CommitChanges(sessionSqlCmd);
             dbconn.Close();
@@ -719,7 +627,6 @@ namespace SCMTMainWindow
 
             if (File.Exists(fileCdl))
             {
-     
                 File.Delete(fileCdl);
             }
             else
@@ -727,8 +634,9 @@ namespace SCMTMainWindow
       
             }
         }
-	
-	//Add by mayi 
+
+        #region 快捷键在此
+        //Add by mayi 
         //实现  鼠标的移动事件，执行拖拽
         private  void TreeViewItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -910,7 +818,6 @@ namespace SCMTMainWindow
         private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
         {
             HotKeyInit.Instance.RegisterGlobalHotKeyEvent += Instance_RegisterGlobalHotKeyEvent;
-
         }
 
 
@@ -945,5 +852,6 @@ namespace SCMTMainWindow
             }
 
         }
+        #endregion
     }
 }
