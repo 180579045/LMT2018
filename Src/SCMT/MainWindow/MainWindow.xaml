@@ -185,9 +185,13 @@
                 </TabItem>
                 <TabItem Header="数据查看" Style="{StaticResource TabItemStyle}">
                     <Grid Height="800" >
-                        <Button Content="点击" Margin="352,36,143,741" RenderTransformOrigin="0.08,0.22" Click="OpenFileButtonClick"  />
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="418*"/>
+                            <ColumnDefinition Width="135*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="点击" Margin="352,36,7.757,741" RenderTransformOrigin="0.08,0.22" Click="OpenFileButtonClick"  />
                         <TextBox x:Name="textDirction" HorizontalAlignment="Left" Height="23" Margin="36,36,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="294"/>
-                        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Height="196" Width="543" AutoGenerateColumns="False">
+                        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="10,92,0,0" VerticalAlignment="Top" Height="196" Width="543" AutoGenerateColumns="False" Grid.ColumnSpan="2">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="选中" Width="40">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -203,7 +207,7 @@
                                 <DataGridTextColumn Header="事件名称" Width="80" Binding="{Binding EventName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <DataGrid x:Name="dataGrideNB" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Height="207" Width="543" AutoGenerateColumns="False">
+                        <DataGrid x:Name="dataGrideNB" HorizontalAlignment="Left" Margin="10,515,0,0" VerticalAlignment="Top" Height="207" Width="543" AutoGenerateColumns="False" Grid.ColumnSpan="2">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="选中" Width="40">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -219,7 +223,7 @@
                                 <DataGridTextColumn Header="事件名称" Width="80" Binding="{Binding EventName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </DataGrid.Columns>
                         </DataGrid>
-                        <DataGrid x:Name="dataGridgNB" HorizontalAlignment="Left" Margin="10,293,0,0" VerticalAlignment="Top" Height="222" Width="543" AutoGenerateColumns="False">
+                        <DataGrid x:Name="dataGridgNB" HorizontalAlignment="Left" Margin="10,293,0,0" VerticalAlignment="Top" Height="222" Width="543" AutoGenerateColumns="False" Grid.ColumnSpan="2">
                             <DataGrid.Columns>
                                 <DataGridTemplateColumn Header="选中" Width="40">
                                     <DataGridTemplateColumn.CellTemplate>
@@ -236,8 +240,8 @@
                             </DataGrid.Columns>
                         </DataGrid>
 
-                        <Button x:Name="parseFile" Content="开始解析" HorizontalAlignment="Left" Margin="437,37,0,0" VerticalAlignment="Top" Width="46" Click="parseFile_Click"/>
-                        <Button x:Name="scriptBegin" Content="脚本启动" HorizontalAlignment="Left" Margin="468,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-3.907,0.045" Click="beginParse_click"/>
+                        <Button x:Name="parseFile" Content="开始解析" HorizontalAlignment="Left" Margin="19.243,37,0,0" VerticalAlignment="Top" Width="46" Click="parseFile_Click" Grid.Column="1"/>
+                        <Button x:Name="scriptBegin" Content="脚本启动" HorizontalAlignment="Left" Margin="50.243,10,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-3.907,0.045" Click="beginParse_click" Grid.Column="1"/>
                     </Grid>
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
                 </TabItem>
