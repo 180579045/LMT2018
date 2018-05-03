@@ -141,6 +141,10 @@
     <Compile Include="Component\View\FlowChart.xaml.cs">
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\View\HotKeyManager.cs" />
+    <Compile Include="Component\View\HotKeySet.xaml.cs">
+      <DependentUpon>HotKeySet.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\View\LinechartContent.xaml.cs">
       <DependentUpon>LinechartContent.xaml</DependentUpon>
     </Compile>
@@ -152,6 +156,10 @@
     <Compile Include="Component\View\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Page Include="Component\View\FlowChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\View\HotKeySet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
