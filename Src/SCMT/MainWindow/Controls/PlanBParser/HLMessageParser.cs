@@ -49,7 +49,7 @@ namespace SCMTMainWindow.Controls.PlanBParser
         // 开始解析;
         public void beginParse()
         {
-            PubSubServer.GetInstance().InitServer();
+            //PubSubServer.GetInstance().InitServer();
             SignalBConfig.StartByScriptXml();
             PublishHelper.PublishMsg("StartTraceHlSignal", "");
         }
@@ -57,11 +57,10 @@ namespace SCMTMainWindow.Controls.PlanBParser
         // 构建HLMessage的解析器;
         public HLMessageParser()
         {
+            MqInitial.Init();
             signalB = new SignalBPlan();
             subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
-            MessageList = new HLMessageViewModel();
-            subClient.Run();
+            SubscribeHelper.AddSubscribe("HlSignalMsg", updateHlSingalMessageInfo);
         }
     }
 }

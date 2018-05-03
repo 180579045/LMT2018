@@ -39,8 +39,8 @@ namespace AtpMessage.LinkMgr
 				}
 			};
 
-			//只有建链通过后才能发送登录请求。TODO 这里需要同步处理。
-			SendPackets(SerializeHelper.SerializeStructToBytes(addFlowReq));
+			//TODO 只有建链通过后才能发送登录请求。这里需要同步处理。
+			//SendPackets(SerializeHelper.SerializeStructToBytes(addFlowReq));
 
 		}
 	}

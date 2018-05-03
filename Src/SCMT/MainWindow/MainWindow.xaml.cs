@@ -67,7 +67,7 @@ namespace SCMTMainWindow
             RegisterFunction();                                               // 注册功能;
             deleteTempFile();
         }
-        
+
         /// <summary>
         /// 初始化用户界面;
         /// </summary>
@@ -415,26 +415,7 @@ namespace SCMTMainWindow
         }
         #endregion
         
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-        }
-
-        private void Lost_Nodeb_Focus(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Base lost focus");
-        }
-
-        private void Load_Nodeb(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Base Load");
-        }
-
-        private void Get_Nodeb_Focus(object sender, RoutedEventArgs e)
-        {
-            Console.WriteLine("Get Nodeb Focus");
-
-        }
-        
+        #region CDL的一大堆……
         // 开始解析;
         private void parseFile_Click(object sender, RoutedEventArgs e)
         {
@@ -634,11 +615,12 @@ namespace SCMTMainWindow
       
             }
         }
+        #endregion
 
         #region 快捷键在此
         //Add by mayi 
         //实现  鼠标的移动事件，执行拖拽
-        private  void TreeViewItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        private void TreeViewItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
             //判断鼠标左键是否按下，否则，只要鼠标在范围内移动就会一直触发事件
             if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
@@ -853,5 +835,26 @@ namespace SCMTMainWindow
 
         }
         #endregion
+
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+        }
+
+        private void Lost_Nodeb_Focus(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Base lost focus");
+        }
+
+        private void Load_Nodeb(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Base Load");
+        }
+
+        private void Get_Nodeb_Focus(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine("Get Nodeb Focus");
+
+        }
+
     }
 }

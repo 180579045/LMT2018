@@ -7,32 +7,10 @@ using MsgQueue;
 
 namespace AtpMessage.SessionMgr
 {
-	public class Target : IComparable
-	{
-		public string addr;
-		public int port;
-
-		public int CompareTo(object obj)
-		{
-			var temp = obj as Target;
-			if (null == temp)
-			{
-				return -1;
-			}
-
-			if (temp.addr == addr && temp.port == port)
-			{
-				return 0;
-			}
-
-			return 1;
-		}
-	}
-
 	/// <summary>
 	/// atp和gtsa模式通信使用的是udp协议
 	/// </summary>
-	internal class UdpSession
+	internal class UdpSession : IASession
 	{
 		private readonly UdpClient _udpClient;
 		private IPEndPoint _ipTargetEp;
@@ -54,9 +32,19 @@ namespace AtpMessage.SessionMgr
 			_ipTargetEp = new IPEndPoint(IPAddress.Parse(target.addr), target.port);
 			_udpClient.Connect(_ipTargetEp);
 
+			_recvThread = new Thread(RecvFromBoard);		//先启动接收线程，否则可能漏掉数据包
+			_recvThread.Start();
+
 			_prefix = $"{target.addr}:{target.port}";       //订阅这个消息是用于运行过程中给板卡发送信息
 			_subClient = new SubscribeClient(CommonPort.PubServerPort);
-			_subClient.AddSubscribeTopic($"to:{_prefix}", OnSubscribe);
+
+			string topic = $"udp-send://{_prefix}";
+			_subClient.AddSubscribeTopic(topic, OnSubscribe);
+			_subClient.Run();
+
+			string desc = "用于运行过程中给板卡发送信息，需要在创建链接后使用。收到网卡端的数据后，更换前缀为udp-recv://后发布原始数据";
+			Type type = typeof(System.Array);
+			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, type));
 		}
 
 		/// <summary>
@@ -96,9 +84,7 @@ namespace AtpMessage.SessionMgr
 		/// </summary>
 		public void Run()
 		{
-			_recvThread = new Thread(RecvFromBoard);
-			_recvThread.Start();
-			_subClient.Run();
+
 		}
 
 		/// <summary>
@@ -113,7 +99,7 @@ namespace AtpMessage.SessionMgr
 				{
 					var revBytes = _udpClient.Receive(ref _ipTargetEp);
 					var header = GetHeaderFromBytes.GetHeader(revBytes);
-					PublishHelper.PublishMsg($"from:{_prefix}", revBytes);
+					PublishHelper.PublishMsg($"udp-recv://{_prefix}", revBytes);
 				}
 				catch (SocketException e)
 				{

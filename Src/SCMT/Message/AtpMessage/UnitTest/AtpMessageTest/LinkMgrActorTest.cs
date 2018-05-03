@@ -15,7 +15,6 @@ namespace AtpMessageTest
         public LinkMgrActorTest()
         {
             //
-            //TODO:  在此处添加构造函数逻辑
             //
         }
 
@@ -62,10 +61,10 @@ namespace AtpMessageTest
         [TestMethod]
         public void TestGetIpFromTopic()
         {
-            string ip = LinkMgrActor.GetInstance().GetIpFromTopic("from:172.27.245.92:5002");
+            string ip = LinkMgrActor.GetInstance().GetIpFromTopic("udp-recv://172.27.245.92:5002");
             Assert.AreEqual("172.27.245.92", ip);
 
-            ip = LinkMgrActor.GetInstance().GetIpFromTopic("from:172.27.245.92");
+            ip = LinkMgrActor.GetInstance().GetIpFromTopic("udp-recv://172.27.245.92");
             Assert.IsNull(ip);
 
             ip = LinkMgrActor.GetInstance().GetIpFromTopic("172.27.245.92:5002");

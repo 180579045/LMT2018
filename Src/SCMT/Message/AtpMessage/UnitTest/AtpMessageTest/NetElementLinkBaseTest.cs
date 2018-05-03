@@ -15,7 +15,6 @@ namespace AtpMessageTest
         public NetElementLinkBaseTest()
         {
             //
-            //TODO:  在此处添加构造函数逻辑
             //
         }
 

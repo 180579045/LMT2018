@@ -18,10 +18,7 @@ namespace AtpMessage.GtsMsgParse
         public void InitService()
         {
             _worker = new GtsMsgParseWorker();
-
-            _subscribeClient = new SubscribeClient(CommonPort.PubServerPort);
-            _subscribeClient.AddSubscribeTopic("/GtsMsgParseService", OnMsgParse);
-            _subscribeClient.Run();
+            SubscribeHelper.AddSubscribe("/GtsMsgParseService", OnMsgParse);
         }
 
         private void OnMsgParse(SubscribeMsg msg)
@@ -30,7 +27,6 @@ namespace AtpMessage.GtsMsgParse
             _worker.DoWork(msg.Data);
         }
 
-        private SubscribeClient _subscribeClient;
         private GtsMsgParseWorker _worker;
     }
 }

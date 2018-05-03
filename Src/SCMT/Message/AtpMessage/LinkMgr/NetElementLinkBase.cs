@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Timers;
 using AtpMessage.MsgDefine;
+using AtpMessage.SessionMgr;
 using CommonUility;
 using MsgQueue;
 using Timer = System.Timers.Timer;
@@ -35,7 +36,8 @@ namespace AtpMessage.LinkMgr
 			//如果已经连接或者连接中，就不再处理
 			if (IsBreak)
 			{
-				Logon(netElementAddress);
+				_netElementConfig = netElementAddress;
+				Logon(_netElementConfig);
 			}
 		}
 
@@ -57,7 +59,6 @@ namespace AtpMessage.LinkMgr
 		public virtual void Logon(NetElementConfig netElementAddress)
 		{
 			State = LinkState.Connecting;
-			_netElementConfig = netElementAddress;
 		}
 
 		/// <summary>
@@ -116,18 +117,49 @@ namespace AtpMessage.LinkMgr
 				_kaBytes = SerializeHelper.SerializeStructToBytes(kaReq);
 			}
 
-			SendPackets(_kaBytes);
+			SendPackets(_kaBytes, $"udp-send://{_netElementConfig.TargetIp}:{CommonPort.AtpLinkPort}");
 		}
 
 		/// <summary>
-		/// 发送报文。就是调用了PublishHelper
+		/// 发送报文。直接调用了PublishHelper
 		/// </summary>
-		/// <param name="dataByteses">要发送的数据流</param>
+		/// <param name="dataBytes">要发送的数据流</param>
+		/// <param name="topic">该数据流对应的topic</param>
 		/// <returns>发送的字节数</returns>
-		public int SendPackets(byte[] dataByteses)
+		public int SendPackets(byte[] dataBytes, string topic)
 		{
-			PublishHelper.PublishMsg("topic", dataByteses);     //TODO TOPIC
-			return dataByteses.Length;
+			if (null == dataBytes)
+			{
+				throw new ArgumentNullException("dataBytes is null");
+			}
+
+			PublishHelper.PublishMsg(topic, dataBytes);
+			return dataBytes.Length;
+		}
+
+		public int SendPackets(byte[] dataBytes, bool isLogon)
+		{
+			if (null == dataBytes)
+			{
+				throw new ArgumentNullException("dataBytes is null");
+			}
+
+			SessionData sessionData = new SessionData()
+			{
+				target =
+				{
+					addr = _netElementConfig.TargetIp,
+					port = CommonPort.AtpLinkPort
+				},
+				data = dataBytes
+			};
+
+			string sendBytes = JsonHelper.SerializeObjectToString(sessionData);
+
+			//创建和断开连接的topic比较特殊
+			string topic = String.Format("/SessionService/%s/UDP", isLogon ? "Create" : "Delete");
+			PublishHelper.PublishMsg(topic, sendBytes);
+			return sendBytes.Length;
 		}
 
 		private NetElementConfig _netElementConfig;

@@ -56,15 +56,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializeHelperTest.cs" />
     <Compile Include="BitFieldTest.cs" />
+    <Compile Include="TopicInfoTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
       <Project>{DFCC660C-1B0A-470A-9AB1-14448A33091C}</Project>
       <Name>MsgQueue</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
