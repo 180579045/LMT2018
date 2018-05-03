@@ -33,19 +33,16 @@ namespace AtpMessage.SessionMgr
 		{
 			_udpSessions = new Dictionary<string, UdpSession>();
 
-			_subClient = new SubscribeClient(CommonPort.PubServerPort);
-
 			string topic = "/SessionService/Create/";
 			string desc = "创建连接。后面跟协议：UDP、TCP、IP、FTP。";
 			Type dataType = typeof(SessionData);
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, dataType));
-			_subClient.AddSubscribeTopic(topic, OnMakeUdpSession);
+			SubscribeHelper.AddSubscribe(topic, OnMakeUdpSession);
 
 			topic = "/SessionService/Delete/";
 			desc = "断开连接。后面跟协议：UDP、TCP、IP、FTP。";
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, dataType));
-			_subClient.AddSubscribeTopic(topic, OnBreakUdpSession);
-			_subClient.Run();
+			SubscribeHelper.AddSubscribe(topic, OnBreakUdpSession);
 		}
 
 		/// <summary>
@@ -154,8 +151,6 @@ namespace AtpMessage.SessionMgr
 			ProcotolType pt = GetProcotolType(procotol);
 			return (ProcotolType.Invalid == pt);
 		}
-
-		private SubscribeClient _subClient;
 
 		//保存udpSession。key:"目的IP-目的端口"
 		private Dictionary<string, UdpSession> _udpSessions;

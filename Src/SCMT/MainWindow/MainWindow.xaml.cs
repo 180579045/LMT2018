@@ -66,7 +66,6 @@ namespace SCMTMainWindow
         ObservableCollection<EventNew> hlMessageUE = new ObservableCollection<EventNew>();
         ObservableCollection<EventNew> hlMessageeNB = new ObservableCollection<EventNew>();
         ObservableCollection<EventNew> hlMessagegNB = new ObservableCollection<EventNew>();
-        SubscribeClient subClient;
         SignalBPlan signalB;
 
         public MainWindow()
@@ -90,14 +89,13 @@ namespace SCMTMainWindow
 
         private void InitSubscribeTopic()
         {
-            PubSubServer.GetInstance().InitServer(CommonPort.PubServerPort, CommonPort.SubServerPort);
+            MqInitial.Init();       //消息队列初始化
             this.dataGrid.ItemsSource = hlMessageUE;
             this.dataGrideNB.ItemsSource = hlMessageeNB;
             this.dataGridgNB.ItemsSource = hlMessagegNB;
             signalB = new SignalBPlan();
-            subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
-            subClient.Run();
+
+            SubscribeHelper.AddSubscribe("HlSignalMsg", updateHlSingalMessageInfo);
         }
 
         private void MainHorizenTab_SelectionChanged(object sender, SelectionChangedEventArgs e)

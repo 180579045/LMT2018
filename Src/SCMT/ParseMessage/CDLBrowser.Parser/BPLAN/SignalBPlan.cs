@@ -40,17 +40,15 @@ namespace CDLBrowser.Parser.BPLAN
 
     public class SignalBPlan
     {
-        public SubscribeClient subClient;
+        //public SubscribeClient subClient;
         private int UENo;
         private int eNBNo;
         private int gNBNo;
 
         public SignalBPlan()
         {
-            subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.AddSubscribeTopic("StartTraceHlSignal", StartTraceByUI);
-            subClient.AddSubscribeTopic("StopTraceHlSignal", StopTraceByUI);
-            subClient.Run();
+            SubscribeHelper.AddSubscribe("StartTraceHlSignal", StartTraceByUI);
+            SubscribeHelper.AddSubscribe("StopTraceHlSignal", StopTraceByUI);
             InitStaticNo();
         }
 

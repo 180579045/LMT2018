@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="CommonPort.cs" />
     <Compile Include="CommonStruct.cs" />
+    <Compile Include="MqInitial.cs" />
     <Compile Include="PublisherClient.cs" />
     <Compile Include="PublishHelper.cs" />
     <Compile Include="PubSubServer.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="RequestClient.cs" />
     <Compile Include="ResponseServer.cs" />
     <Compile Include="SubscribeClient.cs" />
+    <Compile Include="SubscribeHelper.cs" />
     <Compile Include="TopicManager.cs" />
   </ItemGroup>
   <Import Project="..\CommonUility\CommonUility.projitems" Label="Shared" />

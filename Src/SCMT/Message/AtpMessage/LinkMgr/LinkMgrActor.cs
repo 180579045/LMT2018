@@ -25,10 +25,7 @@ namespace AtpMessage.LinkMgr
 		public LinkMgrActor()
 		{
 			_mapNetElementLinks = new Dictionary<string, INetElementLink>();
-
-			_subscribeClient = new SubscribeClient(CommonPort.PubServerPort);
-			_subscribeClient.AddSubscribeTopic("/LinkMgr", OnLinkMgr);
-			_subscribeClient.Run();
+		    SubscribeHelper.AddSubscribe("/LinkMgr", OnLinkMgr);
 		}
 
 		/// <summary>
@@ -54,7 +51,7 @@ namespace AtpMessage.LinkMgr
 			_mapNetElementLinks[ip] = link;
 
 			//此处只有udp协议的数据处理，后面增加其他类型的协议
-			_subscribeClient.AddSubscribeTopic($"udp-recv://{ip}:{CommonPort.AtpLinkPort}", OnLinkMsgFromBoard);       //订阅消息
+		    SubscribeHelper.AddSubscribe($"udp-recv://{ip}:{CommonPort.AtpLinkPort}", OnLinkMsgFromBoard);
 			link.Connect(neConfig);
 
 			return true;
@@ -80,7 +77,8 @@ namespace AtpMessage.LinkMgr
 
 			INetElementLink link = _mapNetElementLinks[ip];
 			link.Disconnect();
-			_subscribeClient.CancelSubscribeTopic($"from:{ip}:{CommonPort.AtpLinkPort}");
+
+		    SubscribeHelper.CancelSubscribe($"from:{ip}:{CommonPort.AtpLinkPort}");
 			_mapNetElementLinks.Remove(ip);
 
 			return true;
@@ -191,8 +189,6 @@ namespace AtpMessage.LinkMgr
 
 			return _mapNetElementLinks.ContainsKey(ip);
 		}
-
-		private SubscribeClient _subscribeClient;
 
 		//保存所有添加的网元信息。Key：ne addr，Value：ne reference
 		private Dictionary<string, INetElementLink> _mapNetElementLinks;
