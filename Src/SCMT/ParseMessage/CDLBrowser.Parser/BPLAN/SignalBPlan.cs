@@ -41,17 +41,34 @@ namespace CDLBrowser.Parser.BPLAN
     public class SignalBPlan
     {
         public SubscribeClient subClient;
+        private int UENo;
+        private int eNBNo;
+        private int gNBNo;
 
         public SignalBPlan()
         {
             subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.AddSubscribeTopic("StartTraceHlSignal", startTraceByUI);
+            subClient.AddSubscribeTopic("StartTraceHlSignal", StartTraceByUI);
+            subClient.AddSubscribeTopic("StopTraceHlSignal", StopTraceByUI);
             subClient.Run();
+            InitStaticNo();
         }
 
-        public void startTraceByUI(SubscribeMsg msg)
+        private void InitStaticNo()
+        {
+            UENo = 0;
+            eNBNo = 0;
+            gNBNo = 0;
+        }
+
+        public void StartTraceByUI(SubscribeMsg msg)
         {
             ParseScript();
+        }
+
+        public void StopTraceByUI(SubscribeMsg msg)
+        {
+            InitStaticNo();
         }
 
         public void ParseScript()
@@ -87,10 +104,29 @@ namespace CDLBrowser.Parser.BPLAN
             TimeDelay();
             //添加时间戳
             inputMessage.time = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
-            string msg = JsonConvert.SerializeObject(inputMessage);
-            PublishHelper.PublishMsg("HlSignalMsg", msg);
-            Console.WriteLine("time is {0}", inputMessage.time);
-
+            string originUI = inputMessage.UI;
+            //区分三类消息，对应于界面呈现使用
+            if (-1 != originUI.IndexOf("UE"))
+            {
+                inputMessage.NO = UENo++;
+                inputMessage.UI = "UE";
+                string msg = JsonConvert.SerializeObject(inputMessage);
+                PublishHelper.PublishMsg("HlSignalMsg", msg);
+            }
+            if (-1 != originUI.IndexOf("eNB"))
+            {
+                inputMessage.NO = eNBNo++;
+                inputMessage.UI = "eNB";
+                string msg = JsonConvert.SerializeObject(inputMessage);
+                PublishHelper.PublishMsg("HlSignalMsg", msg);
+            }
+            if (-1 != originUI.IndexOf("gNB"))
+            {
+                inputMessage.NO = gNBNo++;
+                inputMessage.UI = "gNB";
+                string msg = JsonConvert.SerializeObject(inputMessage);
+                PublishHelper.PublishMsg("HlSignalMsg", msg);
+            }
         }
 
         private int TimeDelay()
