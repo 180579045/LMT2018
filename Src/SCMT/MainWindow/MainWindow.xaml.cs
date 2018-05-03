@@ -90,7 +90,7 @@ namespace SCMTMainWindow
 
         private void InitSubscribeTopic()
         {
-            PubSubServer.GetInstance().InitServer();
+            PubSubServer.GetInstance().InitServer(CommonPort.PubServerPort, CommonPort.SubServerPort);
             this.dataGrid.ItemsSource = hlMessageUE;
             this.dataGrideNB.ItemsSource = hlMessageeNB;
             this.dataGridgNB.ItemsSource = hlMessagegNB;
@@ -727,8 +727,8 @@ namespace SCMTMainWindow
       
             }
         }
-	
-	//Add by mayi 
+    
+    //Add by mayi 
         //实现  鼠标的移动事件，执行拖拽
         private  void TreeViewItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {

@@ -8,7 +8,7 @@ namespace AtpMessage.LinkMgr
 {
 	/// <summary>
 	/// 连接管理。考虑到后面可能同时连接多个基站抄消息，所以需要保存对应的连接。
-	/// TODO but 前台是否限制了一个IP只能对应一个网元？
+	/// TODO 前台是否限制了一个IP只能对应一个网元？
 	/// TODO ipSession可能无法建立对应的map，需要更多的信息
 	/// </summary>
 	public class LinkMgrActor

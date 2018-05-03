@@ -117,7 +117,6 @@ namespace AtpMessage.LinkMgr
 				_kaBytes = SerializeHelper.SerializeStructToBytes(kaReq);
 			}
 
-			//TODO 直接发送数据的topic
 			SendPackets(_kaBytes, $"udp-send://{_netElementConfig.TargetIp}:{CommonPort.AtpLinkPort}");
 		}
 
@@ -134,7 +133,7 @@ namespace AtpMessage.LinkMgr
 				throw new ArgumentNullException("dataBytes is null");
 			}
 
-			PublishHelper.PublishMsg(topic, dataBytes);     //TODO TOPIC
+			PublishHelper.PublishMsg(topic, dataBytes);
 			return dataBytes.Length;
 		}
 
@@ -157,7 +156,7 @@ namespace AtpMessage.LinkMgr
 
 			string sendBytes = JsonHelper.SerializeObjectToString(sessionData);
 
-			//TODO 创建和断开连接的topic比较特殊
+			//创建和断开连接的topic比较特殊
 			string topic = String.Format("/SessionService/%s/UDP", isLogon ? "Create" : "Delete");
 			PublishHelper.PublishMsg(topic, sendBytes);
 			return sendBytes.Length;
