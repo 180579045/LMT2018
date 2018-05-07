@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using SCMT_json;
 using SCMT_json.JSONDataMgr;
 
 
-namespace SCMT_json
+namespace SCMT_json.JSONDataMgr
 {
     ///
     public class ReDataByEnglishName : IReDataByEnglishName
