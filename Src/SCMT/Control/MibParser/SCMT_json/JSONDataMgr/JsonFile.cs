@@ -32,10 +32,10 @@ namespace SCMT_json.JSONDataMgr
                 filestr = fileread.ReadLine();
                 fileread.Close();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 //记日志
-                Console.WriteLine("open file " + filepath + " failed!");
+                Console.WriteLine("open file {0} failed!{1}",filepath,ex.Message);
             }
             return filestr;
         }
@@ -54,10 +54,10 @@ namespace SCMT_json.JSONDataMgr
                 filestr = fileread.ReadToEnd();
                 fileread.Close();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
                 //记日志
-                Console.WriteLine("open file " + filepath + " failed!");
+                Console.WriteLine("open file {0} failed!{1}", filepath, ex.Message);
             }
             return filestr;
         }

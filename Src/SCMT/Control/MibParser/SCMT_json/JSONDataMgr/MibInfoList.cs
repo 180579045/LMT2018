@@ -31,8 +31,7 @@ namespace SCMT_json.JSONDataMgr
         /// json 文件生产 3种数据库
         /// </summary>
         public void GeneratedMibInfoList()
-        {
-            ///
+        {          ///
             string sFilePath = @"D:\C#\SCMT_json\SCMT_json\jsonfile\mib.json";
             FileStream fs = new FileStream(sFilePath, FileMode.Open);//初始化文件流
             byte[] array = new byte[fs.Length];//初始化字节数组
@@ -81,7 +80,8 @@ namespace SCMT_json.JSONDataMgr
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(childName,ex.Message);
+                        nameEn_info_db[childName]["oid"] = nameEn_info_db[childName]["oid"] +"|"+ childOid;
+                        Console.WriteLine("生成json_db时{0},{1}",childName,ex.Message);
                     }
 
                     oidChildInfo.Add("isLeaf", "1");
@@ -91,7 +91,7 @@ namespace SCMT_json.JSONDataMgr
                 }
             }
 
-
+            var test = oid_info_db.ToString();
             var jsonstroid = JsonConvert.SerializeObject(oid_info_db);
             var jsonstrnameEn = JsonConvert.SerializeObject(nameEn_info_db);
             var jsonstrtable = JsonConvert.SerializeObject(table_info_db);
