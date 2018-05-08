@@ -11,7 +11,7 @@ namespace SCMT_json.JSONDataMgr
 {
     class MibJsonData
     {
-        string stringMibJson;
+        //string stringMibJson;
         JObject mibJObject; // mib节点，表
         //JArray mibJArray;
         int tableNum;
@@ -34,7 +34,7 @@ namespace SCMT_json.JSONDataMgr
         }
         public string GetStringMibJson()
         {
-            return this.stringMibJson;
+            return this.mibJObject.ToString();
         }
         public void SetMibVersion(string version)
         {
@@ -45,9 +45,9 @@ namespace SCMT_json.JSONDataMgr
         {
             JArray mibJArray = new JArray();
             JObject objRec = null;
-            int leafIndex = 0;
             JArray childJArray = null;
-            for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)
+            int tableNum = MibdateSet.Tables[0].Rows.Count;
+            for (int loop = 0; loop < tableNum - 1; loop++)
             {
                 DataRow row = MibdateSet.Tables[0].Rows[loop];
                 DataRow nextRow = MibdateSet.Tables[0].Rows[loop + 1];
@@ -61,27 +61,37 @@ namespace SCMT_json.JSONDataMgr
                     }
                     objRec = new JObject();
                     childJArray = new JArray();
-                    leafIndex = 0;
                 }
                 switch (tableLeafType)
                 {
                     case EnumTableLeafType.table:
-                        objRec = TableToJsonData(row, nextRow);
+                        if (!TableToJsonData(row, nextRow, out objRec))
+                        {
+                            Console.WriteLine("Err:DB err.TableToJsonData,TableRow({0}),but leaf({1}).", row["MIBName"].ToString(), nextRow["MIBName"].ToString());
+                        }
                         this.tableNum++;
                         break;
                     case EnumTableLeafType.leaf:
-                        LeafToJsonData(childJArray, row, leafIndex);
-                        leafIndex++;
+                        if (!LeafToJsonData(objRec, childJArray, row))
+                        {
+                            Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), row["MIBName"].ToString());
+                        }
                         break;
                     default:
                         break;
                 }
-
             }
+            if (!LeafToJsonData(objRec, childJArray, MibdateSet.Tables[0].Rows[tableNum-1])){
+                Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), MibdateSet.Tables[0].Rows[tableNum]["MIBName"].ToString());
+            }
+            objRec.Add("childList", childJArray);
+            mibJArray.Add(objRec);
+
             this.mibJObject.Add("mibVersion", this.mibVersion);
             this.mibJObject.Add("tableNum", this.tableNum);
             this.mibJObject.Add("tableList", mibJArray);
-            this.stringMibJson = this.mibJObject.ToString();
+
+            //this.stringMibJson = this.mibJObject.ToString();
             return;
         }
 
@@ -102,74 +112,67 @@ namespace SCMT_json.JSONDataMgr
             }
         }
         //input:string propertyName, string varValue
-        private JObject TableToJsonData(DataRow rowRec, DataRow rowRecNext)
+        private bool TableToJsonData(DataRow rowRec, DataRow rowRecNext, out JObject table)
         {
             int indexNum = 0;
-            int isStatic = 1;
-            if ("" != rowRecNext["Index1OID"].ToString())
+            //int isStatic = 1;
+            // 两个节点是否有父子关系
+            if (!rowRecNext["ParentOID"].ToString().Equals(rowRec["OID"].ToString()))
             {
-                indexNum++;
+                table = new JObject {{ "nameMib", rowRec["MIBName"].ToString()},
+                    { "oid", rowRec["OID"].ToString()},
+                    { "nameCh", rowRec["ChFriendName"].ToString()},
+                    { "indexNum", indexNum}};
+                return false;
             }
-            else if ("" != rowRecNext["Index1OID"].ToString())
-            {
-                indexNum++;
-            }
-            else if ("" != rowRecNext["Index2OID"].ToString())
-            {
-                indexNum++;
-            }
-            else if ("" != rowRecNext["Index3OID"].ToString())
-            {
-                indexNum++;
-            }
-            else if ("" != rowRecNext["Index4OID"].ToString())
-            {
-                indexNum++;
-            }
-            else if ("" != rowRecNext["Index5OID"].ToString())
-            {
-                indexNum++;
-            }
-            else if ("" != rowRecNext["Index6OID"].ToString())
-            {
-                indexNum++;
-            }
+
+            // 查找 索引的个数
+            List<string> indexNameList = new List<string> { "Index1OID", "Index2OID", "Index3OID", "Index4OID", "Index5OID", "Index6OID" };
+            foreach (var indexName in indexNameList)
+                if ("" != rowRecNext[indexName].ToString())
+                    indexNum++;
+                else
+                    break;
+
+            /* 判断静动态表
             if ("" != rowRec["TableContent"].ToString())
-            {
-                //0表示动态表，1表示静态表
-                isStatic = 0;
-            }
-            var table1 = new JObject {{ "nameMib", rowRec["MIBName"].ToString()},
+                isStatic = 0;//0表示动态表，1表示静态表
+            */
+
+            table = new JObject {{ "nameMib", rowRec["MIBName"].ToString()},
                 { "oid", rowRec["OID"].ToString()},
                 { "nameCh", rowRec["ChFriendName"].ToString()},
-                { "indexNum", indexNum}
-            };
-            return table1;
+                { "indexNum", indexNum}};
+            return true;
         }
-        private void LeafToJsonData(JArray childJArray, DataRow rowRec, int leafIndex)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childJArray"></param>
+        /// <param name="rowRec"></param>
+        /// <param name="leafIndex"></param>
+        private bool LeafToJsonData(JObject table, JArray childJArray, DataRow rowRec)
         {
             int isMib = 0;
             int UIType = 0;
-            //假MIB不写入
-            if(0 == string.Compare("√",rowRec["IsMIB"].ToString()))
-            {
+
+            // 判断父子关系
+            if (!rowRec["ParentOID"].ToString().Equals(table["oid"].ToString()))
+                return false;
+
+            if (0 == string.Compare("√",rowRec["IsMIB"].ToString()))//假MIB不写入
                 isMib = 1;
-            }
+
             if (0 == string.Compare("enum", rowRec["OMType"].ToString()))
-            {
-                //单选下拉框
-                UIType = 1;
-            }
+                UIType = 1;//单选下拉框
             else if (0 == string.Compare("DateAndTime", rowRec["OMType"].ToString()))
-            {
-                //日期
-                UIType = 2;
-            }
+                UIType = 2;//日期
             else if (0 == string.Compare("BITS", rowRec["OMType"].ToString()))
-            {
-                //复选框
-                UIType = 3;
-            }
+                UIType = 3;//复选框
+
+            //
+            int leafIndex = int.Parse(rowRec["OID"].ToString().Replace(rowRec["ParentOID"].ToString()+".", ""));
             JObject childJObject = new JObject { { "childNameMib", rowRec["MIBName"].ToString()},
                 { "childNo", leafIndex},
                 { "childOid",rowRec["OID"].ToString()},
@@ -181,11 +184,12 @@ namespace SCMT_json.JSONDataMgr
                 { "managerValueRange", rowRec["MIBVal_list"].ToString()},
                 { "defaultValue", rowRec["DefaultValue"].ToString()},
                 { "detailDesc", rowRec["chDetailDesc"].ToString()},
+                { "leafProperty", 0},//0x0001,查;0x0010,增;0x0100,改;0x1000,删;
                 { "unit", rowRec["MIBVal_Unit"].ToString()}
             };
             childJArray.Add(childJObject);
-            return;
-        }
+            return true;
+        }///
         
         static public string RemoveCommOID(string OID)
         {
