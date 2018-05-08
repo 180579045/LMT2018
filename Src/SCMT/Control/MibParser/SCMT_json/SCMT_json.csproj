@@ -57,9 +57,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Database.cs" />
     <Compile Include="JSONDataMgr\AccessDBManager.cs" />
     <Compile Include="IDatabase.cs" />
+    <Compile Include="JSONDataMgr\Database.cs" />
     <Compile Include="JSONDataMgr\MibInfoList.cs" />
     <Compile Include="JSONDataMgr\ReadIniFile.cs" />
     <Compile Include="JSONDataMgr\UnzippedLmDtz.cs" />
