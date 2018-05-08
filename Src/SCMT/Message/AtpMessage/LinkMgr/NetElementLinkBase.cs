@@ -8,7 +8,7 @@ using Timer = System.Timers.Timer;
 
 namespace AtpMessage.LinkMgr
 {
-	public abstract class NetElementLinkBase : INetElementLink
+	public abstract class NetElementLinkBase
 	{
 		public enum LinkState
 		{
@@ -95,6 +95,88 @@ namespace AtpMessage.LinkMgr
 		}
 
 		/// <summary>
+		/// 发送报文。直接调用了PublishHelper
+		/// </summary>
+		/// <param name="dataBytes">要发送的数据流</param>
+		/// <param name="topic">该数据流对应的topic</param>
+		/// <returns>发送的字节数</returns>
+		public int SendPackets(byte[] dataBytes, string topic)
+		{
+			if (null == dataBytes)
+			{
+				throw new ArgumentNullException("dataBytes is null");
+			}
+
+			PublishHelper.PublishMsg(topic, dataBytes);
+			return dataBytes.Length;
+		}
+
+		/// <summary>
+		/// 发送数据，为登录和注销使用。
+		/// 登录时，SerssionService需要创建连接；注销时，则删除连接
+		/// </summary>
+		/// <param name="dataBytes">要发送板卡的数据</param>
+		/// <param name="isLogon">是否登陆操作</param>
+		/// <returns></returns>
+		public int SendPackets(byte[] dataBytes, bool isLogon)
+		{
+			if (null == dataBytes)
+			{
+				throw new ArgumentNullException("dataBytes is null");
+			}
+
+			SessionData sessionData = new SessionData()
+			{
+				target =
+				{
+					raddr = _netElementConfig.TargetIp,
+					rport = CommonPort.AtpLinkPort,
+					laddr = _netElementConfig.TraceIp
+				},
+				data = dataBytes
+			};
+
+			string sendBytes = JsonHelper.SerializeObjectToString(sessionData);
+
+			//创建和断开连接的topic比较特殊
+			string topic = string.Format("/SessionService/%s/UDP", isLogon ? "Create" : "Delete");
+			PublishHelper.PublishMsg(topic, sendBytes);
+			return sendBytes.Length;
+		}
+
+		public int SendPackets(byte[] dataBytes)
+		{
+			if (null == dataBytes)
+			{
+				throw new ArgumentNullException("dataBytes is null");
+			}
+
+			PublishHelper.PublishMsg($"udp-send://{_netElementConfig.TargetIp}:{CommonPort.AtpLinkPort}", dataBytes);
+			return dataBytes.Length;
+		}
+
+		/// <summary>
+		/// 发送消息跟踪控制开关
+		/// </summary>
+		/// <param name="switchs">前台已经处理好的开关</param>
+		/// <returns></returns>
+		public bool SendTraceSwitch(byte[] switchs)
+		{
+			return SendTSwitchs(switchs, _netElementConfig);
+		}
+
+		/// <summary>
+		/// 虚函数，发送消息跟踪控制开关。不同的链接方式有不同的处理，子类重载该函数
+		/// </summary>
+		/// <param name="switchBytes">开关数组</param>
+		/// <param name="netElementAddress">要处理的网元信息</param>
+		/// <returns></returns>
+		public virtual bool SendTSwitchs(byte[] switchBytes, NetElementConfig netElementAddress)
+		{
+			return true;
+		}
+
+		/// <summary>
 		/// 发送保活报文。
 		/// </summary>
 		/// <param name="sender"></param>
@@ -117,49 +199,7 @@ namespace AtpMessage.LinkMgr
 				_kaBytes = SerializeHelper.SerializeStructToBytes(kaReq);
 			}
 
-			SendPackets(_kaBytes, $"udp-send://{_netElementConfig.TargetIp}:{CommonPort.AtpLinkPort}");
-		}
-
-		/// <summary>
-		/// 发送报文。直接调用了PublishHelper
-		/// </summary>
-		/// <param name="dataBytes">要发送的数据流</param>
-		/// <param name="topic">该数据流对应的topic</param>
-		/// <returns>发送的字节数</returns>
-		public int SendPackets(byte[] dataBytes, string topic)
-		{
-			if (null == dataBytes)
-			{
-				throw new ArgumentNullException("dataBytes is null");
-			}
-
-			PublishHelper.PublishMsg(topic, dataBytes);
-			return dataBytes.Length;
-		}
-
-		public int SendPackets(byte[] dataBytes, bool isLogon)
-		{
-			if (null == dataBytes)
-			{
-				throw new ArgumentNullException("dataBytes is null");
-			}
-
-			SessionData sessionData = new SessionData()
-			{
-				target =
-				{
-					addr = _netElementConfig.TargetIp,
-					port = CommonPort.AtpLinkPort
-				},
-				data = dataBytes
-			};
-
-			string sendBytes = JsonHelper.SerializeObjectToString(sessionData);
-
-			//创建和断开连接的topic比较特殊
-			string topic = String.Format("/SessionService/%s/UDP", isLogon ? "Create" : "Delete");
-			PublishHelper.PublishMsg(topic, sendBytes);
-			return sendBytes.Length;
+			SendPackets(_kaBytes);
 		}
 
 		private NetElementConfig _netElementConfig;

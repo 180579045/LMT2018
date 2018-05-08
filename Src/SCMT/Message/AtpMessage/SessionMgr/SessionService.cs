@@ -13,7 +13,7 @@ using MsgQueue;
 /// </summary>
 namespace AtpMessage.SessionMgr
 {
-	public enum ProcotolType
+	internal enum ProcotolType
 	{
 		Invalid = -1,
 		UDP = 0,
@@ -31,30 +31,22 @@ namespace AtpMessage.SessionMgr
 
 		public SessionService()
 		{
-			_udpSessions = new Dictionary<string, UdpSession>();
+			_Sessions = new Dictionary<string, IASession>();
 
 			string topic = "/SessionService/Create/";
 			string desc = "创建连接。后面跟协议：UDP、TCP、IP、FTP。";
 			Type dataType = typeof(SessionData);
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, dataType));
-			SubscribeHelper.AddSubscribe(topic, OnMakeUdpSession);
+			SubscribeHelper.AddSubscribe(topic, OnMakeSession);
 
 			topic = "/SessionService/Delete/";
 			desc = "断开连接。后面跟协议：UDP、TCP、IP、FTP。";
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, dataType));
-			SubscribeHelper.AddSubscribe(topic, OnBreakUdpSession);
+			SubscribeHelper.AddSubscribe(topic, OnBreakSession);
 		}
 
-		/// <summary>
-		/// 初始化函数。初始化map，订阅主题
-		/// </summary>
-		public void Init() { }
-
-		/// <summary>
-		/// 创建链接
-		/// </summary>
-		/// <param name="msg"></param>
-		public void OnMakeUdpSession(SubscribeMsg msg)
+		//创建链接
+		public void OnMakeSession(SubscribeMsg msg)
 		{
 			string procotol = GetProcotolTypeFromTopic(msg.Topic);
 			ProcotolType pt = GetProcotolType(procotol);
@@ -65,24 +57,32 @@ namespace AtpMessage.SessionMgr
 			}
 
 			var sessionData = JsonHelper.SerializeJsonToObject<SessionData>(msg.Data);
-			var key = $"{procotol}://{sessionData.target.addr}:{sessionData.target.port}";
-			if (_udpSessions.ContainsKey(key))
+			var key = $"{procotol}://{sessionData.target.raddr}:{sessionData.target.rport}";
+			if (_Sessions.ContainsKey(key))
 			{
-				_udpSessions[key].SendAsync(sessionData.data);	//如果连接已经建立了，就只发送数据
+				_Sessions[key].SendAsync(sessionData.data);	//如果连接已经建立了，就只发送数据
 				return;
 			}
 
-			var session = new UdpSession(sessionData.target);	//TODO 先只处理udp协议
-			session.Run();
-			session.SendAsync(sessionData.data);
-			_udpSessions.Add(key, session);
+			IASession session = null;
+			if (ProcotolType.UDP == pt)
+			{
+				session = new UdpSession(sessionData.target);   //TODO 先只处理udp协议
+				session.SendAsync(sessionData.data);
+			}
+			else if (ProcotolType.IP == pt)
+			{
+				session = new IpSession(sessionData.target);
+				if (!session.Init(sessionData.target.laddr))
+				{
+					return;
+				}
+			}
+			_Sessions.Add(key, session);
 		}
 
-		/// <summary>
-		/// 断开连接。
-		/// </summary>
-		/// <param name="msg"></param>
-		public void OnBreakUdpSession(SubscribeMsg msg)
+		//断开连接
+		public void OnBreakSession(SubscribeMsg msg)
 		{
 			string procotol = GetProcotolTypeFromTopic(msg.Topic);
 			ProcotolType pt = GetProcotolType(procotol);
@@ -93,22 +93,18 @@ namespace AtpMessage.SessionMgr
 			}
 
 			var data = JsonHelper.SerializeJsonToObject<SessionData>(msg.Data);
-			var key = $"{procotol}://{data.target.addr}:{data.target.port}";
-			if (!_udpSessions.ContainsKey(key))
+			var key = $"{procotol}://{data.target.raddr}:{data.target.rport}";
+			if (!_Sessions.ContainsKey(key))
 			{
 				return;
 			}
 
-			_udpSessions[key].SendAsync(data.data);		//发送数据
-			_udpSessions[key].Dispose();				//释放数据
-			_udpSessions.Remove(key);
+			_Sessions[key].SendAsync(data.data);		//发送数据
+			_Sessions[key].Stop();						//释放数据
+			_Sessions.Remove(key);
 		}
 
-		/// <summary>
-		/// 从topic中取出协议类型。大概有UDP，IP，TCP，SNMP，FTP
-		/// </summary>
-		/// <param name="topic"></param>
-		/// <returns></returns>
+		//从topic中取出协议类型。大概有UDP，IP，TCP，SNMP，FTP
 		public string GetProcotolTypeFromTopic(string topic)
 		{
 			if (String.IsNullOrWhiteSpace(topic))
@@ -153,6 +149,6 @@ namespace AtpMessage.SessionMgr
 		}
 
 		//保存udpSession。key:"目的IP-目的端口"
-		private Dictionary<string, UdpSession> _udpSessions;
+		private Dictionary<string, IASession> _Sessions;
 	}
 }

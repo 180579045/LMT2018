@@ -6,26 +6,12 @@ using System.Threading.Tasks;
 
 namespace MsgQueue
 {
-	public class Target : IComparable
+	public class Target
 	{
-		public string addr;
-		public int port;
-
-		public int CompareTo(object obj)
-		{
-			var temp = obj as Target;
-			if (null == temp)
-			{
-				return -1;
-			}
-
-			if (temp.addr == addr && temp.port == port)
-			{
-				return 0;
-			}
-
-			return 1;
-		}
+		public string raddr;		//目标地址
+		public string laddr;		//本地地址
+		public int rport;			//目标端口
+		public int lport;			//本地端口
 	}
 
 	public class SessionData

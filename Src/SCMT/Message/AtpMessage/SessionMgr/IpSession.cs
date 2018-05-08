@@ -12,8 +12,11 @@ namespace AtpMessage.SessionMgr
 	public class IpSession : IASession
 	{
 		private LibPcapLiveDevice _deviceCapture;
-		private string _pubTopic;
-		private bool _stoped;
+
+		public IpSession(Target target)
+		{
+
+		}
 
 		/// <summary>
 		/// 根据IP地址获取设备，用于抓包
@@ -47,14 +50,17 @@ namespace AtpMessage.SessionMgr
 			return null;
 		}
 
+		public void SendAsync(byte[] dataBytes)
+		{
+			throw new NotImplementedException();
+		}
+
 		/// <summary>
 		/// 启动数据包捕获
 		/// </summary>
 		/// <param name="localIp">本地网卡上的IP地址</param>
-		/// <param name="filter">数据包过滤filter</param>
-		/// <param name="pubTopic">收到数据包发布的topic TODO 是否合适设置topic</param>
 		/// <returns>true:启动接收成功，false:在本地网卡上没有找到对应的本地IP地址</returns>
-		public bool Init(string localIp, string filter, string pubTopic)
+		public bool Init(string localIp)
 		{
 			_deviceCapture = GetDeviceWithIp(localIp);
 			if (null == _deviceCapture)
@@ -62,20 +68,16 @@ namespace AtpMessage.SessionMgr
 				return false;
 			}
 
-			_pubTopic = pubTopic;
 			_deviceCapture.OnPacketArrival += OnPacketArrive;
 			_deviceCapture.OnCaptureStopped += OnStopCapture;
 			_deviceCapture.Open(DeviceMode.Promiscuous);
-			_deviceCapture.Filter = filter;       //filter规则语法和tcpdump的一样，不是wireshark的语法
+			_deviceCapture.Filter = "udp and udp.srcport==50000";
 			_deviceCapture.StartCapture();
-			_stoped = false;
+
 			return true;
 		}
 
-		/// <summary>
-		/// 停止设备接收数据包
-		/// </summary>
-		/// <returns>true:success，false:otherwise</returns>
+		//停止设备接收数据包
 		public bool Stop()
 		{
 			if (null != _deviceCapture && _deviceCapture.Started)
@@ -84,7 +86,7 @@ namespace AtpMessage.SessionMgr
 				{
 					_deviceCapture?.StopCapture();
 				}
-				catch (PcapException e)     //此处throw一个异常，但不会造成影响，不必处理
+				catch (PcapException)     //此处throw一个异常，但不会造成影响，不必处理
 				{
 					//Console.WriteLine(e);
 					//throw;
@@ -102,7 +104,7 @@ namespace AtpMessage.SessionMgr
 		private void OnPacketArrive(object sender, CaptureEventArgs e)
 		{
 			byte[] data = e.Packet.Data;       //Data转为string，需要替换-为空字符
-			PublishHelper.PublishMsg("/GtsMsgParseService", data);
+			PublishHelper.PublishMsg("/GtsMsgParseService/WinPcap", data);
 		}
 
 		private void OnStopCapture(object sender, CaptureStoppedEventStatus status)

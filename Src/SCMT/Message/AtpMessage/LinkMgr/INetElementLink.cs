@@ -15,5 +15,9 @@ namespace AtpMessage.LinkMgr
 		bool IsConnected();
 
 		void OnLogonResult(bool bSucceed);
+
+	    bool SendTraceSwitch(byte[] switchs);
+
+	    void OnSendTraceSwitchRsp(bool bSucceed);
 	}
 }

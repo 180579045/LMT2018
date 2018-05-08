@@ -24,12 +24,16 @@ namespace AtpMessage.LinkMgr
 
 		public LinkMgrActor()
 		{
-			_mapNetElementLinks = new Dictionary<string, INetElementLink>();
-		    SubscribeHelper.AddSubscribe("/LinkMgr", OnLinkMgr);
+			_mapNetElementLinks = new Dictionary<string, NetElementLinkBase>();
+			SubscribeHelper.AddSubscribe("/LinkMgr", OnLinkMgr);
+
+			//TODO 接口中需要包含目的IP地址
+			SubscribeHelper.AddSubscribe("/AtpBack/TraceConfig/StartTrace", OnSendTraceSwtich);
 		}
 
 		/// <summary>
-		/// 建立网元连接。TODO 如果是其他连接，topic还需要修改
+		/// 建立网元连接。
+		/// TODO LMT-B还会连接基站，这两个连接不一样，需要协调
 		/// </summary>
 		/// <param name="ip"></param>
 		/// <param name="neConfig"></param>
@@ -47,11 +51,12 @@ namespace AtpMessage.LinkMgr
 				return false;
 			}
 
-			INetElementLink link = LinkFactory.CreateLink(neConfig.conType);
+			NetElementLinkBase link = LinkFactory.CreateLink(neConfig.conType);
 			_mapNetElementLinks[ip] = link;
 
 			//此处只有udp协议的数据处理，后面增加其他类型的协议
-		    SubscribeHelper.AddSubscribe($"udp-recv://{ip}:{CommonPort.AtpLinkPort}", OnLinkMsgFromBoard);
+			SubscribeHelper.AddSubscribe($"udp-recv://{ip}:{CommonPort.AtpLinkPort}", OnLinkMsgFromBoard);
+
 			link.Connect(neConfig);
 
 			return true;
@@ -75,10 +80,10 @@ namespace AtpMessage.LinkMgr
 				return false;
 			}
 
-			INetElementLink link = _mapNetElementLinks[ip];
+			NetElementLinkBase link = _mapNetElementLinks[ip];
 			link.Disconnect();
 
-		    SubscribeHelper.CancelSubscribe($"from:{ip}:{CommonPort.AtpLinkPort}");
+			SubscribeHelper.CancelSubscribe($"from:{ip}:{CommonPort.AtpLinkPort}");
 			_mapNetElementLinks.Remove(ip);
 
 			return true;
@@ -93,6 +98,17 @@ namespace AtpMessage.LinkMgr
 			//多层topic解析，当前版本为了简单，先使用直接调用的方式进行处理
 		}
 
+		private void OnSendTraceSwtich(SubscribeMsg msg)
+		{
+			string ip = "";     //TODO
+			if (!HasLinkWithSameIp(ip))     //没有对应的连接，返回。需要加入提示
+			{
+				return;
+			}
+
+			_mapNetElementLinks[ip].SendTraceSwitch(msg.Data);
+		}
+
 		private void OnLinkMsgFromBoard(SubscribeMsg msg)
 		{
 			byte[] msgBytes = msg.Data;
@@ -104,7 +120,8 @@ namespace AtpMessage.LinkMgr
 				case GtsMsgType.O_GTSAGTSM_LOGON_RSP:
 					DealConnectRsp(ip);
 					break;
-				case GtsMsgType.O_GTSAGTSM_TRACE_CTRL_RSP:
+				case GtsMsgType.O_GTSAGTSM_TRACE_CTRL_RSP:  //发送开关的响应
+					DealSendTraceSwitchRsp(ip, msg.Data);
 					break;
 				case GtsMsgType.O_GTSAGTSM_FDL_RSP:
 					break;
@@ -114,7 +131,7 @@ namespace AtpMessage.LinkMgr
 					break;
 				case GtsMsgType.O_GTSAGTSM_FILTER_RESET_RSP:
 					break;
-				case GtsMsgType.O_GTSAGTSM_TRACE_MSG:
+				case GtsMsgType.O_GTSAGTSM_TRACE_MSG:   //抄送的消息
 					DealTraceMsg(msg.Data);
 					break;
 				default:
@@ -128,15 +145,14 @@ namespace AtpMessage.LinkMgr
 		/// <param name="ip"></param>
 		private void DealConnectRsp(string ip)
 		{
-			if (string.IsNullOrWhiteSpace(ip) ||
-				string.IsNullOrEmpty(ip))
+			if (string.IsNullOrWhiteSpace(ip) || string.IsNullOrEmpty(ip))
 			{
 				throw new ArgumentNullException();
 			}
 
 			if (_mapNetElementLinks.ContainsKey(ip))
 			{
-				INetElementLink link = _mapNetElementLinks[ip];
+				NetElementLinkBase link = _mapNetElementLinks[ip];
 				link.OnLogonResult(true);
 			}
 		}
@@ -147,7 +163,26 @@ namespace AtpMessage.LinkMgr
 		/// <param name="msgData"></param>
 		private void DealTraceMsg(byte[] msgData)
 		{
-			PublishHelper.PublishMsg("/GtsMsgParseService", msgData);
+			PublishHelper.PublishMsg("/GtsMsgParseService/GtsaSend", msgData);
+		}
+
+		private void DealSendTraceSwitchRsp(string ip, byte[] dataBytes)
+		{
+			if (string.IsNullOrWhiteSpace(ip) ||
+				string.IsNullOrEmpty(ip))
+			{
+				throw new ArgumentNullException();
+			}
+
+			if (!HasLinkWithSameIp(ip))
+			{
+				return;
+			}
+
+			MsgGtsa2GtsmTraceCtrlRsp rsp = (MsgGtsa2GtsmTraceCtrlRsp)SerializeHelper.BytesToStruct(dataBytes, typeof(MsgGtsa2GtsmTraceCtrlRsp));
+
+			byte[] rspBytes = new byte[] {rsp.u8Complete};
+			PublishHelper.PublishMsg("/AtpFront/TraceConfig/TraceActRsp", rspBytes);
 		}
 
 		/// <summary>
@@ -191,6 +226,6 @@ namespace AtpMessage.LinkMgr
 		}
 
 		//保存所有添加的网元信息。Key：ne addr，Value：ne reference
-		private Dictionary<string, INetElementLink> _mapNetElementLinks;
+		private Dictionary<string, NetElementLinkBase> _mapNetElementLinks;
 	}
 }

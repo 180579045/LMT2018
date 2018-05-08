@@ -22,20 +22,16 @@ namespace AtpMessage.SessionMgr
 
 		private bool MsgSendCompleted { get; set; }
 
-		/// <summary>
-		/// 构造函数
-		/// </summary>
-		/// <param name="target">目的信息，包括地址和端口号</param>
 		public UdpSession(Target target)
 		{
 			_udpClient = new UdpClient();
-			_ipTargetEp = new IPEndPoint(IPAddress.Parse(target.addr), target.port);
+			_ipTargetEp = new IPEndPoint(IPAddress.Parse(target.raddr), target.rport);
 			_udpClient.Connect(_ipTargetEp);
 
 			_recvThread = new Thread(RecvFromBoard);		//先启动接收线程，否则可能漏掉数据包
 			_recvThread.Start();
 
-			_prefix = $"{target.addr}:{target.port}";       //订阅这个消息是用于运行过程中给板卡发送信息
+			_prefix = $"{target.raddr}:{target.rport}";       //订阅这个消息是用于运行过程中给板卡发送信息
 			_subClient = new SubscribeClient(CommonPort.PubServerPort);
 
 			string topic = $"udp-send://{_prefix}";
@@ -47,19 +43,13 @@ namespace AtpMessage.SessionMgr
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, type));
 		}
 
-		/// <summary>
-		/// 异步发送信息回调函数
-		/// </summary>
-		/// <param name="ar"></param>
+		//异步发送信息回调函数
 		public void SendCallback(IAsyncResult ar)
 		{
 			MsgSendCompleted = ar.IsCompleted;
 		}
 
-		/// <summary>
-		/// 异步发送数据
-		/// </summary>
-		/// <param name="dataBytes"></param>
+		//异步发送数据
 		public void SendAsync(byte[] dataBytes)
 		{
 			MsgSendCompleted = false;
@@ -79,18 +69,18 @@ namespace AtpMessage.SessionMgr
 			}
 		}
 
-		/// <summary>
-		/// 启动线程接收数据
-		/// </summary>
-		public void Run()
+		public bool Init(string lip)
 		{
-
+			return true;
 		}
 
-		/// <summary>
-		/// 接收数据线程函数
-		/// </summary>
-		/// <param name="obj"></param>
+		public bool Stop()
+		{
+			Dispose();
+			return true;
+		}
+
+		//接收数据线程函数
 		private void RecvFromBoard(object obj)
 		{
 			while(true)

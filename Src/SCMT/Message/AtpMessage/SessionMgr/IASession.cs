@@ -11,5 +11,10 @@ namespace AtpMessage.SessionMgr
 	/// </summary>
 	public interface IASession
 	{
+		void SendAsync(byte[] dataBytes);
+
+		bool Init(string lip);
+
+		bool Stop();
 	}
 }

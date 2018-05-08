@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
 using CommonUility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -22,6 +24,12 @@ namespace CommonUilityTest
 	{
 		public int Count { get; set; }
 		public List<TraceSwitch> Switches;
+	}
+
+	public class Ts
+	{
+		public string ip;
+		public byte[] ts;
 	}
 
 	[TestClass]
@@ -56,6 +64,24 @@ namespace CommonUilityTest
 
 			Assert.AreEqual(2, actual.Count);
 			Assert.AreEqual(1, actual.Switches[0].Id);
+		}
+
+		[TestMethod]
+		public void SerializeJsonBytesToObjectTest()
+		{
+			Ts tt = new Ts()
+			{
+				ip = "172.27.245.92",
+				ts = new byte[5] {1, 0, 1, 1, 1}
+			};
+			string json = JsonHelper.SerializeObjectToString(tt);
+
+			byte[] btemp = Encoding.Default.GetBytes(json);
+
+			Ts actual = JsonHelper.SerializeJsonToObject<Ts>(btemp);
+			Assert.AreEqual("172.27.245.92", actual.ip);
+			Assert.AreEqual(1, actual.ts[0]);
+			Assert.AreEqual(0, actual.ts[1]);
 		}
 	}
 }

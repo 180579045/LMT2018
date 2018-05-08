@@ -1,7 +1,7 @@
-﻿using System;
+﻿using System.Runtime.InteropServices;
+using AtpMessage.GtsMsgParse;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AtpMessage.MsgDefine;
-using CommonUility;
 
 namespace AtpMessageTest
 {
@@ -25,6 +25,12 @@ namespace AtpMessageTest
 			Assert.AreEqual(-1, used);
 		}
 
+		[TestMethod]
+		public void TestEthHeaderLen()
+		{
+			int len = Marshal.SizeOf<ETHERNET_HEADER>();
+			Assert.AreEqual(14, len);
+		}
 		
 	}
 }

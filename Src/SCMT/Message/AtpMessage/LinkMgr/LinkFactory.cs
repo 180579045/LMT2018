@@ -8,9 +8,9 @@ namespace AtpMessage.LinkMgr
 {
     public class LinkFactory
     {
-        public static INetElementLink CreateLink(ConnectType ct)
+        public static NetElementLinkBase CreateLink(ConnectType ct)
         {
-            INetElementLink link = null;
+            NetElementLinkBase link = null;
             switch (ct)
             {
                 case ConnectType.ATP_DIRECT_LINK:

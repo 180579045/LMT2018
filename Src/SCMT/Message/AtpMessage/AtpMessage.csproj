@@ -42,10 +42,6 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\..\SCMT\Src\SCMT\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PacketDotNet, Version=0.16.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="SharpPcap, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\SharpPcap.4.4.0\lib\SharpPcap.dll</HintPath>
       <Private>True</Private>
@@ -64,10 +60,10 @@
     <Compile Include="AtpMessageInfo.cs" />
     <Compile Include="GtsMsgParse\GtsMsgParseService.cs" />
     <Compile Include="GtsMsgParse\GtsMsgParseWorker.cs" />
+    <Compile Include="GtsMsgParse\ProtocolDefine.cs" />
     <Compile Include="LinkMgr\AtpDirectLink.cs" />
     <Compile Include="LinkMgr\AtpRemoteLogLink.cs" />
     <Compile Include="LinkMgr\AtpRemoteMsgLink.cs" />
-    <Compile Include="LinkMgr\INetElementLink.cs" />
     <Compile Include="LinkMgr\LinkFactory.cs" />
     <Compile Include="LinkMgr\LinkMgrActor.cs" />
     <Compile Include="LinkMgr\NetElementLinkBase.cs" />

@@ -7,7 +7,7 @@ namespace AtpMessage.MsgDefine
 	/// gts消息头，实现了序列化和反序列化
 	/// </summary>
 	[StructLayout(LayoutKind.Sequential, Pack = 1)]
-	public struct GtsMsgHeader : IASerialize
+	public class GtsMsgHeader : IASerialize
 	{
 		public ushort u16SourceID;                            /*消息源信息域*/
 		public ushort u16DestID;                              /*消息目的地信息域*/

@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonUility;
 
+/// <summary>
+/// warnning: 可能会有性能限制，毕竟是在一个线程中。后面再加上PULL和PUSH模式
+/// </summary>
 namespace MsgQueue
 {
     public class SubscribeHelper
