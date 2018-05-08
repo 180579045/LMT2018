@@ -9,7 +9,7 @@ namespace AtpMessage.MsgDefine
 	描述：ATP发给GTSA的存活消息
 	**************************************/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaAliveRpt : IASerialize
+	internal class MsgGtsm2GtsaAliveRpt : IASerialize
 	{
 		public GtsMsgHeader header;              /*GTSA头*/
 		public byte u8FrameNo;
@@ -17,6 +17,11 @@ namespace AtpMessage.MsgDefine
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] u8Pad;
 
+		public MsgGtsm2GtsaAliveRpt()
+		{
+			header = new GtsMsgHeader();
+			u8Pad = new byte[2];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{

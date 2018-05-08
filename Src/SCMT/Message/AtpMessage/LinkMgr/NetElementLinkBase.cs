@@ -125,7 +125,7 @@ namespace AtpMessage.LinkMgr
 				throw new ArgumentNullException("dataBytes is null");
 			}
 
-			SessionData sessionData = new SessionData()
+			SessionData sessionData = new SessionData(dataBytes.Length)
 			{
 				target =
 				{

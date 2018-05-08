@@ -92,12 +92,12 @@ namespace AtpMessageTest
             Assert.IsTrue(bSucceed);
             Assert.IsTrue(LinkMgrActor.GetInstance().HasLinkWithSameIp(ip));
 
-            bSucceed = bSucceed = LinkMgrActor.GetInstance().ConnectNetElement(ip, config);
+            bSucceed = LinkMgrActor.GetInstance().ConnectNetElement(ip, config);
             Assert.IsFalse(bSucceed);
 
             try
             {
-                bSucceed = bSucceed = LinkMgrActor.GetInstance().ConnectNetElement(ip, null);
+                bSucceed = LinkMgrActor.GetInstance().ConnectNetElement(ip, null);
                 Assert.IsFalse(bSucceed);
             }
             catch (ArgumentNullException e)
@@ -108,7 +108,7 @@ namespace AtpMessageTest
 
             try
             {
-                bSucceed = bSucceed = LinkMgrActor.GetInstance().DisconnectNe(null);
+                bSucceed = LinkMgrActor.GetInstance().DisconnectNe(null);
                 Assert.IsTrue(bSucceed);
             }
             catch (ArgumentNullException e)

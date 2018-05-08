@@ -6,12 +6,17 @@ namespace AtpMessage.MsgDefine
 {
 	/*文件下载请求*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct StruFdlData : IASerialize
+	internal class StruFdlData : IASerialize
 	{
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = GtsMsgType.MAX_FILE_PATH_NAME_LENGTH)]
 		public byte[] u8FileName;					/*文件名*/
 		public ushort u16DestID;					/*目标*/
 		public uint u32FileSize;					/*文件大小*/
+
+		public StruFdlData()
+		{
+			u8FileName = new byte[GtsMsgType.MAX_FILE_PATH_NAME_LENGTH];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -38,7 +43,7 @@ namespace AtpMessage.MsgDefine
 	};
 
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaFdlReq : IASerialize
+	internal class MsgGtsm2GtsaFdlReq : IASerialize
 	{
 		public GtsMsgHeader header;						/*GTS消息头*/
 		public byte u8OpType;								/*文件操作类型*/
@@ -46,6 +51,13 @@ namespace AtpMessage.MsgDefine
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] u8Padding;
 		public StruFdlData struFileData;					/*数据部分*/
+
+		public MsgGtsm2GtsaFdlReq()
+		{
+			header = new GtsMsgHeader();
+			u8Padding = new byte[2];
+			struFileData = new StruFdlData();
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -75,12 +87,18 @@ namespace AtpMessage.MsgDefine
 
 	/*文件下载响应*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaFdlRsp : IASerialize
+	internal class MsgGtsm2GtsaFdlRsp : IASerialize
 	{
 		public GtsMsgHeader header;						/*GTS消息头*/
 		public byte u8Complete;								/*GTS_SUCCESS表示成功，GTS_FAILURE表示失败*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
 		public byte[] u8Padding;
+
+		public MsgGtsm2GtsaFdlRsp()
+		{
+			header = new GtsMsgHeader();
+			u8Padding = new byte[3];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -97,7 +115,7 @@ namespace AtpMessage.MsgDefine
 			int used = 0;
 			used += header.DeserializeToStruct(bytes, offset + used);
 			used += SerializeHelper.DeserializeByte(bytes, offset + used, ref u8Complete);
-			used += SerializeHelper.SerializeBytes(ref u8Padding, 0, bytes, offset + used, 2);
+			used += SerializeHelper.SerializeBytes(ref u8Padding, 0, bytes, offset + used, 3);
 			return used;
 		}
 
@@ -108,7 +126,7 @@ namespace AtpMessage.MsgDefine
 
 	/*文件下载完成消息*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct StruFdlEndInfo : IASerialize
+	internal class StruFdlEndInfo : IASerialize
 	{
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = GtsMsgType.MAX_FILE_PATH_NAME_LENGTH)]
 		public byte[] u8FileName;							/*文件名*/
@@ -116,6 +134,12 @@ namespace AtpMessage.MsgDefine
 		public byte u8Completed;							/*完成标志*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
 		public byte[] u8Padding;
+
+		public StruFdlEndInfo()
+		{
+			u8FileName = new byte[GtsMsgType.MAX_FILE_PATH_NAME_LENGTH];
+			u8Padding = new byte[3];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -143,7 +167,7 @@ namespace AtpMessage.MsgDefine
 	};
 
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsa2GtsmFdlCompleteInd : IASerialize
+	internal class MsgGtsa2GtsmFdlCompleteInd : IASerialize
 	{
 		public GtsMsgHeader header;							/*GTS消息头*/
 		public byte u8OpType;								/*文件操作类型*/
@@ -151,6 +175,13 @@ namespace AtpMessage.MsgDefine
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public byte[] u8Padding;
 		public StruFdlEndInfo struFileData;					/*数据部分*/
+
+		public MsgGtsa2GtsmFdlCompleteInd()
+		{
+			header = new GtsMsgHeader();
+			u8Padding = new byte[2];
+			struFileData = new StruFdlEndInfo();
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{

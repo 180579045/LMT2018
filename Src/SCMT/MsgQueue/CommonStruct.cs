@@ -18,5 +18,11 @@ namespace MsgQueue
 	{
 		public byte[] data;
 		public Target target;
+
+		public SessionData(int dataLen)
+		{
+			data = new byte[dataLen];
+			target = new Target();
+		}
 	}
 }

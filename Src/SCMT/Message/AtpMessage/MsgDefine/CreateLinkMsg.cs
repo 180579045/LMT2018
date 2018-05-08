@@ -12,7 +12,7 @@ namespace AtpMessage.MsgDefine
 	描述：建链请求
 	**************************************/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaAddFlowReq : IASerialize
+	internal class MsgGtsm2GtsaAddFlowReq : IASerialize
 	{
 		public GtsMsgHeader header;
 		public uint u32IpType;					/*IP地址类型，IPV4/IPV6*/
@@ -22,6 +22,12 @@ namespace AtpMessage.MsgDefine
 		public ushort u16FrameNo;				/*BPOE板卡机框号*/
 		public ushort u16SlotNo;				/*BPOE板卡插槽号*/
 		public ushort u16ProcId;				/*处理器号，暂时不用，以后扩展*/
+
+		public MsgGtsm2GtsaAddFlowReq()
+		{
+			header = new GtsMsgHeader();
+			u8PcIpAdd = new byte[GtsMsgType.IP_ADDRESS_LEN_V6];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -59,7 +65,7 @@ namespace AtpMessage.MsgDefine
 	描述：建链响应
 	**************************************/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsa2GtsmAddFlowRsp : IASerialize
+	internal class MsgGtsa2GtsmAddFlowRsp : IASerialize
 	{
 		public GtsMsgHeader header;
 		public ushort u16RackNo;			/*机架号，暂时不用，留待以后扩展*/
@@ -67,6 +73,11 @@ namespace AtpMessage.MsgDefine
 		public ushort u16SlotNo;			/*BPOE板卡插槽号*/
 		public ushort u16ProcId;			/*处理器号，暂时不用，以后扩展*/
 		public int s32Result;				/*建链结果，0为成功，1为失败*/
+
+		public MsgGtsa2GtsmAddFlowRsp()
+		{
+			header = new GtsMsgHeader();
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{

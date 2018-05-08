@@ -6,7 +6,7 @@ namespace AtpMessage.MsgDefine
 {
 	/*登录请求O_GTSMGTSA_LOGON_REQ*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	public struct MsgGtsm2GtsaLogonReq : IASerialize
+	public class MsgGtsm2GtsaLogonReq : IASerialize
 	{
 		public GtsMsgHeader header;							/*GTS消息头*/
 		public ushort u16DataLength;						/*数据长度*/
@@ -20,6 +20,12 @@ namespace AtpMessage.MsgDefine
 		public byte u8DstSlot;								/*远程BBU板的插槽号*/
 		public byte u8AgentSlot;							/*代理CCU板槽位号*/
 		public byte u8Padding;
+
+		public MsgGtsm2GtsaLogonReq()
+		{
+			u8MacAddr = new byte[6];
+			header = new GtsMsgHeader();
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -55,13 +61,18 @@ namespace AtpMessage.MsgDefine
 
 	/*登录响应O_GTSAGTSM_LOGON_RSP*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	public struct MsgGtsa2GtsmLogonRsp : IASerialize
+	public class MsgGtsa2GtsmLogonRsp : IASerialize
 	{
 		public GtsMsgHeader header;                         /*GTS消息头*/
 		public byte u8DstFrame;                             /*远程BBU板的机框号*/
 		public byte u8DstSlot;                              /*远程BBU板的插槽号*/
 		public byte u8BoardType;                            /*板卡类型*/
 		public byte u8Pad;
+
+		public MsgGtsa2GtsmLogonRsp()
+		{
+			header = new GtsMsgHeader();
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -102,6 +113,7 @@ namespace AtpMessage.MsgDefine
 		public MsgGtsm2GtsaQuitInd()
 		{
 			u8Data = new byte[GtsMsgType.MAX_DIAG_MSG_LEN];
+			header = new GtsMsgHeader();
 		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)

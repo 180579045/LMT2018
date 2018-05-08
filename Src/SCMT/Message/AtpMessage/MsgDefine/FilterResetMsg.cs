@@ -6,13 +6,19 @@ namespace AtpMessage.MsgDefine
 {
 	/*过滤复位请求*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaFilterResetReq : IASerialize
+	internal class MsgGtsm2GtsaFilterResetReq : IASerialize
 	{
 		public GtsMsgHeader header;                         /*GTS消息头*/
 		public byte u8FilterReset;                          /*复位标志*/
 		public byte u8DstFrame;                             /*远程BBU板的机框号*/
 		public byte u8DstSlot;                              /*远程BBU板的插槽号*/
 		public byte u8Padding;
+
+		public MsgGtsm2GtsaFilterResetReq()
+		{
+			header = new GtsMsgHeader();
+		}
+
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
 			if (ret.Length - offset < Len)
@@ -41,13 +47,19 @@ namespace AtpMessage.MsgDefine
 
 	/*过滤复位响应消息*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsa2GtsmFilterResetRsp : IASerialize
+	internal class MsgGtsa2GtsmFilterResetRsp : IASerialize
 	{
 		public GtsMsgHeader header;                         /*GTS消息头*/
 		public byte u8Complete;                             /*GTS_SUCCESS表示成功，GTS_FAILURE表示失败*/
 		public byte u8DstFrame;                             /*远程BBU板的机框号*/
 		public byte u8DstSlot;                              /*远程BBU板的插槽号*/
 		public byte u8Padding;
+
+		public MsgGtsa2GtsmFilterResetRsp()
+		{
+			header = new GtsMsgHeader();
+		}
+
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
 			throw new NotImplementedException();

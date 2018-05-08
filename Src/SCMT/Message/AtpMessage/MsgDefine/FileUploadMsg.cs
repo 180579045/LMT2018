@@ -6,11 +6,17 @@ namespace AtpMessage.MsgDefine
 {
 	/*文件上传请求*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaFulReq : IASerialize
+	internal class MsgGtsm2GtsaFulReq : IASerialize
 	{
 		public GtsMsgHeader header;				/*GTS消息头*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = GtsMsgType.MAX_FILE_PATH_NAME_LENGTH)]
 		public byte[] u8FileName;				/*文件名*/
+
+		public MsgGtsm2GtsaFulReq()
+		{
+			header = new GtsMsgHeader();
+			u8FileName = new byte[GtsMsgType.MAX_FILE_PATH_NAME_LENGTH];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -37,12 +43,18 @@ namespace AtpMessage.MsgDefine
 
 	/*文件上传响应*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaFulRsp : IASerialize
+	internal class MsgGtsm2GtsaFulRsp : IASerialize
 	{
 		public GtsMsgHeader header;                         /*GTS消息头*/
 		public byte u8Complete;                             /*GTS_SUCCESS表示成功， GTS_FAILURE表示失败*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
 		public byte[] u8Padding;
+
+		public MsgGtsm2GtsaFulRsp()
+		{
+			header = new GtsMsgHeader();
+			u8Padding = new byte[3];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -79,12 +91,19 @@ namespace AtpMessage.MsgDefine
 
 	/*文件上传完成消息*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsa2GtsmFulCompleteInd : IASerialize
+	internal class MsgGtsa2GtsmFulCompleteInd : IASerialize
 	{
 		public GtsMsgHeader header;			/*GTS消息头*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = GtsMsgType.MAX_FILE_PATH_NAME_LENGTH)]
 		public byte[] u8FileName;			/*文件名*/
 		public byte u8Completed;			/*完成标志*/
+
+		public MsgGtsa2GtsmFulCompleteInd()
+		{
+			header = new GtsMsgHeader();
+			u8FileName = new byte[GtsMsgType.MAX_FILE_PATH_NAME_LENGTH];
+		}
+
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
 			throw new NotImplementedException();

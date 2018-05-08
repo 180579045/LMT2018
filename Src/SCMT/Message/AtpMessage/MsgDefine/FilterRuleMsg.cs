@@ -6,7 +6,7 @@ namespace AtpMessage.MsgDefine
 {
 	/*过滤条件消息*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsm2GtsaFilterRuleReq : IASerialize
+	internal class MsgGtsm2GtsaFilterRuleReq : IASerialize
 	{
 		public GtsMsgHeader header;                         /*GTS消息头*/
 		public byte u8FilterSign;                           /*RULE_FILTER表示过滤, RULE_HODE表示保留*/
@@ -15,6 +15,13 @@ namespace AtpMessage.MsgDefine
 		public byte u8DstSlot;                              /*远程BBU板的插槽号*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 100)]
 		public uint[] u32FilterOpcode;						/*过滤条件*/
+
+		public MsgGtsm2GtsaFilterRuleReq()
+		{
+			header = new GtsMsgHeader();
+			u32FilterOpcode = new uint[100];
+		}
+
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
 			if (ret.Length - offset < Len)
@@ -44,13 +51,19 @@ namespace AtpMessage.MsgDefine
 
 	/*过滤条件响应*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	internal struct MsgGtsa2GtsmFilterRuleRsp : IASerialize
+	internal class MsgGtsa2GtsmFilterRuleRsp : IASerialize
 	{
 		public GtsMsgHeader header;                         /*GTS消息头*/
 		public byte u8Complete;                             /*GTS_SUCCESS表示成功，GTS_FAILURE表示失败*/
 		public byte u8DstFrame;                             /*远程BBU板的机框号*/
 		public byte u8DstSlot;                              /*远程BBU板的插槽号*/
 		public byte u8Padding;
+
+		public MsgGtsa2GtsmFilterRuleRsp()
+		{
+			header = new GtsMsgHeader();
+		}
+
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
 			throw new NotImplementedException();

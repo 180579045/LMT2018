@@ -26,7 +26,7 @@ namespace AtpMessage.MsgDefine
 {
 	//日志头文件中的时间定义,年月日时分秒和毫秒组成
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	public struct STRU_Time : IASerialize
+	public class STRU_Time : IASerialize
 	{
 		public u16 u16Year;
 		public u8 u8Month;
@@ -38,6 +38,11 @@ namespace AtpMessage.MsgDefine
 		public u16 u16MilSec;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public u8[] u8Pad2;
+
+		public STRU_Time()
+		{
+			u8Pad2 = new byte[2];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -71,7 +76,7 @@ namespace AtpMessage.MsgDefine
 
 	//日志文件中存储消息头定义
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	public struct GTS_LogHeader : IASerialize
+	public class GTS_LogHeader : IASerialize
 	{
 		public u32 u32MsgNum;                   /*消息序号*/
 		public u16 u16MsgLen;                   /*消息长度*/
@@ -85,6 +90,12 @@ namespace AtpMessage.MsgDefine
 		public STRU_Time struTime;                     /*系统时间*/
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 		public u8[] u8Pad2;                    /*保留字段*/
+
+		public GTS_LogHeader()
+		{
+			u8IP = new byte[20];
+			u8Pad2 = new byte[4];
+		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
 		{
@@ -164,13 +175,19 @@ namespace AtpMessage.MsgDefine
 
 
 	//osp头定义
-	public struct ATP_OSP_STRU_MSGHEAD : IASerialize
+	public class ATP_OSP_STRU_MSGHEAD : IASerialize
 	{
 		public OSP_MSGSELECT MsgType;                /* 消息类型 */
 		public OSP_MSGSIZE MsgSize;                /* 消息体长度，以字节为单位 */
 		public ATP_OSP_SFUID_STRUCT SrcSfuId;    /* 源SFUID */
 		public ATP_OSP_SFUID_STRUCT DstSfuId;    /* 目的SFUID */
 		public u32 value;
+
+		public ATP_OSP_STRU_MSGHEAD()
+		{
+			SrcSfuId = new ATP_OSP_SFUID_STRUCT();
+			DstSfuId = new ATP_OSP_SFUID_STRUCT();
+		}
 
 		//TODO 判断大小端后需要调整顺序
 		public u32 TimeStamp2 => value & 0xF8000000;        /* 时间戳2，用于记录时隙号:5bit */
