@@ -288,7 +288,7 @@ namespace SCMTMainWindow.Component.View
 
             try
             {
-                doc.Load("opcode.xml");
+                doc.Load(".\\Component\\Configration\\opcode.xml");
 
                 XmlNodeList nodeList = doc.SelectNodes("/Root/OperationCode[SwitchName='" + SwitchName + "']");
 
@@ -421,7 +421,7 @@ namespace SCMTMainWindow.Component.View
             try
             {
                 //加载配置文件，从配置文件中查找节点 TraceSwitch，保存到xmlNodeList中
-                bsnDoc.Load("traceswitch.xml");
+                bsnDoc.Load(".\\Component\\Configration\\traceswitch.xml");
                 XmlNodeList bsnList = bsnDoc.SelectNodes("/Root/TraceSwitch");
 
                 //从每个 TraceSwitch 中获取 BoardStyleName
@@ -466,7 +466,7 @@ namespace SCMTMainWindow.Component.View
 
             try
             {
-                doc.Load("traceswitch.xml");
+                doc.Load(".\\Component\\Configration\\traceswitch.xml");
 
                 XmlNodeList nodeList = doc.SelectNodes("/Root/TraceSwitch[BoardStyleName='" + BoardStyleName + "']");
 
@@ -552,13 +552,14 @@ namespace SCMTMainWindow.Component.View
                 strTest += nID.ToString() + ": " + arrySwitch[nID].ToString() + "\n";
 
             }
-            MessageBox.Show(strTest);
+	    ParseMessageWindow Pw = new ParseMessageWindow();
+            Pw.Show();
         }
 
         private int GetIDByName(string strName)
         {
             XmlDocument doc = new XmlDocument();
-            doc.Load("traceswitch.xml");
+            doc.Load(".\\Component\\Configration\\traceswitch.xml");
 
             XmlNodeList docNodeList = doc.SelectNodes("/Root/TraceSwitch[Name='" + strName + "']");
 
