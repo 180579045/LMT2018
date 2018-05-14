@@ -8,7 +8,7 @@ using MsgQueue;
 
 namespace AtpMessage.GtsMsgParse
 {
-	public class GtsMsgParseService
+	public class GtsMsgParseService : IDisposable
 	{
 		public static GtsMsgParseService GetInstance()
 		{
@@ -42,5 +42,10 @@ namespace AtpMessage.GtsMsgParse
 		}
 
 		private GtsMsgParseWorker _worker;
+		public void Dispose()
+		{
+			SubscribeHelper.CancelSubscribe("/GtsMsgParseService/WinPcap");
+			SubscribeHelper.CancelSubscribe("/GtsMsgParseService/GtsaSend");
+		}
 	}
 }

@@ -71,6 +71,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="IpBurstTest.cs" />
+    <Compile Include="IpSessionTest.cs" />
     <Compile Include="LinkMgrActorTest.cs" />
     <Compile Include="MsgSerializeTest.cs" />
     <Compile Include="NetElementLinkBaseTest.cs" />

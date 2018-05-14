@@ -139,7 +139,8 @@ namespace AtpMessage.LinkMgr
 			string sendBytes = JsonHelper.SerializeObjectToString(sessionData);
 
 			//创建和断开连接的topic比较特殊
-			string topic = string.Format("/SessionService/%s/UDP", isLogon ? "Create" : "Delete");
+			string act = (isLogon ? "Create" : "Delete");
+			string topic = string.Format($"/SessionService/{act}/UDP");
 			PublishHelper.PublishMsg(topic, sendBytes);
 			return sendBytes.Length;
 		}
@@ -162,6 +163,20 @@ namespace AtpMessage.LinkMgr
 		/// <returns></returns>
 		public bool SendTraceSwitch(byte[] switchs)
 		{
+			//创建IP连接
+			SessionData sessionData = new SessionData(10)
+			{
+				target =
+				{
+					raddr = _netElementConfig.TargetIp,
+					rport = CommonPort.AtpLinkPort,
+					laddr = _netElementConfig.TraceIp
+				}
+			};
+			string sendBytes = JsonHelper.SerializeObjectToString(sessionData);
+
+			PublishHelper.PublishMsg("/SessionService/Create/IP", sendBytes);
+
 			return SendTSwitchs(switchs, _netElementConfig);
 		}
 

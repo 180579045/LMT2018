@@ -10,48 +10,53 @@ using CommonUility;
 /// </summary>
 namespace MsgQueue
 {
-    public class SubscribeHelper
-    {
-        private SubscribeClient subClient;
+	public class SubscribeHelper : IDisposable
+	{
+		private SubscribeClient subClient;
 
-        public SubscribeHelper()
-        {
-            subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.Run();
-        }
+		public SubscribeHelper()
+		{
+			subClient = new SubscribeClient(CommonPort.PubServerPort);
+			subClient.Run();
+		}
 
-        ~SubscribeHelper()
-        {
-            subClient.Dispose();
-        }
+		~SubscribeHelper()
+		{
+			subClient.Dispose();
+		}
 
-        public static SubscribeHelper GetInstance()
-        {
-            return Singleton<SubscribeHelper>.GetInstance();
-        }
+		public void Dispose()
+		{
+			
+		}
 
-        public static bool AddSubscribe(string topic, HandlerSubscribeMsg handler)
-        {
-            return GetInstance().SubscribeTopic(topic, handler);
-        }
+		public static SubscribeHelper GetInstance()
+		{
+			return Singleton<SubscribeHelper>.GetInstance();
+		}
 
-        public static bool CancelSubscribe(string topic)
-        {
-            return GetInstance().SubScribeCancel(topic);
-        }
+		public static bool AddSubscribe(string topic, HandlerSubscribeMsg handler)
+		{
+			return GetInstance().SubscribeTopic(topic, handler);
+		}
 
-        //TODO 需要加topic流程
-        private bool SubscribeTopic(string topic, HandlerSubscribeMsg handler)
-        {
-            subClient.AddSubscribeTopic(topic, handler);
-            return true;
-        }
+		public static bool CancelSubscribe(string topic)
+		{
+			return GetInstance().SubScribeCancel(topic);
+		}
 
-        private bool SubScribeCancel(string topic)
-        {
-            subClient.CancelSubscribeTopic(topic);
-            return true;
-        }
+		//TODO 需要加topic流程
+		private bool SubscribeTopic(string topic, HandlerSubscribeMsg handler)
+		{
+			subClient.AddSubscribeTopic(topic, handler);
+			return true;
+		}
 
-    }
+		private bool SubScribeCancel(string topic)
+		{
+			subClient.CancelSubscribeTopic(topic);
+			return true;
+		}
+
+	}
 }

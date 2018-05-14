@@ -22,7 +22,7 @@ namespace AtpMessage.SessionMgr
 		FTP,
 	}
 
-	public class SessionService
+	public class SessionService : IDisposable
 	{
 		public static SessionService GetInstance()
 		{
@@ -33,16 +33,18 @@ namespace AtpMessage.SessionMgr
 		{
 			_Sessions = new Dictionary<string, IASession>();
 
-			string topic = "/SessionService/Create/";
+			string topic = "/SessionService/Create/UDP";
 			string desc = "创建连接。后面跟协议：UDP、TCP、IP、FTP。";
 			Type dataType = typeof(SessionData);
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, dataType));
 			SubscribeHelper.AddSubscribe(topic, OnMakeSession);
+			SubscribeHelper.AddSubscribe("/SessionService/Create/IP", OnMakeSession);
 
-			topic = "/SessionService/Delete/";
+			topic = "/SessionService/Delete/UDP";
 			desc = "断开连接。后面跟协议：UDP、TCP、IP、FTP。";
 			TopicManager.GetInstance().AddTopic(new TopicInfo(topic, desc, dataType));
 			SubscribeHelper.AddSubscribe(topic, OnBreakSession);
+			SubscribeHelper.AddSubscribe("/SessionService/Delete/IP", OnBreakSession);
 		}
 
 		//创建链接
@@ -150,5 +152,17 @@ namespace AtpMessage.SessionMgr
 
 		//保存udpSession。key:"目的IP-目的端口"
 		private Dictionary<string, IASession> _Sessions;
+		public void Dispose()
+		{
+			foreach (var session in _Sessions)
+			{
+				session.Value.Stop();
+			}
+
+			SubscribeHelper.CancelSubscribe("/SessionService/Create/UDP");
+			SubscribeHelper.CancelSubscribe("/SessionService/Create/IP");
+			SubscribeHelper.CancelSubscribe("/SessionService/Delete/IP");
+			SubscribeHelper.CancelSubscribe("/SessionService/Delete/UDP");
+		}
 	}
 }

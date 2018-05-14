@@ -1,11 +1,12 @@
-﻿using CommonUility;
+﻿using System;
+using CommonUility;
 
 namespace MsgQueue
 {
 	/// <summary>
 	/// 公共的发布消息助手
 	/// </summary>
-	public class PublishHelper
+	public class PublishHelper : IDisposable
 	{
 		private readonly PublisherClient _pubClient;
 
@@ -17,6 +18,11 @@ namespace MsgQueue
 		~PublishHelper()
 		{
 			_pubClient.Dispose();
+		}
+
+		public void Dispose()
+		{
+			
 		}
 
 		public static PublishHelper GetInstance()

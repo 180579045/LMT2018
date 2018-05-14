@@ -20,5 +20,12 @@ namespace AtpMessage
 
 			return 0;
 		}
+
+		public static void Stop()
+		{
+			LinkMgrActor.GetInstance().Dispose();
+			SessionService.GetInstance().Dispose();
+			GtsMsgParseService.GetInstance().Dispose();
+		}
 	}
 }

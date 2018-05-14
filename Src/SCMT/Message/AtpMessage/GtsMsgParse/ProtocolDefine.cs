@@ -117,7 +117,7 @@ namespace AtpMessage.GtsMsgParse
 			used += SerializeHelper.DeserializeInt32(bytes, offset + used, ref src_addr);
 			used += SerializeHelper.DeserializeInt32(bytes, offset + used, ref des_addr);
 
-			headerLen = (byte)(ver_len & 0x0F);
+			headerLen = (byte)((ver_len & 0x0F) * 4);	//首部长度指的是首部占32bit字的数目
 			if (used < headerLen)      //条件成立：有可选项
 			{
 				options = new byte[32];

@@ -11,7 +11,7 @@ namespace AtpMessage.LinkMgr
 	/// TODO 前台是否限制了一个IP只能对应一个网元？
 	/// TODO ipSession可能无法建立对应的map，需要更多的信息
 	/// </summary>
-	public class LinkMgrActor
+	public class LinkMgrActor :IDisposable
 	{
 		/// <summary>
 		/// 获取LinkMgrActor的实例。单例。
@@ -100,7 +100,7 @@ namespace AtpMessage.LinkMgr
 
 		private void OnSendTraceSwtich(SubscribeMsg msg)
 		{
-			string ip = "";     //TODO
+			string ip = "172.27.245.92";     //TODO
 			if (!HasLinkWithSameIp(ip))     //没有对应的连接，返回。需要加入提示
 			{
 				return;
@@ -227,5 +227,17 @@ namespace AtpMessage.LinkMgr
 
 		//保存所有添加的网元信息。Key：ne addr，Value：ne reference
 		private Dictionary<string, NetElementLinkBase> _mapNetElementLinks;
+		public void Dispose()
+		{
+			//foreach (var link in _mapNetElementLinks)
+			//{
+			//	DisconnectNe(link.Key);
+			//}
+
+
+
+			//取消订阅
+			SubscribeHelper.CancelSubscribe("/AtpBack/TraceConfig/StartTrace");
+		}
 	}
 }

@@ -40,6 +40,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="PacketDotNet">
+      <HintPath>..\..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="SharpPcap">
       <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\SharpPcap.dll</HintPath>
     </Reference>

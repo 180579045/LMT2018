@@ -71,7 +71,7 @@ namespace AtpMessage.SessionMgr
 			_deviceCapture.OnPacketArrival += OnPacketArrive;
 			_deviceCapture.OnCaptureStopped += OnStopCapture;
 			_deviceCapture.Open(DeviceMode.Promiscuous);
-			_deviceCapture.Filter = "udp and udp.srcport==50000";
+			_deviceCapture.Filter = "udp src port 5002";
 			_deviceCapture.StartCapture();
 
 			return true;
