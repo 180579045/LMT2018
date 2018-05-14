@@ -68,9 +68,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework" />
-    <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SnmpSharpNet.0.9.5\lib\SnmpSharpNet.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="SnmpSharpNet">
+      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -38,6 +38,7 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Interop;
+using CDLBrowser.Parser;
 
 namespace SCMTMainWindow
 {
@@ -855,5 +856,10 @@ namespace SCMTMainWindow
 
         }
 
+        private void OpenClick(object sender, RoutedEventArgs e)
+        {
+            ParseMessageWindow Pw = new ParseMessageWindow();
+            Pw.Show();
+        }
     }
 }
