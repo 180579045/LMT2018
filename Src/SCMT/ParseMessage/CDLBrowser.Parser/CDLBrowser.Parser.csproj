@@ -42,9 +42,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncIO, Version=0.1.25.0, Culture=neutral, PublicKeyToken=44a94435bd6f33f8, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\AsyncIO.0.1.26.0\lib\net40\AsyncIO.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="AsyncIO">
+      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\AsyncIO.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e" />
     <Reference Include="DevExpress.Data.v11.2, Version=11.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a, processorArchitecture=MSIL">
@@ -62,14 +61,16 @@
     <Reference Include="MySql.Data">
       <HintPath>..\..\Output\Library\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="NetMQ, Version=4.0.0.1, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NetMQ.4.0.0.1\lib\net40\NetMQ.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NetMQ">
+      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\NetMQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.1.12217, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="ServiceStack.Client">
+      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\ServiceStack.Client.dll</HintPath>
+    </Reference>
     <Reference Include="Spring.Core, Version=1.3.2.20943, Culture=neutral, PublicKeyToken=65e474d141e25e07, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Output\Library\Spring.Core.dll</HintPath>
@@ -121,7 +122,11 @@
     <Compile Include="Document\Event\DataBaseIngoredAttribute.cs" />
     <Compile Include="Document\Event\EventNew.cs" />
     <Compile Include="Document\Event\SignalingEvent.cs" />
+    <Compile Include="Document\HexMessage.cs" />
     <Compile Include="Document\ParserNameManager.cs" />
+    <Compile Include="ParseMessageWindow.xaml.cs">
+      <DependentUpon>ParseMessageWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ProtocolDecoder.cs" />
     <Compile Include="Configuration\ConfigurationManagerTest.cs" />
     <Compile Include="Configuration\ConfigNode.cs" />
@@ -302,7 +307,12 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="ParseMessageWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

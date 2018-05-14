@@ -1,0 +1,50 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CDLBrowser.Parser"
+        xmlns:CustomUI="clr-namespace:SuperLMT.Utils.CustomUI;assembly=SuperLMT.Utils" x:Class="CDLBrowser.Parser.ParseMessageWindow"
+        mc:Ignorable="d"
+        Title="ParseMessageWindow" Height="400" Width="525">
+    <Grid>
+        <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" VerticalAlignment="Top" Height="193" Width="497" Margin="10,10,0,0" SelectionChanged="dataGrid_SelectionChanged"/>
+        <TreeView x:Name="treeView" HorizontalAlignment="Left" Height="70" Margin="10,203,0,0" VerticalAlignment="Top" Width="497"/>
+        <CustomUI:HexMemoryViewer x:Name="hexMemView" HorizontalAlignment="Left" Margin="10,273,0,0" VerticalAlignment="Top" Height="48" Width="497" SelectedRange="{Binding Path=HeMemoryViewSelectedRage}" DisplayContent="{Binding Path=HeMemoryViewContext}" ScrollViewer.CanContentScroll="True">
+
+            <FlowDocument Background="White" PageWidth="550">
+                <Table x:Name="hexTabel" FontFamily="Lucida Console" FontSize="14" CellSpacing="0">
+                    <Table.Columns>
+                        <TableColumn Width="100"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                        <TableColumn Width="25"/>
+                    </Table.Columns>
+                    <TableRowGroup>
+                        <TableRow>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+
+                        </TableRow>
+                    </TableRowGroup>
+                </Table>
+            </FlowDocument>
+        </CustomUI:HexMemoryViewer>
+        <Button x:Name="button" Content="Click" HorizontalAlignment="Left" Margin="214,339,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+    </Grid>
+</Window>

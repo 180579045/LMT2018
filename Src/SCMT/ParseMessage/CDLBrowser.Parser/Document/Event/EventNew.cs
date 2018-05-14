@@ -25,5 +25,19 @@ namespace CDLBrowser.Parser.Document.Event
         public string MessageSource { get; set; }
         [DataBaseIngoredAttribute(false)]
         public string data { get; set; }
+        private byte[] rawData;
+        [DataBaseIngoredAttribute(false)]
+        public byte[] RawData
+        {
+            get
+            {
+                return this.rawData;
+            }
+            set
+            {
+                rawData = value;
+            }
+
+        }
     }
 }
