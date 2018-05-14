@@ -209,7 +209,7 @@ namespace SCMTMainWindow.Component.View
         {
             try
             {
-                string strInfo = File.ReadAllText("HotKey.json");
+                string strInfo = File.ReadAllText(".\\Component\\Configration\\HotKey.json");
                 ObservableCollection<HotKeyModel> listHotKey = JsonConvert.DeserializeObject<ObservableCollection<HotKeyModel>>(strInfo);
 
                 return listHotKey;

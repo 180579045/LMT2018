@@ -149,6 +149,10 @@
     <Compile Include="Component\View\MesasgeRecv.xaml.cs">
       <DependentUpon>MesasgeRecv.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\View\TraceSet.xaml.cs">
+      <DependentUpon>TraceSet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Component\View\TraceSetTreeModel.cs" />
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\PlanBParser\HLMessageParser.cs" />
     <Compile Include="MainWindowVM.cs" />
@@ -167,6 +171,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Component\View\MesasgeRecv.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\View\TraceSet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,6 +236,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <Content Include="Component\Configration\opcode.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Configration\traceswitch.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Data\Mib_Data.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -241,6 +255,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Tree_Reference.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Component\Configration\HotKey.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">
