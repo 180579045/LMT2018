@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AtpInital.cs" />
     <Compile Include="AtpMessageInfo.cs" />
     <Compile Include="GtsMsgParse\GtsMsgParseService.cs" />
     <Compile Include="GtsMsgParse\GtsMsgParseWorker.cs" />

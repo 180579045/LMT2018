@@ -60,15 +60,15 @@ namespace AtpMessage.GtsMsgParse
 			}
 
 			int used = 0;
-			used += SerializeHelper.SerializeBytes(ref des_mac, 0, bytes, offset + used, Marshal.SizeOf(des_mac));
-			used += SerializeHelper.SerializeBytes(ref src_mac, 0, bytes, offset + used, Marshal.SizeOf(src_mac));
-			used += SerializeHelper.SerializeBytes(ref type, 0, bytes, offset + used, Marshal.SizeOf(type));
+			used += SerializeHelper.SerializeBytes(ref des_mac, 0, bytes, offset + used, des_mac.Length);
+			used += SerializeHelper.SerializeBytes(ref src_mac, 0, bytes, offset + used, src_mac.Length);
+			used += SerializeHelper.SerializeBytes(ref type, 0, bytes, offset + used, type.Length);
 
 			return used;
 		}
 
 		public int Len => ContentLen;
-		public ushort ContentLen => (ushort) (Marshal.SizeOf(des_mac) + Marshal.SizeOf(src_mac) + Marshal.SizeOf(type));
+		public ushort ContentLen => (ushort) (des_mac.Length + src_mac.Length + type.Length);
 	};
 
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
@@ -86,7 +86,7 @@ namespace AtpMessage.GtsMsgParse
 		public uint des_addr;          //目标地址,32位
 
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-		public byte[] options;    //选项和填充,32位
+		public byte[] options;			//选项和填充,32位
 
 		//下面的是为了方便添加的，不是协议中的内容
 		public byte headerLen;
@@ -121,7 +121,7 @@ namespace AtpMessage.GtsMsgParse
 			if (used < headerLen)      //条件成立：有可选项
 			{
 				options = new byte[32];
-				used += SerializeHelper.SerializeBytes(ref options, 0, bytes, offset + used, Marshal.SizeOf(options));
+				used += SerializeHelper.SerializeBytes(ref options, 0, bytes, offset + used, options.Length);
 			}
 
 			_flag = (byte)(flag_offset >> 13);          //3bit：分片标志。标识是否IP分片.第一位无用，第二位0：允许分片，1：不允许。第三位0：最后一片，1：后面还有分片
@@ -135,7 +135,6 @@ namespace AtpMessage.GtsMsgParse
 		public ushort ContentLen => (ushort)(sizeof(byte) * 20);    //TODO 选项不一定有
 	};
 
-	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
 	public class UDP_HEADER : IASerialize
 	{
 		public ushort src_port;   //发送端端口

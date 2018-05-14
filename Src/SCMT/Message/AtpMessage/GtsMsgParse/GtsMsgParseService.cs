@@ -15,11 +15,19 @@ namespace AtpMessage.GtsMsgParse
 			return Singleton<GtsMsgParseService>.GetInstance();
 		}
 
+		private bool bHadInit = false;
+
 		public void InitService()
 		{
+			if (bHadInit)
+			{
+				return;
+			}
+
 			_worker = new GtsMsgParseWorker();
 			SubscribeHelper.AddSubscribe("/GtsMsgParseService/WinPcap", OnIpFrameMsgParse);
 			SubscribeHelper.AddSubscribe("/GtsMsgParseService/GtsaSend", OnGtsaMsgParse);
+			bHadInit = true;
 		}
 
 		private void OnIpFrameMsgParse(SubscribeMsg msg)

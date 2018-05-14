@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Reflection;
+using AtpMessage;
 using AtpMessage.SessionMgr;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -68,6 +70,17 @@ namespace AtpMessageTest
 			topic = "/SessionService/Create/";
 			actual = SessionService.GetInstance().GetProcotolTypeFromTopic(topic);
 			Assert.AreEqual("", actual);
+		}
+
+		[TestMethod]
+		public void TestAtpInitial()
+		{
+			Type t = typeof(AtpInitial);
+			MethodInfo mtInfo = t.GetMethod("Init");
+			Assert.IsNotNull(mtInfo);
+
+			int ret = (int)mtInfo.Invoke(null, null);
+			Assert.AreEqual(11, ret);
 		}
 	}
 }

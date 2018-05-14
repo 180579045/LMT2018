@@ -5,13 +5,20 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using AtpMessage;
+using MsgQueue;
 
 namespace SCMTMainWindow
 {
-    /// <summary>
-    /// App.xaml 的交互逻辑
-    /// </summary>
-    public partial class App : Application
-    {
-    }
+	/// <summary>
+	/// App.xaml 的交互逻辑
+	/// </summary>
+	public partial class App : Application
+	{
+		protected override void OnStartup(StartupEventArgs e)
+		{
+			MqInitial.Init();
+			AtpInitial.Init();
+		}
+	}
 }

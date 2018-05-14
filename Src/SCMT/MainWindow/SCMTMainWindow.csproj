@@ -316,6 +316,10 @@
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Message\AtpMessage\AtpMessage.csproj">
+      <Project>{47e80563-d3e6-4039-bd2b-63480bbd0525}</Project>
+      <Name>AtpMessage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MsgQueue\MsgQueue.csproj">
       <Project>{DFCC660C-1B0A-470A-9AB1-14448A33091C}</Project>
       <Name>MsgQueue</Name>

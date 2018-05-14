@@ -32,7 +32,7 @@ namespace MsgQueue
 		{
 			_dictionaryTopicHandlers = new Dictionary<string, HandlerSubscribeMsg>();
 			_subSocket = new SubscriberSocket($">tcp://{addr}:{port}");
-			_subSocket.Options.ReceiveHighWatermark = 1000;
+			_subSocket.Options.ReceiveHighWatermark = 10000;
 		}
 
 		/// <summary>

@@ -58,7 +58,8 @@ namespace AtpMessage.GtsMsgParse
 				throw new ArgumentException();
 			}
 
-			UdpDataInfo udpData = new UdpDataInfo()
+			int udpDataLen = udpBytes.Length - offset - udpHeader.Len;
+			UdpDataInfo udpData = new UdpDataInfo(udpDataLen)
 			{
 				SrcAddr = srcAddr,
 				DstAddr = dstAddr,
@@ -66,7 +67,6 @@ namespace AtpMessage.GtsMsgParse
 				DstPort = udpHeader.des_port
 			};
 
-			int udpDataLen = udpBytes.Length - offset - udpHeader.Len;
 			Buffer.BlockCopy(udpBytes, offset + udpHeader.Len, udpData.UdpDataBytes, 0, udpDataLen);
 
 			ParseUdpData(udpData);
@@ -141,12 +141,17 @@ namespace AtpMessage.GtsMsgParse
 		private Dictionary< ushort, SortedDictionary<ushort, byte[]> > mapIpFrames = new Dictionary<ushort, SortedDictionary<ushort, byte[]>>();
 	}
 
-	internal struct UdpDataInfo
+	internal class UdpDataInfo
 	{
 		public byte[] UdpDataBytes;     //已经去掉了所有的协议头
 		public uint SrcAddr;
 		public uint DstAddr;
 		public ushort SrcPort;
 		public ushort DstPort;
+
+		public UdpDataInfo(int len)
+		{
+			UdpDataBytes = new byte[len];
+		}
 	}
 }

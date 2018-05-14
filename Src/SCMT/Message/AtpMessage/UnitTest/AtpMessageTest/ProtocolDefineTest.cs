@@ -7,34 +7,21 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace AtpMessageTest
 {
 	/// <summary>
-	/// IP组包单元测试
+	/// ProtocolDefineTest 的摘要说明
 	/// </summary>
 	[TestClass]
-	public class IpBurstTest
+	public class ProtocolDefineTest
 	{
-		public IpBurstTest()
+		public ProtocolDefineTest()
 		{
-			worker = new GtsMsgParseWorker();
-		}
 
-		private GtsMsgParseWorker worker;
-		private TestContext testContextInstance;
+		}
 
 		/// <summary>
 		///获取或设置测试上下文，该上下文提供
 		///有关当前测试运行及其功能的信息。
 		///</summary>
-		public TestContext TestContext
-		{
-			get
-			{
-				return testContextInstance;
-			}
-			set
-			{
-				testContextInstance = value;
-			}
-		}
+		public TestContext TestContext { get; set; }
 
 		#region 附加测试特性
 		//
@@ -59,31 +46,33 @@ namespace AtpMessageTest
 		#endregion
 
 		[TestMethod]
-		public void TestAddNewIpPacket()
+		public void TestEtherHeaderInit()
 		{
-			//模拟IP分片无序到达的情况
-			ushort ipId = 100;
-			ushort frameOffset = 2;
-			byte[] frameData = {1, 1, 1, 1};
+			byte[] src_mac = new byte[6] { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66};
+			byte[] dst_mac = new byte[6] { 0x77, 0x88, 0x99, 0x00, 0xaa, 0xbb };
+			byte[] p_type = new byte[2] {0x00, 0x11};
 
-			worker.AddNewIpPacket(ipId, frameOffset, frameData);
-
-			frameOffset = 1;
-			frameData = new byte[] { 0, 0, 0, 0};
-			worker.AddNewIpPacket(ipId, frameOffset, frameData);
-
-			frameOffset = 3;
-			frameData = new byte[] { 0, 1, 0, 1 };
-			worker.AddNewIpPacket(ipId, frameOffset, frameData);
-
-			byte[] expected = {0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1};
-			byte[] actual = worker.IpBurst(ipId);
-
-			Assert.AreEqual(expected.Length, actual.Length);
-
-			for (int i = 0; i < expected.Length; i++)
+			ETHERNET_HEADER header = new ETHERNET_HEADER()
 			{
-				Assert.AreEqual(expected[i], actual[i]);
+				des_mac = dst_mac,
+				src_mac = src_mac,
+				type = p_type
+			};
+
+			Assert.AreEqual(14, header.Len);
+		}
+
+		[TestMethod]
+		public void TestEthernetHeaderDe()
+		{
+			byte[] data = new byte[] { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x99, 0x00, 0xaa, 0xbb, 0x00, 0x11 };
+			ETHERNET_HEADER header = new ETHERNET_HEADER();
+			int ret = header.DeserializeToStruct(data, 0);
+			Assert.AreEqual(data.Length, ret);
+
+			for (int i = 0; i < 6; i++)
+			{
+				Assert.AreEqual(data[i], header.des_mac[i]);
 			}
 		}
 	}
