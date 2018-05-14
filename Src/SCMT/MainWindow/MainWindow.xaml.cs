@@ -856,12 +856,12 @@ namespace SCMTMainWindow
 
         }
 
-<<<<<<< HEAD
+
         private void OpenClick(object sender, RoutedEventArgs e)
         {
             ParseMessageWindow Pw = new ParseMessageWindow();
             Pw.Show();
-=======
+        }
         /// <summary>
         /// 打开跟踪设置界面
         /// </summary>
@@ -880,7 +880,7 @@ namespace SCMTMainWindow
             {
                 win.Activate();
             }
->>>>>>> f96e1d73d2dd8b44daf9c8bee3026e824071d202
+
         }
     }
 }
