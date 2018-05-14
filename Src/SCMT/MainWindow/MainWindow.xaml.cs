@@ -855,5 +855,24 @@ namespace SCMTMainWindow
 
         }
 
+        /// <summary>
+        /// 打开跟踪设置界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroMenuItem_Click_1(object sender, RoutedEventArgs e)
+        {
+            //显示  设置窗体
+            var win = TraceSet.CreateInstance();
+
+            if (!win.IsVisible)
+            {
+                win.ShowDialog();
+            }
+            else
+            {
+                win.Activate();
+            }
+        }
     }
 }

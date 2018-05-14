@@ -41,6 +41,7 @@
                 <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
                 <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="快捷键" Click="MetroMenuItem_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
+                    <Metro:MetroMenuItem Header="跟踪设置" Click="MetroMenuItem_Click_1" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
                 </Metro:MetroMenuItem>
                 <Metro:MetroMenuItem Header="帮助" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png"/>
