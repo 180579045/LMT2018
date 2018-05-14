@@ -40,12 +40,9 @@ namespace CDLBrowser.Parser
 
         }
         private void InitSubscribeTopic()
-        {
-            PubSubServer.GetInstance().InitServer(CommonPort.PubServerPort, CommonPort.SubServerPort);
+        {            
             this.dataGrid.ItemsSource = hlMessageUE;
-            subClient = new SubscribeClient(CommonPort.PubServerPort);
-            subClient.AddSubscribeTopic("HlSignalMsg", updateHlSingalMessageInfo);
-            subClient.Run();
+            SubscribeHelper.AddSubscribe("/AtpBack/CDLParse/MsgParse", updateHlSingalMessageInfo);
         }
         private void updateHlSingalMessageInfo(SubscribeMsg msg)
         {
