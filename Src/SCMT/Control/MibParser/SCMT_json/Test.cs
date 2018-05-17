@@ -4,17 +4,24 @@ using SCMT_json.JSONDataMgr;
 namespace SCMT_json
 {
     class NodeB {
+        Database test;
         void ResultInitData(bool result)
         {
             if (result)
+            {
                 Console.WriteLine("init data result is ok");
+
+                IReDataByEnglishName nameInfo = new ReDataByEnglishName();
+                test.getDataByEnglishName("srsResourceSetId", out nameInfo);
+                Console.WriteLine("output, {0}", nameInfo.oid);
+            }
             else
                 Console.WriteLine("init data result is failed");
         }
 
         public void dosomething()
         {
-            Database test = new Database();
+            test = new Database();
 
 
             if (!test.initDatabase())
@@ -25,7 +32,6 @@ namespace SCMT_json
                 Console.WriteLine("test.initDatabase ok. ");
             }
             test.resultInitData = new ResultInitData(ResultInitData);
-            Console.WriteLine("== resultInitData ok. ");
 
         }
     }
@@ -34,6 +40,14 @@ namespace SCMT_json
     {
         static void Main(String[] args)
         {
+            // 2. 解析lm.dtz => json文件(增加，叶子节点的读写属性)
+            //解析.mdb文件
+            //JsonDataManager JsonDataM = new JsonDataManager("5.10.11");
+            //JsonDataM = new JsonDataManager("5.10.11");
+            //JsonDataM.ConvertAccessDbToJsonCmdTree();
+            //Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+            //return;
+
 
             Console.WriteLine("begin ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
             NodeB b = new NodeB();
@@ -98,6 +112,16 @@ namespace SCMT_json
         {
             string myStr = "hello";
             //CloneMe(myStr);
+        }
+
+        public void testCmdTree()
+        {
+            // 2. 解析lm.dtz => json文件(增加，叶子节点的读写属性)
+            //解析.mdb文件
+            JsonDataManager JsonDataM = new JsonDataManager("5.10.11");
+            JsonDataM = new JsonDataManager("5.10.11");
+            JsonDataM.ConvertAccessDbToJsonCmdTree();
+            Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
         }
 
     }

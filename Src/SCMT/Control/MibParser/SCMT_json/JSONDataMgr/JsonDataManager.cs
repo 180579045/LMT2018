@@ -26,6 +26,7 @@ namespace SCMT_json.JSONDataMgr
     {
         string mibInfo;
         string objTreeInfo;
+        string cmdTreeInfo;
         string mibVersion;
         
         string mdbFile;
@@ -78,7 +79,27 @@ namespace SCMT_json.JSONDataMgr
             //jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
             jsonObjFile.WriteFile(jsonfilepath + "obj.json", objTreeJson.GetStringObjTreeJson());
             this.objTreeInfo = objTreeJson.GetStringObjTreeJson();
+
+            ////生产 cmdTree 命令树文件
+            //dataSet.Reset();
+            //sqlContent = "select * from CmdTree order by CmdID";
+            //dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
+
             Console.WriteLine("end to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+            return;
+        }
+        public void ConvertAccessDbToJsonCmdTree()
+        {
+            //生产 cmdTree 命令树文件
+            string sqlContent = "select * from CmdTree order by CmdID";
+            DataSet dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
+            CmdTreeJsonData cmdJsonDatat = new CmdTreeJsonData();
+            cmdJsonDatat.CmdParseDataSet(dataSet);
+
+            JsonFile jsonObjFile = new JsonFile();
+            //jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
+            jsonObjFile.WriteFile(jsonfilepath + "cmd.json", cmdJsonDatat.GetStringObjTreeJson());
+            this.cmdTreeInfo = cmdJsonDatat.GetStringObjTreeJson();
             return;
         }
 
