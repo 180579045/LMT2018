@@ -11,6 +11,7 @@ namespace SCMT_json
             {
                 Console.WriteLine("init data result is ok");
 
+                // 查询数据
                 IReDataByEnglishName nameInfo = new ReDataByEnglishName();
                 test.getDataByEnglishName("srsResourceSetId", out nameInfo);
                 Console.WriteLine("output, {0}", nameInfo.oid);
