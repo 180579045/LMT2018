@@ -49,6 +49,7 @@ namespace SCMT_json.JSONDataMgr
     {
         public ResultInitData resultInitData;
         private MibInfoList mibL = null;
+        private CmdInfoList cmdL = null;
 
         //初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
         private void myInitDateBase()
@@ -78,6 +79,10 @@ namespace SCMT_json.JSONDataMgr
             mibL.GeneratedMibInfoList();
             Console.WriteLine("mib list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
             //mibL.getOidEnInfo(@"1.3.6.1.4.1.5105.1.2.100.1.1.5.6.1.20.33",out oidInfo);
+
+            //
+            cmdL = new CmdInfoList();
+            cmdL.GeneratedCmdInfoList();
             resultInitData(true);
             return;
         }

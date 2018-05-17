@@ -32,7 +32,10 @@ namespace SCMT_json.JSONDataMgr
         /// </summary>
         public void GeneratedMibInfoList()
         {          ///
-            string sFilePath = @"D:\C#\SCMT_json\SCMT_json\jsonfile\mib.json";
+            ReadIniFile iniFile = new ReadIniFile();
+            string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
+            string jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
+            string sFilePath = jsonfilepath+ "mib.json";
             FileStream fs = new FileStream(sFilePath, FileMode.Open);//初始化文件流
             byte[] array = new byte[fs.Length];//初始化字节数组
             fs.Read(array, 0, array.Length);//读取流中数据到字节数组中
@@ -91,39 +94,39 @@ namespace SCMT_json.JSONDataMgr
                 }
             }
 
-            var test = oid_info_db.ToString();
-            var jsonstroid = JsonConvert.SerializeObject(oid_info_db);
-            var jsonstrnameEn = JsonConvert.SerializeObject(nameEn_info_db);
-            var jsonstrtable = JsonConvert.SerializeObject(table_info_db);
+            //var test = oid_info_db.ToString();
+            //var jsonstroid = JsonConvert.SerializeObject(oid_info_db);
+            //var jsonstrnameEn = JsonConvert.SerializeObject(nameEn_info_db);
+            //var jsonstrtable = JsonConvert.SerializeObject(table_info_db);
 
 
-            string fswritePathoid = @"D:\C#\SCMT_json\SCMT_json\jsonfile\oid_info_db.json";
-            string fswritePathnameEn = @"D:\C#\SCMT_json\SCMT_json\jsonfile\nameEn_info_db.json";
-            string fswritePattableh = @"D:\C#\SCMT_json\SCMT_json\jsonfile\table_info_db.json"; ;
-            FileStream fswoid = new FileStream(fswritePathoid, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件                                                                            //清空文件
-                                                                                               //清空文件
-            FileStream fswname = new FileStream(fswritePathnameEn, FileMode.Create, FileAccess.Write);
-            FileStream fswtable = new FileStream(fswritePattableh, FileMode.Create, FileAccess.Write);
+            //string fswritePathoid = @"D:\C#\SCMT_json\SCMT_json\jsonfile\oid_info_db.json";
+            //string fswritePathnameEn = @"D:\C#\SCMT_json\SCMT_json\jsonfile\nameEn_info_db.json";
+            //string fswritePattableh = @"D:\C#\SCMT_json\SCMT_json\jsonfile\table_info_db.json"; ;
+            //FileStream fswoid = new FileStream(fswritePathoid, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件                                                                            //清空文件
+            //                                                                                   //清空文件
+            //FileStream fswname = new FileStream(fswritePathnameEn, FileMode.Create, FileAccess.Write);
+            //FileStream fswtable = new FileStream(fswritePattableh, FileMode.Create, FileAccess.Write);
 
-            fswoid.SetLength(0);
-            fswname.SetLength(0);
-            fswtable.SetLength(0);
+            //fswoid.SetLength(0);
+            //fswname.SetLength(0);
+            //fswtable.SetLength(0);
 
-            StreamWriter sw1 = new StreamWriter(fswoid, Encoding.Default);
-            StreamWriter sw2 = new StreamWriter(fswname, Encoding.Default);
-            StreamWriter sw3 = new StreamWriter(fswtable, Encoding.Default);
+            //StreamWriter sw1 = new StreamWriter(fswoid, Encoding.Default);
+            //StreamWriter sw2 = new StreamWriter(fswname, Encoding.Default);
+            //StreamWriter sw3 = new StreamWriter(fswtable, Encoding.Default);
 
-            sw1.Write(jsonstroid);
-            sw1.Flush();
-            sw1.Close();
+            //sw1.Write(jsonstroid);
+            //sw1.Flush();
+            //sw1.Close();
 
-            sw2.Write(jsonstrnameEn);
-            sw2.Flush();
-            sw2.Close();
+            //sw2.Write(jsonstrnameEn);
+            //sw2.Flush();
+            //sw2.Close();
 
-            sw3.Write(jsonstrtable);
-            sw3.Flush();
-            sw3.Close();
+            //sw3.Write(jsonstrtable);
+            //sw3.Flush();
+            //sw3.Close();
             return;
          }
 

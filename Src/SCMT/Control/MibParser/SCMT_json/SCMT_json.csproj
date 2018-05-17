@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="JSONDataMgr\AccessDBManager.cs" />
     <Compile Include="IDatabase.cs" />
+    <Compile Include="JSONDataMgr\CmdInfoList.cs" />
     <Compile Include="JSONDataMgr\CmdTreeJsonData.cs" />
     <Compile Include="JSONDataMgr\Database.cs" />
     <Compile Include="JSONDataMgr\MibInfoList.cs" />

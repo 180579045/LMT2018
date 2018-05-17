@@ -80,10 +80,8 @@ namespace SCMT_json.JSONDataMgr
             jsonObjFile.WriteFile(jsonfilepath + "obj.json", objTreeJson.GetStringObjTreeJson());
             this.objTreeInfo = objTreeJson.GetStringObjTreeJson();
 
-            ////生产 cmdTree 命令树文件
-            //dataSet.Reset();
-            //sqlContent = "select * from CmdTree order by CmdID";
-            //dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
+            //cmdTree命令树 转换生成json文件
+            ConvertAccessDbToJsonCmdTree();
 
             Console.WriteLine("end to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
             return;
