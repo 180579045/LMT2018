@@ -14,6 +14,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using SCMTOperationCore.Elements;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace SCMTMainWindow
 {
@@ -34,12 +36,20 @@ namespace SCMTMainWindow
         {
             m_ObjFilePath = node.m_ObjTreeDataPath;
             JObject JObj = new JObject();
-
-            using (StreamReader reader = File.OpenText(m_ObjFilePath))
+            try
             {
-                JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                using (StreamReader reader = File.OpenText(m_ObjFilePath))
+                {
+                    JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+                }
+
+                ObjNode.nodeb = node;
+                ParseJObject(JObj);
             }
-            ParseJObject(JObj);
+            catch(Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
         }
 
         /// <summary>
@@ -50,26 +60,27 @@ namespace SCMTMainWindow
         private void ParseJObject(JObject obj)
         {
             // 筛选出所有节点的ID;
-            IEnumerable<int> AllNodes = from nodes in obj.First.Next.First
-                                        select (int)nodes["ObjID"];
+            IEnumerable<int> AllNodes = from nodes in obj.First.Next.First select (int)nodes["ObjID"];
             m_NodeList = new List<ObjNode>();
-
             int TempCount = 0;
+
+            
             // 遍历所有JSON文件中的节点,并添加进列表中;
             foreach (var iter in AllNodes)
             {
                 ObjNode node;
                 var ObjParentNodes = (int)obj.First.Next.First[TempCount]["ObjParentID"];
                 var name = (string)obj.First.Next.First[TempCount]["ObjName"];
+                var TableName = (string)obj.First.Next.First[TempCount]["MibTableName"];
                 var version = (string)obj.First.First;
 
                 if ((int)obj.First.Next.First[TempCount]["ChildRenCount"] != 0)
                 {
-                    node = new ObjTreeNode(iter, ObjParentNodes, version, name);
+                    node = new ObjTreeNode(iter, ObjParentNodes, version, name, TableName);
                 }
                 else
                 {
-                    node = new ObjLeafNode(iter, ObjParentNodes, version, name);
+                    node = new ObjLeafNode(iter, ObjParentNodes, version, name, TableName);
                 }
 
                 m_NodeList.Add(node);
@@ -77,6 +88,8 @@ namespace SCMTMainWindow
             }
             m_RootNode = ArrangeParentage(m_NodeList);
 
+            
+            
         }
 
         /// <summary>
@@ -87,7 +100,7 @@ namespace SCMTMainWindow
         public static List<ObjNode> ArrangeParentage(List<ObjNode> NodeList)
         {
             List<ObjNode> RootNodeShow = new List<ObjNode>();
-            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "基站节点列表");
+            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "基站节点列表",@"/");
 
             // 遍历所有节点确认亲子关系;
             foreach (ObjNode iter in NodeList)

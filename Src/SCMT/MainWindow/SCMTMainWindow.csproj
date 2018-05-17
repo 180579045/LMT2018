@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\CefSharp.Wpf.63.0.3\build\CefSharp.Wpf.props" Condition="Exists('..\packages\CefSharp.Wpf.63.0.3\build\CefSharp.Wpf.props')" />
   <Import Project="..\packages\CefSharp.Common.63.0.3\build\CefSharp.Common.props" Condition="Exists('..\packages\CefSharp.Common.63.0.3\build\CefSharp.Common.props')" />
@@ -110,10 +110,7 @@
       <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-     <HintPath>..\packages\Lib\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="LogManager">
-      <HintPath>..\Output\Bin\Debug\LogManager.dll</HintPath>
+      <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -162,7 +159,7 @@
     <Compile Include="Component\View\TraceSet.xaml.cs">
       <DependentUpon>TraceSet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\TraceSetTreeModel.cs" />
+    <Compile Include="Component\ViewModel\TraceSetTreeModel.cs" />
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\PlanBParser\HLMessageParser.cs" />
     <Compile Include="MainWindowVM.cs" />
@@ -336,6 +333,14 @@
     <Resource Include="Resources\NetPlanB.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\MibParser\SCMT_json\MIBDataParser.csproj">
+      <Project>{e212a21d-fe5b-4e50-9d60-dcf979ff242a}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>

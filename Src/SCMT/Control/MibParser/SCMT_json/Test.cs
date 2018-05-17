@@ -1,7 +1,7 @@
 ﻿using System;
-using SCMT_json.JSONDataMgr;
+using MIBDataParser.JSONDataMgr;
 
-namespace SCMT_json
+namespace MIBDataParser
 {
     class NodeB {
         Database test;

@@ -20,7 +20,7 @@ using System.Threading;
 using System.Data;
 using Newtonsoft.Json.Linq;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     class JsonDataManager
     {

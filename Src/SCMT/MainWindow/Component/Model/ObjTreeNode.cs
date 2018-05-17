@@ -17,6 +17,9 @@ using UICore.Controls.Metro;
 using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
+using SCMTOperationCore.Elements;
 
 namespace SCMTMainWindow
 {
@@ -31,11 +34,13 @@ namespace SCMTMainWindow
         public int ObjParentID { get; set; }                     // 父节点ID;
         public string ObjName { get; set; }                      // 节点名称;
         public List<string> OIDList { get; set; }                // 节点包含OID列表;
+        public string ObjTableName { get; set; }                 // 节点对应的表名;
         public List<ObjNode> SubObj_Lsit { get; set; }           // 孩子节点列表;
 
         public Grid m_NB_ContentGrid { get; set; }               // 对应的MIB内容容器;
         public MetroScrollViewer m_NB_Base_Contain { get; set; } // 对应的基站基本信息容器;
         public DataGrid m_NB_Content { get; set; }               // 对应的MIB内容;
+        static public NodeB nodeb { get; set; }                  // 对应的基站;
 
         abstract public void Add(ObjNode obj);                   // 增加孩子节点;
         abstract public void Remove(ObjNode obj);                // 删除孩子节点;
@@ -107,6 +112,12 @@ namespace SCMTMainWindow
             }
         }
 
+        /// <summary>
+        /// 遍历收藏夹节点;
+        /// </summary>
+        /// <param name="Obj_Tree"></param>
+        /// <param name="Lists"></param>
+        /// <param name="depths"></param>
         public void TraverseCollectChildren(MetroExpander Obj_Tree, StackPanel Lists, int depths)
         {
             Thickness margin = new Thickness();
@@ -181,34 +192,22 @@ namespace SCMTMainWindow
         /// <summary>
         /// 初始化参数列表;
         /// </summary>
-        public ObjNode(int id, int pid, string version, string name)
+        public ObjNode(int id, int pid, string version, string name, string tablename)
         {
             this.version = version;
             this.ObjID = id;
             this.ObjParentID = pid;
             this.ObjName = name;
+            this.ObjTableName = tablename;
             IsSelectedChanged += ClickObjNode;
             IsRightMouseDown += ObjNode_IsRightMouseDown;
         }
 
         private void ObjNode_IsRightMouseDown(object sender, MouseButtonEventArgs e)
         {
-
             MetroExpander abc = e.Source as MetroExpander;
             Console.WriteLine("111" + (abc.obj_type as ObjNode).ObjName);
             MainWindow.StrNodeName = (abc.obj_type as ObjNode).ObjName;
-            //menu.Show(control, new Point(e.X, e.Y));   //在点(e.X, e.Y)处显示menu
-
-
-            //MetroExpander abc = e.Source as MetroExpander;
-            //Console.WriteLine("111" + (abc.obj_type as ObjNode).ObjName);
-            ////this.ObjName = (abc.obj_type as ObjNode).ObjName;
-            //MenuItem[] formMenuItemList = new MenuItem[1];
-            ////formMenuItemList[0] = new MenuItem("添加到收藏", null, new EventHandler(AddToCollect(sender, e)));
-            //formMenuItemList[0] = new MenuItem();
-            //ContextMenu formMenu = new ContextMenu();
-            //formMenu.Items.Add(formMenuItemList);
-            //this.ContextMenu = formMenu;
         }
 
     }
@@ -217,8 +216,8 @@ namespace SCMTMainWindow
     /// </summary>
     class ObjTreeNode : ObjNode
     {
-        public ObjTreeNode(int id, int pid, string version, string name) 
-            : base(id, pid, version, name)
+        public ObjTreeNode(int id, int pid, string version, string name, string tablename) 
+            : base(id, pid, version, name, tablename)
         {
             SubObj_Lsit = new List<ObjNode>();
         }
@@ -256,6 +255,11 @@ namespace SCMTMainWindow
                     subitems.Click += iter.ClickObjNode;
                     subitems.obj_type = iter;
                     items.SubExpender.Children.Add(subitems);
+                }
+                // 该节点有对应的表可查;
+                if(this.ObjTableName != @"/")
+                {
+
                 }
             }
             else
@@ -311,8 +315,8 @@ namespace SCMTMainWindow
     /// </summary>
     class ObjLeafNode : ObjNode
     {
-        public ObjLeafNode(int id, int pid, string version, string name)
-            : base(id, pid, version, name)
+        public ObjLeafNode(int id, int pid, string version, string name, string tablename)
+            : base(id, pid, version, name, tablename)
         {
         }
 
@@ -320,8 +324,17 @@ namespace SCMTMainWindow
         {
             MetroExpander item = sender as MetroExpander;
             ObjNode node = item.obj_type as ObjNode;
+            IReDataByTableEnglishName ret = new ReDataByTableEnglishName();
 
-            Console.WriteLine("LeafNode Clicked!" + node.ObjName);
+            Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
+
+            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
+            foreach(var iter in ret.childrenList)
+            {
+                Console.WriteLine("Children List is" + iter.Keys.ToString());
+            }
+            
+
         }
         
         public override void Add(ObjNode obj)
@@ -340,8 +353,8 @@ namespace SCMTMainWindow
     /// </summary>
     class ObjCellSetupNode : ObjNode
     {
-        public ObjCellSetupNode(int id, int pid, string version, string name)
-            : base(id, pid, version, name)
+        public ObjCellSetupNode(int id, int pid, string version, string name, string tablename)
+            : base(id, pid, version, name, tablename)
         {
         }
 

@@ -4,11 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMT_json
+namespace MIBDataParser
 {
     public delegate void ResultInitData(bool result);
 
-    public interface IReDataByEnglishName{string oid { get; }}
+    public interface IReDataByEnglishName
+    {
+        string oid { get; }
+    }
     public interface IReDataByOid
     {
         string nameEn { get; }

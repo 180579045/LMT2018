@@ -63,7 +63,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommonUilityTest", "CommonU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtpMessageTest", "Message\AtpMessage\UnitTest\AtpMessageTest\AtpMessageTest.csproj", "{4CAC5654-E023-49E3-A5C0-AD3F919CEB59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMT_json", "Control\MibParser\SCMT_json\SCMT_json.csproj", "{E212A21D-FE5B-4E50-9D60-DCF979FF242A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MIBDataParser", "Control\MibParser\SCMT_json\MIBDataParser.csproj", "{E212A21D-FE5B-4E50-9D60-DCF979FF242A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

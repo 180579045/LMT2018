@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     /// <summary>
     /// 解压 JsonDataMgr.ini中的压缩文件

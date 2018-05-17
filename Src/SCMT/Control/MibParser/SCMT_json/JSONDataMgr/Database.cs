@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
-using SCMT_json;
-using SCMT_json.JSONDataMgr;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
 
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     ///
     public class ReDataByEnglishName : IReDataByEnglishName
@@ -45,11 +45,11 @@ namespace SCMT_json.JSONDataMgr
         public List<Dictionary<string, object>> childrenList { get { return myChildList; } }
     }
 
-    class Database : IDatabase
+    public class Database : IDatabase
     {
         public ResultInitData resultInitData;
         private MibInfoList mibL = null;
-        private CmdInfoList cmdL = null;
+        //private CmdInfoList cmdL = null;
 
         //初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
         private void myInitDateBase()
@@ -81,8 +81,8 @@ namespace SCMT_json.JSONDataMgr
             //mibL.getOidEnInfo(@"1.3.6.1.4.1.5105.1.2.100.1.1.5.6.1.20.33",out oidInfo);
 
             //
-            cmdL = new CmdInfoList();
-            cmdL.GeneratedCmdInfoList();
+//             cmdL = new CmdInfoList();
+//             cmdL.GeneratedCmdInfoList();
             resultInitData(true);
             return;
         }

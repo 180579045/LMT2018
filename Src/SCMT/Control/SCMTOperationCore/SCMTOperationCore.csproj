@@ -103,6 +103,12 @@
   <ItemGroup>
     <Folder Include="Message\GTSA\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MibParser\SCMT_json\MIBDataParser.csproj">
+      <Project>{E212A21D-FE5B-4E50-9D60-DCF979FF242A}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

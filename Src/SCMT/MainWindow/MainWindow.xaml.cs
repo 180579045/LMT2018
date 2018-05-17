@@ -40,6 +40,8 @@ using System.Collections.ObjectModel;
 using System.Windows.Interop;
 using CDLBrowser.Parser;
 using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
 
 namespace SCMTMainWindow
 {
@@ -51,7 +53,7 @@ namespace SCMTMainWindow
         public static string StrNodeName;
         private List<string> CollectList = new List<string>();
         public NodeBControl NBControler;
-        public NodeB node;
+        public NodeB node;                                                    // 当前项目暂时先只连接一个基站;
         bool bIsRepeat;
         private IntPtr m_Hwnd = new IntPtr();                                 // 当前主窗口句柄;
         private Dictionary<eHotKey, int> m_HotKeyDic                          // 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息;
@@ -94,7 +96,7 @@ namespace SCMTMainWindow
         //______________________________________________________________________主界面动态刷新____
 
         /// <summary>
-        /// 更新对象树模型以及叶节点模型;
+        /// 向对象树控件更新对象树模型以及叶节点模型;
         /// </summary>
         /// <param name="ItemsSource">对象树列表</param>
         private void RefreshObj(IList<ObjNode> ItemsSource)
@@ -145,12 +147,34 @@ namespace SCMTMainWindow
             ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
             node = (e as NodeBArgs).m_NodeB;
 
-            RefreshObj(Ctrl.m_RootNode);                                         // 1、更新对象树;
-            AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
+            RefreshObj(Ctrl.m_RootNode);                                         // 1、向控件更新对象树(第一个版本先加载本地的);
+            InitDataBase();                                                      // 2、创建数据库(第一个版本先加载本地的);
+            AddNodeBPageToWindow();                                              // 3、将基站添加到窗口页签中;
             if (node != null)
             {
-                node.Connect();                                                  // 3、连接基站(第一个版本，暂时只连接一个基站);
+                node.Connect();                                                  // 4、连接基站(第一个版本，暂时只连接一个基站);
             }
+        }
+
+        private void InitDataBase()
+        {
+            node.db = new Database();
+
+            if (!node.db.initDatabase())
+            {
+                Console.WriteLine("NodeB init database failed!");
+            }
+            else
+            {
+                Console.WriteLine("NodeB init database Success!");
+            }
+
+            node.db.resultInitData = new ResultInitData((bool ret) => {
+                if(ret == false)
+                {
+                    Console.WriteLine("DataBase Init Failed!");
+                }
+            });
         }
 
         #region 添加对象树收藏
@@ -240,7 +264,7 @@ namespace SCMTMainWindow
             ObjNode Objnode;
             List<ObjNode> m_NodeList = new List<ObjNode>();
             List<ObjNode> RootNodeShow = new List<ObjNode>();
-            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点");
+            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点", @"/");
             NodeB node = new NodeB("172.27.245.92", "NodeB");
             string cfgFile = node.m_ObjTreeDataPath;
             StreamReader reader = File.OpenText(cfgFile);
@@ -253,6 +277,7 @@ namespace SCMTMainWindow
             {
                 var ObjParentNodes = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
                 var name = (string)JObj.First.Next.First[TempCount]["ObjName"];
+                var TableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
                 var version = (string)JObj.First.First;
                 if (JObj.First.Next.First[TempCount]["ObjCollect"] == null)
                 {
@@ -262,7 +287,7 @@ namespace SCMTMainWindow
                 int ObjCollect = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
 
 
-                Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name);
+                Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name, TableName);
                 if (ObjCollect == 1)
                 {
                     int index = m_NodeList.IndexOf(Objnode);
@@ -399,6 +424,7 @@ namespace SCMTMainWindow
             Log.WriteLogDebug(typeof(MainWindow), "添加基站");
             Log.WriteLogInfo(typeof(MainWindow), "添加基站");
             Log.WriteLogWarn(typeof(MainWindow), "添加基站");
+
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
@@ -866,6 +892,7 @@ namespace SCMTMainWindow
             ParseMessageWindow Pw = new ParseMessageWindow();
             Pw.Show();
         }
+
         /// <summary>
         /// 打开跟踪设置界面
         /// </summary>
