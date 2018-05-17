@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SCMTMainWindow
+{
+    public class DataGrid_Cell_MIB : GridCell
+    {
+        public string oid;                             // 该单元格内对象的oid;
+        public string MibName_EN;                      // 该单元格内对象的MIB英文名称;
+        public string MibName_CN;                      // 该单元格内对象的MIB中文名称;
+
+        public override void CellDragawayCallback()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void EditingCallback()
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

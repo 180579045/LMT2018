@@ -43,8 +43,9 @@
     <Reference Include="PacketDotNet">
       <HintPath>..\..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="SharpPcap">
-      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\SharpPcap.dll</HintPath>
+    <Reference Include="SharpPcap, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\SharpPcap.4.4.0\lib\SharpPcap.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -93,6 +94,9 @@
       <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
       <Name>MsgQueue</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

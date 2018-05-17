@@ -135,12 +135,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataGrid\DataGrid_Cell_MIB.cs" />
+    <Compile Include="DataGrid\DataGrid_MIBDataControl.cs" />
+    <Compile Include="DataGrid\GridCell.cs" />
+    <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
     <Compile Include="Component\ViewModel\HLMessageViewModel.cs" />
     <Compile Include="Component\View\FlowChart.xaml.cs">
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\HotKeyManager.cs" />
-    <Compile Include="Component\View\HotKeySet.xaml.cs">
+    <Compile Include="Controls\HotKeyManager.cs" />
+    <Compile Include="Pages\HotKeySet.xaml.cs">
       <DependentUpon>HotKeySet.xaml</DependentUpon>
     </Compile>
     <Compile Include="Component\View\LinechartContent.xaml.cs">
@@ -156,13 +160,13 @@
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\PlanBParser\HLMessageParser.cs" />
     <Compile Include="MainWindowVM.cs" />
-    <Compile Include="Component\View\ObjTreeNode.cs" />
+    <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Page Include="Component\View\FlowChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\HotKeySet.xaml">
+    <Page Include="Pages\HotKeySet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -208,7 +212,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Component\View\Option.cs">
+    <Compile Include="Component\Model\Option.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Pages\AddNodeB.xaml.cs">

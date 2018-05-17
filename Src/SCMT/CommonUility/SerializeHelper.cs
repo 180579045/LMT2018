@@ -83,6 +83,10 @@ namespace CommonUility
 		/// <returns>copy的长度</returns>
 		public static int SerializeBytes(ref byte[] dst, int offset, byte[] src, int src_offset, int len)
 		{
+            if(src == null)
+            {
+                return -1;
+            }
 			if ((src.Length - src_offset < len) || (dst.Length - offset < len))
 			{
 				return -1;
