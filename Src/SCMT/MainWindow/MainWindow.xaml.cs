@@ -39,6 +39,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Interop;
 using CDLBrowser.Parser;
+using LogManager;
 
 namespace SCMTMainWindow
 {
@@ -395,6 +396,9 @@ namespace SCMTMainWindow
         #region 添加基站事件
         private void AddeNB(object sender, EventArgs e)
         {
+            Log.WriteLogDebug(typeof(MainWindow), "添加基站");
+            Log.WriteLogInfo(typeof(MainWindow), "添加基站");
+            Log.WriteLogWarn(typeof(MainWindow), "添加基站");
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
