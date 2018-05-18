@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MIBDataParser.JSONDataMgr;
 
 namespace MIBDataParser
@@ -12,13 +13,24 @@ namespace MIBDataParser
                 Console.WriteLine("init data result is ok");
 
                 // 查询数据
+                IReCmdDataByCmdEnglishName reCmdData;
+                test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
+
                 IReDataByEnglishName nameInfo = new ReDataByEnglishName();
                 test.getDataByEnglishName("srsResourceSetId", out nameInfo);
+
+
+                List <IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
+                List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
+                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
+                test.getDataByEnglishName(nameEnList, out nameInfoList);
 
                 IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
                 test.getDataByTableEnglishName("alarmCauseTable", out tableData);
 
                 test.testGetDataByTableEnglishName();
+
+
                 Console.WriteLine("output, {0}", nameInfo.oid);
             }
             else

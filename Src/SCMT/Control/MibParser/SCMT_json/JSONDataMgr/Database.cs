@@ -37,15 +37,32 @@ namespace MIBDataParser.JSONDataMgr
         public string indexNum { get { return myIndexNum; } }
     }
 
+    public class ReDataByTableEnglishNameChild : IReDataByTableEnglishNameChild
+    {
+        public string childNameMib { get; set; } // "alarmCauseNopublic string  ,
+        public string childNo { get; set; } // 1,
+        public string childOid { get; set; } // "1.1.1.1.1.1",
+        public string childNameCh { get; set; } // "告警原因编号",
+        public string isMib { get; set; } // 1,
+        public string ASNType { get; set; } // "Integer32",
+        public string OMType { get; set; } // "s32",
+        public string UIType { get; set; } // 0,
+        public string managerValueRange { get; set; } // "0-2147483647",
+        public string defaultValue { get; set; } // "×",
+        public string detailDesc { get; set; } // "告警原因编号， 取值  :0..2147483647。",
+        public string leafProperty { get; set; } // 0,
+        public string unit { get; set; } // ""
+    }
     public class ReDataByTableEnglishName : IReDataByTableEnglishName
     {
         public string myOid { get; set; }
         public string myIndexNum { get; set; }
-        public List<Dictionary<string, object>> myChildList = new List<Dictionary<string, object>>();
+        public List<IReDataByTableEnglishNameChild> myChildList = new List<IReDataByTableEnglishNameChild>();
+
         //// TableInfo 实现
         public string oid { get { return myOid; } }
         public string indexNum { get { return myIndexNum; } }
-        public List<Dictionary<string, object>> childrenList { get { return myChildList; } }
+        public List<IReDataByTableEnglishNameChild> childrenList { get { return myChildList; } }
     }
 
     public class ReCmdDataByCmdEnglishName : IReCmdDataByCmdEnglishName
@@ -132,6 +149,19 @@ namespace MIBDataParser.JSONDataMgr
             return true;
         }
 
+        public bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList)
+        {
+            reDataList = new List<IReDataByEnglishName>();
+            foreach (var nameEn in nameEnList)
+            {
+                IReDataByEnglishName nameInfo = new ReDataByEnglishName();
+                if (!this.getDataByEnglishName(nameEn, out nameInfo))
+                    return false;
+                reDataList.Add(nameInfo);
+            }
+            return true;
+        }
+
         public bool getDataByOid(string oid, out IReDataByOid reData)
         {
             reData = null;
@@ -152,49 +182,37 @@ namespace MIBDataParser.JSONDataMgr
 
         public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData)
         {
-            reData = null;
-            
             ReDataByTableEnglishName reTable = new ReDataByTableEnglishName();
-            dynamic getTable;
+            reData = null;
 
             if (nameEn.Length == 0 | mibL == null)
                 return false;
 
-            //if (!mibL.getTableInfo(nameEn, out getTable))
-            //    return false;
-            string nameTableEn = nameEn.Replace("Table", "Entry");
-            if (!mibL.getTableInfo(nameTableEn, out getTable))
+            dynamic getTable;
+            if (!mibL.getTableInfo(nameEn.Replace("Table", "Entry"), out getTable))
                 return false;
-
             reTable.myOid = getTable["oid"];
             reTable.myIndexNum = getTable["indexNum"];
-
-            string entryNameEn = getTable["nameMib"];
-            string entryOid = getTable["oid"];
-            string entryNameCh = getTable["nameCh"];
-            var entryChildList = getTable["childList"];
-
-            List<Dictionary<string, object>> childlist = new List<Dictionary<string, object>>();
-            foreach (var child in entryChildList)
+            foreach (var child in getTable["childList"])
             {
-                Dictionary<string, object> childInfo = new Dictionary<string, object>();
-                childInfo.Add("childNameMib", child["childNameMib"]);
-                childInfo.Add("childNo", child["childNo"]);
-                childInfo.Add("childOid", child["childOid"]);
-                childInfo.Add("childNameCh", child["childNameCh"]);
-                childInfo.Add("isMib", child["isMib"]);
-                childInfo.Add("ASNType", child["ASNType"]);
-                childInfo.Add("OMType", child["OMType"]);
-                childInfo.Add("UIType", child["UIType"]);
-                childInfo.Add("managerValueRange", child["managerValueRange"]);
-                childInfo.Add("defaultValue", child["defaultValue"]);
-                childInfo.Add("detailDesc", child["detailDesc"]);
-                childInfo.Add("leafProperty", child["leafProperty"]);
-                childInfo.Add("unit", child["unit"]);
+                ReDataByTableEnglishNameChild childInfo = new ReDataByTableEnglishNameChild();
+
+                childInfo.childNameMib = child["childNameMib"];
+                childInfo.childNo = child["childNo"];
+                childInfo.childOid = child["childOid"];
+                childInfo.childNameCh = child["childNameCh"];
+                childInfo.isMib = child["isMib"];
+                childInfo.ASNType = child["ASNType"];
+                childInfo.OMType = child["OMType"];
+                childInfo.UIType = child["UIType"];
+                childInfo.managerValueRange = child["managerValueRange"];
+                childInfo.defaultValue = child["defaultValue"];
+                childInfo.detailDesc = child["detailDesc"];
+                childInfo.leafProperty = child["leafProperty"];
+                childInfo.unit = child["unit"];
                 //
-                childlist.Add(childInfo);
+                reTable.myChildList.Add(childInfo);
             }
-            reTable.myChildList = childlist;
 
             reData = reTable;
             return true;
@@ -233,6 +251,11 @@ namespace MIBDataParser.JSONDataMgr
 
             Dictionary<string, dynamic> cmdInfo;
             cmdL.getCmdInfoByCmdEnglishName(cmdEn, out cmdInfo);
+            reCmdData.cmdNameEn = cmdEn; // 命令的英文名
+            reCmdData.tableName = cmdInfo["TableName"]; // 命令的mib表英文名
+            reCmdData.cmdType = cmdInfo["CmdType"]; //命令类型
+            reCmdData.cmdDesc = cmdInfo["CmdDesc"]; //命令描述
+            reCmdData.leaflist = cmdInfo["leafOIdList"]; // 命令节点名
             return true;
         }
     }

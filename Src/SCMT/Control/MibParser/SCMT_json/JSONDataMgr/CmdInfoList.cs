@@ -19,7 +19,6 @@ namespace MIBDataParser.JSONDataMgr
         ///     "leafOIdList" (List):[oid_1,oid_2,...,oid_x]}
         /// </summary>
         Dictionary<string, dynamic> cmd_info_db = new Dictionary<string, dynamic>();
-        dynamic myjson;
 
         public void GeneratedCmdInfoList()
         {          ///
@@ -60,7 +59,13 @@ namespace MIBDataParser.JSONDataMgr
         public bool getCmdInfoByCmdEnglishName(string cmdNameEn, out Dictionary<string, dynamic> cmdInfo)
         {
             cmdInfo = new Dictionary<string, dynamic>();
-
+            //判断键存在
+            if (!cmd_info_db.ContainsKey(cmdNameEn)) // exist == True 
+            {
+                Console.WriteLine("Table db with Key = ({0}) not exists.", cmdNameEn);
+                return false;
+            }
+            cmdInfo = cmd_info_db[cmdNameEn];
             return true;
         }
     }

@@ -18,11 +18,28 @@ namespace MIBDataParser
         string isLeaf { get; }
         string indexNum { get; }
     }
+
+    public interface IReDataByTableEnglishNameChild
+    {
+        string childNameMib { get; set; } // "alarmCauseNostring ,
+        string childNo { get; set; } // 1,
+        string childOid { get; set; } // "1.1.1.1.1.1",
+        string childNameCh { get; set; } // "告警原因编号",
+        string isMib { get; set; } // 1,
+        string ASNType { get; set; } // "Integer32",
+        string OMType { get; set; } // "s32",
+        string UIType { get; set; } // 0,
+        string managerValueRange { get; set; } // "0-2147483647",
+        string defaultValue { get; set; } // "×",
+        string detailDesc { get; set; } // "告警原因编号， 取值  :0..2147483647。",
+        string leafProperty { get; set; } // 0,
+        string unit { get; set; } // ""
+    }
     public interface IReDataByTableEnglishName
     {
         string oid { get; }
         string indexNum { get; }
-        List<Dictionary<string, object>> childrenList { get; }
+        List<IReDataByTableEnglishNameChild> childrenList { get; }
     }
     public interface IReCmdDataByCmdEnglishName {
         string cmdNameEn { get; set; } // 命令的英文名
