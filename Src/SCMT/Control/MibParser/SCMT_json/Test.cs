@@ -17,6 +17,8 @@ namespace MIBDataParser
 
                 IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
                 test.getDataByTableEnglishName("alarmCauseTable", out tableData);
+
+                test.testGetDataByTableEnglishName();
                 Console.WriteLine("output, {0}", nameInfo.oid);
             }
             else

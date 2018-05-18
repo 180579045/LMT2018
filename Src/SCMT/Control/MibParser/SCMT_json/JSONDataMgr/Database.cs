@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.IO;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 
@@ -199,8 +202,27 @@ namespace MIBDataParser.JSONDataMgr
 
         public bool testGetDataByTableEnglishName()
         {
+            ReadIniFile iniFile = new ReadIniFile();
+            string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
+            string jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
+            string sFilePath = jsonfilepath + "Tree_Reference.json";
+            
+            StreamReader reader = File.OpenText(sFilePath);
+            JObject JObj = new JObject();
+            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            foreach (var table in JObj["NodeList"])
+            {
+                IReDataByTableEnglishName reData;
+                string MibTableName = table["MibTableName"].ToString();
+                if (String.Equals("/", MibTableName))
+                    continue;
+                if (false == getDataByTableEnglishName(MibTableName, out reData))
+                {
+                    //Console.WriteLine("===={0} not exist.", MibTableName);
+                }
+            }
 
-            return false;
+            return true;
         }
 
         public bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData)
