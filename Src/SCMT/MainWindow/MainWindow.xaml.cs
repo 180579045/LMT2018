@@ -42,6 +42,7 @@ using CDLBrowser.Parser;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
+using SCMTMainWindow.Component.SCMTControl;
 
 namespace SCMTMainWindow
 {
@@ -156,25 +157,21 @@ namespace SCMTMainWindow
             }
         }
 
+        /// <summary>
+        /// 更新数据库;
+        /// </summary>
         private void InitDataBase()
         {
             node.db = new Database();
 
-            if (!node.db.initDatabase())
+            node.db.resultInitData = new ResultInitData((bool ret) =>
             {
-                Console.WriteLine("NodeB init database failed!");
-            }
-            else
-            {
-                Console.WriteLine("NodeB init database Success!");
-            }
-
-            node.db.resultInitData = new ResultInitData((bool ret) => {
-                if(ret == false)
+                if (ret == false)
                 {
                     Console.WriteLine("DataBase Init Failed!");
                 }
             });
+            node.db.initDatabase();
         }
 
         #region 添加对象树收藏

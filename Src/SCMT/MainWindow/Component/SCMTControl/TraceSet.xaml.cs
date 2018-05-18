@@ -16,8 +16,9 @@ using System.Windows.Shapes;
 using System.Xml;
 using CDLBrowser.Parser;
 using MsgQueue;
+using SCMTMainWindow.Component;
 
-namespace SCMTMainWindow.Component.View
+namespace SCMTMainWindow.Component.SCMTControl
 {
 	/// <summary>
 	/// TraceSet.xaml 的交互逻辑

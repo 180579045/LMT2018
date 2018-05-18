@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SCMTMainWindow.Component.View
+namespace SCMTMainWindow.Component.SCMTControl
 {
     /// <summary>
     /// MesasgeRecv.xaml 的交互逻辑

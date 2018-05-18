@@ -138,25 +138,28 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataGrid\DataGrid_Cell_MIB.cs" />
-    <Compile Include="DataGrid\DataGrid_MIBDataControl.cs" />
-    <Compile Include="DataGrid\GridCell.cs" />
+    <Compile Include="Component\Model\DataGrid\DataGrid_Cell_MIB.cs" />
+    <Compile Include="Component\SCMTControl\DataGrid.xaml.cs">
+      <DependentUpon>DataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
+    <Compile Include="Component\Model\DataGrid\GridCell.cs" />
     <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
     <Compile Include="Component\ViewModel\HLMessageViewModel.cs" />
-    <Compile Include="Component\View\FlowChart.xaml.cs">
+    <Compile Include="Component\SCMTControl\FlowChart.xaml.cs">
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\HotKeyManager.cs" />
     <Compile Include="Pages\HotKeySet.xaml.cs">
       <DependentUpon>HotKeySet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\LinechartContent.xaml.cs">
+    <Compile Include="Component\SCMTControl\LinechartContent.xaml.cs">
       <DependentUpon>LinechartContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\MesasgeRecv.xaml.cs">
+    <Compile Include="Component\SCMTControl\MesasgeRecv.xaml.cs">
       <DependentUpon>MesasgeRecv.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\TraceSet.xaml.cs">
+    <Compile Include="Component\SCMTControl\TraceSet.xaml.cs">
       <DependentUpon>TraceSet.xaml</DependentUpon>
     </Compile>
     <Compile Include="Component\ViewModel\TraceSetTreeModel.cs" />
@@ -165,7 +168,11 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
-    <Page Include="Component\View\FlowChart.xaml">
+    <Page Include="Component\SCMTControl\DataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\FlowChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -173,15 +180,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\LinechartContent.xaml">
+    <Page Include="Component\SCMTControl\LinechartContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\MesasgeRecv.xaml">
+    <Page Include="Component\SCMTControl\MesasgeRecv.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\TraceSet.xaml">
+    <Page Include="Component\SCMTControl\TraceSet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

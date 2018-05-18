@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SCMTMainWindow.Component.View
+namespace SCMTMainWindow.Component.SCMTControl
 {
     /// <summary>
     /// LinechartContent.xaml 的交互逻辑

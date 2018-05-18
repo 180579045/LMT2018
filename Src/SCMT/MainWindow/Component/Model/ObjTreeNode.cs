@@ -331,7 +331,7 @@ namespace SCMTMainWindow
             nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
             foreach(var iter in ret.childrenList)
             {
-                Console.WriteLine("Children List is" + iter.Keys.ToString());
+                Console.WriteLine("Children List is" + iter.ToString());
             }
             
 

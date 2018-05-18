@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace SCMTMainWindow.Component.View
+namespace SCMTMainWindow.Component
 {
     public class TraceSetTreeModel : INotifyPropertyChanged
     {

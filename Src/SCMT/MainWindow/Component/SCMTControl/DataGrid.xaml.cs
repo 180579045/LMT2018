@@ -13,20 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SCMTMainWindow.Component.View
+namespace SCMTMainWindow.Component.SCMTControl
 {
     /// <summary>
-    /// FlowChart.xaml 的交互逻辑
+    /// DataGrid.xaml 的交互逻辑
     /// </summary>
-    public partial class FlowChart : UserControl
+    public partial class DataGrid : UserControl
     {
-        public FlowChart()
+        public DataGrid()
         {
             InitializeComponent();
-            this.address.Address = System.Environment.CurrentDirectory + @"\FlowChart_JS\FlowChart.html";
-            //CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-            //this.address.RegisterJsObject("JsObj", new CallbackObjectForJs());
-            this.address.BeginInit();
         }
     }
 }
