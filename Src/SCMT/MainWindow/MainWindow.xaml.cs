@@ -71,7 +71,7 @@ namespace SCMTMainWindow
             RegisterFunction();                                               // 注册功能;
             deleteTempFile();
         }
-
+        
         /// <summary>
         /// 初始化用户界面;
         /// </summary>
@@ -81,21 +81,57 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 注册所有所需要的基础功能;
+        /// 窗口启动，注册所有所需要的基础功能;
         /// </summary>
         private void RegisterFunction()
         {
             //TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
         }
 
-        private void AddNodeBPageToWindow()
+        /// <summary>
+        /// 窗口关闭;
+        /// 关闭先前注册的服务;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MetroWindow_Closed(object sender, EventArgs e)
         {
-            
+            TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
         }
 
+        /// <summary>
+        /// 当增加基站的窗口关闭的时候进行的处理;
+        /// 1、通过tcp接口连接基站
+        /// 2、连接成功后，向基站发送数据同步请求;
+        /// 3、请求成功后，对数据进行解析，并显示在前端界面上;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNB_Closed(object sender, EventArgs e)
+        {
+            // 如果参数为空，则表示用户没有添加基站;
+            if (!(e is NodeBArgs) || e == null)
+            {
+                return;
+            }
 
-        //______________________________________________________________________主界面动态刷新____
+            // 第一个版本所有数据先从本地获取;
+            node = (e as NodeBArgs).m_NodeB;
+            ObjNode.datagrid = new DTDataGrid();
+            ObjNode.datagrid = this.MibDataGrid;
+            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 初始化象树树信息;
+            InitDataBase();                                                      // 创建数据库(第一个版本先加载本地的);
 
+            // 向基站前端控件填入对应信息;
+            RefreshObj(Ctrl.m_RootNode);                                         // 向控件更新对象树;
+            AddNodeBPageToWindow();                                              // 将基站添加到窗口页签中;
+
+            if (node != null)
+            {
+                node.Connect();                                                  // 连接基站(第一个版本，暂时只连接一个基站);
+            }
+        }
+        
         /// <summary>
         /// 向对象树控件更新对象树模型以及叶节点模型;
         /// </summary>
@@ -112,49 +148,11 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 窗口关闭;
-        /// 关闭先前注册的服务;
+        /// 将基站添加到对象树以及详细页的页签当中;
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void MetroWindow_Closed(object sender, EventArgs e)
+        private void AddNodeBPageToWindow()
         {
-            TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
-        }
 
-        /// <summary>
-        /// 添加基站;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddNodeB_Click(object sender, RoutedEventArgs e)
-        {
-            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-            AddNodeB.NewInstance(this).ShowDialog();
-        }
-
-        /// <summary>
-        /// 当窗口关闭得时候进行的处理;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddNB_Closed(object sender, EventArgs e)
-        {
-            // 如果参数为空，则表示没有基站;
-            if (!(e is NodeBArgs))
-            {
-                return;
-            }
-            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
-            node = (e as NodeBArgs).m_NodeB;
-
-            RefreshObj(Ctrl.m_RootNode);                                         // 1、向控件更新对象树(第一个版本先加载本地的);
-            InitDataBase();                                                      // 2、创建数据库(第一个版本先加载本地的);
-            AddNodeBPageToWindow();                                              // 3、将基站添加到窗口页签中;
-            if (node != null)
-            {
-                node.Connect();                                                  // 4、连接基站(第一个版本，暂时只连接一个基站);
-            }
         }
 
         /// <summary>
@@ -173,7 +171,19 @@ namespace SCMTMainWindow
             });
             node.db.initDatabase();
         }
+        
+        /// <summary>
+        /// 添加基站按钮事件;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNodeB_Click(object sender, RoutedEventArgs e)
+        {
+            AddNodeB.NewInstance(this).Closed += AddNB_Closed;
+            AddNodeB.NewInstance(this).ShowDialog();
+        }
 
+        //______________________________________________________________________主界面动态刷新____
         #region 添加对象树收藏
         /// <summary>
         /// 将对象树添加到收藏;

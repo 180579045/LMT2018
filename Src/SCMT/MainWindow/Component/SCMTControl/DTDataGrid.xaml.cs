@@ -18,9 +18,9 @@ namespace SCMTMainWindow.Component.SCMTControl
     /// <summary>
     /// DataGrid.xaml 的交互逻辑
     /// </summary>
-    public partial class DataGrid : UserControl
+    public partial class DTDataGrid : UserControl
     {
-        public DataGrid()
+        public DTDataGrid()
         {
             InitializeComponent();
         }

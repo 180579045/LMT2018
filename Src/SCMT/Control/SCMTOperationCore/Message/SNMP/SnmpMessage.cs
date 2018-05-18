@@ -146,6 +146,10 @@ namespace SCMTOperationCore.Message.SNMP
     /// </summary>
     public class SnmpMessageResult : IAsyncResult
     {
+        /// <summary>
+        /// Key：oid;
+        /// value：数值;
+        /// </summary>
         private Dictionary<string, string> m_Result;
 
         public void SetSNMPReslut(Dictionary<string, string> res)

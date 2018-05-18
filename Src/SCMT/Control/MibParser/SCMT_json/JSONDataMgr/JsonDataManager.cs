@@ -100,8 +100,12 @@ namespace MIBDataParser.JSONDataMgr
             threads[1].Name = "ObjTree";
             threads[2] = new Thread(new ThreadStart(ConvertAccessDbToJsonCmdTree));
             threads[2].Name = "CmdTree";
+
             foreach (Thread t in threads)
+            {
                 t.Start();
+            }
+                
 
             int i = 3;
             while (i>0){

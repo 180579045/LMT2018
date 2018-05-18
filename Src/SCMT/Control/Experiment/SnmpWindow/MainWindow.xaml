@@ -24,7 +24,7 @@
                         <avalon:LayoutPanel>
 
                             <avalon:LayoutDocumentPane>
-                                <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanTogglePin="False" CanAutoHide="False">
+                                <avalon:LayoutAnchorable Title="Sample Tool Pane" CanFloat="True" CanHide="False" CanAutoHide="False">
                                     <Grid>
                                         <StackPanel>
                                             <Button Grid.Row="0" Height="19" Width="50" Content="123" Click="shownewpanel"></Button>
@@ -54,7 +54,7 @@
                             </avalon:LayoutDocumentPane>
 
                             <avalon:LayoutDocumentPane x:Name="pane1">
-                                <avalon:LayoutAnchorable Title="Trap" CanHide="False" CanTogglePin="False" CanAutoHide="False">
+                                <avalon:LayoutAnchorable Title="Trap" CanHide="False" CanAutoHide="False">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="30"></RowDefinition>
@@ -66,7 +66,7 @@
                                     </Grid>
                                 </avalon:LayoutAnchorable>
 
-                                <avalon:LayoutAnchorable Title="input" CanTogglePin="False" CanHide="False" CanAutoHide="False" CanFloat="True">
+                                <avalon:LayoutAnchorable Title="input" CanHide="False" CanAutoHide="False" CanFloat="True">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition></ColumnDefinition>
@@ -99,7 +99,7 @@
 
                             <avalon:LayoutDocumentPane ShowHeader="False">
 
-                                <avalon:LayoutAnchorable Title="input" CanTogglePin="False" CanHide="False" CanAutoHide="False" CanFloat="True">
+                                <avalon:LayoutAnchorable Title="input" CanHide="False" CanAutoHide="False" CanFloat="True">
                                     <Grid>
 
                                     </Grid>

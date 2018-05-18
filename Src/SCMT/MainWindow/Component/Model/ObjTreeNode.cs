@@ -20,6 +20,10 @@ using System.Windows.Input;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Elements;
+using SCMTMainWindow.Component.SCMTControl;
+using SCMTOperationCore.Message.SNMP;
+using SCMTMainWindow.Component.ViewModel;
+using System.Windows.Data;
 
 namespace SCMTMainWindow
 {
@@ -29,25 +33,30 @@ namespace SCMTMainWindow
     /// </summary>
     public abstract class ObjNode
     {
-        public string version { get; set; }                      // 对象树版本号;
-        public int ObjID { get; set; }                           // 节点ID;
-        public int ObjParentID { get; set; }                     // 父节点ID;
-        public string ObjName { get; set; }                      // 节点名称;
-        public List<string> OIDList { get; set; }                // 节点包含OID列表;
-        public string ObjTableName { get; set; }                 // 节点对应的表名;
-        public List<ObjNode> SubObj_Lsit { get; set; }           // 孩子节点列表;
+        public string version { get; set; }                            // 对象树版本号;
+        public int ObjID { get; set; }                                 // 节点ID;
+        public int ObjParentID { get; set; }                           // 父节点ID;
+        public string ObjName { get; set; }                            // 节点名称;
+        public List<string> OIDList { get; set; }                      // 节点包含OID列表;
+        public string ObjTableName { get; set; }                       // 节点对应的表名;
+        public List<ObjNode> SubObj_Lsit { get; set; }                 // 孩子节点列表;
 
-        public Grid m_NB_ContentGrid { get; set; }               // 对应的MIB内容容器;
-        public MetroScrollViewer m_NB_Base_Contain { get; set; } // 对应的基站基本信息容器;
-        public DataGrid m_NB_Content { get; set; }               // 对应的MIB内容;
-        static public NodeB nodeb { get; set; }                  // 对应的基站;
+        public Grid m_NB_ContentGrid { get; set; }                     // 对应的MIB内容容器;
+        public MetroScrollViewer m_NB_Base_Contain { get; set; }       // 对应的基站基本信息容器;
+        public DataGrid m_NB_Content { get; set; }                     // 对应的MIB内容;
+        static public NodeB nodeb { get; set; }                        // 对应的基站;
+        static public DTDataGrid datagrid { get; set; }                // 对应的界面表格;
+        protected Dictionary<string, string> name_cn { get; set; }     // 属性名与中文名对应关系;(后续独立挪到DataGridControl中)
+        protected Dictionary<string, string> oid_cn { get; set; }      // oid与中文名对应关系;
+        protected List<DyDataGrid_MIBModel> contentlist { get; set; }    // 用来保存内容;
 
-        abstract public void Add(ObjNode obj);                   // 增加孩子节点;
-        abstract public void Remove(ObjNode obj);                // 删除孩子节点;
+        abstract public void Add(ObjNode obj);                         // 增加孩子节点;
+        abstract public void Remove(ObjNode obj);                      // 删除孩子节点;
 
-        public event EventHandler IsExpandedChanged;             // 树形结构展开时;
-        public event EventHandler IsSelectedChanged;             // 树形结构节点被选择时;
-        public event MouseButtonEventHandler IsRightMouseDown;   // 右键选择节点时;
+        public event EventHandler IsExpandedChanged;                   // 树形结构展开时;
+        public event EventHandler IsSelectedChanged;                   // 树形结构节点被选择时;
+        public event MouseButtonEventHandler IsRightMouseDown;         // 右键选择节点时;
+        static protected string prev_oid = "1.3.6.1.4.1.5105.100.";
 
         /// <summary>
         /// 对象树节点点击事件;
@@ -201,6 +210,9 @@ namespace SCMTMainWindow
             this.ObjTableName = tablename;
             IsSelectedChanged += ClickObjNode;
             IsRightMouseDown += ObjNode_IsRightMouseDown;
+            name_cn = new Dictionary<string, string>();
+            oid_cn = new Dictionary<string, string>();
+            contentlist = new List<DyDataGrid_MIBModel>();
         }
 
         private void ObjNode_IsRightMouseDown(object sender, MouseButtonEventArgs e)
@@ -329,14 +341,67 @@ namespace SCMTMainWindow
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
             nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
+
+            List<string> oidlist = new List<string>();
+            name_cn.Clear();oid_cn.Clear();
+            // 遍历所有子节点，组SNMP的GetNext命令OID集合;
             foreach(var iter in ret.childrenList)
             {
-                Console.WriteLine("Children List is" + iter.ToString());
+                string temp = prev_oid + iter.childOid;
+                name_cn.Add(iter.childNameMib, iter.childNameCh);
+                oid_cn.Add(iter.childOid, iter.childNameCh);
+                oidlist.Add(temp);
             }
-            
+
+            SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
+            msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
+        }
+
+        private void ReceiveRes(IAsyncResult ar)
+        {
+            SnmpMessageResult res = ar as SnmpMessageResult;
+
+            foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
+            {
+                Console.WriteLine("NextIndex" + iter.Key.ToString() + "Value:" + iter.Value.ToString());
+
+                dynamic model = new DyDataGrid_MIBModel();
+
+                foreach(var iter2 in oid_cn)
+                {
+                    if(iter.Key.ToString().Contains(iter2.Key))
+                    {
+                        model.AddProperty(iter2.Key.ToString(), new DataGrid_Cell_MIB() { m_Content = iter.Value.ToString() }, iter2.Value.ToString());
+                    }
+                }
+
+                // 向单元格内添加内容;
+                contentlist.Add(model);
+            }
+            foreach(var iter3 in oid_cn)
+            {
+                DataGridTextColumn column = new DataGridTextColumn();
+                column.Header = iter3.Value;
+                column.Binding = new Binding(iter3.Key);
+
+                if (System.Threading.Thread.CurrentThread != datagrid.Dispatcher.Thread)
+                {
+                    datagrid.Dispatcher.Invoke(
+                       new Action(
+                            delegate
+                            {
+                                datagrid.DataGrid_AutoGenCol.Columns.Add(column);
+                            }
+                       )
+                    );
+                }
+                
+            }
+
+            datagrid.DataGrid_AutoGenCol.ItemsSource = contentlist;
 
         }
-        
+
         public override void Add(ObjNode obj)
         {
             throw new NotImplementedException();

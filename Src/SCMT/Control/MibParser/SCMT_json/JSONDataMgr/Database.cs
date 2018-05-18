@@ -115,8 +115,8 @@ namespace MIBDataParser.JSONDataMgr
             //解析.mdb文件
             JsonDataManager JsonDataM = new JsonDataManager("5.10.11");
             JsonDataM = new JsonDataManager("5.10.11");
-            //JsonDataM.ConvertAccessDbToJson();
-            JsonDataM.ConvertAccessDbToJsonForThread();
+            JsonDataM.ConvertAccessDbToJson();
+            //JsonDataM.ConvertAccessDbToJsonForThread();
             Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
 
             // 3. 解析json 文件
