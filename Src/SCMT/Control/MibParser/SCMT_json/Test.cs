@@ -14,6 +14,9 @@ namespace MIBDataParser
                 // 查询数据
                 IReDataByEnglishName nameInfo = new ReDataByEnglishName();
                 test.getDataByEnglishName("srsResourceSetId", out nameInfo);
+
+                IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
+                test.getDataByTableEnglishName("alarmCauseTable", out tableData);
                 Console.WriteLine("output, {0}", nameInfo.oid);
             }
             else
@@ -24,15 +27,11 @@ namespace MIBDataParser
         {
             test = new Database();
 
-
-            if (!test.initDatabase())
-            {
-                Console.WriteLine("note b initDatabase faild. ");
-            }
-            else {
-                Console.WriteLine("test.initDatabase ok. ");
-            }
+            // 结果回调
             test.resultInitData = new ResultInitData(ResultInitData);
+
+            // 初始化
+            test.initDatabase();
 
         }
     }

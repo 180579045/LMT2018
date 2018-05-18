@@ -36,6 +36,11 @@ namespace MIBDataParser.JSONDataMgr
             //1. 获取ini配置文件中的相关信息
             ReadIniFile iniFile = new ReadIniFile();
             string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
+            if (String.Empty == iniFilePath)
+            {
+                err = "JsonDataMgr.ini找不到！";
+                return false;
+            }
 
             try
             {

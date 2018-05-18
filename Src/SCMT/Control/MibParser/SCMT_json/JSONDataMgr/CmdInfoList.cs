@@ -6,9 +6,8 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using System.Threading.Tasks;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
-
     class CmdInfoList
     {
         /// <summary>
@@ -58,8 +57,10 @@ namespace SCMT_json.JSONDataMgr
             return;
         }
 
-        public bool getCmdInfoByCmdEnglishName()
+        public bool getCmdInfoByCmdEnglishName(string cmdNameEn, out Dictionary<string, dynamic> cmdInfo)
         {
+            cmdInfo = new Dictionary<string, dynamic>();
+
             return true;
         }
     }
