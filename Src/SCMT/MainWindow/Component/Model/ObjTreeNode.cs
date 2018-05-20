@@ -48,7 +48,8 @@ namespace SCMTMainWindow
         static public DTDataGrid datagrid { get; set; }                // 对应的界面表格;
         protected Dictionary<string, string> name_cn { get; set; }     // 属性名与中文名对应关系;(后续独立挪到DataGridControl中)
         protected Dictionary<string, string> oid_cn { get; set; }      // oid与中文名对应关系;
-        protected List<DyDataGrid_MIBModel> contentlist { get; set; }    // 用来保存内容;
+        protected List<DyDataGrid_MIBModel> contentlist { get; set; }  // 用来保存内容;
+        public static MainWindow main { get; set; }
 
         abstract public void Add(ObjNode obj);                         // 增加孩子节点;
         abstract public void Remove(ObjNode obj);                      // 删除孩子节点;
@@ -359,47 +360,7 @@ namespace SCMTMainWindow
 
         private void ReceiveRes(IAsyncResult ar)
         {
-            SnmpMessageResult res = ar as SnmpMessageResult;
-
-            foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
-            {
-                Console.WriteLine("NextIndex" + iter.Key.ToString() + "Value:" + iter.Value.ToString());
-
-                dynamic model = new DyDataGrid_MIBModel();
-
-                foreach(var iter2 in oid_cn)
-                {
-                    if(iter.Key.ToString().Contains(iter2.Key))
-                    {
-                        model.AddProperty(iter2.Key.ToString(), new DataGrid_Cell_MIB() { m_Content = iter.Value.ToString() }, iter2.Value.ToString());
-                    }
-                }
-
-                // 向单元格内添加内容;
-                contentlist.Add(model);
-            }
-            foreach(var iter3 in oid_cn)
-            {
-                DataGridTextColumn column = new DataGridTextColumn();
-                column.Header = iter3.Value;
-                column.Binding = new Binding(iter3.Key);
-
-                if (System.Threading.Thread.CurrentThread != datagrid.Dispatcher.Thread)
-                {
-                    datagrid.Dispatcher.Invoke(
-                       new Action(
-                            delegate
-                            {
-                                datagrid.DataGrid_AutoGenCol.Columns.Add(column);
-                            }
-                       )
-                    );
-                }
-                
-            }
-
-            datagrid.DataGrid_AutoGenCol.ItemsSource = contentlist;
-
+            main.UpdateMibDataGrid(ar, oid_cn, contentlist);
         }
 
         public override void Add(ObjNode obj)
