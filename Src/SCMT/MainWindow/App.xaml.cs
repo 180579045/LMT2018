@@ -19,20 +19,20 @@ namespace SCMTMainWindow
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			MqInitial.Init();
-			AtpInitial.Init();
+			//AtpInitial.Init();
 
-			NetElementConfig config = new NetElementConfig()
-			{
-				TraceIp = "172.27.245.82",
-				AgentSlot = 2,
-				Index = 3,
-				FrameNo = 0,
-				SlotNo = 1,
-				TargetIp = "172.27.245.92",
-				conType = ConnectType.ATP_DIRECT_LINK
-			};
+			//NetElementConfig config = new NetElementConfig()
+			//{
+			//	TraceIp = "172.27.245.82",
+			//	AgentSlot = 2,
+			//	Index = 3,
+			//	FrameNo = 0,
+			//	SlotNo = 1,
+			//	TargetIp = "172.27.245.92",
+			//	conType = ConnectType.ATP_DIRECT_LINK
+			//};
 
-			LinkMgrActor.GetInstance().ConnectNetElement("172.27.245.92", config);
+			//LinkMgrActor.GetInstance().ConnectNetElement("172.27.245.92", config);
 		}
 
 		protected override void OnExit(ExitEventArgs e)

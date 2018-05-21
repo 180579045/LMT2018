@@ -96,7 +96,7 @@ namespace MIBDataParser.JSONDataMgr
             }
         }
 
-        //初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
+        //初始化(1.解压lm.dtz;2.解析.mdb,生成json;3.解析json;)
         private void myInitDateBase()
         {
             // 初始化
@@ -109,15 +109,15 @@ namespace MIBDataParser.JSONDataMgr
                 resultInitData(false);
                 return ;
             }
-            Console.WriteLine("unzip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+            Console.WriteLine("unzip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
             // 2. 解析lm.dtz => json文件(增加，叶子节点的读写属性)
             //解析.mdb文件
             JsonDataManager JsonDataM = new JsonDataManager("5.10.11");
             JsonDataM = new JsonDataManager("5.10.11");
-            JsonDataM.ConvertAccessDbToJson();
-            //JsonDataM.ConvertAccessDbToJsonForThread();
-            Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+            //JsonDataM.ConvertAccessDbToJson();
+            JsonDataM.ConvertAccessDbToJsonForThread();
+            Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
             // 3. 解析json 文件
             //MibInfoList mibL = new MibInfoList();
@@ -125,7 +125,7 @@ namespace MIBDataParser.JSONDataMgr
             cmdL = new CmdInfoList();// cmd 节点
             mibL.GeneratedMibInfoList();
             cmdL.GeneratedCmdInfoList();
-            Console.WriteLine("mib list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+            Console.WriteLine("mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             //mibL.getOidEnInfo(@"1.3.6.1.4.1.5105.1.2.100.1.1.5.6.1.20.33",out oidInfo);
 
             //
@@ -237,7 +237,7 @@ namespace MIBDataParser.JSONDataMgr
                     continue;
                 if (false == getDataByTableEnglishName(MibTableName, out reData))
                 {
-                    //Console.WriteLine("===={0} not exist.", MibTableName);
+                    Console.WriteLine("===={0} not exist.", MibTableName);
                 }
             }
 

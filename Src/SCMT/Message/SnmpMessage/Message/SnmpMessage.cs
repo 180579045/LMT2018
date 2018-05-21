@@ -19,7 +19,7 @@ namespace Snmp_dll
     /// <summary>
     /// 抽象SNMP报文，以便后续扩展SNMPV3;
     /// </summary>
-    abstract public class SnmpMessage
+    public abstract class SnmpMessage
     {
         public Dictionary<string, string> m_Response { get; set; }        // Get返回的结果;
         public string m_IPAddr { get; set; }                              // 代理目标IP地址

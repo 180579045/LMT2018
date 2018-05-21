@@ -67,9 +67,14 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="SnmpSharpNet">
-      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\SnmpSharpNet.dll</HintPath>
+    <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,17 +86,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connection\IConnection.cs" />
-    <Compile Include="Connection\TcpConnection.cs" />
-    <Compile Include="Connection\UdpConnection.cs" />
+    <Compile Include="Connection\ConnectedEventArgs.cs" />
+    <Compile Include="Connection\Connection.cs" />
+    <Compile Include="Connection\ConnectionEndPoint.cs" />
+    <Compile Include="Connection\ConnectionListener.cs" />
+    <Compile Include="Connection\ConnectionState.cs" />
+    <Compile Include="Connection\ConnectionStatistics.cs" />
+    <Compile Include="Connection\DataReceivedEventArgs.cs" />
+    <Compile Include="Connection\DisconnectedEventArgs.cs" />
+    <Compile Include="Connection\HazelException.cs" />
+    <Compile Include="Connection\IPMode.cs" />
+    <Compile Include="Connection\IRecyclable.cs" />
+    <Compile Include="Connection\NetworkConnection.cs" />
+    <Compile Include="Connection\NetworkConnectionListener.cs" />
+    <Compile Include="Connection\NetworkEndPoint.cs" />
+    <Compile Include="Connection\NewConnectionEventArgs.cs" />
+    <Compile Include="Connection\ObjectPool.cs" />
+    <Compile Include="Connection\SendOption.cs" />
+    <Compile Include="Connection\Tcp\StateObject.cs" />
+    <Compile Include="Connection\Tcp\TcpConnection.cs" />
+    <Compile Include="Connection\Tcp\TcpConnectionListener.cs" />
+    <Compile Include="Connection\Udp\SendOptionInternal.cs" />
+    <Compile Include="Connection\Udp\UdpClientConnection.cs" />
+    <Compile Include="Connection\Udp\UdpConnection.cs" />
+    <Compile Include="Connection\Udp\UdpConnection.Fragmented.cs" />
+    <Compile Include="Connection\Udp\UdpConnection.KeepAlive.cs" />
+    <Compile Include="Connection\Udp\UdpConnection.Reliable.cs" />
+    <Compile Include="Connection\Udp\UdpConnectionListener.cs" />
+    <Compile Include="Connection\Udp\UdpServerConnection.cs" />
     <Compile Include="Control\ElementControl.cs" />
     <Compile Include="Control\NodeBControl.cs" />
     <Compile Include="Elements\BaseElement\Element.cs" />
     <Compile Include="Elements\BaseElement\GtsaElement.cs" />
     <Compile Include="Elements\BaseElement\IElement.cs" />
+    <Compile Include="Elements\BaseElement\SiMsgDealer.cs" />
     <Compile Include="Elements\NodeB.cs" />
     <Compile Include="Elements\BaseElement\SiElement.cs" />
-    <Compile Include="Message\SI\SiMessage.cs" />
+    <Compile Include="Message\SI\SiMacroDef.cs" />
+    <Compile Include="Message\SI\SiFileMgrMsgDef.cs" />
+    <Compile Include="Message\SI\SiMsgBaseTypeDef.cs" />
+    <Compile Include="Message\SNMP\CDTObjectRef.cs" />
+    <Compile Include="Message\SNMP\CDTSnmpPdu.cs" />
+    <Compile Include="Message\SNMP\IDTObjectRefInterface.cs" />
     <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />
     <Compile Include="Message\SNMP\TrapMessage.cs" />
@@ -104,6 +140,10 @@
     <Folder Include="Message\GTSA\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MibParser\SCMT_json\MIBDataParser.csproj">
       <Project>{E212A21D-FE5B-4E50-9D60-DCF979FF242A}</Project>
       <Name>MIBDataParser</Name>
