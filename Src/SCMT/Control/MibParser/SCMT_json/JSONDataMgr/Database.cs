@@ -237,7 +237,7 @@ namespace MIBDataParser.JSONDataMgr
                     continue;
                 if (false == getDataByTableEnglishName(MibTableName, out reData))
                 {
-                    //Console.WriteLine("===={0} not exist.", MibTableName);
+                    Console.WriteLine("===={0} not exist.", MibTableName);
                 }
             }
 

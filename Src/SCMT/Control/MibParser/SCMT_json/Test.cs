@@ -12,26 +12,7 @@ namespace MIBDataParser
             {
                 Console.WriteLine("init data result is ok");
 
-                // 查询数据
-                IReCmdDataByCmdEnglishName reCmdData;
-                test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
-
-                IReDataByEnglishName nameInfo = new ReDataByEnglishName();
-                test.getDataByEnglishName("srsResourceSetId", out nameInfo);
-
-
-                List <IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
-                List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
-                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
-                test.getDataByEnglishName(nameEnList, out nameInfoList);
-
-                IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
-                test.getDataByTableEnglishName("alarmCauseTable", out tableData);
-
-                test.testGetDataByTableEnglishName();
-
-
-                Console.WriteLine("output, {0}", nameInfo.oid);
+                testDb();
             }
             else
                 Console.WriteLine("init data result is failed");
@@ -46,7 +27,31 @@ namespace MIBDataParser
 
             // 初始化
             test.initDatabase();
+        }
 
+        void testDb()
+        {
+            // 查询数据 test_1
+            IReCmdDataByCmdEnglishName reCmdData;
+            test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
+
+            // test_2
+            IReDataByEnglishName nameInfo = new ReDataByEnglishName();
+            test.getDataByEnglishName("srsResourceSetId", out nameInfo);
+            Console.WriteLine("output, {0}", nameInfo.oid);
+
+            // test_3
+            List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
+            List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
+                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
+            test.getDataByEnglishName(nameEnList, out nameInfoList);
+
+            // test_4
+            IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
+            test.getDataByTableEnglishName("alarmCauseTable", out tableData);
+
+            // test_5
+            test.testGetDataByTableEnglishName();
         }
     }
 
