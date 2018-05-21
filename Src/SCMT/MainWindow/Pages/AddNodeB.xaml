@@ -18,7 +18,7 @@
         <Grid Grid.Row="1">
             <StackPanel HorizontalAlignment="Left" Orientation="Horizontal" Margin="5,0,0,0">
                 <Label  Content="IP 地址：" HorizontalAlignment="Left" VerticalAlignment="Center"></Label>
-                <TextBox x:Name="IpAddress" Height="20" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" ></TextBox>
+                <TextBox x:Name="IpAddress" Height="20" Width="200" HorizontalAlignment="Center" VerticalAlignment="Center" >172.27.245.92</TextBox>
             </StackPanel>
         </Grid>
 

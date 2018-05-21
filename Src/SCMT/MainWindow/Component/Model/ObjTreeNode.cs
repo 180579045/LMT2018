@@ -48,6 +48,7 @@ namespace SCMTMainWindow
         static public DTDataGrid datagrid { get; set; }                // 对应的界面表格;
         protected Dictionary<string, string> name_cn { get; set; }     // 属性名与中文名对应关系;(后续独立挪到DataGridControl中)
         protected Dictionary<string, string> oid_cn { get; set; }      // oid与中文名对应关系;
+        protected Dictionary<string, string> oid_en { get; set; }      // oid与英文名对应关系;
         protected List<DyDataGrid_MIBModel> contentlist { get; set; }  // 用来保存内容;
         public static MainWindow main { get; set; }
 
@@ -213,6 +214,7 @@ namespace SCMTMainWindow
             IsRightMouseDown += ObjNode_IsRightMouseDown;
             name_cn = new Dictionary<string, string>();
             oid_cn = new Dictionary<string, string>();
+            oid_en = new Dictionary<string, string>();
             contentlist = new List<DyDataGrid_MIBModel>();
         }
 
@@ -338,29 +340,39 @@ namespace SCMTMainWindow
             MetroExpander item = sender as MetroExpander;
             ObjNode node = item.obj_type as ObjNode;
             IReDataByTableEnglishName ret = new ReDataByTableEnglishName();
+            Dictionary<string, string> GetNextRet = new Dictionary<string, string>();
 
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
             nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
 
             List<string> oidlist = new List<string>();
-            name_cn.Clear();oid_cn.Clear();
+            name_cn.Clear();oid_cn.Clear();oid_en.Clear();
             // 遍历所有子节点，组SNMP的GetNext命令OID集合;
             foreach(var iter in ret.childrenList)
             {
                 string temp = prev_oid + iter.childOid;
                 name_cn.Add(iter.childNameMib, iter.childNameCh);
+                oid_en.Add(iter.childOid, iter.childNameMib);
                 oid_cn.Add(iter.childOid, iter.childNameCh);
                 oidlist.Add(temp);
             }
 
             SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
             msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
+            //GetNextRet = msg.GetNextRequest(oidlist);
+            //this.ReceiveRes(GetNextRet);
+
         }
 
         private void ReceiveRes(IAsyncResult ar)
         {
-            main.UpdateMibDataGrid(ar, oid_cn, contentlist);
+            main.UpdateMibDataGrid(ar, oid_cn, oid_en, contentlist);
+        }
+
+        private void ReceiveRes(Dictionary<string, string> ar)
+        {
+            main.UpdateMibDataGrid2(ar, oid_cn, contentlist);
         }
 
         public override void Add(ObjNode obj)

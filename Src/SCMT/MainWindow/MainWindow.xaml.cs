@@ -80,9 +80,6 @@ namespace SCMTMainWindow
         private void InitView()
         {
             NBControler = new NodeBControl();
-            DataGridTextColumn column = new DataGridTextColumn();
-            column.Header = "1111";
-            this.MibDataGrid.Columns.Add(column);
         }
 
         /// <summary>
@@ -928,11 +925,66 @@ namespace SCMTMainWindow
 
         }
 
-        public void UpdateMibDataGrid(IAsyncResult ar, Dictionary<string, string> oid_cn, List<DyDataGrid_MIBModel> contentlist)
+        public void UpdateMibDataGrid(IAsyncResult ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en, List<DyDataGrid_MIBModel> contentlist)
         {
             SnmpMessageResult res = ar as SnmpMessageResult;
 
-            foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
+            this.MibDataGrid.Dispatcher.Invoke(new Action(()=>
+            {
+                this.MibDataGrid.Columns.Clear();
+                foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
+                {
+                    Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());
+
+                    dynamic model = new DyDataGrid_MIBModel();
+
+                    foreach (var iter2 in oid_cn)
+                    {
+                        // 如果存在对应关系;
+                        if (iter.Key.ToString().Contains(iter2.Key))
+                        {
+                            Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value.ToString() + " and Header：" + iter2.Value.ToString());
+                            model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB() { m_Content = iter.Value.ToString() }, iter2.Value.ToString());
+                        }
+                    }
+
+                    // 向单元格内添加内容;
+                    contentlist.Add(model);
+                }
+
+                foreach (var iter3 in oid_en)
+                {
+                    Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
+                    DataGridTextColumn column = new DataGridTextColumn();
+                    column.Header = iter3.Value;
+                    column.Binding = new Binding(iter3.Value + ".m_Content");
+
+                    this.MibDataGrid.Columns.Add(column);
+  
+                }
+
+                this.MibDataGrid.ItemsSource = contentlist;
+
+            }));
+            
+
+            
+
+//             this.MibDataGrid.Dispatcher.Invoke(
+//                 new Action(() =>
+//                 {
+//                     this.MibDataGrid.ItemsSource = contentlist;
+//                 })
+//             );
+ 
+
+        }
+
+        public void UpdateMibDataGrid2(Dictionary<string, string> ar, Dictionary<string, string> oid_cn, List<DyDataGrid_MIBModel> contentlist)
+        {
+            this.MibDataGrid.Columns.Clear();
+
+            foreach (KeyValuePair<string, string> iter in ar as Dictionary<string, string>)
             {
                 Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());
 
@@ -956,18 +1008,18 @@ namespace SCMTMainWindow
                 column.Binding = new Binding(iter3.Key);
 
                 this.MibDataGrid.Dispatcher.Invoke(
-                    new Action(() => {
+                    new Action(() =>
+                    {
                         this.MibDataGrid.Columns.Add(column);
                     })
                 );
-                
+
             }
 
-            System.Windows.Application.Current.Dispatcher.Invoke(
-                    new Action(() =>{ this.MibDataGrid.ItemsSource = contentlist; })
-                );
+            this.MibDataGrid.ItemsSource = contentlist;
 
 
         }
     }
+
 }

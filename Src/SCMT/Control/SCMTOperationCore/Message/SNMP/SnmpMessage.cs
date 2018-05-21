@@ -423,12 +423,12 @@ namespace SCMTOperationCore.Message.SNMP
                 List<List<string>> AllList = new List<List<string>>();
 
                 AllList.Add(PduList);
-                for(int i = 0; i <= AllList.Count; )
+                for(int i = 0; i <= AllList.Count;)
                 {
                     NextRest = this.GetNext(AllList[i]);        // 返回结果，同时更新下一个有效的OidList;
                     if(AllList[i].Count != 0)
                     {
-                        AllList.Add(AllList[i]);
+                        AllList.Add(AllList[i]);                // GetNext的机制是将本次获得到的行数据回填，SNMP框架会返回下一行的数据;
                         i++;
                     }
                         
@@ -437,6 +437,30 @@ namespace SCMTOperationCore.Message.SNMP
                 }
                 return;
             });
+        }
+
+        public Dictionary<string, string> GetNextRequest(List<string> PduList)
+        {
+            Dictionary<string, string> NextRest = new Dictionary<string, string>();
+            List<List<string>> AllList = new List<List<string>>();
+
+            if ((PduList.Count == 0) && (PduList == null))
+            {
+                Console.WriteLine("error");
+                return NextRest;
+            }
+
+            AllList.Add(PduList);
+            for (int i = 0; i <= AllList.Count;)
+            {
+                NextRest = this.GetNext(AllList[i]);        // 返回结果，同时更新下一个有效的OidList;
+                if (AllList[i].Count != 0)
+                {
+                    AllList.Add(AllList[i]);
+                    i++;
+                }
+            }
+            return NextRest;
         }
     }
 
