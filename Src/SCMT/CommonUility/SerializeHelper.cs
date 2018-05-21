@@ -34,6 +34,30 @@ namespace CommonUility
 			}
 		}
 
+		//// <summary>
+		/// 结构体转byte数组
+		/// TODO 这个方法有BUG。对于嵌套的结构体变量数组处理错误，结果byte[]长度不正确
+		/// </summary>
+		/// <param name="obj">要转换的结构体</param>
+		/// <returns>转换后的byte数组</returns>
+		public static byte[] StructToBytes(object obj)
+		{
+			//得到结构体的大小
+			int size = Marshal.SizeOf(obj);
+			//创建byte数组
+			byte[] bytes = new byte[size];
+			//分配结构体大小的内存空间
+			IntPtr structPtr = Marshal.AllocHGlobal(size);
+			//将结构体拷到分配好的内存空间
+			Marshal.StructureToPtr(obj, structPtr, false);
+			//从内存空间拷到byte数组
+			Marshal.Copy(structPtr, bytes, 0, size);
+			//释放内存空间
+			Marshal.FreeHGlobal(structPtr);
+			//返回byte数组
+			return bytes;
+		}
+
 		/// <summary>
 		/// 序列化一个byte数据到字节数组中
 		/// </summary>
@@ -165,6 +189,11 @@ namespace CommonUility
 			return (ushort) ((value & 0x00FFU) << 8 | (value & 0xFF00U) >> 8);
 		}
 
+		public static short ReverseShort(short value)
+		{
+			return (short)((value & 0x00FFU) << 8 | (value & 0xFF00U) >> 8);
+		}
+
 		/// <summary>
 		/// 双字节数据序列化
 		/// </summary>
@@ -212,6 +241,12 @@ namespace CommonUility
 		{
 			return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
 				   (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
+		}
+
+		public static int ReverseFourBytesData(int value)
+		{
+			return (int)((value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
+				   (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24);
 		}
 
 		/// <summary>

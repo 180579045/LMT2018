@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMTOperationCore.Message.SI
+namespace SCMTOperationCore.Message.SNMP
 {
-    abstract class SiMessage
-    {
-    }
+	interface IDTObjectRefInterface
+	{
+		void AddRef();
+
+		void ReleaseRef();
+	}
 }

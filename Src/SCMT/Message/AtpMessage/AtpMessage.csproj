@@ -86,6 +86,7 @@
     <Compile Include="SessionMgr\IASession.cs" />
     <Compile Include="SessionMgr\IpSession.cs" />
     <Compile Include="SessionMgr\SessionService.cs" />
+    <Compile Include="SessionMgr\TcpSession.cs" />
     <Compile Include="SessionMgr\UdpSession.cs" />
   </ItemGroup>
   <ItemGroup>
