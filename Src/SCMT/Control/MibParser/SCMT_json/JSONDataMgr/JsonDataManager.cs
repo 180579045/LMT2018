@@ -32,9 +32,10 @@ namespace MIBDataParser.JSONDataMgr
         string mdbFile;
         string jsonfilepath;
 
-        static private bool isMibJsonOK = false;
-        static private bool isObjJsonOK = false;
-        static private bool isCmdJsonOK = false;
+        bool isMibJsonOK = false;
+        bool isObjJsonOK = false;
+        bool isObjJson2OK = false;
+        bool isCmdJsonOK = false;
 
         public JsonDataManager(string mibVersion)
         {
@@ -45,7 +46,7 @@ namespace MIBDataParser.JSONDataMgr
             {
                 string mdbfilePath = iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "mdbfilePath");
                 mdbFile = mdbfilePath + "lm.mdb";
-                jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
+                this.jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
 
             }
             catch (Exception ex)
@@ -64,33 +65,10 @@ namespace MIBDataParser.JSONDataMgr
         {
             Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
 
-            ConvertAccessDbToJsonMibTree();
-            ConvertAccessDbToJsonObjTree();
-            ConvertAccessDbToJsonCmdTree();
+            ConvertAccessDbToJsonMibTree();// 查询MibTree database
+            ConvertAccessDbToJsonObjTree();// 对象树转换生成json文件
+            ConvertAccessDbToJsonCmdTree();// cmdTree命令树 转换生成json文件
 
-            //// 查询MibTree database
-            //string sqlContent = "select * from MibTree order by OID asc";
-            //DataSet dataSet = GetRecordByAccessDb(this.mdbFile, sqlContent);
-            //MibJsonData mibJsonDatat = new MibJsonData(mibVersion);
-            //mibJsonDatat.MibParseDataSet(dataSet);
-
-            //JsonFile jsonMibFile = new JsonFile();
-            //jsonMibFile.WriteFile(jsonfilepath + "mib.json", mibJsonDatat.GetStringMibJson());
-            //this.mibInfo = mibJsonDatat.GetStringMibJson();
-
-            ////对象树转换生成json文件
-            //dataSet.Reset();
-            //sqlContent = "select * from ObjTree order by ObjExcelLine";
-            //dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
-            //ObjTressJsonData objTreeJson = new ObjTressJsonData();
-            //objTreeJson.ObjParseDataSet(dataSet);
-            //JsonFile jsonObjFile = new JsonFile();
-            ////jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
-            //jsonObjFile.WriteFile(jsonfilepath + "obj.json", objTreeJson.GetStringObjTreeJson());
-            //this.objTreeInfo = objTreeJson.GetStringObjTreeJson();
-
-            ////cmdTree命令树 转换生成json文件
-            //ConvertAccessDbToJsonCmdTree();
             Console.WriteLine("end to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
             return;
         }
@@ -98,24 +76,27 @@ namespace MIBDataParser.JSONDataMgr
         {
             isMibJsonOK = false;
             isObjJsonOK = false;
+            isObjJson2OK = false;
             isCmdJsonOK = false;
             
             //Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-            Thread[] threads = new Thread[3];
+            Thread[] threads = new Thread[4];
             threads[0] = new Thread(new ThreadStart(ConvertAccessDbToJsonMibTree));
             threads[0].Name = "MibTree";
             threads[1] = new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree));
             threads[1].Name = "ObjTree";
             threads[2] = new Thread(new ThreadStart(ConvertAccessDbToJsonCmdTree));
             threads[2].Name = "CmdTree";
-            
+            threads[3] = new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree2));
+            threads[3].Name = "ObjTreeReference";
+
             foreach (Thread t in threads)
             {
                 t.Start();
             }
 
             while (true){
-                if (true == isMibJsonOK && true == isObjJsonOK && true == isCmdJsonOK) {
+                if (true == isMibJsonOK && true == isObjJsonOK && true == isObjJson2OK && true == isCmdJsonOK) {
                     break;
                 }
             }
@@ -124,25 +105,29 @@ namespace MIBDataParser.JSONDataMgr
             return;
         }
 
+        void JsonFileWrite(string fileName, string content)
+        {
+            JsonFile jsonMibFile = new JsonFile();
+            jsonMibFile.WriteFile(fileName, content);
+        }
         /// <summary>
         /// 解析lm.dtz 写 mib.json
         /// </summary>
         public void ConvertAccessDbToJsonMibTree()
         {
             //Console.WriteLine("DbToJsonMibTree start " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-
             string sqlContent = "select * from MibTree order by OID asc";
             DataSet dataSet = GetRecordByAccessDb(this.mdbFile, sqlContent);
-            MibJsonData mibJsonDatat = new MibJsonData(mibVersion);
+            MibJsonData mibJsonDatat = new MibJsonData(this.mibVersion);
             mibJsonDatat.MibParseDataSet(dataSet);
 
-            JsonFile jsonMibFile = new JsonFile();
-            jsonMibFile.WriteFile(jsonfilepath + "mib.json", mibJsonDatat.GetStringMibJson());
+            JsonFileWrite(jsonfilepath + "mib.json", mibJsonDatat.GetStringMibJson());
             this.mibInfo = mibJsonDatat.GetStringMibJson();
 
             isMibJsonOK = true;
             //Console.WriteLine("DbToJsonMibTree end " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
         }
+        
         /// <summary>
         /// 解析lm.dtz 写 obj.json
         /// </summary>
@@ -154,14 +139,25 @@ namespace MIBDataParser.JSONDataMgr
             ObjTressJsonData objTreeJson = new ObjTressJsonData();
             objTreeJson.ObjParseDataSet(dataSet);
 
-            JsonFile jsonObjFile = new JsonFile();
-            //jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
-            jsonObjFile.WriteFile(jsonfilepath + "obj.json", objTreeJson.GetStringObjTreeJson());
+            JsonFileWrite(jsonfilepath + "obj.json", objTreeJson.GetStringObjTreeJson());
             this.objTreeInfo = objTreeJson.GetStringObjTreeJson();
 
             isObjJsonOK = true;
             //Console.WriteLine("DbToJsonObjTree end " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
         }
+
+        public void ConvertAccessDbToJsonObjTree2()
+        {
+            string sqlContent = "select * from ObjTree order by ObjExcelLine";
+            DataSet dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
+            ObjTressJsonData objTreeJson = new ObjTressJsonData(this.mibVersion);
+            objTreeJson.TreeReferenceParseDataSet(dataSet);
+
+            JsonFileWrite(jsonfilepath + "Tree_Reference.json", objTreeJson.GetStringTreeReference());
+
+            isObjJson2OK = true;
+        }
+
         /// <summary>
         /// 解析lm.dtz 写 cmd.json
         /// </summary>

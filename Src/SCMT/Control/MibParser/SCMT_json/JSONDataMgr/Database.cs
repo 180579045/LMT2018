@@ -96,7 +96,7 @@ namespace MIBDataParser.JSONDataMgr
             }
         }
 
-        //初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
+        //初始化(1.解压lm.dtz;2.解析.mdb,生成json;3.解析json;)
         private void myInitDateBase()
         {
             // 初始化
