@@ -64,7 +64,7 @@ namespace MIBDataParser.JSONDataMgr
             //ReadIniFile iniFile = new ReadIniFile();
             //string iniFilePath = currentPath + "JsonDataMgr.ini";
 
-            string getInitPath = currentPath + @"\"+ inifilename;
+            string getInitPath = currentPath + @"..\..\" + inifilename;
             //是否存在
             if (!File.Exists(getInitPath))
             {
