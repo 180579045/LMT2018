@@ -73,7 +73,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MIBDataParser", "Control\Mi
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		CommonUility\CommonUility.projitems*{5bf0ee4e-8220-4e2a-af99-53246ff970a2}*SharedItemsImports = 4
 		CommonUility\CommonUility.projitems*{dfcc660c-1b0a-470a-9ab1-14448a33091c}*SharedItemsImports = 4
 		CommonUility\CommonUility.projitems*{e0d5f5b3-3253-44f9-a5cf-ae8bafed4c20}*SharedItemsImports = 13
 	EndGlobalSection

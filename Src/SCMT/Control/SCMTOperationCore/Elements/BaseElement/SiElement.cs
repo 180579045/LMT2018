@@ -80,7 +80,7 @@ namespace SCMTOperationCore.Elements
 			catch (Exception e)			//TODO 发送失败会throw异常，需要处理
 			{
 				Console.WriteLine(e);
-				throw;
+				//throw;
 			}
 
 			return false;
