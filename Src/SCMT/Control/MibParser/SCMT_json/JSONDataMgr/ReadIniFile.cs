@@ -16,7 +16,7 @@ using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     /// <summary>
     /// 读取配置文件 JsonDataMgr.ini
@@ -64,7 +64,7 @@ namespace SCMT_json.JSONDataMgr
             //ReadIniFile iniFile = new ReadIniFile();
             //string iniFilePath = currentPath + "JsonDataMgr.ini";
 
-            string getInitPath = currentPath + inifilename;
+            string getInitPath = currentPath + @"\"+ inifilename;
             //是否存在
             if (!File.Exists(getInitPath))
             {

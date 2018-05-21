@@ -16,7 +16,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     /// <summary>
     /// 解压 JsonDataMgr.ini中的压缩文件
@@ -36,6 +36,11 @@ namespace SCMT_json.JSONDataMgr
             //1. 获取ini配置文件中的相关信息
             ReadIniFile iniFile = new ReadIniFile();
             string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
+            if (String.Empty == iniFilePath)
+            {
+                err = "JsonDataMgr.ini找不到！";
+                return false;
+            }
 
             try
             {

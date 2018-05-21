@@ -69,8 +69,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connection.UnitTests", "Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiMsgParse.UnitTests", "Control\SCMTOperationCore\SiMsgParse.UnitTests\SiMsgParse.UnitTests.csproj", "{609E266A-2BDA-4BBA-AF14-717673A9647F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MIBDataParser", "Control\MibParser\SCMT_json\MIBDataParser.csproj", "{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		CommonUility\CommonUility.projitems*{5bf0ee4e-8220-4e2a-af99-53246ff970a2}*SharedItemsImports = 4
 		CommonUility\CommonUility.projitems*{dfcc660c-1b0a-470a-9ab1-14448a33091c}*SharedItemsImports = 4
 		CommonUility\CommonUility.projitems*{e0d5f5b3-3253-44f9-a5cf-ae8bafed4c20}*SharedItemsImports = 13
 	EndGlobalSection
@@ -443,6 +446,22 @@ Global
 		{609E266A-2BDA-4BBA-AF14-717673A9647F}.Release|x64.Build.0 = Release|Any CPU
 		{609E266A-2BDA-4BBA-AF14-717673A9647F}.Release|x86.ActiveCfg = Release|Any CPU
 		{609E266A-2BDA-4BBA-AF14-717673A9647F}.Release|x86.Build.0 = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|ARM.Build.0 = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|x64.Build.0 = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Debug|x86.Build.0 = Debug|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|ARM.ActiveCfg = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|ARM.Build.0 = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|x64.ActiveCfg = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|x64.Build.0 = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|x86.ActiveCfg = Release|Any CPU
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -471,5 +490,6 @@ Global
 		{E212A21D-FE5B-4E50-9D60-DCF979FF242A} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 		{C25E03B0-ED03-498D-937E-83FC22AC12BC} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 		{609E266A-2BDA-4BBA-AF14-717673A9647F} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
+		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 	EndGlobalSection
 EndGlobal

@@ -109,6 +109,9 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\Lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
@@ -135,46 +138,57 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Component\Model\DataGrid\DataGrid_Cell_MIB.cs" />
+    <Compile Include="Component\SCMTControl\DTDataGrid.xaml.cs">
+      <DependentUpon>DTDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
+    <Compile Include="Component\Model\DataGrid\GridCell.cs" />
+    <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
     <Compile Include="Component\ViewModel\HLMessageViewModel.cs" />
-    <Compile Include="Component\View\FlowChart.xaml.cs">
+    <Compile Include="Component\SCMTControl\FlowChart.xaml.cs">
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\HotKeyManager.cs" />
-    <Compile Include="Component\View\HotKeySet.xaml.cs">
+    <Compile Include="Controls\HotKeyManager.cs" />
+    <Compile Include="Pages\HotKeySet.xaml.cs">
       <DependentUpon>HotKeySet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\LinechartContent.xaml.cs">
+    <Compile Include="Component\SCMTControl\LinechartContent.xaml.cs">
       <DependentUpon>LinechartContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\MesasgeRecv.xaml.cs">
+    <Compile Include="Component\SCMTControl\MesasgeRecv.xaml.cs">
       <DependentUpon>MesasgeRecv.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\TraceSet.xaml.cs">
+    <Compile Include="Component\SCMTControl\TraceSet.xaml.cs">
       <DependentUpon>TraceSet.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\View\TraceSetTreeModel.cs" />
+    <Compile Include="Component\ViewModel\TraceSetTreeModel.cs" />
     <Compile Include="Controls\FavoriteNode_Control.cs" />
     <Compile Include="Controls\PlanBParser\HLMessageParser.cs" />
     <Compile Include="MainWindowVM.cs" />
-    <Compile Include="Component\View\ObjTreeNode.cs" />
+    <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
-    <Page Include="Component\View\FlowChart.xaml">
+    <Page Include="Component\SCMTControl\DTDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\HotKeySet.xaml">
+    <Page Include="Component\SCMTControl\FlowChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\LinechartContent.xaml">
+    <Page Include="Pages\HotKeySet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\MesasgeRecv.xaml">
+    <Page Include="Component\SCMTControl\LinechartContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Component\View\TraceSet.xaml">
+    <Page Include="Component\SCMTControl\MesasgeRecv.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\TraceSet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -208,7 +222,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Component\View\Option.cs">
+    <Compile Include="Component\Model\Option.cs">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Compile>
     <Compile Include="Pages\AddNodeB.xaml.cs">
@@ -326,6 +340,14 @@
     <Resource Include="Resources\NetPlanB.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\MibParser\SCMT_json\MIBDataParser.csproj">
+      <Project>{e212a21d-fe5b-4e50-9d60-dcf979ff242a}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
@@ -335,7 +357,7 @@
       <Name>AtpMessage</Name>
     </ProjectReference>
     <ProjectReference Include="..\MsgQueue\MsgQueue.csproj">
-      <Project>{DFCC660C-1B0A-470A-9AB1-14448A33091C}</Project>
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
       <Name>MsgQueue</Name>
     </ProjectReference>
     <ProjectReference Include="..\ParseMessage\CDLBrowser.Parser\CDLBrowser.Parser.csproj">

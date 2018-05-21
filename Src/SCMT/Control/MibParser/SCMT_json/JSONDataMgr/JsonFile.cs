@@ -2,7 +2,7 @@
 * CLR版本：        $$
 * 类 名 称：       $ JsonFile $
 * 机器名称：       $ machinename $
-* 命名空间：       $ SCMT_json.JSONDataMgr $
+* 命名空间：       $ MIBDataParser.JSONDataMgr $
 * 文 件 名：       $ JsonFile.cs $
 * 创建时间：       $ 2018.04.XX $
 * 作    者：       $ TangYun $
@@ -18,7 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     class JsonFile
     {
