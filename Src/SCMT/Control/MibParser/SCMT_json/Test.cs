@@ -83,7 +83,7 @@ namespace MIBDataParser
             b.dosomething();
             Console.WriteLine("end ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
 
-            Console.Read();
+            //Console.Read();
         }
         
 

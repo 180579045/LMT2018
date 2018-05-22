@@ -165,7 +165,7 @@ namespace MIBDataParser.JSONDataMgr
                     objIdList.Add(row["ObjName"].ToString(), objId);
                 }
                 catch {
-                    Console.WriteLine("TreeReferenceParseDataSet ({0}) is chongfu.", row["ObjName"].ToString());
+                    //Console.WriteLine("TreeReferenceParseDataSet ({0}) is chongfu.", row["ObjName"].ToString());
                 }
                 objId += 1;
                 objJArray.Add(objOne);

@@ -133,7 +133,6 @@ namespace MIBDataParser.JSONDataMgr
             return;
         }
 
-
         public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData)
         {
             reData = null;
@@ -222,13 +221,10 @@ namespace MIBDataParser.JSONDataMgr
         public bool testGetDataByTableEnglishName()
         {
             ReadIniFile iniFile = new ReadIniFile();
-            string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
-            string jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
-            string sFilePath = jsonfilepath + "Tree_Reference.json";
-            
-            StreamReader reader = File.OpenText(sFilePath);
-            JObject JObj = new JObject();
-            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
+
+            JsonFile json = new JsonFile();
+            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "Tree_Reference.json");
             foreach (var table in JObj["NodeList"])
             {
                 IReDataByTableEnglishName reData;
@@ -240,7 +236,6 @@ namespace MIBDataParser.JSONDataMgr
                     Console.WriteLine("===={0} not exist.", MibTableName);
                 }
             }
-
             return true;
         }
 
