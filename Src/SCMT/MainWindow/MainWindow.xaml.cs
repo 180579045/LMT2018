@@ -930,6 +930,7 @@ namespace SCMTMainWindow
         {
             SnmpMessageResult res = ar as SnmpMessageResult;
 
+            // 将信息回填到DataGrid当中;
             this.MibDataGrid.Dispatcher.Invoke(new Action(()=>
             {
                 this.MibDataGrid.Columns.Clear();
@@ -967,17 +968,6 @@ namespace SCMTMainWindow
                 this.MibDataGrid.ItemsSource = contentlist;
 
             }));
-            
-
-            
-
-//             this.MibDataGrid.Dispatcher.Invoke(
-//                 new Action(() =>
-//                 {
-//                     this.MibDataGrid.ItemsSource = contentlist;
-//                 })
-//             );
- 
 
         }
 
@@ -1018,8 +1008,6 @@ namespace SCMTMainWindow
             }
 
             this.MibDataGrid.ItemsSource = contentlist;
-
-
         }
     }
 

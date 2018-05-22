@@ -145,7 +145,7 @@
       <Name>MsgQueue</Name>
     </ProjectReference>
     <ProjectReference Include="..\MibParser\SCMT_json\MIBDataParser.csproj">
-      <Project>{E212A21D-FE5B-4E50-9D60-DCF979FF242A}</Project>
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
   </ItemGroup>
