@@ -3,60 +3,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Logging;
+using System.Runtime.CompilerServices;
 
-[assembly: log4net.Config.XmlConfigurator(ConfigFile = "Log4.config", Watch = true)]
+//[assembly: log4net.Config.XmlConfigurator(ConfigFile = "Log4.config", Watch = true)]
 namespace LogManager
 {
     public class Log
     {
-        /// <summary>
-        /// 输出日志到Log4Net
-        /// </summary>
-        /// <param name="t"></param>
-        /// <param name="ex"></param>
-        #region static void WriteLog(Type t, Exception ex)
-
+        private static readonly ILog log = Common.Logging.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+         ///<summary>
+         ///输出日志到Log4Net
+         ///</summary>
+         ///<param name = "ex" ></ param >
+        #region static void WriteLog(Exception ex)
         //错误信息
-        public static void WriteLogError(Type t, Exception ex)
+        public static void WriteLogError(Exception ex,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memeberName = null)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Error("Error", ex);
+            log.Error($"{filePath} {memeberName} {lineNumber} Error", ex);
         }
-
-        #endregion
         //严重错误
-        public static void WriteLogFatal(Type t, Exception ex)
+        public static void WriteLogFatal(Exception ex,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memeberName = null)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Fatal("Fatal", ex);
+            log.Fatal($"{filePath} {memeberName} {lineNumber} Fatal", ex);
         }
+        #endregion
 
         /// <summary>
         /// 输出日志到Log4Net
         /// </summary>
-        /// <param name="t"></param>
         /// <param name="msg"></param>
-        #region static void WriteLog(Type t, string msg)
+        #region static void WriteLog(string msg)
+
+        //调试信息
+        public static void WriteLogDebug(string msg,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memeberName = null)
+        {
+            log.Debug($"{filePath} {memeberName} {lineNumber} {msg}");
+        }
+
+    
 
         //一般信息
-        public static void WriteLogInfo(Type t, string msg)
+        public static void WriteLogInfo(string msg,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memeberName = null)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Info(msg);
+            log.Info($"{filePath} {memeberName} {lineNumber} {msg}");
+        }
+
+
+        public static void WriteLogWarn(string msg,
+            [CallerFilePath] string filePath = null,
+            [CallerLineNumber] int lineNumber = 0,
+            [CallerMemberName] string memeberName = null)
+        {
+            log.Warn($"{filePath} {memeberName} {lineNumber} {msg}");
         }
 
         #endregion
-
-        public static void WriteLogDebug(Type t, string msg)
-        {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Debug(msg);
-        }
-
-        public static void WriteLogWarn(Type t, string msg)
-        {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Warn(msg);
-        }
     }
 }

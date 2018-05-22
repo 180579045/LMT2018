@@ -27,8 +27,13 @@ namespace SCMTOperationCore.Elements
 			dealer = new SiMsgDealer();
 		}
 
+		~SiElement()
+		{
+			DisConnect();
+		}
+
 		//连接网元。
-		public void Connect()
+		public override void Connect()
 		{
 			try
 			{
@@ -64,7 +69,7 @@ namespace SCMTOperationCore.Elements
 		}
 
 		//断开连接，在OnDisconnected中处理事件
-		public void DisConnect()
+		public override void DisConnect()
 		{
 			connection.Close();
 		}

@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace MIBDataParser.JSONDataMgr
@@ -78,6 +80,14 @@ namespace MIBDataParser.JSONDataMgr
                 //记日志
                 Console.WriteLine("write file " + filepath + " failed!");
             }
+        }
+
+        public JObject ReadJsonFileForJObject(string sFilePath)
+        {
+            StreamReader reader = File.OpenText(sFilePath);
+            JObject JObj = new JObject();
+            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            return JObj;
         }
     }
 }

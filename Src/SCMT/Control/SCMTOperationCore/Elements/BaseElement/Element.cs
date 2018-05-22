@@ -12,15 +12,15 @@ namespace SCMTOperationCore.Elements
 	/// <summary>
 	/// 所有网元类型的基类;
 	/// </summary>
-	public abstract class Element
+	public abstract class Element : IDisposable
 	{
 		/// <summary>
-		/// 构造函数
+		/// 构造函数。设置为protected属性，调用者只能调用该类的子类的构造函数生成对象。
 		/// </summary>
 		/// <param name="friendName">友好名。可查可改</param>
 		/// <param name="neIp">网元IP，可查可改</param>
 		/// <param name="nePort">网元端口，可查可改。默认为5000端口</param>
-		public Element(string friendName, IPAddress neIp, ushort nePort = 5000)
+		protected Element(string friendName, IPAddress neIp, ushort nePort = 5000)
 		{
 			FriendlyName = friendName;
 			NeAddress = neIp;
@@ -33,5 +33,22 @@ namespace SCMTOperationCore.Elements
 		public IPAddress NeAddress { get; set; }
 
 		public ushort NePort { get; set; }
+
+		//虚函数，在子类中override
+		public virtual void Connect()
+		{
+
+		}
+
+		//虚函数，在子类中override
+		public virtual void DisConnect()
+		{
+
+		}
+
+		public virtual void Dispose()
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

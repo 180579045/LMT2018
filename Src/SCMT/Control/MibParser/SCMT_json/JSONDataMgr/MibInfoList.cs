@@ -33,25 +33,18 @@ namespace MIBDataParser.JSONDataMgr
         public void GeneratedMibInfoList()
         {          ///
             ReadIniFile iniFile = new ReadIniFile();
-            string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
-            string jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
-            string sFilePath = jsonfilepath+ "mib.json";
-            FileStream fs = new FileStream(sFilePath, FileMode.Open);//初始化文件流
-            byte[] array = new byte[fs.Length];//初始化字节数组
-            fs.Read(array, 0, array.Length);//读取流中数据到字节数组中
-            fs.Close();//关闭流
-            string str = Encoding.Default.GetString(array);//将字节数组转化为字符串
+            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
 
-            ///
-            dynamic json = JObject.Parse(str);
-            foreach (var table in json["tableList"])
+            JsonFile json = new JsonFile();
+            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json"); 
+            foreach (var table in JObj["tableList"])
             {
                 Dictionary<string, string> nameEnTableInfo = new Dictionary<string, string>();
                 Dictionary<string, string> oidTableInfo = new Dictionary<string, string>();
-                string tableName = table["nameMib"];
-                string tableOid = table["oid"];
-                string tableIndexNum = table["indexNum"];
-                string nameCh = table["nameCh"];
+                string tableName = table["nameMib"].ToString();
+                string tableOid = table["oid"].ToString();
+                string tableIndexNum = table["indexNum"].ToString();
+                string nameCh = table["nameCh"].ToString();
                 dynamic childList = table["childList"];
 
                 nameEnTableInfo.Add("isLeaf", "0");
@@ -83,8 +76,8 @@ namespace MIBDataParser.JSONDataMgr
                     }
                     catch (Exception ex)
                     {
-                        nameEn_info_db[childName]["oid"] = nameEn_info_db[childName]["oid"] +"|"+ childOid;
-                        Console.WriteLine("生成json_db时{0},{1}",childName,ex.Message);
+                        nameEn_info_db[childName]["oid"] = nameEn_info_db[childName]["oid"] + "|" + childOid;
+                        Console.WriteLine("生成json_db时{0},{1}", childName, ex.Message);
                     }
 
                     oidChildInfo.Add("isLeaf", "1");
@@ -95,6 +88,19 @@ namespace MIBDataParser.JSONDataMgr
             }
             return;
          }
+        /// <summary>
+        /// 把数据库内容，写到文件中，便于查看
+        /// </summary>
+        void TestWriteListDbFile()
+        {
+            ReadIniFile iniFile = new ReadIniFile();
+            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
+
+            JsonFile json = new JsonFile();
+            json.WriteFile(JsonConvert.SerializeObject(oid_info_db), jsonfilepath + "oid_info_db.json");
+            json.WriteFile(JsonConvert.SerializeObject(nameEn_info_db), jsonfilepath + "nameEn_info_db.json");
+            json.WriteFile(JsonConvert.SerializeObject(table_info_db), jsonfilepath + "table_info_db.json");
+        }             
 
         public bool getTableInfo(string key,out dynamic tableInfo)
         {
@@ -152,5 +158,7 @@ namespace MIBDataParser.JSONDataMgr
                 return false;
             return true;
         }
+
+
     }
 }
