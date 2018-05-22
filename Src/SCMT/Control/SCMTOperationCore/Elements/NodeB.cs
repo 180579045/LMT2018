@@ -29,7 +29,7 @@ namespace SCMTOperationCore.Elements
 			{
 				MessageBox.Show(e.ToString());
 			}
-			
+
 
 			// 此后的动作;
 			// 1、创建数据库保存路径,并保存到对应的属性成员中;
