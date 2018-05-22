@@ -39,7 +39,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Interop;
 using CDLBrowser.Parser;
-using Common.Logging;
+using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTMainWindow.Component.SCMTControl;
@@ -53,8 +53,8 @@ namespace SCMTMainWindow
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        //获取ILog实例
-        public static ILog Log = Common.Logging.LogManager.GetLogger(typeof(MainWindow));
+        ////获取ILog实例
+        //public static ILog Log = Common.Logging.LogManager.GetLogger(typeof(MainWindow));
         public static string StrNodeName;
         private List<string> CollectList = new List<string>();
         public NodeBControl NBControler;
@@ -434,9 +434,11 @@ namespace SCMTMainWindow
         #region 添加基站事件
         private void AddeNB(object sender, EventArgs e)
         {
-            Log.Info("添加基站");
-            Log.Warn("添加基站");
-            Log.Debug("添加基站");
+
+            
+            Log.WriteLogDebug("添加基站");
+            Log.WriteLogInfo("添加基站");
+            Log.WriteLogWarn("添加基站");
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
