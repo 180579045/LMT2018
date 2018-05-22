@@ -10,7 +10,7 @@ namespace SCMTMainWindow.Component.ViewModel
         // 用来保存这个动态类型的所有属性;
         // string为属性的名字;
         // object为属性的值（同时也包含了类型）;
-        Dictionary<string, object> Properties = new Dictionary<string, object>();
+        public Dictionary<string, object> Properties = new Dictionary<string, object>();
 
         // 用来保存中文列名与属性的对应关系;
         Dictionary<string, string> ColName_Property = new Dictionary<string, string>();
@@ -32,7 +32,7 @@ namespace SCMTMainWindow.Component.ViewModel
             if (binder.Name == "AddProperty" && binder.CallInfo.ArgumentCount == 3)
             {
                 string name = args[0] as string;
-                if (name == null)
+                if (name == null || Properties.ContainsKey(name))
                 {
                     //throw new ArgumentException("name");  
                     result = null;

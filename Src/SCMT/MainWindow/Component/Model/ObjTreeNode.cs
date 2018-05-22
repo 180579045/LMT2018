@@ -24,6 +24,7 @@ using SCMTMainWindow.Component.SCMTControl;
 using SCMTOperationCore.Message.SNMP;
 using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
+using System.Collections.ObjectModel;
 
 namespace SCMTMainWindow
 {
@@ -49,7 +50,8 @@ namespace SCMTMainWindow
         protected Dictionary<string, string> name_cn { get; set; }     // 属性名与中文名对应关系;(后续独立挪到DataGridControl中)
         protected Dictionary<string, string> oid_cn { get; set; }      // oid与中文名对应关系;
         protected Dictionary<string, string> oid_en { get; set; }      // oid与英文名对应关系;
-        protected List<DyDataGrid_MIBModel> contentlist { get; set; }  // 用来保存内容;
+        protected ObservableCollection<DyDataGrid_MIBModel> contentlist { get; set; }
+                                                                       // 用来保存内容;
         public static MainWindow main { get; set; }
 
         abstract public void Add(ObjNode obj);                         // 增加孩子节点;
@@ -215,7 +217,7 @@ namespace SCMTMainWindow
             name_cn = new Dictionary<string, string>();
             oid_cn = new Dictionary<string, string>();
             oid_en = new Dictionary<string, string>();
-            contentlist = new List<DyDataGrid_MIBModel>();
+            contentlist = new ObservableCollection<DyDataGrid_MIBModel>();
         }
 
         private void ObjNode_IsRightMouseDown(object sender, MouseButtonEventArgs e)
@@ -341,21 +343,31 @@ namespace SCMTMainWindow
             ObjNode node = item.obj_type as ObjNode;
             IReDataByTableEnglishName ret = new ReDataByTableEnglishName();
             Dictionary<string, string> GetNextRet = new Dictionary<string, string>();
+            int IndexNum = 0;
+            contentlist.Clear();
 
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
-            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
+            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);                //根据表明获取该表内所有MIB节点;
 
             List<string> oidlist = new List<string>();
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();
+            int.TryParse(ret.indexNum, out IndexNum);
             // 遍历所有子节点，组SNMP的GetNext命令OID集合;
             foreach(var iter in ret.childrenList)
             {
-                string temp = prev_oid + iter.childOid;
-                name_cn.Add(iter.childNameMib, iter.childNameCh);
-                oid_en.Add(iter.childOid, iter.childNameMib);
-                oid_cn.Add(iter.childOid, iter.childNameCh);
-                oidlist.Add(temp);
+                if(int.Parse(iter.childNo) > IndexNum )
+                {
+                    string temp = prev_oid + iter.childOid;
+                    name_cn.Add(iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(iter.childOid, iter.childNameMib);
+                    oid_cn.Add(iter.childOid, iter.childNameCh);
+                    oidlist.Add(temp);
+                }
+                else
+                {
+
+                }
             }
 
             SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
@@ -369,12 +381,7 @@ namespace SCMTMainWindow
         {
             main.UpdateMibDataGrid(ar, oid_cn, oid_en, contentlist);
         }
-
-        private void ReceiveRes(Dictionary<string, string> ar)
-        {
-            main.UpdateMibDataGrid2(ar, oid_cn, contentlist);
-        }
-
+        
         public override void Add(ObjNode obj)
         {
             throw new NotImplementedException();

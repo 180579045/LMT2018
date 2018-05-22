@@ -111,7 +111,7 @@ namespace SCMTOperationCore.Message.SNMP
         /// <summary>
         /// GetNext;
         /// </summary>
-        protected Dictionary<string, string> GetNext(List<string> oid)
+        protected Dictionary<string, string> GetNext(ref List<string> oid)
         {
             SimpleSnmp SnmpMsg = new SimpleSnmp(this.m_IPAddr, this.m_Community);
             Dictionary<string, string> Res = new Dictionary<string, string>();
@@ -129,7 +129,7 @@ namespace SCMTOperationCore.Message.SNMP
                     foreach (KeyValuePair<Oid, AsnType> entry in TempRes)
                     {
                         Res.Add(entry.Key.ToString(), entry.Value.ToString());
-                        oid.Add(entry.Key.ToString());
+                        oid.Add(entry.Key.ToString());                                // 将Next信息回填;
                     }
                 }
                 else
@@ -137,6 +137,7 @@ namespace SCMTOperationCore.Message.SNMP
                     oid.Clear();
                 }
             }
+            
             return Res;
         }
 
@@ -413,25 +414,25 @@ namespace SCMTOperationCore.Message.SNMP
         public override void GetNextRequest(AsyncCallback callback, List<string> PduList)
         {
             SnmpMessageResult res = new SnmpMessageResult();
-            if ((PduList.Count == 0) && (PduList == null))
+            if ((PduList.Count == 0) && (PduList == null))      // 如果PduList内容为空，则不进行处理;
             {
                 return;
             }
-            Task tsk = Task.Factory.StartNew(()=>
+            Task tsk = Task.Factory.StartNew(() =>
             {
                 Dictionary<string, string> NextRest = new Dictionary<string, string>();
                 List<List<string>> AllList = new List<List<string>>();
+                bool GetNextorNot = true;
 
                 AllList.Add(PduList);
-                for(int i = 0; i <= AllList.Count;)
+                while(GetNextorNot)
                 {
-                    NextRest = this.GetNext(AllList[i]);        // 返回结果，同时更新下一个有效的OidList;
-                    if(AllList[i].Count != 0)
+
+                    NextRest = this.GetNext(ref PduList);           // 得到返回结果;
+                    if (PduList.Count == 0)
                     {
-                        AllList.Add(AllList[i]);                // GetNext的机制是将本次获得到的行数据回填，SNMP框架会返回下一行的数据;
-                        i++;
+                        GetNextorNot = false;
                     }
-                        
                     res.SetSNMPReslut(NextRest);
                     callback(res);
                 }
