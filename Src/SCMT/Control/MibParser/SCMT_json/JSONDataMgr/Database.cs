@@ -92,6 +92,7 @@ namespace MIBDataParser.JSONDataMgr
             }
             catch
             {
+                resultInitData(false);
                 return;
             }
         }
