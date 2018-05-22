@@ -103,6 +103,12 @@
     <Reference Include="AsyncIO">
       <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\AsyncIO.dll</HintPath>
     </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Lib\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging.Log4Net">
+      <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
+    </Reference>
     <Reference Include="NetMQ">
       <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\NetMQ.dll</HintPath>
     </Reference>
@@ -345,7 +351,7 @@
       <Name>LogManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\Control\MibParser\SCMT_json\MIBDataParser.csproj">
-      <Project>{e212a21d-fe5b-4e50-9d60-dcf979ff242a}</Project>
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">

@@ -49,6 +49,7 @@ namespace SCMTMainWindow.Component.ViewModel
                 result = value;
                 return true;
             }
+            // StartEditing事件，判断应该使用那个属性操作;
             if (binder.Name == "JudgePropertyName_StartEditing" && binder.CallInfo.ArgumentCount == 1)
             {
                 string columnname = args[0] as string;
@@ -62,6 +63,7 @@ namespace SCMTMainWindow.Component.ViewModel
                 if (ColName_Property.ContainsKey(columnname))
                 {
                     string key = ColName_Property[columnname];
+                    // 如果存在对应得属性;
                     if (Properties.ContainsKey(key))
                     {
                         object property = Properties[key];
