@@ -69,7 +69,7 @@
   <ItemGroup>
     <Reference Include="PresentationFramework" />
     <Reference Include="SnmpSharpNet">
-      <HintPath>..\..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\SnmpSharpNet.dll</HintPath>
+      <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -92,6 +92,8 @@
     <Compile Include="Elements\NodeB.cs" />
     <Compile Include="Elements\BaseElement\SiElement.cs" />
     <Compile Include="Message\SI\SiMessage.cs" />
+    <Compile Include="Message\SNMP\CmdExecuteMgr.cs" />
+    <Compile Include="Message\SNMP\LmtPdu.cs" />
     <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />
     <Compile Include="Message\SNMP\TrapMessage.cs" />
