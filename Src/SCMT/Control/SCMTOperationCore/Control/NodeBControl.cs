@@ -3,7 +3,7 @@ using SCMTOperationCore.Elements;
 using System.Collections.Generic;
 using System.Net;
 using CommonUility;
-using LogMgr;
+using LogManager;
 
 //节点管理功能
 namespace SCMTOperationCore.Control
@@ -39,14 +39,14 @@ namespace SCMTOperationCore.Control
 			if (HasSameFriendlyName(friendlyName))
 			{
 				errorInfo = $"友好名为：{friendlyName}的网元已存在";
-				Log.WriteLogError(errorInfo);
+				Log.Error(errorInfo);
 				throw new CustomException(errorInfo);
 			}
 
 			if (HasSameIpAddr(ip))
 			{
 				errorInfo = $"地址为：{ip}的网元已存在，网元友好名为：{GetFriendlyNameByIp(ip)}";
-				Log.WriteLogError(errorInfo);
+				Log.Error(errorInfo);
 				throw new CustomException(errorInfo);
 			}
 
