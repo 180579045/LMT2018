@@ -71,7 +71,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MIBDataParser", "Control\Mi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMTOperationCoreTests", "Control\SCMTOperationCoreTests\SCMTOperationCoreTests.csproj", "{F513C49C-AC51-45E6-9BAD-B7E20CB4E37C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMTRedisOperation", "Control\SCMTRedisOperation\SCMTRedisOperation\SCMTRedisOperation.csproj", "{C501BF8E-DF4B-447C-9F29-01DBE8376359}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisOperation", "Control\RedisOperation\RedisOperation\RedisOperation.csproj", "{C501BF8E-DF4B-447C-9F29-01DBE8376359}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
