@@ -2,7 +2,7 @@
 * CLR版本：        $$
 * 类 名 称：       $UnzippedLmDtz$
 * 机器名称：       $machinename$
-* 命名空间：       $SCMT_json.JSONDataMgr$
+* 命名空间：       $JSONDataMgr$
 * 文 件 名：       $UnzippedLmDtz.cs$
 * 创建时间：       $2018.04.04$
 * 作    者：       $luanyibo$

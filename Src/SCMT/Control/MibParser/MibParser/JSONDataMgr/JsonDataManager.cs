@@ -12,13 +12,8 @@
 * 2018.04.xx   唐 芸       创建文件并实现类  JsonDataManager
 *************************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using System.Data;
-using Newtonsoft.Json.Linq;
 
 namespace MIBDataParser.JSONDataMgr
 {
