@@ -353,6 +353,7 @@ namespace SCMTMainWindow
             List<string> oidlist = new List<string>();
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();
             int.TryParse(ret.indexNum, out IndexNum);
+
             // 遍历所有子节点，组SNMP的GetNext命令OID集合;
             foreach(var iter in ret.childrenList)
             {
