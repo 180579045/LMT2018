@@ -438,9 +438,9 @@ namespace SCMTMainWindow
         {
 
             
-            Log.WriteLogDebug("添加基站");
-            Log.WriteLogInfo("添加基站");
-            Log.WriteLogWarn("添加基站");
+            Log.Debug("添加基站");
+            Log.Info("添加基站");
+            Log.Warn("添加基站");
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
