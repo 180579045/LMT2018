@@ -130,6 +130,7 @@
     <Compile Include="Message\SI\SiMsgBaseTypeDef.cs" />
     <Compile Include="Message\SNMP\CDTObjectRef.cs" />
     <Compile Include="Message\SNMP\CDTSnmpPdu.cs" />
+    <Compile Include="Message\SNMP\CDTCmdExecuteMgr.cs" />
     <Compile Include="Message\SNMP\IDTObjectRefInterface.cs" />
     <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />

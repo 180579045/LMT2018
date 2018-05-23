@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -49,13 +50,19 @@ namespace SCMTOperationCore.Message.SNMP
                               , string strIpAddr, ref CDTLmtbPdu lmtPdu)
         {
             requestId = 0;
+
+            Log.Info("CmdGetSync() start");
+            string msg = string.Format("cmdName={0},requestId={1},strIndex={2}, strIpAddr={3}"
+                , cmdName, requestId, strIndex, strIpAddr);
+            Log.Info(msg);
+
             if (string.IsNullOrEmpty(cmdName) || string.IsNullOrEmpty(strIpAddr))
             {
                 return -1;
             }
 
             // TODO: 数据库先打桩
-            string strMibList = "";
+            string strMibList = "1.2.3|1.2.4|1.2.5";
 
             if (string.IsNullOrEmpty(strMibList))
             {
@@ -74,7 +81,7 @@ namespace SCMTOperationCore.Message.SNMP
 
             // TODO:
             // 获取oid的前缀
-            string strPreFixOid = "";
+            string strPreFixOid = "10";
             string strOid;
 
             foreach(string v in mibList)
@@ -85,6 +92,11 @@ namespace SCMTOperationCore.Message.SNMP
             return 0;
         }
 
+        /// <summary>
+        /// 将以"|"分割的字符串转换为数组
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         private string[] StringToArray(string str)
         {
             if (string.IsNullOrEmpty(str))
