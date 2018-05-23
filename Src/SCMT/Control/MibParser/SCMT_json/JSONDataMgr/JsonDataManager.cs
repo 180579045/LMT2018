@@ -87,7 +87,7 @@ namespace MIBDataParser.JSONDataMgr
             threads[1].Name = "ObjTree";
             threads[2] = new Thread(new ThreadStart(ConvertAccessDbToJsonCmdTree));
             threads[2].Name = "CmdTree";
-            threads[3] = new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree2));
+            threads[3] = new Thread(new ThreadStart(ConvertAccessDbToJsonTreeReference));
             threads[3].Name = "ObjTreeReference";
 
             foreach (Thread t in threads)
@@ -146,7 +146,10 @@ namespace MIBDataParser.JSONDataMgr
             //Console.WriteLine("DbToJsonObjTree end " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
         }
 
-        public void ConvertAccessDbToJsonObjTree2()
+        /// <summary>
+        /// 解析lm.dtz 写 TreeReference.json
+        /// </summary>
+        public void ConvertAccessDbToJsonTreeReference()
         {
             string sqlContent = "select * from ObjTree order by ObjExcelLine";
             DataSet dataSet = GetRecordByAccessDb(mdbFile, sqlContent);

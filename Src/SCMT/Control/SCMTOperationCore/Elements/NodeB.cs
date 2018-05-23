@@ -12,7 +12,7 @@ namespace SCMTOperationCore.Elements
 	{
 		public string m_ObjTreeDataPath { get; }         // 基站对象树数据库数据源;
 		public string m_MibDataPath { get; }             // 基站Mib数据源;
-		public Database db;
+		public Database db { get; set; }                 // 用来全局保存数据库;
 		public IPAddress m_IPAddress;
 
 

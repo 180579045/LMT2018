@@ -132,7 +132,7 @@ namespace MIBDataParser.JSONDataMgr
             this.stringObjTreeJson = JsonConvert.SerializeObject(objTreeInfo, Formatting.Indented, jsonSetting);
             return;
         }
-        public void TreeReferenceParseDataSet(DataSet dataInput)
+        public void TreeReferenceParseDataSetOld(DataSet dataInput)
         {
             JObject objRec = new JObject();
 
@@ -161,7 +161,6 @@ namespace MIBDataParser.JSONDataMgr
                 objOne.Add("MIBList", "");//"MIBList":null
                 try
                 {
-                    //
                     objIdList.Add(row["ObjName"].ToString(), objId);
                 }
                 catch {
@@ -175,6 +174,51 @@ namespace MIBDataParser.JSONDataMgr
 
             this.treeReferenceJson = objRec;
         }
+        public void TreeReferenceParseDataSet(DataSet dataInput)
+        {
+            Dictionary<string, int> objIdList = new Dictionary<string, int>();
+
+            JObject objTreeReference = new JObject();
+            JArray objJArray = new JArray();
+            int selfId = 1;
+            for (int loop = 0; loop < dataInput.Tables[0].Rows.Count - 1; loop++)
+            {
+                DataRow row = dataInput.Tables[0].Rows[loop];
+                JObject objOne = ParseRowObj(selfId, row, objIdList);
+                if (objIdList.ContainsKey(row["ObjName"].ToString()) == false)
+                {
+                    objIdList.Add(row["ObjName"].ToString(), selfId);
+                }
+                selfId += 1;
+                objJArray.Add(objOne);
+            }
+            objTreeReference.Add("version", this.mibVersion);
+            objTreeReference.Add("NodeList", objJArray);
+
+            this.treeReferenceJson = objTreeReference;
+        }
+
+        private JObject ParseRowObj(int selfId, DataRow row, Dictionary<string, int> objIdList)
+        {
+            return new JObject() {
+                { "ObjID", selfId },
+                { "ObjParentID", GetParentIdByNameEn(row["ObjParent"].ToString(), objIdList)},
+                { "ChildRenCount", ""},                           //"ChildRenCount":21,
+                { "ObjName", row["ObjName"].ToString()},          //"ObjName":"基站信息", 
+                { "ObjNameEn", ""},                               //"ObjNameEn":"StartMode", 
+                {"MibTableName", row["ObjMibTables"].ToString() },//"MibTableName":"sysStartMode",
+                {"MIBList", "" },                                 //"MIBList":null
+            };
+        }
+
+        private int GetParentIdByNameEn(string parentNameEn, Dictionary<string, int> objIdList)
+        {
+            int parentId = 0;
+            objIdList.TryGetValue(parentNameEn, out parentId);
+            return parentId;
+        }
+
+
 
         private void ObjTreeAdd(DataRow rowRec, JArray objJarray)
         {

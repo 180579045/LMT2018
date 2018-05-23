@@ -702,7 +702,7 @@ namespace SCMTMainWindow
             //添加消息处理程序
             if (m_HwndSource != null)
             {
-                //m_HwndSource.AddHook(WndProc);
+                m_HwndSource.AddHook(WndProc);
             }
         }
 
