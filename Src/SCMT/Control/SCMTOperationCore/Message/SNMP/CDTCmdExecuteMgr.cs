@@ -9,17 +9,17 @@ namespace SCMTOperationCore.Message.SNMP
     /// <summary>
     /// 以命令名称方式发送Snmp消息
     /// </summary>
-    public sealed class CmdExecuteMgr
+    public sealed class CDTCmdExecuteMgr
     {
-        private static CmdExecuteMgr _instance = null;
+        private static CDTCmdExecuteMgr _instance = null;
 
         private static readonly object SynObj = new object();
 
-        private CmdExecuteMgr()
+        private CDTCmdExecuteMgr()
         {
         }
 
-        public static CmdExecuteMgr GetInstance()
+        public static CDTCmdExecuteMgr GetInstance()
         {
             if (null == _instance)
             {
@@ -27,7 +27,7 @@ namespace SCMTOperationCore.Message.SNMP
                 {
                     if (null == _instance)
                     {
-                        _instance = new CmdExecuteMgr();
+                        _instance = new CDTCmdExecuteMgr();
                     }
                 }
             }
@@ -46,7 +46,7 @@ namespace SCMTOperationCore.Message.SNMP
         /// <param name="lmtPdu"></param>
         /// <returns></returns>
         public int CmdGetSync(string cmdName, out long requestId, string strIndex
-                              , string strIpAddr, ref LmtPdu lmtPdu)
+                              , string strIpAddr, ref CDTLmtbPdu lmtPdu)
         {
             requestId = 0;
             if (string.IsNullOrEmpty(cmdName) || string.IsNullOrEmpty(strIpAddr))
