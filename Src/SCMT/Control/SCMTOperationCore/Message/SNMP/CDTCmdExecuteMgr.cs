@@ -83,10 +83,14 @@ namespace SCMTOperationCore.Message.SNMP
             // 获取oid的前缀
             string strPreFixOid = "10";
             string strOid;
+            StringBuilder sbOid = new StringBuilder();
 
             foreach(string v in mibList)
             {
-                //strOid.
+                sbOid.Append(strPreFixOid);
+                sbOid.AppendFormat("{0}.{1}.{2}", strPreFixOid, v, strIndex);
+                CDTLmtbVb vb = new CDTLmtbVb();
+//                lmtPdu.AddVb();
             }
 
             return 0;

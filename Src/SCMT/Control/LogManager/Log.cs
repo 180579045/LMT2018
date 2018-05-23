@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Common.Logging;
 using System.Runtime.CompilerServices;
 
-//[assembly: log4net.Config.XmlConfigurator(ConfigFile = "Log4.config", Watch = true)]
+//[assembly: log4net.Config.XmlConfigurator(ConfigFile = "config/LogCfg/Log4Net.xml", Watch = true)]
 namespace LogManager
 {
 	public class Log

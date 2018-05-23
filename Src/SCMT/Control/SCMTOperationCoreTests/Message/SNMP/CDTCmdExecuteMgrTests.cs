@@ -14,7 +14,14 @@ namespace SCMTOperationCore.Message.SNMP.Tests
         [TestMethod()]
         public void CmdGetSyncTest()
         {
-            Assert.Fail();
+            string cmdName = "aaa";
+            long requestId = 0;
+            string strIndex = ".0";
+            string strIpAddr = "192.168.5.198";
+            CDTLmtbPdu lmtbPdu = null;
+            CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out requestId, strIndex, strIpAddr, ref lmtbPdu);
+
+
         }
     }
 }
