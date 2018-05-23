@@ -7,7 +7,7 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     class MibInfoList
     {
@@ -32,23 +32,19 @@ namespace SCMT_json.JSONDataMgr
         /// </summary>
         public void GeneratedMibInfoList()
         {          ///
-            string sFilePath = @"D:\C#\SCMT_json\SCMT_json\jsonfile\mib.json";
-            FileStream fs = new FileStream(sFilePath, FileMode.Open);//初始化文件流
-            byte[] array = new byte[fs.Length];//初始化字节数组
-            fs.Read(array, 0, array.Length);//读取流中数据到字节数组中
-            fs.Close();//关闭流
-            string str = Encoding.Default.GetString(array);//将字节数组转化为字符串
+            ReadIniFile iniFile = new ReadIniFile();
+            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
 
-            ///
-            dynamic json = JObject.Parse(str);
-            foreach (var table in json["tableList"])
+            JsonFile json = new JsonFile();
+            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json"); 
+            foreach (var table in JObj["tableList"])
             {
                 Dictionary<string, string> nameEnTableInfo = new Dictionary<string, string>();
                 Dictionary<string, string> oidTableInfo = new Dictionary<string, string>();
-                string tableName = table["nameMib"];
-                string tableOid = table["oid"];
-                string tableIndexNum = table["indexNum"];
-                string nameCh = table["nameCh"];
+                string tableName = table["nameMib"].ToString();
+                string tableOid = table["oid"].ToString();
+                string tableIndexNum = table["indexNum"].ToString();
+                string nameCh = table["nameCh"].ToString();
                 dynamic childList = table["childList"];
 
                 nameEnTableInfo.Add("isLeaf", "0");
@@ -80,8 +76,8 @@ namespace SCMT_json.JSONDataMgr
                     }
                     catch (Exception ex)
                     {
-                        nameEn_info_db[childName]["oid"] = nameEn_info_db[childName]["oid"] +"|"+ childOid;
-                        Console.WriteLine("生成json_db时{0},{1}",childName,ex.Message);
+                        nameEn_info_db[childName]["oid"] = nameEn_info_db[childName]["oid"] + "|" + childOid;
+                        Console.WriteLine("生成json_db时{0},{1}", childName, ex.Message);
                     }
 
                     oidChildInfo.Add("isLeaf", "1");
@@ -90,42 +86,21 @@ namespace SCMT_json.JSONDataMgr
                     oid_info_db.Add(childOid, oidChildInfo);
                 }
             }
-
-            var test = oid_info_db.ToString();
-            var jsonstroid = JsonConvert.SerializeObject(oid_info_db);
-            var jsonstrnameEn = JsonConvert.SerializeObject(nameEn_info_db);
-            var jsonstrtable = JsonConvert.SerializeObject(table_info_db);
-
-
-            string fswritePathoid = @"D:\C#\SCMT_json\SCMT_json\jsonfile\oid_info_db.json";
-            string fswritePathnameEn = @"D:\C#\SCMT_json\SCMT_json\jsonfile\nameEn_info_db.json";
-            string fswritePattableh = @"D:\C#\SCMT_json\SCMT_json\jsonfile\table_info_db.json"; ;
-            FileStream fswoid = new FileStream(fswritePathoid, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件                                                                            //清空文件
-                                                                                               //清空文件
-            FileStream fswname = new FileStream(fswritePathnameEn, FileMode.Create, FileAccess.Write);
-            FileStream fswtable = new FileStream(fswritePattableh, FileMode.Create, FileAccess.Write);
-
-            fswoid.SetLength(0);
-            fswname.SetLength(0);
-            fswtable.SetLength(0);
-
-            StreamWriter sw1 = new StreamWriter(fswoid, Encoding.Default);
-            StreamWriter sw2 = new StreamWriter(fswname, Encoding.Default);
-            StreamWriter sw3 = new StreamWriter(fswtable, Encoding.Default);
-
-            sw1.Write(jsonstroid);
-            sw1.Flush();
-            sw1.Close();
-
-            sw2.Write(jsonstrnameEn);
-            sw2.Flush();
-            sw2.Close();
-
-            sw3.Write(jsonstrtable);
-            sw3.Flush();
-            sw3.Close();
             return;
          }
+        /// <summary>
+        /// 把数据库内容，写到文件中，便于查看
+        /// </summary>
+        void TestWriteListDbFile()
+        {
+            ReadIniFile iniFile = new ReadIniFile();
+            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
+
+            JsonFile json = new JsonFile();
+            json.WriteFile(JsonConvert.SerializeObject(oid_info_db), jsonfilepath + "oid_info_db.json");
+            json.WriteFile(JsonConvert.SerializeObject(nameEn_info_db), jsonfilepath + "nameEn_info_db.json");
+            json.WriteFile(JsonConvert.SerializeObject(table_info_db), jsonfilepath + "table_info_db.json");
+        }             
 
         public bool getTableInfo(string key,out dynamic tableInfo)
         {
@@ -183,5 +158,7 @@ namespace SCMT_json.JSONDataMgr
                 return false;
             return true;
         }
+
+
     }
 }

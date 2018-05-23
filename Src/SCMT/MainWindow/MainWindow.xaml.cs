@@ -39,6 +39,12 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using System.Windows.Interop;
 using CDLBrowser.Parser;
+using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
+using SCMTMainWindow.Component.SCMTControl;
+using SCMTMainWindow.Component.ViewModel;
+using System.Windows.Data;
 
 namespace SCMTMainWindow
 {
@@ -47,14 +53,18 @@ namespace SCMTMainWindow
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+        ////获取ILog实例
+        //public static ILog Log = Common.Logging.LogManager.GetLogger(typeof(MainWindow));
         public static string StrNodeName;
         private List<string> CollectList = new List<string>();
         public NodeBControl NBControler;
-        public NodeB node;
+        public NodeB node;                                                    // 当前项目暂时先只连接一个基站;
         bool bIsRepeat;
         private IntPtr m_Hwnd = new IntPtr();                                 // 当前主窗口句柄;
         private Dictionary<eHotKey, int> m_HotKeyDic                          // 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息;
             = new Dictionary<eHotKey, int>();
+        ObservableCollection<DyDataGrid_MIBModel> content_list                // 用来存储MIBDataGrid中存放的值;
+            = new ObservableCollection<DyDataGrid_MIBModel>();
 
         public MainWindow()
         {
@@ -67,7 +77,7 @@ namespace SCMTMainWindow
             RegisterFunction();                                               // 注册功能;
             deleteTempFile();
         }
-
+        
         /// <summary>
         /// 初始化用户界面;
         /// </summary>
@@ -77,34 +87,11 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 注册所有所需要的基础功能;
+        /// 窗口启动，注册所有所需要的基础功能;
         /// </summary>
         private void RegisterFunction()
         {
             //TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
-        }
-
-        private void AddNodeBPageToWindow()
-        {
-            
-        }
-
-
-        //______________________________________________________________________主界面动态刷新____
-
-        /// <summary>
-        /// 更新对象树模型以及叶节点模型;
-        /// </summary>
-        /// <param name="ItemsSource">对象树列表</param>
-        private void RefreshObj(IList<ObjNode> ItemsSource)
-        {
-            // 将右侧叶节点容器容器加入到对象树子容器中;
-            this.Obj_Root.SubExpender = this.FavLeaf_Lists;
-
-            foreach (ObjNode items in ItemsSource)
-            {
-                items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0);
-            }
         }
 
         /// <summary>
@@ -119,7 +106,82 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 添加基站;
+        /// 当增加基站的窗口关闭的时候进行的处理;
+        /// 1、通过tcp接口连接基站
+        /// 2、连接成功后，向基站发送数据同步请求;
+        /// 3、请求成功后，对数据进行解析，并显示在前端界面上;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void AddNB_Closed(object sender, EventArgs e)
+        {
+            // 如果参数为空，则表示用户没有添加基站;
+            if (!(e is NodeBArgs) || e == null)
+            {
+                return;
+            }
+
+            // 第一个版本所有数据先从本地获取;
+            node = (e as NodeBArgs).m_NodeB;
+            ObjNode.datagrid = new DTDataGrid();
+            ObjNode.main = this;
+            //ObjNode.datagrid = this.MibDataGrid;
+            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 初始化象树树信息;
+            InitDataBase();                                                      // 创建数据库(第一个版本先加载本地的);
+
+            // 向基站前端控件填入对应信息;
+            RefreshObj(Ctrl.m_RootNode);                                         // 向控件更新对象树;
+            AddNodeBPageToWindow();                                              // 将基站添加到窗口页签中;
+
+            if (node != null)
+            {
+                node.Connect();                                                  // 连接基站(第一个版本，暂时只连接一个基站);
+            }
+            
+        }
+        
+        /// <summary>
+        /// 向对象树控件更新对象树模型以及叶节点模型;
+        /// </summary>
+        /// <param name="ItemsSource">对象树列表</param>
+        private void RefreshObj(IList<ObjNode> ItemsSource)
+        {
+            // 将右侧叶节点容器容器加入到对象树子容器中;
+            this.Obj_Root.SubExpender = this.FavLeaf_Lists;
+
+            foreach (ObjNode items in ItemsSource)
+            {
+                items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0);
+            }
+        }
+
+        /// <summary>
+        /// 将基站添加到对象树以及详细页的页签当中;
+        /// </summary>
+        private void AddNodeBPageToWindow()
+        {
+
+        }
+
+        /// <summary>
+        /// 更新数据库;
+        /// </summary>
+        private void InitDataBase()
+        {
+            node.db = new Database();
+
+            node.db.resultInitData = new ResultInitData((bool ret) =>
+            {
+                if (ret == false)
+                {
+                    Console.WriteLine("DataBase Init Failed!");
+                }
+            });
+            node.db.initDatabase();
+        }
+        
+        /// <summary>
+        /// 添加基站按钮事件;
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -129,29 +191,7 @@ namespace SCMTMainWindow
             AddNodeB.NewInstance(this).ShowDialog();
         }
 
-        /// <summary>
-        /// 当窗口关闭得时候进行的处理;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void AddNB_Closed(object sender, EventArgs e)
-        {
-            // 如果参数为空，则表示没有基站;
-            if (!(e is NodeBArgs))
-            {
-                return;
-            }
-            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 象树树信息;
-            node = (e as NodeBArgs).m_NodeB;
-
-            RefreshObj(Ctrl.m_RootNode);                                         // 1、更新对象树;
-            AddNodeBPageToWindow();                                              // 2、将所有基站添加到窗口页签中;
-            if (node != null)
-            {
-                node.Connect();                                                  // 3、连接基站(第一个版本，暂时只连接一个基站);
-            }
-        }
-
+        //______________________________________________________________________主界面动态刷新____
         #region 添加对象树收藏
         /// <summary>
         /// 将对象树添加到收藏;
@@ -239,7 +279,7 @@ namespace SCMTMainWindow
             ObjNode Objnode;
             List<ObjNode> m_NodeList = new List<ObjNode>();
             List<ObjNode> RootNodeShow = new List<ObjNode>();
-            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点");
+            ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点", @"/");
             NodeB node = new NodeB("172.27.245.92", "NodeB");
             string cfgFile = node.m_ObjTreeDataPath;
             StreamReader reader = File.OpenText(cfgFile);
@@ -252,6 +292,7 @@ namespace SCMTMainWindow
             {
                 var ObjParentNodes = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
                 var name = (string)JObj.First.Next.First[TempCount]["ObjName"];
+                var TableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
                 var version = (string)JObj.First.First;
                 if (JObj.First.Next.First[TempCount]["ObjCollect"] == null)
                 {
@@ -261,7 +302,7 @@ namespace SCMTMainWindow
                 int ObjCollect = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
 
 
-                Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name);
+                Objnode = new ObjTreeNode(iter, ObjParentNodes, version, name, TableName);
                 if (ObjCollect == 1)
                 {
                     int index = m_NodeList.IndexOf(Objnode);
@@ -395,6 +436,11 @@ namespace SCMTMainWindow
         #region 添加基站事件
         private void AddeNB(object sender, EventArgs e)
         {
+
+            
+            Log.Debug("添加基站");
+            Log.Info("添加基站");
+            Log.Warn("添加基站");
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
@@ -656,7 +702,7 @@ namespace SCMTMainWindow
             //添加消息处理程序
             if (m_HwndSource != null)
             {
-                m_HwndSource.AddHook(WndProc);
+                //m_HwndSource.AddHook(WndProc);
             }
         }
 
@@ -862,6 +908,7 @@ namespace SCMTMainWindow
             ParseMessageWindow Pw = new ParseMessageWindow();
             Pw.Show();
         }
+
         /// <summary>
         /// 打开跟踪设置界面
         /// </summary>
@@ -882,5 +929,67 @@ namespace SCMTMainWindow
             }
 
         }
+
+        
+
+        /// <summary>
+        /// 每有一条新数据，都会调用该函数;
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <param name="oid_cn"></param>
+        /// <param name="oid_en"></param>
+        /// <param name="contentlist"></param>
+        public void UpdateMibDataGrid(IAsyncResult ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en, ObservableCollection<DyDataGrid_MIBModel> contentlist)
+        {
+            SnmpMessageResult res = ar as SnmpMessageResult;
+
+            //content_list ;
+            // 将信息回填到DataGrid当中;
+            this.MibDataGrid.Dispatcher.Invoke(new Action(()=>
+            {
+                this.MibDataGrid.Columns.Clear();                          //以最后一次为准;
+                dynamic model = new DyDataGrid_MIBModel();
+                foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
+                {
+                    Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());
+
+                    
+
+                    foreach (var iter2 in oid_cn)
+                    {
+                        // 如果存在对应关系;
+                        if (iter.Key.ToString().Contains(iter2.Key))
+                        {
+                            Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value.ToString() + " and Header：" + iter2.Value.ToString());
+                            model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB() { m_Content = iter.Value.ToString() }, iter2.Value.ToString());
+                        }
+                    }
+                    
+                    
+                }
+
+                if(model.Properties.Count != 0)
+                {
+                    // 向单元格内添加内容;
+                    contentlist.Add(model);
+                }
+
+                foreach (var iter3 in oid_en)
+                {
+                    Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
+                    DataGridTextColumn column = new DataGridTextColumn();
+                    column.Header = oid_cn[iter3.Key];
+                    column.Binding = new Binding(iter3.Value + ".m_Content");
+
+                    this.MibDataGrid.Columns.Add(column);
+  
+                }
+
+                this.MibDataGrid.DataContext = contentlist;
+
+            }));
+        }
+        
     }
+
 }

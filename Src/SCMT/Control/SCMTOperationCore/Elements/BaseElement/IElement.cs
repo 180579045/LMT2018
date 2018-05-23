@@ -12,6 +12,7 @@ namespace SCMTOperationCore.Elements
     interface IElement
     {
         void Connect();
+
         void DisConnect();
     }
 }

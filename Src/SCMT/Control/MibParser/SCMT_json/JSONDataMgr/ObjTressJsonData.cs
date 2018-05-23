@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     class ObjTreeBase
     {
@@ -30,6 +30,8 @@ namespace SCMT_json.JSONDataMgr
         string mibVersion;
         string stringObjTreeJson;
 
+        private JObject treeReferenceJson;
+
         public ObjTressJsonData(string mibVersion)
         {
             this.mibVersion = mibVersion;
@@ -42,6 +44,7 @@ namespace SCMT_json.JSONDataMgr
             this.objTreeInfo = new ObjTreeInfo();
             this.mibVersion = "";
             this.stringObjTreeJson = "";
+
         }
 
         public void SetObjTreeMibVersion(string mibVersion)
@@ -53,6 +56,10 @@ namespace SCMT_json.JSONDataMgr
         public string GetStringObjTreeJson()
         {
             return this.stringObjTreeJson;
+        }
+        public string GetStringTreeReference()
+        {
+            return this.treeReferenceJson.ToString();
         }
 
         //获取一个父节点下的所有叶子节点信息
@@ -124,6 +131,49 @@ namespace SCMT_json.JSONDataMgr
             jsonSetting.DefaultValueHandling = DefaultValueHandling.Include;
             this.stringObjTreeJson = JsonConvert.SerializeObject(objTreeInfo, Formatting.Indented, jsonSetting);
             return;
+        }
+        public void TreeReferenceParseDataSet(DataSet dataInput)
+        {
+            JObject objRec = new JObject();
+
+            Dictionary<string, int> objIdList = new Dictionary<string, int>();
+            JArray objJArray = new JArray();
+            int objId = 1;
+            int tableNum = dataInput.Tables[0].Rows.Count;
+            for (int loop = 0; loop < tableNum - 1; loop++)
+            {
+                DataRow row = dataInput.Tables[0].Rows[loop];
+                JObject objOne = new JObject();
+                //
+                objOne.Add("ObjID", objId);
+                if (0 == objIdList.Count)
+                {
+                    objOne.Add("ObjParentID", 0);
+                }
+                else
+                {
+                    objOne.Add("ObjParentID", objIdList[row["ObjParent"].ToString()]);
+                }
+                objOne.Add("ChildRenCount", "");//"ChildRenCount":21,
+                objOne.Add("ObjName", row["ObjName"].ToString());//"ObjName":"双模基站",    
+                objOne.Add("ObjNameEn", "");//"ObjNameEn":"TLSNB",                                         
+                objOne.Add("MibTableName", row["ObjMibTables"].ToString());//"MibTableName":"equipmentSysInfo",
+                objOne.Add("MIBList", "");//"MIBList":null
+                try
+                {
+                    //
+                    objIdList.Add(row["ObjName"].ToString(), objId);
+                }
+                catch {
+                    //Console.WriteLine("TreeReferenceParseDataSet ({0}) is chongfu.", row["ObjName"].ToString());
+                }
+                objId += 1;
+                objJArray.Add(objOne);
+            }
+            objRec.Add("version", this.mibVersion);
+            objRec.Add("NodeList", objJArray);
+
+            this.treeReferenceJson = objRec;
         }
 
         private void ObjTreeAdd(DataRow rowRec, JArray objJarray)

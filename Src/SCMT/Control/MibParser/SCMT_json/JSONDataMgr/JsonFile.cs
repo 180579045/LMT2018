@@ -2,7 +2,7 @@
 * CLR版本：        $$
 * 类 名 称：       $ JsonFile $
 * 机器名称：       $ machinename $
-* 命名空间：       $ SCMT_json.JSONDataMgr $
+* 命名空间：       $ MIBDataParser.JSONDataMgr $
 * 文 件 名：       $ JsonFile.cs $
 * 创建时间：       $ 2018.04.XX $
 * 作    者：       $ TangYun $
@@ -16,9 +16,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace SCMT_json.JSONDataMgr
+namespace MIBDataParser.JSONDataMgr
 {
     class JsonFile
     {
@@ -78,6 +80,14 @@ namespace SCMT_json.JSONDataMgr
                 //记日志
                 Console.WriteLine("write file " + filepath + " failed!");
             }
+        }
+
+        public JObject ReadJsonFileForJObject(string sFilePath)
+        {
+            StreamReader reader = File.OpenText(sFilePath);
+            JObject JObj = new JObject();
+            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            return JObj;
         }
     }
 }

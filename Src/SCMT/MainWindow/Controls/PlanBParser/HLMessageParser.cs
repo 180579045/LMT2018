@@ -21,29 +21,29 @@ namespace SCMTMainWindow.Controls.PlanBParser
         // B方案呈现HL信令消息;
         private void updateHlSingalMessageInfo(SubscribeMsg msg)
         {
-            ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
-            EventNew UIMsg = new EventNew();
+            //ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
+            //EventNew UIMsg = new EventNew();
 
-            UIMsg.DisplayIndex = scriptMessage.NO;
-            UIMsg.TimeStamp = scriptMessage.time;
-            UIMsg.EventName = scriptMessage.message;
-            UIMsg.MessageDestination = scriptMessage.MessageDestination;
-            UIMsg.MessageSource = scriptMessage.MessageSource;
-            UIMsg.data = scriptMessage.data;
+            //UIMsg.DisplayIndex = scriptMessage.NO;
+            //UIMsg.TimeStamp = scriptMessage.time;
+            //UIMsg.EventName = scriptMessage.message;
+            //UIMsg.MessageDestination = scriptMessage.MessageDestination;
+            //UIMsg.MessageSource = scriptMessage.MessageSource;
+            //UIMsg.data = scriptMessage.data;
 
-            if (-1 != scriptMessage.UI.IndexOf("UE"))
-            {
-                MessageList.m_MsgList.Add(UIMsg);
-            }
-            if (-1 != scriptMessage.UI.IndexOf("eNB"))
-            {
-                MessageList.m_eNB_MsgList.Add(UIMsg);
-            }
-            if (-1 != scriptMessage.UI.IndexOf("gNB"))
-            {
-                MessageList.m_gNB_MsgList.Add(UIMsg);
-            }
-            return;
+            //if (-1 != scriptMessage.UI.IndexOf("UE"))
+            //{
+            //    MessageList.m_MsgList.Add(UIMsg);
+            //}
+            //if (-1 != scriptMessage.UI.IndexOf("eNB"))
+            //{
+            //    MessageList.m_eNB_MsgList.Add(UIMsg);
+            //}
+            //if (-1 != scriptMessage.UI.IndexOf("gNB"))
+            //{
+            //    MessageList.m_gNB_MsgList.Add(UIMsg);
+            //}
+            //return;
         }
 
         // 开始解析;

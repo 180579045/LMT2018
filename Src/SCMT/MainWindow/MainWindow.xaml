@@ -15,6 +15,7 @@
         xmlns:Metro="clr-namespace:UICore.Controls.Metro;assembly=UICore"
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:uc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
         mc:Ignorable="d"
         Height="778" Width="1024"
         Title="{Binding Title}"
@@ -138,9 +139,6 @@
         </Metro:MetroFavScrollViewer>
 
         <!-- 页签的基础控件 -->
-        <!-- 遗留问题：
-             1：Avalon长度比窗体宽
-        -->
         <Grid Grid.Column="3">
             <TabControl x:Name="MainHorizenTab" TabStripPlacement="Top" Style="{StaticResource TabControlStyle}" >
 
@@ -165,7 +163,10 @@
                             <xcad:LayoutRoot x:Name="_layoutRoot">
                                 <xcad:LayoutPanel Orientation="Horizontal">
                                     <xcad:LayoutAnchorablePane x:Name="Pane">
-                                        <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False"/>
+                                        <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False">
+                                            <!-- 显示MIB内容的DataGrid -->
+                                            <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}"/>
+                                        </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>
                             </xcad:LayoutRoot>
