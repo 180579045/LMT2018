@@ -688,18 +688,18 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 窗体资源准备完成之后，获取当前窗口句柄，并添加消息处理程序
+        /// 窗体资源准备完成之后，获取当前窗口句柄，并添加消息处理程序;
         /// </summary>
         /// <param name="e"></param>
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);
 
-            //获取窗体句柄
+            //获取窗体句柄;
             m_Hwnd = new WindowInteropHelper(this).Handle;
             HwndSource m_HwndSource = HwndSource.FromHwnd(m_Hwnd);
 
-            //添加消息处理程序
+            //添加消息处理程序;
             if (m_HwndSource != null)
             {
                 m_HwndSource.AddHook(WndProc);
@@ -707,7 +707,7 @@ namespace SCMTMainWindow
         }
 
         /// <summary>
-        /// 窗体消息回调函数，负责处理热键消息
+        /// 窗体消息回调函数，负责处理热键消息;
         /// </summary>
         /// <param name="hWnd">窗口句柄</param>
         /// <param name="msg">消息</param>
@@ -719,12 +719,12 @@ namespace SCMTMainWindow
         {
             switch (msg)
             {
-                //消息是热键消息
+                //消息是热键消息;
                 case HotKeyManager.WM_HOTKEY:
 
                     int atomID = wParam.ToInt32();
 
-                    //此处无法使用switch，因为case不是常量而是变量
+                    //此处无法使用switch，因为case不是常量而是变量;
                     if (atomID == m_HotKeyDic[eHotKey.UserCase1])
                     {
                         SignalBConfig.SetScriptTxt(1);
@@ -773,6 +773,7 @@ namespace SCMTMainWindow
                     handled = true;
 
                     break;
+
                 default:
                     break;
             }
@@ -888,7 +889,7 @@ namespace SCMTMainWindow
 
         private void Lost_Nodeb_Focus(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine("Base lost focus");
+            Console.WriteLine("Base page lost focus");
         }
 
         private void Load_Nodeb(object sender, RoutedEventArgs e)
@@ -933,7 +934,7 @@ namespace SCMTMainWindow
         
 
         /// <summary>
-        /// 每有一条新数据，都会调用该函数;
+        /// 每有一条新的MIB数据，都会调用该函数;
         /// </summary>
         /// <param name="ar"></param>
         /// <param name="oid_cn"></param>
@@ -947,8 +948,10 @@ namespace SCMTMainWindow
             // 将信息回填到DataGrid当中;
             this.MibDataGrid.Dispatcher.Invoke(new Action(()=>
             {
-                this.MibDataGrid.Columns.Clear();                          //以最后一次为准;
+                this.MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
                 dynamic model = new DyDataGrid_MIBModel();
+                
+                // 遍历GetNext的结果;
                 foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
                 {
                     Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());

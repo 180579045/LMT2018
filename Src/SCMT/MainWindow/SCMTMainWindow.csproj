@@ -354,7 +354,7 @@
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
       <Name>LogManager</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Control\MibParser\SCMT_json\MIBDataParser.csproj">
+    <ProjectReference Include="..\Control\MibParser\MibParser\MIBDataParser.csproj">
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
