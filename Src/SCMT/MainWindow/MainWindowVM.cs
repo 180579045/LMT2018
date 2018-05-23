@@ -140,42 +140,36 @@ namespace SCMTMainWindow
 
     public enum OrderStatus { None, New, Processing, Shipped, Received };
 
-
+    /// <summary>
+    /// 初始化JsObj;
+    /// </summary>
     public class CallbackObjectForJs
     {
         private DispatcherTimer timer = new DispatcherTimer();
         private int i=0;
+        
+        private string option = OptionJsonString();               // 生成 option 配置项，并转成 JSON 字符串;
 
-        // 生成 option 配置项，并转成 JSON 字符串
-        private string option = OptionJsonString();
-
-        //add by MaYi   定义全局的legend  和 series  方便进行添加和删除
+        //add by MaYi   定义全局的legend  和 series  方便进行添加和删除;
         public List<string> listForLegend = new List<string>();
         public List<series> listForSeries = new List<series>();
 
         public static string OptionJsonString() {
 
-            //这些只是进行初始化的信息，最后会被覆盖的
-
+            //这些只是进行初始化的信息，最后会被覆盖的;
             List<string> aaa = new List<string>();
             //aaa.Add("想怎么配");
             //aaa.Add("就怎么配");
 
-            legend legend = new legend(aaa);
+            legend legend = new legend(aaa);                     // 数据集;
 
-            // 生成 series 里面的 data 数据 ( 重要 )
-           // double[] al1 = randomArr(36);
-           // double[] al2 = randomArr(72);
-           // series series = new series("想怎么配", "line", false, "circle", "", al1);
-           // series series1 = new series("就怎么配", "line", false, "circle", "", al2);
+            // 生成 series 里面的 data 数据 ( 重要 );
             List<series> ser1 = new List<series>();
-
-          //  ser1.Add(series);
-          //  ser1.Add(series1);
-
-            // 生成 xAxis 中的 data 属性 ( date 的格式很重要 )
+            
+            // 生成 xAxis 中的 data 属性 ( date 的格式很重要 );
             string[] data = { "16:49:01", "16:49:02", "16:49:03", "16:49:04", "16:49:05", "16:49:06" };
             xAxis xaxis = new xAxis(data);
+
             Option option = new Option(legend, ser1, xaxis);
 
             return SCMTMainWindow.Option.ObjectToJson(option);

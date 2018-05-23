@@ -8,6 +8,11 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <cefSharp:ChromiumWebBrowser x:Name="address" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Button Content="调试" Click="Button_Click" Grid.Row="0"></Button>
+        <cefSharp:ChromiumWebBrowser Grid.Row="1" x:Name="address" />
     </Grid>
 </UserControl>
