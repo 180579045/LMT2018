@@ -84,6 +84,9 @@ namespace SCMTMainWindow
         private void InitView()
         {
             NBControler = new NodeBControl();
+            this.MibDataGrid.MouseMove += MibDataGrid_MouseMove;
+            this.MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
+            this.MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
         }
 
         /// <summary>
@@ -372,8 +375,8 @@ namespace SCMTMainWindow
 
             // 当前的问题：这个Title显示不出来;
             sub.Title = "折线图";
-            sub.FloatingHeight = 280;
-            sub.FloatingWidth = 350;
+            sub.FloatingHeight = 400;
+            sub.FloatingWidth = 800;
             sub.Content = content;
             sub.FloatingLeft = 200;
             sub.FloatingTop = 200;
@@ -383,6 +386,11 @@ namespace SCMTMainWindow
             this.Pane.Children.Add(sub);
             sub.Float();
 
+            // 当窗口发生变化时;
+            sub.PropertyChanged += content.WindowProperty_Changed;
+            sub.Closed += content.Sub_Closed;
+            
+            /* 后续使用真实数据;
             //Add by Mayi
             //实现鼠标的拖拽，这里通过一个简单的TreeView 做个演示
             TreeView myTree = new TreeView();
@@ -414,7 +422,14 @@ namespace SCMTMainWindow
 
             //显示到主界面
             this.FavLeaf_Lists.Children.Add(myTree);
+            */
         }
+
+        private void Sub_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region 显示B方案Message列表控件
@@ -943,8 +958,7 @@ namespace SCMTMainWindow
         public void UpdateMibDataGrid(IAsyncResult ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en, ObservableCollection<DyDataGrid_MIBModel> contentlist)
         {
             SnmpMessageResult res = ar as SnmpMessageResult;
-
-            //content_list ;
+            
             // 将信息回填到DataGrid当中;
             this.MibDataGrid.Dispatcher.Invoke(new Action(()=>
             {
@@ -956,15 +970,19 @@ namespace SCMTMainWindow
                 {
                     Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());
 
-                    
-
                     foreach (var iter2 in oid_cn)
                     {
                         // 如果存在对应关系;
                         if (iter.Key.ToString().Contains(iter2.Key))
                         {
                             Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value.ToString() + " and Header：" + iter2.Value.ToString());
-                            model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB() { m_Content = iter.Value.ToString() }, iter2.Value.ToString());
+                            model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
+                            {
+                                m_Content = iter.Value.ToString(),
+                                oid = iter.Key,
+                                MibName_CN = iter2.Value,
+                                MibName_EN = oid_en[iter2.Key]
+                            }, iter2.Value.ToString());
                         }
                     }
                     
@@ -992,7 +1010,87 @@ namespace SCMTMainWindow
 
             }));
         }
-        
+
+        /// <summary>
+        /// 针对DataGrid的鼠标操作;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MibDataGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            //(e.OriginalSource as DataGridCell).DataContext is MS.Internal.NamedObject;
+            try
+            {
+                if (e.OriginalSource is DataGridCell)
+                {
+
+                    Console.WriteLine("MouseMove;函数参数e反馈的实体是单元格内数据内容:" +
+                        ((e.OriginalSource as DataGridCell).Column).Header.ToString());
+
+                    DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
+
+                    foreach(var iter in (e.Source as DataGrid).SelectedCells)
+                    {
+                        Console.WriteLine("User Selected:" + iter.Item.GetType());
+                        SelectedIter = iter.Item as DyDataGrid_MIBModel;
+                    }
+
+                    DataGridCell item = e.OriginalSource as DataGridCell;
+
+                    // 在MouseMove事件当中可以添加鼠标拖拽事件;
+                    if (e.MiddleButton == System.Windows.Input.MouseButtonState.Pressed)
+                    {
+                        DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
+                        {
+                            HeaderName = (e.OriginalSource as DataGridCell).Column.Header.ToString(),
+                            SelectedCell = SelectedIter
+                        }, DragDropEffects.Copy);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MouseMove Exception" + ex.ToString());
+            }
+        }
+
+        private void MibDataGrid_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (e.OriginalSource is DataGridCell)
+            {
+                Console.WriteLine("PreviewMouseMove;函数参数e反馈的实体是单元格内数据内容:" +
+                    ((e.OriginalSource as DataGridCell).Column).Header.ToString());
+            }
+        }
+
+
+        private void MibDataGrid_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            if ((e.OriginalSource as DataGrid).Items.CurrentItem is DyDataGrid_MIBModel)
+            {
+                DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
+
+                foreach (var iter in (e.OriginalSource as DataGrid).SelectedCells)
+                {
+                    Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header.ToString());
+                    SelectedIter = iter.Item as DyDataGrid_MIBModel;
+
+                    DataGrid item = e.OriginalSource as DataGrid;
+
+                    // 在MouseMove事件当中可以添加鼠标拖拽事件;
+                    if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+                    {
+                        DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
+                        {
+                            HeaderName = iter.Column.Header.ToString(),
+                            SelectedCell = SelectedIter
+                        }, DragDropEffects.Copy);
+                    }
+
+                }
+            }
+        }
+
     }
 
 }

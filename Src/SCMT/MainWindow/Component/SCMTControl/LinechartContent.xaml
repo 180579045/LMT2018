@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl"
              xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="800" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="10"></RowDefinition>

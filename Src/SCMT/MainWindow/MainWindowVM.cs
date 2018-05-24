@@ -149,6 +149,8 @@ namespace SCMTMainWindow
         private int i=0;
         
         private string option = OptionJsonString();               // 生成 option 配置项，并转成 JSON 字符串;
+        public string canvas_width { get; set; }
+        public string canvas_height { get; set; }
 
         //add by MaYi   定义全局的legend  和 series  方便进行添加和删除;
         public List<string> listForLegend = new List<string>();
