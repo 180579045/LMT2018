@@ -81,10 +81,50 @@ namespace MIBDataParser.JSONDataMgr
 
         public JObject ReadJsonFileForJObject(string sFilePath)
         {
-            StreamReader reader = File.OpenText(sFilePath);
-            JObject JObj = new JObject();
-            JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
+            //JObject JObjOne = ReadJsonFileMethodOne(sFilePath);
+
+            //JObject JObjTwo = ReadJsonFileMethodTwo(sFilePath);
+
+            JObject JObjThree = ReadJsonFileMethodThree(sFilePath);
+
+            //CompareReadJsonMethod(JObjTwo, JObjThree);
+            return JObjThree;
+        }
+        JObject ReadJsonFileMethodOne(string sFilePath)
+        {
+            StreamReader fs = File.OpenText(sFilePath);
+            //JObject JObj = new JObject();
+            JObject JObj = (JObject)JToken.ReadFrom(new JsonTextReader(fs));
+            fs.Close();
             return JObj;
         }
+        JObject ReadJsonFileMethodTwo(string sFilePath)
+        {
+            FileStream fs = new FileStream(sFilePath, FileMode.Open);//初始化文件流
+            byte[] array = new byte[fs.Length];//初始化字节数组
+            fs.Read(array, 0, array.Length);//读取流中数据到字节数组中
+            fs.Close();//关闭流
+            string str = Encoding.Default.GetString(array);//将字节数组转化为字符串
+            JObject JObj = JObject.Parse(str);
+            return JObj;
+        }
+        JObject ReadJsonFileMethodThree(string sFilePath)
+        {
+            FileStream fs = new FileStream(sFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            StreamReader sr = new StreamReader(fs, Encoding.GetEncoding("gb2312"));
+            JObject JObj = JObject.Parse(sr.ReadToEnd().ToString());
+            fs.Close();
+            return JObj;
+        }
+        bool CompareReadJsonMethod(JObject ObjectOne, JObject ObjectTwo)
+        {
+            int a = 1;
+            for (int i =0;i<3;i++)
+            {
+
+            }
+            return true;
+        }
+
     }
 }
