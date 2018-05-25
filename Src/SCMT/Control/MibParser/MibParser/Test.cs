@@ -38,7 +38,8 @@ namespace MIBDataParser
             // test_2
             IReDataByEnglishName nameInfo = new ReDataByEnglishName();
             test.getDataByEnglishName("srsResourceSetId", out nameInfo);
-            Console.WriteLine("output, {0}", nameInfo.oid);
+            if(null != nameInfo)
+                Console.WriteLine("output, {0}", nameInfo.oid);
 
             // test_3
             List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();

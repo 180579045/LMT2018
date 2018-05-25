@@ -71,7 +71,7 @@ namespace MIBDataParser.JSONDataMgr
                     case EnumTableLeafType.leaf:
                         if (!LeafToJsonData(objRec, childJArray, row))
                         {
-                            Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), row["MIBName"].ToString());
+                            //Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), row["MIBName"].ToString());
                         }
                         break;
                     default:
