@@ -126,7 +126,6 @@ namespace SCMTMainWindow
 
             // 第一个版本所有数据先从本地获取;
             node = (e as NodeBArgs).m_NodeB;
-            ObjNode.datagrid = new DTDataGrid();
             ObjNode.main = this;
             //ObjNode.datagrid = this.MibDataGrid;
             ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 初始化象树树信息;
