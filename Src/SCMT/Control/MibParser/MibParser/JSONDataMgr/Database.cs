@@ -73,6 +73,7 @@ namespace MIBDataParser.JSONDataMgr
         private MibInfoList mibL = null;
         private CmdInfoList cmdL = null;
 
+        private string curConnectIp = "";
         // 初始化 线程: 调用 myInitDateBase
         public void initDatabase()
         {
@@ -80,6 +81,26 @@ namespace MIBDataParser.JSONDataMgr
             {
                 // 开线程: void myInitDateBase();
                 Thread childThread = new Thread(myInitDateBase);
+                childThread.Start();
+                return;
+            }
+            catch
+            {
+                resultInitData(false);
+                return;
+            }
+        }
+        /// <summary>
+        /// 初始化 线程: 调用 myInitDateBase
+        /// </summary>
+        /// <param name="connectIp">基站连接的ip</param>
+        public void initDatabase(string connectIp)
+        {
+            try
+            {
+                // 开线程: void myInitDateBase();
+                curConnectIp = connectIp;
+                Thread childThread = new Thread(myInitDateBaseByIpConnect);
                 childThread.Start();
                 return;
             }
@@ -127,6 +148,43 @@ namespace MIBDataParser.JSONDataMgr
             return;
         }
 
+        private void myInitDateBaseByIpConnect()
+        {
+            // 初始化
+            // 1. 解压lm.dtz
+            UnzippedLmDtz unZip = new UnzippedLmDtz();
+            string err = "";
+            if (!unZip.UnZipFile(out err))
+            {
+                Console.WriteLine("Err:Unzip fail, {0}", err);
+                resultInitData(false);
+                return;
+            }
+            Console.WriteLine("unzip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+
+            // 2. 解析lm.dtz => json文件(增加，叶子节点的读写属性)
+            //解析.mdb文件
+            JsonDataManager JsonDataM = new JsonDataManager("5.10.11");
+            JsonDataM = new JsonDataManager("5.10.11");
+            //JsonDataM.ConvertAccessDbToJson();
+            JsonDataM.ConvertAccessDbToJsonForThread();
+            Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+
+            // 3. 解析json 文件
+            //MibInfoList mibL = new MibInfoList();
+            mibL = new MibInfoList();// mib 节点
+            cmdL = new CmdInfoList();// cmd 节点
+            mibL.GeneratedMibInfoList(this.curConnectIp);
+            cmdL.GeneratedCmdInfoList();
+            Console.WriteLine("mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            //mibL.getOidEnInfo(@"1.3.6.1.4.1.5105.1.2.100.1.1.5.6.1.20.33",out oidInfo);
+
+            this.curConnectIp = "";
+            //
+            resultInitData(true);
+            return;
+        }
+
         public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData)
         {
             reData = null;
@@ -137,6 +195,21 @@ namespace MIBDataParser.JSONDataMgr
                 return false;
 
             if (!mibL.getNameEnInfo(nameEn, out getNameInfo))
+                return false;
+            reDataC._myOid = getNameInfo["oid"];
+            reData = reDataC;
+            return true;
+        }
+        public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string curConnectIp)
+        {
+            reData = null;
+            ReDataByEnglishName reDataC = new ReDataByEnglishName();
+            dynamic getNameInfo;
+
+            if (nameEn.Length == 0 | mibL == null)
+                return false;
+
+            if (!mibL.getNameEnInfo(nameEn, out getNameInfo, curConnectIp))
                 return false;
             reDataC._myOid = getNameInfo["oid"];
             reData = reDataC;
@@ -155,6 +228,21 @@ namespace MIBDataParser.JSONDataMgr
             }
             return true;
         }
+        public bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList, string curConnectIp)
+        {
+            reDataList = new List<IReDataByEnglishName>();
+            foreach (var nameEn in nameEnList)
+            {
+                IReDataByEnglishName nameInfo = new ReDataByEnglishName();
+                if (!this.getDataByEnglishName(nameEn, out nameInfo, curConnectIp))
+                {
+                    reDataList = null;
+                    return false;
+                }
+                reDataList.Add(nameInfo);
+            }
+            return true;
+        }
 
         public bool getDataByOid(string oid, out IReDataByOid reData)
         {
@@ -166,6 +254,23 @@ namespace MIBDataParser.JSONDataMgr
                 return false;
 
             if (!mibL.getOidEnInfo(oid, out getOidInfo))
+                return false;
+            reOidInfo.myNameEn = getOidInfo["nameMib"];
+            reOidInfo.myIsLeaf = getOidInfo["isLeaf"];
+            reOidInfo.myIndexNum = getOidInfo["indexNum"];
+            reData = reOidInfo;
+            return true;
+        }
+        public bool getDataByOid(string oid, out IReDataByOid reData, string curConnectIp)
+        {
+            reData = null;
+            ReDataByOid reOidInfo = new ReDataByOid();
+            dynamic getOidInfo;
+
+            if (oid.Length == 0 | mibL == null)
+                return false;
+
+            if (!mibL.getOidEnInfo(oid, out getOidInfo, curConnectIp))
                 return false;
             reOidInfo.myNameEn = getOidInfo["nameMib"];
             reOidInfo.myIsLeaf = getOidInfo["isLeaf"];
@@ -211,6 +316,61 @@ namespace MIBDataParser.JSONDataMgr
             reData = reTable;
             return true;
         }
+        public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string curConnectIp)
+        {
+            ReDataByTableEnglishName reTable = new ReDataByTableEnglishName();
+            reData = null;
+
+            if (nameEn.Length == 0 | mibL == null)
+                return false;
+
+            dynamic getTable;
+            if (!mibL.getTableInfo(nameEn.Replace("Table", "Entry"), out getTable, curConnectIp))
+                return false;
+            reTable.myOid = getTable["oid"];
+            reTable.myIndexNum = getTable["indexNum"];
+            foreach (var child in getTable["childList"])
+            {
+                ReDataByTableEnglishNameChild childInfo = new ReDataByTableEnglishNameChild();
+
+                childInfo.childNameMib = child["childNameMib"];
+                childInfo.childNo = child["childNo"];
+                childInfo.childOid = child["childOid"];
+                childInfo.childNameCh = child["childNameCh"];
+                childInfo.isMib = child["isMib"];
+                childInfo.ASNType = child["ASNType"];
+                childInfo.OMType = child["OMType"];
+                childInfo.UIType = child["UIType"];
+                childInfo.managerValueRange = child["managerValueRange"];
+                childInfo.defaultValue = child["defaultValue"];
+                childInfo.detailDesc = child["detailDesc"];
+                childInfo.leafProperty = child["leafProperty"];
+                childInfo.unit = child["unit"];
+                //
+                reTable.myChildList.Add(childInfo);
+            }
+
+            reData = reTable;
+            return true;
+        }
+
+        public bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData)
+        {
+            reCmdData = new ReCmdDataByCmdEnglishName();
+            if (null == cmdL | cmdEn == String.Empty)
+                return false;
+
+            Dictionary<string, dynamic> cmdInfo;
+            cmdL.getCmdInfoByCmdEnglishName(cmdEn, out cmdInfo);
+            reCmdData.cmdNameEn = cmdEn; // 命令的英文名
+            reCmdData.tableName = cmdInfo["TableName"]; // 命令的mib表英文名
+            reCmdData.cmdType = cmdInfo["CmdType"]; //命令类型
+            reCmdData.cmdDesc = cmdInfo["CmdDesc"]; //命令描述
+            reCmdData.leaflist = cmdInfo["leafOIdList"]; // 命令节点名
+            return true;
+        }
+
+        //////////
 
         public bool testGetDataByTableEnglishName()
         {
@@ -230,22 +390,6 @@ namespace MIBDataParser.JSONDataMgr
                     Console.WriteLine("===={0} not exist.", MibTableName);
                 }
             }
-            return true;
-        }
-
-        public bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData)
-        {
-            reCmdData = new ReCmdDataByCmdEnglishName();
-            if (null == cmdL | cmdEn == String.Empty)
-                return false;
-
-            Dictionary<string, dynamic> cmdInfo;
-            cmdL.getCmdInfoByCmdEnglishName(cmdEn, out cmdInfo);
-            reCmdData.cmdNameEn = cmdEn; // 命令的英文名
-            reCmdData.tableName = cmdInfo["TableName"]; // 命令的mib表英文名
-            reCmdData.cmdType = cmdInfo["CmdType"]; //命令类型
-            reCmdData.cmdDesc = cmdInfo["CmdDesc"]; //命令描述
-            reCmdData.leaflist = cmdInfo["leafOIdList"]; // 命令节点名
             return true;
         }
     }

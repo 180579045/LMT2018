@@ -12,10 +12,23 @@ namespace MIBDataParser
             {
                 Console.WriteLine("init data result is ok");
 
-                testDb();
+                //testDb();
+                testForInitByConnetIp();
             }
             else
                 Console.WriteLine("init data result is failed");
+        }
+
+        public void dosomething(string connectIp)
+        {
+            test = new Database();
+
+            // 结果回调
+            test.resultInitData = new ResultInitData(ResultInitData);
+
+            // 初始化
+            //test.initDatabase();
+            test.initDatabase(connectIp);
         }
 
         public void dosomething()
@@ -26,19 +39,20 @@ namespace MIBDataParser
             test.resultInitData = new ResultInitData(ResultInitData);
 
             // 初始化
+            //test.initDatabase();
             test.initDatabase();
         }
 
         void testDb()
         {
-            // 查询数据 test_1
+            // 查询数据 test_1 命令树
             IReCmdDataByCmdEnglishName reCmdData;
             test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
 
             // test_2
             IReDataByEnglishName nameInfo = new ReDataByEnglishName();
-            test.getDataByEnglishName("srsResourceSetId", out nameInfo);
-            if(null != nameInfo)
+            test.getDataByEnglishName("alarmCausePrimaryAlarmCauseNo", out nameInfo);
+            if (null != nameInfo)
                 Console.WriteLine("output, {0}", nameInfo.oid);
 
             // test_3
@@ -54,6 +68,31 @@ namespace MIBDataParser
             // test_5
             test.testGetDataByTableEnglishName();
         }
+        void testForInitByConnetIp()
+        {
+            // 查询数据 test_1 命令树
+            IReCmdDataByCmdEnglishName reCmdData;
+            test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
+
+            // test_2
+            IReDataByEnglishName nameInfo = new ReDataByEnglishName();
+            test.getDataByEnglishName("alarmCausePrimaryAlarmCauseNo", out nameInfo, "192.163.2.1");
+            if (null != nameInfo)
+                Console.WriteLine("output, {0}", nameInfo.oid);
+
+            // test_3
+            List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
+            List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
+                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
+            if(test.getDataByEnglishName(nameEnList, out nameInfoList, "192.163.2.1"))
+                Console.WriteLine("output, {0}", nameInfoList.Count);
+
+
+            // test_4
+            IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
+            test.getDataByTableEnglishName("alarmCauseTable", out tableData, "192.163.2.1");
+
+        }
     }
 
     class Test
@@ -61,10 +100,17 @@ namespace MIBDataParser
         static void Main(String[] args)
         {
             //
-            //testForCmdJson();
+            InitDbByConnectIp();
+        }
 
-            //
-            testForInitDb();
+        static void InitDbByConnectIp()
+        {
+            Console.WriteLine("begin ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+            NodeB b = new NodeB();
+            b.dosomething("192.163.2.1");
+            Console.WriteLine("end ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
+
+            //Console.Read();
         }
 
         static void testForCmdJson()
@@ -81,7 +127,9 @@ namespace MIBDataParser
         {
             Console.WriteLine("begin ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
             NodeB b = new NodeB();
-            b.dosomething();
+
+            //b.dosomething();
+            b.dosomething("192.163.2.1");
             Console.WriteLine("end ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
 
             //Console.Read();

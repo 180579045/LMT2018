@@ -57,6 +57,7 @@ namespace MIBDataParser
 
         // 线程 : 初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
         void initDatabase();// IParseResultNotify parseResultListener);
+        void initDatabase(string connectIp);
 
         //查询数据
         bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
@@ -64,6 +65,13 @@ namespace MIBDataParser
         bool getDataByOid(string oid, out IReDataByOid reData);
         bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
         bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
+
+        //
+        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string connectIp);
+        bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList, string connectIp);
+        bool getDataByOid(string oid, out IReDataByOid reData, string connectIp);
+        bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string connectIp);
+        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData, string connectIp);
     }
 }
 

@@ -174,6 +174,10 @@ namespace MIBDataParser.JSONDataMgr
             //3. 解压缩rar文件
             try
             {
+                if (File.Exists(destinationDirectoryName + "lm"))
+                {
+                    File.Delete(destinationDirectoryName + "lm");
+                }
                 if (File.Exists(destinationDirectoryName + "lm.mdb"))
                 {
                     File.Delete(destinationDirectoryName + "lm.mdb");
