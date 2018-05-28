@@ -48,41 +48,47 @@ namespace MIBDataParser.JSONDataMgr
                 nameEnTableInfo.Add("oid", tableOid);
                 nameEnTableInfo.Add("indexNum", tableIndexNum);
                 nameEnTableInfo.Add("nameCh", nameCh);
-                nameEn_info_db.Add(tableName, nameEnTableInfo);
+                this.nameEn_info_db.Add(tableName, nameEnTableInfo);//
+                //getNameEnTableInfo(table);
 
                 oidTableInfo.Add("isLeaf", "0");
                 oidTableInfo.Add("nameMib", tableName);
                 oidTableInfo.Add("indexNum", tableIndexNum);
                 oidTableInfo.Add("nameCh", nameCh);
-                oid_info_db.Add(tableOid, oidTableInfo);
+                this.oid_info_db.Add(tableOid, oidTableInfo);//
+                //getOidTableInfo(table);
 
-                table_info_db.Add(tableName, table);
+                this.table_info_db.Add(tableName, table);
                 foreach (var child in childList)
                 {
                     Dictionary<string, string> nameEnChildInfo = new Dictionary<string, string>();
                     Dictionary<string, string> oidChildInfo = new Dictionary<string, string>();
                     string childName = child["childNameMib"];
                     string childOid = child["childOid"];
+                    string childNameCh = child["childNameCh"];
 
+                    nameEnChildInfo.Add("tableNameEn", tableName);
                     nameEnChildInfo.Add("isLeaf", "1");
                     nameEnChildInfo.Add("oid", childOid);
                     nameEnChildInfo.Add("indexNum", tableIndexNum);
+                    nameEnChildInfo.Add("nameCh", childNameCh);
                     try
                     {
-                        nameEn_info_db.Add(childName, nameEnChildInfo);
+                        this.nameEn_info_db.Add(childName, nameEnChildInfo);
                     }
                     catch (Exception ex)
                     {
-                        nameEn_info_db[childName]["oid"] = nameEn_info_db[childName]["oid"] + "|" + childOid;
+                        this.nameEn_info_db[childName]["oid"] = this.nameEn_info_db[childName]["oid"] + "|" + childOid;
                         Console.WriteLine("生成json_db时{0},{1}", childName, ex.Message);
                     }
 
                     oidChildInfo.Add("isLeaf", "1");
                     oidChildInfo.Add("nameMib", childName);
                     oidChildInfo.Add("indexNum", tableIndexNum);
-                    oid_info_db.Add(childOid, oidChildInfo);
+                    this.oid_info_db.Add(childOid, oidChildInfo);
                 }
             }
+            TestWriteListDbFile();
             return;
          }
         /// <summary>
@@ -94,9 +100,9 @@ namespace MIBDataParser.JSONDataMgr
             string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
 
             JsonFile json = new JsonFile();
-            json.WriteFile(JsonConvert.SerializeObject(oid_info_db), jsonfilepath + "oid_info_db.json");
-            json.WriteFile(JsonConvert.SerializeObject(nameEn_info_db), jsonfilepath + "nameEn_info_db.json");
-            json.WriteFile(JsonConvert.SerializeObject(table_info_db), jsonfilepath + "table_info_db.json");
+            json.WriteFile(jsonfilepath + "oid_info_db.json", JsonConvert.SerializeObject(oid_info_db));
+            json.WriteFile(jsonfilepath + "nameEn_info_db.json", JsonConvert.SerializeObject(nameEn_info_db));
+            json.WriteFile(jsonfilepath + "table_info_db.json", JsonConvert.SerializeObject(table_info_db));
         }             
 
         public bool getTableInfo(string key,out dynamic tableInfo)
@@ -156,6 +162,29 @@ namespace MIBDataParser.JSONDataMgr
             return true;
         }
 
+        //
+        public bool getNameEnTableInfo(JToken table)
+        {
+            Dictionary<string, string> nameEnTableInfo = new Dictionary<string, string>();
 
+            nameEnTableInfo.Add("isLeaf", "0");
+            nameEnTableInfo.Add("oid", table["oid"].ToString());
+            nameEnTableInfo.Add("indexNum", table["indexNum"].ToString());
+            nameEnTableInfo.Add("nameCh", table["nameCh"].ToString());
+
+            this.nameEn_info_db.Add(table["nameMib"].ToString(), nameEnTableInfo);
+            return true;
+        }
+        public bool getOidTableInfo(JToken table)
+        {
+            Dictionary<string, string> oidTableInfo = new Dictionary<string, string>();
+
+            oidTableInfo.Add("isLeaf", "0");
+            oidTableInfo.Add("nameMib", table["nameMib"].ToString());
+            oidTableInfo.Add("indexNum", table["indexNum"].ToString());
+            oidTableInfo.Add("nameCh", table["nameCh"].ToString());
+            this.oid_info_db.Add(table["oid"].ToString(), oidTableInfo);
+            return true;
+        }
     }
 }

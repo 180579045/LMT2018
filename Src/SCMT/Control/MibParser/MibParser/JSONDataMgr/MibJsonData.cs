@@ -182,7 +182,8 @@ namespace MIBDataParser.JSONDataMgr
                 { "defaultValue", rowRec["DefaultValue"].ToString()},
                 { "detailDesc", rowRec["chDetailDesc"].ToString()},
                 { "leafProperty", 0},//0x0001,查;0x0010,增;0x0100,改;0x1000,删;
-                { "unit", rowRec["MIBVal_Unit"].ToString()}
+                { "unit", rowRec["MIBVal_Unit"].ToString()},
+                { "IsIndex", rowRec["IsIndex"].ToString()},
             };
             childJArray.Add(childJObject);
             return true;
