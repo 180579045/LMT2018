@@ -88,6 +88,8 @@ namespace SCMTOperationCore.Message.SNMP
         /// <returns></returns>
         public abstract SnmpV2Packet GetRequest(List<string> PduList);
 
+        public abstract SnmpV2Packet GetRequest(Pdu pdu);
+
         /// <summary>
         /// SetRequest的对外接口
         /// </summary>
@@ -410,6 +412,63 @@ namespace SCMTOperationCore.Message.SNMP
                 throw e;
             }
            
+
+            return result;
+
+        }
+
+        public override SnmpV2Packet GetRequest(Pdu pdu)
+        {
+            if (m_target == null)
+            {
+                Log.Error("SNMP m_target = null.");
+                return null;
+            }
+
+            if (pdu == null)
+            {
+                Log.Error("SNMP请求参数pdu为空");
+                return null;
+            }
+
+            // Log msg
+            string logMsg;
+            SnmpV2Packet result = null;
+
+            pdu.Type = PduType.Get;
+
+            try
+            {
+                result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+                if (null != result)
+                {
+                    if (result.Pdu.ErrorStatus != 0)
+                    {
+                        logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
+                            , result.Pdu.ErrorStatus, result.Pdu.ErrorIndex);
+                        Log.Error(logMsg);
+                    }
+                    else
+                    {
+                        foreach (Vb vb in result.Pdu.VbList)
+                        {
+                            logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
+                                , vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+                            Log.Debug(logMsg);
+                        }
+                    }
+                }
+                else
+                {
+                    Log.Error("No response received from SNMP agent.");
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message.ToString());
+                throw e;
+            }
+
 
             return result;
 
