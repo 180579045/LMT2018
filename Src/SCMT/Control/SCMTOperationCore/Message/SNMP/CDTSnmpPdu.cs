@@ -9,8 +9,11 @@ namespace SCMTOperationCore.Message.SNMP
 {
 	public class CDTLmtbPdu : CDTObjectRef
 	{
+		public CDTLmtbPdu()
+		{ }
+
 		//设置和获取源端口
-		void set_SourcePort(long SourcePort)
+		public void set_SourcePort(long SourcePort)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -18,7 +21,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		long get_SourcePort()
+		public long get_SourcePort()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -29,7 +32,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取出错状态
-		void set_LastErrorStatus(long LastErrorStatus)
+		public void set_LastErrorStatus(long LastErrorStatus)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -37,7 +40,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		long get_LastErrorStatus()
+		public long get_LastErrorStatus()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -48,7 +51,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取出错vb索引
-		void set_LastErrorIndex(long LastErrorIndex)
+		public void set_LastErrorIndex(long LastErrorIndex)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -56,7 +59,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		long get_LastErrorIndex()
+		public long get_LastErrorIndex()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -67,7 +70,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取Notify Id
-		void set_NotifyId(int NotifyId)
+		public void set_NotifyId(int NotifyId)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -75,7 +78,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		int get_NotifyId()
+		public int get_NotifyId()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -85,7 +88,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return 0;
 		}
 
-		void setPrintId(bool bNotPrint)
+		public void setPrintId(bool bNotPrint)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -93,7 +96,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		bool getPrintId()
+		public bool getPrintId()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -103,7 +106,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return false;
 		}
 
-		void setSyncId(bool bSync)
+		public void setSyncId(bool bSync)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -111,7 +114,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		bool getSyncId()
+		public bool getSyncId()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -121,7 +124,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return false;
 		}
 
-		int getReqMsgType()
+		public int getReqMsgType()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -131,7 +134,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return 0;
 		}
 
-		void setReqMsgType(int reqMsgType)
+		public void setReqMsgType(int reqMsgType)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -140,7 +143,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取源IP
-		void set_SourceIp(string SourceIp)
+		public void set_SourceIp(string SourceIp)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -148,7 +151,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		void SetOmtSourceIp(string inSourceIp)
+		public void SetOmtSourceIp(string inSourceIp)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -156,7 +159,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		string get_SourceIp()
+		public string get_SourceIp()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -166,7 +169,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return null;
 		}
 
-		string get_omtSourceIp()
+		public string get_omtSourceIp()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -176,7 +179,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return null;
 		}
 
-		string get_CmdName()
+		public string get_CmdName()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -186,7 +189,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return null;
 		}
 
-		void setCmdName(string cmdName)
+		public void setCmdName(string cmdName)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -194,18 +197,18 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		bool IsEndOfMibView()
+		public bool IsEndOfMibView()
 		{
 			return isEndOfMibView;
 		}
 
-		void SetEndOfMibViewFlag(bool bEndOfMibView)
+		public void SetEndOfMibViewFlag(bool bEndOfMibView)
 		{
 			isEndOfMibView = bEndOfMibView;
 		}
 
 		//获取回调原因
-		int get_Reason()
+		public int get_Reason()
 		{
 			return reason;
 		}
@@ -312,7 +315,7 @@ namespace SCMTOperationCore.Message.SNMP
 			m_lmtbPduInfo.m_appendInfo.getValue(out appendInfo);
 		}
 
-		void SetRequestId(long id)
+		public void SetRequestId(long id)
 		{
 			m_requestId = id;
 		}
@@ -322,7 +325,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return m_requestId;
 		}
 
-		void SetPduType(ushort tp)
+		public void SetPduType(ushort tp)
 		{
 			m_type = tp;
 		}
@@ -331,7 +334,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return m_type;
 		}
 
-		void CopyPduInfo(ref CDTLmtbPdu pPdu)
+		public void CopyPduInfo(ref CDTLmtbPdu pPdu)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -339,7 +342,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		bool RecordOidValue(string strMibOID, out string lpszIndex)
+		public bool RecordOidValue(string strMibOID, out string lpszIndex)
 		{
 			throw new NotImplementedException();
 		}
@@ -351,10 +354,10 @@ namespace SCMTOperationCore.Message.SNMP
 		private ushort m_type; //收到的Snmp响应报文类型
 		private bool isEndOfMibView;  //针对GetBulk命令，是否还会有更多的实例
 
-		private List<CDTLmtbVb> m_VbTable;   //用来存储Vb对的容器
+		private List<CDTLmtbVb> m_VbTable = new List<CDTLmtbVb>();   //用来存储Vb对的容器
 
 		//key为PDU中每一个VB的OID，Value为PDU中每一个VB的value
-		private Dictionary<string, string> m_mapVBs;
+		private Dictionary<string, string> m_mapVBs = new Dictionary<string, string>();
 
 		private stru_LmtbPduInfo m_lmtbPduInfo;
 	}
@@ -430,7 +433,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取Oid
-		void set_Oid(string Oid)
+		public void set_Oid(string Oid)
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -438,7 +441,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		string get_Oid()
+		public string get_Oid()
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -449,7 +452,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取实例值
-		void set_Value(string Value)
+		public void set_Value(string Value)
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -457,7 +460,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		string get_Value()
+		public string get_Value()
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -468,7 +471,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		//设置和获取Syntax类型
-		void set_Syntax(SNMP_SYNTAX_TYPE Syntax)
+		public void set_Syntax(SNMP_SYNTAX_TYPE Syntax)
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -476,7 +479,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		SNMP_SYNTAX_TYPE get_Syntax()
+		public SNMP_SYNTAX_TYPE get_Syntax()
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -487,7 +490,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/*设置和获取Octet String类型的原始数据*/
-		bool SetRawData(byte[] RawDataBytes, int nDataLen)
+		public bool SetRawData(byte[] RawDataBytes, int nDataLen)
 		{
 			if (null == m_lmtbVbInfo || RawDataBytes.Length < nDataLen || nDataLen > CommonMacro.MAX_VALUE_LEN)
 			{
@@ -509,7 +512,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return m_lmtbVbInfo.m_rawData;
 		}
 
-		void SetAsnType(string asnType)
+		public void SetAsnType(string asnType)
 		{
 			if (null == asnType)
 			{
@@ -519,12 +522,12 @@ namespace SCMTOperationCore.Message.SNMP
 			this.asnType = asnType;
 		}
 
-		string GetAsnType()
+		public string GetAsnType()
 		{
 			return asnType;
 		}
 
-		void Copy(out CDTLmtbVb pVb)
+		public void Copy(out CDTLmtbVb pVb)
 		{
 			pVb = this;
 		}
@@ -533,7 +536,7 @@ namespace SCMTOperationCore.Message.SNMP
 		private string asnType;
 
 		/* added by liuwei6 20130308 增加ParentOID长度 */
-		void SetParentOidLength(int nParentOidLength)
+		public void SetParentOidLength(int nParentOidLength)
 		{
 			if (null != m_lmtbVbInfo)
 			{
@@ -541,7 +544,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		int GetParentOidLength()
+		public int GetParentOidLength()
 		{
 			if (null != m_lmtbVbInfo)
 			{

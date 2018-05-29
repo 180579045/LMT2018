@@ -131,8 +131,13 @@
     <Compile Include="Message\SNMP\CDTObjectRef.cs" />
     <Compile Include="Message\SNMP\CDTSnmpPdu.cs" />
     <Compile Include="Message\SNMP\CDTCmdExecuteMgr.cs" />
+    <Compile Include="Message\SNMP\DTLinkPathMgr.cs" />
+    <Compile Include="Message\SNMP\ICDTLinkPathMgr.cs" />
     <Compile Include="Message\SNMP\IDTObjectRefInterface.cs" />
+    <Compile Include="Message\SNMP\ILmtbSnmp.cs" />
+    <Compile Include="Message\SNMP\LmtbSnmpEx.cs" />
     <Compile Include="Message\SNMP\SnmpControl.cs" />
+    <Compile Include="Message\SNMP\SnmpHelper.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />
     <Compile Include="Message\SNMP\TrapMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
