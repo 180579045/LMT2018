@@ -8,35 +8,38 @@ namespace MIBDataParser.JSONDataMgr
 {
     class MibInfoList
     {
-        Dictionary<string, Dictionary<string, dynamic>> test;
+        /*************************************     开辟内存，存数据      ********************************************/
         /// <summary>
         /// 数据库 1 ：{key：tableName, value: 表的所有信息(包括叶子节点)}
         /// </summary>
-        Dictionary<string, dynamic> table_info_db = new Dictionary<string, dynamic>();
-        Dictionary<string, dynamic> table_info_db_list = new Dictionary<string, dynamic>();
+        private Dictionary<string, dynamic> table_info_db = null;
+        private Dictionary<string, dynamic> table_info_db_list = new Dictionary<string, dynamic>();
 
         /// <summary>
         /// 数据库 2 ：{key：nameEnglish, value: {"oid":vOid,"indexNum":vIndexNum,"nameCh":vNameCh }}
         /// nameEnTableInfo.Add("isLeaf", "0");
         /// </summary>
-        Dictionary<string, Dictionary<string, string>> nameEn_info_db = new Dictionary<string, Dictionary<string, string>>();
-        Dictionary<string, dynamic> nameEn_info_db_list = new Dictionary<string, dynamic>();
+        private Dictionary<string, Dictionary<string, string>> nameEn_info_db = null;
+        private Dictionary<string, dynamic> nameEn_info_db_list = new Dictionary<string, dynamic>();
 
         /// <summary>
         /// 数据库 3 ：{key：oid, value: {"nameEn":vNameEn,"indexNum":vIndexNum,"nameCh":vNameCh }}
         /// </summary>
-        Dictionary<string, Dictionary<string, string>> oid_info_db = new Dictionary<string, Dictionary<string, string>>();
-        Dictionary<string, dynamic> oid_info_db_list = new Dictionary<string, dynamic>();
+        private Dictionary<string, Dictionary<string, string>> oid_info_db = null;
+        private Dictionary<string, dynamic> oid_info_db_list = new Dictionary<string, dynamic>();
 
-        ///
-        bool initDb()
+        /*************************************     开辟内存，存数据      ********************************************/
+
+        /// 初始化，申请存储
+        private bool initDbMemory()
         {
             table_info_db = new Dictionary<string, dynamic>();
             nameEn_info_db = new Dictionary<string, Dictionary<string, string>>();
             oid_info_db = new Dictionary<string, Dictionary<string, string>>();
             return true;
         }
-        bool DelDb()
+        /// 结束后，释放存储
+        private bool DelDbMemory()
         {
             table_info_db = null;
             nameEn_info_db = null;
@@ -47,113 +50,13 @@ namespace MIBDataParser.JSONDataMgr
         /// <summary>
         /// json 文件生产 3种数据库
         /// </summary>
-        void GeneratedMibInfoList(bool useOld)
+        public bool GeneratedMibInfoList(string ConnectIp)
         {
-            initDb();
+            initDbMemory();
             ///
             ReadIniFile iniFile = new ReadIniFile();
             string jsonfilepath = iniFile.IniReadValue(
-                iniFile.getIniFilePath("JsonDataMgr.ini"), 
-                "JsonFileInfo", "jsonfilepath");
-
-            JsonFile json = new JsonFile();
-            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json"); 
-            foreach (var table in JObj["tableList"])
-            {
-                Dictionary<string, string> nameEnTableInfo = new Dictionary<string, string>();
-                Dictionary<string, string> oidTableInfo = new Dictionary<string, string>();
-                string tableName = table["nameMib"].ToString();
-                string tableOid = table["oid"].ToString();
-                string tableIndexNum = table["indexNum"].ToString();
-                string nameCh = table["nameCh"].ToString();
-                dynamic childList = table["childList"];
-
-                nameEnTableInfo.Add("isLeaf", "0");
-                nameEnTableInfo.Add("oid", tableOid);
-                nameEnTableInfo.Add("indexNum", tableIndexNum);
-                nameEnTableInfo.Add("nameCh", nameCh);
-                this.nameEn_info_db.Add(tableName, nameEnTableInfo);
-
-                oidTableInfo.Add("isLeaf", "0");
-                oidTableInfo.Add("nameMib", tableName);
-                oidTableInfo.Add("indexNum", tableIndexNum);
-                oidTableInfo.Add("nameCh", nameCh);
-                this.oid_info_db.Add(tableOid, oidTableInfo);
-
-                this.table_info_db.Add(tableName, table);
-                foreach (var child in childList)
-                {
-                    Dictionary<string, string> nameEnChildInfo = new Dictionary<string, string>();
-                    Dictionary<string, string> oidChildInfo = new Dictionary<string, string>();
-                    string childName = child["childNameMib"];
-                    string childOid = child["childOid"];
-                    string childNameCh = child["childNameCh"];
-
-                    nameEnChildInfo.Add("tableNameEn", tableName);
-                    nameEnChildInfo.Add("isLeaf", "1");
-                    nameEnChildInfo.Add("oid", childOid);
-                    nameEnChildInfo.Add("indexNum", tableIndexNum);
-                    nameEnChildInfo.Add("nameCh", childNameCh);
-
-                    try
-                    {
-                        this.nameEn_info_db.Add(childName, nameEnChildInfo);
-                    }
-                    catch (Exception ex)
-                    {
-                        this.nameEn_info_db[childName]["oid"] = this.nameEn_info_db[childName]["oid"] + "|" + childOid;
-                        Console.WriteLine("生成json_db时{0},{1}", childName, ex.Message);
-                    }
-
-                    oidChildInfo.Add("isLeaf", "1");
-                    oidChildInfo.Add("nameMib", childName);
-                    oidChildInfo.Add("indexNum", tableIndexNum);
-                    this.oid_info_db.Add(childOid, oidChildInfo);
-                }
-            }
-            TestWriteListDbFile();
-            return;
-         }
-
-        /// <summary>
-        /// json 文件生产 3种数据库
-        /// </summary>
-        public void GeneratedMibInfoList()
-        {
-            initDb();
-            ///
-            ReadIniFile iniFile = new ReadIniFile();
-            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath(
-                "JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
-
-            JsonFile json = new JsonFile();
-            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json");
-            foreach (var table in JObj["tableList"])
-            {
-                CreateNameEnByTableInfo(table);
-                CreateOidByTableInfo(table);
-                CreateTableByTableInfo(table);
-
-                foreach (var child in table["childList"])
-                {
-                    CreateNameEnByChildInfo(child, table);
-                    CreateOidByChildInfo(child, table);
-                }
-            }
-            //TestWriteListDbFile2();
-            return;
-        }
-
-        /// <summary>
-        /// json 文件生产 3种数据库
-        /// </summary>
-        public void GeneratedMibInfoList(string ConnectIp)
-        {
-            initDb();
-            ///
-            ReadIniFile iniFile = new ReadIniFile();
-            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath(
-                "JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
+                iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
 
             JsonFile json = new JsonFile();
             JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json");
@@ -173,11 +76,11 @@ namespace MIBDataParser.JSONDataMgr
             if (!AddDBList(ConnectIp))
             {
                 Console.WriteLine("add Db list err.");
-                return;
+                return false;
             }
             TestWriteListDbFile2();
-            DelDb();
-            return;
+            DelDbMemory();
+            return true;
         }
 
         /// <summary>
@@ -438,6 +341,109 @@ namespace MIBDataParser.JSONDataMgr
             }
             return true;
         }
+
+
+        /********************************    私有，原来的代码     ********************************/
+        /// <summary>
+        /// json 文件生产 3种数据库
+        /// </summary>
+        private void GeneratedMibInfoList()
+        {
+            initDbMemory();
+            ///
+            ReadIniFile iniFile = new ReadIniFile();
+            string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath(
+                "JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
+
+            JsonFile json = new JsonFile();
+            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json");
+            foreach (var table in JObj["tableList"])
+            {
+                CreateNameEnByTableInfo(table);
+                CreateOidByTableInfo(table);
+                CreateTableByTableInfo(table);
+
+                foreach (var child in table["childList"])
+                {
+                    CreateNameEnByChildInfo(child, table);
+                    CreateOidByChildInfo(child, table);
+                }
+            }
+            //TestWriteListDbFile2();
+            return;
+        }
+
+        /// <summary>
+        /// json 文件生产 3种数据库
+        /// </summary>
+        private void GeneratedMibInfoList(bool useOld)
+        {
+            initDbMemory();
+            ///
+            ReadIniFile iniFile = new ReadIniFile();
+            string jsonfilepath = iniFile.IniReadValue(
+                iniFile.getIniFilePath("JsonDataMgr.ini"),
+                "JsonFileInfo", "jsonfilepath");
+
+            JsonFile json = new JsonFile();
+            JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "mib.json");
+            foreach (var table in JObj["tableList"])
+            {
+                Dictionary<string, string> nameEnTableInfo = new Dictionary<string, string>();
+                Dictionary<string, string> oidTableInfo = new Dictionary<string, string>();
+                string tableName = table["nameMib"].ToString();
+                string tableOid = table["oid"].ToString();
+                string tableIndexNum = table["indexNum"].ToString();
+                string nameCh = table["nameCh"].ToString();
+                dynamic childList = table["childList"];
+
+                nameEnTableInfo.Add("isLeaf", "0");
+                nameEnTableInfo.Add("oid", tableOid);
+                nameEnTableInfo.Add("indexNum", tableIndexNum);
+                nameEnTableInfo.Add("nameCh", nameCh);
+                this.nameEn_info_db.Add(tableName, nameEnTableInfo);
+
+                oidTableInfo.Add("isLeaf", "0");
+                oidTableInfo.Add("nameMib", tableName);
+                oidTableInfo.Add("indexNum", tableIndexNum);
+                oidTableInfo.Add("nameCh", nameCh);
+                this.oid_info_db.Add(tableOid, oidTableInfo);
+
+                this.table_info_db.Add(tableName, table);
+                foreach (var child in childList)
+                {
+                    Dictionary<string, string> nameEnChildInfo = new Dictionary<string, string>();
+                    Dictionary<string, string> oidChildInfo = new Dictionary<string, string>();
+                    string childName = child["childNameMib"];
+                    string childOid = child["childOid"];
+                    string childNameCh = child["childNameCh"];
+
+                    nameEnChildInfo.Add("tableNameEn", tableName);
+                    nameEnChildInfo.Add("isLeaf", "1");
+                    nameEnChildInfo.Add("oid", childOid);
+                    nameEnChildInfo.Add("indexNum", tableIndexNum);
+                    nameEnChildInfo.Add("nameCh", childNameCh);
+
+                    try
+                    {
+                        this.nameEn_info_db.Add(childName, nameEnChildInfo);
+                    }
+                    catch (Exception ex)
+                    {
+                        this.nameEn_info_db[childName]["oid"] = this.nameEn_info_db[childName]["oid"] + "|" + childOid;
+                        Console.WriteLine("生成json_db时{0},{1}", childName, ex.Message);
+                    }
+
+                    oidChildInfo.Add("isLeaf", "1");
+                    oidChildInfo.Add("nameMib", childName);
+                    oidChildInfo.Add("indexNum", tableIndexNum);
+                    this.oid_info_db.Add(childOid, oidChildInfo);
+                }
+            }
+            TestWriteListDbFile();
+            return;
+        }
+        /********************************    私有，原来的代码     ********************************/
 
         //public void TestDBInfoList()
         //{

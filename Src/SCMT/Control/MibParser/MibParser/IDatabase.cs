@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MIBDataParser
 {
+    /// <summary>
+    /// 委托 : 初始化Database 结果
+    /// </summary>
+    /// <param name="result">初始化成功,true;失败,false</param>
     public delegate void ResultInitData(bool result);
 
     public interface IReDataByEnglishName
@@ -48,6 +52,10 @@ namespace MIBDataParser
         string cmdDesc { get; set; } //命令描述
         List<string> leaflist { get; set; } // 命令节点名
     }
+
+    /// <summary>
+    /// 操作数据库接口 : 初始化, 查询. 没有修改的接口.
+    /// </summary>
     public interface IDatabase
     {
         // 返回初始化 initDatabase 的结果

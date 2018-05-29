@@ -40,7 +40,7 @@ namespace MIBDataParser
 
             // 初始化
             //test.initDatabase();
-            test.initDatabase();
+            //test.initDatabase();
         }
 
         void testDb()

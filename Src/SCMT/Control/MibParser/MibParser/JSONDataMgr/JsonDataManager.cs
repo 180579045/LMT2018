@@ -31,6 +31,7 @@ namespace MIBDataParser.JSONDataMgr
         bool isObjJsonOK = false;
         bool isObjJson2OK = false;
         bool isCmdJsonOK = false;
+        bool isJsonProtect = false;
 
         public JsonDataManager(string mibVersion)
         {
@@ -67,15 +68,16 @@ namespace MIBDataParser.JSONDataMgr
             Console.WriteLine("end to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
             return;
         }
-        public void ConvertAccessDbToJsonForThread()//string fileName,string mibJsonPath, string ojbJsonPath)
+        public bool ConvertAccessDbToJsonForThread()//string fileName,string mibJsonPath, string ojbJsonPath)
         {
             isMibJsonOK = false;
             isObjJsonOK = false;
             isObjJson2OK = false;
             isCmdJsonOK = false;
-            
+            isJsonProtect = false;
+
             //Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-            Thread[] threads = new Thread[4];
+            Thread[] threads = new Thread[5];
             threads[0] = new Thread(new ThreadStart(ConvertAccessDbToJsonMibTree));
             threads[0].Name = "MibTree";
             threads[1] = new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree));
@@ -84,20 +86,24 @@ namespace MIBDataParser.JSONDataMgr
             threads[2].Name = "CmdTree";
             threads[3] = new Thread(new ThreadStart(ConvertAccessDbToJsonTreeReference));
             threads[3].Name = "ObjTreeReference";
+            threads[4] = new Thread(new ThreadStart(ConvertAccessDbToJsonProtect));
+            threads[4].Name = "ObjTreeReference";
 
             foreach (Thread t in threads)
-            {
                 t.Start();
-            }
 
-            while (true){
+            while (!isJsonProtect)
+            {
                 if (true == isMibJsonOK && true == isObjJsonOK && true == isObjJson2OK && true == isCmdJsonOK) {
                     break;
                 }
             }
+            if (!isJsonProtect)
+                return true;
+            else
+                return false;
             //Console.WriteLine("end   to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             //Console.Read();
-            return;
         }
 
         void JsonFileWrite(string fileName, string content)
@@ -176,6 +182,12 @@ namespace MIBDataParser.JSONDataMgr
             isCmdJsonOK = true;
             //Console.WriteLine("DbToJsonCmdTree end " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             return;
+        }
+
+        private void ConvertAccessDbToJsonProtect()
+        {
+            Thread.Sleep(3000);
+            isJsonProtect = true;
         }
 
         /// <summary>
