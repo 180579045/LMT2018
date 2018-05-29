@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace MIBDataParser
 {
+    /// <summary>
+    /// 委托 : 初始化Database 结果
+    /// </summary>
+    /// <param name="result">初始化成功,true;失败,false</param>
     public delegate void ResultInitData(bool result);
 
     public interface IReDataByEnglishName
@@ -48,6 +52,10 @@ namespace MIBDataParser
         string cmdDesc { get; set; } //命令描述
         List<string> leaflist { get; set; } // 命令节点名
     }
+
+    /// <summary>
+    /// 操作数据库接口 : 初始化, 查询. 没有修改的接口.
+    /// </summary>
     public interface IDatabase
     {
         // 返回初始化 initDatabase 的结果
@@ -56,13 +64,21 @@ namespace MIBDataParser
         // ResultInitData resultInitData;
 
         // 线程 : 初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
-        void initDatabase();// IParseResultNotify parseResultListener);
+        // void initDatabase();// IParseResultNotify parseResultListener);
+        void initDatabase(string connectIp);
 
         //查询数据
-        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
-        bool getDataByOid(string oid, out IReDataByOid reData);
-        bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
-        bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
+        //bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
+        //bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList);
+        //bool getDataByOid(string oid, out IReDataByOid reData);
+        //bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
+        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
+        //
+        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string connectIp);
+        bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList, string connectIp);
+        bool getDataByOid(string oid, out IReDataByOid reData, string connectIp);
+        bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string connectIp);
+        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData, string connectIp);
     }
 }
 

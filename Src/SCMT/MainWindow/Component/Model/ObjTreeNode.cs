@@ -45,14 +45,15 @@ namespace SCMTMainWindow
         public Grid m_NB_ContentGrid { get; set; }                     // 对应的MIB内容容器;
         public MetroScrollViewer m_NB_Base_Contain { get; set; }       // 对应的基站基本信息容器;
         public DataGrid m_NB_Content { get; set; }                     // 对应的MIB内容;
-        static public NodeB nodeb { get; set; }                        // 对应的基站;
-        static public DTDataGrid datagrid { get; set; }                // 对应的界面表格;
         protected Dictionary<string, string> name_cn { get; set; }     // 属性名与中文名对应关系;(后续独立挪到DataGridControl中)
         protected Dictionary<string, string> oid_cn { get; set; }      // oid与中文名对应关系;
         protected Dictionary<string, string> oid_en { get; set; }      // oid与英文名对应关系;
-        protected ObservableCollection<DyDataGrid_MIBModel> contentlist { get; set; }
-                                                                       // 用来保存内容;
-        public static MainWindow main { get; set; }
+        protected ObservableCollection<DyDataGrid_MIBModel> 
+            contentlist { get; set; }                                  // 用来保存内容;
+
+        public static MainWindow main { get; set; }                    // 保存与之对应的主窗口;
+        public static NodeB nodeb { get; set; }                        // 对应的基站;
+        public static DTDataGrid datagrid { get; set; }                // 对应的界面表格;
 
         abstract public void Add(ObjNode obj);                         // 增加孩子节点;
         abstract public void Remove(ObjNode obj);                      // 删除孩子节点;
@@ -60,7 +61,7 @@ namespace SCMTMainWindow
         public event EventHandler IsExpandedChanged;                   // 树形结构展开时;
         public event EventHandler IsSelectedChanged;                   // 树形结构节点被选择时;
         public event MouseButtonEventHandler IsRightMouseDown;         // 右键选择节点时;
-        static protected string prev_oid = "1.3.6.1.4.1.5105.100.";
+        static protected string prev_oid = "1.3.6.1.4.1.5105.100.";    // DataBase模块保存的是部分OID，这个是前半部分;
 
         /// <summary>
         /// 对象树节点点击事件;
@@ -337,6 +338,12 @@ namespace SCMTMainWindow
         {
         }
 
+        /// <summary>
+        /// 当点击叶子节点时，会触发GetNext操作;
+        /// 注意：基站GetNext不支持全节点查询，最大粒度为Get命令当中的节点数量;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public override void ClickObjNode(object sender, EventArgs e)
         {
             MetroExpander item = sender as MetroExpander;
@@ -348,15 +355,17 @@ namespace SCMTMainWindow
 
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
-            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);                //根据表明获取该表内所有MIB节点;
+            //根据表名获取该表内所有MIB节点;
+            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
 
-            List<string> oidlist = new List<string>();
-            name_cn.Clear();oid_cn.Clear();oid_en.Clear();
-            int.TryParse(ret.indexNum, out IndexNum);
+            List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
+            name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;
+            int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
 
             // 遍历所有子节点，组SNMP的GetNext命令OID集合;
             foreach(var iter in ret.childrenList)
             {
+                // 索引不参与查询;
                 if(int.Parse(iter.childNo) > IndexNum )
                 {
                     string temp = prev_oid + iter.childOid;
@@ -371,6 +380,7 @@ namespace SCMTMainWindow
                 }
             }
 
+            // 通过GetNext获取整表数据;
             SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
             msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
             //GetNextRet = msg.GetNextRequest(oidlist);

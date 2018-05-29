@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
 using Newtonsoft.Json.Linq;
 
@@ -74,7 +71,7 @@ namespace MIBDataParser.JSONDataMgr
                     case EnumTableLeafType.leaf:
                         if (!LeafToJsonData(objRec, childJArray, row))
                         {
-                            Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), row["MIBName"].ToString());
+                            //Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), row["MIBName"].ToString());
                         }
                         break;
                     default:
@@ -185,7 +182,8 @@ namespace MIBDataParser.JSONDataMgr
                 { "defaultValue", rowRec["DefaultValue"].ToString()},
                 { "detailDesc", rowRec["chDetailDesc"].ToString()},
                 { "leafProperty", 0},//0x0001,查;0x0010,增;0x0100,改;0x1000,删;
-                { "unit", rowRec["MIBVal_Unit"].ToString()}
+                { "unit", rowRec["MIBVal_Unit"].ToString()},
+                { "IsIndex", rowRec["IsIndex"].ToString()},
             };
             childJArray.Add(childJObject);
             return true;

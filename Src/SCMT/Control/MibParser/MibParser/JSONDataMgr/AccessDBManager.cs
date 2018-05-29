@@ -2,7 +2,7 @@
 * CLR版本：        $$
 * 类 名 称：       $ AccessDBManager $
 * 机器名称：       $ machinename $
-* 命名空间：       $ SCMT_json.JSONDataMgr $
+* 命名空间：       $ MIBDataParser.JSONDataMgr $
 * 文 件 名：       $ AccessDBManager.cs $
 * 创建时间：       $ 2018.04.XX $
 * 作    者：       $ TangYun $
@@ -12,10 +12,6 @@
 * 2018.04.xx   唐 芸       创建文件并实现类  AccessDBManager
 *************************************************************************************/
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Data;
 using System.Data.OleDb;
 
