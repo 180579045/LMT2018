@@ -124,6 +124,7 @@ namespace SCMTOperationCore.Message.SNMP
                 return -1;
             }
 
+            /*
             List<string> vbList = new List<string>();
 
             int vbCount = lmtPdu.VbCount();
@@ -134,10 +135,20 @@ namespace SCMTOperationCore.Message.SNMP
                 string oid = lmtVb.get_Oid();
                 vbList.Add(oid);
             }
+            */
 
-            SnmpV2Packet result = snmp.GetRequest(vbList);
+            // SnmpV2Packet result = snmp.GetRequest(vbList);
 
-            
+            Pdu pdu;
+            bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
+            if (!rs)
+            {
+                Log.Error("LmtPdu2SnmpPdu()转换错误");
+                return -1;
+            }
+
+            SnmpV2Packet result = snmp.GetRequest(pdu);
+
             if (result == null)
             {
                 Log.Error("SNMP request error, response is null.");
@@ -145,7 +156,7 @@ namespace SCMTOperationCore.Message.SNMP
             }
             requestId = result.Pdu.RequestId;
 
-            bool rs = SnmpPdu2LmtPdu(result, snmp.m_target, lmtPdu, 0, false);
+            rs = SnmpPdu2LmtPdu(result, snmp.m_target, lmtPdu, 0, false);
 
 
             return 0;
@@ -351,8 +362,10 @@ namespace SCMTOperationCore.Message.SNMP
                     case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHOBJECT:
                     case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHINSTANCE:
                     case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW:
+                        // do nothing
                         break;
                     default:
+                        // do nothing
                         break;
 
                 }
