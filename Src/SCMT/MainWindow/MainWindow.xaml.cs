@@ -945,8 +945,6 @@ namespace SCMTMainWindow
 
         }
 
-        
-
         /// <summary>
         /// 每有一条新的MIB数据，都会调用该函数;
         /// </summary>
@@ -969,12 +967,13 @@ namespace SCMTMainWindow
                 {
                     Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());
 
+                    // 通过基站反馈回来的一行结果，动态生成一个类型，用来与DataGrid对应;
                     foreach (var iter2 in oid_cn)
                     {
                         // 如果存在对应关系;
                         if (iter.Key.ToString().Contains(iter2.Key))
                         {
-                            Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value.ToString() + " and Header：" + iter2.Value.ToString());
+                            Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value.ToString() + " and Header is:" + iter2.Value.ToString());
                             model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
                             {
                                 m_Content = iter.Value.ToString(),
@@ -988,6 +987,7 @@ namespace SCMTMainWindow
                     
                 }
 
+                // 将这个整行数据填入List;
                 if(model.Properties.Count != 0)
                 {
                     // 向单元格内添加内容;
@@ -1007,6 +1007,32 @@ namespace SCMTMainWindow
 
                 this.MibDataGrid.DataContext = contentlist;
 
+            }));
+        }
+
+        /// <summary>
+        /// 当SNMP模块收集全整表数据后，调用该函数;
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <param name="oid_cn"></param>
+        /// <param name="oid_en"></param>
+        /// <param name="contentlist"></param>
+        public void UpdateAllMibDataGrid(Dictionary<string, string> ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en, 
+            ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
+        {
+            // 将信息回填到DataGrid当中;
+            this.MibDataGrid.Dispatcher.Invoke(new Action(() =>
+            {
+                this.MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
+                dynamic model = new DyDataGrid_MIBModel();
+
+                // 显示GetNext结果;
+                foreach (var iter in ar)
+                {
+                    Console.WriteLine("NextIndex" + iter.Key.ToString());
+                }
+
+                this.MibDataGrid.DataContext = contentlist;
             }));
         }
 

@@ -125,11 +125,11 @@ namespace SCMTOperationCore.Message.SNMP
                 TempRes = SnmpMsg.GetNext(this.m_Version, oidargs);
                 if (TempRes != null)
                 {
-                    oid.Clear();
+                    oid.Clear();                                                      // 获取结果后，清空oid，并准备回填Next的OID;
                     foreach (KeyValuePair<Oid, AsnType> entry in TempRes)
                     {
-                        Res.Add(entry.Key.ToString(), entry.Value.ToString());
-                        oid.Add(entry.Key.ToString());                                // 将Next信息回填;
+                        Res.Add(entry.Key.ToString(), entry.Value.ToString());        // 将结果回填;
+                        oid.Add(entry.Key.ToString());                                // 将Next的OID回填;
                     }
                 }
                 else
@@ -142,6 +142,7 @@ namespace SCMTOperationCore.Message.SNMP
         }
 
     }
+
     /// <summary>
     /// 异步获取SNMP结果参数;
     /// </summary>
@@ -184,14 +185,11 @@ namespace SCMTOperationCore.Message.SNMP
 
         public bool IsCompleted
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
+            get;
+            set;
         }
-
-
     }
+
 
     /// <summary>
     /// Snmp报文V2c版本
@@ -425,11 +423,11 @@ namespace SCMTOperationCore.Message.SNMP
                 bool GetNextorNot = true;
 
                 AllList.Add(PduList);
-                while(GetNextorNot)
+                while(GetNextorNot)                                 // 持续获取，知道最后一个结果;
                 {
 
                     NextRest = this.GetNext(ref PduList);           // 得到返回结果;
-                    if (PduList.Count == 0)
+                    if (PduList.Count == 0)                         // 当返回结果为空时，停止GetNext;
                     {
                         GetNextorNot = false;
                     }
@@ -439,7 +437,45 @@ namespace SCMTOperationCore.Message.SNMP
                 return;
             });
         }
-        
+
+        /// <summary>
+        /// GetNext的对外接口
+        /// 该函数会在第一次收到客户端请求后;
+        /// 在每次收到基站的GetResponse之后，都会调用客户端注册的回调函数
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="PduList"></param>
+        public void GetNextRequestWhenStop(AsyncCallback callback, AsyncCallback callback_WhenStop, List<string> PduList)
+        {
+            SnmpMessageResult res = new SnmpMessageResult();
+            if ((PduList.Count == 0) && (PduList == null))      // 如果PduList内容为空，则不进行处理;
+            {
+                return;
+            }
+            Task tsk = Task.Factory.StartNew(() =>
+            {
+                Dictionary<string, string> NextRest = new Dictionary<string, string>();
+                List<List<string>> AllList = new List<List<string>>();
+                bool GetNextorNot = true;
+
+                AllList.Add(PduList);
+                while (GetNextorNot)                                 // 持续获取，知道最后一个结果;
+                {
+
+                    NextRest = this.GetNext(ref PduList);           // 得到返回结果;
+                    if (PduList.Count == 0)                         // 当返回结果为空时，停止GetNext;
+                    {
+                        GetNextorNot = false;
+                        res.IsCompleted = true;
+                        callback_WhenStop(res);
+                    }
+                    res.SetSNMPReslut(NextRest);
+                    callback(res);
+                }
+                return;
+            });
+        }
+
     }
 
 }

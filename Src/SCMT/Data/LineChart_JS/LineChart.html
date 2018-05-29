@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="../echarts.min.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 800px;height:300px;"></div>
+    <input type="button" id="button1" onclick="alertMsg()" value="Button 1" />
+
+    <script>
+        // 数据驱动 -- 下面的对象皆为需要配置的参数，建议使用JSON格式
+        var newOption = JSON.parse(JsObj.option)
+        JsObj.data = [] // 测试数据
+        JsObj.date = [] // 测试横坐标
+
+        // 通过修下面两个属性，改变ECharts的div大小
+        JsObj.canvasWidth = 800
+        JsObj.canvasHeight = 300
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        // 横坐标（调试使用，生产不用）
+        var date = []; 
+        var now = new Date();
+
+        // 记录原来的宽高
+        var oldCanvasWidth = 0
+        var oldCanvasHeight = 0
+
+        function alertMsg()
+        {
+            var printres = ""
+            printres += JsObj.canvas_height
+            printres += ","
+            printres += JsObj.canvas_width
+
+            alert(printres)
+        }
+        
+        // 检测宽高并调整
+        function adjustCanvas(canvasWidth, canvasHeight) {
+            var div = document.getElementById('div');
+            if (!canvasWidth|| !canvasHeight) {
+                printErrorInfo("canvas`s Width or Height is Error")
+            }
+            // 先判断宽高是否有变化, 避免DOM操作过多
+            if (oldCanvasWidth !== canvasWidth || oldCanvasHeight !== canvasHeight) {
+                // 调整 canvas 宽高
+                document.querySelector("canvas").style.width = canvasWidth + "px"
+                document.querySelector("canvas").style.height = canvasHeight + "px"
+                
+                // 调整 div 宽高
+                var divs = document.querySelectorAll("div")
+                for (var i = 0; i < divs.length; i++) {
+                    divs[i].style.width = canvasWidth + "px"
+                }
+                for (var i = 0; i < divs.length; i++) {
+                    divs[i].style.height = canvasHeight + "px"
+                }
+            }
+        }
+        
+        // 生成渲染数据
+        function renderData() {
+            // 获取当前时间
+            let now = new Date()
+            // 控制数据长度（通过横坐标个数控制数据粒度）
+            if (JsObj.date.length === 360) {
+                JsObj.date.shift()
+                JsObj.data[0].shift()
+                JsObj.data[1].shift()
+            }
+            // 更新横坐标 -- 时间
+            JsObj.date.push([now.getHours(), now.getMinutes(), now.getSeconds()].join(':'))
+            JsObj.data[0].push(20 + Math.random() * 10)
+            JsObj.data[1].push(20 + Math.random() * 10)
+        }
+
+        // Echart使用的变量
+        option = {
+            // 标题组件，包含了主题和副主题
+            title: {
+                text: "基站数据"
+            },
+            // 需要与 series 的 name 属性相对应，进行控制显示
+            legend: {
+                data: []
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: true,  // true:x轴两边留白；false:x轴两边无padding
+                data: date
+            },
+            yAxis: {
+                boundaryGap: [0, "20%"],  // [原始数据最小值与最终最小值之间的差额，原始数据最大值与最终最大值之间的差额]
+                type: 'value'
+            },
+            // 提示框组件
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    // 提示字符串
+                    let tipStr = ""
+                    // 便利所有数据源，拼接提示字符串
+                    for (let index = 0; index < params.length; index++) {
+                        const element = params[index];
+                        // 提示： <br> 是换行符
+                        tipStr += element.seriesName + " : " + element.value.toFixed(2) + "<br>"
+                    }
+                    return tipStr
+                },
+                axisPointer: {
+                    type: 'cross'
+                },
+            },
+
+            // 缩放组件
+            dataZoom: [{
+                    type: 'slider',
+                    show: true,
+                    xAxisIndex: [0],
+                    start: 0,
+                    end: 100
+                },
+                {
+                    type: 'slider',
+                    show: true,
+                    yAxisIndex: [0],
+                    left: '93%',
+                    start: 0,
+                    end: 100
+                },
+                {
+                    type: 'inside',
+                    xAxisIndex: [0],
+                    start: 0,
+                    end: 100
+                },
+                {
+                    type: 'inside',
+                    yAxisIndex: [0],
+                    start: 0,
+                    end: 100
+                }
+            ],
+            // 系列列表。最重要的通过type显示图表的类型
+            series: []
+        }
+
+        // 启动定时器，动态修改 data 和 date 即可
+        let timer = setInterval(function () {
+
+            // 生成渲染数据（调试使用，生产不用）
+            // renderData()
+            
+            // 解析 JsObj.Option
+            parseOption(JsObj)
+
+            //异常检测
+            checkError()
+
+            // series 更新 data （调试使用，生产不用）
+            //newOption.series.map(function(ele, index) {
+            //    ele.data = JsObj.data[index] //
+            //    return ele
+            //})
+
+            myChart.setOption({
+                xAxis: {
+                    data: newOption.xAxis.data  // 更新 xAxis 的 data 属性
+                },
+                legend: newOption.legend,   // 根据配置更新legend组件
+                series: newOption.series    // 根据配置更新series组件
+            })
+            
+            // 宽高检测函数
+            adjustCanvas(JsObj.canvas_width, JsObj.canvas_height)
+
+        }, 1000)
+
+        // 根据配置信息初始化 ECharts
+        Object.assign(option, { series: newOption.series })
+        myChart.setOption(option)
+
+        // 异常检测
+        function checkError() {
+            if(!JsObj) {
+                printErrorInfo("JsObj is error")
+            } if(!JsObj.date) {
+                printErrorInfo("JsObj.date is error")
+            } if (!newOption.series) {
+                printErrorInfo("newOption.series is error")
+            }
+        }
+
+        // 错误打印函数
+        function printErrorInfo(...str) {
+            document.querySelector("#main").innerHTML = `<span>${str}</span>`
+            // 取消定时器
+            clearInterval(timer)
+        }
+
+        // 解析 JSON 格式的 JsObj.option
+        function parseOption(JsObj) {
+            // 转换 option 信息类型
+            if (typeof JsObj.option === "string") {
+                try {
+                    newOption = JSON.parse(JsObj.option)
+
+                } catch (e) {
+                    printErrorInfo(e)
+                }
+            } else {
+                printErrorInfo("the type of JsObj.option is not string")
+            }
+        }
+    </script>
+</body>
+</html>
