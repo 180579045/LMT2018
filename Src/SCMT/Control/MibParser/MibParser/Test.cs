@@ -87,11 +87,9 @@ namespace MIBDataParser
             if(test.getDataByEnglishName(nameEnList, out nameInfoList, "192.163.2.1"))
                 Console.WriteLine("output, {0}", nameInfoList.Count);
 
-
             // test_4
             IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
             test.getDataByTableEnglishName("alarmCauseTable", out tableData, "192.163.2.1");
-
         }
     }
 

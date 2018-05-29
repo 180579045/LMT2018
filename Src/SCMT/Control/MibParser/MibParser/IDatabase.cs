@@ -60,11 +60,11 @@ namespace MIBDataParser
         void initDatabase(string connectIp);
 
         //查询数据
-        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
-        bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList);
-        bool getDataByOid(string oid, out IReDataByOid reData);
-        bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
-        bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
+        //bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
+        //bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList);
+        //bool getDataByOid(string oid, out IReDataByOid reData);
+        //bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
+        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
 
         //
         bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string connectIp);
