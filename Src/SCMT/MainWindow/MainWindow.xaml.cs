@@ -179,7 +179,7 @@ namespace SCMTMainWindow
                     Console.WriteLine("DataBase Init Failed!");
                 }
             });
-            node.db.initDatabase();
+            node.db.initDatabase(node.m_IPAddress.ToString());
         }
         
         /// <summary>
@@ -1026,10 +1026,11 @@ namespace SCMTMainWindow
                 this.MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
                 dynamic model = new DyDataGrid_MIBModel();
 
-                // 显示GetNext结果;
+                // 遍历GetNext结果后，将结果填入到DataGrid控件当中;
                 foreach (var iter in ar)
                 {
-                    Console.WriteLine("NextIndex" + iter.Key.ToString());
+                    Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString());
+                    string[] temp = iter.Key.ToString().Split('.');
                 }
 
                 this.MibDataGrid.DataContext = contentlist;

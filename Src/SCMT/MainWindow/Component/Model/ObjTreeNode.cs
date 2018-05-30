@@ -67,6 +67,7 @@ namespace SCMTMainWindow
         static protected int LastColumn = 0;                           // 整行最后一个节点;
         static public string ObjParentOID { get; set; }                // 父节点OID;
         static public int IndexCount { get; set; }                     // 索引个数;
+        static public int ChildCount { get; set; }                     // 孩子节点的个数;
 
         /// <summary>
         /// 对象树节点点击事件;
@@ -365,24 +366,27 @@ namespace SCMTMainWindow
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
             //根据表名获取该表内所有MIB节点;
-            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
+            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString());
             
             List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;
             int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
             LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
             IndexCount = int.Parse(ret.indexNum);
+            ChildCount = ret.childrenList.Count - IndexNum;
             ObjParentOID = ret.oid;                                // 将父节点OID赋值;
 
             // 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
             foreach (var iter in ret.childrenList)
             {
+                oidlist.Clear();
                 // 索引不参与查询,将所有其他孩子节点进行GetNext查询操作;
                 if(int.Parse(iter.childNo) > IndexNum )
                 {
                     // 如果不是真MIB，不参与查询;
                     if (iter.isMib != "1")
                     {
+                        ChildCount--;
                         continue;
                     }
 
@@ -444,7 +448,7 @@ namespace SCMTMainWindow
             LastColumn++;
 
             // 全部节点都已经收集完毕;
-            if(LastColumn == oid_cn.Count)
+            if(LastColumn == ChildCount)
             {
                 main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount);
             }

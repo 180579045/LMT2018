@@ -448,22 +448,24 @@ namespace SCMTOperationCore.Message.SNMP
         public void GetNextRequestWhenStop(AsyncCallback callback, AsyncCallback callback_WhenStop, List<string> PduList)
         {
             SnmpMessageResult res = new SnmpMessageResult();
-            if ((PduList.Count == 0) && (PduList == null))      // 如果PduList内容为空，则不进行处理;
+            List<string> templist = new List<string>();
+            templist = PduList;
+
+            if ((PduList.Count == 0) || (PduList == null))      // 如果PduList内容为空，则不进行处理;
             {
                 return;
             }
-            Task tsk = Task.Factory.StartNew(() =>
+            
             {
                 Dictionary<string, string> NextRest = new Dictionary<string, string>();
                 List<List<string>> AllList = new List<List<string>>();
                 bool GetNextorNot = true;
 
-                AllList.Add(PduList);
-                while (GetNextorNot)                                 // 持续获取，知道最后一个结果;
+                AllList.Add(templist);
+                while (GetNextorNot)                                 // 持续获取，直到最后一个结果;
                 {
-
-                    NextRest = this.GetNext(ref PduList);           // 得到返回结果;
-                    if (PduList.Count == 0)                         // 当返回结果为空时，停止GetNext;
+                    NextRest = this.GetNext(ref templist);           // 得到返回结果;
+                    if (templist.Count == 0)                         // 当返回结果为空时，停止GetNext;
                     {
                         GetNextorNot = false;
                         res.IsCompleted = true;
@@ -473,7 +475,7 @@ namespace SCMTOperationCore.Message.SNMP
                     callback(res);
                 }
                 return;
-            });
+            }
         }
 
     }
