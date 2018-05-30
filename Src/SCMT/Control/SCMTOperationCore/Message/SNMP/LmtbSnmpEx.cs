@@ -162,6 +162,95 @@ namespace SCMTOperationCore.Message.SNMP
             return 0;
         }
 
+        /// <summary>
+        /// 异步Get操作
+        /// </summary>
+        /// <param name="lmtPdu"></param>
+        /// <param name="requestId"></param>
+        /// <param name="strIpAddr"></param>
+        /// <returns></returns>
+        public int SnmpGetAsync(CDTLmtbPdu lmtPdu, out long requestId, string strIpAddr)
+        {
+            requestId = 0;
+
+            Log.Debug("========== SnmpGetSync() Start ==========");
+            string msg = string.Format("pars: lmtPdu={0}, requestId={1}, strIpAddr={2}"
+                , lmtPdu, requestId, strIpAddr);
+            Log.Debug(msg);
+
+            if (string.IsNullOrEmpty(strIpAddr))
+            {
+                Log.Error("strIpAddr is null");
+                return -1;
+            }
+            if (lmtPdu == null)
+            {
+                Log.Error("参数lmtPdu为空");
+                return -1;
+            }
+
+            // TODO: 根据基站ip获取Lmtor信息
+            //LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(remoteIpAddr);
+
+            SnmpHelper snmp = m_SnmpAsync;
+            if (null == snmp)
+            {
+                msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令");
+                Log.Error(msg);
+                return -1;
+            }
+
+            Pdu pdu = new Pdu();
+            requestId = pdu.RequestId;
+
+            bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
+            if (!rs)
+            {
+                Log.Error("LmtPdu2SnmpPdu()转换错误");
+                return -1;
+            }
+
+            SnmpAsyncResponse callback = new SnmpAsyncResponse(this.SnmpCallbackFun);
+                 
+            bool status = snmp.GetRequestAsync(pdu, callback);
+
+            if (!status)
+            {
+                Log.Error("SNMP request error, response is null.");
+                return -1;
+            }
+
+            return 0;
+        }
+
+        private void SnmpCallbackFun(AsyncRequestResult result, SnmpPacket packet)
+        {
+            string logMsg = string.Format("SNMP异步请求结果: AsyncRequestResult = {0}", result);
+            Log.Info(logMsg);
+
+            if (result == AsyncRequestResult.NoError)
+            {
+                SnmpV2Packet packetv2 = (SnmpV2Packet)packet;
+
+                if (packetv2 == null)
+                {
+                    Log.Error("SNMP request error, response is null.");
+                    return;
+                }
+
+                CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+                bool rs = SnmpPdu2LmtPdu(packetv2, m_SnmpAsync.m_target, lmtPdu, 0, false);
+
+                // TODO
+                // 发消息
+
+
+
+            }
+
+            return;
+        }
+
 
         /// <summary>
         /// 同步Set操作
@@ -459,6 +548,10 @@ namespace SCMTOperationCore.Message.SNMP
 
             foreach(Vb vb in snmpPackage.Pdu.VbList)
             {
+                logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
+                    , vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+                Log.Debug(logMsg);
+
                 CDTLmtbVb lmtVb = new CDTLmtbVb();
 
                 lmtVb.set_Oid(vb.Oid.ToString());

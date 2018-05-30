@@ -57,7 +57,6 @@ namespace SCMTOperationCore.Message.SNMP
             this.m_Version = version;
             this.m_TimeOut = timeOut;
 
-
             ConnectToAgent(m_Community, m_DestIPAddr);
         }
 
@@ -88,7 +87,14 @@ namespace SCMTOperationCore.Message.SNMP
         /// <returns></returns>
         public abstract SnmpV2Packet GetRequest(List<string> PduList);
 
+        /// <summary>
+        /// Get请求
+        /// </summary>
+        /// <param name="pdu"></param>
+        /// <returns></returns>
         public abstract SnmpV2Packet GetRequest(Pdu pdu);
+
+        public abstract bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
 
         /// <summary>
         /// SetRequest的对外接口
@@ -98,6 +104,11 @@ namespace SCMTOperationCore.Message.SNMP
         /// <param name="IpAddress">需要设置的IP地址</param>
         public abstract void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress);
 
+        /// <summary>
+        /// Set请求
+        /// </summary>
+        /// <param name="pdu"></param>
+        /// <returns></returns>
         public abstract SnmpV2Packet SetRequest(Pdu pdu);
 
         /// <summary>
@@ -436,7 +447,6 @@ namespace SCMTOperationCore.Message.SNMP
             SnmpV2Packet result = null;
 
             pdu.Type = PduType.Get;
-
             try
             {
                 result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
@@ -472,6 +482,39 @@ namespace SCMTOperationCore.Message.SNMP
 
             return result;
 
+        }
+
+        public override bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback)
+        {
+            bool rs = false;
+            if (m_target == null)
+            {
+                Log.Error("SNMP m_target = null.");
+                return false;
+            }
+
+            if (pdu == null)
+            {
+                Log.Error("SNMP请求参数pdu为空");
+                return false;
+            }
+
+            try
+            {
+                rs = m_target.RequestAsync(pdu, m_Param, callback);
+                if (!rs)
+                {
+                    Log.Error("SNMP异步请求错误");
+                }
+                
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message.ToString());
+                throw e;
+            }
+
+            return rs;
         }
 
         /// <summary>

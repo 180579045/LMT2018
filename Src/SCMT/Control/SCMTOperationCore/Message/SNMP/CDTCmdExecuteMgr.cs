@@ -128,6 +128,92 @@ namespace SCMTOperationCore.Message.SNMP
         }
 
         /// <summary>
+        /// 执行一条类型为Get的异步操作命令
+        /// </summary>
+        /// <param name="cmdName"></param>
+        /// <param name="requestId"></param>
+        /// <param name="strIndex"></param>
+        /// <param name="strIpAddr"></param>
+        /// <param name="lmtPdu"></param>
+        /// <returns></returns>
+        public int CmdGetAsync(string cmdName, out long requestId, string strIndex
+                              , string strIpAddr, bool isPrint = false, bool needCheck = false)
+        {
+            requestId = 0;
+
+ //           Log.Info("========== CmdGetAsync() start ==========");
+            string msg = string.Format("cmdName={0},requestId={1},strIndex={2}, strIpAddr={3}"
+                , cmdName, requestId, strIndex, strIpAddr);
+            Log.Info(msg);
+
+            if (string.IsNullOrEmpty(cmdName) || string.IsNullOrEmpty(strIpAddr))
+            {
+                return -1;
+            }
+
+            // TODO: 数据库先打桩
+            string strMibList = "";
+            // test
+            if (cmdName.Equals("aaa"))
+            {
+                strMibList = "100.1.9.1.1|100.1.9.1.2";
+            }
+            else
+            {
+                strMibList = "100.1.2.1.1.1.5.3";
+            }
+
+            if (string.IsNullOrEmpty(strMibList))
+            {
+                return -1;
+            }
+
+            // 转换为oid数组
+            string[] mibList = StringToArray(strMibList);
+            if (mibList == null)
+            {
+                return -1;
+            }
+
+
+            // TODO : bNeedCheck
+            if (needCheck)
+            {
+            }
+
+            CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+            // TODO:
+            // 获取oid的前缀
+            string strPreFixOid = "1.3.6.1.4.1.5105";
+            StringBuilder sbOid = new StringBuilder();
+
+            string strIndexFmt = string.Format(".{0}", strIndex.Trim('.'));
+
+            foreach (string v in mibList)
+            {
+                sbOid.Clear();
+                sbOid.AppendFormat("{0}.{1}{2}", strPreFixOid, v, strIndexFmt);
+                CDTLmtbVb vb = new CDTLmtbVb();
+                vb.set_Oid(sbOid.ToString());
+                lmtPdu.AddVb(vb);
+            }
+
+            lmtPdu.setCmdName(cmdName);
+            lmtPdu.setPrintId(isPrint);
+            lmtPdu.setSyncId(true);
+
+            // 根据ip获取当前基站的snmp实例
+            LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetInstance().getSnmpByIp(strIpAddr);
+            int rs = lmtbSnmpEx.SnmpGetAsync(lmtPdu, out requestId, strIpAddr);
+            if (rs != 0)
+            {
+                Log.Error("执行lmtbSnmpEx.SnmpGetAsync()方法错误");
+            }
+
+            return 0;
+        }
+
+        /// <summary>
         /// 执行一条类型为Set的同步操作命令
         /// </summary>
         /// <param name="cmdName"></param>
@@ -185,7 +271,7 @@ namespace SCMTOperationCore.Message.SNMP
             foreach (string v in mibList)
             {
                 sbOid.Clear();
-                sbOid.AppendFormat("{0}.{1}{2}", strPreFixOid, v, strIndex);
+                sbOid.AppendFormat("{0}.{1}{2}", strPreFixOid, v, strIndexFmt);
                 CDTLmtbVb vb = new CDTLmtbVb();
                 vb.set_Oid(sbOid.ToString());
 
