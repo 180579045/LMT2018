@@ -94,6 +94,7 @@ namespace SCMTOperationCore.Message.SNMP
         /// <returns></returns>
         public abstract SnmpV2Packet GetRequest(Pdu pdu);
 
+
         public abstract bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
 
         /// <summary>
@@ -110,6 +111,8 @@ namespace SCMTOperationCore.Message.SNMP
         /// <param name="pdu"></param>
         /// <returns></returns>
         public abstract SnmpV2Packet SetRequest(Pdu pdu);
+
+        public abstract bool SetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
 
         /// <summary>
         /// SetRequest的对外接口;
@@ -484,6 +487,12 @@ namespace SCMTOperationCore.Message.SNMP
 
         }
 
+        /// <summary>
+        /// 异步GetRequest
+        /// </summary>
+        /// <param name="pdu"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
         public override bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback)
         {
             bool rs = false;
@@ -498,6 +507,7 @@ namespace SCMTOperationCore.Message.SNMP
                 Log.Error("SNMP请求参数pdu为空");
                 return false;
             }
+            pdu.Type = PduType.Get;
 
             try
             {
@@ -631,6 +641,47 @@ namespace SCMTOperationCore.Message.SNMP
                         response.Pdu[0].Oid.ToString(), response.Pdu[0].Value.ToString()));
                 }
             }
+        }
+
+
+        /// <summary>
+        /// 异步SetRequest
+        /// </summary>
+        /// <param name="pdu"></param>
+        /// <param name="callback"></param>
+        /// <returns></returns>
+        public override bool SetRequestAsync(Pdu pdu, SnmpAsyncResponse callback)
+        {
+            bool rs = false;
+            if (m_target == null)
+            {
+                Log.Error("SNMP m_target = null.");
+                return false;
+            }
+
+            if (pdu == null)
+            {
+                Log.Error("SNMP请求参数pdu为空");
+                return false;
+            }
+            pdu.Type = PduType.Set;
+
+            try
+            {
+                rs = m_target.RequestAsync(pdu, m_Param, callback);
+                if (!rs)
+                {
+                    Log.Error("SNMP异步请求错误");
+                }
+
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message.ToString());
+                throw e;
+            }
+
+            return rs;
         }
 
         public override void SetRequest(AsyncCallback callback, List<string> PduList)
