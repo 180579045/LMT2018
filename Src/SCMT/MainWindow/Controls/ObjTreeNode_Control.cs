@@ -48,7 +48,7 @@ namespace SCMTMainWindow
             }
             catch(Exception e)
             {
-                MessageBox.Show(e.ToString());
+                MessageBox.Show("1加载数据库失败;" + e.ToString());
             }
         }
 

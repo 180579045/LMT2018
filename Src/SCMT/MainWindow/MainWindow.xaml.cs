@@ -128,11 +128,11 @@ namespace SCMTMainWindow
             node = (e as NodeBArgs).m_NodeB;
             ObjNode.main = this;
             //ObjNode.datagrid = this.MibDataGrid;
-            ObjNodeControl Ctrl = new ObjNodeControl((e as NodeBArgs).m_NodeB);  // 初始化象树树信息;
+            
             InitDataBase();                                                      // 创建数据库(第一个版本先加载本地的);
 
             // 向基站前端控件填入对应信息;
-            RefreshObj(Ctrl.m_RootNode);                                         // 向控件更新对象树;
+            
             AddNodeBPageToWindow();                                              // 将基站添加到窗口页签中;
 
             if (node != null)
@@ -177,6 +177,14 @@ namespace SCMTMainWindow
                 if (ret == false)
                 {
                     Console.WriteLine("DataBase Init Failed!");
+                }
+                else
+                {
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        ObjNodeControl Ctrl = new ObjNodeControl(node);  // 初始化象树树信息;
+                        RefreshObj(Ctrl.m_RootNode);                     // 向控件更新对象树;
+                    });
                 }
             });
             node.db.initDatabase(node.m_IPAddress.ToString());
