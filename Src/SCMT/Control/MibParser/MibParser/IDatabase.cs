@@ -36,20 +36,25 @@ namespace MIBDataParser
         string managerValueRange { get; set; } // "0-2147483647",
         string defaultValue { get; set; } // "×",
         string detailDesc { get; set; } // "告警原因编号， 取值  :0..2147483647。",
-        string leafProperty { get; set; } // 0,
+        string leafProperty { get; set; } // 0, TODO 这是什么鬼？
         string unit { get; set; } // ""
+
+        bool idIndex { get; set; }		// TODO 为什么没有解析出这个属性？
     }
     public interface IReDataByTableEnglishName
     {
+
         string oid { get; }
         string indexNum { get; }
         List<IReDataByTableEnglishNameChild> childrenList { get; }
     }
-    public interface IReCmdDataByCmdEnglishName {
-        string cmdNameEn { get; set; } // 命令的英文名
-        string tableName { get; set; } // 命令的mib表英文名
-        string cmdType { get; set; } //命令类型
-        string cmdDesc { get; set; } //命令描述
+
+    public interface IReCmdDataByCmdEnglishName
+    {
+        string cmdNameEn { get; set; }		// 命令的英文名
+        string tableName { get; set; }		// 命令的mib表英文名
+        string cmdType { get; set; }		//命令类型
+        string cmdDesc { get; set; }		//命令描述
         List<string> leaflist { get; set; } // 命令节点名
     }
 

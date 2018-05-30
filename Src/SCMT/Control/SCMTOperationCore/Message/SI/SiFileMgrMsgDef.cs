@@ -82,12 +82,9 @@ namespace SCMTOperationCore.Message.SI
 	结构名: SI_LMTENBSI_GetFileInfoReqMsg
 	描述:  文件信息查询请求消息
 	***********************************************/
-	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
 	public class SI_LMTENBSI_GetFileInfoReqMsg : IASerialize
 	{
 		public SI_LMTENBSI_MsgHead head;
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEPATH_MAX_LEN)]
 		public byte[] s8SrcPath;		/* 查询路径 */
 
 		public SI_LMTENBSI_GetFileInfoReqMsg()
@@ -96,6 +93,16 @@ namespace SCMTOperationCore.Message.SI
 			head = new SI_LMTENBSI_MsgHead();
 			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
 			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETFILEINFO_REQ;
+		}
+
+		public SI_LMTENBSI_GetFileInfoReqMsg(string path)
+		{
+			s8SrcPath = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+			head = new SI_LMTENBSI_MsgHead();
+			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
+			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETFILEINFO_REQ;
+
+			SetPath(path);
 		}
 
 		public bool SetPath(byte[] pathBytes, int offset = 0)
@@ -181,18 +188,12 @@ namespace SCMTOperationCore.Message.SI
 	结构名: SI_SILMTENB_GetFileInfoRspMsg
 	描述:   文件信息查询响应消息
 	**************************************************/
-	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
 	public class SI_SILMTENB_GetFileInfoRspMsg : IASerialize
 	{
 		public SI_LMTENBSI_MsgHead head;
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEPATH_MAX_LEN)]
 		public byte[] s8SrcPath;		/* 查询目录 */
-
 		public byte s8GetResult;		/* 0:成功;1:失败 */
 		public ushort u16FileNum;		/* 待查询目录下的文件数 */
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_DIR_MAX_FILENUM)]
 		public SI_STRU_FileInfo[] struFileInfo;		/* 文件信息结构数组 */
 
 		public SI_SILMTENB_GetFileInfoRspMsg()
@@ -641,6 +642,18 @@ namespace SCMTOperationCore.Message.SI
 			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
 			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETCAPACITY_REQ;
 			s8DevName = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+		}
+
+		public SI_LMTENBSI_GetCapacityReqMsg(string path)
+		{
+			head = new SI_LMTENBSI_MsgHead();
+			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
+			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETCAPACITY_REQ;
+			s8DevName = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+
+			int minPath = Math.Min(SiMacroDef.SI_FILEPATH_MAX_LEN, path.Length);
+			var pathBytes = Encoding.Default.GetBytes(path);
+			Buffer.BlockCopy(pathBytes, 0, s8DevName, 0, minPath);
 		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)

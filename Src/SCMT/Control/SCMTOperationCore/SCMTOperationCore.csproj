@@ -134,6 +134,7 @@
     <Compile Include="Message\SNMP\IDTObjectRefInterface.cs" />
     <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />
+    <Compile Include="Message\SNMP\SnmpToDatabase.cs" />
     <Compile Include="Message\SNMP\TrapMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
