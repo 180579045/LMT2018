@@ -1031,6 +1031,10 @@ namespace SCMTMainWindow
                 {
                     Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString());
                     string[] temp = iter.Key.ToString().Split('.');
+                    for(int i = temp.Length - IndexCount; i < temp.Length; i++)
+                    {
+
+                    }
                 }
 
                 this.MibDataGrid.DataContext = contentlist;
