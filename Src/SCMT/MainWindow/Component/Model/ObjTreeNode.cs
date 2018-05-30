@@ -61,7 +61,13 @@ namespace SCMTMainWindow
         public event EventHandler IsExpandedChanged;                   // 树形结构展开时;
         public event EventHandler IsSelectedChanged;                   // 树形结构节点被选择时;
         public event MouseButtonEventHandler IsRightMouseDown;         // 右键选择节点时;
+
         static protected string prev_oid = "1.3.6.1.4.1.5105.100.";    // DataBase模块保存的是部分OID，这个是前半部分;
+        static protected Dictionary<string, string> GetNextResList;    // GetNext结果;
+        static protected int LastColumn = 0;                           // 整行最后一个节点;
+        static public string ObjParentOID { get; set; }                // 父节点OID;
+        static public int IndexCount { get; set; }                     // 索引个数;
+        static public int ChildCount { get; set; }                     // 孩子节点的个数;
 
         /// <summary>
         /// 对象树节点点击事件;
@@ -219,6 +225,7 @@ namespace SCMTMainWindow
             oid_cn = new Dictionary<string, string>();
             oid_en = new Dictionary<string, string>();
             contentlist = new ObservableCollection<DyDataGrid_MIBModel>();
+            GetNextResList = new Dictionary<string, string>();
         }
 
         private void ObjNode_IsRightMouseDown(object sender, MouseButtonEventArgs e)
@@ -352,47 +359,111 @@ namespace SCMTMainWindow
             Dictionary<string, string> GetNextRet = new Dictionary<string, string>();
             int IndexNum = 0;
             contentlist.Clear();
+            GetNextResList.Clear();
+            ObjParentOID = String.Empty;
 
+            // 目前可以获取到节点对应的中文名以及对应的表名;
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
             //根据表名获取该表内所有MIB节点;
-            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret);
-
+            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString());
+            
             List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;
-            int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
-
-            // 遍历所有子节点，组SNMP的GetNext命令OID集合;
-            foreach(var iter in ret.childrenList)
+            try
             {
-                // 索引不参与查询;
+                int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
+                IndexCount = int.Parse(ret.indexNum);
+                LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
+                ChildCount = ret.childrenList.Count - IndexNum;
+                ObjParentOID = ret.oid;                                // 将父节点OID赋值;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
+            
+
+            // 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
+            foreach (var iter in ret.childrenList)
+            {
+                oidlist.Clear();
+                // 索引不参与查询,将所有其他孩子节点进行GetNext查询操作;
                 if(int.Parse(iter.childNo) > IndexNum )
                 {
+                    // 如果不是真MIB，不参与查询;
+                    if (iter.isMib != "1")
+                    {
+                        ChildCount--;
+                        continue;
+                    }
+
                     string temp = prev_oid + iter.childOid;
-                    name_cn.Add(iter.childNameMib, iter.childNameCh);
-                    oid_en.Add(iter.childOid, iter.childNameMib);
-                    oid_cn.Add(iter.childOid, iter.childNameCh);
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
                     oidlist.Add(temp);
+
+                    // 通过GetNext查询单个节点数据;
+                    SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
+                    msg.GetNextRequestWhenStop(new AsyncCallback(ReceiveResBySingleNode),new AsyncCallback(NotifyMainUpdateDataGrid) ,oidlist);
                 }
                 else
                 {
-
                 }
+
+                // 如果是单个节点遍历，就只能在此处组DataGrid的VM类;
             }
 
-            // 通过GetNext获取整表数据;
-            SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
-            msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
-            //GetNextRet = msg.GetNextRequest(oidlist);
-            //this.ReceiveRes(GetNextRet);
+            // 通过GetNext获取整表数据，后来发现基站不支持,如果基站支持后，在此处GetNext即可;
+            //SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
+            //msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
 
         }
 
+        /// <summary>
+        /// 每当收集完一行数据后，更新主界面中的DataGrid;
+        /// </summary>
+        /// <param name="ar"></param>
         private void ReceiveRes(IAsyncResult ar)
         {
             main.UpdateMibDataGrid(ar, oid_cn, oid_en, contentlist);
         }
-        
+
+        /// <summary>
+        /// 按照单个节点进行GetNext;
+        /// 该函数将所有数据收集完成后再通知主界面DataGrid更新;
+        /// </summary>
+        /// <param name="ar"></param>
+        private void ReceiveResBySingleNode(IAsyncResult ar)
+        {
+            SnmpMessageResult res = ar as SnmpMessageResult;
+
+            // 遍历GetNext结果，添加到对应容器当中,GetNextResList容器中保存着全量集;
+            foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
+            {
+                GetNextResList.Add(iter.Key, iter.Value);
+            }
+
+        }
+
+        /// <summary>
+        /// ReceiveResBySingleNode的GetNext函数收集完成之后，调用主界面更新DataGrid
+        /// </summary>
+        /// <param name="ar"></param>
+        private void NotifyMainUpdateDataGrid(IAsyncResult ar)
+        {
+            LastColumn++;
+
+            // 全部节点都已经收集完毕;
+            if(LastColumn == ChildCount)
+            {
+                main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount);
+            }
+        }
+
+
         public override void Add(ObjNode obj)
         {
             throw new NotImplementedException();

@@ -219,7 +219,7 @@ namespace MIBDataParser.JSONDataMgr
             reData = reOidInfo;
             return true;
         }
-
+        
         public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData)
         {
             ReDataByTableEnglishName reTable = new ReDataByTableEnglishName();
@@ -257,6 +257,7 @@ namespace MIBDataParser.JSONDataMgr
             reData = reTable;
             return true;
         }
+
         public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string curConnectIp)
         {
             ReDataByTableEnglishName reTable = new ReDataByTableEnglishName();

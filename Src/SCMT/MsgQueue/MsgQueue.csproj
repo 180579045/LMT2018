@@ -33,8 +33,8 @@
     <Reference Include="AsyncIO">
       <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\AsyncIO.dll</HintPath>
     </Reference>
-    <Reference Include="NetMQ">
-      <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\NetMQ.dll</HintPath>
+    <Reference Include="NetMQ, Version=4.0.0.1, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\NetMQ.4.0.0.1\lib\net40\NetMQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\Newtonsoft.Json.dll</HintPath>
@@ -67,6 +67,9 @@
     <Compile Include="SubscribeClient.cs" />
     <Compile Include="SubscribeHelper.cs" />
     <Compile Include="TopicManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="..\CommonUility\CommonUility.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
