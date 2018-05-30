@@ -370,11 +370,20 @@ namespace SCMTMainWindow
             
             List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;
-            int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
-            LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
-            IndexCount = int.Parse(ret.indexNum);
-            ChildCount = ret.childrenList.Count - IndexNum;
-            ObjParentOID = ret.oid;                                // 将父节点OID赋值;
+            try
+            {
+                int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
+                IndexCount = int.Parse(ret.indexNum);
+                LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
+                ChildCount = ret.childrenList.Count - IndexNum;
+                ObjParentOID = ret.oid;                                // 将父节点OID赋值;
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
+            
 
             // 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
             foreach (var iter in ret.childrenList)
@@ -391,9 +400,9 @@ namespace SCMTMainWindow
                     }
 
                     string temp = prev_oid + iter.childOid;
-                    name_cn.Add(iter.childNameMib, iter.childNameCh);
-                    oid_en.Add(iter.childOid, iter.childNameMib);
-                    oid_cn.Add(iter.childOid, iter.childNameCh);
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
                     oidlist.Add(temp);
 
                     // 通过GetNext查询单个节点数据;

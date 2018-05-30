@@ -983,8 +983,6 @@ namespace SCMTMainWindow
                             }, iter2.Value.ToString());
                         }
                     }
-                    
-                    
                 }
 
                 // 将这个整行数据填入List;
@@ -1024,17 +1022,102 @@ namespace SCMTMainWindow
             this.MibDataGrid.Dispatcher.Invoke(new Action(() =>
             {
                 this.MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
-                dynamic model = new DyDataGrid_MIBModel();
+                if (IndexCount == 0)
+                    IndexCount = 1;
+                
+                List<string> AlreadyRead = new List<string>();
+                
+
+                // 调试打印;
+                foreach (var iter in ar)
+                {
+                    string[] temp = iter.Key.ToString().Split('.');
+                    string NowIndex = "";
+                    string NowNodeOID = "";
+
+                    for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+                    {
+                        NowIndex += "." + temp[i];
+                    }
+                    for (int i = 0; i < temp.Length - IndexCount; i++)
+                    {
+                        NowNodeOID += "." + temp[i];
+                    }
+                    
+                    Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex + " Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
+                }
 
                 // 遍历GetNext结果后，将结果填入到DataGrid控件当中;
                 foreach (var iter in ar)
                 {
-                    Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString());
                     string[] temp = iter.Key.ToString().Split('.');
-                    for(int i = temp.Length - IndexCount; i < temp.Length; i++)
-                    {
+                    string NowIndex = "";
+                    
 
+                    for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+                    {
+                        NowIndex += "." + temp[i];
                     }
+
+                    Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex);
+
+                    // 如果存在索引,且索引没有被添加到表中;
+                    if (iter.Key.ToString().Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
+                    {
+                        dynamic model = new DyDataGrid_MIBModel();
+
+                        // 将ar当中所有匹配的结果取出,即取出了一行数据;
+                        foreach(var iter3 in ar)
+                        {
+                            // 将所有相同索引取出;
+                            if (iter3.Key.ToString().Contains(NowIndex))
+                            {
+                                foreach (var iter2 in oid_cn)
+                                {
+                                    string[] temp_nowoid = iter3.Key.ToString().Split('.');
+                                    string NowNodeOID = "";
+
+                                    for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
+                                    {
+                                        NowNodeOID += "." + temp_nowoid[i];
+                                    }
+                                    string temp_compare = NowNodeOID.Substring(1);
+                                    if (temp_compare == iter2.Key.ToString())
+                                    {
+                                        Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter3.Value.ToString() + " and Header is:" + iter2.Value.ToString());
+
+                                        model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
+                                        {
+                                            m_Content = iter3.Value.ToString(),
+                                            oid = iter3.Key,
+                                            MibName_CN = iter2.Value,
+                                            MibName_EN = oid_en[iter2.Key]
+                                        }, iter2.Value.ToString());
+
+                                        AlreadyRead.Add(NowIndex);
+                                    }
+                                }
+                            }
+                        }
+
+                        // 将这个整行数据填入List;
+                        if (model.Properties.Count != 0)
+                        {
+                            // 向单元格内添加内容;
+                            contentlist.Add(model);
+                        }
+                    }
+                }
+
+                foreach (var iter3 in oid_en)
+                {
+                    Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
+                    DataGridTextColumn column = new DataGridTextColumn();
+                    column.Header = oid_cn[iter3.Key];
+                    column.Binding = new Binding(iter3.Value + ".m_Content");
+
+                    this.MibDataGrid.Columns.Add(column);
+
                 }
 
                 this.MibDataGrid.DataContext = contentlist;
@@ -1096,29 +1179,37 @@ namespace SCMTMainWindow
 
         private void MibDataGrid_GotMouseCapture(object sender, MouseEventArgs e)
         {
-            if ((e.OriginalSource as DataGrid).Items.CurrentItem is DyDataGrid_MIBModel)
+            try
             {
-                DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
-
-                foreach (var iter in (e.OriginalSource as DataGrid).SelectedCells)
+                if ((e.OriginalSource as DataGrid).Items.CurrentItem is DyDataGrid_MIBModel)
                 {
-                    Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header.ToString());
-                    SelectedIter = iter.Item as DyDataGrid_MIBModel;
+                    DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
 
-                    DataGrid item = e.OriginalSource as DataGrid;
-
-                    // 在MouseMove事件当中可以添加鼠标拖拽事件;
-                    if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+                    foreach (var iter in (e.OriginalSource as DataGrid).SelectedCells)
                     {
-                        DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
-                        {
-                            HeaderName = iter.Column.Header.ToString(),
-                            SelectedCell = SelectedIter
-                        }, DragDropEffects.Copy);
-                    }
+                        Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header.ToString());
+                        SelectedIter = iter.Item as DyDataGrid_MIBModel;
 
+                        DataGrid item = e.OriginalSource as DataGrid;
+
+                        // 在MouseMove事件当中可以添加鼠标拖拽事件;
+                        if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+                        {
+                            DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
+                            {
+                                HeaderName = iter.Column.Header.ToString(),
+                                SelectedCell = SelectedIter
+                            }, DragDropEffects.Copy);
+                        }
+
+                    }
                 }
             }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
         }
 
     }
