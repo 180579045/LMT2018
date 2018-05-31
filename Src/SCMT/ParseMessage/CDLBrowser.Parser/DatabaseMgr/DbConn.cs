@@ -27,7 +27,7 @@ namespace CDLBrowser.Parser.DatabaseMgr
     };
     public class DbConn
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(DbConn));
+        private static readonly ILog Log = Common.Logging.LogManager.GetLogger(typeof(DbConn));
         public DbType mDbType;
         private DbconnBase mIDbconn;
         public string strConnString;
