@@ -163,7 +163,7 @@
                                             <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" SelectionMode="Single"/>
                                         </xcad:LayoutAnchorable>
                                         <xcad:LayoutAnchorable ContentId="messageRecv" Title="终端消息" x:Name="subForMessageRecv" CanAutoHide="True" Hiding="subForMessageRecv_Hiding" CanClose="False" FloatingHeight="500" FloatingWidth="800">
-                                            <uc:MessageRecvMayi x:Name="messageRecv"></uc:MessageRecvMayi>   
+                                            <uc:MessageRecv x:Name="messageRecv"></uc:MessageRecv>   
                                         </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>

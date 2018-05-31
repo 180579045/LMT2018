@@ -22,9 +22,9 @@ using CommonUility;
 namespace SCMTMainWindow.Component.SCMTControl
 {
     /// <summary>
-    /// MessageRecvMayi.xaml 的交互逻辑
+    /// MessageRecv.xaml 的交互逻辑
     /// </summary>
-    public partial class MessageRecvMayi : UserControl
+    public partial class MessageRecv : UserControl
     {
         //全局变量，定义3个集合，分别表示  UE，ENB， GNB 的信息
         public ObservableCollection<ScriptMessage> UE_List = new ObservableCollection<ScriptMessage>();
@@ -33,7 +33,7 @@ namespace SCMTMainWindow.Component.SCMTControl
 
         public SignalBPlan signalB;
 
-        public MessageRecvMayi()
+        public MessageRecv()
         {
             InitializeComponent();
 

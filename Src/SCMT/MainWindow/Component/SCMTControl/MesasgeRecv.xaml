@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SCMTMainWindow.Component.SCMTControl.MessageRecvMayi"
+﻿<UserControl x:Class="SCMTMainWindow.Component.SCMTControl.MessageRecv"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
