@@ -1,79 +1,97 @@
-﻿<UserControl x:Class="SCMTMainWindow.Component.SCMTControl.MesasgeRecv"
+﻿<UserControl x:Class="SCMTMainWindow.Component.SCMTControl.MessageRecvMayi"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:xcdg="http://schemas.xceed.com/wpf/xaml/datagrid"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl"
-             xmlns:model="clr-namespace:CDLBrowser.Parser.Document.Event;assembly=CDLBrowser.Parser"
              mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="800">
+             d:DesignHeight="500" d:DesignWidth="800" >
+    <Grid Name="MainGrid">
+        <!--定义3列，分别显示UE，eNB，GNB信息-->
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <!--两个主行，第一行显示  跟踪按钮，第二行显示内容-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
 
-    <UserControl.Resources>
-        <DataTemplate x:Key="cellEditingTemplate" DataType="{x:Type model:EventNew}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition Width="15"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding data}"/>
-            </Grid>
-        </DataTemplate>
-    </UserControl.Resources>
-    
+        <!--每列都分为两部分，一部分是listview  显示主要信息， 另一部分暂时定为listbox  显示 data  字符串-->
 
-    <Grid>
-        <!--
-            5G3_PlanB消息查看控件
-            作用：类似WireShark、ATP工具的消息抄送窗口
-            窗口A：GridView控件显示消息
-            窗口B：显示消息详细内容
-        -->
-        <Grid>
+        <Grid Grid.Column="0" Grid.Row="1" Name="gridUE">
             <Grid.RowDefinitions>
-                <RowDefinition Height="3.3*"></RowDefinition>
-                <RowDefinition Height="3.3*"></RowDefinition>
-                <RowDefinition Height="3.3*"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="6*"></ColumnDefinition>
-                    <ColumnDefinition Width="2"></ColumnDefinition>
-                    <ColumnDefinition Width="4*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
+            <!--定义表头-->
+            <Label Grid.Row="0" HorizontalAlignment="Center">UE</Label>
 
-                <Grid Grid.Column="0">
-                    <DataGrid Name="DG1" ItemsSource="{Binding}" AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </Grid>
+            <!--定义  ListView-->
+            <ListView Grid.Row="1" Name="lvUE" SelectionChanged="lvUE_SelectionChanged"></ListView>
 
-                <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch" >
-                    <GridSplitter.Background>
-                        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                            <GradientStop Color="#FFE8E8E8" Offset="0"/>
-                            <GradientStop Color="#FFE6E6E6" Offset="1"/>
-                            <GradientStop Color="#FFBFBFBF" Offset="0.478"/>
-                        </LinearGradientBrush>
-                    </GridSplitter.Background>
-                </GridSplitter>
+            <!--定义  分隔条-->
+            <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
 
-                <Grid Grid.Column="2" >
-                    <TreeView>
-                        <TreeViewItem Header="消息">
-                            <TreeViewItem Header="消息内容:65535">
-                                <Label>source port:Asn.1</Label>
-                                <Label>Destination port:10</Label>
-                                <Label>********************</Label>
-                            </TreeViewItem>
-                        </TreeViewItem>
-                    </TreeView>
-                </Grid>
-            </Grid>
-
+            <!--定义  listBox-->
+            <ListBox Grid.Row="3" Name="lbUE"></ListBox>
         </Grid>
 
+        <Grid Grid.Column="2" Grid.Row="1" Name="gridENB">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!--定义表头-->
+            <Label Grid.Row="0" HorizontalAlignment="Center">eNB</Label>
+
+            <!--定义  ListView-->
+            <ListView Grid.Row="1" Name="lveNB" SelectionChanged="lveNB_SelectionChanged"></ListView>
+
+            <!--定义  分隔条-->
+            <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
+
+            <!--定义  listBox-->
+            <ListBox Grid.Row="3" Name="lbeNB"></ListBox>
+        </Grid>
+
+        <Grid Grid.Column="4" Grid.Row="1" Name="gridGNB">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!--定义表头-->
+            <Label Grid.Row="0" HorizontalAlignment="Center">gNB</Label>
+
+            <!--定义  ListView-->
+            <ListView Grid.Row="1" Name="lvgNB" SelectionChanged="lvgNB_SelectionChanged"></ListView>
+
+            <!--定义  分隔条-->
+            <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
+
+            <!--定义  listBox-->
+            <ListBox Grid.Row="3" Name="lbgNB"></ListBox>
+        </Grid>
+
+        <!--定义  3  列的分隔条-->
+        <GridSplitter Width="5" Grid.Column="1" Grid.Row="1" ResizeBehavior="PreviousAndNext"></GridSplitter>
+        <GridSplitter Width="5" Grid.Column="3" Grid.Row="1" ResizeBehavior="PreviousAndNext"></GridSplitter>
+
+        <!--定义  开始跟踪  按钮-->
+        <Button Width="100" Height="30" Name="btnStartTrace" Click="btnStartTrace_Click" Grid.Row="0" Grid.ColumnSpan="5">开始跟踪</Button>
     </Grid>
 </UserControl>

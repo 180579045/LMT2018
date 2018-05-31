@@ -442,16 +442,13 @@ namespace SCMTMainWindow
         #region 显示B方案Message列表控件
         private void ShowMessage_Click(object sender, EventArgs e)
         {
-            // 后续需要有一个界面元素管理类;
-            LayoutAnchorable sub = new LayoutAnchorable();
-            MesasgeRecv content = new MesasgeRecv();
+            ///后续需要有一个界面元素管理类;
+            //  LayoutAnchorable sub = new LayoutAnchorable();
+            //     MesasgeRecv content = new MesasgeRecv();
 
-            sub.Content = content;
-            sub.FloatingHeight = 300;
-            sub.FloatingWidth = 800;
+            subForMessageRecv.Show();
+            subForMessageRecv.Float();
 
-            this.Pane.Children.Add(sub);
-            sub.Float();
         }
         #endregion
 
@@ -1220,6 +1217,15 @@ namespace SCMTMainWindow
             
         }
 
+        /// <summary>
+        /// 隐藏  信令消息界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void subForMessageRecv_Hiding(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.messageRecv.ClearAll();
+        }
     }
 
 }
