@@ -35,7 +35,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 		public string m_SourceIp { get; set; }
 
-		void setSyncId(bool bSync)
+		public void SetSyncFlag(bool bSync)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -43,7 +43,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		bool getSyncId()
+		public bool getSyncId()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -53,7 +53,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return false;
 		}
 
-		int getReqMsgType()
+		public int getReqMsgType()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -63,7 +63,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return 0;
 		}
 
-		void setReqMsgType(int reqMsgType)
+		public void setReqMsgType(int reqMsgType)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -71,7 +71,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		string get_CmdName()
+		public string get_CmdName()
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -81,7 +81,7 @@ namespace SCMTOperationCore.Message.SNMP
 			return null;
 		}
 
-		void setCmdName(string cmdName)
+		public void SetCmdName(string cmdName)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -125,6 +125,12 @@ namespace SCMTOperationCore.Message.SNMP
 		public void AddVb(CDTLmtbVb pLmtbVb)
 		{
 			m_VbList.Add(pLmtbVb);
+		}
+
+		// 在pdu中添加多个vb
+		public void AddVb(List<CDTLmtbVb> vbList)
+		{
+			m_VbList.AddRange(vbList);
 		}
 
 		public void Clear()
@@ -201,6 +207,14 @@ namespace SCMTOperationCore.Message.SNMP
 			m_VbList = new List<CDTLmtbVb>();
 			m_mapVBs = new Dictionary<string, string>();
 			m_lmtbPduInfo = new stru_LmtbPduInfo();
+		}
+
+		public CDTLmtbPdu(string cmd, bool bIsSync = true, bool bNeedPrint = false)
+		: this()
+		{
+			SetCmdName(cmd);
+			SetSyncFlag(bIsSync);
+			m_bIsNeedPrint = bNeedPrint;
 		}
 	}
 
