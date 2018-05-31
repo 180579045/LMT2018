@@ -27,7 +27,7 @@ namespace SCMTOperationCore.Elements
 			}
 			catch(Exception e)
 			{
-				MessageBox.Show(e.ToString());
+				MessageBox.Show("加载对象树文件失败;" + e.ToString());
 			}
 
 
