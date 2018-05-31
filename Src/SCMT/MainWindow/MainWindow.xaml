@@ -82,12 +82,7 @@
 
                     <Metro:MetroExpander Header="消息模板" >
                         <StackPanel Margin="20,0,0,0">
-                            <Metro:MetroExpander Header="HL消息">
-                                <StackPanel Margin="20,0,0,0">
-                                    <Metro:MetroExpander Header="终端消息" Icon="Resources/NetPLanB.png" Click="ShowMessage_Click"></Metro:MetroExpander>
-                                    <Metro:MetroExpander Header="eNB消息" Icon="Resources/NetPLanB.png"></Metro:MetroExpander>
-                                    <Metro:MetroExpander Header="gNB消息" Icon="Resources/NetPLanB.png"></Metro:MetroExpander>
-                                </StackPanel>
+                            <Metro:MetroExpander Header="信令消息" Click="ShowMessage_Click" Icon="Resources/NetPLanB.png">                               
                             </Metro:MetroExpander>
                         </StackPanel>
                     </Metro:MetroExpander>
@@ -166,6 +161,9 @@
                                         <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False">
                                             <!-- 显示MIB内容的DataGrid -->
                                             <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" SelectionMode="Single"/>
+                                        </xcad:LayoutAnchorable>
+                                        <xcad:LayoutAnchorable ContentId="messageRecv" Title="终端消息" x:Name="subForMessageRecv" CanAutoHide="True" Hiding="subForMessageRecv_Hiding" CanClose="False" FloatingHeight="500" FloatingWidth="800">
+                                            <uc:MessageRecv x:Name="messageRecv"></uc:MessageRecv>   
                                         </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>
