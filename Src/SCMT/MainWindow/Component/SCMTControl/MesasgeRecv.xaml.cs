@@ -102,8 +102,8 @@ namespace SCMTMainWindow.Component.SCMTControl
             }
             ScriptMessage thisMsg = (ScriptMessage)lvUE.SelectedItem;
 
-            lbUE.Items.Clear();
-            lbUE.Items.Add(thisMsg.data);
+            lbUE.Text = "";
+            lbUE.Text = thisMsg.data;
         }
         /// <summary>
         /// ListView  的  选择改变事件，选择不同的 item 时，显示各自的 data 节点信息
@@ -118,8 +118,8 @@ namespace SCMTMainWindow.Component.SCMTControl
             }
             ScriptMessage thisMsg = (ScriptMessage)lveNB.SelectedItem;
 
-            lbeNB.Items.Clear();
-            lbeNB.Items.Add(thisMsg.data);
+            lbeNB.Text = "";
+            lbeNB.Text = thisMsg.data;
         }
         /// <summary>
         /// ListView  的  选择改变事件，选择不同的 item 时，显示各自的 data 节点信息
@@ -134,8 +134,8 @@ namespace SCMTMainWindow.Component.SCMTControl
             }
             ScriptMessage thisMsg = (ScriptMessage)lvgNB.SelectedItem;
 
-            lbgNB.Items.Clear();
-            lbgNB.Items.Add(thisMsg.data);
+            lbgNB.Text = "";
+            lbgNB.Text = thisMsg.data;
         }
         /// <summary>
         /// 初始化  三个  ListView   并绑定数据
@@ -155,25 +155,31 @@ namespace SCMTMainWindow.Component.SCMTControl
             gvUE.Columns.Add(colum);
 
             colum = new GridViewColumn();
+            colum.Header = "时间";
+            colum.Width = 60;
+            colum.DisplayMemberBinding = new Binding("time");
+            gvUE.Columns.Add(colum);
+
+            colum = new GridViewColumn();
             colum.Header = "ID";
             colum.Width = 60;
             colum.DisplayMemberBinding = new Binding("ENBUEID");
             gvUE.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "MsgSource";
+            colum.Header = "消息源";
             colum.Width = 80;
             colum.DisplayMemberBinding = new Binding("MessageSource");
             gvUE.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "MsgDestination";
+            colum.Header = "消息目的";
             colum.Width = 85;
             colum.DisplayMemberBinding = new Binding("MessageDestination");
             gvUE.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "Msg";
+            colum.Header = "消息内容";
             colum.Width = 125;
             colum.DisplayMemberBinding = new Binding("message");
             gvUE.Columns.Add(colum);
@@ -188,25 +194,31 @@ namespace SCMTMainWindow.Component.SCMTControl
             gvENB.Columns.Add(colum);
 
             colum = new GridViewColumn();
+            colum.Header = "时间";
+            colum.Width = 60;
+            colum.DisplayMemberBinding = new Binding("time");
+            gvENB.Columns.Add(colum);
+
+            colum = new GridViewColumn();
             colum.Header = "ID";
             colum.Width = 60;
             colum.DisplayMemberBinding = new Binding("ENBUEID");
             gvENB.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "MsgSource";
+            colum.Header = "消息源";
             colum.Width = 80;
             colum.DisplayMemberBinding = new Binding("MessageSource");
             gvENB.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "MsgDestination";
+            colum.Header = "消息目的";
             colum.Width = 85;
             colum.DisplayMemberBinding = new Binding("MessageDestination");
             gvENB.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "Msg";
+            colum.Header = "消息内容";
             colum.Width = 125;
             colum.DisplayMemberBinding = new Binding("message");
             gvENB.Columns.Add(colum);
@@ -221,25 +233,31 @@ namespace SCMTMainWindow.Component.SCMTControl
             gvGNB.Columns.Add(colum);
 
             colum = new GridViewColumn();
+            colum.Header = "时间";
+            colum.Width = 60;
+            colum.DisplayMemberBinding = new Binding("time");
+            gvGNB.Columns.Add(colum);
+
+            colum = new GridViewColumn();
             colum.Header = "ID";
             colum.Width = 60;
             colum.DisplayMemberBinding = new Binding("ENBUEID");
             gvGNB.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "MsgSource";
+            colum.Header = "消息源";
             colum.Width = 80;
             colum.DisplayMemberBinding = new Binding("MessageSource");
             gvGNB.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "MsgDestination";
+            colum.Header = "消息目的";
             colum.Width = 85;
             colum.DisplayMemberBinding = new Binding("MessageDestination");
             gvGNB.Columns.Add(colum);
 
             colum = new GridViewColumn();
-            colum.Header = "Msg";
+            colum.Header = "消息内容";
             colum.Width = 125;
             colum.DisplayMemberBinding = new Binding("message");
             gvGNB.Columns.Add(colum);
@@ -255,9 +273,9 @@ namespace SCMTMainWindow.Component.SCMTControl
             UE_List.Clear();
             ENB_List.Clear();
             GNB_List.Clear();
-            lbUE.Items.Clear();
-            lbeNB.Items.Clear();
-            lbgNB.Items.Clear();
+            lbUE.Text = "";
+            lbeNB.Text = "";
+            lbgNB.Text = "";
 
             PublishHelper.PublishMsg("StopTraceHlSignal", "");
         }
