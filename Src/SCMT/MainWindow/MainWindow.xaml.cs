@@ -442,16 +442,13 @@ namespace SCMTMainWindow
         #region 显示B方案Message列表控件
         private void ShowMessage_Click(object sender, EventArgs e)
         {
-            // 后续需要有一个界面元素管理类;
-            LayoutAnchorable sub = new LayoutAnchorable();
-            MesasgeRecv content = new MesasgeRecv();
+            ///后续需要有一个界面元素管理类;
+            //  LayoutAnchorable sub = new LayoutAnchorable();
+            //     MesasgeRecv content = new MesasgeRecv();
 
-            sub.Content = content;
-            sub.FloatingHeight = 300;
-            sub.FloatingWidth = 800;
+            subForMessageRecv.Show();
+            subForMessageRecv.Float();
 
-            this.Pane.Children.Add(sub);
-            sub.Float();
         }
         #endregion
 
@@ -1019,7 +1016,7 @@ namespace SCMTMainWindow
         /// <summary>
         /// 当SNMP模块收集全整表数据后，调用该函数;
         /// </summary>
-        /// <param name="ar"></param>
+        /// <param name="ar">GetNext之后，得到的整表数据;</param>
         /// <param name="oid_cn"></param>
         /// <param name="oid_en"></param>
         /// <param name="contentlist"></param>
@@ -1029,14 +1026,14 @@ namespace SCMTMainWindow
             // 将信息回填到DataGrid当中;
             this.MibDataGrid.Dispatcher.Invoke(new Action(() =>
             {
-                this.MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
-                if (IndexCount == 0)
+                this.MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
+
+                if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
                     IndexCount = 1;
                 
                 List<string> AlreadyRead = new List<string>();
-                
 
-                // 调试打印;
+                // 调试打印,正式版本记得删除;
                 foreach (var iter in ar)
                 {
                     string[] temp = iter.Key.ToString().Split('.');
@@ -1052,21 +1049,20 @@ namespace SCMTMainWindow
                         NowNodeOID += "." + temp[i];
                     }
                     
-                    Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex + " Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
+                    Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex + 
+                        " Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
                 }
 
                 // 遍历GetNext结果后，将结果填入到DataGrid控件当中;
                 foreach (var iter in ar)
                 {
+                    // 获取当前遍历到的节点的索引值(即取最后N位数字);
                     string[] temp = iter.Key.ToString().Split('.');
                     string NowIndex = "";
-                    
-
                     for (int i = temp.Length - IndexCount; i < temp.Length; i++)
                     {
                         NowIndex += "." + temp[i];
                     }
-
                     Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex);
 
                     // 如果存在索引,且索引没有被添加到表中;
@@ -1074,7 +1070,7 @@ namespace SCMTMainWindow
                     {
                         dynamic model = new DyDataGrid_MIBModel();
 
-                        // 将ar当中所有匹配的结果取出,即取出了一行数据;
+                        // 将ar当中所有匹配的结果取出,最后会取出了一行数据;
                         foreach(var iter3 in ar)
                         {
                             // 将所有相同索引取出;
@@ -1082,14 +1078,16 @@ namespace SCMTMainWindow
                             {
                                 foreach (var iter2 in oid_cn)
                                 {
+                                    // 将GetNext整表的OID数值取出到temp_compare;
                                     string[] temp_nowoid = iter3.Key.ToString().Split('.');
                                     string NowNodeOID = "";
-
                                     for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
                                     {
                                         NowNodeOID += "." + temp_nowoid[i];
                                     }
                                     string temp_compare = NowNodeOID.Substring(1);
+                                    
+                                    // 如果OID匹配;
                                     if (temp_compare == iter2.Key.ToString())
                                     {
                                         Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter3.Value.ToString() + " and Header is:" + iter2.Value.ToString());
@@ -1102,6 +1100,7 @@ namespace SCMTMainWindow
                                             MibName_EN = oid_en[iter2.Key]
                                         }, iter2.Value.ToString());
 
+                                        // 已经查询过该索引,后续不再参与查询;
                                         AlreadyRead.Add(NowIndex);
                                     }
                                 }
@@ -1220,6 +1219,15 @@ namespace SCMTMainWindow
             
         }
 
+        /// <summary>
+        /// 隐藏  信令消息界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void subForMessageRecv_Hiding(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            this.messageRecv.ClearAll();
+        }
     }
 
 }
