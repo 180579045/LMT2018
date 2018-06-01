@@ -116,15 +116,15 @@ namespace MIBDataParser.JSONDataMgr
             fs.Close();
             return JObj;
         }
-        bool CompareReadJsonMethod(JObject ObjectOne, JObject ObjectTwo)
-        {
-            int a = 1;
-            for (int i =0;i<3;i++)
-            {
+        //bool CompareReadJsonMethod(JObject ObjectOne, JObject ObjectTwo)
+        //{
+        //    int a = 1;
+        //    for (int i =0;i<3;i++)
+        //    {
 
-            }
-            return true;
-        }
+        //    }
+        //    return true;
+        //}
 
     }
 }

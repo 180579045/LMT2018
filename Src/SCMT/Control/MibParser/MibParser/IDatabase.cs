@@ -15,6 +15,10 @@ namespace MIBDataParser
     public interface IReDataByEnglishName
     {
         string oid { get; }
+        //MIB_Syntax
+        //取值范围
+        //描述信息 MIBDesc
+        //父oid，table=null
     }
     public interface IReDataByOid
     {
@@ -64,21 +68,49 @@ namespace MIBDataParser
         // ResultInitData resultInitData;
 
         // 线程 : 初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
-        // void initDatabase();// IParseResultNotify parseResultListener);
         void initDatabase(string connectIp);
 
         //查询数据
-        //bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
-        //bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList);
-        //bool getDataByOid(string oid, out IReDataByOid reData);
-        //bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
-        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
-        //
-        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string connectIp);
-        bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList, string connectIp);
-        bool getDataByOid(string oid, out IReDataByOid reData, string connectIp);
-        bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string connectIp);
-        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData, string connectIp);
+        /// <summary>
+        /// [查询]通过节点英文名字，查询节点信息。支持多节点查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的英文名(需要输入)，value为对应的节点信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err);
+
+        /// <summary>
+        /// [查询]通过节点oid，查询节点信息。支持多节点查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的oid(需要输入)，value为对应的节点信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        //bool getDataByOid(string oid, string connectIp, out IReDataByOid reData, out string err);
+        bool getDataByOid(Dictionary<string, IReDataByOid>reData, string connectIp, out string err);
+
+
+        //bool getDataByTableEnglishName(string nameEn, string connectIp, out IReDataByTableEnglishName reData, out string err);
+        /// <summary>
+        /// [查询]通过表的英文名，查询表的信息。支持多表查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的表名(需要输入)，value为对应的表的信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        bool getDataByTableEnglishName(Dictionary<string, IReDataByTableEnglishName> reData, string connectIp, out string err);
+
+        /// <summary>
+        /// [查询]通过命令的英文名，查询命令的信息。支持多个命令查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的命令英文名(需要输入)，value为对应的命令的信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        bool getCmdDataByCmdEnglishName(Dictionary<string, IReCmdDataByCmdEnglishName> reData, string connectIp, out string err);
+
+        //bool testDictExample(Dictionary<string, IReDataByEnglishName> reData);
     }
 }
 
