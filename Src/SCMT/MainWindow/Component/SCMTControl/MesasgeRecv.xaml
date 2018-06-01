@@ -41,8 +41,8 @@
             <!--定义  分隔条-->
             <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
 
-            <!--定义  listBox-->
-            <ListBox Grid.Row="3" Name="lbUE"></ListBox>
+            <!--定义  TextBox-->
+            <TextBox Name="lbUE" Grid.Row="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"></TextBox>
         </Grid>
 
         <Grid Grid.Column="2" Grid.Row="1" Name="gridENB">
@@ -62,8 +62,8 @@
             <!--定义  分隔条-->
             <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
 
-            <!--定义  listBox-->
-            <ListBox Grid.Row="3" Name="lbeNB"></ListBox>
+            <!--定义  TextBox-->
+            <TextBox Grid.Row="3" Name="lbeNB" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"></TextBox>
         </Grid>
 
         <Grid Grid.Column="4" Grid.Row="1" Name="gridGNB">
@@ -83,8 +83,8 @@
             <!--定义  分隔条-->
             <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
 
-            <!--定义  listBox-->
-            <ListBox Grid.Row="3" Name="lbgNB"></ListBox>
+            <!--定义  TextBox-->
+            <TextBox Grid.Row="3" Name="lbgNB" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"></TextBox>
         </Grid>
 
         <!--定义  3  列的分隔条-->
