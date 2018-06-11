@@ -100,17 +100,11 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncIO">
-      <HintPath>..\packages\Lib\AsyncIO.dll</HintPath>
-    </Reference>
     <Reference Include="Common.Logging">
       <HintPath>..\packages\Lib\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="NetMQ">
-      <HintPath>..\packages\Lib\NetMQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>

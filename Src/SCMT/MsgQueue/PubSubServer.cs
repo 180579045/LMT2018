@@ -1,6 +1,4 @@
 ﻿using System.Threading.Tasks;
-using NetMQ;
-using NetMQ.Sockets;
 using CommonUility;
 using ZeroMQ;
 
@@ -17,26 +15,7 @@ namespace MsgQueue
 			return Singleton<PubSubServer>.GetInstance();
 		}
 
-		/// <summary>
-		/// 初始化PubSubServer。启动一个Task运行
-		/// </summary>
-		/// <param name="addr">服务地址。可以运行在不同的PC上进行消息的收发</param>
-		/// <param name="publiserPort">pub server port。订阅者连接到这个端口</param>
-		/// <param name="subscribePort">sub server port。发布者连接到这个端口</param>
-		public void InitServer(int publiserPort, int subscribePort, string addr = "127.0.0.1")
-		{
-			if (HadInited) return;
-
-			_pubSocket = new XPublisherSocket($"@tcp://{addr}:{publiserPort}");
-			_subSocket = new XSubscriberSocket($"@tcp://{addr}:{subscribePort}");
-
-			_proxy = new Proxy(_subSocket, _pubSocket);
-			Task.Factory.StartNew(_proxy.Start);
-
-			HadInited = true;
-		}
-
-		private ZContext context;
+		public ZContext context { get; private set; }	// inproc协议要求所有的socket使用同一个一个context对象
 		private ZSocket pubSocket;
 		private ZSocket subSocket;
 
@@ -49,12 +28,16 @@ namespace MsgQueue
 			pubSocket = new ZSocket(context, ZSocketType.XPUB);
 			subSocket = new ZSocket(context, ZSocketType.XSUB);
 
-			pubSocket.Bind("ipc://publish-bus");
-			subSocket.Bind("ipc://subscribe-bus");
+			pubSocket.Bind(CommonPort.PubBus);
+			subSocket.Bind(CommonPort.SubBus);
 
-			ZContext.Proxy(subSocket, pubSocket);
+			Task.Factory.StartNew(StartProxy);
+		}
 
+		private void StartProxy()
+		{
 			HadInited = true;
+			ZContext.Proxy(subSocket, pubSocket);
 		}
 
 		public void Stop()
@@ -65,21 +48,6 @@ namespace MsgQueue
 
 			HadInited = false;
 		}
-
-		/// <summary>
-		/// 停止PubSubServer
-		/// </summary>
-		public void StopServer()
-		{
-			if (!HadInited) return;
-
-			_proxy.Stop();
-			HadInited = false;
-		}
-
-		private Proxy _proxy;
-		private NetMQSocket _pubSocket;
-		private NetMQSocket _subSocket;
 
 		public bool HadInited { get; private set; }
 	}

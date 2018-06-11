@@ -32,7 +32,7 @@ namespace AtpMessage.SessionMgr
 			_recvThread.Start();
 
 			_prefix = $"{target.raddr}:{target.rport}";       //订阅这个消息是用于运行过程中给板卡发送信息
-			_subClient = new SubscribeClient(CommonPort.PubServerPort);
+			_subClient = new SubscribeClient();
 
 			string topic = $"udp-send://{_prefix}";
 			_subClient.AddSubscribeTopic(topic, OnSubscribe);

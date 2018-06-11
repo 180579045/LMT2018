@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using CommonUility;
+using LogManager;
 
 namespace MsgQueue
 {
@@ -10,9 +12,11 @@ namespace MsgQueue
 	{
 		private readonly PublisherClient _pubClient;
 
+		#region 构造、析构
+
 		public PublishHelper()
 		{
-			_pubClient = new PublisherClient(CommonPort.SubServerPort);
+			_pubClient = new PublisherClient();
 		}
 
 		~PublishHelper()
@@ -22,13 +26,18 @@ namespace MsgQueue
 
 		public void Dispose()
 		{
-			
+
 		}
 
 		public static PublishHelper GetInstance()
 		{
 			return Singleton<PublishHelper>.GetInstance();
 		}
+
+
+		#endregion
+
+		#region 公共接口
 
 		public void Publish(string topic, string msg)
 		{
@@ -40,14 +49,24 @@ namespace MsgQueue
 			_pubClient.PublishMsg(topic, msgBytes);
 		}
 
-		public static void PublishMsg(string topic, string msg)
+		public static void PublishMsg(string topic, string msg,
+			[CallerFilePath] string filePath = null,
+			[CallerLineNumber] int lineNumber = 0,
+			[CallerMemberName] string memeberName = null)
 		{
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {msg}");
 			GetInstance().Publish(topic, msg);
 		}
 
-		public static void PublishMsg(string topic, byte[] msgBytes)
+		public static void PublishMsg(string topic, byte[] msgBytes,
+			[CallerFilePath] string filePath = null,
+			[CallerLineNumber] int lineNumber = 0,
+			[CallerMemberName] string memeberName = null)
 		{
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}");
 			GetInstance().Publish(topic, msgBytes);
 		}
+
+		#endregion
 	}
 }
