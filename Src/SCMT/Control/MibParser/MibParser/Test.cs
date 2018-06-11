@@ -35,7 +35,6 @@ namespace MIBDataParser
         /// <param name="connectIp"></param>
         void testForInitByConnetIp(string connectIp)
         {
-
             Dictionary<string, IReDataByEnglishName> reData = new Dictionary<string, IReDataByEnglishName>() {
                 { "alarmCausePrimaryAlarmCauseNo",null },
                 { "hsdpaCQIReviseLcId", null},
@@ -62,7 +61,8 @@ namespace MIBDataParser
                 { "alarmCausePrimaryAlarmCauseNo",null },
                 //{ "hsdpaCQIReviseLcId", null},
                 { "eueTimerT304", null},
-                { "cellAdjCellLcId", null}
+                { "cellAdjCellLcId", null},
+                { "alarmCauseEntry",null},
             };
             if (!dataHandle.getDataByEnglishName(nameInfo, connectIp, out err))
             {
@@ -71,44 +71,49 @@ namespace MIBDataParser
             if (null != nameInfo)
                 Console.WriteLine("output, {0}", nameInfo["alarmCausePrimaryAlarmCauseNo"].oid);
 
+            IReDataByEnglishName nameEnSigle = new ReDataByEnglishName();
+            if (!dataHandle.getDataByEnglishName("alarmCausePrimaryAlarmCauseNo", out nameEnSigle, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
+            else {
+                Console.WriteLine(nameEnSigle.mibDesc);
+            }
+
             // test_3
-            List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
-            List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
-                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
-            Dictionary<string, IReDataByEnglishName> nameEnList1 = 
+            //List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
+            //List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
+            //        "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
+            Dictionary<string, IReDataByEnglishName> nameEnList = 
                 new Dictionary<string, IReDataByEnglishName>() {
                     { "alarmCausePrimaryAlarmCauseNo", null},
                     //{ "hsdpaCQIReviseLcId",  null},
                     { "eueTimerT304", null},
                     { "cellAdjCellLcId", null},
                 };
-            if (!dataHandle.getDataByEnglishName(nameEnList1, connectIp, out err))
+            if (!dataHandle.getDataByEnglishName(nameEnList, connectIp, out err))
             {
                 Console.WriteLine(err);
             }
             else
             {
-                Console.WriteLine("output, ", nameEnList1.Values);
+                Console.WriteLine("output, ", nameEnList.Values);
             }
 
             // test_4
-            IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
-            Dictionary<string, IReDataByTableEnglishName> tableData1 =
+            //IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
+            Dictionary<string, IReDataByTableEnglishName> tableData =
                 new Dictionary<string, IReDataByTableEnglishName>() {
                     { "alarmCauseTable", null},
                 };
-            if (!dataHandle.getDataByTableEnglishName(tableData1, connectIp, out err))
+            if (!dataHandle.getDataByTableEnglishName(tableData, connectIp, out err))
             {
                 Console.WriteLine(err);
             }
             else
             {
-                Console.WriteLine("output, ", tableData1.Values);
+                Console.WriteLine( tableData.Values);
             }
-
-
-            
-
             Console.WriteLine("testForInitByConnetIp is over.");
             Console.Read();
         }
