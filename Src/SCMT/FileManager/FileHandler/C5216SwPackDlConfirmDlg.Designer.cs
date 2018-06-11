@@ -1,6 +1,6 @@
 ﻿namespace FileManager
 {
-	partial class C5216SWPackDownLoad
+	partial class C5216SwPackDlConfirmDlg
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -219,7 +219,7 @@
 			this.IDCANCEL.UseVisualStyleBackColor = true;
 			this.IDCANCEL.Click += new System.EventHandler(this.IDCANCEL_Click);
 			// 
-			// C5216SWPackDownLoad
+			// C5216SwPackDlConfirmDlg
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -245,8 +245,9 @@
 			this.Controls.Add(this.IDC_EDIT_SOFTPACKTYPE);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Name = "C5216SWPackDownLoad";
+			this.Name = "C5216SwPackDlConfirmDlg";
 			this.Text = "软件包下载激活配置";
+			this.Load += new System.EventHandler(this.form_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -10,7 +10,7 @@ namespace FileManager.FileHandler
 	public class FileHandlerFactory
 	{
 		// 根据文件的扩展名来创建具体的处理对象
-		public static IFileHandler CreateHandler(string ext)
+		public static IFileHandler CreateHandler(string ext, string targetIp)
 		{
 			IFileHandler handler = null;
 
@@ -18,15 +18,15 @@ namespace FileManager.FileHandler
 
 			if (EXT.Equals("CFG"))
 			{
-				handler = new CfgFileHandler();
+				handler = new CfgFileHandler(targetIp);
 			}
 			else if (EXT.Equals("DTZ"))
 			{
-				handler = new DtzFileHandler();
+				handler = new DtzFileHandler(targetIp);
 			}
 			else
 			{
-				handler = new BaseFileHandler();
+				handler = new BaseFileHandler(targetIp);
 			}
 
 			return handler;

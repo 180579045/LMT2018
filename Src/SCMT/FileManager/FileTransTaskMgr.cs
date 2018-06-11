@@ -7,77 +7,18 @@ using System.Threading.Tasks;
 using CommonUility;
 using LogManager;
 using SCMTOperationCore.Message.SNMP;
+using SnmpSharpNet;
 
 namespace FileManager
 {
-	#region 枚举类型
 
-	public enum TRANSFILETYPE_5216 : byte
-	{
-		TRANSFILE_unknowtype = 0,
-		TRANSFILE_operationLog = 1,     //|操作日志
-		TRANSFILE_alterLog,             //|变更日志
-		TRANSFILE_omSecurityLog,        //|安全日志
-		TRANSFILE_alarmLog,             //|告警日志文件
-		TRANSFILE_omKeyLog,             //|重要过程日志
-		TRANSFILE_updateLog,            //|升级日志
-		TRANSFILE_debugLog,             //|黑匣子日志
-		TRANSFILE_statelessAlarmLog,    //|异常日志
-		TRANSFILE_eventLog,             //|事件日志
-		TRANSFILE_userLog,              //|用户日志
-		TRANSFILE_cfgDataConsistency,   //|配置数据一致性文件
-		TRANSFILE_stateDataConsistency, //|状态数据一致性文件
-		TRANSFILE_dataConsistency,      //|数据一致性文件
-		TRANSFILE_curConfig,            //|当前运行配置文件
-		TRANSFILE_planConfig,           //|期望配置文件
-		TRANSFILE_equipSoftwarePack,    //|主设备软件包
-		TRANSFILE_coldPatchPack,        //|主设备冷补丁包
-		TRANSFILE_hotPatchPack,         //|主设备热补丁包
-		TRANSFILE_rruEquipSoftwarePack, //|RRU软件包
-		TRANSFILE_relantEquipSoftwarePack,              //|电调天线软件包
-		TRANSFILE_enviromentEquipSoftwarePackPack,      //|环境监控软件包
-		TRANSFILE_gpsEquipSoftwarePack,                 //|GPS软件包
-		TRANSFILE_1588EquipSoftwarePack,                //|1588软件包
-		TRANSFILE_cnssEquipSoftwarePackPack,            //|北斗软件包
-		TRANSFILE_generalFile,                          //|普通文件/
-		TRANSFILE_lmtMDBFile,                           //|数据库文件
-		TRANSFILE_activeAlarmFile,                      //|活跃告警文件
-		TRANSFILE_performanceFile,                      //|性能文件
-		TRANSFILE_cfgPackFile,                          //|性能文件
-		TRANSFILE_snapshotFile = 30,                    //快照配置文件
-		TRANSFILE_rncDisa = 49,                         //RNC容灾文件
-		TRANSFILE_rarFile = 42,                         //rar压缩文件
-	}
-
-	public enum SENDFILETASKRES : byte
-	{
-		TRANSFILE_TASK_QUERYOIDFAIL,    /*获取OID失败*/
-		TRANSFILE_TASK_SUCCEED,         /*传输任务下发成功*/
-		TRANSFILE_TASK_FAILED,          /*传输任务下发失败*/
-		TRANSFILE_TASK_NOIDLE           /*没有空闲的任务*/
-	}
-
-	public enum TRANSDIRECTION : byte
-	{
-		TRANS_UPLOAD = 1,       /*eNB上传到管理站*/
-		TRANS_DOWNLOAD          /*管理站下载到eNB*/
-	}
-
-	public enum SOFTACT : byte{
-		SOFTACT_CLOSE = 0,
-		SOFTACT_OPEN = 1
-	}
-
-	#endregion
-
-
-	public class FileTransTaskMgr : Singleton<FileTransTaskMgr>
+	public class FileTransTaskMgr
 	{
 		#region 文件传输相关
 
-		// 发起文件传输操作
-		public SENDFILETASKRES SendTransFileTask(string targetIp, CDTCommonFileTrans cft,
-			ref long taskId,        // TODO ref 和 out 有什么区别？
+		// 发起文件传输操作。为了方便操作，所有的文件信息都在cft对象中传入
+		public static SENDFILETASKRES SendTransFileTask(string targetIp, CDTCommonFileTrans cft,
+			ref long taskId,
 			ref long requestId)
 		{
 			// 获取 requestid 和 taskid
@@ -98,9 +39,10 @@ namespace FileManager
 			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
-		public CDTCommonFileTrans FormatTransInfo(string targetPath,
+		// 格式化传输文件信息。返回CDTCommonFileTrans对象可以直接用于SendTransFileTask方法的入参
+		public static CDTCommonFileTrans FormatTransInfo(string targetPath,
 			string fileFullName,
-			TRANSFILETYPE_5216 filetype,
+			Transfiletype5216 filetype,
 			TRANSDIRECTION direction)
 		{
 			string filePath = Path.GetDirectoryName(fileFullName);
@@ -114,12 +56,12 @@ namespace FileManager
 			if (TRANSDIRECTION.TRANS_UPLOAD == direction)
 			{
 				fileTransNEDirectory = FileTransMacro.STR_EMPTYPATH;
-				if (TRANSFILETYPE_5216.TRANSFILE_generalFile == filetype)   //单文件
+				if (Transfiletype5216.TRANSFILE_generalFile == filetype)   //单文件
 				{
 					fileTransFileName = fileName;
 					fileTransNEDirectory = filePath;
 				}
-				else if (TRANSFILETYPE_5216.TRANSFILE_snapshotFile == filetype)
+				else if (Transfiletype5216.TRANSFILE_snapshotFile == filetype)
 				{
 					fileTransFileName = fileFullName;      //把快照文件名传入
 				}
@@ -150,25 +92,35 @@ namespace FileManager
 			{
 				FileTransFileType = Convert.ToString((byte)filetype),       //文件类型,
 				FileTransDirection = Convert.ToString((byte)direction),      //传输方向,
-				FileTransFTPDir = ftpWorkPath,
+				FileTransFtpDir = ftpWorkPath,
 				FileTransFileName = fileTransFileName,
-				FileTransNEDir = fileTransNEDirectory,
+				FileTransNeDir = fileTransNEDirectory,
 				FileTransRowStatus = FileTransMacro.STR_CREATANDGO
 			};
 
 			return cft;
 		}
 
-		//停止文件传输操作
-		public SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
+		//停止文件传输操作。taskId作为索引使用
+		public static SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
 		{
 			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
 			mapName2Value.Add("fileTransRowStatus", FileTransMacro.STR_DESTROY);
+			long reqId = 0;
 
-			//TODO 同步执行snmp命令：DelFileTransTask
-			throw new NotImplementedException();
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("DelFileTransTask", out reqId, mapName2Value, $".{taskId}", targetIp);
+			if (0 == ret)
+			{
+				HasTransFileWork = false;
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
+		public static bool HasTransFileWork { get; set; }
+
+		public static bool HasUpgradeWork { get; set; }
 		#endregion
 
 		#region 文件上传操作
@@ -181,12 +133,20 @@ namespace FileManager
 		// rru日志上传操作
 		public SENDFILETASKRES RruLogUpload(string dstPath, uint nRruIndexNo, uint nLogFileType, string remoteIp)
 		{
-			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
-			mapName2Value.Add("topoRRULogDestination", dstPath);
-			mapName2Value.Add("topoRRULogFileType", Convert.ToString(nLogFileType));
+			Dictionary<string, string> mapName2Value = new Dictionary<string, string>
+			{
+				{"topoRRULogDestination", dstPath},
+				{"topoRRULogFileType", Convert.ToString(nLogFileType)}
+			};
 
-			//TODO  执行snmp命令：UploadRRULog
-			throw new NotImplementedException();
+			long reqId = 0;
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("UploadRRULog", out reqId, mapName2Value, $".{nRruIndexNo}", remoteIp);
+			if (0 == ret)
+			{
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
 		#endregion
@@ -199,8 +159,14 @@ namespace FileManager
 			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
 			mapName2Value.Add("softwarePackActSwitch", Convert.ToString( (byte)enmuAct));
 
-			//TODO 同步执行snmp命令：SetSoftwarePackAct
-			throw new NotImplementedException();
+			long reqId = 0;
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("softwarePackActSwitch", out reqId, mapName2Value, $".{nIndex}", targetIp);
+			if (0 == ret)
+			{
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
 		// 定时激活
@@ -210,8 +176,14 @@ namespace FileManager
 			mapName2Value.Add("softwarePackActNeed", Convert.ToString((byte)enmuAct));
 			mapName2Value.Add("softwarePackActTime", time);
 
-			//TODO 同步执行snmp命令：SetSoftwarePackActTime
-			throw new NotImplementedException();
+			long reqId = 0;
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("SetSoftwarePackActTime", out reqId, mapName2Value, $".{nIndex}", targetIp);
+			if (0 == ret)
+			{
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
 		// 取消定时激活
@@ -220,19 +192,30 @@ namespace FileManager
 			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
 			mapName2Value.Add("softwarePackActNeed", Convert.ToString((byte)enmuAct));
 
-			//TODO 同步执行snmp命令：SetSoftwarePackClearActTime
-			throw new NotImplementedException();
+			long reqId = 0;
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("SetSoftwarePackClearActTime", out reqId, mapName2Value, $".{nIndex}", targetIp);
+			if (0 == ret)
+			{
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
 		// 删除文件
 		public SENDFILETASKRES SendFileDeleteCmd(string filename, int index, string targetIp)
 		{
-			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
-			mapName2Value.Add("softFileName", filename);
-			mapName2Value.Add("softDeleteTrigger", "1");
+			Dictionary<string, string> mapName2Value =
+				new Dictionary<string, string> {{"softFileName", filename}, {"softDeleteTrigger", "1"}};
 
-			//TODO 同步执行snmp命令：DelSoftware
-			throw new NotImplementedException();
+			long reqId = 0;
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("DelSoftware", out reqId, mapName2Value, $".{index}", targetIp);
+			if (0 == ret)
+			{
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
 		// 删除软件包
@@ -241,18 +224,119 @@ namespace FileManager
 			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
 			mapName2Value.Add("softwarePackDeleteTrigger", "1");
 
-			//TODO 同步执行snmp命令：DelSoftwarePack
-			throw new NotImplementedException();
+			long reqId = 0;
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("DelSoftwarePack", out reqId, mapName2Value, $".{index}", targetIp);
+			if (0 == ret)
+			{
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
 		#endregion
 
 		#region snmp操作结果处理
 
-		// 一个委托。TODO pdu需要修改为实际定义的类型
+		// snmp操作结果处理
 		public void ResponseDeal(CDTLmtbPdu pdu)
 		{
+			if (null == pdu)
+			{
+				return;
+			}
 
+			string boardIp = pdu.m_SourceIp;
+			long reqId = pdu.m_requestId;
+
+			if (!m_setReqId.Contains(reqId))
+			{
+				Log.Debug($"本地没有找到ID为{reqId}的信息");
+				return;
+			}
+
+			m_setReqId.Remove(reqId);
+
+			if (SnmpConstants.ErrNoError != pdu.m_LastErrorStatus)
+			{
+				Log.Error("传入的PDU错误");
+				SendTransFileTask_Start(boardIp, -1, reqId);
+			}
+			else
+			{
+				string fileTransId;
+				if (pdu.GetValueByMibName(boardIp, "fileTransNextAvailableIDForOthers", out fileTransId))
+				{
+					var nFileTransId = Int64.Parse(fileTransId);
+					SendTransFileTask_Start(boardIp, nFileTransId, reqId);
+				}
+				else
+				{
+					SendTransFileTask_Start(boardIp, -1, reqId);
+				}
+			}
+		}
+
+		private bool SendTransFileTask_Start(string ip, long nFileTransId, long lReqId)
+		{
+			bool bRet = true;
+
+			if (!m_mapIp2FlTrsObjQue.ContainsKey(ip))
+			{
+				Log.Error($"没有找到到{ip}的文件传输任务");
+				return false;
+			}
+
+			var fileTransQueue = m_mapIp2FlTrsObjQue[ip];
+			if (null == fileTransQueue)
+			{
+				fileTransQueue = new List<CDTAbstractFileTrans>();
+			}
+
+			if (fileTransQueue.Count > 0)
+			{
+				if (-1 == nFileTransId)		// 超时或者失败
+				{
+					Log.Error("查找文件传输ID失败");
+					// TODO 删除已有的数据
+				}
+				else
+				{
+					var fileTransObj = fileTransQueue.First();
+					if (null == fileTransObj)
+					{
+						return false;
+					}
+
+					long reqId = 0;
+					if (!fileTransObj.StartFileTrans(nFileTransId, ref reqId))
+					{
+						bRet = false;
+					}
+
+					m_setReqId.Add(reqId);
+				}
+			}
+
+			foreach (var fileTranObj in fileTransQueue)
+			{
+				if (null == fileTranObj)
+				{
+					continue;
+				}
+
+				if (!GetFileTransAvailableId(ip, ref lReqId))
+				{
+					bRet = false;
+					fileTransQueue.Remove(fileTranObj);
+					break;
+				}
+
+				fileTranObj.SetReqId(lReqId);
+				m_setReqId.Add(lReqId);
+			}
+
+			return bRet;
 		}
 
 		#endregion
@@ -260,14 +344,35 @@ namespace FileManager
 
 		#region 私有方法
 
-		private bool GetFileTransAvailableId_Sync(string ip, ref long reqId, ref long taskId)
+		// 使用同步的方式获取可用的文件传输任务ID
+		private static bool GetFileTransAvailableId_Sync(string ip, ref long reqId, ref long taskId)
 		{
-			throw new NotImplementedException();
+			CDTLmtbPdu InOutPdu = new CDTLmtbPdu();
+			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransNextID", out reqId, ".0", ip, ref InOutPdu);
+			if (0 == ret)
+			{
+				string csFileTrandId;
+				if ((InOutPdu.GetValueByMibName(ip, "fileTransNextAvailableIDForOthers", out csFileTrandId)))
+				{
+					taskId = Int64.Parse(csFileTrandId);
+					return true;
+				}
+			}
+
+			Log.Error("同步获取文件传输可用任务ID出错!");
+			return false;
 		}
 
+		// 使用异步方式获取可用的文件传输任务ID
 		private bool GetFileTransAvailableId(string ip, ref long reqId)
 		{
-			throw new NotImplementedException();
+			return (0 == CDTCmdExecuteMgr.GetInstance().CmdGetAsync("GetFileTransNextID", out reqId, ".0", ip));
+		}
+
+		private FileTransTaskMgr()
+		{
+			m_setReqId = new HashSet<long>();
+			m_mapIp2FlTrsObjQue = new Dictionary<string, List<CDTAbstractFileTrans>>();
 		}
 
 		#endregion
@@ -275,6 +380,11 @@ namespace FileManager
 		#region 私有属性
 
 		private byte MaxTransTaskCount = 20;
+
+		private HashSet<long> m_setReqId;
+
+		private Dictionary<string, List<CDTAbstractFileTrans>> m_mapIp2FlTrsObjQue;
+
 
 		#endregion
 	}
@@ -287,7 +397,7 @@ namespace FileManager
 			m_bIsReqIdValid = bIsReqIdValid;
 		}
 
-		public virtual bool StartFileTrans(long unFileTransId, ref long lreqID)
+		public virtual bool StartFileTrans(long unFileTransId, ref long lreqId)
 		{
 			return true;
 		}
@@ -315,35 +425,41 @@ namespace FileManager
 
 		}
 
-		public bool StartFileTrans(long unFileTransId, ref long lReqId)
+		// 启动文件下发任务
+		public override bool StartFileTrans(long unFileTransId, ref long lReqId)
 		{
 			Dictionary<string, string> mapName2Value = new Dictionary<string, string>
 			{
 				{"fileTransRowStatus", FileTransRowStatus},
 				{"fileTransType", FileTransFileType},
 				{"fileTransIndicator", FileTransDirection},
-				{"fileTransFTPDirectory", FileTransFTPDir},
+				{"fileTransFTPDirectory", FileTransFtpDir},
 				{"fileTransFileName", FileTransFileName},
-				{"fileTransNEDirectory", FileTransNEDir}
+				{"fileTransNEDirectory", FileTransNeDir}
 			};
 
-			//同步下发任务
+			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
 
-			return true;
+			var ret = CDTCmdExecuteMgr.GetInstance().CmdSetSync("AddFileTransTask", out lReqId, mapName2Value, $".{unFileTransId}",
+				IpAddr, ref inOutPdu);
+
+			return (0 == ret);
 		}
 
 		public string FileTransRowStatus { get; set; }
 
 		public string FileTransFileType { get; set; }
 
-		public string FileTransFTPDir { get; set; }
+		public string FileTransFtpDir { get; set; }
 
 		public string FileTransFileName { get; set; }
 
-		public string FileTransNEDir { get; set; }
+		public string FileTransNeDir { get; set; }
 
 		public string IpAddr { get; set; }
 
 		public string FileTransDirection { get; set; }
 	};
+
+
 }

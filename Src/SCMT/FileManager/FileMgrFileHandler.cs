@@ -2,14 +2,16 @@
 using System.IO;
 using CommonUility;
 using FileManager.FileHandler;
+using LogManager;
 
 namespace FileManager
 {
-	class FileMgrFileHandler
+	// 只是把原来的函数先简单的封装在一个文件中
+	public class FileMgrFileHandler
 	{
 
-		//发送文件到远端
-		public bool SendFileToRemote(string localFilePath, string remotePath)
+		//发送文件到远端。localFilePath和remotePath等参数已经处理好
+		public bool SendFileToRemote(string localFilePath, string remotePath, string targetIp)
 		{
 			//校验基站端是否允许升级
 			if (!CanUpdate())
@@ -17,31 +19,40 @@ namespace FileManager
 				return false;
 			}
 
-			//创建临时目录等操作
-
-
-			//获取选择的本地文件
-			string srcfile = localFilePath;
-
-			//TODO  copy file to back folder。后面操作使用的都是back file
-			string dstfile = "";
-			File.Copy(srcfile, dstfile, true);
-
 			//判断是否存在其他正在进行的任务
 			if (HasRunningTask())
 			{
-				return false;
+				throw new CustomException("有正在进行传输的文件或正在升级的任务");
 			}
+
+			//创建临时目录等操作
+			var dstFullPath = CreateTempFile(localFilePath, targetIp);
 
 			// 使用工厂模式，创建不同文件的处理对象，在处理对象中进行文件处理
-			string ext = GetExtString(dstfile);
-			IFileHandler handler = FileHandlerFactory.CreateHandler(ext);
-			if (!handler.DoHandle(dstfile, remotePath))
+			string ext = FilePathHelper.GetFileExt(dstFullPath);
+			if (null == ext)
 			{
+				throw new CustomException($"从文件路径{dstFullPath}获取扩展名失败");
+			}
+
+			IFileHandler handler = FileHandlerFactory.CreateHandler(ext, targetIp);
+			var result = handler.DoHandle(dstFullPath, remotePath);
+			if (ExecuteResult.UpgradeFailed == result)
+			{
+				Log.Error("升级失败");
 				return false;
 			}
 
-			// TODO 启动定时器，定时查询下载进度等操作
+			if (ExecuteResult.UserCancel == result)
+			{
+				Log.Info("升级过程中用户主动取消");
+				return true;
+			}
+
+			FileTransTaskMgr.HasTransFileWork = true;
+
+			// TODO UI模块启动定时器
+
 			return true;
 		}
 
@@ -64,33 +75,48 @@ namespace FileManager
 			return (-1 == path.IndexOf("&", StringComparison.Ordinal));
 		}
 
-		// 替换路径中的\和//
-		private string ReplaceDosPathSlashToLinux(string path)
-		{
-			if (string.IsNullOrEmpty(path))
-			{
-				throw new CustomException($"{path}字符串为空或null");
-			}
-
-			return path.Replace('\\', '/').Replace("//", "/");
-		}
-
 		// 判断是否存在有其他正在进行的任务
 		private bool HasRunningTask()
 		{
-			throw new NotImplementedException();
+			return FileTransTaskMgr.HasTransFileWork || FileTransTaskMgr.HasUpgradeWork;
 		}
 
-		// 获取路径中文件的扩展名，如果有，全改为大写。否则返回""
-		private string GetExtString(string path)
+		// 创建临时文件
+		private string CreateTempFile(string srcFile, string targetIp)
 		{
-			string ext = "";
-			if (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrEmpty(path))
+			if (!IsValidPath(srcFile))
 			{
-				ext = Path.GetExtension(path);
+				throw new CustomException($"文件路径{srcFile}有非法字符&");
 			}
 
-			return ext.ToUpper();
+			var dstDirPath = FilePathHelper.GetTempFilesPath() + $"{targetIp}/DTZ/";
+
+			if (!FilePathHelper.DeleteFolder(dstDirPath))
+			{
+				throw new CustomException($"删除临时目录{dstDirPath}失败");
+			}
+
+			if (!FilePathHelper.CreateFolder(dstDirPath))
+			{
+				throw new CustomException($"创建临时目录{dstDirPath}失败");
+			}
+
+			var srcFileName = FilePathHelper.GetFileNameFromFullPath(srcFile);
+			if (null == srcFileName)
+			{
+				throw new CustomException($"从路径{srcFile}中获取文件名失败，文件不存在");
+			}
+
+			var dstFilePath = $"{dstDirPath}{srcFileName}";
+			var srcFullPath = FilePathHelper.ReplaceDosSlashToLinux(srcFile);
+			var dstFullPath = FilePathHelper.ReplaceDosSlashToLinux(dstFilePath);
+
+			if (!FilePathHelper.CopyFile(srcFullPath, dstFullPath))
+			{
+				throw new CustomException($"复制文件{srcFile}到{dstFilePath}失败！");
+			}
+
+			return dstFullPath;
 		}
 
 		#endregion

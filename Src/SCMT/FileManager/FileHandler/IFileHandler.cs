@@ -10,6 +10,6 @@ namespace FileManager.FileHandler
 	public interface IFileHandler
 	{
 		// 开始干活吧
-		bool DoHandle(string srcFileFullName, string dstFilePath);
+		ExecuteResult DoHandle(string srcFileFullName, string dstFilePath);
 	}
 }
