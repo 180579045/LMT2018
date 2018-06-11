@@ -14,16 +14,15 @@ namespace CommonUility
 			return DateTimeToString(DateTime.Now);
 		}
 
-		public static string DateTimeToString(DateTime t)
+		public static string DateTimeToString(DateTime t, string format = "yyyy-MM-dd HH:mm:ss")
 		{
-			var year = t.Year.ToString("D4");
-			var month = t.Month.ToString("D2");
-			var day = t.Day.ToString("D2");
-			var hour = t.Hour.ToString("D2");
-			var min = t.Minute.ToString("D2");
-			var second = t.Second.ToString("D2");
-			var time = $"{year}-{month}-{day} {hour}:{min}:{second}";
-			return time;
+			return t.ToString(format);
+		}
+
+		// 获取用于做文件夹名字的时间信息：yearmonday_hourminsec_millsec
+		public static string GetFolderNameWithTime()
+		{
+			return DateTimeToString(DateTime.Now, "yyyyMMdd_HHmmss_fff");
 		}
 	}
 }

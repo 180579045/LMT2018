@@ -36,7 +36,7 @@ namespace CommonUility
 
 		//// <summary>
 		/// 结构体转byte数组
-		/// TODO 这个方法有BUG。对于嵌套的结构体变量数组处理错误，结果byte[]长度不正确
+		/// 这个方法有BUG。对于嵌套的结构体变量数组处理错误，结果byte[]长度不正确
 		/// </summary>
 		/// <param name="obj">要转换的结构体</param>
 		/// <returns>转换后的byte数组</returns>

@@ -1,4 +1,6 @@
-﻿using NetMQ;
+﻿//using NetMQ;
+
+using System.Text;
 using Newtonsoft.Json;
 
 namespace CommonUility
@@ -37,7 +39,8 @@ namespace CommonUility
 		/// <returns></returns>
 		public static T SerializeJsonToObject<T>(byte[] jsonBytes)
 		{
-			var s = SendReceiveConstants.DefaultEncoding.GetString(jsonBytes);
+			//var s = SendReceiveConstants.DefaultEncoding.GetString(jsonBytes);
+			var s = Encoding.Default.GetString(jsonBytes);
 			return JsonHelper.SerializeJsonToObject<T>(s);
 		}
 	}

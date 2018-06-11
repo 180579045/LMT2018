@@ -1,23 +1,17 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using System.Diagnostics;
 using CommonUility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace CommonUilityTest
 {
 	/// <summary>
-	/// TimeHelperTest 的摘要说明
+	/// FilePathHelperTest 的摘要说明
 	/// </summary>
 	[TestClass]
-	public class TimeHelperTest
+	public class FilePathHelperTest
 	{
-		public TimeHelperTest()
-		{
-			//
-			//
-		}
 
 		private TestContext testContextInstance;
 
@@ -60,17 +54,34 @@ namespace CommonUilityTest
 		#endregion
 
 		[TestMethod]
-		public void TestGetCurrentTime()
+		public void TestDeleteFolder()
 		{
-			string time = TimeHelper.GetCurrentTime();
-			Debug.Print(time);
+			var path = "d:/test";
+			FilePathHelper.DeleteFolder(path);
 		}
 
 		[TestMethod]
-		public void TestGetFolderNameWithTime()
+		public void TestCreateFolder()
 		{
-			var time = TimeHelper.GetFolderNameWithTime();
-			Debug.Print(time);
+			var path = "d:/test/test";
+			FilePathHelper.CreateFolder(path);
+
+			path = "d:/test/test2";
+			FilePathHelper.CreateFolder(path);
+		}
+
+		[TestMethod]
+		public void TestCopyFile()
+		{
+			var src = "d:/test/test.txt";
+			var dst = "e:/test/test2.log";
+
+			bool ret = FilePathHelper.CopyFile(src, dst);
+			Assert.IsTrue(ret);
+
+			dst = "f:/test2.log";
+			ret = FilePathHelper.CopyFile(src, dst);
+			Assert.IsFalse(ret);
 		}
 	}
 }
