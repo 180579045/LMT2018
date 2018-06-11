@@ -111,36 +111,61 @@ namespace MIBDataParser.JSONDataMgr
         //input:string propertyName, string varValue
         private bool TableToJsonData(DataRow rowRec, DataRow rowRecNext, out JObject table)
         {
-            int indexNum = 0;
             //int isStatic = 1;
             // 两个节点是否有父子关系
-            if (!rowRecNext["ParentOID"].ToString().Equals(rowRec["OID"].ToString()))
+            if( !String.Equals( rowRecNext["ParentOID"].ToString(), rowRec["OID"].ToString()))
             {
-                table = new JObject {{ "nameMib", rowRec["MIBName"].ToString()},
-                    { "oid", rowRec["OID"].ToString()},
-                    { "nameCh", rowRec["ChFriendName"].ToString()},
-                    { "indexNum", indexNum}};
+                table = this.TableToJsonDataResolveTable(rowRec, null);
                 return false;
             }
+            
+            ////判断静动态表
+            //if ("" != rowRec["TableContent"].ToString())
+            //    isStatic = 0;//0表示动态表，1表示静态表
 
-            // 查找 索引的个数
-            List<string> indexNameList = new List<string> { "Index1OID", "Index2OID", "Index3OID", "Index4OID", "Index5OID", "Index6OID" };
-            foreach (var indexName in indexNameList)
-                if ("" != rowRecNext[indexName].ToString())
-                    indexNum++;
-                else
-                    break;
-
-            /* 判断静动态表
-            if ("" != rowRec["TableContent"].ToString())
-                isStatic = 0;//0表示动态表，1表示静态表
-            */
-
-            table = new JObject {{ "nameMib", rowRec["MIBName"].ToString()},
+            table = this.TableToJsonDataResolveTable(rowRec, rowRecNext);
+            return true;
+        }
+        /// <summary>
+        /// 解析 table,在TableToJsonData中。
+        /// </summary>
+        /// <param name="rowRec"></param>
+        /// <param name="indexNum"></param>
+        /// <returns></returns>
+        private JObject TableToJsonDataResolveTable(DataRow rowRec, DataRow rowRecNext)
+        {
+            return new JObject {
+                { "nameMib", rowRec["MIBName"].ToString()},
                 { "oid", rowRec["OID"].ToString()},
                 { "nameCh", rowRec["ChFriendName"].ToString()},
-                { "indexNum", indexNum}};
-            return true;
+                { "indexNum", this.TableToJsonDataResolveIndexNum(rowRecNext)},
+                { "mibSyntax", rowRec["MIB_Syntax"].ToString()},
+                { "mibDesc", rowRec["MIBDesc"].ToString()},
+            };
+        }
+        /// <summary>
+        /// 解析索引个数，在TableToJsonData中。
+        /// </summary>
+        /// <param name="rowRecNext"></param>
+        /// <returns></returns>
+        private int TableToJsonDataResolveIndexNum(DataRow rowRecNext)
+        {
+            int indexNum = 0;
+            if (null != rowRecNext)
+            {
+                foreach (var index in new List<string> { "Index1OID", "Index2OID", "Index3OID", "Index4OID", "Index5OID", "Index6OID" })
+                {
+                    if ("" != rowRecNext[index].ToString())
+                    {
+                        indexNum++;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            return indexNum;
         }
 
         /// <summary>
@@ -170,7 +195,8 @@ namespace MIBDataParser.JSONDataMgr
 
             //
             int leafIndex = int.Parse(rowRec["OID"].ToString().Replace(rowRec["ParentOID"].ToString()+".", ""));
-            JObject childJObject = new JObject { { "childNameMib", rowRec["MIBName"].ToString()},
+            JObject childJObject = new JObject {
+                { "childNameMib", rowRec["MIBName"].ToString()},
                 { "childNo", leafIndex},
                 { "childOid",rowRec["OID"].ToString()},
                 { "childNameCh", rowRec["ChFriendName"].ToString()},
@@ -184,6 +210,8 @@ namespace MIBDataParser.JSONDataMgr
                 { "leafProperty", 0},//0x0001,查;0x0010,增;0x0100,改;0x1000,删;
                 { "unit", rowRec["MIBVal_Unit"].ToString()},
                 { "IsIndex", rowRec["IsIndex"].ToString()},
+                { "mibSyntax", rowRec["MIB_Syntax"].ToString()},
+                { "mibDesc", rowRec["MIBDesc"].ToString()},
             };
             childJArray.Add(childJObject);
             return true;
