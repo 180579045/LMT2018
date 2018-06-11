@@ -12,13 +12,13 @@ using LogManager;
 /// </summary>
 namespace MsgQueue
 {
-	public class SubscribeHelper : IDisposable
+	public class SubscribeHelper : Singleton<SubscribeHelper>, IDisposable
 	{
 		private readonly SubscribeClient subClient;
 
 		#region 构造、析构
 
-		public SubscribeHelper()
+		private SubscribeHelper()
 		{
 			subClient = new SubscribeClient();
 			subClient.Run();
@@ -26,19 +26,22 @@ namespace MsgQueue
 
 		~SubscribeHelper()
 		{
-			subClient.Dispose();
+			Dispose(false);
 		}
 
 		public void Dispose()
 		{
-
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		public static SubscribeHelper GetInstance()
+		protected void Dispose(bool disposing)
 		{
-			return Singleton<SubscribeHelper>.GetInstance();
+			if (disposing)
+			{
+				subClient?.Dispose();
+			}
 		}
-
 		#endregion
 
 		#region 公共接口

@@ -58,7 +58,7 @@ namespace SCMTMainWindow.Controls.PlanBParser
         public HLMessageParser()
         {
             signalB = new SignalBPlan();
-            subClient = new SubscribeClient(CommonPort.PubServerPort);
+            subClient = new SubscribeClient();
             SubscribeHelper.AddSubscribe("HlSignalMsg", updateHlSingalMessageInfo);
         }
     }

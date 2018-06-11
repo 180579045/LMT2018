@@ -8,32 +8,35 @@ namespace MsgQueue
 	/// <summary>
 	/// 公共的发布消息助手
 	/// </summary>
-	public class PublishHelper : IDisposable
+	public class PublishHelper : Singleton<PublishHelper>, IDisposable
 	{
 		private readonly PublisherClient _pubClient;
 
 		#region 构造、析构
 
-		public PublishHelper()
+		private PublishHelper()
 		{
 			_pubClient = new PublisherClient();
 		}
 
 		~PublishHelper()
 		{
-			_pubClient.Dispose();
+			Dispose(false);
 		}
 
 		public void Dispose()
 		{
-
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		public static PublishHelper GetInstance()
+		protected void Dispose(bool disposing)
 		{
-			return Singleton<PublishHelper>.GetInstance();
+			if (disposing)
+			{
+				_pubClient?.Dispose();
+			}
 		}
-
 
 		#endregion
 

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using CommonUility;
 using ZeroMQ;
 
@@ -8,11 +9,16 @@ namespace MsgQueue
 	/// 用一个Proxy实例，同时运行PublishServer和SubcribeServer
 	/// 很多模块既要publish数据，也要subcribe其他模块的数据。这个服务器进程相当于中转站
 	/// </summary>
-	public class PubSubServer
+	public class PubSubServer : Singleton<PubSubServer>, IDisposable
 	{
-		public static PubSubServer GetInstance()
+		private PubSubServer()
 		{
-			return Singleton<PubSubServer>.GetInstance();
+			
+		}
+
+		~PubSubServer()
+		{
+			Dispose(false);
 		}
 
 		public ZContext context { get; private set; }	// inproc协议要求所有的socket使用同一个一个context对象
@@ -50,5 +56,21 @@ namespace MsgQueue
 		}
 
 		public bool HadInited { get; private set; }
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				pubSocket?.Dispose();
+				subSocket?.Dispose();
+				context?.Dispose();
+			}
+		}
 	}
 }

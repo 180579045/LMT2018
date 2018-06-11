@@ -5,13 +5,9 @@ using System.Text;
 namespace CommonUility
 {
 	/// <summary>
-	/// 泛化单例模式，使用方法：
-	/// public static PubSubServer GetInstance()
-	/// {
-	///    return Singleton<PubSubServer>.GetInstance();
-	/// }
+	/// 泛化单例模式
 	/// </summary>
-	public class Singleton<T> where T : class, new()
+	public class Singleton<T> where T : class
 	{
 		private static T _instance;
 		private static readonly object syslock = new object();
@@ -24,7 +20,7 @@ namespace CommonUility
 				{
 					if (null == _instance)
 					{
-						_instance = new T();
+						_instance = (T) Activator.CreateInstance(typeof(T), true);
 					}
 				}
 			}
