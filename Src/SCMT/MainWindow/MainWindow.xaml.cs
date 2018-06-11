@@ -170,7 +170,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitDataBase()
         {
-            node.db = new Database();
+            node.db = Database.GetInstance();
 
             node.db.resultInitData = new ResultInitData((bool ret) =>
             {

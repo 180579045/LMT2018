@@ -55,6 +55,7 @@ namespace MIBDataParser.JSONDataMgr
         public string detailDesc {get; set;} // "告警原因编号， 取值  :0..2147483647。",
         public string leafProperty {get; set;} // 0,
         public string unit {get; set;} // ""
+        public bool idIndex { get; set; }
     }
     public class ReDataByTableEnglishName : IReDataByTableEnglishName
     {
