@@ -16,6 +16,7 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:uc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
+        xmlns:fileManager="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
         mc:Ignorable="d"
         Height="778" Width="1024"
         Title="{Binding Title}"
@@ -176,6 +177,27 @@
 
                 <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
+                </TabItem>
+
+                <TabItem Header="文件管理" Style="{StaticResource TabItemStyle}">
+                    <Grid Name="TestFileManager">
+                        <!--阿瓦隆界面布局-->
+                            <xcad:DockingManager  BorderBrush="Blue" >
+
+                                <!-- 根页签 -->
+                                <xcad:LayoutRoot>
+                                    <xcad:LayoutPanel Orientation="Horizontal">
+                                        <xcad:LayoutAnchorablePane>
+                                            <xcad:LayoutAnchorable ContentId="FileManager" Title="文件管理" x:Name="tabFileManager" CanAutoHide="False" CanHide="False"  CanClose="False" FloatingHeight="600" FloatingWidth="800">
+                                            <fileManager:TestTwoFileManager></fileManager:TestTwoFileManager>
+                                            </xcad:LayoutAnchorable>
+                                        </xcad:LayoutAnchorablePane>
+                                    </xcad:LayoutPanel>
+                                </xcad:LayoutRoot>
+
+                            </xcad:DockingManager>
+
+                    </Grid>
                 </TabItem>
 
                 <TabItem Header="基站数据" Style="{StaticResource TabItemStyle}">
