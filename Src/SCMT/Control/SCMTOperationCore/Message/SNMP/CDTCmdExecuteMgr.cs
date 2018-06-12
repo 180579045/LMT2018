@@ -12,30 +12,10 @@ namespace SCMTOperationCore.Message.SNMP
 	/// <summary>
 	/// 以命令名称方式发送Snmp消息
 	/// </summary>
-	public sealed class CDTCmdExecuteMgr
+	public sealed class CDTCmdExecuteMgr : Singleton<CDTCmdExecuteMgr>
 	{
-		private static CDTCmdExecuteMgr _instance = null;
-
-		private static readonly object SynObj = new object();
-
 		private CDTCmdExecuteMgr()
 		{
-		}
-
-		public static CDTCmdExecuteMgr GetInstance()
-		{
-			if (null == _instance)
-			{
-				lock(SynObj)
-				{
-					if (null == _instance)
-					{
-						_instance = new CDTCmdExecuteMgr();
-					}
-				}
-			}
-
-			return _instance;
 		}
 
 		public void Initialize()
@@ -176,7 +156,7 @@ namespace SCMTOperationCore.Message.SNMP
 		/// <param name="needCheck"></param>
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
-		public int CmdSetAsync(string cmdName, out long requestId, Dictionary<string, string> name2Value
+		public static int CmdSetAsync(string cmdName, out long requestId, Dictionary<string, string> name2Value
 			, string strIndex, string strIpAddr, bool isPrint = false, bool needCheck = false)
 		{
 			requestId = 0;
@@ -284,7 +264,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			// 把查到的命令行对应的leaflist转换为vblist
-			var oidList = SnmpToDatabase.ConvertNameToOid(cmdInfo.leaflist, ip);
+			var oidList = SnmpToDatabase.ConvertNameToOid(cmdInfo.m_leaflist, ip);
 
 			// 在此处校验索引是否有效
 			if (bNeedCheck)
@@ -305,7 +285,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 打包执行set命令所需的pdu
-		private bool PackSetCmdPdu(string cmdName, string index, string ip, bool bNeedCheck,
+		private static bool PackSetCmdPdu(string cmdName, string index, string ip, bool bNeedCheck,
 			Dictionary<string, string> name2Value, ref CDTLmtbPdu pdu)
 		{
 			// 返回的结果中leaflist是一个叶节点名的集合，不是oid的集合
@@ -316,7 +296,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			// 把name转为vblist，已经把数据值传入到vb中
-			var vbList = SnmpToDatabase.ConvertNameToVbList(cmdInfo.leaflist, ip, index, bNeedCheck, name2Value);
+			var vbList = SnmpToDatabase.ConvertNameToVbList(cmdInfo.m_leaflist, ip, index, bNeedCheck, name2Value);
 
 			if (null == pdu)
 			{

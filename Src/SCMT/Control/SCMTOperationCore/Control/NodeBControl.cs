@@ -24,7 +24,7 @@ namespace SCMTOperationCore.Control
 		#endregion
 
 
-		public NodeBControl()
+		private NodeBControl()
 		{
 			mapElements = new Dictionary<string, Element>();
 		}

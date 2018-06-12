@@ -49,7 +49,6 @@ namespace SCMTMainWindow.Controls.PlanBParser
         // 开始解析;
         public void beginParse()
         {
-            //PubSubServer.GetInstance().InitServer();
             SignalBConfig.StartByScriptXml();
             PublishHelper.PublishMsg("StartTraceHlSignal", "");
         }

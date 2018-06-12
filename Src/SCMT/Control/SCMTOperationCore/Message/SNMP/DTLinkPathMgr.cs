@@ -11,7 +11,7 @@ namespace SCMTOperationCore.Message.SNMP
 	/// <summary>
 	/// 与eNB的通信链路管理器
 	/// </summary>
-	public class DTLinkPathMgr : ICDTLinkPathMgr
+	public class DTLinkPathMgr : Singleton<DTLinkPathMgr>, ICDTLinkPathMgr
 	{
 
 		// 管理侧trap端口
@@ -75,21 +75,6 @@ namespace SCMTOperationCore.Message.SNMP
 
 		#region 公有静态接口
 
-		public static DTLinkPathMgr GetInstance()
-		{
-			if (null == _instance)
-			{
-				lock (SynObj)
-				{
-					if (null == _instance)
-					{
-						_instance = new DTLinkPathMgr();
-					}
-				}
-			}
-			return _instance;
-		}
-
 		// 获取和IP对应snmp实例，未处理异常
 		public static LmtbSnmpEx GetSnmpInstance(string ip)
 		{
@@ -100,7 +85,6 @@ namespace SCMTOperationCore.Message.SNMP
 
 		#region 私有属性
 
-		private static DTLinkPathMgr _instance = null;
 		private static readonly object SynObj = new object();
 
 		private static bool m_SnmpAlive = false;

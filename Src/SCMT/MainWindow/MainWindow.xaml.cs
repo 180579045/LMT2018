@@ -83,7 +83,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitView()
         {
-            NBControler = new NodeBControl();
+            NBControler = NodeBControl.GetInstance();
             this.MibDataGrid.MouseMove += MibDataGrid_MouseMove;
             this.MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
             this.MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;

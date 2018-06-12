@@ -70,6 +70,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5BF0EE4E-8220-4E2A-AF99-53246FF970A2}</Project>
       <Name>SCMTOperationCore</Name>

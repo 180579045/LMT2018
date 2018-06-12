@@ -96,14 +96,21 @@ namespace MIBDataParser.JSONDataMgr
         private CmdInfoList cmdL = null; // Cmd 相关数据的操作句柄
 
         private static Database _instance = null;//private static readonly object SynObj = new object();
+        private static object _syncLock = new object();
 
-        [Obsolete("Use Method public static Database GetInstance(). For example:Database dtHandle = Database.GetInstance(); instead", true)]
-        public  Database(){}
-        private Database(string my){}
+        private Database(){}
+
         public static Database GetInstance()
         {
-            if (null == _instance){
-                _instance = new Database("");
+            if (null == _instance)
+            {
+                lock (_syncLock)
+                {
+                    if (null == _instance)
+                    {
+                        _instance = new Database();
+                    }
+                }
             }
             return _instance;
         }
