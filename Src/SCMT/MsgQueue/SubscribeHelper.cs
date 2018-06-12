@@ -1,51 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUility;
+using LogManager;
 
 /// <summary>
-/// warnning: 可能会有性能限制，毕竟是在一个线程中。后面再加上PULL和PUSH模式
+/// warnning: 可能会有性能限制，毕竟是在一个线程中
 /// </summary>
 namespace MsgQueue
 {
-	public class SubscribeHelper : IDisposable
+	public class SubscribeHelper : Singleton<SubscribeHelper>, IDisposable
 	{
-		private SubscribeClient subClient;
+		private readonly SubscribeClient subClient;
 
-		public SubscribeHelper()
+		#region 构造、析构
+
+		private SubscribeHelper()
 		{
-			subClient = new SubscribeClient(CommonPort.PubServerPort);
+			subClient = new SubscribeClient();
 			subClient.Run();
 		}
 
 		~SubscribeHelper()
 		{
-			subClient.Dispose();
+			Dispose(false);
 		}
 
 		public void Dispose()
 		{
-			
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		public static SubscribeHelper GetInstance()
+		protected void Dispose(bool disposing)
 		{
-			return Singleton<SubscribeHelper>.GetInstance();
+			if (disposing)
+			{
+				subClient?.Dispose();
+			}
 		}
+		#endregion
 
-		public static bool AddSubscribe(string topic, HandlerSubscribeMsg handler)
+		#region 公共接口
+
+		public static bool AddSubscribe(string topic, HandlerSubscribeMsg handler,
+			[CallerFilePath] string filePath = null,
+			[CallerLineNumber] int lineNumber = 0,
+			[CallerMemberName] string memeberName = null)
 		{
+			Log.Debug($"{memeberName} call this func, subscribe {topic}");
+
 			return GetInstance().SubscribeTopic(topic, handler);
 		}
 
-		public static bool CancelSubscribe(string topic)
+		public static bool CancelSubscribe(string topic,
+			[CallerFilePath] string filePath = null,
+			[CallerLineNumber] int lineNumber = 0,
+			[CallerMemberName] string memeberName = null)
 		{
+			Log.Debug($"{memeberName} call this func, unsubscribe {topic}");
 			return GetInstance().SubScribeCancel(topic);
 		}
 
-		//TODO 需要加topic流程
+		#endregion
+
+		#region 私有接口
+
 		private bool SubscribeTopic(string topic, HandlerSubscribeMsg handler)
 		{
 			subClient.AddSubscribeTopic(topic, handler);
@@ -58,5 +81,6 @@ namespace MsgQueue
 			return true;
 		}
 
+		#endregion
 	}
 }

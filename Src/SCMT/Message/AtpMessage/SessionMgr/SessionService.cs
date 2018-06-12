@@ -22,14 +22,10 @@ namespace AtpMessage.SessionMgr
 		FTP,
 	}
 
-	public class SessionService : IDisposable
+	public class SessionService : Singleton<SessionService>, IDisposable
 	{
-		public static SessionService GetInstance()
-		{
-			return Singleton<SessionService>.GetInstance();
-		}
 
-		public SessionService()
+		private SessionService()
 		{
 			_Sessions = new Dictionary<string, IASession>();
 

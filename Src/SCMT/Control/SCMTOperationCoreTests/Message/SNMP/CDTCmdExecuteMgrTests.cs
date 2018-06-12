@@ -1,11 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SCMTOperationCore.Message.SNMP;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SCMTOperationCore.Message.SNMP.Tests
 {
@@ -71,6 +67,30 @@ namespace SCMTOperationCore.Message.SNMP.Tests
         }
 
 
+        [TestMethod()]
+        public void CmdGetNextSyncTest()
+        {
+            string cmdName = "aaa";
+            long requestId = 0;
+            string strIpAddr = "172.27.245.92";
+            CDTLmtbPdu lmtbPdu = new CDTLmtbPdu();
+
+
+            string commniuty = "public";
+            DTLinkPathMgr dTLinkPathMgr = DTLinkPathMgr.GetInstance();
+            dTLinkPathMgr.StartSnmp(commniuty, strIpAddr);
+
+            List<string> indexList;
+            Dictionary<string, string> results;
+
+            CDTCmdExecuteMgr.GetInstance().CmdGetNextSync(cmdName, out requestId, out indexList, out results, strIpAddr);
+
+  
+            Debug.WriteLine("========= CmdGetNextSyncTest() End ==========");
+
+
+        }
+
 
         [TestMethod()]
         public void CmdSetSyncTest()
@@ -95,16 +115,9 @@ namespace SCMTOperationCore.Message.SNMP.Tests
             name2Value.Add("fileTransFTPDirectory", "e:\\afyf\\src\\Lmt\\out\\release\\bin\\data\\AlarmFile\\TempFiles\\");
             name2Value.Add("fileTransFileName", null);
 
-
-
-            int rs = CDTCmdExecuteMgr.GetInstance().CmdSetSync(cmdName, out requestId, name2Value, strIndex, strIpAddr, ref lmtbPdu);
-
-
-          
+            int rs = CDTCmdExecuteMgr.CmdSetSync(cmdName, out requestId, name2Value, strIndex, strIpAddr, ref lmtbPdu);
 
             Debug.WriteLine("========= CmdGetSyncTest() End ==========");
-
-
         }
 
 
@@ -133,7 +146,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 
 
 
-            int rs = CDTCmdExecuteMgr.GetInstance().CmdSetAsync(cmdName, out requestId, name2Value, strIndex, strIpAddr);
+            int rs = CDTCmdExecuteMgr.CmdSetAsync(cmdName, out requestId, name2Value, strIndex, strIpAddr);
 
 
 

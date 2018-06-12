@@ -1,6 +1,0 @@
-﻿namespace MsgQueue
-{
-	class ResponseServer
-	{
-	}
-}

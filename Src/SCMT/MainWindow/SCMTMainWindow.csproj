@@ -100,17 +100,11 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncIO">
-      <HintPath>..\packages\Lib\AsyncIO.dll</HintPath>
-    </Reference>
     <Reference Include="Common.Logging">
       <HintPath>..\packages\Lib\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
-    </Reference>
-    <Reference Include="NetMQ">
-      <HintPath>..\packages\Lib\NetMQ.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
@@ -461,6 +455,9 @@
   </Target>
   <Import Project="..\packages\CefSharp.Common.63.0.3\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.63.0.3\build\CefSharp.Common.targets')" />
   <Import Project="..\packages\CefSharp.Wpf.63.0.3\build\CefSharp.Wpf.targets" Condition="Exists('..\packages\CefSharp.Wpf.63.0.3\build\CefSharp.Wpf.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ZeroMQ\* "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

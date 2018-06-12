@@ -365,8 +365,9 @@ namespace SCMTMainWindow
             // 目前可以获取到节点对应的中文名以及对应的表名;
             Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
+            string errorInfo = "";
             //根据表名获取该表内所有MIB节点;
-            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString());
+            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
             
             List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;

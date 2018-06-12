@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NetMQ;
-using NetMQ.Sockets;
+using ZeroMQ;
+using LogManager;
 
 namespace MsgQueue
 {
@@ -22,17 +22,31 @@ namespace MsgQueue
 	}
 
 	/// <summary>
-	/// 消息订阅者。不提供全局的Helper，每个模块定制自己的client
-	/// 因为涉及到消息处理函数。
+	/// 使用ZeroMQ实现的订阅者客户端
 	/// </summary>
 	public class SubscribeClient : IDisposable
 	{
+		public ZSocket Client { get; protected set; }
 
-		public SubscribeClient(int port, string addr = "127.0.0.1")
+		public string PublishServer { get; protected set; }
+
+		public SubscribeClient(string pubServer = CommonPort.PubBus)
 		{
 			_dictionaryTopicHandlers = new Dictionary<string, HandlerSubscribeMsg>();
-			_subSocket = new SubscriberSocket($">tcp://{addr}:{port}");
-			_subSocket.Options.ReceiveHighWatermark = 10000;
+			PublishServer = pubServer;
+
+			ConnectToPubServer();
+		}
+
+		~SubscribeClient()
+		{
+			Dispose(false);
+		}
+
+		public void ConnectToPubServer()
+		{
+			Client = new ZSocket(PubSubServer.GetInstance().context, ZSocketType.SUB);
+			Client.Connect(PublishServer);
 		}
 
 		/// <summary>
@@ -45,7 +59,7 @@ namespace MsgQueue
 		{
 			if (_dictionaryTopicHandlers.ContainsKey(topic)) return false;
 
-			_subSocket.Subscribe(topic);
+			Client.Subscribe(topic);
 			_dictionaryTopicHandlers[topic] = handler;
 
 			return true;
@@ -61,12 +75,12 @@ namespace MsgQueue
 			if (!_dictionaryTopicHandlers.ContainsKey(topic)) return false;
 
 			_dictionaryTopicHandlers.Remove(topic);
-			_subSocket.Unsubscribe(topic);
+			Client.Unsubscribe(topic);
 			return true;
 		}
 
 		/// <summary>
-		/// 启动任务开始监听订。 TODO 需要优化
+		/// 启动任务开始监听订
 		/// </summary>
 		public void Run()
 		{
@@ -88,13 +102,26 @@ namespace MsgQueue
 		/// </summary>
 		private void RecvMessage()
 		{
+			ZMessage msg;
+			ZError error;
 			while (!_stop)
 			{
-				var topic2 = _subSocket.ReceiveFrameBytes();
-				var topic = SendReceiveConstants.DefaultEncoding.GetString(topic2);
-				var message2 = _subSocket.ReceiveFrameBytes();
+				if (null == (msg = Client.ReceiveMessage(out error)))
+				{
+					if (error == ZError.ETERM)
+						break;  // Interrupted
+					throw new ZException(error);
+				}
 
-				GetTopicHandler(topic)?.Invoke(new SubscribeMsg(message2, topic));
+				using (msg)
+				{
+					var topic = msg[0].ReadString();
+					var msgBody = msg[1].Read();
+
+					Log.Debug($"recv msg topic: {topic}, body: {BitConverter.ToString(msgBody)}");
+
+					GetTopicHandler(topic)?.Invoke(new SubscribeMsg(msgBody, topic));
+				}
 			}
 		}
 
@@ -105,14 +132,25 @@ namespace MsgQueue
 
 		public void Dispose()
 		{
-			_subSocket?.Close();
-			_dictionaryTopicHandlers.Clear();
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 
-		private readonly SubscriberSocket _subSocket;
+		protected void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				if (Client != null)
+				{
+					Client.Dispose();
+					Client = null;
+				}
+				_dictionaryTopicHandlers?.Clear();
+			}
+		}
+
 		private readonly Dictionary<string, HandlerSubscribeMsg> _dictionaryTopicHandlers;
 		private bool _running;
 		private bool _stop;
 	}
-
 }

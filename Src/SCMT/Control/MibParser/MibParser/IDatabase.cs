@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace MIBDataParser
 {
-    /// <summary>
-    /// 委托 : 初始化Database 结果
-    /// </summary>
-    /// <param name="result">初始化成功,true;失败,false</param>
-    public delegate void ResultInitData(bool result);
-
     public interface IReDataByEnglishName
     {
         string oid { get; }
+        string mibSyntax { get; }//MIB_Syntax取值类型
+        string mangerValue { get; }//取值范围
+        string mibDesc { get; }//描述信息 MIBDesc
+        string parentOid { get; }//父oid，table=""
     }
     public interface IReDataByOid
     {
@@ -25,19 +23,21 @@ namespace MIBDataParser
 
     public interface IReDataByTableEnglishNameChild
     {
-        string childNameMib { get; set; } // "alarmCauseNostring ,
-        string childNo { get; set; } // 1,
-        string childOid { get; set; } // "1.1.1.1.1.1",
-        string childNameCh { get; set; } // "告警原因编号",
-        string isMib { get; set; } // 1,
-        string ASNType { get; set; } // "Integer32",
-        string OMType { get; set; } // "s32",
-        string UIType { get; set; } // 0,
-        string managerValueRange { get; set; } // "0-2147483647",
-        string defaultValue { get; set; } // "×",
-        string detailDesc { get; set; } // "告警原因编号， 取值  :0..2147483647。",
-        string leafProperty { get; set; } // 0,
-        string unit { get; set; } // ""
+        string childNameMib { get;  } // "alarmCauseNostring ,
+        string childNo { get;  } // 1,
+        string childOid { get;  } // "1.1.1.1.1.1",
+        string childNameCh { get;  } // "告警原因编号",
+        string isMib { get;  } // 1,
+        string ASNType { get;  } // "Integer32",
+        string OMType { get;  } // "s32",
+        string UIType { get;  } // 0,
+        string managerValueRange { get;  } // "0-2147483647",
+        string defaultValue { get;  } // "×",
+        string detailDesc { get;  } // "告警原因编号， 取值  :0..2147483647。",
+        string leafProperty { get;  } // 0,
+        string unit { get; } // ""
+
+        bool idIndex { get; set; }		// TODO 为什么没有解析出这个属性？
     }
     public interface IReDataByTableEnglishName
     {
@@ -45,40 +45,93 @@ namespace MIBDataParser
         string indexNum { get; }
         List<IReDataByTableEnglishNameChild> childrenList { get; }
     }
-    public interface IReCmdDataByCmdEnglishName {
-        string cmdNameEn { get; set; } // 命令的英文名
-        string tableName { get; set; } // 命令的mib表英文名
-        string cmdType { get; set; } //命令类型
-        string cmdDesc { get; set; } //命令描述
-        List<string> leaflist { get; set; } // 命令节点名
+
+    public interface IReCmdDataByCmdEnglishName
+    {
+        string m_cmdNameEn { get; } // 命令的英文名
+        string m_tableName { get; } // 命令的mib表英文名
+        string m_cmdType { get;} //命令类型
+        string m_cmdDesc { get; } //命令描述
+        List<string> m_leaflist { get; } // 命令节点名
     }
+
+    /// <summary>
+    /// 委托 : 初始化Database 结果
+    /// </summary>
+    /// <param name="result">初始化成功,true;失败,false</param>
+    public delegate void ResultInitData(bool result);
 
     /// <summary>
     /// 操作数据库接口 : 初始化, 查询. 没有修改的接口.
     /// </summary>
     public interface IDatabase
     {
-        // 返回初始化 initDatabase 的结果
-        //   true: 初始化成功； flase: 初始化失败、
-        //   void ResultInitData(bool result);
-        // ResultInitData resultInitData;
+        /// <summary>
+        /// 获取单实例数据库句柄
+        /// </summary>
+        /// <returns>Database</returns>
+        /// Database GetInstance();
 
-        // 线程 : 初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
-        // void initDatabase();// IParseResultNotify parseResultListener);
+        /// <summary>
+        /// 初始化的线程 : 初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
+        /// </summary>
+        /// <param name="connectIp">信息归属的标识</param>
         void initDatabase(string connectIp);
 
-        //查询数据
-        //bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData);
-        //bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList);
-        //bool getDataByOid(string oid, out IReDataByOid reData);
-        //bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName  reData);
-        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData);
-        //
-        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string connectIp);
-        bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList, string connectIp);
-        bool getDataByOid(string oid, out IReDataByOid reData, string connectIp);
-        bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string connectIp);
-        //bool getCmdDataByCmdEnglishName(string cmdEn, out IReCmdDataByCmdEnglishName reCmdData, string connectIp);
+        /// <summary>
+        /// 返回初始化 initDatabase 的结果。void ResultInitData(bool result);
+        /// </summary>
+        /// <param name="result">true: 初始化成功； flase: 初始化失败。</param>
+        /// <returns>void</returns>
+        /// ResultInitData resultInitData;
+
+        ///查询数据
+        /// <summary>
+        /// [查询]通过节点英文名字，查询节点信息。支持多节点查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的英文名(需要输入)，value为对应的节点信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err);
+        /// <summary>
+        /// [查询]通过节点英文名字，查询节点信息。支持单节点查找。
+        /// </summary>
+        /// <param name="nameEn">节点英文名字</param>
+        /// <param name="reData">节点信息</param>
+        /// <param name="curConnectIp">信息归属的标识</param>
+        /// <returns></returns>
+        bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string curConnectIp, out string err);
+
+        /// <summary>
+        /// [查询]通过节点oid，查询节点信息。支持多节点查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的oid(需要输入)，value为对应的节点信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        //bool getDataByOid(string oid, string connectIp, out IReDataByOid reData, out string err);
+        bool getDataByOid(Dictionary<string, IReDataByOid>reData, string connectIp, out string err);
+
+        /// <summary>
+        /// [查询]通过表的英文名，查询表的信息。支持多表查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的表名(需要输入)，value为对应的表的信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        bool getDataByTableEnglishName(Dictionary<string, IReDataByTableEnglishName> reData, string connectIp, out string err);
+
+        /// <summary>
+        /// [查询]通过命令的英文名，查询命令的信息。支持多个命令查找。
+        /// </summary>
+        /// <param name="reData">其中key为查询的命令英文名(需要输入)，value为对应的命令的信息。</param>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <param name="err">查询失败的原因</param>
+        /// <returns></returns>
+        bool getCmdDataByCmdEnglishName(Dictionary<string, IReCmdDataByCmdEnglishName> reData, string connectIp, out string err);
+
+        //bool testDictExample(Dictionary<string, IReDataByEnglishName> reData);
     }
 }
 

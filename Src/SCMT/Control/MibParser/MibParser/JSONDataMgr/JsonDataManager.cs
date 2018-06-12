@@ -77,24 +77,23 @@ namespace MIBDataParser.JSONDataMgr
             isJsonProtect = false;
 
             //Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-            Thread[] threads = new Thread[5];
-            threads[0] = new Thread(new ThreadStart(ConvertAccessDbToJsonMibTree));
-            threads[0].Name = "MibTree";
-            threads[1] = new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree));
-            threads[1].Name = "ObjTree";
-            threads[2] = new Thread(new ThreadStart(ConvertAccessDbToJsonCmdTree));
-            threads[2].Name = "CmdTree";
-            threads[3] = new Thread(new ThreadStart(ConvertAccessDbToJsonTreeReference));
-            threads[3].Name = "ObjTreeReference";
-            threads[4] = new Thread(new ThreadStart(ConvertAccessDbToJsonProtect));
-            threads[4].Name = "ObjTreeReference";
+            Thread[] threads = new Thread[] {
+                 new Thread(new ThreadStart(ConvertAccessDbToJsonMibTree)),// "MibTree"
+                 //new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree)),// "ObjTree"
+                 new Thread(new ThreadStart(ConvertAccessDbToJsonCmdTree)),// "CmdTree"
+                 new Thread(new ThreadStart(ConvertAccessDbToJsonTreeReference)),//与"ObjTree"类似
+                 new Thread(new ThreadStart(ConvertAccessDbToJsonProtect)),//线程保护机制
+            };
 
             foreach (Thread t in threads)
                 t.Start();
 
             while (!isJsonProtect)
             {
-                if (true == isMibJsonOK && true == isObjJsonOK && true == isObjJson2OK && true == isCmdJsonOK) {
+                if (true == isMibJsonOK 
+                    //&& true == isObjJsonOK 
+                    && true == isObjJson2OK 
+                    && true == isCmdJsonOK) {
                     break;
                 }
             }
@@ -108,8 +107,7 @@ namespace MIBDataParser.JSONDataMgr
 
         void JsonFileWrite(string fileName, string content)
         {
-            JsonFile jsonMibFile = new JsonFile();
-            jsonMibFile.WriteFile(fileName, content);
+            new JsonFile().WriteFile(fileName, content);
         }
         /// <summary>
         /// 解析lm.dtz 写 mib.json
@@ -120,8 +118,9 @@ namespace MIBDataParser.JSONDataMgr
             string sqlContent = "select * from MibTree order by OID asc";
             DataSet dataSet = GetRecordByAccessDb(this.mdbFile, sqlContent);
             MibJsonData mibJsonDatat = new MibJsonData(this.mibVersion);
-            mibJsonDatat.MibParseDataSet(dataSet);
+            mibJsonDatat.MibParseDataSet(dataSet);//按格式解析
 
+            // 把解析内容写成json文件
             JsonFileWrite(jsonfilepath + "mib.json", mibJsonDatat.GetStringMibJson());
             this.mibInfo = mibJsonDatat.GetStringMibJson();
 
@@ -184,6 +183,9 @@ namespace MIBDataParser.JSONDataMgr
             return;
         }
 
+        /// <summary>
+        /// 线程保护机制，默认3秒可以全部处理完写文件，超过3秒自己退出
+        /// </summary>
         private void ConvertAccessDbToJsonProtect()
         {
             Thread.Sleep(3000);

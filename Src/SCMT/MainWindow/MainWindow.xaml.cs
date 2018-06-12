@@ -83,7 +83,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitView()
         {
-            NBControler = new NodeBControl();
+            NBControler = NodeBControl.GetInstance();
             this.MibDataGrid.MouseMove += MibDataGrid_MouseMove;
             this.MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
             this.MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
@@ -170,7 +170,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitDataBase()
         {
-            node.db = new Database();
+            node.db = Database.GetInstance();
 
             node.db.resultInitData = new ResultInitData((bool ret) =>
             {

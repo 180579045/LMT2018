@@ -4,109 +4,41 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
 
 namespace SCMTOperationCore.Message.SNMP
 {
+	#region snmp pdu 封装
+
 	public class CDTLmtbPdu : CDTObjectRef
 	{
-		public CDTLmtbPdu()
-		{ }
 
-		//设置和获取源端口
-		public void set_SourcePort(long SourcePort)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_SourcePort = SourcePort;
-			}
-		}
+		#region 公共接口和属性
 
-		public long get_SourcePort()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_SourcePort;
-			}
+		public long m_requestId { get; set; }		//请求消息Id
 
-			return 0;
-		}
+		public ushort m_type { set; get; }			//收到的Snmp响应报文类型
 
-		//设置和获取出错状态
-		public void set_LastErrorStatus(long LastErrorStatus)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_LastErrorStatus = LastErrorStatus;
-			}
-		}
+		//获取回调原因.Response，Trap,超时，中断
+		public int reason { get; set; }
 
-		public long get_LastErrorStatus()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_LastErrorStatus;
-			}
+		public bool isEndOfMibView { get; set; }		//针对GetBulk命令，是否还会有更多的实例
 
-			return 0;
-		}
+		public long m_SourcePort { get; set; }			//源端口
 
-		//设置和获取出错vb索引
-		public void set_LastErrorIndex(long LastErrorIndex)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_LastErrorIndex = LastErrorIndex;
-			}
-		}
+		public long m_LastErrorStatus { get; set; }		//出错状态
 
-		public long get_LastErrorIndex()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_LastErrorIndex;
-			}
+		public long m_LastErrorIndex { get; set; }		//出错vb索引
 
-			return 0;
-		}
+		public int m_NotifyId { get; set; }				//在逻辑层经过自定义转换后的 Trap ID
 
-		//设置和获取Notify Id
-		public void set_NotifyId(int NotifyId)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_NotifyId = NotifyId;
-			}
-		}
+		public bool m_bIsNeedPrint { get; set; }
 
-		public int get_NotifyId()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_NotifyId;
-			}
+		public string m_SourceIp { get; set; }
 
-			return 0;
-		}
-
-		public void setPrintId(bool bNotPrint)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_appendInfo.m_bIsNeedPrint = bNotPrint;
-			}
-		}
-
-		public bool getPrintId()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_appendInfo.m_bIsNeedPrint;
-			}
-
-			return false;
-		}
-
-		public void setSyncId(bool bSync)
+		public void SetSyncFlag(bool bSync)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -142,80 +74,17 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		//设置和获取源IP
-		public void set_SourceIp(string SourceIp)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_SourceIp = SourceIp;
-			}
-		}
-
-		public void SetOmtSourceIp(string inSourceIp)
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				m_lmtbPduInfo.m_OMTSourceIp = inSourceIp;
-			}
-		}
-
-		public string get_SourceIp()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_SourceIp;
-			}
-
-			return null;
-		}
-
-		public string get_omtSourceIp()
-		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_OMTSourceIp;
-			}
-
-			return null;
-		}
-
 		public string get_CmdName()
 		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_appendInfo.m_cmdName;
-			}
-
-			return null;
+			return m_lmtbPduInfo?.m_appendInfo.m_cmdName;
 		}
 
-		public void setCmdName(string cmdName)
+		public void SetCmdName(string cmdName)
 		{
 			if (null != m_lmtbPduInfo)
 			{
 				m_lmtbPduInfo.m_appendInfo.m_cmdName = cmdName;
 			}
-		}
-
-		public bool IsEndOfMibView()
-		{
-			return isEndOfMibView;
-		}
-
-		public void SetEndOfMibViewFlag(bool bEndOfMibView)
-		{
-			isEndOfMibView = bEndOfMibView;
-		}
-
-		//获取回调原因
-		public int get_Reason()
-		{
-			return reason;
-		}
-
-		public void set_Reason(int rval)
-		{
-			reason = rval;
 		}
 
 		public int GetVbByIndex(int index, ref CDTLmtbVb obj)
@@ -230,7 +99,7 @@ namespace SCMTOperationCore.Message.SNMP
 				return -1;
 			}
 
-			obj = m_VbTable[index];
+			obj = m_VbList[index];
 
 			return 0;
 		}
@@ -242,57 +111,68 @@ namespace SCMTOperationCore.Message.SNMP
 				return null;
 			}
 
-			return m_VbTable[index];
+			return m_VbList[index];
 		}
 
 		public int VbCount()
 		{
-			return m_VbTable.Count;       //当前vb个数
+			return m_VbList.Count;       //当前vb个数
 		}
 
-		//在Pdu里田间Vb
+		//在Pdu里添加Vb
 		public void AddVb(CDTLmtbVb pLmtbVb)
 		{
-			m_VbTable.Add(pLmtbVb);
+			m_VbList.Add(pLmtbVb);
+		}
+
+		// 在pdu中添加多个vb
+		public void AddVb(List<CDTLmtbVb> vbList)
+		{
+			m_VbList.AddRange(vbList);
 		}
 
 		public void Clear()
 		{
-			m_VbTable.Clear();
+			m_VbList.Clear();
 			m_mapVBs.Clear();
-		}
-
-		public int Clone(CDTLmtbPdu pLmtbPdu)
-		{
-			if (null == pLmtbPdu)
-			{
-				return -1;
-			}
-
-			if (this == pLmtbPdu)
-			{
-				return 0;
-			}
-
-			//TODO 赋值
-
-			return 0;
 		}
 
 		public void RemoveAllVbs()
 		{
-			m_VbTable.Clear();
+			m_VbList.Clear();
 		}
 
-		//int GetVbIndexByMibName(class CAdoConnection* pAdoConn, const char* strMibName)	//从vb绑定对中查找对应MibName的索引
-		//{
-
-		//}
-
-		//从vb绑定对中查找对应MibName的值
-		public bool GetValueByMibName(string strIPAddr, string strMibName, out string strValue, string lpszIndex = null)    //从vb绑定对中查找对应MibName的值
+		//从vb绑定对中查找对应MibName的值。
+		public bool GetValueByMibName(string strIPAddr, string strMibName, out string strValue, string lpszIndex = null)
 		{
-			throw new NotImplementedException();
+			strValue = "";
+
+			string error = "";
+			// 根据ip和mibname从数据库模块找到所需的信息，主要是oid
+			var param = new Dictionary<string, IReDataByEnglishName> {[strMibName] = null};
+			if (!Database.GetInstance().getDataByEnglishName(param, strIPAddr, out error))
+			{
+				return false;
+			}
+
+			var temp = param[strMibName];
+			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
+			var oid = temp.oid.Trim('.');
+			var fulloid = $"{prefix}.{oid}";
+
+			if (m_mapVBs.Count == 0)
+			{
+				RecordOidValue(fulloid, out lpszIndex);
+			}
+
+			if (!m_mapVBs.ContainsKey(fulloid))
+			{
+				Log.Error($"PDU中没有OID为{fulloid}的VB");
+				return false;
+			}
+
+			strValue = m_mapVBs[fulloid];
+			return true;
 		}
 
 		public bool GetAlarmValueByMibName(string strMibName, out string strValue)
@@ -307,34 +187,15 @@ namespace SCMTOperationCore.Message.SNMP
 
 		public void assignAppendValue(stru_LmtbPduAppendInfo appendInfo)
 		{
-			m_lmtbPduInfo.m_appendInfo.assignValue(out appendInfo);
+			m_lmtbPduInfo.m_appendInfo.AssignValue(out appendInfo);
 		}
 
 		public void getAppendValue(stru_LmtbPduAppendInfo appendInfo)
 		{
-			m_lmtbPduInfo.m_appendInfo.getValue(out appendInfo);
+			m_lmtbPduInfo.m_appendInfo.GetValue(out appendInfo);
 		}
 
-		public void SetRequestId(long id)
-		{
-			m_requestId = id;
-		}
-
-		long GetRequestId()
-		{
-			return m_requestId;
-		}
-
-		public void SetPduType(ushort tp)
-		{
-			m_type = tp;
-		}
-		ushort GetPduType()
-		{
-			return m_type;
-		}
-
-		public void CopyPduInfo(ref CDTLmtbPdu pPdu)
+		void CopyPduInfo(ref CDTLmtbPdu pPdu)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -342,24 +203,40 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
+		// 记录oid对应的数据 原来的代码实现的是个鬼啊
 		public bool RecordOidValue(string strMibOID, out string lpszIndex)
 		{
 			throw new NotImplementedException();
 		}
 
-		/*张新发2008年6月2日添加，用来标识函数回调原因，可以判断是否是超时回调*/
-		private int reason;			//回调原因,Response，Trap,超时，中断
-		private long m_requestId;	//请求消息Id
+		#endregion
 
-		private ushort m_type; //收到的Snmp响应报文类型
-		private bool isEndOfMibView;  //针对GetBulk命令，是否还会有更多的实例
+		#region 私有属性
 
-		private List<CDTLmtbVb> m_VbTable = new List<CDTLmtbVb>();   //用来存储Vb对的容器
+		private List<CDTLmtbVb> m_VbList;   //用来存储Vb对的容器
 
-		//key为PDU中每一个VB的OID，Value为PDU中每一个VB的value
-		private Dictionary<string, string> m_mapVBs = new Dictionary<string, string>();
+		//key为PDU中每一个VB的OID，Value为PDU中每一个oid的value
+		private Dictionary<string, string> m_mapVBs;
 
 		private stru_LmtbPduInfo m_lmtbPduInfo;
+
+		#endregion
+
+		// 构造函数
+		public CDTLmtbPdu()
+		{
+			m_VbList = new List<CDTLmtbVb>();
+			m_mapVBs = new Dictionary<string, string>();
+			m_lmtbPduInfo = new stru_LmtbPduInfo();
+		}
+
+		public CDTLmtbPdu(string cmd, bool bIsSync = true, bool bNeedPrint = false)
+		: this()
+		{
+			SetCmdName(cmd);
+			SetSyncFlag(bIsSync);
+			m_bIsNeedPrint = bNeedPrint;
+		}
 	}
 
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
@@ -380,6 +257,11 @@ namespace SCMTOperationCore.Message.SNMP
 		public string m_OMTSourceIp;        //标示消息是由哪个OMT发出，用于OMT登陆时,不再使用
 
 		public stru_LmtbPduAppendInfo m_appendInfo;
+
+		public stru_LmtbPduInfo()
+		{
+			m_appendInfo = new stru_LmtbPduAppendInfo();
+		}
 	}
 
 	public class stru_LmtbPduAppendInfo
@@ -390,14 +272,14 @@ namespace SCMTOperationCore.Message.SNMP
 			m_bIsSync = false;
 		}
 
-		public void assignValue(out stru_LmtbPduAppendInfo appendInfo)
+		public void AssignValue(out stru_LmtbPduAppendInfo appendInfo)
 		{
 			appendInfo = this;
 		}
 
-		public void getValue(out stru_LmtbPduAppendInfo appendInfo_out)
+		public void GetValue(out stru_LmtbPduAppendInfo appendInfoOut)
 		{
-			appendInfo_out = this;
+			appendInfoOut = this;
 		}
 
 		public bool m_bIsNeedPrint { get; set; }
@@ -407,124 +289,51 @@ namespace SCMTOperationCore.Message.SNMP
 		public string m_cmdName { get; set; }
 	}
 
-	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
-	public class stru_LmtbVbInfo
-	{
-		public SNMP_SYNTAX_TYPE m_SnmpSyntax;
-		public string m_Value;
-		public string m_Oid;
+	#endregion
 
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = CommonMacro.MAX_VALUE_LEN)]
-		public byte[] m_rawData;			/*用于存储Octet String的原始数据*/
-		public int m_nRowDatalen;
-		public int m_nParentOidLength;      /* 父节点的长度 */
 
-	public stru_LmtbVbInfo()
-	{
-		m_rawData = new byte[CommonMacro.MAX_VALUE_LEN];
-	}
-};
+	#region snmp vb定义
 
+	// snmp vb 封装
 	public class CDTLmtbVb : CDTObjectRef
 	{
 		public CDTLmtbVb()
 		{
-			m_lmtbVbInfo = new stru_LmtbVbInfo();
+			m_rawData = new byte[CommonMacro.MAX_VALUE_LEN];
 		}
+
+		#region 公共接口和属性
 
 		//设置和获取Oid
-		public void set_Oid(string Oid)
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				m_lmtbVbInfo.m_Oid = Oid;
-			}
-		}
-
-		public string get_Oid()
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				return m_lmtbVbInfo.m_Oid;
-			}
-
-			return null;
-		}
+		public string Oid { get; set; }
 
 		//设置和获取实例值
-		public void set_Value(string Value)
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				m_lmtbVbInfo.m_Value = Value;
-			}
-		}
-
-		public string get_Value()
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				return m_lmtbVbInfo.m_Value;
-			}
-
-			return null;
-		}
+		public string Value { get; set; }
 
 		//设置和获取Syntax类型
-		public void set_Syntax(SNMP_SYNTAX_TYPE Syntax)
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				m_lmtbVbInfo.m_SnmpSyntax = Syntax;
-			}
-		}
+		public SNMP_SYNTAX_TYPE SnmpSyntax { get; set; }
 
-		public SNMP_SYNTAX_TYPE get_Syntax()
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				return m_lmtbVbInfo.m_SnmpSyntax;
-			}
+		public string AsnType { get; set; }
 
-			return SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INIT;
-		}
+		public int ParentOidLength { get; set; }      /* 父节点的长度 */
 
-		/*设置和获取Octet String类型的原始数据*/
+		// 设置和获取Octet String类型的原始数据
 		public bool SetRawData(byte[] RawDataBytes, int nDataLen)
 		{
-			if (null == m_lmtbVbInfo || RawDataBytes.Length < nDataLen || nDataLen > CommonMacro.MAX_VALUE_LEN)
+			if (RawDataBytes.Length < nDataLen || nDataLen > CommonMacro.MAX_VALUE_LEN)
 			{
 				return false;
 			}
 
-			Buffer.BlockCopy(RawDataBytes, 0, m_lmtbVbInfo.m_rawData, 0, nDataLen);
-			m_lmtbVbInfo.m_nRowDatalen = nDataLen;
+			Buffer.BlockCopy(RawDataBytes, 0, m_rawData, 0, nDataLen);
+			m_nRowDatalen = nDataLen;
 
 			return true;
 		}
-		byte[] GetRawData()
+
+		public byte[] GetRawData()
 		{
-			if (null == m_lmtbVbInfo)
-			{
-				return null;
-			}
-
-			return m_lmtbVbInfo.m_rawData;
-		}
-
-		public void SetAsnType(string asnType)
-		{
-			if (null == asnType)
-			{
-				return;
-			}
-
-			this.asnType = asnType;
-		}
-
-		public string GetAsnType()
-		{
-			return asnType;
+			return m_rawData;
 		}
 
 		public void Copy(out CDTLmtbVb pVb)
@@ -532,48 +341,37 @@ namespace SCMTOperationCore.Message.SNMP
 			pVb = this;
 		}
 
-		private stru_LmtbVbInfo m_lmtbVbInfo;
-		private string asnType;
+		#endregion
 
-		/* added by liuwei6 20130308 增加ParentOID长度 */
-		public void SetParentOidLength(int nParentOidLength)
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				m_lmtbVbInfo.m_nParentOidLength = nParentOidLength;
-			}
-		}
+		#region 私有属性
 
-		public int GetParentOidLength()
-		{
-			if (null != m_lmtbVbInfo)
-			{
-				return m_lmtbVbInfo.m_nParentOidLength;
-			}
+		private readonly byte[] m_rawData;            /*用于存储Octet String的原始数据*/
+		private int m_nRowDatalen;
 
-			return 0;
-		}
+		#endregion
 	}
+
+	#endregion
 
 	public enum SNMP_SYNTAX_TYPE
 	{
-	SNMP_SYNTAX_INIT = 0,
-	SNMP_SYNTAX_INT = 0 | 0 | 0x2,
-	SNMP_SYNTAX_BITS = 0 | 0 | 0x3,
-	SNMP_SYNTAX_OCTETS = 0 | 0 | 0x4,
-	SNMP_SYNTAX_NULL = 0 | 0 | 0x5,
-	SNMP_SYNTAX_OID = 0 | 0 | 0x6,
-	SNMP_SYNTAX_INT32 = 0 | 0 | 0x2,
-	SNMP_SYNTAX_IPADDR = 0x40 | 0 | 0,
-	SNMP_SYNTAX_CNTR32 = 0x40 | 0 | 0x1,
-	SNMP_SYNTAX_GAUGE32 = 0x40 | 0 | 0x2,
-	SNMP_SYNTAX_TIMETICKS = 0x40 | 0 | 0x3,
-	SNMP_SYNTAX_OPAQUE = 0x40 | 0 | 0x4,
-	SNMP_SYNTAX_CNTR64 = 0x40 | 0 | 0x6,
-	SNMP_SYNTAX_UINT32 = SNMP_SYNTAX_GAUGE32,
-	SNMP_SYNTAX_NOSUCHOBJECT = 0x80 | 0 | 0,
-	SNMP_SYNTAX_NOSUCHINSTANCE = 0x80 | 0 | 0x1,
-	SNMP_SYNTAX_ENDOFMIBVIEW = 0x80 | 0 | 0x2
+		SNMP_SYNTAX_INIT = 0,
+		SNMP_SYNTAX_INT = 0 | 0 | 0x2,
+		SNMP_SYNTAX_BITS = 0 | 0 | 0x3,
+		SNMP_SYNTAX_OCTETS = 0 | 0 | 0x4,
+		SNMP_SYNTAX_NULL = 0 | 0 | 0x5,
+		SNMP_SYNTAX_OID = 0 | 0 | 0x6,
+		SNMP_SYNTAX_INT32 = 0 | 0 | 0x2,
+		SNMP_SYNTAX_IPADDR = 0x40 | 0 | 0,
+		SNMP_SYNTAX_CNTR32 = 0x40 | 0 | 0x1,
+		SNMP_SYNTAX_GAUGE32 = 0x40 | 0 | 0x2,
+		SNMP_SYNTAX_TIMETICKS = 0x40 | 0 | 0x3,
+		SNMP_SYNTAX_OPAQUE = 0x40 | 0 | 0x4,
+		SNMP_SYNTAX_CNTR64 = 0x40 | 0 | 0x6,
+		SNMP_SYNTAX_UINT32 = SNMP_SYNTAX_GAUGE32,
+		SNMP_SYNTAX_NOSUCHOBJECT = 0x80 | 0 | 0,
+		SNMP_SYNTAX_NOSUCHINSTANCE = 0x80 | 0 | 0x1,
+		SNMP_SYNTAX_ENDOFMIBVIEW = 0x80 | 0 | 0x2
 	};
 
 	public class CommonMacro

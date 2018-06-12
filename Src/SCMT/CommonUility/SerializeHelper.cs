@@ -36,7 +36,7 @@ namespace CommonUility
 
 		//// <summary>
 		/// 结构体转byte数组
-		/// TODO 这个方法有BUG。对于嵌套的结构体变量数组处理错误，结果byte[]长度不正确
+		/// 这个方法有BUG。对于嵌套的结构体变量数组处理错误，结果byte[]长度不正确
 		/// </summary>
 		/// <param name="obj">要转换的结构体</param>
 		/// <returns>转换后的byte数组</returns>
@@ -107,10 +107,10 @@ namespace CommonUility
 		/// <returns>copy的长度</returns>
 		public static int SerializeBytes(ref byte[] dst, int offset, byte[] src, int src_offset, int len)
 		{
-            if(src == null)
-            {
-                return -1;
-            }
+			if(src == null)
+			{
+				return -1;
+			}
 			if ((src.Length - src_offset < len) || (dst.Length - offset < len))
 			{
 				return -1;

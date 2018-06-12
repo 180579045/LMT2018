@@ -10,7 +10,8 @@ namespace MsgQueue
 	{
 		public static void Init()
 		{
-			PubSubServer.GetInstance().InitServer(CommonPort.PubServerPort, CommonPort.SubServerPort);
+			//PubSubServer.GetInstance().InitServer(CommonPort.PubServerPort, CommonPort.SubServerPort);
+			PubSubServer.GetInstance().InitServer();
 			SubscribeHelper.GetInstance();
 			PublishHelper.GetInstance();
 		}
@@ -19,7 +20,8 @@ namespace MsgQueue
 		{
 			PublishHelper.GetInstance().Dispose();
 			SubscribeHelper.GetInstance().Dispose();
-			PubSubServer.GetInstance().StopServer();
+			//PubSubServer.GetInstance().StopServer();
+			PubSubServer.GetInstance().Stop();
 		}
 	}
 }
