@@ -4,7 +4,7 @@
     {
       "ObjID": 1,
       "ObjParentID": 0,
-      "ChildRenCount": "",
+      "ChildRenCount": 20,
       "ObjName": "双模基站",
       "ObjNameEn": "",
       "MibTableName": "equipmentSysInfo",
@@ -13,7 +13,7 @@
     {
       "ObjID": 2,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "启动模式",
       "ObjNameEn": "",
       "MibTableName": "sysStartMode",
@@ -22,7 +22,7 @@
     {
       "ObjID": 3,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基站信息",
       "ObjNameEn": "",
       "MibTableName": "nodeBInfo",
@@ -31,7 +31,7 @@
     {
       "ObjID": 4,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "设备信息公共部分",
       "ObjNameEn": "",
       "MibTableName": "equipmentCommon",
@@ -40,7 +40,7 @@
     {
       "ObjID": 5,
       "ObjParentID": 4,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "设备软件许可控制",
       "ObjNameEn": "",
       "MibTableName": "equipLicenseInfo",
@@ -49,7 +49,7 @@
     {
       "ObjID": 6,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基站校准节点",
       "ObjNameEn": "",
       "MibTableName": "calibrationNode",
@@ -58,7 +58,7 @@
     {
       "ObjID": 7,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "链路公共信息",
       "ObjNameEn": "",
       "MibTableName": "linkCommon",
@@ -67,7 +67,7 @@
     {
       "ObjID": 8,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "局向",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -76,7 +76,7 @@
     {
       "ObjID": 9,
       "ObjParentID": 8,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MME",
       "ObjNameEn": "",
       "MibTableName": "mmeCfgTable",
@@ -85,7 +85,7 @@
     {
       "ObjID": 10,
       "ObjParentID": 8,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "邻基站",
       "ObjNameEn": "",
       "MibTableName": "adjeNBTable",
@@ -94,7 +94,7 @@
     {
       "ObjID": 11,
       "ObjParentID": 8,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "管理站信息",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -103,7 +103,7 @@
     {
       "ObjID": 12,
       "ObjParentID": 11,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "操作维护链路",
       "ObjNameEn": "",
       "MibTableName": "omLinkTable",
@@ -112,7 +112,7 @@
     {
       "ObjID": 13,
       "ObjParentID": 11,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "管理站",
       "ObjNameEn": "",
       "MibTableName": "managerTable",
@@ -121,7 +121,7 @@
     {
       "ObjID": 14,
       "ObjParentID": 13,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "文件服务器",
       "ObjNameEn": "",
       "MibTableName": "ftpServerTable",
@@ -130,7 +130,7 @@
     {
       "ObjID": 15,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 13,
       "ObjName": "传输管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -139,7 +139,7 @@
     {
       "ObjID": 16,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "SCTP链路",
       "ObjNameEn": "",
       "MibTableName": "sctpTable",
@@ -148,7 +148,7 @@
     {
       "ObjID": 17,
       "ObjParentID": 16,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "SCTP流",
       "ObjNameEn": "",
       "MibTableName": "sctpStreamTable",
@@ -157,7 +157,7 @@
     {
       "ObjID": 18,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "SCTP定时器",
       "ObjNameEn": "",
       "MibTableName": "sctpTimer",
@@ -166,7 +166,7 @@
     {
       "ObjID": 19,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "IP地址",
       "ObjNameEn": "",
       "MibTableName": "ipAddrTable",
@@ -175,7 +175,7 @@
     {
       "ObjID": 20,
       "ObjParentID": 19,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "IP Path",
       "ObjNameEn": "",
       "MibTableName": "ipPathTable",
@@ -184,7 +184,7 @@
     {
       "ObjID": 21,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "路由关系",
       "ObjNameEn": "",
       "MibTableName": "routeRelationTable",
@@ -193,7 +193,7 @@
     {
       "ObjID": 22,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "TD-LTE QOS参数",
       "ObjNameEn": "",
       "MibTableName": "trafficCategoryTable",
@@ -202,7 +202,7 @@
     {
       "ObjID": 23,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "VLAN配置",
       "ObjNameEn": "",
       "MibTableName": "vlanIdTable",
@@ -211,7 +211,7 @@
     {
       "ObjID": 24,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "传输割接",
       "ObjNameEn": "",
       "MibTableName": "transCutOver",
@@ -220,7 +220,7 @@
     {
       "ObjID": 25,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "反向维护",
       "ObjNameEn": "",
       "MibTableName": "reverseOperationTable",
@@ -229,7 +229,7 @@
     {
       "ObjID": 26,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "镜像功能",
       "ObjNameEn": "",
       "MibTableName": "mirrorFunction",
@@ -238,7 +238,7 @@
     {
       "ObjID": 27,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "链路聚合",
       "ObjNameEn": "",
       "MibTableName": "linkAggregation",
@@ -247,7 +247,7 @@
     {
       "ObjID": 28,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "链路检测",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -256,7 +256,7 @@
     {
       "ObjID": 29,
       "ObjParentID": 28,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "以太OAM",
       "ObjNameEn": "",
       "MibTableName": "ethernetOAMTable",
@@ -265,7 +265,7 @@
     {
       "ObjID": 30,
       "ObjParentID": 28,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "双向链路检测",
       "ObjNameEn": "",
       "MibTableName": "bfdTable",
@@ -274,7 +274,7 @@
     {
       "ObjID": 31,
       "ObjParentID": 28,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "链路质量检测",
       "ObjNameEn": "",
       "MibTableName": "qolTable",
@@ -283,7 +283,7 @@
     {
       "ObjID": 32,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "ARP信息",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -292,7 +292,7 @@
     {
       "ObjID": 33,
       "ObjParentID": 32,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "ARP状态",
       "ObjNameEn": "",
       "MibTableName": "arpStatusTable",
@@ -301,7 +301,7 @@
     {
       "ObjID": 34,
       "ObjParentID": 32,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "ARP配置",
       "ObjNameEn": "",
       "MibTableName": "arpConfigInfo",
@@ -310,7 +310,7 @@
     {
       "ObjID": 35,
       "ObjParentID": 15,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "远程LMT路由",
       "ObjNameEn": "",
       "MibTableName": "remoteLmtRouteTable",
@@ -319,7 +319,7 @@
     {
       "ObjID": 36,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 13,
       "ObjName": "物理设备",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -328,7 +328,7 @@
     {
       "ObjID": 37,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "散热公共参数",
       "ObjNameEn": "",
       "MibTableName": "coolingCommon",
@@ -337,7 +337,7 @@
     {
       "ObjID": 38,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 4,
       "ObjName": "时钟信息",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -346,7 +346,7 @@
     {
       "ObjID": 39,
       "ObjParentID": 38,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "时钟源",
       "ObjNameEn": "",
       "MibTableName": "clockSourceTable",
@@ -355,7 +355,7 @@
     {
       "ObjID": 40,
       "ObjParentID": 38,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "当前时钟",
       "ObjNameEn": "",
       "MibTableName": "clockCommon",
@@ -364,7 +364,7 @@
     {
       "ObjID": 41,
       "ObjParentID": 38,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "GPS",
       "ObjNameEn": "",
       "MibTableName": "gpsTable",
@@ -373,7 +373,7 @@
     {
       "ObjID": 42,
       "ObjParentID": 38,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "拉远时钟",
       "ObjNameEn": "",
       "MibTableName": "remoteClockModuleTable",
@@ -382,7 +382,7 @@
     {
       "ObjID": 43,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "机架",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -391,7 +391,7 @@
     {
       "ObjID": 44,
       "ObjParentID": 43,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "机框",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -400,7 +400,7 @@
     {
       "ObjID": 45,
       "ObjParentID": 44,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "风扇",
       "ObjNameEn": "",
       "MibTableName": "coolingFanTable",
@@ -409,7 +409,7 @@
     {
       "ObjID": 46,
       "ObjParentID": 44,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "板卡规划",
       "ObjNameEn": "",
       "MibTableName": "netBoardTable",
@@ -418,7 +418,7 @@
     {
       "ObjID": 47,
       "ObjParentID": 44,
-      "ChildRenCount": "",
+      "ChildRenCount": 15,
       "ObjName": "板卡",
       "ObjNameEn": "",
       "MibTableName": "boardTable",
@@ -427,7 +427,7 @@
     {
       "ObjID": 48,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "处理器",
       "ObjNameEn": "",
       "MibTableName": "processorTable",
@@ -436,7 +436,7 @@
     {
       "ObjID": 49,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基带带宽",
       "ObjNameEn": "",
       "MibTableName": "baseBandwidthTable",
@@ -445,7 +445,7 @@
     {
       "ObjID": 50,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "温度监控点",
       "ObjNameEn": "",
       "MibTableName": "boardTemperatureTable",
@@ -454,7 +454,7 @@
     {
       "ObjID": 51,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "电压监控点",
       "ObjNameEn": "",
       "MibTableName": "boardVoltageTable",
@@ -463,7 +463,7 @@
     {
       "ObjID": 52,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "板卡灯",
       "ObjNameEn": "",
       "MibTableName": "boardLedTable",
@@ -472,7 +472,7 @@
     {
       "ObjID": 53,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "板卡存储",
       "ObjNameEn": "",
       "MibTableName": "boardStorageDevTable",
@@ -481,7 +481,7 @@
     {
       "ObjID": 54,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "以太网端口",
       "ObjNameEn": "",
       "MibTableName": "ethernetPortTable",
@@ -490,7 +490,7 @@
     {
       "ObjID": 55,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "光模块",
       "ObjNameEn": "",
       "MibTableName": "ofpPortTable",
@@ -499,7 +499,7 @@
     {
       "ObjID": 56,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "光口公共信息",
       "ObjNameEn": "",
       "MibTableName": "ofpPortCommInfo",
@@ -508,7 +508,7 @@
     {
       "ObjID": 57,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "高层协议单元信息",
       "ObjNameEn": "",
       "MibTableName": "hlSctSourceTable",
@@ -517,7 +517,7 @@
     {
       "ObjID": 58,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC资源",
       "ObjNameEn": "",
       "MibTableName": "macBbuSourceTable",
@@ -526,7 +526,7 @@
     {
       "ObjID": 59,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "PDCP资源",
       "ObjNameEn": "",
       "MibTableName": "pdcpBbuSourceTable",
@@ -535,7 +535,7 @@
     {
       "ObjID": 60,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区板卡日志",
       "ObjNameEn": "",
       "MibTableName": "cellBoardLogTable",
@@ -544,7 +544,7 @@
     {
       "ObjID": 61,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RLC资源",
       "ObjNameEn": "",
       "MibTableName": "rlcBbuSourceTable",
@@ -553,7 +553,7 @@
     {
       "ObjID": 62,
       "ObjParentID": 47,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "GSM小区信息",
       "ObjNameEn": "",
       "MibTableName": "gsmCellTable",
@@ -562,7 +562,7 @@
     {
       "ObjID": 63,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "空调",
       "ObjNameEn": "",
       "MibTableName": "airConditionerTable",
@@ -571,7 +571,7 @@
     {
       "ObjID": 64,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 6,
       "ObjName": "射频单元布配",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -580,7 +580,7 @@
     {
       "ObjID": 65,
       "ObjParentID": 64,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元规划",
       "ObjNameEn": "",
       "MibTableName": "netRRUTable",
@@ -589,7 +589,7 @@
     {
       "ObjID": 66,
       "ObjParentID": 64,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线安装规划",
       "ObjNameEn": "",
       "MibTableName": "netRRUAntennaSettingTable",
@@ -598,7 +598,7 @@
     {
       "ObjID": 67,
       "ObjParentID": 64,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线阵规划",
       "ObjNameEn": "",
       "MibTableName": "netAntennaArrayTable",
@@ -607,7 +607,7 @@
     {
       "ObjID": 68,
       "ObjParentID": 64,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "IR口规划",
       "ObjNameEn": "",
       "MibTableName": "netIROptPlanTable",
@@ -616,7 +616,7 @@
     {
       "ObjID": 69,
       "ObjParentID": 64,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "拉远HUB规划",
       "ObjNameEn": "",
       "MibTableName": "netRHUBTable",
@@ -625,7 +625,7 @@
     {
       "ObjID": 70,
       "ObjParentID": 64,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "以太口规划",
       "ObjNameEn": "",
       "MibTableName": "netEthPlanTable",
@@ -634,7 +634,7 @@
     {
       "ObjID": 71,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 9,
       "ObjName": "射频单元拓扑",
       "ObjNameEn": "",
       "MibTableName": "topologyRRUTable",
@@ -643,7 +643,7 @@
     {
       "ObjID": 72,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频通道信息",
       "ObjNameEn": "",
       "MibTableName": "rruPathTable",
@@ -652,7 +652,7 @@
     {
       "ObjID": 73,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频频段能力",
       "ObjNameEn": "",
       "MibTableName": "topoRRUBandCapabilityTable",
@@ -661,7 +661,7 @@
     {
       "ObjID": 74,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元初始校准结果",
       "ObjNameEn": "",
       "MibTableName": "initCalibrationTable",
@@ -670,7 +670,7 @@
     {
       "ObjID": 75,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元光口信息",
       "ObjNameEn": "",
       "MibTableName": "rruOpticalTransceiverTable",
@@ -679,7 +679,7 @@
     {
       "ObjID": 76,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频通道频段能力信息",
       "ObjNameEn": "",
       "MibTableName": "topoRRUPortBandCapabTable",
@@ -688,7 +688,7 @@
     {
       "ObjID": 77,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频校准通道信息",
       "ObjNameEn": "",
       "MibTableName": "rruCalcPathTable",
@@ -697,7 +697,7 @@
     {
       "ObjID": 78,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元功放电流",
       "ObjNameEn": "",
       "MibTableName": "topoRRUPACurrentTable",
@@ -706,7 +706,7 @@
     {
       "ObjID": 79,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元上行功率",
       "ObjNameEn": "",
       "MibTableName": "topoRRUULPowerTable",
@@ -715,7 +715,7 @@
     {
       "ObjID": 80,
       "ObjParentID": 71,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元周期校准信息",
       "ObjNameEn": "",
       "MibTableName": "periodCalibrationTable",
@@ -724,7 +724,7 @@
     {
       "ObjID": 81,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "拉远HUB拓扑",
       "ObjNameEn": "",
       "MibTableName": "topologyRHUBTable",
@@ -733,7 +733,7 @@
     {
       "ObjID": 82,
       "ObjParentID": 81,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "拉远HUB光模块信息",
       "ObjNameEn": "",
       "MibTableName": "rhubOpticalTransceiverTable",
@@ -742,7 +742,7 @@
     {
       "ObjID": 83,
       "ObjParentID": 81,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "拉远HUB通道信息",
       "ObjNameEn": "",
       "MibTableName": "rhubEtherTable",
@@ -751,7 +751,7 @@
     {
       "ObjID": 84,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "天线安装拓扑",
       "ObjNameEn": "",
       "MibTableName": "topoRRUAntSettingTable",
@@ -760,7 +760,7 @@
     {
       "ObjID": 85,
       "ObjParentID": 84,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频频段",
       "ObjNameEn": "",
       "MibTableName": "radioBandTable",
@@ -769,7 +769,7 @@
     {
       "ObjID": 86,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 5,
       "ObjName": "天线阵拓扑",
       "ObjNameEn": "",
       "MibTableName": "topologyAntennaArrayTable",
@@ -778,7 +778,7 @@
     {
       "ObjID": 87,
       "ObjParentID": 86,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "电调天线",
       "ObjNameEn": "",
       "MibTableName": "retAntennaRCUTable",
@@ -787,7 +787,7 @@
     {
       "ObjID": 88,
       "ObjParentID": 86,
-      "ChildRenCount": "",
+      "ChildRenCount": 9,
       "ObjName": "RAE天线信息化管理控制",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -796,7 +796,7 @@
     {
       "ObjID": 89,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线信息",
       "ObjNameEn": "",
       "MibTableName": "raeTable",
@@ -805,7 +805,7 @@
     {
       "ObjID": 90,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线文件",
       "ObjNameEn": "",
       "MibTableName": "raeFileTable",
@@ -814,7 +814,7 @@
     {
       "ObjID": 91,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE权重信息",
       "ObjNameEn": "",
       "MibTableName": "raeWeightingFactorsTable",
@@ -823,7 +823,7 @@
     {
       "ObjID": 92,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线权重通用信息",
       "ObjNameEn": "",
       "MibTableName": "raeGeneralTable",
@@ -832,7 +832,7 @@
     {
       "ObjID": 93,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线权重波束宽度",
       "ObjNameEn": "",
       "MibTableName": "raeBeamBandTable",
@@ -841,7 +841,7 @@
     {
       "ObjID": 94,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线权重端口信息",
       "ObjNameEn": "",
       "MibTableName": "raePortInfoTable",
@@ -850,7 +850,7 @@
     {
       "ObjID": 95,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线权重波束指向",
       "ObjNameEn": "",
       "MibTableName": "raeBmIndicatTable",
@@ -859,7 +859,7 @@
     {
       "ObjID": 96,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线权重权值组数",
       "ObjNameEn": "",
       "MibTableName": "raeGroupsTable",
@@ -868,7 +868,7 @@
     {
       "ObjID": 97,
       "ObjParentID": 88,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RAE天线权重权值参数",
       "ObjNameEn": "",
       "MibTableName": "raeParamTable",
@@ -877,7 +877,7 @@
     {
       "ObjID": 98,
       "ObjParentID": 86,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线权重信息",
       "ObjNameEn": "",
       "MibTableName": "antennaWeightTable",
@@ -886,7 +886,7 @@
     {
       "ObjID": 99,
       "ObjParentID": 86,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线垂直权重信息",
       "ObjNameEn": "",
       "MibTableName": "antennaWeightVerTable",
@@ -895,7 +895,7 @@
     {
       "ObjID": 100,
       "ObjParentID": 86,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线耦合系数信息",
       "ObjNameEn": "",
       "MibTableName": "antennaCouplingCoeffctTable",
@@ -904,7 +904,7 @@
     {
       "ObjID": 101,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "器件库",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -913,7 +913,7 @@
     {
       "ObjID": 102,
       "ObjParentID": 101,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "射频单元类型",
       "ObjNameEn": "",
       "MibTableName": "rruTypeTable",
@@ -922,7 +922,7 @@
     {
       "ObjID": 103,
       "ObjParentID": 102,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频通道类型",
       "ObjNameEn": "",
       "MibTableName": "rruTypePortTable",
@@ -931,7 +931,7 @@
     {
       "ObjID": 104,
       "ObjParentID": 101,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线阵类型",
       "ObjNameEn": "",
       "MibTableName": "antennaArrayTypeTable",
@@ -940,7 +940,7 @@
     {
       "ObjID": 105,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "环境监控",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -949,7 +949,7 @@
     {
       "ObjID": 106,
       "ObjParentID": 105,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "干接点",
       "ObjNameEn": "",
       "MibTableName": "dryContactTable",
@@ -958,7 +958,7 @@
     {
       "ObjID": 107,
       "ObjParentID": 105,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元规划干接点告警",
       "ObjNameEn": "",
       "MibTableName": "netRRURootAlarmTable",
@@ -967,7 +967,7 @@
     {
       "ObjID": 108,
       "ObjParentID": 105,
-      "ChildRenCount": "",
+      "ChildRenCount": 6,
       "ObjName": "环境监测设备",
       "ObjNameEn": "",
       "MibTableName": "emEquipmentTable",
@@ -976,7 +976,7 @@
     {
       "ObjID": 109,
       "ObjParentID": 108,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "温度监测",
       "ObjNameEn": "",
       "MibTableName": "emTemperatureTable",
@@ -985,7 +985,7 @@
     {
       "ObjID": 110,
       "ObjParentID": 108,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "湿度监测",
       "ObjNameEn": "",
       "MibTableName": "emHumidityTable",
@@ -994,7 +994,7 @@
     {
       "ObjID": 111,
       "ObjParentID": 108,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "烟雾监测",
       "ObjNameEn": "",
       "MibTableName": "emSmokeTable",
@@ -1003,7 +1003,7 @@
     {
       "ObjID": 112,
       "ObjParentID": 108,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "水浸监测",
       "ObjNameEn": "",
       "MibTableName": "emWaterTable",
@@ -1012,7 +1012,7 @@
     {
       "ObjID": 113,
       "ObjParentID": 108,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "门禁监测",
       "ObjNameEn": "",
       "MibTableName": "emTheftTable",
@@ -1021,7 +1021,7 @@
     {
       "ObjID": 114,
       "ObjParentID": 108,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "雷击监测",
       "ObjNameEn": "",
       "MibTableName": "emThunderboltTable",
@@ -1030,7 +1030,7 @@
     {
       "ObjID": 115,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "IOC",
       "ObjNameEn": "",
       "MibTableName": "iocTable",
@@ -1039,7 +1039,7 @@
     {
       "ObjID": 116,
       "ObjParentID": 36,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "热交换器",
       "ObjNameEn": "",
       "MibTableName": "heatExchangerTable",
@@ -1048,7 +1048,7 @@
     {
       "ObjID": 117,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 12,
       "ObjName": "软件版本",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1057,7 +1057,7 @@
     {
       "ObjID": 118,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基站软件包运行配置",
       "ObjNameEn": "",
       "MibTableName": "softwarePackPlanTable",
@@ -1066,7 +1066,7 @@
     {
       "ObjID": 119,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "外设软件包运行配置",
       "ObjNameEn": "",
       "MibTableName": "peripheralPackPlanTable",
@@ -1075,7 +1075,7 @@
     {
       "ObjID": 120,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "当前运行基站软件包",
       "ObjNameEn": "",
       "MibTableName": "softwarePackRunningTable",
@@ -1084,7 +1084,7 @@
     {
       "ObjID": 121,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "当前运行外设软件包",
       "ObjNameEn": "",
       "MibTableName": "peripheralPackRunningTable",
@@ -1093,7 +1093,7 @@
     {
       "ObjID": 122,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "基站软件包",
       "ObjNameEn": "",
       "MibTableName": "softwarePackTable",
@@ -1102,7 +1102,7 @@
     {
       "ObjID": 123,
       "ObjParentID": 122,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基站程序文件",
       "ObjNameEn": "",
       "MibTableName": "softwareFileTable",
@@ -1111,7 +1111,7 @@
     {
       "ObjID": 124,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "外设软件包",
       "ObjNameEn": "",
       "MibTableName": "peripheralPackTable",
@@ -1120,7 +1120,7 @@
     {
       "ObjID": 125,
       "ObjParentID": 124,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "外设程序文件",
       "ObjNameEn": "",
       "MibTableName": "peripheralFileTable",
@@ -1129,7 +1129,7 @@
     {
       "ObjID": 126,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "单板软件",
       "ObjNameEn": "",
       "MibTableName": "boardSoftwareFileTable",
@@ -1138,7 +1138,7 @@
     {
       "ObjID": 127,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基站软件包客户配置",
       "ObjNameEn": "",
       "MibTableName": "softwarePackCustomerPlanTable",
@@ -1147,7 +1147,7 @@
     {
       "ObjID": 128,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "当前运行基站客户软件包",
       "ObjNameEn": "",
       "MibTableName": "softwarePackCustRunningTable",
@@ -1156,7 +1156,7 @@
     {
       "ObjID": 129,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "软件包升级控制",
       "ObjNameEn": "",
       "MibTableName": "softwarePackUpgradeControl",
@@ -1165,7 +1165,7 @@
     {
       "ObjID": 130,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "软件包存储优化控制",
       "ObjNameEn": "",
       "MibTableName": "packStoreOptimizeControl",
@@ -1174,7 +1174,7 @@
     {
       "ObjID": 131,
       "ObjParentID": 117,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "软件包共同激活控制",
       "ObjNameEn": "",
       "MibTableName": "packActiveControl",
@@ -1183,7 +1183,7 @@
     {
       "ObjID": 132,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "配置管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1192,7 +1192,7 @@
     {
       "ObjID": 133,
       "ObjParentID": 132,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "配置信息",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1201,7 +1201,7 @@
     {
       "ObjID": 134,
       "ObjParentID": 133,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "配置运行信息",
       "ObjNameEn": "",
       "MibTableName": "configFileInfo",
@@ -1210,7 +1210,7 @@
     {
       "ObjID": 135,
       "ObjParentID": 133,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "快照文件",
       "ObjNameEn": "",
       "MibTableName": "configFileTable",
@@ -1219,7 +1219,7 @@
     {
       "ObjID": 136,
       "ObjParentID": 133,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "配置文件运行配置",
       "ObjNameEn": "",
       "MibTableName": "configfilePlanTable",
@@ -1228,7 +1228,7 @@
     {
       "ObjID": 137,
       "ObjParentID": 132,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "事务",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1237,7 +1237,7 @@
     {
       "ObjID": 138,
       "ObjParentID": 137,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "事务控制",
       "ObjNameEn": "",
       "MibTableName": "transactionControl",
@@ -1246,7 +1246,7 @@
     {
       "ObjID": 139,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 6,
       "ObjName": "调测节点",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1255,7 +1255,7 @@
     {
       "ObjID": 140,
       "ObjParentID": 139,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "调试日志上传任务",
       "ObjNameEn": "",
       "MibTableName": "debugUploadTable",
@@ -1264,7 +1264,7 @@
     {
       "ObjID": 141,
       "ObjParentID": 139,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "处理器核",
       "ObjNameEn": "",
       "MibTableName": "processorCoreTable",
@@ -1273,7 +1273,7 @@
     {
       "ObjID": 142,
       "ObjParentID": 139,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CDL信息",
       "ObjNameEn": "",
       "MibTableName": "cdl",
@@ -1282,7 +1282,7 @@
     {
       "ObjID": 143,
       "ObjParentID": 139,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "测量上报信息",
       "ObjNameEn": "",
       "MibTableName": "measurementReport",
@@ -1291,7 +1291,7 @@
     {
       "ObjID": 144,
       "ObjParentID": 139,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "告警触发调试日志上传",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1300,7 +1300,7 @@
     {
       "ObjID": 145,
       "ObjParentID": 144,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "告警触发调试日志上传注册信息",
       "ObjNameEn": "",
       "MibTableName": "almActUploadRegInfoTable",
@@ -1309,7 +1309,7 @@
     {
       "ObjID": 146,
       "ObjParentID": 144,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "告警触发调试日志上传配置信息",
       "ObjNameEn": "",
       "MibTableName": "almActUploadCfg",
@@ -1318,7 +1318,7 @@
     {
       "ObjID": 147,
       "ObjParentID": 139,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "OM调测信息",
       "ObjNameEn": "",
       "MibTableName": "omTestInfo",
@@ -1327,7 +1327,7 @@
     {
       "ObjID": 148,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "控制开关",
       "ObjNameEn": "",
       "MibTableName": "nodeBCtrlPolicy",
@@ -1336,7 +1336,7 @@
     {
       "ObjID": 149,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 5,
       "ObjName": "故障管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1345,7 +1345,7 @@
     {
       "ObjID": 150,
       "ObjParentID": 149,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "告警原因",
       "ObjNameEn": "",
       "MibTableName": "alarmCauseTable",
@@ -1354,7 +1354,7 @@
     {
       "ObjID": 151,
       "ObjParentID": 149,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "告警过滤条件",
       "ObjNameEn": "",
       "MibTableName": "efdTable",
@@ -1363,7 +1363,7 @@
     {
       "ObjID": 152,
       "ObjParentID": 149,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "活跃告警",
       "ObjNameEn": "",
       "MibTableName": "activeAlarmTable",
@@ -1372,7 +1372,7 @@
     {
       "ObjID": 153,
       "ObjParentID": 149,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "告警信息",
       "ObjNameEn": "",
       "MibTableName": "alarmInfo",
@@ -1381,7 +1381,7 @@
     {
       "ObjID": 154,
       "ObjParentID": 149,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "告警箱",
       "ObjNameEn": "",
       "MibTableName": "alarmBoxTable",
@@ -1390,7 +1390,7 @@
     {
       "ObjID": 155,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 6,
       "ObjName": "文件管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1399,7 +1399,7 @@
     {
       "ObjID": 156,
       "ObjParentID": 155,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "文件传输编号",
       "ObjNameEn": "",
       "MibTableName": "fileTransIDInfo",
@@ -1408,7 +1408,7 @@
     {
       "ObjID": 157,
       "ObjParentID": 155,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "文件传输任务",
       "ObjNameEn": "",
       "MibTableName": "fileTransTable",
@@ -1417,7 +1417,7 @@
     {
       "ObjID": 158,
       "ObjParentID": 155,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "文件类型控制",
       "ObjNameEn": "",
       "MibTableName": "fileTypeLimitTable",
@@ -1426,7 +1426,7 @@
     {
       "ObjID": 159,
       "ObjParentID": 155,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "日志文件配置",
       "ObjNameEn": "",
       "MibTableName": "logFileConfigurationTable",
@@ -1435,7 +1435,7 @@
     {
       "ObjID": 160,
       "ObjParentID": 155,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "指定时间文件上传管理",
       "ObjNameEn": "",
       "MibTableName": "fileUploadTable",
@@ -1444,7 +1444,7 @@
     {
       "ObjID": 161,
       "ObjParentID": 155,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "日志自动上传信息",
       "ObjNameEn": "",
       "MibTableName": "fileAutoUploadInfo",
@@ -1453,7 +1453,7 @@
     {
       "ObjID": 162,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "时间管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1462,7 +1462,7 @@
     {
       "ObjID": 163,
       "ObjParentID": 162,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "SNTP配置",
       "ObjNameEn": "",
       "MibTableName": "sntpConfig",
@@ -1471,7 +1471,7 @@
     {
       "ObjID": 164,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 5,
       "ObjName": "资产管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1480,7 +1480,7 @@
     {
       "ObjID": 165,
       "ObjParentID": 164,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "机架资产信息",
       "ObjNameEn": "",
       "MibTableName": "invRackTable",
@@ -1489,7 +1489,7 @@
     {
       "ObjID": 166,
       "ObjParentID": 165,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "机框资产信息",
       "ObjNameEn": "",
       "MibTableName": "invShelfTable",
@@ -1498,7 +1498,7 @@
     {
       "ObjID": 167,
       "ObjParentID": 166,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "板卡资产信息",
       "ObjNameEn": "",
       "MibTableName": "circuitPackTable",
@@ -1507,7 +1507,7 @@
     {
       "ObjID": 168,
       "ObjParentID": 164,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "射频单元资产信息",
       "ObjNameEn": "",
       "MibTableName": "invRruTable",
@@ -1516,7 +1516,7 @@
     {
       "ObjID": 169,
       "ObjParentID": 164,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "天线阵资产信息",
       "ObjNameEn": "",
       "MibTableName": "invAntennaArrayTable",
@@ -1525,7 +1525,7 @@
     {
       "ObjID": 170,
       "ObjParentID": 164,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "室外机柜资产信息",
       "ObjNameEn": "",
       "MibTableName": "outDoorCabinetTable",
@@ -1534,7 +1534,7 @@
     {
       "ObjID": 171,
       "ObjParentID": 164,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "IOC资产信息",
       "ObjNameEn": "",
       "MibTableName": "invIocTable",
@@ -1543,7 +1543,7 @@
     {
       "ObjID": 172,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "输出管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1552,7 +1552,7 @@
     {
       "ObjID": 173,
       "ObjParentID": 172,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "Syslog服务器",
       "ObjNameEn": "",
       "MibTableName": "syslogServerControlTable",
@@ -1561,7 +1561,7 @@
     {
       "ObjID": 174,
       "ObjParentID": 172,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "Syslog控制台",
       "ObjNameEn": "",
       "MibTableName": "syslogConsoleControlTable",
@@ -1570,7 +1570,7 @@
     {
       "ObjID": 175,
       "ObjParentID": 172,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "Syslog统计",
       "ObjNameEn": "",
       "MibTableName": "syslogStatis",
@@ -1579,7 +1579,7 @@
     {
       "ObjID": 176,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "安全管理",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1588,7 +1588,7 @@
     {
       "ObjID": 177,
       "ObjParentID": 176,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "安全管理公共设置",
       "ObjNameEn": "",
       "MibTableName": "securityCommSetting",
@@ -1597,7 +1597,7 @@
     {
       "ObjID": 178,
       "ObjParentID": 176,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "帐号管理",
       "ObjNameEn": "",
       "MibTableName": "userTable",
@@ -1606,7 +1606,7 @@
     {
       "ObjID": 179,
       "ObjParentID": 176,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "用户切换信息",
       "ObjNameEn": "",
       "MibTableName": "userHandoverInfo",
@@ -1615,7 +1615,7 @@
     {
       "ObjID": 180,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "NR业务",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1624,7 +1624,7 @@
     {
       "ObjID": 181,
       "ObjParentID": 180,
-      "ChildRenCount": "",
+      "ChildRenCount": 8,
       "ObjName": "NR小区",
       "ObjNameEn": "",
       "MibTableName": "nrCellCfgTable",
@@ -1633,7 +1633,7 @@
     {
       "ObjID": 182,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区状态信息",
       "ObjNameEn": "",
       "MibTableName": "nrCellTable",
@@ -1642,7 +1642,7 @@
     {
       "ObjID": 183,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区网络规划",
       "ObjNameEn": "",
       "MibTableName": "nrCellNetParaTable",
@@ -1651,7 +1651,7 @@
     {
       "ObjID": 184,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "NR小区选择重选",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1660,7 +1660,7 @@
     {
       "ObjID": 185,
       "ObjParentID": 184,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区选择",
       "ObjNameEn": "",
       "MibTableName": "nrCellSelectTable",
@@ -1669,7 +1669,7 @@
     {
       "ObjID": 186,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 15,
       "ObjName": "NR小区信道及过程配置",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1678,7 +1678,7 @@
     {
       "ObjID": 187,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "PDSCH信道",
       "ObjNameEn": "",
       "MibTableName": "nrPdschTable",
@@ -1687,7 +1687,7 @@
     {
       "ObjID": 188,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "PDCCH信道",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1696,7 +1696,7 @@
     {
       "ObjID": 189,
       "ObjParentID": 188,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区CORESET",
       "ObjNameEn": "",
       "MibTableName": "nrCoreSetTable",
@@ -1705,7 +1705,7 @@
     {
       "ObjID": 190,
       "ObjParentID": 188,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区SEARCH SPACE",
       "ObjNameEn": "",
       "MibTableName": "nrSearchSpaceTable",
@@ -1714,7 +1714,7 @@
     {
       "ObjID": 191,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "PUSCH信道",
       "ObjNameEn": "",
       "MibTableName": "nrPuschTable",
@@ -1723,7 +1723,7 @@
     {
       "ObjID": 192,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 7,
       "ObjName": "PUCCH信道",
       "ObjNameEn": "",
       "MibTableName": "nrPucchTable",
@@ -1732,7 +1732,7 @@
     {
       "ObjID": 193,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "F0参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchF0CfgTable",
@@ -1741,7 +1741,7 @@
     {
       "ObjID": 194,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "F1参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchF1CfgTable",
@@ -1750,7 +1750,7 @@
     {
       "ObjID": 195,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "F2参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchF2CfgTable",
@@ -1759,7 +1759,7 @@
     {
       "ObjID": 196,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "F3参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchF3CfgTable",
@@ -1768,7 +1768,7 @@
     {
       "ObjID": 197,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "F4参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchF4CfgTable",
@@ -1777,7 +1777,7 @@
     {
       "ObjID": 198,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "ACKSET0参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchAckSet0CfgTable",
@@ -1786,7 +1786,7 @@
     {
       "ObjID": 199,
       "ObjParentID": 192,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "ACKSET1参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrPucchAckSet1CfgTable",
@@ -1795,7 +1795,7 @@
     {
       "ObjID": 200,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "PHR参数",
       "ObjNameEn": "",
       "MibTableName": "nrPhrTable",
@@ -1804,7 +1804,7 @@
     {
       "ObjID": 201,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "TA参数",
       "ObjNameEn": "",
       "MibTableName": "nrTATable",
@@ -1813,7 +1813,7 @@
     {
       "ObjID": 202,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "SR上报参数",
       "ObjNameEn": "",
       "MibTableName": "nrSrCfgTable",
@@ -1822,7 +1822,7 @@
     {
       "ObjID": 203,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "HARQ参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrHarqCfgTable",
@@ -1831,7 +1831,7 @@
     {
       "ObjID": 204,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSI上报参数配置",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRptCfgTable",
@@ -1840,7 +1840,7 @@
     {
       "ObjID": 205,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "BWP参数",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1849,7 +1849,7 @@
     {
       "ObjID": 206,
       "ObjParentID": 205,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "初始上行BWP参数",
       "ObjNameEn": "",
       "MibTableName": "nrInitULBwpTable",
@@ -1858,7 +1858,7 @@
     {
       "ObjID": 207,
       "ObjParentID": 205,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "上行BWP参数",
       "ObjNameEn": "",
       "MibTableName": "nrUlBwpTable",
@@ -1867,7 +1867,7 @@
     {
       "ObjID": 208,
       "ObjParentID": 205,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "下行BWP参数",
       "ObjNameEn": "",
       "MibTableName": "nrDlBwpTable",
@@ -1876,7 +1876,7 @@
     {
       "ObjID": 209,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "SRS参数",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1885,7 +1885,7 @@
     {
       "ObjID": 210,
       "ObjParentID": 209,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "SRS资源参数",
       "ObjNameEn": "",
       "MibTableName": "nrSrsResourceTable",
@@ -1894,7 +1894,7 @@
     {
       "ObjID": 211,
       "ObjParentID": 209,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "SRS配置参数",
       "ObjNameEn": "",
       "MibTableName": "nrSrsCfgTable",
@@ -1903,7 +1903,7 @@
     {
       "ObjID": 212,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "RA小区随机接入参数",
       "ObjNameEn": "",
       "MibTableName": "nrRaTable",
@@ -1912,7 +1912,7 @@
     {
       "ObjID": 213,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区SD配置参数",
       "ObjNameEn": "",
       "MibTableName": "nrSdCfgTable",
@@ -1921,7 +1921,7 @@
     {
       "ObjID": 214,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "PL测试开关",
       "ObjNameEn": "",
       "MibTableName": "nrPhyCfgTable",
@@ -1930,7 +1930,7 @@
     {
       "ObjID": 215,
       "ObjParentID": 186,
-      "ChildRenCount": "",
+      "ChildRenCount": 7,
       "ObjName": "CSI-RS参数",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -1939,7 +1939,7 @@
     {
       "ObjID": 216,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSIRS配置参数",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsCqiTable",
@@ -1948,7 +1948,7 @@
     {
       "ObjID": 217,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSIRS配置参数集",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsCqiSetTable",
@@ -1957,7 +1957,7 @@
     {
       "ObjID": 218,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSITRS配置参数",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsTrsTable",
@@ -1966,7 +1966,7 @@
     {
       "ObjID": 219,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSITRS配置参数集",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsTrsSetTable",
@@ -1975,7 +1975,7 @@
     {
       "ObjID": 220,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSIIM配置参数",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsimTable",
@@ -1984,7 +1984,7 @@
     {
       "ObjID": 221,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSIIM配置参数集",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsImCfgTable",
@@ -1993,7 +1993,7 @@
     {
       "ObjID": 222,
       "ObjParentID": 215,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CSIRS资源流动配置",
       "ObjNameEn": "",
       "MibTableName": "nrCsiRsResMoblityTable",
@@ -2002,7 +2002,7 @@
     {
       "ObjID": 223,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "NR小区算法",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2011,7 +2011,7 @@
     {
       "ObjID": 224,
       "ObjParentID": 223,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "上行功率控制",
       "ObjNameEn": "",
       "MibTableName": "nrUlPwrCtrlTable",
@@ -2020,7 +2020,7 @@
     {
       "ObjID": 225,
       "ObjParentID": 223,
-      "ChildRenCount": "",
+      "ChildRenCount": 11,
       "ObjName": "调度",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2029,7 +2029,7 @@
     {
       "ObjID": 226,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC上行算法参数",
       "ObjNameEn": "",
       "MibTableName": "nrMacUpAlgBaseParaTable",
@@ -2038,7 +2038,7 @@
     {
       "ObjID": 227,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC下行算法参数",
       "ObjNameEn": "",
       "MibTableName": "nrMacDownAlgBaseParaTable",
@@ -2047,7 +2047,7 @@
     {
       "ObjID": 228,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC算法开关信息",
       "ObjNameEn": "",
       "MibTableName": "nrMacSwitchInfoTable",
@@ -2056,7 +2056,7 @@
     {
       "ObjID": 229,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区PDCP基本参数",
       "ObjNameEn": "",
       "MibTableName": "nrPdcpParaInfoTable",
@@ -2065,7 +2065,7 @@
     {
       "ObjID": 230,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "ue定时器和常数",
       "ObjNameEn": "",
       "MibTableName": "nrEueTimerConstantsTable",
@@ -2074,7 +2074,7 @@
     {
       "ObjID": 231,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 8,
       "ObjName": "NR测试开关",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2083,7 +2083,7 @@
     {
       "ObjID": 232,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC BO测试开关试开关",
       "ObjNameEn": "",
       "MibTableName": "nrMacSwitchTestInfoTable",
@@ -2092,7 +2092,7 @@
     {
       "ObjID": 233,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC测试开关",
       "ObjNameEn": "",
       "MibTableName": "nrMacTestSwitchInfoTable",
@@ -2101,7 +2101,7 @@
     {
       "ObjID": 234,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC下行MuMiMo算法参数",
       "ObjNameEn": "",
       "MibTableName": "nrMacMuMiMoDwAlgBasParTable",
@@ -2110,7 +2110,7 @@
     {
       "ObjID": 235,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC下行MiMo算法参数",
       "ObjNameEn": "",
       "MibTableName": "nrMacDwAlgMiMoParaTable",
@@ -2119,7 +2119,7 @@
     {
       "ObjID": 236,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区MAC上行MuMiMo算法参数",
       "ObjNameEn": "",
       "MibTableName": "nrMacMuMiMoUpAlgBasParTable",
@@ -2128,7 +2128,7 @@
     {
       "ObjID": 237,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区PDCP BO测试开关",
       "ObjNameEn": "",
       "MibTableName": "nrPdcpSwitchTestInfoTable",
@@ -2137,7 +2137,7 @@
     {
       "ObjID": 238,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区RLC BO测试开关",
       "ObjNameEn": "",
       "MibTableName": "nrRlcSwitchTestInfoTable",
@@ -2146,7 +2146,7 @@
     {
       "ObjID": 239,
       "ObjParentID": 231,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR小区CCH",
       "ObjNameEn": "",
       "MibTableName": "nrCchTestTable",
@@ -2155,7 +2155,7 @@
     {
       "ObjID": 240,
       "ObjParentID": 181,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "NR邻小区",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2164,7 +2164,7 @@
     {
       "ObjID": 241,
       "ObjParentID": 240,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "邻小区关系",
       "ObjNameEn": "",
       "MibTableName": "cellAdjRelationTable",
@@ -2173,7 +2173,7 @@
     {
       "ObjID": 242,
       "ObjParentID": 240,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "NR邻小区关系",
       "ObjNameEn": "",
       "MibTableName": "nrCellAdjRelationTable",
@@ -2182,7 +2182,7 @@
     {
       "ObjID": 243,
       "ObjParentID": 180,
-      "ChildRenCount": "",
+      "ChildRenCount": 6,
       "ObjName": "全局参数配置",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2191,7 +2191,7 @@
     {
       "ObjID": 244,
       "ObjParentID": 243,
-      "ChildRenCount": "",
+      "ChildRenCount": 7,
       "ObjName": "静态业务参数",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2200,7 +2200,7 @@
     {
       "ObjID": 245,
       "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "发送端RLC配置",
       "ObjNameEn": "",
       "MibTableName": "nrSndRlcCfgTable",
@@ -2209,7 +2209,7 @@
     {
       "ObjID": 246,
       "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "接收端RLC配置",
       "ObjNameEn": "",
       "MibTableName": "nrRecvRlcCfgTable",
@@ -2218,7 +2218,7 @@
     {
       "ObjID": 247,
       "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "PDCP配置",
       "ObjNameEn": "",
       "MibTableName": "nrPdcpCfgTable",
@@ -2227,7 +2227,7 @@
     {
       "ObjID": 248,
       "ObjParentID": 1,
-      "ChildRenCount": "",
+      "ChildRenCount": 9,
       "ObjName": "TD-LTE业务",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2236,7 +2236,7 @@
     {
       "ObjID": 249,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 5,
       "ObjName": "外部邻小区",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2245,7 +2245,7 @@
     {
       "ObjID": 250,
       "ObjParentID": 249,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "EUTRAN邻小区",
       "ObjNameEn": "",
       "MibTableName": "cellAdjEutraCellTable",
@@ -2254,7 +2254,7 @@
     {
       "ObjID": 251,
       "ObjParentID": 249,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "UTRA FDD邻小区",
       "ObjNameEn": "",
       "MibTableName": "cellAdjUtraFddCellTable",
@@ -2263,7 +2263,7 @@
     {
       "ObjID": 252,
       "ObjParentID": 249,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "UTRA TDD邻小区",
       "ObjNameEn": "",
       "MibTableName": "cellAdjUtraTddCellTable",
@@ -2272,7 +2272,7 @@
     {
       "ObjID": 253,
       "ObjParentID": 249,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "GERAN小区邻小区",
       "ObjNameEn": "",
       "MibTableName": "cellAdjGeranCellTable",
@@ -2281,7 +2281,7 @@
     {
       "ObjID": 254,
       "ObjParentID": 249,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CDMA2000小区邻小区",
       "ObjNameEn": "",
       "MibTableName": "cellAdjCdma2000CellTable",
@@ -2290,7 +2290,7 @@
     {
       "ObjID": 255,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 4,
       "ObjName": "TD-LTE本地小区规划",
       "ObjNameEn": "",
       "MibTableName": "netLocalCellTable",
@@ -2299,7 +2299,7 @@
     {
       "ObjID": 256,
       "ObjParentID": 255,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "TD-LTE本地小区规划控制",
       "ObjNameEn": "",
       "MibTableName": "netLocalCellCtrlTable",
@@ -2308,7 +2308,7 @@
     {
       "ObjID": 257,
       "ObjParentID": 255,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "TD-LTE小区RRU功率布配控制",
       "ObjNameEn": "",
       "MibTableName": "netLocalCellPowerCtrlTable",
@@ -2317,7 +2317,7 @@
     {
       "ObjID": 258,
       "ObjParentID": 255,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "TD-LTE小区RRU功率调整规划",
       "ObjNameEn": "",
       "MibTableName": "netLocalCellRruPowerTable",
@@ -2326,7 +2326,7 @@
     {
       "ObjID": 259,
       "ObjParentID": 255,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "TD-LTE本地小区",
       "ObjNameEn": "",
       "MibTableName": "localCellTable",
@@ -2335,7 +2335,7 @@
     {
       "ObjID": 260,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 23,
       "ObjName": "TD-LTE小区",
       "ObjNameEn": "",
       "MibTableName": "cellCfgTable",
@@ -2344,7 +2344,7 @@
     {
       "ObjID": 261,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区网络规划",
       "ObjNameEn": "",
       "MibTableName": "cellNetParaTable",
@@ -2353,7 +2353,7 @@
     {
       "ObjID": 262,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区状态信息",
       "ObjNameEn": "",
       "MibTableName": "cellTable",
@@ -2362,7 +2362,7 @@
     {
       "ObjID": 263,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "小区上行底噪",
       "ObjNameEn": "",
       "MibTableName": "cellUlIotTable",
@@ -2371,7 +2371,7 @@
     {
       "ObjID": 264,
       "ObjParentID": 263,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区上行通道干扰测量",
       "ObjNameEn": "",
       "MibTableName": "cellUlAnteIotTable",
@@ -2380,7 +2380,7 @@
     {
       "ObjID": 265,
       "ObjParentID": 263,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区IOT实时检测任务",
       "ObjNameEn": "",
       "MibTableName": "cellUlIotRTMonitorTaskTable",
@@ -2389,7 +2389,7 @@
     {
       "ObjID": 266,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区负荷状态",
       "ObjNameEn": "",
       "MibTableName": "cellLccTable",
@@ -2398,7 +2398,7 @@
     {
       "ObjID": 267,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区特殊校准配置",
       "ObjNameEn": "",
       "MibTableName": "cellSpecialCalCfgTable",
@@ -2407,7 +2407,7 @@
     {
       "ObjID": 268,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 4,
       "ObjName": "小区异频载波信息",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2416,7 +2416,7 @@
     {
       "ObjID": 269,
       "ObjParentID": 268,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "EUTRAN异频载波信息",
       "ObjNameEn": "",
       "MibTableName": "cellInterFreqTable",
@@ -2425,7 +2425,7 @@
     {
       "ObjID": 270,
       "ObjParentID": 268,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "UTRA频率信息",
       "ObjNameEn": "",
       "MibTableName": "cellUtraFreqTable",
@@ -2434,7 +2434,7 @@
     {
       "ObjID": 271,
       "ObjParentID": 268,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "GERAN频率信息",
       "ObjNameEn": "",
       "MibTableName": "cellGeranFreqTable",
@@ -2443,7 +2443,7 @@
     {
       "ObjID": 272,
       "ObjParentID": 268,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CDMA2000小区频率",
       "ObjNameEn": "",
       "MibTableName": "cellAdjCdma2000FreqTable",
@@ -2452,7 +2452,7 @@
     {
       "ObjID": 273,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 4,
       "ObjName": "小区选择重选",
       "ObjNameEn": "",
       "MibTableName": "/",
@@ -2461,728 +2461,728 @@
     {
       "ObjID": 274,
       "ObjParentID": 273,
-      "ChildRenCount": "",
-      "ObjName": "小区选择",
-      "ObjNameEn": "",
-      "MibTableName": "cellSelectTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 275,
-      "ObjParentID": 273,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区重选公共参数",
       "ObjNameEn": "",
       "MibTableName": "cellReselectCommonTable",
       "MIBList": ""
     },
     {
-      "ObjID": 276,
+      "ObjID": 275,
       "ObjParentID": 273,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区同频重选",
       "ObjNameEn": "",
       "MibTableName": "cellReselectIntraFreqTable",
       "MIBList": ""
     },
     {
-      "ObjID": 277,
+      "ObjID": 276,
       "ObjParentID": 273,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "系统间小区重选信息",
       "ObjNameEn": "",
       "MibTableName": "cellReselectionInterRatTable",
       "MIBList": ""
     },
     {
-      "ObjID": 278,
+      "ObjID": 277,
       "ObjParentID": 273,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CDMA2000BandClass信息",
       "ObjNameEn": "",
       "MibTableName": "cellCdmaBandClassInfoTable",
       "MIBList": ""
     },
     {
-      "ObjID": 279,
+      "ObjID": 278,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "小区系统信息",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 280,
-      "ObjParentID": 279,
-      "ChildRenCount": "",
+      "ObjID": 279,
+      "ObjParentID": 278,
+      "ChildRenCount": 0,
       "ObjName": "小区调度信息",
       "ObjNameEn": "",
       "MibTableName": "cellSchedulingTable",
       "MIBList": ""
     },
     {
-      "ObjID": 281,
+      "ObjID": 280,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区接入限制",
       "ObjNameEn": "",
       "MibTableName": "cellAccessRestrictTable",
       "MIBList": ""
     },
     {
-      "ObjID": 282,
+      "ObjID": 281,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 14,
       "ObjName": "信道及过程配置",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 283,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 282,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "PHICH信道",
       "ObjNameEn": "",
       "MibTableName": "phichTable",
       "MIBList": ""
     },
     {
-      "ObjID": 284,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
-      "ObjName": "PDSCH信道",
-      "ObjNameEn": "",
-      "MibTableName": "pdschTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 285,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
-      "ObjName": "PUSCH信道",
-      "ObjNameEn": "",
-      "MibTableName": "puschTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 286,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
-      "ObjName": "PUCCH信道",
-      "ObjNameEn": "",
-      "MibTableName": "pucchTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 287,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 283,
+      "ObjParentID": 281,
+      "ChildRenCount": 1,
       "ObjName": "随机接入参数",
       "ObjNameEn": "",
       "MibTableName": "raTable",
       "MIBList": ""
     },
     {
-      "ObjID": 288,
-      "ObjParentID": 287,
-      "ChildRenCount": "",
+      "ObjID": 284,
+      "ObjParentID": 283,
+      "ChildRenCount": 0,
       "ObjName": "SD参数",
       "ObjNameEn": "",
       "MibTableName": "sdCfgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 289,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 285,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "探测参考信号参数",
       "ObjNameEn": "",
       "MibTableName": "soundingRSTable",
       "MIBList": ""
     },
     {
-      "ObjID": 290,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 286,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "调度请求参数",
       "ObjNameEn": "",
       "MibTableName": "schedulingRequestTable",
       "MIBList": ""
     },
     {
-      "ObjID": 291,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 287,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "信道质量指示参数",
       "ObjNameEn": "",
       "MibTableName": "cqiCfgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 292,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 288,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "半持续调度参数",
       "ObjNameEn": "",
       "MibTableName": "spsCfgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 293,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 289,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "HARQ参数",
       "ObjNameEn": "",
       "MibTableName": "harqTable",
       "MIBList": ""
     },
     {
-      "ObjID": 294,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
-      "ObjName": "PHR参数",
-      "ObjNameEn": "",
-      "MibTableName": "phrTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 295,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
-      "ObjName": "TA参数",
-      "ObjNameEn": "",
-      "MibTableName": "taTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 296,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 290,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "BSR参数",
       "ObjNameEn": "",
       "MibTableName": "bsrTable",
       "MIBList": ""
     },
     {
-      "ObjID": 297,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 291,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "寻呼参数",
       "ObjNameEn": "",
       "MibTableName": "pagingTable",
       "MIBList": ""
     },
     {
-      "ObjID": 298,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 292,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "天线参数",
       "ObjNameEn": "",
       "MibTableName": "anteTable",
       "MIBList": ""
     },
     {
-      "ObjID": 299,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 293,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "MBMS参数",
       "ObjNameEn": "",
       "MibTableName": "mbmsTable",
       "MIBList": ""
     },
     {
-      "ObjID": 300,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
-      "ObjName": "PL测试开关",
-      "ObjNameEn": "",
-      "MibTableName": "phyCfgTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 301,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 294,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "AC参数",
       "ObjNameEn": "",
       "MibTableName": "acCfgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 302,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 295,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "DRX参数",
       "ObjNameEn": "",
       "MibTableName": "drxQciTable",
       "MIBList": ""
     },
     {
-      "ObjID": 303,
-      "ObjParentID": 282,
-      "ChildRenCount": "",
+      "ObjID": 296,
+      "ObjParentID": 281,
+      "ChildRenCount": 0,
       "ObjName": "CSIRS参数",
       "ObjNameEn": "",
       "MibTableName": "csirsTable",
       "MIBList": ""
     },
     {
-      "ObjID": 304,
+      "ObjID": 297,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 16,
       "ObjName": "小区算法",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 305,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 298,
+      "ObjParentID": 297,
+      "ChildRenCount": 1,
       "ObjName": "接纳控制",
       "ObjNameEn": "",
       "MibTableName": "cacTable",
       "MIBList": ""
     },
     {
-      "ObjID": 306,
-      "ObjParentID": 305,
-      "ChildRenCount": "",
+      "ObjID": 299,
+      "ObjParentID": 298,
+      "ChildRenCount": 0,
       "ObjName": "高负荷接纳控制算法",
       "ObjNameEn": "",
       "MibTableName": "chacTable",
       "MIBList": ""
     },
     {
-      "ObjID": 307,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 300,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "基于用户位置的接入控制",
       "ObjNameEn": "",
       "MibTableName": "cacPositionTable",
       "MIBList": ""
     },
     {
-      "ObjID": 308,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 301,
+      "ObjParentID": 297,
+      "ChildRenCount": 1,
       "ObjName": "切换",
       "ObjNameEn": "",
       "MibTableName": "hcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 309,
-      "ObjParentID": 308,
-      "ChildRenCount": "",
+      "ObjID": 302,
+      "ObjParentID": 301,
+      "ChildRenCount": 0,
       "ObjName": "乒乓切换优化算法",
       "ObjNameEn": "",
       "MibTableName": "ppHcAlgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 310,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 303,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "异系统互操作",
       "ObjNameEn": "",
       "MibTableName": "interRatHcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 311,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 304,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "小区干扰协调",
       "ObjNameEn": "",
       "MibTableName": "icicTable",
       "MIBList": ""
     },
     {
-      "ObjID": 312,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 305,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "小区负荷控制",
       "ObjNameEn": "",
       "MibTableName": "lbcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 313,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
-      "ObjName": "上行功率控制",
-      "ObjNameEn": "",
-      "MibTableName": "ulPowerControlTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 314,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 306,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "可选功能",
       "ObjNameEn": "",
       "MibTableName": "opFuncTable",
       "MIBList": ""
     },
     {
-      "ObjID": 315,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
-      "ObjName": "调度",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 316,
+      "ObjID": 307,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC上行算法参数",
       "ObjNameEn": "",
       "MibTableName": "macUpAlgBaseParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 317,
+      "ObjID": 308,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC下行算法参数",
       "ObjNameEn": "",
       "MibTableName": "macDownAlgBaseParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 318,
+      "ObjID": 309,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC算法开关信息",
       "ObjNameEn": "",
       "MibTableName": "macSwitchInfoTable",
       "MIBList": ""
     },
     {
-      "ObjID": 319,
+      "ObjID": 310,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC下行MUMIMO算法参数",
       "ObjNameEn": "",
       "MibTableName": "macDownMuMiMoAlgBaseParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 320,
+      "ObjID": 311,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC上行MUMIMO算法参数",
       "ObjNameEn": "",
       "MibTableName": "macUpMuMiMoAlgBaseParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 321,
+      "ObjID": 312,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "语音调度优化参数配置",
       "ObjNameEn": "",
       "MibTableName": "spsOptmzTable",
       "MIBList": ""
     },
     {
-      "ObjID": 322,
+      "ObjID": 313,
       "ObjParentID": 225,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "MAC下行3DMIMO算法基本参数",
       "ObjNameEn": "",
       "MibTableName": "macDown3DMiMoAlgBaseParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 323,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 314,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "下行控制区功率控制",
       "ObjNameEn": "",
       "MibTableName": "dlCAPowerControTable",
       "MIBList": ""
     },
     {
-      "ObjID": 324,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 315,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "MRO算法",
       "ObjNameEn": "",
       "MibTableName": "mroTable",
       "MIBList": ""
     },
     {
-      "ObjID": 325,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 316,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "拥塞控制",
       "ObjNameEn": "",
       "MibTableName": "lccTable",
       "MIBList": ""
     },
     {
-      "ObjID": 326,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 317,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "40M分层组网负荷均衡",
       "ObjNameEn": "",
       "MibTableName": "lbc40FcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 327,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 318,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "下行功率控制",
       "ObjNameEn": "",
       "MibTableName": "dlPATTable",
       "MIBList": ""
     },
     {
-      "ObjID": 328,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 319,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "负荷主控",
       "ObjNameEn": "",
       "MibTableName": "lmcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 329,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 320,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "系统间负荷均衡参数",
       "ObjNameEn": "",
       "MibTableName": "interRatLbParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 330,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 321,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "差异化调度参数",
       "ObjNameEn": "",
       "MibTableName": "atuParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 331,
-      "ObjParentID": 304,
-      "ChildRenCount": "",
+      "ObjID": 322,
+      "ObjParentID": 297,
+      "ChildRenCount": 0,
       "ObjName": "基于IP的差异化调度参数",
       "ObjNameEn": "",
       "MibTableName": "atuByIpTable",
       "MIBList": ""
     },
     {
-      "ObjID": 332,
+      "ObjID": 323,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 11,
       "ObjName": "小区测量",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 333,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 324,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "eUE测量小区参数配置",
       "ObjNameEn": "",
       "MibTableName": "eueMeasCellCfgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 334,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 325,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "A1事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventA1Table",
       "MIBList": ""
     },
     {
-      "ObjID": 335,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 326,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "A2事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventA2Table",
       "MIBList": ""
     },
     {
-      "ObjID": 336,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 327,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "A3事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventA3Table",
       "MIBList": ""
     },
     {
-      "ObjID": 337,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 328,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "A4事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventA4Table",
       "MIBList": ""
     },
     {
-      "ObjID": 338,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 329,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "A5事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventA5Table",
       "MIBList": ""
     },
     {
-      "ObjID": 339,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 330,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "A6事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventA6Table",
       "MIBList": ""
     },
     {
-      "ObjID": 340,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 331,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "周期上报配置参数",
       "ObjNameEn": "",
       "MibTableName": "euePeriodReportTable",
       "MIBList": ""
     },
     {
-      "ObjID": 341,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 332,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "测量GAP信息",
       "ObjNameEn": "",
       "MibTableName": "measGapTable",
       "MIBList": ""
     },
     {
-      "ObjID": 342,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 333,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "B1事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventB1Table",
       "MIBList": ""
     },
     {
-      "ObjID": 343,
-      "ObjParentID": 332,
-      "ChildRenCount": "",
+      "ObjID": 334,
+      "ObjParentID": 323,
+      "ChildRenCount": 0,
       "ObjName": "B2事件配置",
       "ObjNameEn": "",
       "MibTableName": "eventB2Table",
       "MIBList": ""
     },
     {
-      "ObjID": 344,
+      "ObjID": 335,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "CDMA2000小区参数",
       "ObjNameEn": "",
       "MibTableName": "cellCdma2000ParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 345,
+      "ObjID": 336,
       "ObjParentID": 260,
-      "ChildRenCount": "",
-      "ObjName": "ue定时器和常数",
-      "ObjNameEn": "",
-      "MibTableName": "eueTimerConstantsTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 346,
-      "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 7,
       "ObjName": "测试开关",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 347,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 337,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "MAC测试开关",
       "ObjNameEn": "",
       "MibTableName": "macTestSwitchInfoTable",
       "MIBList": ""
     },
     {
-      "ObjID": 348,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 338,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "MAC BO测试开关",
       "ObjNameEn": "",
       "MibTableName": "macSwitchTestInfoTable",
       "MIBList": ""
     },
     {
-      "ObjID": 349,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 339,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "HL测试开关",
       "ObjNameEn": "",
       "MibTableName": "hlTestSwitchTable",
       "MIBList": ""
     },
     {
-      "ObjID": 350,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 340,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "软容量许可",
       "ObjNameEn": "",
       "MibTableName": "softLicenseTable",
       "MIBList": ""
     },
     {
-      "ObjID": 351,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 341,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "小区软件许可",
       "ObjNameEn": "",
       "MibTableName": "cellSoftLicenseTable",
       "MIBList": ""
     },
     {
-      "ObjID": 352,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 342,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "PL用户日志",
       "ObjNameEn": "",
       "MibTableName": "plUsrLogCfgTable",
       "MIBList": ""
     },
     {
-      "ObjID": 353,
-      "ObjParentID": 346,
-      "ChildRenCount": "",
+      "ObjID": 343,
+      "ObjParentID": 336,
+      "ChildRenCount": 0,
       "ObjName": "时隙干扰检测小区参数",
       "ObjNameEn": "",
       "MibTableName": "plRipCellCfgTable",
       "MIBList": ""
     },
     {
+      "ObjID": 344,
+      "ObjParentID": 260,
+      "ChildRenCount": 4,
+      "ObjName": "用户信息",
+      "ObjNameEn": "",
+      "MibTableName": "/",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 345,
+      "ObjParentID": 344,
+      "ChildRenCount": 0,
+      "ObjName": "小区用户统计信息",
+      "ObjNameEn": "",
+      "MibTableName": "ueInfoStaticsTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 346,
+      "ObjParentID": 344,
+      "ChildRenCount": 0,
+      "ObjName": "小区PRB信息",
+      "ObjNameEn": "",
+      "MibTableName": "cellPrbInfoTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 347,
+      "ObjParentID": 344,
+      "ChildRenCount": 0,
+      "ObjName": "小区用户自适应IRC统计信息",
+      "ObjNameEn": "",
+      "MibTableName": "ueAdaptiveIrcStatTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 348,
+      "ObjParentID": 344,
+      "ChildRenCount": 0,
+      "ObjName": "小区PRB占用率",
+      "ObjNameEn": "",
+      "MibTableName": "cellPrbRatioTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 349,
+      "ObjParentID": 260,
+      "ChildRenCount": 0,
+      "ObjName": "多频段指示信息",
+      "ObjNameEn": "",
+      "MibTableName": "multiBandTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 350,
+      "ObjParentID": 260,
+      "ChildRenCount": 2,
+      "ObjName": "小区载波聚合关系",
+      "ObjNameEn": "",
+      "MibTableName": "/",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 351,
+      "ObjParentID": 350,
+      "ChildRenCount": 0,
+      "ObjName": "CA参数",
+      "ObjNameEn": "",
+      "MibTableName": "cellCAParaTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 352,
+      "ObjParentID": 350,
+      "ChildRenCount": 0,
+      "ObjName": "CA关系",
+      "ObjNameEn": "",
+      "MibTableName": "cellCARelationTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 353,
+      "ObjParentID": 260,
+      "ChildRenCount": 0,
+      "ObjName": "LTE基站节能策略",
+      "ObjNameEn": "",
+      "MibTableName": "eNBEnergyConservationStrategy",
+      "MIBList": ""
+    },
+    {
       "ObjID": 354,
       "ObjParentID": 260,
-      "ChildRenCount": "",
-      "ObjName": "用户信息",
+      "ChildRenCount": 2,
+      "ObjName": "协作处理",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
@@ -3190,1088 +3190,1088 @@
     {
       "ObjID": 355,
       "ObjParentID": 354,
-      "ChildRenCount": "",
-      "ObjName": "小区用户统计信息",
-      "ObjNameEn": "",
-      "MibTableName": "ueInfoStaticsTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 356,
-      "ObjParentID": 354,
-      "ChildRenCount": "",
-      "ObjName": "小区PRB信息",
-      "ObjNameEn": "",
-      "MibTableName": "cellPrbInfoTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 357,
-      "ObjParentID": 354,
-      "ChildRenCount": "",
-      "ObjName": "小区用户自适应IRC统计信息",
-      "ObjNameEn": "",
-      "MibTableName": "ueAdaptiveIrcStatTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 358,
-      "ObjParentID": 354,
-      "ChildRenCount": "",
-      "ObjName": "小区PRB占用率",
-      "ObjNameEn": "",
-      "MibTableName": "cellPrbRatioTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 359,
-      "ObjParentID": 260,
-      "ChildRenCount": "",
-      "ObjName": "多频段指示信息",
-      "ObjNameEn": "",
-      "MibTableName": "multiBandTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 360,
-      "ObjParentID": 260,
-      "ChildRenCount": "",
-      "ObjName": "小区载波聚合关系",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 361,
-      "ObjParentID": 360,
-      "ChildRenCount": "",
-      "ObjName": "CA参数",
-      "ObjNameEn": "",
-      "MibTableName": "cellCAParaTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 362,
-      "ObjParentID": 360,
-      "ChildRenCount": "",
-      "ObjName": "CA关系",
-      "ObjNameEn": "",
-      "MibTableName": "cellCARelationTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 363,
-      "ObjParentID": 260,
-      "ChildRenCount": "",
-      "ObjName": "LTE基站节能策略",
-      "ObjNameEn": "",
-      "MibTableName": "eNBEnergyConservationStrategy",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 364,
-      "ObjParentID": 260,
-      "ChildRenCount": "",
-      "ObjName": "协作处理",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 365,
-      "ObjParentID": 364,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "上行协作处理算法",
       "ObjNameEn": "",
       "MibTableName": "ulCompTable",
       "MIBList": ""
     },
     {
-      "ObjID": 366,
-      "ObjParentID": 364,
-      "ChildRenCount": "",
+      "ObjID": 356,
+      "ObjParentID": 354,
+      "ChildRenCount": 0,
       "ObjName": "下行协作处理算法",
       "ObjNameEn": "",
       "MibTableName": "dlCompTable",
       "MIBList": ""
     },
     {
-      "ObjID": 367,
+      "ObjID": 357,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "邻区ECGI测量",
       "ObjNameEn": "",
       "MibTableName": "adjCellECGITable",
       "MIBList": ""
     },
     {
-      "ObjID": 368,
+      "ObjID": 358,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "超远覆盖增强",
       "ObjNameEn": "",
       "MibTableName": "sdcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 369,
+      "ObjID": 359,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "小区共享网络规划",
       "ObjNameEn": "",
       "MibTableName": "cellSharingNetParaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 370,
+      "ObjID": 360,
       "ObjParentID": 260,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "网络规划S1接口",
       "ObjNameEn": "",
       "MibTableName": "netS1InterfaceTable",
       "MIBList": ""
     },
     {
-      "ObjID": 371,
-      "ObjParentID": 248,
-      "ChildRenCount": "",
-      "ObjName": "全局参数配置",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 372,
+      "ObjID": 361,
       "ObjParentID": 243,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "静态测量",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 373,
-      "ObjParentID": 372,
-      "ChildRenCount": "",
+      "ObjID": 362,
+      "ObjParentID": 361,
+      "ChildRenCount": 0,
       "ObjName": "eNB测量控制",
       "ObjNameEn": "",
       "MibTableName": "eNBMeasComCfg",
       "MIBList": ""
     },
     {
-      "ObjID": 374,
+      "ObjID": 363,
       "ObjParentID": 243,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "定时器参数",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 375,
-      "ObjParentID": 374,
-      "ChildRenCount": "",
+      "ObjID": 364,
+      "ObjParentID": 363,
+      "ChildRenCount": 0,
       "ObjName": "协议定时器",
       "ObjNameEn": "",
       "MibTableName": "protocolTimerInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 376,
-      "ObjParentID": 374,
-      "ChildRenCount": "",
+      "ObjID": 365,
+      "ObjParentID": 363,
+      "ChildRenCount": 0,
       "ObjName": "eNB内部定时器",
       "ObjNameEn": "",
       "MibTableName": "eNBTimerInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 377,
-      "ObjParentID": 243,
-      "ChildRenCount": "",
-      "ObjName": "静态业务参数",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 378,
+      "ObjID": 366,
       "ObjParentID": 244,
-      "ChildRenCount": "",
-      "ObjName": "发送端RLC配置",
-      "ObjNameEn": "",
-      "MibTableName": "sndRlcCfgTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 379,
-      "ObjParentID": 244,
-      "ChildRenCount": "",
-      "ObjName": "接收端RLC配置",
-      "ObjNameEn": "",
-      "MibTableName": "recvRlcCfgTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 380,
-      "ObjParentID": 244,
-      "ChildRenCount": "",
-      "ObjName": "PDCP配置",
-      "ObjNameEn": "",
-      "MibTableName": "pdcpCfgTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 381,
-      "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "信令无线承载",
       "ObjNameEn": "",
       "MibTableName": "srbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 382,
+      "ObjID": 367,
       "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "业务无线承载",
       "ObjNameEn": "",
       "MibTableName": "drbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 383,
+      "ObjID": 368,
       "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "基站级寻呼参数",
       "ObjNameEn": "",
       "MibTableName": "pagingEnbInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 384,
+      "ObjID": 369,
       "ObjParentID": 244,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "扩展业务无线承载",
       "ObjNameEn": "",
       "MibTableName": "extendDrbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 385,
+      "ObjID": 370,
       "ObjParentID": 243,
-      "ChildRenCount": "",
+      "ChildRenCount": 15,
       "ObjName": "全局算法",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 386,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 371,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "加密算法",
       "ObjNameEn": "",
       "MibTableName": "encryptAlgorithmTable",
       "MIBList": ""
     },
     {
-      "ObjID": 387,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 372,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "完整性保护算法",
       "ObjNameEn": "",
       "MibTableName": "integrityAlgorithmTable",
       "MIBList": ""
     },
     {
-      "ObjID": 388,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 373,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "自动邻区发现算法",
       "ObjNameEn": "",
       "MibTableName": "anrAlgorithmInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 389,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 374,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "PCI算法",
       "ObjNameEn": "",
       "MibTableName": "pciAlgorithmInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 390,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 375,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "自启动算法",
       "ObjNameEn": "",
       "MibTableName": "selfStartupAlgorithmInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 391,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 376,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "S1-Flex算法",
       "ObjNameEn": "",
       "MibTableName": "s1Flex",
       "MIBList": ""
     },
     {
-      "ObjID": 392,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 377,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "Geran系统属性",
       "ObjNameEn": "",
       "MibTableName": "geranFeature",
       "MIBList": ""
     },
     {
-      "ObjID": 393,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 378,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "DummyMme开关",
       "ObjNameEn": "",
       "MibTableName": "dummyMme",
       "MIBList": ""
     },
     {
-      "ObjID": 394,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 379,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "基站业务检测",
       "ObjNameEn": "",
       "MibTableName": "eNBTrafficTest",
       "MIBList": ""
     },
     {
-      "ObjID": 395,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 380,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "资源检测控制",
       "ObjNameEn": "",
       "MibTableName": "resourceCheck",
       "MIBList": ""
     },
     {
-      "ObjID": 396,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 381,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "切换惩罚算法",
       "ObjNameEn": "",
       "MibTableName": "hcPenaltyAlgorithm",
       "MIBList": ""
     },
     {
-      "ObjID": 397,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 382,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "大容量保障参数",
       "ObjNameEn": "",
       "MibTableName": "largeCapacityProtect",
       "MIBList": ""
     },
     {
-      "ObjID": 398,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 383,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "CPU负荷接纳控制信息",
       "ObjNameEn": "",
       "MibTableName": "cpuLoadContrlInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 399,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 384,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "差异化调度用户IMSI",
       "ObjNameEn": "",
       "MibTableName": "atuUeIMSI",
       "MIBList": ""
     },
     {
-      "ObjID": 400,
-      "ObjParentID": 385,
-      "ChildRenCount": "",
+      "ObjID": 385,
+      "ObjParentID": 370,
+      "ChildRenCount": 0,
       "ObjName": "双连接算法",
       "ObjNameEn": "",
       "MibTableName": "dualConnectAlgorithmInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 401,
+      "ObjID": 386,
       "ObjParentID": 243,
-      "ChildRenCount": "",
+      "ChildRenCount": 3,
       "ObjName": "全局测试开关",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 402,
-      "ObjParentID": 401,
-      "ChildRenCount": "",
+      "ObjID": 387,
+      "ObjParentID": 386,
+      "ChildRenCount": 0,
       "ObjName": "HL全局测试开关",
       "ObjNameEn": "",
       "MibTableName": "hlGlobalTestSwitchInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 403,
-      "ObjParentID": 401,
-      "ChildRenCount": "",
+      "ObjID": 388,
+      "ObjParentID": 386,
+      "ChildRenCount": 0,
       "ObjName": "MAC全局测试开关",
       "ObjNameEn": "",
       "MibTableName": "macGlobalTestSwitchInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 404,
-      "ObjParentID": 401,
-      "ChildRenCount": "",
+      "ObjID": 389,
+      "ObjParentID": 386,
+      "ChildRenCount": 0,
       "ObjName": "UE能力匹配配置",
       "ObjNameEn": "",
       "MibTableName": "ueMatchConfig",
       "MIBList": ""
     },
     {
-      "ObjID": 405,
+      "ObjID": 390,
       "ObjParentID": 243,
-      "ChildRenCount": "",
+      "ChildRenCount": 2,
       "ObjName": "干扰检测基站级参数",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 406,
-      "ObjParentID": 405,
-      "ChildRenCount": "",
+      "ObjID": 391,
+      "ObjParentID": 390,
+      "ChildRenCount": 0,
       "ObjName": "时隙干扰检测参数",
       "ObjNameEn": "",
       "MibTableName": "plRipLogConfig",
       "MIBList": ""
     },
     {
-      "ObjID": 407,
-      "ObjParentID": 405,
-      "ChildRenCount": "",
+      "ObjID": 392,
+      "ObjParentID": 390,
+      "ChildRenCount": 0,
       "ObjName": "干扰检测日志服务器信息",
       "ObjNameEn": "",
       "MibTableName": "plIotLogServerConfig",
       "MIBList": ""
     },
     {
-      "ObjID": 408,
+      "ObjID": 393,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "性能管理",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 409,
-      "ObjParentID": 408,
-      "ChildRenCount": "",
+      "ObjID": 394,
+      "ObjParentID": 393,
+      "ChildRenCount": 0,
       "ObjName": "周期测量任务",
       "ObjNameEn": "",
       "MibTableName": "pmTaskTable",
       "MIBList": ""
     },
     {
-      "ObjID": 410,
+      "ObjID": 395,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 7,
       "ObjName": "性能计数器",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 411,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
+      "ObjID": 396,
+      "ObjParentID": 395,
+      "ChildRenCount": 24,
       "ObjName": "RRC相关原始计数器组",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 412,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 397,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "RRC 建立过程",
       "ObjNameEn": "",
       "MibTableName": "rrcConnEstabProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 413,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 398,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "RRC 重建立过程",
       "ObjNameEn": "",
       "MibTableName": "rrcConnReEstabProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 414,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 399,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "RRC 连接重配过程",
       "ObjNameEn": "",
       "MibTableName": "rrcConnReconfigProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 415,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 400,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "RB 建立过程",
       "ObjNameEn": "",
       "MibTableName": "rbEstabProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 416,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 401,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "核心网控制的基站间小区间S1接口切换过程",
       "ObjNameEn": "",
       "MibTableName": "s1HandOverProcInterEnbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 417,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 402,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "通过X2接口的eNB间小区X2接口切换过程",
       "ObjNameEn": "",
       "MibTableName": "x2HandOverProcInterEnbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 418,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 403,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "eNB内小区间切换过程",
       "ObjNameEn": "",
       "MibTableName": "handOverProcIntraEnbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 419,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 404,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "系统内小区间切换过程",
       "ObjNameEn": "",
       "MibTableName": "intraRATInterCellHOTable",
       "MIBList": ""
     },
     {
-      "ObjID": 420,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 405,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "eNB间S1切换取消的统计",
       "ObjNameEn": "",
       "MibTableName": "s1hoCancelProcInterEnbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 421,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 406,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "eNB间X2切换取消的统计",
       "ObjNameEn": "",
       "MibTableName": "x2hoCancelProcInterEnbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 422,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 407,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "异系统切换（从EUTRAN切换到其他RAT和从GPRS、TD->EPS的切入）",
       "ObjNameEn": "",
       "MibTableName": "handOverInterRATTable",
       "MIBList": ""
     },
     {
-      "ObjID": 423,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 408,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "邻区对之间的切换过程",
       "ObjNameEn": "",
       "MibTableName": "douAdjcHandOverProcedureTable",
       "MIBList": ""
     },
     {
-      "ObjID": 424,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 409,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "E-RAB建立与切换并发",
       "ObjNameEn": "",
       "MibTableName": "handOverInterWithERABTable",
       "MIBList": ""
     },
     {
-      "ObjID": 425,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 410,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "DRX/Non DRX模式下的eNB间的切换过程",
       "ObjNameEn": "",
       "MibTableName": "handOverProcDrxTable",
       "MIBList": ""
     },
     {
-      "ObjID": 426,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 411,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "寻呼的相关统计",
       "ObjNameEn": "",
       "MibTableName": "pagingProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 427,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 412,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "切换成功E-RAB未被接纳过程",
       "ObjNameEn": "",
       "MibTableName": "erabRelHoProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 428,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 413,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "由于负载均衡触发切换的统计",
       "ObjNameEn": "",
       "MibTableName": "holbcProcInterEnbTable",
       "MIBList": ""
     },
     {
-      "ObjID": 429,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 414,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "LTE_FDD与LTE_TDD间切换",
       "ObjNameEn": "",
       "MibTableName": "lteFddTddHOTable",
       "MIBList": ""
     },
     {
-      "ObjID": 430,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 415,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "VoLTE系统内切换",
       "ObjNameEn": "",
       "MibTableName": "voLTEHandOverInTDLTETable",
       "MIBList": ""
     },
     {
-      "ObjID": 431,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 416,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "SRVCC切换",
       "ObjNameEn": "",
       "MibTableName": "srvccTable",
       "MIBList": ""
     },
     {
-      "ObjID": 432,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 417,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "等效PRB利用率",
       "ObjNameEn": "",
       "MibTableName": "equivalentPRBUsageTable",
       "MIBList": ""
     },
     {
-      "ObjID": 433,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 418,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "LTE到GSM邻区对之间的切换过程",
       "ObjNameEn": "",
       "MibTableName": "douAdjcHOProToGsmTable",
       "MIBList": ""
     },
     {
-      "ObjID": 434,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 419,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "外部EUTRA邻小区统计",
       "ObjNameEn": "",
       "MibTableName": "eutraAdjCellMeasTable",
       "MIBList": ""
     },
     {
-      "ObjID": 435,
-      "ObjParentID": 411,
-      "ChildRenCount": "",
+      "ObjID": 420,
+      "ObjParentID": 396,
+      "ChildRenCount": 0,
       "ObjName": "RUE RRC过程统计",
       "ObjNameEn": "",
       "MibTableName": "rrcProcofRUETable",
       "MIBList": ""
     },
     {
-      "ObjID": 436,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
+      "ObjID": 421,
+      "ObjParentID": 395,
+      "ChildRenCount": 13,
       "ObjName": "AP相关原始计数器组",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 437,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 422,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "初始E-RAB 建立过程",
       "ObjNameEn": "",
       "MibTableName": "initERABEstabProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 438,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 423,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "附加E-RAB 建立过程",
       "ObjNameEn": "",
       "MibTableName": "addERABEstabProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 439,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 424,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "E-RAB释放过程",
       "ObjNameEn": "",
       "MibTableName": "erabRelProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 440,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 425,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "从eNB发起的ERAB释放过程",
       "ObjNameEn": "",
       "MibTableName": "erabReleNBTable",
       "MIBList": ""
     },
     {
-      "ObjID": 441,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 426,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "切换引起的E-RAB释放过程",
       "ObjNameEn": "",
       "MibTableName": "erabRelProcByHOTable",
       "MIBList": ""
     },
     {
-      "ObjID": 442,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 427,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "E-RAB修改过程",
       "ObjNameEn": "",
       "MibTableName": "erabModProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 443,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 428,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "切换入E-RAB数量",
       "ObjNameEn": "",
       "MibTableName": "handoverInERABNbrTable",
       "MIBList": ""
     },
     {
-      "ObjID": 444,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 429,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "上下文相关统计",
       "ObjNameEn": "",
       "MibTableName": "ueContextProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 445,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 430,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "UE相关的S1逻辑连接建立的相关统计",
       "ObjNameEn": "",
       "MibTableName": "s1SigProcTable",
       "MIBList": ""
     },
     {
-      "ObjID": 446,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 431,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "S1连接统计",
       "ObjNameEn": "",
       "MibTableName": "s1Conn",
       "MIBList": ""
     },
     {
-      "ObjID": 447,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 432,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "X2接口异常统计",
       "ObjNameEn": "",
       "MibTableName": "x2AbnormalProc",
       "MIBList": ""
     },
     {
-      "ObjID": 448,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 433,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "路径倒换统计",
       "ObjNameEn": "",
       "MibTableName": "s1PathSwichTable",
       "MIBList": ""
     },
     {
-      "ObjID": 449,
-      "ObjParentID": 436,
-      "ChildRenCount": "",
+      "ObjID": 434,
+      "ObjParentID": 421,
+      "ChildRenCount": 0,
       "ObjName": "RUE E-RAB 建立过程",
       "ObjNameEn": "",
       "MibTableName": "erabEstabProcOfRUETable",
       "MIBList": ""
     },
     {
-      "ObjID": 450,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
+      "ObjID": 435,
+      "ObjParentID": 395,
+      "ChildRenCount": 11,
       "ObjName": "MAC相关原始计数器组",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 451,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 436,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "MAC PRB利用率总量统计",
       "ObjNameEn": "",
       "MibTableName": "macPrbUtilizationCCTable",
       "MIBList": ""
     },
     {
-      "ObjID": 452,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 437,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "MAC PRB利用率峰均值统计",
       "ObjNameEn": "",
       "MibTableName": "macPrbUtilizationSITable",
       "MIBList": ""
     },
     {
-      "ObjID": 453,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 438,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "MAC统计误块率",
       "ObjNameEn": "",
       "MibTableName": "macBlerTable",
       "MIBList": ""
     },
     {
-      "ObjID": 454,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 439,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "MAC统计重传率",
       "ObjNameEn": "",
       "MibTableName": "macHarqRetxRatioTable",
       "MIBList": ""
     },
     {
-      "ObjID": 455,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 440,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "激活ERAB释放个数",
       "ObjNameEn": "",
       "MibTableName": "releasedActiveERABTable",
       "MIBList": ""
     },
     {
-      "ObjID": 456,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 441,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "下行PDCCH信道CCE的平均占用率",
       "ObjNameEn": "",
       "MibTableName": "pdcchCceDlMeanTable",
       "MIBList": ""
     },
     {
-      "ObjID": 457,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 442,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "小区无线信道",
       "ObjNameEn": "",
       "MibTableName": "cqiNumberStatisticTable",
       "MIBList": ""
     },
     {
-      "ObjID": 458,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 443,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "CCE调度和CCLR特性相关统计",
       "ObjNameEn": "",
       "MibTableName": "cceCclrTable",
       "MIBList": ""
     },
     {
-      "ObjID": 459,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 444,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "PDCP业务总时长",
       "ObjNameEn": "",
       "MibTableName": "pdcpThroughputTimeTable",
       "MIBList": ""
     },
     {
-      "ObjID": 460,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 445,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "语音调度相关统计",
       "ObjNameEn": "",
       "MibTableName": "volteSchedulingTable",
       "MIBList": ""
     },
     {
-      "ObjID": 461,
-      "ObjParentID": 450,
-      "ChildRenCount": "",
+      "ObjID": 446,
+      "ObjParentID": 435,
+      "ChildRenCount": 0,
       "ObjName": "上行用户体验速率",
       "ObjNameEn": "",
       "MibTableName": "ipThpUlTable",
       "MIBList": ""
     },
     {
-      "ObjID": 462,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
+      "ObjID": 447,
+      "ObjParentID": 395,
+      "ChildRenCount": 9,
       "ObjName": "PDCP相关原始计数器组",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 463,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 448,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "PDCP小区峰均速率统计",
       "ObjNameEn": "",
       "MibTableName": "pdcpRatioSITable",
       "MIBList": ""
     },
     {
-      "ObjID": 464,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 449,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "PDCP上行SDU空口丢包率",
       "ObjNameEn": "",
       "MibTableName": "pdcpUlSduAirDropRatioTable",
       "MIBList": ""
     },
     {
-      "ObjID": 465,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 450,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "E-RAB Activity统计",
       "ObjNameEn": "",
       "MibTableName": "erabActivityTable",
       "MIBList": ""
     },
     {
-      "ObjID": 466,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 451,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "PDCP下行SDU空口丢包率",
       "ObjNameEn": "",
       "MibTableName": "pdcpDlSduAirDropRatioTable",
       "MIBList": ""
     },
     {
-      "ObjID": 467,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 452,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "接收到的PDCP SDU总包数",
       "ObjNameEn": "",
       "MibTableName": "pdcpSduReceivedNbrTable",
       "MIBList": ""
     },
     {
-      "ObjID": 468,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 453,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "IP层吞吐量",
       "ObjNameEn": "",
       "MibTableName": "ipThroughputCapacityTable",
       "MIBList": ""
     },
     {
-      "ObjID": 469,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 454,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "会话时长",
       "ObjNameEn": "",
       "MibTableName": "sessionTimeTable",
       "MIBList": ""
     },
     {
-      "ObjID": 470,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 455,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "有效RRC连接数",
       "ObjNameEn": "",
       "MibTableName": "activeRRCTable",
       "MIBList": ""
     },
     {
-      "ObjID": 471,
-      "ObjParentID": 462,
-      "ChildRenCount": "",
+      "ObjID": 456,
+      "ObjParentID": 447,
+      "ChildRenCount": 0,
       "ObjName": "RUE PDCP小区数据量",
       "ObjNameEn": "",
       "MibTableName": "pdcpRatioOfRUETable",
       "MIBList": ""
     },
     {
-      "ObjID": 472,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
+      "ObjID": 457,
+      "ObjParentID": 395,
+      "ChildRenCount": 2,
       "ObjName": "RLC相关原始计数器组",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 473,
-      "ObjParentID": 472,
-      "ChildRenCount": "",
+      "ObjID": 458,
+      "ObjParentID": 457,
+      "ChildRenCount": 0,
       "ObjName": "PDCP SDU下行的弃包率",
       "ObjNameEn": "",
       "MibTableName": "pdcpSduDlDiscRatioTable",
       "MIBList": ""
     },
     {
-      "ObjID": 474,
-      "ObjParentID": 472,
-      "ChildRenCount": "",
+      "ObjID": 459,
+      "ObjParentID": 457,
+      "ChildRenCount": 0,
       "ObjName": "下行用户体验速率",
       "ObjNameEn": "",
       "MibTableName": "ipThpDlTable",
       "MIBList": ""
     },
     {
-      "ObjID": 475,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
+      "ObjID": 460,
+      "ObjParentID": 395,
+      "ChildRenCount": 4,
       "ObjName": "PL相关原始计数器组",
+      "ObjNameEn": "",
+      "MibTableName": "/",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 461,
+      "ObjParentID": 460,
+      "ChildRenCount": 0,
+      "ObjName": "PL统计收到Preamble数目以及碰撞数目",
+      "ObjNameEn": "",
+      "MibTableName": "plPreambeRevNumTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 462,
+      "ObjParentID": 460,
+      "ChildRenCount": 0,
+      "ObjName": "PL上行信道接收功率",
+      "ObjNameEn": "",
+      "MibTableName": "plrssiTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 463,
+      "ObjParentID": 460,
+      "ChildRenCount": 0,
+      "ObjName": "物理层上行吞吐量",
+      "ObjNameEn": "",
+      "MibTableName": "plThroughputCapacityULTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 464,
+      "ObjParentID": 460,
+      "ChildRenCount": 0,
+      "ObjName": "物理层下行吞吐量",
+      "ObjNameEn": "",
+      "MibTableName": "plThroughputCapacityDLTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 465,
+      "ObjParentID": 395,
+      "ChildRenCount": 5,
+      "ObjName": "OSP相关原始计数器组",
+      "ObjNameEn": "",
+      "MibTableName": "/",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 466,
+      "ObjParentID": 465,
+      "ChildRenCount": 0,
+      "ObjName": "S1接口IP层数据流量统计",
+      "ObjNameEn": "",
+      "MibTableName": "s1InterfaceIPStatTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 467,
+      "ObjParentID": 465,
+      "ChildRenCount": 0,
+      "ObjName": "S1接口用户面数据流量统计",
+      "ObjNameEn": "",
+      "MibTableName": "s1InterfaceTrafficStat",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 468,
+      "ObjParentID": 465,
+      "ChildRenCount": 0,
+      "ObjName": "X2接口数据流量统计",
+      "ObjNameEn": "",
+      "MibTableName": "x2InterfaceTrafficStat",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 469,
+      "ObjParentID": 465,
+      "ChildRenCount": 0,
+      "ObjName": "SCTP偶联性能测量数据",
+      "ObjNameEn": "",
+      "MibTableName": "sctpAssoPMDataTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 470,
+      "ObjParentID": 465,
+      "ChildRenCount": 0,
+      "ObjName": "以太网口收发数据统计",
+      "ObjNameEn": "",
+      "MibTableName": "ethPortDataStatTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 471,
+      "ObjParentID": 248,
+      "ChildRenCount": 3,
+      "ObjName": "跟踪管理",
+      "ObjNameEn": "",
+      "MibTableName": "/",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 472,
+      "ObjParentID": 471,
+      "ChildRenCount": 0,
+      "ObjName": "信令跟踪管理任务",
+      "ObjNameEn": "",
+      "MibTableName": "traceTaskTable",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 473,
+      "ObjParentID": 471,
+      "ChildRenCount": 0,
+      "ObjName": "信令跟踪服务器配置",
+      "ObjNameEn": "",
+      "MibTableName": "traceMmeUeTrcSrvCfg",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 474,
+      "ObjParentID": 471,
+      "ChildRenCount": 0,
+      "ObjName": "信令跟踪开关",
+      "ObjNameEn": "",
+      "MibTableName": "traceLiscenceCfg",
+      "MIBList": ""
+    },
+    {
+      "ObjID": 475,
+      "ObjParentID": 248,
+      "ChildRenCount": 2,
+      "ObjName": "信令软采",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
@@ -4279,223 +4279,88 @@
     {
       "ObjID": 476,
       "ObjParentID": 475,
-      "ChildRenCount": "",
-      "ObjName": "PL统计收到Preamble数目以及碰撞数目",
-      "ObjNameEn": "",
-      "MibTableName": "plPreambeRevNumTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 477,
-      "ObjParentID": 475,
-      "ChildRenCount": "",
-      "ObjName": "PL上行信道接收功率",
-      "ObjNameEn": "",
-      "MibTableName": "plrssiTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 478,
-      "ObjParentID": 475,
-      "ChildRenCount": "",
-      "ObjName": "物理层上行吞吐量",
-      "ObjNameEn": "",
-      "MibTableName": "plThroughputCapacityULTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 479,
-      "ObjParentID": 475,
-      "ChildRenCount": "",
-      "ObjName": "物理层下行吞吐量",
-      "ObjNameEn": "",
-      "MibTableName": "plThroughputCapacityDLTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 480,
-      "ObjParentID": 410,
-      "ChildRenCount": "",
-      "ObjName": "OSP相关原始计数器组",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 481,
-      "ObjParentID": 480,
-      "ChildRenCount": "",
-      "ObjName": "S1接口IP层数据流量统计",
-      "ObjNameEn": "",
-      "MibTableName": "s1InterfaceIPStatTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 482,
-      "ObjParentID": 480,
-      "ChildRenCount": "",
-      "ObjName": "S1接口用户面数据流量统计",
-      "ObjNameEn": "",
-      "MibTableName": "s1InterfaceTrafficStat",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 483,
-      "ObjParentID": 480,
-      "ChildRenCount": "",
-      "ObjName": "X2接口数据流量统计",
-      "ObjNameEn": "",
-      "MibTableName": "x2InterfaceTrafficStat",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 484,
-      "ObjParentID": 480,
-      "ChildRenCount": "",
-      "ObjName": "SCTP偶联性能测量数据",
-      "ObjNameEn": "",
-      "MibTableName": "sctpAssoPMDataTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 485,
-      "ObjParentID": 480,
-      "ChildRenCount": "",
-      "ObjName": "以太网口收发数据统计",
-      "ObjNameEn": "",
-      "MibTableName": "ethPortDataStatTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 486,
-      "ObjParentID": 248,
-      "ChildRenCount": "",
-      "ObjName": "跟踪管理",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 487,
-      "ObjParentID": 486,
-      "ChildRenCount": "",
-      "ObjName": "信令跟踪管理任务",
-      "ObjNameEn": "",
-      "MibTableName": "traceTaskTable",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 488,
-      "ObjParentID": 486,
-      "ChildRenCount": "",
-      "ObjName": "信令跟踪服务器配置",
-      "ObjNameEn": "",
-      "MibTableName": "traceMmeUeTrcSrvCfg",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 489,
-      "ObjParentID": 486,
-      "ChildRenCount": "",
-      "ObjName": "信令跟踪开关",
-      "ObjNameEn": "",
-      "MibTableName": "traceLiscenceCfg",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 490,
-      "ObjParentID": 248,
-      "ChildRenCount": "",
-      "ObjName": "信令软采",
-      "ObjNameEn": "",
-      "MibTableName": "/",
-      "MIBList": ""
-    },
-    {
-      "ObjID": 491,
-      "ObjParentID": 490,
-      "ChildRenCount": "",
+      "ChildRenCount": 0,
       "ObjName": "信令软采开关",
       "ObjNameEn": "",
       "MibTableName": "sscLicense",
       "MIBList": ""
     },
     {
-      "ObjID": 492,
-      "ObjParentID": 490,
-      "ChildRenCount": "",
+      "ObjID": 477,
+      "ObjParentID": 475,
+      "ChildRenCount": 0,
       "ObjName": "信令软采任务",
       "ObjNameEn": "",
       "MibTableName": "sscTaskTable",
       "MIBList": ""
     },
     {
-      "ObjID": 493,
+      "ObjID": 478,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 5,
       "ObjName": "最小化路测MDT",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 494,
-      "ObjParentID": 493,
-      "ChildRenCount": "",
+      "ObjID": 479,
+      "ObjParentID": 478,
+      "ChildRenCount": 0,
       "ObjName": "MDT配置开关管理",
       "ObjNameEn": "",
       "MibTableName": "mdtSwitchInfo",
       "MIBList": ""
     },
     {
-      "ObjID": 495,
-      "ObjParentID": 493,
-      "ChildRenCount": "",
+      "ObjID": 480,
+      "ObjParentID": 478,
+      "ChildRenCount": 0,
       "ObjName": "MDT配置参数管理",
       "ObjNameEn": "",
       "MibTableName": "mdtConfigManagement",
       "MIBList": ""
     },
     {
-      "ObjID": 496,
-      "ObjParentID": 493,
-      "ChildRenCount": "",
+      "ObjID": 481,
+      "ObjParentID": 478,
+      "ChildRenCount": 0,
       "ObjName": "Logged MDT小区信息",
       "ObjNameEn": "",
       "MibTableName": "loggedMdtCellTable",
       "MIBList": ""
     },
     {
-      "ObjID": 497,
-      "ObjParentID": 493,
-      "ChildRenCount": "",
+      "ObjID": 482,
+      "ObjParentID": 478,
+      "ChildRenCount": 0,
       "ObjName": "Logged MDT跟踪区信息",
       "ObjNameEn": "",
       "MibTableName": "loggedMdtTaTable",
       "MIBList": ""
     },
     {
-      "ObjID": 498,
-      "ObjParentID": 493,
-      "ChildRenCount": "",
+      "ObjID": 483,
+      "ObjParentID": 478,
+      "ChildRenCount": 0,
       "ObjName": "MDT管理任务",
       "ObjNameEn": "",
       "MibTableName": "mdtTaskTable",
       "MIBList": ""
     },
     {
-      "ObjID": 499,
+      "ObjID": 484,
       "ObjParentID": 248,
-      "ChildRenCount": "",
+      "ChildRenCount": 1,
       "ObjName": "预留参数信息",
       "ObjNameEn": "",
       "MibTableName": "/",
       "MIBList": ""
     },
     {
-      "ObjID": 500,
-      "ObjParentID": 499,
-      "ChildRenCount": "",
+      "ObjID": 485,
+      "ObjParentID": 484,
+      "ChildRenCount": 0,
       "ObjName": "基站级预留参数",
       "ObjNameEn": "",
       "MibTableName": "reservedENBParaInfo",

@@ -5,15 +5,16 @@ using MIBDataParser.JSONDataMgr;
 namespace MIBDataParser
 {
     class NodeB {
-        Database test;
+
+        Database dataHandle = Database.GetInstance();
+
+        // 初始化结果返回后处理
         void ResultInitData(bool result)
         {
             if (result)
             {
                 Console.WriteLine("init data result is ok");
-
-                //testDb();
-                testForInitByConnetIp();
+                testForInitByConnetIp("192.163.2.1");
             }
             else
                 Console.WriteLine("init data result is failed");
@@ -21,75 +22,100 @@ namespace MIBDataParser
 
         public void dosomething(string connectIp)
         {
-            test = new Database();
-
             // 结果回调
-            test.resultInitData = new ResultInitData(ResultInitData);
+            dataHandle.resultInitData = new ResultInitData(ResultInitData);
 
             // 初始化
-            //test.initDatabase();
-            test.initDatabase(connectIp);
+            dataHandle.initDatabase(connectIp);
         }
 
-        public void dosomething()
+        /// <summary>
+        /// 测试数据库代码
+        /// </summary>
+        /// <param name="connectIp"></param>
+        void testForInitByConnetIp(string connectIp)
         {
-            test = new Database();
+            Dictionary<string, IReDataByEnglishName> reData = new Dictionary<string, IReDataByEnglishName>() {
+                { "alarmCausePrimaryAlarmCauseNo",null },
+                { "hsdpaCQIReviseLcId", null},
+                { "eueTimerT304", null},
+                { "cellAdjCellLcId", null}
+            };
+            dataHandle.testDictExample(reData);
 
-            // 结果回调
-            test.resultInitData = new ResultInitData(ResultInitData);
 
-            // 初始化
-            //test.initDatabase();
-            //test.initDatabase();
-        }
-
-        void testDb()
-        {
+            string err = "";
             // 查询数据 test_1 命令树
-            IReCmdDataByCmdEnglishName reCmdData;
-            test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
+            //IReCmdDataByCmdEnglishName reCmdData;
+            Dictionary<string, IReCmdDataByCmdEnglishName> reCmdData = 
+                new Dictionary<string, IReCmdDataByCmdEnglishName>() {
+                { "GetEfdAlarmRule", null},
+            };
+            if (!dataHandle.getCmdDataByCmdEnglishName(reCmdData, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
 
             // test_2
-            IReDataByEnglishName nameInfo = new ReDataByEnglishName();
-            test.getDataByEnglishName("alarmCausePrimaryAlarmCauseNo", out nameInfo);
+            Dictionary<string, IReDataByEnglishName> nameInfo = new Dictionary<string, IReDataByEnglishName>() {
+                { "alarmCausePrimaryAlarmCauseNo",null },
+                //{ "hsdpaCQIReviseLcId", null},
+                { "eueTimerT304", null},
+                { "cellAdjCellLcId", null},
+                { "alarmCauseEntry",null},
+            };
+            if (!dataHandle.getDataByEnglishName(nameInfo, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
             if (null != nameInfo)
-                Console.WriteLine("output, {0}", nameInfo.oid);
+                Console.WriteLine("output, {0}", nameInfo["alarmCausePrimaryAlarmCauseNo"].oid);
+
+            IReDataByEnglishName nameEnSigle = new ReDataByEnglishName();
+            if (!dataHandle.getDataByEnglishName("alarmCausePrimaryAlarmCauseNo", out nameEnSigle, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
+            else {
+                Console.WriteLine(nameEnSigle.mibDesc);
+            }
 
             // test_3
-            List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
-            List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
-                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
-            test.getDataByEnglishName(nameEnList, out nameInfoList);
+            //List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
+            //List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
+            //        "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
+            Dictionary<string, IReDataByEnglishName> nameEnList = 
+                new Dictionary<string, IReDataByEnglishName>() {
+                    { "alarmCausePrimaryAlarmCauseNo", null},
+                    //{ "hsdpaCQIReviseLcId",  null},
+                    { "eueTimerT304", null},
+                    { "cellAdjCellLcId", null},
+                };
+            if (!dataHandle.getDataByEnglishName(nameEnList, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
+            else
+            {
+                Console.WriteLine("output, ", nameEnList.Values);
+            }
 
             // test_4
-            IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
-            test.getDataByTableEnglishName("alarmCauseTable", out tableData);
-
-            // test_5
-            test.testGetDataByTableEnglishName();
-        }
-        void testForInitByConnetIp()
-        {
-            // 查询数据 test_1 命令树
-            IReCmdDataByCmdEnglishName reCmdData;
-            test.getCmdDataByCmdEnglishName("GetEfdAlarmRule", out reCmdData);
-
-            // test_2
-            IReDataByEnglishName nameInfo = new ReDataByEnglishName();
-            test.getDataByEnglishName("alarmCausePrimaryAlarmCauseNo", out nameInfo, "192.163.2.1");
-            if (null != nameInfo)
-                Console.WriteLine("output, {0}", nameInfo.oid);
-
-            // test_3
-            List<IReDataByEnglishName> nameInfoList = new List<IReDataByEnglishName>();
-            List<string> nameEnList = new List<string> { "alarmCausePrimaryAlarmCauseNo",
-                    "hsdpaCQIReviseLcId", "eueTimerT304","cellAdjCellLcId"};
-            if(test.getDataByEnglishName(nameEnList, out nameInfoList, "192.163.2.1"))
-                Console.WriteLine("output, {0}", nameInfoList.Count);
-
-            // test_4
-            IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
-            test.getDataByTableEnglishName("alarmCauseTable", out tableData, "192.163.2.1");
+            //IReDataByTableEnglishName tableData = new ReDataByTableEnglishName();
+            Dictionary<string, IReDataByTableEnglishName> tableData =
+                new Dictionary<string, IReDataByTableEnglishName>() {
+                    { "alarmCauseTable", null},
+                };
+            if (!dataHandle.getDataByTableEnglishName(tableData, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
+            else
+            {
+                Console.WriteLine( tableData.Values);
+            }
+            Console.WriteLine("testForInitByConnetIp is over.");
+            Console.Read();
         }
     }
 
@@ -107,8 +133,6 @@ namespace MIBDataParser
             NodeB b = new NodeB();
             b.dosomething("192.163.2.1");
             Console.WriteLine("end ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
-
-            //Console.Read();
         }
 
         static void testForCmdJson()
@@ -133,17 +157,10 @@ namespace MIBDataParser
             //Console.Read();
         }
         
-
         private static void CloneMe(ICloneable c, string myStr)
         {
             object theClone = c.Clone();
             Console.WriteLine("Your clone is a:{0}",theClone.GetType().Name);
-        }
-
-        static void test()
-        {
-            string myStr = "hello";
-            //CloneMe(myStr);
         }
 
         public void testCmdTree()

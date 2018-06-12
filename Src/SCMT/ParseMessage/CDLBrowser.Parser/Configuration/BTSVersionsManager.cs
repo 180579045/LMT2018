@@ -13,7 +13,7 @@ namespace CDLBrowser.Parser.Configuration
     {
 
         private static Hashtable _versions;
-        private static ILog _log = LogManager.GetLogger(typeof(BTSVersionsManager));
+        private static ILog _log = Common.Logging.LogManager.GetLogger(typeof(BTSVersionsManager));
         static BTSVersionsManager()
         {
             InitVersionList();
