@@ -440,7 +440,7 @@ namespace FileManager
 
 			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
 
-			var ret = CDTCmdExecuteMgr.GetInstance().CmdSetSync("AddFileTransTask", out lReqId, mapName2Value, $".{unFileTransId}",
+			var ret = CDTCmdExecuteMgr.CmdSetSync("AddFileTransTask", out lReqId, mapName2Value, $".{unFileTransId}",
 				IpAddr, ref inOutPdu);
 
 			return (0 == ret);

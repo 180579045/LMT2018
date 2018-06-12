@@ -4,6 +4,9 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
 
 namespace SCMTOperationCore.Message.SNMP
 {
@@ -73,12 +76,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 		public string get_CmdName()
 		{
-			if (null != m_lmtbPduInfo)
-			{
-				return m_lmtbPduInfo.m_appendInfo.m_cmdName;
-			}
-
-			return null;
+			return m_lmtbPduInfo?.m_appendInfo.m_cmdName;
 		}
 
 		public void SetCmdName(string cmdName)
@@ -144,15 +142,37 @@ namespace SCMTOperationCore.Message.SNMP
 			m_VbList.Clear();
 		}
 
-		//int GetVbIndexByMibName(class CAdoConnection* pAdoConn, const char* strMibName)	//从vb绑定对中查找对应MibName的索引
-		//{
-
-		//}
-
-		//从vb绑定对中查找对应MibName的值
-		public bool GetValueByMibName(string strIPAddr, string strMibName, out string strValue, string lpszIndex = null)    //从vb绑定对中查找对应MibName的值
+		//从vb绑定对中查找对应MibName的值。
+		public bool GetValueByMibName(string strIPAddr, string strMibName, out string strValue, string lpszIndex = null)
 		{
-			throw new NotImplementedException();
+			strValue = "";
+
+			string error = "";
+			// 根据ip和mibname从数据库模块找到所需的信息，主要是oid
+			var param = new Dictionary<string, IReDataByEnglishName> {[strMibName] = null};
+			if (!Database.GetInstance().getDataByEnglishName(param, strIPAddr, out error))
+			{
+				return false;
+			}
+
+			var temp = param[strMibName];
+			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
+			var oid = temp.oid.Trim('.');
+			var fulloid = $"{prefix}.{oid}";
+
+			if (m_mapVBs.Count == 0)
+			{
+				RecordOidValue(fulloid, out lpszIndex);
+			}
+
+			if (!m_mapVBs.ContainsKey(fulloid))
+			{
+				Log.Error($"PDU中没有OID为{fulloid}的VB");
+				return false;
+			}
+
+			strValue = m_mapVBs[fulloid];
+			return true;
 		}
 
 		public bool GetAlarmValueByMibName(string strMibName, out string strValue)
@@ -167,12 +187,12 @@ namespace SCMTOperationCore.Message.SNMP
 
 		public void assignAppendValue(stru_LmtbPduAppendInfo appendInfo)
 		{
-			m_lmtbPduInfo.m_appendInfo.assignValue(out appendInfo);
+			m_lmtbPduInfo.m_appendInfo.AssignValue(out appendInfo);
 		}
 
 		public void getAppendValue(stru_LmtbPduAppendInfo appendInfo)
 		{
-			m_lmtbPduInfo.m_appendInfo.getValue(out appendInfo);
+			m_lmtbPduInfo.m_appendInfo.GetValue(out appendInfo);
 		}
 
 		void CopyPduInfo(ref CDTLmtbPdu pPdu)
@@ -183,7 +203,8 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 		}
 
-		bool RecordOidValue(string strMibOID, out string lpszIndex)
+		// 记录oid对应的数据 原来的代码实现的是个鬼啊
+		public bool RecordOidValue(string strMibOID, out string lpszIndex)
 		{
 			throw new NotImplementedException();
 		}
@@ -251,14 +272,14 @@ namespace SCMTOperationCore.Message.SNMP
 			m_bIsSync = false;
 		}
 
-		public void assignValue(out stru_LmtbPduAppendInfo appendInfo)
+		public void AssignValue(out stru_LmtbPduAppendInfo appendInfo)
 		{
 			appendInfo = this;
 		}
 
-		public void getValue(out stru_LmtbPduAppendInfo appendInfo_out)
+		public void GetValue(out stru_LmtbPduAppendInfo appendInfoOut)
 		{
-			appendInfo_out = this;
+			appendInfoOut = this;
 		}
 
 		public bool m_bIsNeedPrint { get; set; }

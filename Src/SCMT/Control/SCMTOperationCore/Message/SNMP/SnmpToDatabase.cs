@@ -59,6 +59,28 @@ namespace SCMTOperationCore.Message.SNMP
 			return "1.3.6.1.4.1.5105.";
 		}
 
+		// 获取snmp的团体名
+		public static string GetCommunityString()
+		{
+			return "public";
+		}
+
+		// 同步方式获取cmd执行结果后从pdu中根据mib name获取对应的值
+		public static string GetMibValueFromCmdExeResult(string index, string cmdName, string mibName, string boardAddr)
+		{
+			long lrequestId;
+			string csCmdValueTemp = null;
+			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
+
+			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out lrequestId, index, boardAddr, ref inOutPdu);
+			if (0 == ret)
+			{
+				inOutPdu.GetValueByMibName(boardAddr, mibName, out csCmdValueTemp);
+			}
+
+			return csCmdValueTemp;
+		}
+
 		// oid列表转换为vb列表。oid无前缀；失败返回null
 		public static List<CDTLmtbVb> ConvertOidToVb(List<string> oidList, string oidPostFix)
 		{
@@ -68,19 +90,17 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			var prefix = GetMibPrefix();
-			var postfix = oidPostFix.TrimStart('.');	//删除oidPostFix的开始处的.
+			var postfix = oidPostFix.Trim('.');	//删除oidPostFix的开始处的.
 			var vbList = new List<CDTLmtbVb>();
 			foreach (var oid in oidList)
 			{
 				var soid = oid.Trim('.');	// 不知道oid前后是否带有.，此处使用保守的方式，先尝试删掉，后面再追加
-				var vb = new CDTLmtbVb {Oid = $"{prefix}{soid}.{oidPostFix}"};
+				var vb = new CDTLmtbVb {Oid = $"{prefix}{soid}.{postfix}"};
 				vbList.Add(vb);
 			}
 
 			return vbList;
 		}
-
-		
 
 		// 把节点名列表转换为oid列表。需要连接到数据模块查找
 		public static List<string> ConvertNameToOid(List<string> nameList, string ip)
@@ -92,10 +112,11 @@ namespace SCMTOperationCore.Message.SNMP
 
 			var olidList = new List<string>();
 			IReDataByEnglishName temp = new ReDataByEnglishName();
+			string errorMsg = "";
 
 			foreach (var name in nameList)
 			{
-				if (!Database.GetInstance().getDataByEnglishName(name, out temp, ip))
+				if (!Database.GetInstance().getDataByEnglishName(name, out temp, ip, out errorMsg))
 				{
 					throw new CustomException("待查找的节点名{name}不存在，请确认MIB版本后重试");
 				}
@@ -119,7 +140,7 @@ namespace SCMTOperationCore.Message.SNMP
 			var vbList = new List<CDTLmtbVb>();
 
 			var prefix = GetMibPrefix().Trim('.');
-			var postfix = index.Trim('.');    //删除oidPostFix的开始处的.
+			var postfix = index.Trim('.');    //删除oidPostFix的前后的.
 
 			// 在此处校验索引是否有效
 			if (bCheck)
@@ -127,9 +148,10 @@ namespace SCMTOperationCore.Message.SNMP
 				throw new NotImplementedException("校验索引有效性功能尚未实现");
 			}
 
+			string errorInfo = "";
 			foreach (var name in nameList)
 			{
-				if (!Database.GetInstance().getDataByEnglishName(name, out nameToOid, ip))
+				if (!Database.GetInstance().getDataByEnglishName(name, out nameToOid, ip, out errorInfo))
 				{
 					throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
 				}
@@ -144,7 +166,7 @@ namespace SCMTOperationCore.Message.SNMP
 				{
 					Oid = $"{prefix}.{nameToOid.oid.Trim('.')}.{postfix}",
 					Value = name2value[name],
-					SnmpSyntax = ConvertDataType(nameToOid.syntax)
+					SnmpSyntax = ConvertDataType(nameToOid.mibSyntax)
 				};
 
 				vbList.Add(vb);

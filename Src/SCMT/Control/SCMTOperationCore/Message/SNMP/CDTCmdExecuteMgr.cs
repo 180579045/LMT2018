@@ -103,6 +103,109 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/// <summary>
+		/// 根据命令名称执行同步GetNext
+		/// </summary>
+		/// <param name="cmdName"></param>
+		/// <param name="requestId"></param>
+		/// <param name="indexList"></param>
+		/// <param name="results"></param>
+		/// <param name="strIpAddr"></param>
+		/// <param name="isPrint"></param>
+		/// <param name="needCheck"></param>
+		/// <returns></returns>
+		public int CmdGetNextSync(string cmdName, out long requestId, out List<string> indexList
+							  , out Dictionary<string, string> results, string strIpAddr, bool isPrint = false
+							  , bool needCheck = false)
+		{
+			// 初始化out变量
+			requestId = 0;
+			results = new Dictionary<string, string>();
+			indexList = new List<string>();
+
+			Log.Info("CmdGetNextSync() start");
+			var logMsg = $"cmdName={cmdName},requestId={requestId}, strIpAddr={strIpAddr}";
+			Log.Info(logMsg);
+
+			if (string.IsNullOrEmpty(cmdName) || string.IsNullOrEmpty(strIpAddr))
+			{
+				return -1;
+			}
+
+			// TODO: 数据库先打桩
+			string strMibList = "";
+			// test
+			strMibList = "2.2.1.2.1.1.2|2.2.1.2.1.1.3";
+
+
+			if (string.IsNullOrEmpty(strMibList))
+			{
+				return -1;
+			}
+
+			// 转换为oid数组
+			string[] mibList = StringToArray(strMibList);
+			if (mibList == null)
+			{
+				return -1;
+			}
+
+
+			// TODO : bNeedCheck
+			if (needCheck)
+			{
+			}
+
+			// TODO:
+			// 获取oid的前缀
+			string strPreFixOid = "1.3.6.1.4.1.5105.100";
+			StringBuilder sbOid = new StringBuilder();
+			List<CDTLmtbVb> lmtbVbs = new List<CDTLmtbVb>();
+
+			// 组装lmtbVb参数
+			foreach (string v in mibList)
+			{
+				sbOid.Clear();
+				sbOid.AppendFormat("{0}.{1}", strPreFixOid, v);
+			    CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = sbOid.ToString()};
+			    lmtbVbs.Add(lmtVb);
+			}
+
+			Dictionary<string, string> tmpResult;
+			// 根据ip获取当前基站的snmp实例
+			ILmtbSnmp lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
+			while (true)
+			{
+				if (true == lmtbSnmpEx.GetNextRequest(strIpAddr, lmtbVbs, out tmpResult, 0))
+				{
+					// 清除查询参数
+					lmtbVbs.Clear();
+					foreach (KeyValuePair<string, string> item in tmpResult)
+					{
+						logMsg = string.Format("ObjectName={0}, Value={1}", item.Key, item.Value);
+						//Log.Debug(logMsg);
+
+						// 保存结果
+						results.Add(item.Key, item.Value);
+
+						// 组装新的查询oid
+						CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = item.Key};
+						lmtbVbs.Add(lmtVb);
+					}
+
+				}
+				else
+				{
+					break;
+				}
+			} //end while
+
+
+			return 0;
+		}
+
+
+
+		/// <summary>
 		/// 执行一条类型为Set的同步操作命令
 		/// </summary>
 		/// <param name="cmdName"></param>
@@ -115,7 +218,7 @@ namespace SCMTOperationCore.Message.SNMP
 		/// <param name="needCheck"></param>
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
-		public int CmdSetSync(String cmdName, out long requestId, Dictionary<string,string> name2Value
+		public static int CmdSetSync(String cmdName, out long requestId, Dictionary<string,string> name2Value
 			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = false
 			, bool needCheck = false, long timeOut = 0)
 		{
@@ -176,6 +279,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 			return rs;
 		}
+
 
 		// test
 		private MibNodeInfoTest GetMibNodeInfoByOID(string strIpAddr, string strMibOid)

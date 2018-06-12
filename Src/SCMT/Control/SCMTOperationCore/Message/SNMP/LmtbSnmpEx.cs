@@ -14,19 +14,54 @@ namespace SCMTOperationCore.Message.SNMP
 	/// </summary>
 	public class LmtbSnmpEx : ILmtbSnmp
 	{
-
 		// 同步snmp实例
 		private SnmpHelper m_SnmpSync = null;
 
 		// 异步snmp实例
 		private SnmpHelper m_SnmpAsync = null;
 
-		public SnmpHelper GetSnmpSync()
+		// 数据库里的节点类型描述到Snmp Syntax的映射
+		public static Dictionary<string, SNMP_SYNTAX_TYPE> m_ValType2SynTax 
+			= new Dictionary<string, SNMP_SYNTAX_TYPE>
+		{
+				{ "OCTETS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "PHYADDR", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "TEMP_ID", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "LONG", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT32},
+				{ "BOOL", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT32},
+				{ "UINT32", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_UINT32},
+				{ "ROWSTATUS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT32},
+				{ "NULL", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NULL},
+				{ "OID", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OID},
+				{ "IPADDR", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_IPADDR},
+				{ "TIMETICKS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_TIMETICKS},
+				{ "DATETIME", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "INETADDRESS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "VARIABLEPOINTER", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OID},
+				{ "DATEANDTIME", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "BITS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_UINT32},
+				{ "OCTET STRING", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "INETADDRESSTYPE", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT32},
+				{ "MACADDRESS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "UNSIGNED32ARRAY", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "INTEGER32ARRAY", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
+				{ "MNCMCCTYPE", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS}
+			};
+
+		/// <summary>
+		/// 获取snmp同步实例
+		/// </summary>
+		/// <returns></returns>
+		public SnmpHelper GetSnmpSyncInst()
 		{
 			return m_SnmpSync;
 		}
 
-		public SnmpHelper GetSnmpAsync()
+		/// <summary>
+		/// 获取snmp异步实例
+		/// </summary>
+		/// <returns></returns>
+		public SnmpHelper GetSnmpAsyncInst()
 		{
 			return m_SnmpAsync;
 		}
@@ -64,6 +99,8 @@ namespace SCMTOperationCore.Message.SNMP
 			// TODO: ipv6
 
 
+
+
 	 //       Log.Debug("========== SnmpLibStartUp() End ==========");
 
 			return 0;
@@ -86,7 +123,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/// <summary>
-		/// 同步Get操作
+		/// 同步Get操作(请求的结果通过消息方式返回给上层)
 		/// </summary>
 		/// <param name="lmtPdu"></param>
 		/// <param name="requestId"></param>
@@ -97,9 +134,9 @@ namespace SCMTOperationCore.Message.SNMP
 		{
 			requestId = 0;
 
-			Log.Debug("========== SnmpGetSync() Start ==========");
+ //           Log.Debug("========== SnmpGetSync() Start ==========");
 			var msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}, timeOut={timeOut}";
-			Log.Debug(msg);
+ //           Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
 			{
@@ -113,9 +150,6 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 
-			// TODO: 根据基站ip获取Lmtor信息
-			//LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(remoteIpAddr);
-
 			SnmpHelper snmp = m_SnmpSync;
 			if (null == snmp)
 			{
@@ -123,21 +157,6 @@ namespace SCMTOperationCore.Message.SNMP
 				Log.Error(msg);
 				return -1;
 			}
-
-			/*
-			List<string> vbList = new List<string>();
-
-			int vbCount = lmtPdu.VbCount();
-
-			for (int i = 0; i < vbCount; i++)
-			{
-				CDTLmtbVb lmtVb =  lmtPdu.GetVbByIndexEx(i);
-				string oid = lmtVb.get_Oid();
-				vbList.Add(oid);
-			}
-			*/
-
-			// SnmpV2Packet result = snmp.GetRequest(vbList);
 
 			Pdu pdu;
 			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
@@ -150,18 +169,84 @@ namespace SCMTOperationCore.Message.SNMP
 			pdu.Type = PduType.Get;
 
 			SnmpV2Packet result = snmp.GetRequest(pdu);
-
 			if (result == null)
 			{
 				Log.Error("SNMP request error, response is null.");
 				return -1;
 			}
+
 			requestId = result.Pdu.RequestId;
 
 			rs = SnmpPdu2LmtPdu(result, snmp.m_target, lmtPdu, 0, false);
 
 
 			return 0;
+		}
+
+		/// <summary>
+		/// 同步Get操作(请求的结果通过out参数返回)
+		/// </summary>
+		/// <param name="strIpAddr"></param>
+		/// <param name="queryVbs"></param>
+		/// <param name="results"></param>
+		/// <param name="timeout"></param>
+		/// <returns></returns>
+		public bool SnmpGetSync(string strIpAddr, List<CDTLmtbVb> queryVbs, out Dictionary<string, string> results, long timeout)
+		{
+			// 初始化out参数
+			results = new Dictionary<string, string>();
+			
+			// log msg
+			string logMsg;
+			bool status;
+
+			if (string.IsNullOrEmpty(strIpAddr))
+			{
+				Log.Error("strIpAddr is null");
+				return false;
+			}
+
+			SnmpHelper snmp = m_SnmpSync;
+			if (null == snmp)
+			{
+				logMsg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				Log.Error(logMsg);
+				return false;
+			}
+
+			Pdu pdu;
+			PacketQueryPdu(queryVbs, out pdu);
+
+			SnmpV2Packet ReqResult = (SnmpV2Packet)m_SnmpSync.GetRequest(pdu);
+
+			if (null != ReqResult)
+			{
+				if (ReqResult.Pdu.ErrorStatus != 0)
+				{
+					logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
+						, ReqResult.Pdu.ErrorStatus, ReqResult.Pdu.ErrorIndex);
+					Log.Error(logMsg);
+					status = false;
+				}
+				else
+				{
+					foreach (Vb vb in ReqResult.Pdu.VbList)
+					{
+						logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
+							, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+						//                       Log.Debug(logMsg);
+						results.Add(vb.Oid.ToString(), vb.Value.ToString());
+					}
+					status = true;
+				}
+			}
+			else
+			{
+				Log.Error("SNMP GetNextRequest请求错误");
+				return false;
+			}
+
+			return status;
 		}
 
 		/// <summary>
@@ -227,11 +312,76 @@ namespace SCMTOperationCore.Message.SNMP
 			return 0;
 		}
 
+		/// <summary>
+		/// GetNextRequest
+		/// </summary>
+		/// <param name="strIpAddr"></param>
+		/// <param name="queryVbs"></param>
+		/// <param name="result"></param>
+		/// <param name="timeout"></param>
+		/// <returns></returns>
+		public bool GetNextRequest(string strIpAddr, List<CDTLmtbVb> queryVbs, out Dictionary<string,string> result, long timeout)
+		{
+			result = new Dictionary<string, string>();
 
+			bool status = false;
+			string logMsg;
+
+			if (string.IsNullOrEmpty(strIpAddr))
+			{
+				Log.Error("strIpAddr is null");
+				return false;
+			}
+			if (queryVbs == null)
+			{
+				Log.Error("参数queryVbs为空");
+				return false;
+			}
+
+			Pdu pdu;
+			PacketQueryPdu(queryVbs, out pdu);
+
+			SnmpV2Packet ReqResult = (SnmpV2Packet)m_SnmpSync.GetNextRequest(pdu);
+
+			if (null != ReqResult)
+			{
+				if (ReqResult.Pdu.ErrorStatus != 0)
+				{
+					logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
+						, ReqResult.Pdu.ErrorStatus, ReqResult.Pdu.ErrorIndex);
+					Log.Error(logMsg);
+					status = false;
+
+					// 
+					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
+					{
+						return false;
+					}
+				}
+				else
+				{
+					foreach (Vb vb in ReqResult.Pdu.VbList)
+					{
+						logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
+							, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+ //                       Log.Debug(logMsg);
+						result.Add(vb.Oid.ToString(), vb.Value.ToString());
+					}
+					status = true;
+				}
+			}
+			else
+			{
+				Log.Error("SNMP GetNextRequest请求错误");
+				return false;
+			}
+
+			return status;
+		}
 
 
 		/// <summary>
-		/// 同步Set操作
+		/// 同步Set操作(请求结果通过消息返回给上层)
 		/// </summary>
 		/// <param name="lmtPdu"></param>
 		/// <param name="requestId"></param>
@@ -264,7 +414,7 @@ namespace SCMTOperationCore.Message.SNMP
 			SnmpHelper snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令");
+				msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
 				Log.Error(msg);
 				return -1;
 			}
@@ -274,8 +424,6 @@ namespace SCMTOperationCore.Message.SNMP
 
 
 			Pdu pdu = new Pdu();
-			// TODO:
-			string community = "private";
 			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 
 			SnmpV2Packet result = snmp.SetRequest(pdu);
@@ -289,6 +437,60 @@ namespace SCMTOperationCore.Message.SNMP
 			rs = SnmpPdu2LmtPdu(result, snmp.m_target, lmtPdu, 0, false);
 
 			return 0;
+		}
+
+		/// <summary>
+		/// SNMP Set同步操作(无须向上层抛消息的同步设置)
+		/// </summary>
+		/// <param name="strIpAddr"></param>
+		/// <param name="setVbs"></param>
+		/// <param name="timeOut"></param>
+		/// <returns></returns>
+		public bool SnmpSetSync(string strIpAddr, List<CDTLmtbVb> setVbs, long timeOut)
+		{
+		//	Log.Debug("========== SnmpSetSync() Start ==========");
+			string logMsg = string.Format("pars: strIpAddr={0}, timeOut={1}"
+				,strIpAddr, timeOut);
+//			Log.Debug(logMsg);
+
+			if (string.IsNullOrEmpty(strIpAddr))
+			{
+				Log.Error("参数strIpAddr为空");
+				return false;
+			}
+
+			SnmpHelper snmp = m_SnmpSync;
+			if (null == snmp)
+			{
+				logMsg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				Log.Error(logMsg);
+				return false;
+			}
+
+			
+
+			Pdu pdu;
+			PacketSetPdu(setVbs, out pdu);
+
+			SnmpV2Packet result = snmp.SetRequest(pdu);
+
+			if (result == null)
+			{
+				Log.Error("SNMP set request error, response is null.");
+				return false;
+			}
+			else
+			{
+				if (result.Pdu.ErrorStatus != 0)
+				{
+					logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
+						, result.Pdu.ErrorStatus, result.Pdu.ErrorIndex);
+					//Log.Error(logMsg);
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 
@@ -596,6 +798,7 @@ namespace SCMTOperationCore.Message.SNMP
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
 
 				lmtVb.Oid = vb.Oid.ToString();
+				string  Tmpvalue = "";
 
 				// SnmpConstants.GetSyntaxObject(AsnType.OCTETSTRING);
 				// SnmpConstants.GetTypeName(vb.Value.Type);
@@ -612,6 +815,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 					if ("DateandTime".Equals(strNodeType))
 					{
+						Tmpvalue = SnmpHelper.parseDateAndTime2Octet((OctetString)vb.Value);
 					}
 					else if ("inetaddress".Equals(strNodeType))
 					{
@@ -686,6 +890,59 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			return;
+		}
+
+
+		/// <summary>
+		/// 将CDTLmtbVb数组转换为SNMP Pdu
+		/// </summary>
+		/// <param name="queryVbs"></param>
+		/// <param name="pdu"></param>
+		public void PacketQueryPdu(List<CDTLmtbVb> queryVbs, out Pdu pdu)
+		{
+			pdu = new Pdu(PduType.GetNext);
+
+			if (queryVbs == null)
+			{
+				Log.Error("参数queryVbs为空");
+				return;
+	}
+
+			foreach (CDTLmtbVb lmtVb in queryVbs)
+			{
+				Vb vb = new Vb(new Oid(lmtVb.Oid));
+				pdu.VbList.Add(vb);
+}
+		}
+
+		/// <summary>
+		/// 组装Set Pdu
+		/// </summary>
+		/// <param name="setVbs"></param>
+		/// <param name="setPdu"></param>
+		public void PacketSetPdu(List<CDTLmtbVb> setVbs, out Pdu setPdu)
+		{
+			setPdu = new Pdu(PduType.Set);
+
+			foreach (CDTLmtbVb lmtbVb in setVbs)
+			{
+
+				Vb vb = new Vb(new Oid(lmtbVb.Oid));
+
+				SetVbValue(ref vb, lmtbVb.SnmpSyntax, lmtbVb.Value);
+
+				setPdu.VbList.Add(vb);
+			}
+		}
+
+		/// <summary>
+		/// 数据库里的节点类型描述到Snmp Syntax的映射
+		/// </summary>
+		/// <param name="strType"></param>
+		/// <returns></returns>
+		public static SNMP_SYNTAX_TYPE GetSyntax(string strType)
+		{
+			return m_ValType2SynTax[strType];
 		}
 
 
