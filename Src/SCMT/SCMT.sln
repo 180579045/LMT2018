@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Message", "Message", "{F3A714C8-2F67-4D68-AB27-B38C9A66E003}"
 EndProject
@@ -72,6 +72,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SCMTOperationCoreTests", "Control\SCMTOperationCoreTests\SCMTOperationCoreTests.csproj", "{F513C49C-AC51-45E6-9BAD-B7E20CB4E37C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisOperation", "Control\RedisOperation\RedisOperation\RedisOperation.csproj", "{C501BF8E-DF4B-447C-9F29-01DBE8376359}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManager", "Control\FileManager\FileManager.csproj", "{F8BE0744-6799-4C05-A204-9C4BA378A73D}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
@@ -479,6 +481,22 @@ Global
 		{C501BF8E-DF4B-447C-9F29-01DBE8376359}.Release|x64.Build.0 = Release|Any CPU
 		{C501BF8E-DF4B-447C-9F29-01DBE8376359}.Release|x86.ActiveCfg = Release|Any CPU
 		{C501BF8E-DF4B-447C-9F29-01DBE8376359}.Release|x86.Build.0 = Release|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|ARM.Build.0 = Debug|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|x64.ActiveCfg = Debug|x64
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|x64.Build.0 = Debug|x64
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|x86.ActiveCfg = Debug|x86
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Debug|x86.Build.0 = Debug|x86
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|ARM.ActiveCfg = Release|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|ARM.Build.0 = Release|Any CPU
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|x64.ActiveCfg = Release|x64
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|x64.Build.0 = Release|x64
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|x86.ActiveCfg = Release|x86
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -509,5 +527,6 @@ Global
 		{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 		{F513C49C-AC51-45E6-9BAD-B7E20CB4E37C} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 		{C501BF8E-DF4B-447C-9F29-01DBE8376359} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
+		{F8BE0744-6799-4C05-A204-9C4BA378A73D} = {59AC42EA-D105-4CF9-81EE-85C1092F6649}
 	EndGlobalSection
 EndGlobal

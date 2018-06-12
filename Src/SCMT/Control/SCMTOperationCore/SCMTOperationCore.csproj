@@ -139,6 +139,8 @@
     <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpHelper.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />
+    <Compile Include="Message\SNMP\SnmpSessionWorker.cs" />
+    <Compile Include="Message\SNMP\TrapHelper.cs" />
     <Compile Include="Message\SNMP\TrapMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

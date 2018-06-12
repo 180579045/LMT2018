@@ -67,6 +67,10 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Message\SNMP\CDTCmdExecuteMgrTests.cs" />
+    <Compile Include="Message\SNMP\CommTest.cs" />
+    <Compile Include="Message\SNMP\LmtbSnmpExTests.cs" />
+    <Compile Include="Message\SNMP\SnmpSessionWorkerTests.cs" />
+    <Compile Include="Message\SNMP\TrapHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
