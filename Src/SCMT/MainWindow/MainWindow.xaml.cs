@@ -1228,8 +1228,6 @@ namespace SCMTMainWindow
         {
             this.messageRecv.ClearAll();
         }
-
-
     }
 
 }
