@@ -22,8 +22,25 @@
 
             <GridSplitter Grid.Column="1" Width="6" ResizeBehavior="PreviousAndNext"></GridSplitter>
 
-            <local:FileManager Grid.Column="0" x:Name="FileManagerSource"></local:FileManager>
-            <local:FileManager Grid.Column="2" x:Name="FileManagerTarget" ></local:FileManager>
+            <!--创建两个文件管理子模块，一个是本地文件管理，另一个是基站文件管理-->
+            <Grid Grid.Column="0" Name="fmLocal">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ListView Name="lvLocalFileInfo" Grid.Column="2" ItemsSource="{Binding}" ></ListView>
+            </Grid>
+
+            <Grid Grid.Column="2" Name="fmENB">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="180"></ColumnDefinition>
+                    <ColumnDefinition Width="auto"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <ListView Name="lvENBFileInfo" Grid.Column="2" ItemsSource="{Binding}" ></ListView>
+            </Grid>
+
         </Grid>
 
         <GridSplitter Grid.Row="1" Height="6" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>

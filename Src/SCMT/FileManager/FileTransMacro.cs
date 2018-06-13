@@ -79,7 +79,7 @@ namespace FileManager
 		TRANSFILE_1588EquipSoftwarePack,                //|1588软件包
 		TRANSFILE_cnssEquipSoftwarePackPack,            //|北斗软件包
 		TRANSFILE_generalFile,                          //|普通文件/
-		TRANSFILE_lmtMDBFile,                           //|数据库文件
+		TRANSFILE_lmtMDBFile,                           //|数据库文件 lm.dtz
 		TRANSFILE_activeAlarmFile,                      //|活跃告警文件
 		TRANSFILE_performanceFile,                      //|性能文件
 		TRANSFILE_cfgPackFile,                          //|性能文件

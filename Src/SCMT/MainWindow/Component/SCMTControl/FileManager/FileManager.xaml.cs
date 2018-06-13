@@ -276,58 +276,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 				}
 			}
 		}
-
-		//  private void GetFileSize(object obj)
-		private void GetFileSize(string strSourceFilePath, string strDestFilePath)
-		{
-
-			//string strFileName = (string)obj;
-
-			//string[] strInfos = strFileName.Split('|');
-
-			//string strSourceFilePath = strInfos[0];
-			//string strDestFilePath = strInfos[1];
-
-			long nMaxSize;
-			long nNowSize = 0;
-
-			try
-			{
-				//获取  源文件的总大小
-				FileInfo SourceFileInfo = new FileInfo(strSourceFilePath);
-				nMaxSize = SourceFileInfo.Length;
-
-
-				//ProcessList testPL = new ProcessList();
-				//testPL.FileName = SourceFileInfo.Name;
-				//testPL.ProgressValue = 0;
-
-				TestTwoFileManager.myList.FileName = SourceFileInfo.Name;
-				TestTwoFileManager.myList.ProgressValue = 0;
-
-				TestTwoFileManager.lvMainListView.Items.Add(TestTwoFileManager.myList);
-
-
-				while (nNowSize < 100)
-				{
-					//获取目的文件的大小
-					//   FileInfo DestFileInfo = new FileInfo(strDestFilePath);
-					//      nNowSize = DestFileInfo.Length;
-
-					nNowSize++;
-
-					TestTwoFileManager.myList.ProgressValue = nNowSize;
-
-					Waite(10);
-
-				}
-
-			}
-			catch (Exception)
-			{
-
-			}
-		}
+			
 
 		//线程等待
 		public static void Waite(int nTime)
@@ -385,12 +334,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 				long nTotalSize = fSourceInfo.Length;                                       //文件的总长度
 				byte[] bArry = new byte[4096];                                                  //读写文件的缓冲数组
 				long nCurrentSize = 0;                                                                //每次读取的大小
-
-				//添加进度条显示信息
-				TestTwoFileManager.myList.FileName = fSourceInfo.Name;
-				TestTwoFileManager.myList.ProgressValue = 0;
-				TestTwoFileManager.lvMainListView.Items.Add(TestTwoFileManager.myList);
-
+				
 				while (nCurrentSize < nTotalSize)
 				{
 					int n = fsFileSource.Read(bArry, 0, 4096);                              //每次读取1024个字节
@@ -400,17 +344,12 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 					fsFileDest.Write(bArry, 0, n);
 
 					long nPercent = (nCurrentSize * 100) / nTotalSize;
-
-					//更新进度条
-					TestTwoFileManager.myList.ProgressValue = nPercent;
-					TestTwoFileManager.myList.TextBloxkValue = nPercent + "%";
-
+					
 					Waite(1);
 				}
 
 				if (nCurrentSize == nTotalSize)
 				{
-					TestTwoFileManager.lvMainListView.Items.Clear();
 				}
 
 				fsFileDest.Close();

@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.IO;
 using System.Windows.Media.Imaging;
+using SCMTOperationCore.Message.SI;
 
 namespace SCMTMainWindow.Component.SCMTControl.FileManager
 {
@@ -198,4 +199,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             EndInit();
         }
     }
+    
+    
 }
