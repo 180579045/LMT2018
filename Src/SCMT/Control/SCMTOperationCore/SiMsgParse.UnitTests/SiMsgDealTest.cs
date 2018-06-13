@@ -21,7 +21,7 @@ namespace SiMsgParse.UnitTests
 			byte[] part1 = new byte[10200];
 			Buffer.BlockCopy(temp, 0, part1, 0, temp.Length);
 
-			SiMsgDealer dealer = new SiMsgDealer();
+			SiMsgDealer dealer = new SiMsgDealer("");
 
 			dealer.DealSiMsg(part1);		//应该是不够的，还需要40个字节才能解析数据包
 

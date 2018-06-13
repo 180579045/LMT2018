@@ -97,7 +97,7 @@ namespace SCMTOperationCore.Connection.Tcp
                 }
                 catch (Exception e)
                 {
-                    throw new HazelException("Could not connect as an exception occured.", e);
+                    throw new HazelException($"Could not connect as an exception occured.\r\n{e.Message}");
                 }
 
                 //Start receiving data

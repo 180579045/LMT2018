@@ -252,6 +252,81 @@ namespace SCMTOperationCore.Message.SI
 		public ushort ContentLen => (ushort)(SiMacroDef.SI_FILEPATH_MAX_LEN + SiMacroDef.SI_DIR_MAX_FILENUM * Marshal.SizeOf<SI_STRU_FileInfo>());
 	}
 
+	/**************************************************
+	消息宏: O_SILMTENB_GETFILEINFO_RES
+	结构名: SI_SILMTENB_GetFileInfoRspMsg
+	描述:   文件信息查询响应消息
+	**************************************************/
+	public class SI_SILMTENB_GetFileInfoRspMsg_v2 : IASerialize
+	{
+		public SI_LMTENBSI_MsgHead head;
+		public byte[] s8SrcPath;        /* 查询目录 */
+		public byte s8GetResult;        /* 0:成功;1:失败 */
+		public byte u8Pad;
+		public byte u8Ver;
+		public byte u8FileCount;
+		public SI_STRU_FileInfo_V2[] struFileInfo;     /* 文件信息结构数组，V2 96个*/
+
+		public SI_SILMTENB_GetFileInfoRspMsg_v2()
+		{
+			s8SrcPath = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+			struFileInfo = new SI_STRU_FileInfo_V2[96];
+			head = new SI_LMTENBSI_MsgHead();
+		}
+
+		public int SerializeToBytes(ref byte[] ret, int offset)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int DeserializeToStruct(byte[] bytes, int offset)
+		{
+			if (bytes.Length - offset < Len)
+			{
+				return -1;
+			}
+
+			int used = 0;
+			int u = head.DeserializeToStruct(bytes, offset + used);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.SerializeBytes(ref s8SrcPath, 0, bytes, offset + used, SiMacroDef.SI_FILEPATH_MAX_LEN);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref s8GetResult);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8Pad);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8Ver);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8FileCount);
+			if (-1 == u) return -1;
+			used += u;
+
+			//解出来所有的数据
+			for (int i = 0; i < 96; i++)
+			{
+				u = struFileInfo[i].DeserializeToStruct(bytes, offset + used);
+				if (-1 == u) return -1;
+				used += u;
+			}
+
+			return used;
+		}
+
+		public int Len => head.Len + ContentLen;
+
+		public ushort ContentLen => (ushort) (200 + sizeof(byte) * 4 + 96 * Marshal.SizeOf<SI_STRU_FileInfo>());
+	}
+
 	/*文件信息结构*/
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
 	public class SI_STRU_FileInfo : IASerialize

@@ -24,7 +24,7 @@ namespace SCMTOperationCore.Elements
 		{
 			NetworkEndPoint ep = new NetworkEndPoint(NeAddress, nePort, IPMode.IPv4);
 			connection = new TcpConnection(ep);
-			dealer = new SiMsgDealer();
+			dealer = new SiMsgDealer(neIp.ToString());
 		}
 
 		~SiElement()

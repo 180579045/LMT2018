@@ -150,66 +150,35 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
     /// </summary>
     public class FileInfoDemo
     {
-        string strFileName;
-        string strFileType;
-        string strFileSize;
-        string _lastModifyTime;
-        string _filePath;
-        ImageSource _ImgSource;        
-
         /// <summary>
         /// 获取文件的图标信息
         /// </summary>
-        public ImageSource ImgSource
-        {
-            get { return _ImgSource; }
-            set { _ImgSource = value; }
-        }
+        public ImageSource ImgSource { get; set; }
 
         /// <summary>
         /// 文件名
         /// </summary>
-        public string FileName
-        {
-            get { return strFileName; }
-            set { strFileName = value; }
-        }
+        public string FileName { get; set; }
 
         /// <summary>
         /// 文件类型
         /// </summary>
-        public string FileType
-        {
-            get { return strFileType; }
-            set { strFileType = value; }
-        }
+        public string FileType { get; set; }
 
         /// <summary>
         /// 文件大小
         /// </summary>
-        public string Size
-        {
-            get { return strFileSize; }
-            set { strFileSize = value; }
-        }
+        public string Size { get; set; }
 
         /// <summary>
         /// 最后一次修改时间
         /// </summary>
-        public string LastModifyTime
-        {
-            get { return _lastModifyTime; }
-            set { _lastModifyTime = value; }
-        }
+        public string LastModifyTime { get; set; }
 
         /// <summary>
         /// 文件所在路径
         /// </summary>
-        public string FilePath
-        {
-            get { return _filePath; }
-            set { _filePath = value; }
-        }
+        public string FilePath { get; set; }
     }
 
     /// <summary>
