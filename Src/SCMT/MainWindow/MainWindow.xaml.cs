@@ -1220,7 +1220,18 @@ namespace SCMTMainWindow
 			this.messageRecv.ClearAll();
 		}
 
+        private void MetroExpander_Click(object sender, EventArgs e)
+        {
 
-	}
+            SCMTMainWindow.Component.SCMTControl.FileManager.TestTwoFileManager content = new Component.SCMTControl.FileManager.TestTwoFileManager("192.168.0.12");
+
+            LayoutAnchorable sub = new LayoutAnchorable();
+
+            sub.Content = content;
+
+            sub.Title = "NewAvalon";
+            this.FileManagerLAP.Children.Add(sub);
+        }
+    }
 
 }

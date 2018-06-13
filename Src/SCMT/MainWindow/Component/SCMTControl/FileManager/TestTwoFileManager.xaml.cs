@@ -238,7 +238,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         {
             //定义文件夹树
             DirectoryTreeView enbMainTree = new DirectoryTreeView();
-            enbMainTree.SelectedItemChanged += EnbMainTree_SelectedItemChanged; ;
+            //enbMainTree.SelectedItemChanged += EnbMainTree_SelectedItemChanged; ;
             fmENB.Children.Add(enbMainTree);
             Grid.SetColumn(enbMainTree, 0);
 
@@ -395,10 +395,10 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         }
 
 
-        private void EnbMainTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            throw new NotImplementedException();
-        }
+        //private void EnbMainTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
         /// <summary>

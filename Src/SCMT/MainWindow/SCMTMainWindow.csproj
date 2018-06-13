@@ -146,9 +146,6 @@
     <Compile Include="Component\SCMTControl\DTDataGrid.xaml.cs">
       <DependentUpon>DTDataGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Component\SCMTControl\FileManager\FileManager.xaml.cs">
-      <DependentUpon>FileManager.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Component\SCMTControl\FileManager\FileRename.xaml.cs">
       <DependentUpon>FileRename.xaml</DependentUpon>
     </Compile>
@@ -184,10 +181,6 @@
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Page Include="Component\SCMTControl\DTDataGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Component\SCMTControl\FileManager\FileManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
