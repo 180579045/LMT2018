@@ -53,7 +53,9 @@ namespace SCMTOperationCore.Elements
 		//连接成功处理事件
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
-			Debug.WriteLine("connect server succeed");
+			// 连接基站成功后，需要上传lm.dtz文件
+
+			// 需要激活界面的上控件
 		}
 
 		//连接断开处理事件
