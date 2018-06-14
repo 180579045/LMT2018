@@ -362,8 +362,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             }
 
             var fileNumber = rsp.u16FileNum;
-            var fileCount = fileNumber & 0x00FF;
-            var fileVersion = (fileNumber & 0xFF00) >> 8;
+            var fileVersion  = fileNumber & 0x00FF;
+            var fileCount = (fileNumber & 0xFF00) >> 8;
             Log.Debug($"文件数量：{fileCount}，文件版本：{fileVersion}");
 
             if (fileVersion == 0)
