@@ -478,8 +478,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
                     fsFileDest.Write(bArry, 0, n);
 
+                    long nProcessValue = (nCurrentSize * 100) / nTotalSize;
+
                     //更新进度条
-                    myList.ProgressValue = (nCurrentSize * 100) / nTotalSize;
+                    myList.ProgressValue = nProcessValue;
+                    myList.TextBloxkValue = nProcessValue.ToString() + "%";
 
                     Waite(1);
                 }
