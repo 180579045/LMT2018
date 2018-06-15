@@ -53,8 +53,6 @@ namespace SCMTMainWindow
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
-        ////获取ILog实例
-        //public static ILog Log = Common.Logging.LogManager.GetLogger(typeof(MainWindow));
         public static string StrNodeName;
         private List<string> CollectList = new List<string>();
         public NodeBControl NBControler;
@@ -76,6 +74,8 @@ namespace SCMTMainWindow
             InitView();                                                       // 初始化界面;
             RegisterFunction();                                               // 注册功能;
             deleteTempFile();
+
+            // TODO 读取网元配置文件
         }
         
         /// <summary>
@@ -83,7 +83,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitView()
         {
-            NBControler = new NodeBControl();
+            NBControler = NodeBControl.GetInstance();
             this.MibDataGrid.MouseMove += MibDataGrid_MouseMove;
             this.MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
             this.MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
@@ -119,27 +119,23 @@ namespace SCMTMainWindow
         private void AddNB_Closed(object sender, EventArgs e)
         {
             // 如果参数为空，则表示用户没有添加基站;
-            if (!(e is NodeBArgs) || e == null)
+            if (!(e is NodeBArgs))
             {
+                Log.Error("add nodeb failed");
                 return;
             }
 
             // 第一个版本所有数据先从本地获取;
-            node = (e as NodeBArgs).m_NodeB;
+            node = ((NodeBArgs) e).m_NodeB;
             ObjNode.main = this;
             //ObjNode.datagrid = this.MibDataGrid;
-            
+
             InitDataBase();                                                      // 创建数据库(第一个版本先加载本地的);
 
             // 向基站前端控件填入对应信息;
-            
             AddNodeBPageToWindow();                                              // 将基站添加到窗口页签中;
 
-            if (node != null)
-            {
-                node.Connect();                                                  // 连接基站(第一个版本，暂时只连接一个基站);
-            }
-            
+            node?.Connect();                                                  // 连接基站(第一个版本，暂时只连接一个基站);
         }
         
         /// <summary>
@@ -162,7 +158,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void AddNodeBPageToWindow()
         {
-
+            // TODO 添加控件
         }
 
         /// <summary>
@@ -170,7 +166,7 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitDataBase()
         {
-            node.db = new Database();
+            node.db = Database.GetInstance();
 
             node.db.resultInitData = new ResultInitData((bool ret) =>
             {
@@ -455,11 +451,6 @@ namespace SCMTMainWindow
         #region 添加基站事件
         private void AddeNB(object sender, EventArgs e)
         {
-
-            
-            Log.Debug("添加基站");
-            Log.Info("添加基站");
-            Log.Warn("添加基站");
             AddNodeB.NewInstance(this).Closed += AddNB_Closed;
             AddNodeB.NewInstance(this).ShowDialog();
         }
@@ -1227,6 +1218,19 @@ namespace SCMTMainWindow
         private void subForMessageRecv_Hiding(object sender, System.ComponentModel.CancelEventArgs e)
         {
             this.messageRecv.ClearAll();
+        }
+
+        private void MetroExpander_Click(object sender, EventArgs e)
+        {
+
+            SCMTMainWindow.Component.SCMTControl.FileManager.TestTwoFileManager content = new Component.SCMTControl.FileManager.TestTwoFileManager("172.27.145.92");
+
+            LayoutAnchorable sub = new LayoutAnchorable();
+
+            sub.Content = content;
+
+            sub.Title = "NewAvalon";
+            this.FileManagerLAP.Children.Add(sub);
         }
     }
 

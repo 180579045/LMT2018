@@ -30,12 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AsyncIO">
-      <HintPath>..\..\..\..\..\SCTM20180503\LMT2018\Src\SCMT\packages\Lib\AsyncIO.dll</HintPath>
-    </Reference>
-    <Reference Include="NetMQ, Version=4.0.0.1, Culture=neutral, PublicKeyToken=a6decef4ddc58b3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\NetMQ.4.0.0.1\lib\net40\NetMQ.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\Control\MibParser\MibParser\dll\NETJson\Net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -48,6 +42,9 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZeroMQ">
+      <HintPath>..\packages\Lib\ZeroMQ.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonPort.cs" />
@@ -57,15 +54,22 @@
     <Compile Include="PublishHelper.cs" />
     <Compile Include="PubSubServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RDServer.cs" />
-    <Compile Include="RequestClient.cs" />
-    <Compile Include="ResponseServer.cs" />
+    <Compile Include="ReqRspPattern\MajordomoBroker.cs" />
+    <Compile Include="ReqRspPattern\MajordomoClientApi.cs" />
+    <Compile Include="ReqRspPattern\MajordomoCommon.cs" />
+    <Compile Include="ReqRspPattern\MajordomoWorkerApi.cs" />
     <Compile Include="SubscribeClient.cs" />
     <Compile Include="SubscribeHelper.cs" />
     <Compile Include="TopicManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="..\CommonUility\CommonUility.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

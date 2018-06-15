@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{07DAACCE-62BF-4681-9014-D36515C67882}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FileManager</RootNamespace>
+    <AssemblyName>FileManager</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NetMQ">
+      <HintPath>..\packages\Lib\NetMQ.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SnmpSharpNet">
+      <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FileHandler\C5216SwPackDlConfirmDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileHandler\C5216SwPackDlConfirmDlg.Designer.cs">
+      <DependentUpon>C5216SwPackDlConfirmDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileHandler\BaseFileHandler.cs" />
+    <Compile Include="FileHandler\CfgFileCheckErrorDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileHandler\CfgFileCheckErrorDlg.Designer.cs">
+      <DependentUpon>CfgFileCheckErrorDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileHandler\CfgFileCheckStruDef.cs" />
+    <Compile Include="FileHandler\CfgFileHandler.cs" />
+    <Compile Include="FileHandler\CfgFileSelDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FileHandler\CfgFileSelDlg.Designer.cs">
+      <DependentUpon>CfgFileSelDlg.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FileHandler\DtzFileHandler.cs" />
+    <Compile Include="FileHandler\DtzFileHelper.cs" />
+    <Compile Include="FileHandler\FileHandlerFactory.cs" />
+    <Compile Include="FileHandler\IFileHandler.cs" />
+    <Compile Include="FileMgrFileHandler.cs" />
+    <Compile Include="FileMgrSendSiMsg.cs" />
+    <Compile Include="FileMgrSnmpHandle.cs" />
+    <Compile Include="FileTransMacro.cs" />
+    <Compile Include="FileTransTaskMgr.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\MibParser\MibParser\MIBDataParser.csproj">
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
+      <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
+      <Name>SCMTOperationCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FileHandler\C5216SwPackDlConfirmDlg.resx">
+      <DependentUpon>C5216SwPackDlConfirmDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileHandler\CfgFileCheckErrorDlg.resx">
+      <DependentUpon>CfgFileCheckErrorDlg.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FileHandler\CfgFileSelDlg.resx">
+      <DependentUpon>CfgFileSelDlg.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

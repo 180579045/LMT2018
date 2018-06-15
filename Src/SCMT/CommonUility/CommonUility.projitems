@@ -11,10 +11,13 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BitField.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FilePathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IASerialize.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)JsonConvertHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MibStringHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NetAddrConvertHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SerializeHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Singleton.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TimeHelper.cs" />
   </ItemGroup>
 </Project>

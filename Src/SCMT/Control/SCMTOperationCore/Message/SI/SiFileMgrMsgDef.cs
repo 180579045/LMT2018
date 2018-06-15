@@ -12,6 +12,7 @@ using CommonUility;
 
 namespace SCMTOperationCore.Message.SI
 {
+	using System.Diagnostics;
 	using SIs8 = Char;
 	using SIu8 = Byte;
 
@@ -82,12 +83,9 @@ namespace SCMTOperationCore.Message.SI
 	结构名: SI_LMTENBSI_GetFileInfoReqMsg
 	描述:  文件信息查询请求消息
 	***********************************************/
-	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
 	public class SI_LMTENBSI_GetFileInfoReqMsg : IASerialize
 	{
 		public SI_LMTENBSI_MsgHead head;
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEPATH_MAX_LEN)]
 		public byte[] s8SrcPath;		/* 查询路径 */
 
 		public SI_LMTENBSI_GetFileInfoReqMsg()
@@ -96,6 +94,16 @@ namespace SCMTOperationCore.Message.SI
 			head = new SI_LMTENBSI_MsgHead();
 			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
 			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETFILEINFO_REQ;
+		}
+
+		public SI_LMTENBSI_GetFileInfoReqMsg(string path)
+		{
+			s8SrcPath = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+			head = new SI_LMTENBSI_MsgHead();
+			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
+			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETFILEINFO_REQ;
+
+			SetPath(path);
 		}
 
 		public bool SetPath(byte[] pathBytes, int offset = 0)
@@ -181,18 +189,12 @@ namespace SCMTOperationCore.Message.SI
 	结构名: SI_SILMTENB_GetFileInfoRspMsg
 	描述:   文件信息查询响应消息
 	**************************************************/
-	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
 	public class SI_SILMTENB_GetFileInfoRspMsg : IASerialize
 	{
 		public SI_LMTENBSI_MsgHead head;
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEPATH_MAX_LEN)]
 		public byte[] s8SrcPath;		/* 查询目录 */
-
 		public byte s8GetResult;		/* 0:成功;1:失败 */
 		public ushort u16FileNum;		/* 待查询目录下的文件数 */
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_DIR_MAX_FILENUM)]
 		public SI_STRU_FileInfo[] struFileInfo;		/* 文件信息结构数组 */
 
 		public SI_SILMTENB_GetFileInfoRspMsg()
@@ -238,9 +240,12 @@ namespace SCMTOperationCore.Message.SI
 			//解出来所有的数据
 			for (int i = 0; i < SiMacroDef.SI_DIR_MAX_FILENUM; i++)
 			{
-				u = struFileInfo[i].DeserializeToStruct(bytes, offset + used);
+				var fileInfo = new SI_STRU_FileInfo();
+				u = fileInfo.DeserializeToStruct(bytes, offset + used);
 				if (-1 == u) return -1;
 				used += u;
+
+				struFileInfo[i] = fileInfo;
 			}
 
 			return used;
@@ -249,6 +254,91 @@ namespace SCMTOperationCore.Message.SI
 		public int Len => head.Len + ContentLen;
 
 		public ushort ContentLen => (ushort)(SiMacroDef.SI_FILEPATH_MAX_LEN + SiMacroDef.SI_DIR_MAX_FILENUM * Marshal.SizeOf<SI_STRU_FileInfo>());
+	}
+
+	/**************************************************
+	消息宏: O_SILMTENB_GETFILEINFO_RES
+	结构名: SI_SILMTENB_GetFileInfoRspMsg
+	描述:   文件信息查询响应消息
+	**************************************************/
+	public class SI_SILMTENB_GetFileInfoRspMsg_v2 : IASerialize
+	{
+		public SI_LMTENBSI_MsgHead head;
+		public byte[] s8SrcPath;        /* 查询目录 */
+		public byte s8GetResult;        /* 0:成功;1:失败 */
+		public byte u8Pad;
+		public byte u8Ver;
+		public byte u8FileCount;
+		public SI_STRU_FileInfo_V2[] struFileInfo;     /* 文件信息结构数组，V2 96个*/
+
+		public SI_SILMTENB_GetFileInfoRspMsg_v2()
+		{
+			s8SrcPath = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+			struFileInfo = new SI_STRU_FileInfo_V2[96];
+			head = new SI_LMTENBSI_MsgHead();
+		}
+
+		public int SerializeToBytes(ref byte[] ret, int offset)
+		{
+			throw new NotImplementedException();
+		}
+
+		public int DeserializeToStruct(byte[] bytes, int offset)
+		{
+			if (bytes.Length - offset < Len)
+			{
+				return -1;
+			}
+
+			int used = 0;
+			int u = head.DeserializeToStruct(bytes, offset + used);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.SerializeBytes(ref s8SrcPath, 0, bytes, offset + used, SiMacroDef.SI_FILEPATH_MAX_LEN);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref s8GetResult);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8Pad);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8Ver);
+			if (-1 == u) return -1;
+			used += u;
+
+			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8FileCount);
+			if (-1 == u) return -1;
+			used += u;
+
+			//Debug.WriteLine($"index filename fileversion time size");
+
+			//解出来所有的数据
+			for (int i = 0; i < 96; i++)
+			{
+				var fi = new SI_STRU_FileInfo_V2();
+				u = fi.DeserializeToStruct(bytes, offset + used);
+				if (-1 == u) return -1;
+				used += u;
+
+				struFileInfo[i] = fi;
+
+				//var fname = Encoding.Default.GetString(fi.s8FileName).Replace("\0", "");
+				//var fver = Encoding.Default.GetString(fi.s8FileMicroVer).Replace("\0", "");
+				//var ftime = fi.struFileTime.GetStrTime();
+				//Debug.WriteLine($"{i}  {fname} {fver} {ftime} {fi.u32FileLength}");
+			}
+
+			return used;
+		}
+
+		public int Len => head.Len + ContentLen;
+
+		public ushort ContentLen => (ushort) (200 + sizeof(byte) * 4 + 96 * Marshal.SizeOf<SI_STRU_FileInfo_V2>());
 	}
 
 	/*文件信息结构*/
@@ -270,6 +360,7 @@ namespace SCMTOperationCore.Message.SI
 		{
 			s8FileMicroVer = new byte[SiMacroDef.SI_FILEVER_MAX_LEN];
 			s8FileName = new byte[SiMacroDef.SI_FILENAME_MAX_LEN];
+			struFileTime = new SIDOS_DATE_TIME();
 		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
@@ -285,7 +376,7 @@ namespace SCMTOperationCore.Message.SI
 			}
 
 			int used = 0;
-			int u = SerializeHelper.SerializeBytes(ref s8FileName, 0, bytes, offset + used, SiMacroDef.SI_FILEPATH_MAX_LEN);
+			int u = SerializeHelper.SerializeBytes(ref s8FileName, 0, bytes, offset + used, SiMacroDef.SI_FILENAME_MAX_LEN);
 			if (-1 == u) return -1;
 			used += u;
 
@@ -311,7 +402,7 @@ namespace SCMTOperationCore.Message.SI
 		public int Len => ContentLen;
 
 		public ushort ContentLen => 
-			(ushort) (SiMacroDef.SI_FILENAME_MAX_LEN + sizeof(uint) + Marshal.SizeOf(struFileTime) + 
+			(ushort) (SiMacroDef.SI_FILENAME_MAX_LEN + sizeof(uint) + Marshal.SizeOf<SIDOS_DATE_TIME>() + 
 			          SiMacroDef.SI_FILEVER_MAX_LEN + sizeof(byte));
 	}
 
@@ -322,7 +413,7 @@ namespace SCMTOperationCore.Message.SI
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
 		public byte[] s8FileName;    /*40--->70文件名 2014.12.11 */
 
-		public uint u32FileLength;				/* 文件字节长度 */
+		public uint u32FileLength;					/* 文件字节长度 */
 		public SIDOS_DATE_TIME struFileTime;		/* 文件时间 */
 
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEVER_MAX_LEN)]
@@ -334,6 +425,7 @@ namespace SCMTOperationCore.Message.SI
 		{
 			s8FileMicroVer = new byte[SiMacroDef.SI_FILEVER_MAX_LEN];
 			s8FileName = new byte[70];
+			struFileTime = new SIDOS_DATE_TIME();
 		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)
@@ -350,18 +442,22 @@ namespace SCMTOperationCore.Message.SI
 
 			int used = 0;
 			used += SerializeHelper.SerializeBytes(ref s8FileName, 0, bytes, offset + used, 70);
+
+			used += 2;		// 2个字节补齐
+
 			used += SerializeHelper.DeserializeInt32(bytes, offset + used, ref u32FileLength);
 			used += struFileTime.DeserializeToStruct(bytes, offset + used);
 			used += SerializeHelper.SerializeBytes(ref s8FileMicroVer, 0, bytes, offset + used, SiMacroDef.SI_FILEVER_MAX_LEN);
 			used += SerializeHelper.DeserializeByte(bytes, offset + used, ref u8RdWrAttribute);
+
+			used += 3;		// 3个字节补齐
 
 			return used;
 		}
 
 		public int Len => ContentLen;
 
-		public ushort ContentLen => (ushort)(70 + sizeof(uint) + Marshal.SizeOf(struFileTime) +
-											 SiMacroDef.SI_FILEVER_MAX_LEN + sizeof(byte));
+		public ushort ContentLen => (ushort)(70 + sizeof(uint) + 24 + 40 + sizeof(byte) + 5);
 	}
 
 	[Serializable, StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
@@ -641,6 +737,18 @@ namespace SCMTOperationCore.Message.SI
 			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
 			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETCAPACITY_REQ;
 			s8DevName = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+		}
+
+		public SI_LMTENBSI_GetCapacityReqMsg(string path)
+		{
+			head = new SI_LMTENBSI_MsgHead();
+			head.u16MsgLength = (ushort)(head.Len + SiMacroDef.SI_FILEPATH_MAX_LEN);
+			head.u16MsgType = SiMacroDef.O_LMTENBSI_GETCAPACITY_REQ;
+			s8DevName = new byte[SiMacroDef.SI_FILEPATH_MAX_LEN];
+
+			int minPath = Math.Min(SiMacroDef.SI_FILEPATH_MAX_LEN, path.Length);
+			var pathBytes = Encoding.Default.GetBytes(path);
+			Buffer.BlockCopy(pathBytes, 0, s8DevName, 0, minPath);
 		}
 
 		public int SerializeToBytes(ref byte[] ret, int offset)

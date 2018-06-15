@@ -8,14 +8,14 @@ using MsgQueue;
 
 namespace AtpMessage.GtsMsgParse
 {
-	public class GtsMsgParseService : IDisposable
+	public class GtsMsgParseService : Singleton<GtsMsgParseService>, IDisposable
 	{
-		public static GtsMsgParseService GetInstance()
-		{
-			return Singleton<GtsMsgParseService>.GetInstance();
-		}
-
 		private bool bHadInit = false;
+
+		private GtsMsgParseService()
+		{
+			
+		}
 
 		public void InitService()
 		{

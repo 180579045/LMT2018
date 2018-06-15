@@ -9,13 +9,16 @@ using SCMTOperationCore.Message.SI;
 namespace SCMTOperationCore.Elements.BaseElement
 {
 
-	//处理SI消息的数据包
+	//处理SI消息的数据包。每个NodeB对象持有一个
 	public class SiMsgDealer
 	{
+		private string BoardIp { get; set; }
+
 		//--------------------接口-------------------------
-		public SiMsgDealer()
+		public SiMsgDealer(string ip)
 		{
 			m_siMsgBuffer = new byte[BUFF_LEN];
+			BoardIp = ip;
 		}
 
 		//处理si消息。newData是新收到的数据
@@ -87,7 +90,7 @@ namespace SCMTOperationCore.Elements.BaseElement
 			switch (head.u16MsgType)
 			{
 				case SiMacroDef.O_SILMTENB_GETFILEINFO_RES:
-					PublishHelper.PublishMsg("topic", msgBytes);	//TODO topic协商
+					PublishHelper.PublishMsg($"/{BoardIp}/O_SILMTENB_GETFILEINFO_RES", msgBytes);
 					break;
 				case SiMacroDef.O_SILMTENB_GETFILEATTRIB_RES:
 					break;

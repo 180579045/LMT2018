@@ -11,13 +11,8 @@ namespace MsgQueue
 	/// <summary>
 	/// topic管理类
 	/// </summary>
-	public class TopicManager
+	public class TopicManager : Singleton<TopicManager>
 	{
-		public static TopicManager GetInstance()
-		{
-			return Singleton<TopicManager>.GetInstance();
-		}
-
 		/// <summary>
 		/// 注册topic。
 		/// </summary>

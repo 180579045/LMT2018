@@ -6,7 +6,7 @@ using Newtonsoft.Json.Linq;
 
 namespace MIBDataParser.JSONDataMgr
 {
-    class CmdInfoList
+    public class CmdInfoList
     {
         /// <summary>
         /// key (string) : cmd English name

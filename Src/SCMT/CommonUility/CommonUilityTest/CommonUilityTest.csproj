@@ -52,10 +52,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="FilePathHelperTest.cs" />
     <Compile Include="JsonConvertTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializeHelperTest.cs" />
     <Compile Include="BitFieldTest.cs" />
+    <Compile Include="TimeHelperTest.cs" />
     <Compile Include="TopicInfoTest.cs" />
   </ItemGroup>
   <ItemGroup>

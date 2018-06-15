@@ -2,6 +2,7 @@
 using SCMTOperationCore.Elements;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading;
 using CommonUility;
 using LogManager;
 
@@ -10,14 +11,37 @@ namespace SCMTOperationCore.Control
 {
 	public class NodeBControl : ElementControl
 	{
+		#region 静态函数区
 		public static NodeBControl GetInstance()
 		{
 			return Singleton<NodeBControl>.GetInstance();
 		}
 
-		public NodeBControl()
+		public static bool SendSiMsg(string nodeIp, byte[] dataBytes)
+		{
+			return GetInstance().SendSiMsgToTarget(nodeIp, dataBytes);
+		}
+		#endregion
+
+
+		private NodeBControl()
 		{
 			mapElements = new Dictionary<string, Element>();
+		}
+
+		private bool SendSiMsgToTarget(string nodeIp, byte[] dataBytes)
+		{
+			if (!HasSameIpAddr(nodeIp))
+			{
+				Log.Debug($"待查询的节点{nodeIp}不存在，无法发送Si消息");
+				return false;
+			}
+
+			lock (lockObj)
+			{
+				var nodeb = mapElements[nodeIp] as NodeB;
+				return nodeb.SendSiMsg(dataBytes);
+			}
 		}
 
 		/// <summary>
@@ -38,20 +62,22 @@ namespace SCMTOperationCore.Control
 			string errorInfo = "";
 			if (HasSameFriendlyName(friendlyName))
 			{
-				errorInfo = $"友好名为：{friendlyName}的网元已存在";
+				errorInfo = $"友好名为{friendlyName}的基站已存在";
 				Log.Error(errorInfo);
 				throw new CustomException(errorInfo);
 			}
 
 			if (HasSameIpAddr(ip))
 			{
-				errorInfo = $"地址为：{ip}的网元已存在，网元友好名为：{GetFriendlyNameByIp(ip)}";
+				errorInfo = $"地址为{ip}的基站已存在，友好名为{GetFriendlyNameByIp(ip)}";
 				Log.Error(errorInfo);
 				throw new CustomException(errorInfo);
 			}
 
 			Element newNodeb = new NodeB(ip, friendlyName, port);
 			AddElement(ip, newNodeb);
+
+			//TODO 写入到配置文件中
 
 			return newNodeb;
 		}
@@ -64,11 +90,17 @@ namespace SCMTOperationCore.Control
 			}
 
 			RmElement(ip);
+
+			// TODO 从配置文件中删除
+
 			return true;
 		}
 
-		//判断友好名是否重复
-		private bool HasSameIpAddr(string ip)
+
+		#region 私有函数区
+
+		//判断IP是否重复
+		public bool HasSameIpAddr(string ip)
 		{
 			if (null == ip || ip.Trim().Equals(""))
 			{
@@ -81,8 +113,8 @@ namespace SCMTOperationCore.Control
 			}
 		}
 
-		//判断IP是否重复
-		private bool HasSameFriendlyName(string friendlyName)
+		//判断友好名是否重复
+		public bool HasSameFriendlyName(string friendlyName)
 		{
 			if (null == friendlyName || friendlyName.Trim().Equals(""))
 			{
@@ -114,7 +146,7 @@ namespace SCMTOperationCore.Control
 		}
 
 		//获取网元的友好名
-		private string GetFriendlyNameByIp(string ip)
+		public string GetFriendlyNameByIp(string ip)
 		{
 			if (null == ip || ip.Trim().Equals(""))
 			{
@@ -152,6 +184,20 @@ namespace SCMTOperationCore.Control
 				}
 			}
 		}
+
+		//判断节点的连接状态
+		private bool NodeHasConnected(string ip)
+		{
+			lock (lockObj)
+			{
+				var node = mapElements[ip] as NodeB;
+				return node.HasConnected();
+			}
+		}
+
+		#endregion
+
+
 
 		//key:ip， value: Element obj
 		private readonly Dictionary<string, Element> mapElements;

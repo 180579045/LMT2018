@@ -36,6 +36,8 @@ namespace MIBDataParser
         string detailDesc { get;  } // "告警原因编号， 取值  :0..2147483647。",
         string leafProperty { get;  } // 0,
         string unit { get; } // ""
+
+        bool idIndex { get; set; }		// TODO 为什么没有解析出这个属性？
     }
     public interface IReDataByTableEnglishName
     {
@@ -43,7 +45,9 @@ namespace MIBDataParser
         string indexNum { get; }
         List<IReDataByTableEnglishNameChild> childrenList { get; }
     }
-    public interface IReCmdDataByCmdEnglishName {
+
+    public interface IReCmdDataByCmdEnglishName
+    {
         string m_cmdNameEn { get; } // 命令的英文名
         string m_tableName { get; } // 命令的mib表英文名
         string m_cmdType { get;} //命令类型
