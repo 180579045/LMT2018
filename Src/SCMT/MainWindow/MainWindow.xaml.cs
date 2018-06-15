@@ -76,6 +76,11 @@ namespace SCMTMainWindow
             deleteTempFile();
 
             // TODO 读取网元配置文件
+
+            // 在异常由应用程序引发但未进行处理时发生。主要指的是UI线程。
+            Application.Current.DispatcherUnhandledException += new System.Windows.Threading.DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+            //  当某个异常未被捕获时出现。主要指的是非UI线程
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
         }
         
         /// <summary>
@@ -1231,6 +1236,25 @@ namespace SCMTMainWindow
 
             sub.Title = "NewAvalon";
             this.FileManagerLAP.Children.Add(sub);
+        }
+
+        void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            //可以记录日志并转向错误bug窗口友好提示用户
+            if (e.ExceptionObject is System.Exception)
+            {
+                Exception ex = (System.Exception)e.ExceptionObject;
+                Log.WriteLogFatal(ex);
+                MessageBox.Show(ex.Message);
+            }
+        }
+        void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            //可以记录日志并转向错误bug窗口友好提示用户
+            e.Handled = true;
+            Log.WriteLogFatal(e.Exception);
+            MessageBox.Show("消息:" + e.Exception.Message + "\r\n" + e.Exception.StackTrace);
+
         }
     }
 
