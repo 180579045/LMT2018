@@ -36,6 +36,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// </summary>
         DirectoryTreeViewItem localSelectedDTVI;
 
+        /// <summary>
+        /// 基站文件夹中被选中的项
+        /// </summary>
+        enbDirectoryTreeViewItem enbSelectedItem;
+
         public TestTwoFileManager(string strIP)
         {
             InitializeComponent();
@@ -189,7 +194,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             mycolun.DisplayMemberBinding = new Binding("FilePath");
             myview.Columns.Add(mycolun);
 
-            //右键菜单添加测试
+            //右键菜单添加
             ContextMenu myContext = new ContextMenu();
 
             MenuItem myMUItem = new MenuItem();
@@ -231,16 +236,17 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             lvLocalFileInfo.MouseMove += LvLocalFileInfo_MouseMove;
         }
 
+
+        //定义文件夹树
+        TreeView enbMainTree = new TreeView();
         /// <summary>
         /// 初始化基站文件管理模块
         /// </summary>
         private void InitEnbFileManager()
         {
-            //定义文件夹树
-            DirectoryTreeView enbMainTree = new DirectoryTreeView();
-            //enbMainTree.SelectedItemChanged += EnbMainTree_SelectedItemChanged; ;
             fmENB.Children.Add(enbMainTree);
             Grid.SetColumn(enbMainTree, 0);
+            enbMainTree.SelectedItemChanged += EnbMainTree_SelectedItemChanged;
 
             //分隔条
             GridSplitter splite = new GridSplitter();
@@ -256,35 +262,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             GridViewColumn mycolun = new GridViewColumn();
             mycolun.Header = "文件名";
             mycolun.Width = 120;
-
-            //文件名是带图标的文件名，需要使用模板
-            DataTemplate template = new DataTemplate();
-
-            //模板是一个  包含  Image  控件  和  TextBlock 控件  的 StackPanel
-            FrameworkElementFactory fileStackPanel = new FrameworkElementFactory(typeof(StackPanel));
-
-            //定义图标，并绑定
-            FrameworkElementFactory fileIcon = new FrameworkElementFactory(typeof(Image));
-            fileIcon.SetValue(Image.WidthProperty, 16.0);
-            fileIcon.SetValue(Image.HeightProperty, 16.0);
-            fileIcon.SetValue(Image.VerticalAlignmentProperty, VerticalAlignment.Center);
-            fileIcon.SetValue(Image.MarginProperty, new Thickness(0, 0, 2, 0));
-            fileIcon.SetBinding(Image.SourceProperty, new Binding("ImgSource"));
-
-            //定义文件名并绑定
-            FrameworkElementFactory fileText = new FrameworkElementFactory(typeof(TextBlock));
-            fileText.SetValue(Image.VerticalAlignmentProperty, VerticalAlignment.Center);
-            fileText.SetBinding(TextBlock.TextProperty, new Binding("FileName"));
-            fileStackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
-
-            //设置  stackpanel
-            fileStackPanel.AppendChild(fileIcon);
-            fileStackPanel.AppendChild(fileText);
-            template.VisualTree = fileStackPanel;
-
-            //该列的模板就是刚刚定义的stackpanel
-            mycolun.CellTemplate = template;
             myview.Columns.Add(mycolun);
+            mycolun.DisplayMemberBinding = new Binding("FileName");
+
 
             mycolun = new GridViewColumn();
             mycolun.Header = "修改日期";
@@ -304,15 +284,118 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             mycolun.DisplayMemberBinding = new Binding("FileType");
             myview.Columns.Add(mycolun);
 
-            mycolun = new GridViewColumn();
-            mycolun.Header = "路径";
-            mycolun.Width = 80;
-            mycolun.DisplayMemberBinding = new Binding("FilePath");
-            myview.Columns.Add(mycolun);
+            //右键菜单添加
+            ContextMenu myContext = new ContextMenu();
+
+            MenuItem myMUItem = new MenuItem();
+            myMUItem.Header = "上传文件至本地";
+            myMUItem.Name = "UploadToLocal";
+            myContext.Items.Add(myMUItem);
+
+            myMUItem = new MenuItem();
+            myMUItem.Header = "激活基站软件包";
+            myMUItem.Name = "ActiveEnbSoftwarePackage";
+            myContext.Items.Add(myMUItem);
+
+            myMUItem = new MenuItem();
+            myMUItem.Header = "激活外设软件包";
+            myMUItem.Name = "ActivePeripheralSoftwarePackage";
+            myContext.Items.Add(myMUItem);
+
+            myMUItem = new MenuItem();
+            myMUItem.Header = "版本查询";
+            myMUItem.Name = "SelectVer";
+            myContext.Items.Add(myMUItem);
+
+            myMUItem = new MenuItem();
+            myMUItem.Header = "查询系统容量";
+            myMUItem.Name = "SelectSystemCapacity";
+            myContext.Items.Add(myMUItem);
+
+            myMUItem = new MenuItem();
+            myMUItem.Header = "上传快照配置文件";
+            myMUItem.Name = "UploadConfigFile";
+            myContext.Items.Add(myMUItem);
+
+            myMUItem = new MenuItem();
+            myMUItem.Header = "刷新";
+            myMUItem.Name = "EnbRefresh";
+            myMUItem.Click += enbRefresh;
+            myContext.Items.Add(myMUItem);            
+
+            lvENBFileInfo.ContextMenu = myContext;
 
             //初始化和基站的连接
             InitMember();
             InitTargetFileTreeInfo();
+        }
+
+        private void enbRefreshList()
+        {
+            //清除文件列表信息，重新加载
+            lvENBFileInfo.Items.Clear();
+
+            //FileInfo[] fileInfos;
+            //DirectoryInfo[] dirInfos;
+
+            //try
+            //{
+            //    dirInfos = localSelectedDTVI.DirInfo.GetDirectories();
+            //    fileInfos = localSelectedDTVI.DirInfo.GetFiles();
+            //}
+            //catch
+            //{
+            //    return;
+            //}
+
+            //foreach (DirectoryInfo dirInfo in dirInfos)
+            //{
+            //    FileInfoDemo myDir = new FileInfoDemo();
+            //    myDir.FileName = dirInfo.Name;
+            //    myDir.Size = null;
+            //    myDir.LastModifyTime = dirInfo.LastAccessTime.ToString();
+            //    myDir.FilePath = dirInfo.Parent.Name;
+            //    myDir.FileType = "文件夹";
+            //    myDir.ImgSource = FileInfoGet.GetIcon(dirInfo.Name, true, true);
+
+            //    lvLocalFileInfo.Items.Add(myDir);
+            //}
+
+            //foreach (FileInfo info in fileInfos)
+            //{
+            //    FileInfoDemo myFile = new FileInfoDemo();
+            //    myFile.FileName = info.Name;
+            //    //将 long 类型的长度  转换为  千位分隔符表示
+            //    //具体的做法是，如果文件为空，长度为 0KB，否则，就算不够1024也算1KB
+            //    myFile.Size = string.Format("{0:N0}KB", (info.Length + 1023) / 1024);
+            //    myFile.LastModifyTime = info.LastAccessTime.ToString();
+            //    myFile.FilePath = info.DirectoryName;
+            //    myFile.FileType = info.Extension;
+            //    myFile.ImgSource = FileInfoGet.GetIcon(info.Name, true, false);
+
+            //    lvLocalFileInfo.Items.Add(myFile);
+            //}
+        }
+
+        private void enbRefresh(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        //enb树的选择改变事件
+        private void EnbMainTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            enbSelectedItem = e.NewValue as enbDirectoryTreeViewItem;
+
+            if(enbSelectedItem != null)
+            {                
+                if (!_fileHandler.GetBoardFileInfo(enbSelectedItem.DirInfo))
+                {
+                    Log.Error($"获取板卡{_boardIp}路径信息失败");
+                    // TODO 前台错误信息提示
+                    return;
+                }
+            }
         }
 
 
@@ -320,6 +403,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
         private FileMgrFileHandler _fileHandler;
         private string _boardIp;
+        private bool _bInRoot = true;
 
         #endregion
         // 私有成员初始化
@@ -347,7 +431,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
         private void GetFileInfoCallBack(byte[] rspBytes)
         {
-            MessageBox.Show("Here GetFileInfoCallBack");
+          //  MessageBox.Show("Here GetFileInfoCallBack");
             var rsp = new SI_SILMTENB_GetFileInfoRspMsg();
             if (-1 == rsp.DeserializeToStruct(rspBytes, 0))
             {
@@ -359,6 +443,13 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             {
                 Log.Error("基站上报数据失败");
                 return;
+            }
+
+            if (_bInRoot)
+            {
+                var strTest = Encoding.Default.GetString(rsp.s8SrcPath).Replace("\0", "");
+                InitEnbTreeView(strTest, _boardIp);
+                _bInRoot = false;
             }
 
             var fileNumber = rsp.u16FileNum;
@@ -386,19 +477,92 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         // TODO 把文件数据写入到控件，分为两个版本
         private void ShowFileInfoToView(SI_SILMTENB_GetFileInfoRspMsg rsp)
         {
-            MessageBox.Show("Here");
-        }
+            if (rsp != null)
+            {
+                for (int i = 0; i < rsp.u16FileNum; i++)
+                {
+                    var strTest = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileName).Replace("\0", "");
+                 //   MessageBox.Show(strTest);
+                }
+            }
 
+        }
+        
         private void ShowFileInfoToView(SI_SILMTENB_GetFileInfoRspMsg_v2 rsp)
         {
+            //每次获取文件信息之前，清空Listview
+            lvENBFileInfo.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                lvENBFileInfo.Items.Clear();
+            }));
+            if (rsp != null)
+            {
+                //获取父路径
+                var strFather = Encoding.Default.GetString(rsp.s8SrcPath).Replace("\0", "");
+                
+                for (int i = 0; i < rsp.u8FileCount; i++)
+                {
+                    var strTest = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileName).Replace("\0", "");
 
+                    //根据<>判断是否是文件夹，否则是文件
+                    if ((strTest[0] == '<') && (strTest[strTest.Length-1] == '>'))
+                    {
+                        //去掉<>，获取文件夹名称
+                        var strCurrent = strTest.Substring(1, strTest.Length - 2);
+
+                        //在被选中的item中添加子项
+                        enbSelectedItem.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            enbDirectoryTreeViewItem newItem = new enbDirectoryTreeViewItem(strCurrent, strFather);
+                            enbSelectedItem.Items.Add(newItem);
+
+                        }));
+                    }
+                    else
+                    {
+                        //添加文件信息到ListView中
+                        FileInfoEnb newEnbFileInfo = new FileInfoEnb();
+
+                        newEnbFileInfo.FileName = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileName).Replace("\0", "");
+                        newEnbFileInfo.Size = string.Format("{0:N0}KB", (rsp.struFileInfo[i].u32FileLength + 1023) / 1024);
+                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
+                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
+                        newEnbFileInfo.LastModifyTime = strTime;
+
+                        lvENBFileInfo.Dispatcher.BeginInvoke(new Action(() =>
+                        {
+                            lvENBFileInfo.Items.Add(newEnbFileInfo);
+                        }));
+                    }
+
+                }
+            }
         }
 
+        private void InitEnbTreeView(string strRootPath, string strENBIP)
+        {
+            int i = 0;
+            while ((i = strRootPath.IndexOf('|')) > 0)
+            {
+                string newStr = strRootPath.Substring(0,i);                
 
-        //private void EnbMainTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        //{
-        //    throw new NotImplementedException();
-        //}
+                enbMainTree.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    enbDirectoryTreeViewItem newItem = new enbDirectoryTreeViewItem(newStr, "");
+                    enbMainTree.Items.Add(newItem);
+
+                }));
+
+                strRootPath = strRootPath.Substring(i + 1);
+            }
+
+            enbMainTree.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                enbDirectoryTreeViewItem newItem = new enbDirectoryTreeViewItem(strRootPath, "");
+                enbMainTree.Items.Add(newItem);
+            }));
+
+        }
 
 
         /// <summary>

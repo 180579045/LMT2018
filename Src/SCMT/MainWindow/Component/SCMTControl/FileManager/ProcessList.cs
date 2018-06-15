@@ -299,4 +299,40 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
 
     }
+
+    /// <summary>
+    /// 自定义的文件信息类，用于绑定到ListViewItem中
+    /// </summary>
+    public class FileInfoEnb
+    {
+        /// <summary>
+        /// 获取文件的图标信息
+        /// </summary>
+        public ImageSource ImgSource { get; set; }
+
+        /// <summary>
+        /// 文件名
+        /// </summary>
+        public string FileName { get; set; }
+
+        /// <summary>
+        /// 文件类型
+        /// </summary>
+        public string FileType { get; set; }
+
+        /// <summary>
+        /// 文件大小
+        /// </summary>
+        public string Size { get; set; }
+
+        /// <summary>
+        /// 最后一次修改时间
+        /// </summary>
+        public string LastModifyTime { get; set; }
+
+        /// <summary>
+        /// 文件所在路径
+        /// </summary>
+        public string FilePath { get; set; }
+    }
 }

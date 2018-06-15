@@ -5,7 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.IO;
 using System.Windows.Media.Imaging;
+using FileManager;
+using CommonUility;
+using LogManager;
 using SCMTOperationCore.Message.SI;
+using System.Text;
 
 namespace SCMTMainWindow.Component.SCMTControl.FileManager
 {
@@ -199,6 +203,52 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             EndInit();
         }
     }
-    
-    
+
+
+    /// <summary>
+    /// 基站文件夹列表item，继承自ImagedTreeViewItem
+    /// </summary>
+    public class enbDirectoryTreeViewItem : ImagedTreeViewItem
+    {
+        string dir;
+
+        //Constructor requires SI_STRU_FileInfo object
+        public enbDirectoryTreeViewItem(string pathName, string parentPath)
+        {
+            this.dir = parentPath + "/" +  pathName;
+
+            Text = pathName;
+            Items.Add(null);
+
+            SelectedImage = new BitmapImage(new Uri("pack://application:,,/component/SCMTControl/FileManager/img/OPEN.BMP"));
+            UnselectedImage = new BitmapImage(new Uri("pack://application:,,/component/SCMTControl/FileManager/img/CLOSED.BMP"));
+        }
+
+        /// <summary>
+        /// public property to obtain DirectoryInfo
+        /// </summary>
+        public string DirInfo
+        {
+            get { return dir; }
+        }
+
+        /// <summary>
+        /// event override to populate subitem
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnExpanded(RoutedEventArgs e)
+        {
+            base.OnExpanded(e);
+            if (Items[0] == null)
+            {
+                Items.Remove(Items[0]);
+            }            
+        }
+
+
+    }
+
+
+
+
 }
