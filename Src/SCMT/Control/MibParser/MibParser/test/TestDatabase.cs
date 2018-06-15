@@ -11,7 +11,7 @@ namespace MIBDataParser.test
     {
         public void test1()
         {
-            Database dbTest = Database.GetInstance();
+            Database db = Database.GetInstance();
 
 
         }

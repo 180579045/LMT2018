@@ -123,6 +123,17 @@ namespace MIBDataParser.JSONDataMgr
             return;
         }
 
+        public bool delDatabase(string connectIp)
+        {
+            if (String.Empty == connectIp)
+                return false;
+
+            if (!mibL.DelDBList(connectIp))
+                return false;
+            return true;
+
+        }
+
         [Obsolete("Use Method bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err); instead", true)]
         public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData)
         {
@@ -498,8 +509,6 @@ namespace MIBDataParser.JSONDataMgr
             //MibInfoList tets2 = new MibInfoList();
             //tets2.GeneratedMibInfoListThread(connectIp);
             //Console.WriteLine("Db init list2 ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-
-
             return true;
         }
         /**********   私有函数   **********/

@@ -75,6 +75,13 @@ namespace MIBDataParser
         void initDatabase(string connectIp);
 
         /// <summary>
+        /// 删除断链的ip的数据库
+        /// </summary>
+        /// <param name="connectIp">信息归属的标识</param>
+        /// <returns></returns>
+        bool delDatabase(string connectIp);
+
+        /// <summary>
         /// 返回初始化 initDatabase 的结果。void ResultInitData(bool result);
         /// </summary>
         /// <param name="result">true: 初始化成功； flase: 初始化失败。</param>
