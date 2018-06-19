@@ -12,17 +12,10 @@ using SCMTOperationCore.Message.SI;
 //文件管理模块SI消息发送和处理。后面再改，先实现
 namespace FileManager
 {
-	public class FileMgrSendSiMsg
+	public static class FileMgrSendSiMsg
 	{
-		private string boardAddr;
-
-		public FileMgrSendSiMsg(string ip)
-		{
-			boardAddr = ip;
-		}
-
 		//发送获取基站目录的请求
-		public bool SendGetBoardFileInfoReq(string path)
+		public static bool SendGetBoardFileInfoReq(string path, string boardIp)
 		{
 			if (null == path)
 			{
@@ -30,11 +23,11 @@ namespace FileManager
 			}
 
 			SI_LMTENBSI_GetFileInfoReqMsg reqMsg = new SI_LMTENBSI_GetFileInfoReqMsg(path);
-			return SerializeAndSend(reqMsg);
+			return SerializeAndSend(reqMsg, boardIp);
 		}
 
 		//发送获取文件属性请求
-		public bool SendGetFileAttrReq(string path, string fileName)
+		public static bool SendGetFileAttrReq(string path, string fileName, string boardIp)
 		{
 			if (null == path || null == fileName)
 			{
@@ -43,11 +36,11 @@ namespace FileManager
 
 			SI_LMTENBSI_GetFileAttribReqMsg reqMsg = new SI_LMTENBSI_GetFileAttribReqMsg();
 			reqMsg.SetPathAndName(path, fileName);
-			return SerializeAndSend(reqMsg);
+			return SerializeAndSend(reqMsg, boardIp);
 		}
 
 		//发送查询容量请求
-		public bool SendGetCapacityReq(string path = "/ata2")
+		public static bool SendGetCapacityReq(string boardIp, string path = "/ata2")
 		{
 			if (null == path)
 			{
@@ -55,10 +48,10 @@ namespace FileManager
 			}
 
 			SI_LMTENBSI_GetCapacityReqMsg reqMsg = new SI_LMTENBSI_GetCapacityReqMsg(path);
-			return SerializeAndSend(reqMsg);
+			return SerializeAndSend(reqMsg, boardIp);
 		}
 
-		private bool SerializeAndSend(IASerialize reqMsg)
+		private static bool SerializeAndSend(IASerialize reqMsg, string boardIp)
 		{
 			try
 			{
@@ -69,7 +62,7 @@ namespace FileManager
 					return false;
 				}
 
-				bool succeed = NodeBControl.SendSiMsg(boardAddr, reqBytes);
+				bool succeed = NodeBControl.SendSiMsg(boardIp, reqBytes);
 				if (!succeed)
 				{
 					Log.Error("发送失败");

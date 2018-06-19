@@ -146,6 +146,14 @@
     <Compile Include="Component\SCMTControl\DTDataGrid.xaml.cs">
       <DependentUpon>DTDataGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\FileRename.xaml.cs">
+      <DependentUpon>FileRename.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\ImagedTreeViewItem.cs" />
+    <Compile Include="Component\SCMTControl\FileManager\ProcessList.cs" />
+    <Compile Include="Component\SCMTControl\FileManager\TestTwoFileManager.xaml.cs">
+      <DependentUpon>TestTwoFileManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
     <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
@@ -173,6 +181,14 @@
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Page Include="Component\SCMTControl\DTDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\FileManager\FileRename.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\FileManager\TestTwoFileManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -260,6 +276,8 @@
     <Content Include="Component\Configration\traceswitch.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Component\SCMTControl\FileManager\img\CLOSED.BMP" />
+    <Resource Include="Component\SCMTControl\FileManager\img\OPEN.BMP" />
     <Content Include="Data\Mib_Data.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -356,6 +374,10 @@
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FileManager\FileManager.csproj">
+      <Project>{07daacce-62bf-4681-9014-d36515c67882}</Project>
+      <Name>FileManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Message\AtpMessage\AtpMessage.csproj">
       <Project>{47e80563-d3e6-4039-bd2b-63480bbd0525}</Project>
       <Name>AtpMessage</Name>
@@ -430,6 +452,9 @@
   </Target>
   <Import Project="..\packages\CefSharp.Common.63.0.3\build\CefSharp.Common.targets" Condition="Exists('..\packages\CefSharp.Common.63.0.3\build\CefSharp.Common.targets')" />
   <Import Project="..\packages\CefSharp.Wpf.63.0.3\build\CefSharp.Wpf.targets" Condition="Exists('..\packages\CefSharp.Wpf.63.0.3\build\CefSharp.Wpf.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ZeroMQ\* "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

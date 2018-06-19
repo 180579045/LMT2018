@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SCMTOperationCore.Message.SI
 {
 	//SI消息中宏定义
-	public class SiMacroDef
+	public static class SiMacroDef
 	{
 		public const int SI_FILEPATH_MAX_LEN = 200;		/* 文件路径最大长度 */
 		public const int SI_DIR_MAX_FILENUM = 70;       /* 一个目录最大文件数 */

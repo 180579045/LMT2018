@@ -525,8 +525,12 @@ namespace MIBDataParser.JSONDataMgr
             }
             return true;
         }
-        private bool DelDBList(string ConnectIp)
+        public  bool DelDBList(string ConnectIp)
         {
+            if ( !tableInfoDbList.ContainsKey(ConnectIp) |
+                !nameEnInfoDbList.ContainsKey(ConnectIp) |
+                !oidInfoDbList.ContainsKey(ConnectIp))
+                return false;
             try
             {
                 tableInfoDbList.Remove(ConnectIp);
