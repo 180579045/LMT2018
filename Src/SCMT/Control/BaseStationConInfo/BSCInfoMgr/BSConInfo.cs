@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using System.Threading;
+using System.IO;
+using System.Text;
+
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +19,8 @@ namespace BaseStationConInfo.BSCInfoMgr
         private static object _syncLock = new object();
         private BSConInfo()///初始化
         {
-            connectBSInfo = new Dictionary<string, string>();
+            //connectBSInfo = new Dictionary<string, string>();
+            ReadJsonFileForBSInfo();
         }
         public static BSConInfo GetInstance()
         {
@@ -55,6 +62,8 @@ namespace BaseStationConInfo.BSCInfoMgr
                 return false;
 
             connectBSInfo.Add(strName, strIp);
+
+            writeBSInfoToJsonFile();
             return true;
         }
         public bool delBaseStationConInfoByName(string strName)
@@ -66,6 +75,7 @@ namespace BaseStationConInfo.BSCInfoMgr
                 return false;
 
             connectBSInfo.Remove(strName);
+            writeBSInfoToJsonFile();
             return true;
         }
 
@@ -73,6 +83,64 @@ namespace BaseStationConInfo.BSCInfoMgr
         {
             connectBSInfo = null;
             connectBSInfo = new Dictionary<string, string>();
+            writeBSInfoToJsonFile();
+        }
+
+        private void writeBSInfoToJsonFile()
+        {
+            string currentPath = AppDomain.CurrentDomain.BaseDirectory;
+            
+            string jsonFilePath = currentPath + @"..\..\" + "BaseStationConnectInfo.Json";
+            this.WriteFile(jsonFilePath, JsonConvert.SerializeObject(connectBSInfo, Formatting.Indented));
+        }
+
+        private void WriteFile(string filepath, string content)
+        {
+            try
+            {
+                FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件
+                //清空文件
+                fs.SetLength(0);
+                StreamWriter sw = new StreamWriter(fs, Encoding.Default);
+                sw.Write(content);
+                sw.Flush();
+                sw.Close();
+            }
+            catch
+            {
+                //记日志
+                Console.WriteLine("write file " + filepath + " failed!");
+            }
+        }
+
+        private void ReadJsonFileForBSInfo()
+        {
+            connectBSInfo = new Dictionary<string, string>();
+
+            string currentPath = AppDomain.CurrentDomain.BaseDirectory;
+            string jsonFilePath = currentPath + @"..\..\" + "BaseStationConnectInfo.Json";
+            if (!File.Exists(jsonFilePath))
+            {
+                return ;
+            }
+            JObject JObjThree = ReadFile(jsonFilePath);
+            if (null == JObjThree)
+                return;
+            foreach (var obj in JObjThree)
+            {
+                connectBSInfo.Add(obj.Key.ToString(), obj.Value.ToString());
+            }
+
+            
+            return ;
+        }
+        private JObject ReadFile(string sFilePath)
+        {
+            FileStream fs = new FileStream(sFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            StreamReader sr = new StreamReader(fs, Encoding.GetEncoding("gb2312"));
+            JObject JObj = JObject.Parse(sr.ReadToEnd().ToString());
+            fs.Close();
+            return JObj;
         }
     }
 }

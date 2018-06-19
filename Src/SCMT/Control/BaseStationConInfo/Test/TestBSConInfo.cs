@@ -11,6 +11,8 @@ namespace BaseStationConInfo.Test
     {
         public bool TestBSConInfoM()
         {
+            if (!testInitBaseStationConInfo())
+                return false;
             if (!testGetBaseStationConInfo())
                 return false;
             if (!testAddBaseStationConInfo())
@@ -19,6 +21,81 @@ namespace BaseStationConInfo.Test
                 return false;
             return true;
         }
+
+        /// <summary>
+        /// 出事化test
+        /// </summary>
+        /// <returns></returns>
+        private bool testInitBaseStationConInfo()
+        {
+            testDumpAll();
+            //if (!testInitBaseStationConInfo1())
+            //    return false;
+            testInitBaseStationConInfo0();
+            if (!testInitBaseStationConInfo2())
+                return false;
+
+            testDumpAll();
+            return true;
+        }
+        private void testInitBaseStationConInfo0()
+        {
+            BSConInfo bsci = BSConInfo.GetInstance();
+            string strName = "25981_";
+            string strIp = "192.168.1.";
+            for (int i = 0; i < 4; i++)
+            {
+                if (!bsci.addBaseStationConInfo(strName + i.ToString(), strIp + i.ToString()))
+                {
+                    Console.WriteLine("addBaseStationConInfo Test3 is err.");
+                    return ;
+                }
+            }
+        }
+        private bool testInitBaseStationConInfo1()
+        {
+            BSConInfo bsci = BSConInfo.GetInstance();
+            //Dictionary<string, string> cankaoValue = new Dictionary<string, string>();
+            string strName = "25981_";
+            string strIp = "192.168.1.";
+            for (int i = 0; i < 4; i++)
+            {
+                //cankaoValue.Add(strName + i.ToString(), strIp + i.ToString());
+                if (!bsci.addBaseStationConInfo(strName + i.ToString(), strIp + i.ToString()))
+                {
+                    Console.WriteLine("addBaseStationConInfo Test3 is err.");
+                    return false;
+                }
+            }
+            return true;
+        }
+        private bool testInitBaseStationConInfo2()
+        {
+            BSConInfo bsci = BSConInfo.GetInstance();
+            Dictionary<string, string> cankaoValue = new Dictionary<string, string>();
+            string strName = "25981_";
+            string strIp = "192.168.1.";
+            for (int i = 0; i < 4; i++)
+            {
+                cankaoValue.Add(strName + i.ToString(), strIp + i.ToString());
+            }
+
+            Dictionary<string, string> allConInfo = new Dictionary<string, string>();
+            if (!bsci.getBaseStationConInfo(allConInfo))
+            {
+                Console.WriteLine("getBaseStationConInfo Test1 is err");
+                return false;
+            }
+            foreach (var key in allConInfo.Keys)
+            {
+                if (!String.Equals(allConInfo[key], cankaoValue[key]))
+                    return false;
+            }
+
+            return true;
+        }
+
+
         private bool testGetBaseStationConInfo()
         {
             //sBSConInfo bsci = BSConInfo.GetInstance();
