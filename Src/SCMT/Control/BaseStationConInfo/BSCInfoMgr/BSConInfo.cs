@@ -10,6 +10,7 @@ namespace BaseStationConInfo.BSCInfoMgr
     {
         Dictionary<string, string> connectBSInfo;
         private static BSConInfo  _instance = null;/// 单例类的句柄
+        private static object _syncLock = new object();
         private BSConInfo()///初始化
         {
             connectBSInfo = new Dictionary<string, string>();
@@ -18,7 +19,13 @@ namespace BaseStationConInfo.BSCInfoMgr
         {
             if (null == _instance)
             {
-                _instance = new BSConInfo();
+                lock (_syncLock)
+                {
+                    if (null == _instance)
+                    {
+                        _instance = new BSConInfo();
+                    }
+                }
             }
             return _instance;
         }
