@@ -1,9 +1,11 @@
 ﻿using LogManager;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SCMTOperationCore.Message.SNMP;
+using SnmpSharpNet;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -120,6 +122,61 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 
 		}
 
+		[TestMethod()]
+		public void MacAddressTest()
+		{
+			string logMsg;
+			string commnuity = "public";
+			string destIpAddr = "172.27.245.92";
+
+			LmtbSnmpEx lmtbSnmpEx = new LmtbSnmpEx();
+			// 启动SNMP通信
+			int status = lmtbSnmpEx.SnmpLibStartUp(commnuity, destIpAddr);
+
+
+			List<CDTLmtbVb> lmtVbs = new List<CDTLmtbVb>();
+			// 1.3.6.1.4.1.5105.100.2.4.1.1.2.1.1.11.0.0.1.0: 001ea859a85b
+
+			CDTLmtbVb lmtVb2 = new CDTLmtbVb();
+			lmtVb2.Oid = ("1.3.6.1.4.1.5105.100.2.4.1.1.2.1.1.11");
+			lmtVbs.Add(lmtVb2);
+			
+
+			Dictionary<string, string> result = new Dictionary<string, string>();
+			Dictionary<string, string> tmpResult;
+
+			while (true)
+			{
+				if (lmtbSnmpEx.GetNextRequest(destIpAddr, lmtVbs, out tmpResult, 0))
+				{
+					lmtVbs.Clear();
+					foreach (KeyValuePair<string, string> item in tmpResult)
+					{
+						logMsg = $"oid={item.Key}, value={item.Value}";
+						//                       Log.Info(logMsg);
+
+						// 保存结果
+						result.Add(item.Key, item.Value);
+
+						CDTLmtbVb lmtVbTmp = new CDTLmtbVb { Oid = (item.Key) };
+						lmtVbs.Add(lmtVbTmp);
+					}
+				}
+				else
+				{
+					break;
+				}
+
+				foreach (KeyValuePair<string, string> val in result)
+				{
+					logMsg = $"oid={val.Key}, value={val.Value}";
+					//   Log.Info(logMsg);
+					Debug.WriteLine(logMsg);
+				}
+
+			} // end while
+
+		}
 
 
 
@@ -134,7 +191,9 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 			// 启动SNMP通信
 			int status = lmtbSnmpEx.SnmpLibStartUp(commnuity, destIpAddr);
 
-			CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = ("1.3.6.1.4.1.5105.100.1.9.4.11")};
+			// 1.3.6.1.4.1.5105.100.1.9.4.11
+			// 2.4.1.4.1.1.8
+			CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = ("1.3.6.1.4.1.5105.100.2.4.1.4.1.1.8.1") };
 //            lmtVb.Oid = ("1.3.6.1.4.1.5105.100.2.2");
 
 			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
@@ -144,10 +203,174 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 
 			lmtbSnmpEx.SnmpGetSync(lmtPdu, out requestId, destIpAddr, 0);
 			string strVal = "";
-//			lmtPdu.GetValueByOID("1.3.6.1.4.1.5105.100.1.9.4.11",out strVal);
 
 			Debug.WriteLine("---------- strVal = {0}", strVal);
 		}
+
+
+		[TestMethod()]
+		public void GetRequestIpTest()
+		{
+
+			string commnuity = "public";
+			string destIpAddr = "172.27.245.92";
+
+			LmtbSnmpEx lmtbSnmpEx = new LmtbSnmpEx();
+			// 启动SNMP通信
+			int status = lmtbSnmpEx.SnmpLibStartUp(commnuity, destIpAddr);
+
+			string strOid = "1.3.6.1.4.1.5105.100.1.2.1.1.1.5.3";
+
+			CDTLmtbVb lmtVb = new CDTLmtbVb { Oid = (strOid) };
+			//            lmtVb.Oid = ("1.3.6.1.4.1.5105.100.2.2");
+
+			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+			lmtPdu.AddVb(lmtVb);
+
+			long requestId;
+
+			lmtbSnmpEx.SnmpGetSync(lmtPdu, out requestId, destIpAddr, 0);
+			string strVal = "";
+			lmtPdu.GetValueByOID("1.3.6.1.4.1.5105.100.1.9.4.11", out strVal);
+
+			Debug.WriteLine("---------- strVal = {0}", strVal);
+		}
+
+		[TestMethod()]
+		public void GetRequestMacTest()
+		{
+
+			string commnuity = "public";
+			string destIpAddr = "172.27.245.92";
+
+			LmtbSnmpEx lmtbSnmpEx = new LmtbSnmpEx();
+			// 启动SNMP通信
+			int status = lmtbSnmpEx.SnmpLibStartUp(commnuity, destIpAddr);
+
+			string strOid = "1.3.6.1.4.1.5105.100.2.4.1.1.2.1.1.11.2";
+
+			CDTLmtbVb lmtVb = new CDTLmtbVb { Oid = (strOid) };
+			//            lmtVb.Oid = ("1.3.6.1.4.1.5105.100.2.2");
+
+			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+			lmtPdu.AddVb(lmtVb);
+
+			long requestId;
+
+			lmtbSnmpEx.SnmpGetSync(lmtPdu, out requestId, destIpAddr, 0);
+			string strVal = "";
+			lmtPdu.GetValueByOID(strOid, out strVal);
+
+			Debug.WriteLine("---------- strVal = {0}", strVal);
+		}
+
+		[TestMethod]
+		public void TimeTest()
+		{
+			string strDateTime = "2018-06-13 08:01:45";
+
+
+			byte[] bytes = SnmpHelper.SnmpStrDateTime2Bytes(strDateTime);
+
+
+			OctetString t = new OctetString(bytes);
+
+			string strDt = SnmpHelper.SnmpDateTime2String(t);
+
+			Debug.WriteLine("----");
+		}
+
+		[TestMethod]
+		public void IpTest()
+		{
+			// 1.3.6.1.4.1.5105.100.1.2.1.1.1.5.3: ac1bf5c6  172.27.245.198
+			string strIpAddr = "172.27.245.198";
+			byte[] bytes = SnmpHelper.SnmpStrIpAddr2Bytes(strIpAddr);
+
+			OctetString otString = new OctetString(bytes);
+
+			IpAddress ipAddr2 = new IpAddress(otString);
+
+			Debug.WriteLine("-----");
+		}
+
+		[TestMethod]
+		public void MacTest()
+		{
+			// 001ea859a85b
+			string strMacAddr = "001ea859a85b";
+			byte[] bytes = SnmpHelper.StrHex2Bytes(strMacAddr);
+
+			OctetString o1 = new OctetString(bytes);
+
+
+			EthernetAddress ethAddr = new EthernetAddress(bytes);
+
+			OctetString o2 = new OctetString(ethAddr);
+
+			Debug.WriteLine("--------");
+
+		}
+
+
+		[TestMethod]
+		public void Unsigned32ArrayTest()
+		{
+			string strU32Array = @"{123}";
+
+			byte[] bytes = SnmpHelper.Unsigned32Array2Bytes(strU32Array);
+
+
+			OctetString o = new OctetString(bytes);
+
+
+			Debug.WriteLine("----------");
+		}
+
+		[TestMethod]
+		public void PlnmTest()
+		{
+			string plmn = "00";
+
+			byte[] bytes = SnmpHelper.MncMccType2Bytes(plmn);
+
+			Debug.WriteLine("------------");
+		}
+
+		
+
+
+		[TestMethod]
+		public void SnmpSetIpTest()
+		{
+			string commnuity = "public";
+			string destIpAddr = "172.27.245.92";
+
+			LmtbSnmpEx lmtbSnmpEx = new LmtbSnmpEx();
+			// 启动SNMP通信
+			int status = lmtbSnmpEx.SnmpLibStartUp(commnuity, destIpAddr);
+
+			string strOid = "1.3.6.1.4.1.5105.100.1.2.1.1.1.5.3";
+			string strIpAddr = "172.27.245.198";
+
+			List<CDTLmtbVb> vbList= new List<CDTLmtbVb>();
+
+			CDTLmtbVb lmtVb = new CDTLmtbVb { Oid = (strOid),Value=(strIpAddr) };
+			lmtVb.SnmpSyntax = SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS;
+			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+			lmtPdu.AddVb(lmtVb);
+
+			long requestId;
+
+
+			lmtbSnmpEx.SnmpSetSync(lmtPdu, out requestId, destIpAddr, 0);
+
+			Debug.WriteLine("------");
+
+
+		}
+
+
 
 	}
 }

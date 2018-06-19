@@ -16,6 +16,8 @@ using System.Threading;
 using SnmpSharpNet;
 using System.Threading.Tasks;
 using LogManager;
+using System.Globalization;
+using System.Text;
 
 namespace SCMTOperationCore.Message.SNMP
 {
@@ -183,11 +185,13 @@ namespace SCMTOperationCore.Message.SNMP
 			return Res;
 		}
 
-		public static String parseDateAndTime2Octet(OctetString v)
+		/// <summary>
+		/// 将SNMP的DateTime类型转换为字符串
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+		public static String SnmpDateTime2String(OctetString v)
 		{
-
-			//OctetString  
-
 			byte[] bts = v.ToArray();
 
 			byte[] format_str = new byte[128];   //保存格式化过后的时间字符串  
@@ -205,7 +209,7 @@ namespace SCMTOperationCore.Message.SNMP
 			int second;
 
 			//int msecond;        
-			year = year = bts[0] * 256 + bts[1];
+			year = bts[0] * 256 + bts[1]; // 前2个字节为年份
 			month = bts[2];
 			day = bts[3];
 			hour = bts[4];
@@ -281,9 +285,293 @@ namespace SCMTOperationCore.Message.SNMP
 			//    i--;  
 			//}  
 
-			return System.Text.Encoding.Default.GetString(format_str);// new String(format_str);  
+			string strTmp = System.Text.Encoding.Default.GetString(format_str);
+
+			return strTmp; // new String(format_str);  
 
 		}
+
+		/// <summary>
+		/// 将日期字符串转换为byte数组，并转换为网络字节序
+		/// </summary>
+		/// <param name="strDateTime"></param>
+		/// <returns></returns>
+		public static byte[] SnmpStrDateTime2Bytes(string strDateTime)
+		{
+			DateTime dt = String2DateTime(strDateTime);
+
+			return SnmpDateTime2Bytes(dt);
+		}
+
+		/// <summary>
+		/// 将DateTime转换为byte数组，并转换为网络字节序
+		/// </summary>
+		/// <param name="dt"></param>
+		/// <returns></returns>
+		public static byte[] SnmpDateTime2Bytes(DateTime dt)
+		{
+			byte[] bytes = new byte[8];
+			if (dt != null)
+			{
+				// 年
+				ushort year = (ushort)dt.Year;
+				byte[] bytesYear = BitConverter.GetBytes(year);
+				if (BitConverter.IsLittleEndian) // 转换为网络字节序
+				{
+					Array.Reverse(bytesYear);
+				}
+				Buffer.BlockCopy(bytesYear, 0, bytes, 0, 2);
+
+				bytes[2] = Convert.ToByte(dt.Month.ToString(), 10);
+				bytes[3] = Convert.ToByte(dt.Day.ToString(), 10);
+				bytes[4] = Convert.ToByte(dt.Hour.ToString(), 10);
+				bytes[5] = Convert.ToByte(dt.Minute.ToString(), 10);
+				bytes[6] = Convert.ToByte(dt.Second.ToString(), 10);
+			}
+
+			return bytes;
+		}
+
+		/// <summary>
+		/// 将日期字符串转换为DateTime类型
+		/// </summary>
+		/// <param name="strDateTime"></param>
+		/// <param name="strFormat"></param>
+		/// <returns></returns>
+		public static DateTime String2DateTime(string strDateTime, string strFormat = "yyyy-MM-dd HH:mm:ss")
+		{
+			DateTime dt;
+
+			DateTimeFormatInfo dtForm = new DateTimeFormatInfo();
+			dtForm.ShortDatePattern = strFormat;
+
+			dt = Convert.ToDateTime(strDateTime, dtForm);
+
+			return dt;
+		}
+
+		/// <summary>
+		/// 将IP地址转换为byte数组
+		/// </summary>
+		/// <param name="strIpAddr"></param>
+		/// <returns></returns>
+		public static byte[] SnmpStrIpAddr2Bytes(string strIpAddr)
+		{
+			byte[] bytes = new byte[4];
+			if (!string.IsNullOrEmpty(strIpAddr))
+			{
+				IpAddress ipAddr = new IpAddress(strIpAddr);
+				bytes = BitConverter.GetBytes(ipAddr.ToUInt32()); //ipAddr.ToArray();
+			}
+
+			return bytes;
+		}
+
+		/// <summary>
+		/// Mac地址字符串转换为byte数组
+		/// </summary>
+		/// <param name="strMacAddr"></param>
+		/// <returns></returns>
+		public static byte[] StrMacAddr2Bytes(string strMacAddr)
+		{
+			return StrHex2Bytes(strMacAddr);
+		}
+
+		/// <summary>
+		/// 十六进制字串转换为bytes数组
+		/// </summary>
+		/// <param name="strHex"></param>
+		/// <returns></returns>
+		public static byte[] StrHex2Bytes(string strHex)
+		{
+			if (string.IsNullOrEmpty(strHex))
+			{
+				return null;
+			}
+			strHex = strHex.Replace(":", "");
+			strHex = strHex.Replace(" ", "");
+
+			int length = strHex.Length;
+			byte[] bytes = new byte[length / 2];
+
+			for (int i = 0; i < length; i += 2)
+			{
+				bytes[i / 2] = Convert.ToByte(strHex.Substring(i, 2), 16);
+			}
+
+			return bytes;
+		}
+
+		/// <summary>
+		/// 将Unsigned32Array转换为byte数组
+		/// </summary>
+		/// <param name="strUnsigned32"></param>
+		/// <returns></returns>
+		public static byte[] Unsigned32Array2Bytes(string strUnsigned32)
+		{
+			string strTmp = strUnsigned32;
+			// 删除左右大括号
+			strTmp = strTmp.Replace("{", "");
+			strTmp = strTmp.Replace("}", "");
+			// 获取数值
+			string[] strValArray = strTmp.Split(',');
+
+			// 返回值
+			byte[] bytes = new byte[strValArray.Length * 4];
+
+			// 将数值转换为byte数组
+			int index = 0;
+			foreach (string strVal in strValArray)
+			{
+				if (string.IsNullOrEmpty(strVal))
+				{
+					break;
+				}
+
+				uint intVal = UInt32.Parse(strVal);
+				byte[] bytesTmp = BitConverter.GetBytes(intVal);
+				if (BitConverter.IsLittleEndian) // 转换为网络序
+				{
+					Array.Reverse(bytesTmp);
+				}
+				Buffer.BlockCopy(bytesTmp, 0, bytes, index * 4, sizeof(UInt32));
+				index++;
+			}
+
+			return bytes;
+		}
+
+		/// <summary>
+		/// 从Octet String类型转为U32数组的字符串表示
+		/// </summary>
+		/// <param name="octStr"></param>
+		/// <returns></returns>
+		public static string OctetStrToU32Array(OctetString octStr)
+		{
+			// 数组个数
+			int valCount = octStr.Length / sizeof(UInt32);
+			if (valCount <= 0)
+			{
+				return "";
+			}
+
+			StringBuilder sb = new StringBuilder();
+			sb.Append("{");
+
+			byte[] bytes = octStr.ToArray();
+
+			// 每四个字节转换为一个UInt32数字
+			for (int i = 0; i < valCount;)
+			{
+				// 拷贝4个字节，转换为整数
+				byte[] bsTmp = new byte[sizeof(UInt32)];
+				Buffer.BlockCopy(bsTmp, 0, bytes, i * 4, sizeof(UInt32));
+				// 大小端转换
+				if (BitConverter.IsLittleEndian)
+				{
+					Array.Reverse(bsTmp);
+				}
+
+				UInt32 intTmp = BitConverter.ToUInt32(bsTmp, 0);
+				sb.Append(intTmp);
+
+				i++;
+				if (i < valCount)
+				{
+					sb.Append(",");
+				}
+			}
+
+			sb.Append("}");
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		/// 从Octet String类型转为S32数组的字符串表示
+		/// </summary>
+		/// <param name="octStr"></param>
+		/// <returns></returns>
+		public static string OctetStrToS32Array(OctetString octStr)
+		{
+			// 数字长度
+			int valCount = octStr.Length / sizeof(Int32);
+			if (valCount <= 0)
+			{
+				return "";
+			}
+
+			StringBuilder sb = new StringBuilder();
+			sb.Append("{");
+
+			byte[] bytes = octStr.ToArray();
+
+			// 每4个字节转换为一个Int32数字
+			for (int i = 0; i < valCount;)
+			{
+				byte[] bsTmp = new byte[sizeof(Int32)];
+				Buffer.BlockCopy(bsTmp, 0, bytes, i * 4, sizeof(Int32));
+				// 大小端转换
+				if (BitConverter.IsLittleEndian)
+				{
+					Array.Reverse(bsTmp);
+				}
+
+				Int32 intTmp = BitConverter.ToInt32(bsTmp, 0);
+				sb.Append(intTmp);
+
+				i++;
+				if (i < valCount)
+				{
+					sb.Append(",");
+				}
+			}
+
+			sb.Append("}");
+
+			return sb.ToString();
+		}
+
+		/// <summary>
+		/// MncMccType类型转换为byte数组
+		/// </summary>
+		/// <param name="strMncMccVal"></param>
+		/// <returns></returns>
+		public static byte[] MncMccType2Bytes(string strMncMccVal)
+		{
+			// TODO: 原来方法要减48，目前没减确定对不对？？？
+			return System.Text.Encoding.ASCII.GetBytes(strMncMccVal);
+		}
+
+		/// <summary>
+		/// 将OctetString转换为MncMccType字符串
+		/// </summary>
+		/// <param name="octStr"></param>
+		/// <returns></returns>
+		public static string OctetStr2MncMccTypeStr(OctetString octStr)
+		{
+			if (null == octStr || octStr.Length <= 0)
+			{
+				return "";
+			}
+
+			StringBuilder sb = new StringBuilder();
+			byte[] bytes = octStr.ToArray();
+
+			foreach (byte bt in bytes)
+			{
+				if (bt == 255)
+				{
+					// 无效字段不需要记录
+					break;
+				}
+
+				sb.Append((int)bt);
+			}
+
+			return sb.ToString();
+		}
+
 
 	}
 	/// <summary>

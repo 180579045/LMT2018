@@ -182,7 +182,20 @@ namespace SCMTOperationCore.Message.SNMP
 
 		public bool GetValueByOID(string strOID, out string strValue)
 		{
-			throw new NotImplementedException();
+			strValue = null;
+			bool rs = false;
+
+			foreach (KeyValuePair<string, string> vb in m_mapVBs)
+			{
+				if (vb.Key.Equals(strOID))
+				{
+					strValue = vb.Value;
+					rs = true;
+					break;
+				}
+			}
+
+			return rs;
 		}
 
 		public void assignAppendValue(stru_LmtbPduAppendInfo appendInfo)
