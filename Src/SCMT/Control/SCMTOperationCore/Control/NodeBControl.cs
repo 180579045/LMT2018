@@ -3,6 +3,7 @@ using SCMTOperationCore.Elements;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
+using BaseStationConInfo.BSCInfoMgr;
 using CommonUility;
 using LogManager;
 
@@ -23,25 +24,32 @@ namespace SCMTOperationCore.Control
 		}
 		#endregion
 
+		#region 构造函数
 
 		private NodeBControl()
 		{
 			mapElements = new Dictionary<string, Element>();
 		}
 
-		private bool SendSiMsgToTarget(string nodeIp, byte[] dataBytes)
+		#endregion
+
+		/// <summary>
+		/// 初始化已存在的节点信息
+		/// </summary>
+		/// <returns>节点的友好名和IP地址。key:友好名，value:连接IP</returns>
+		public Dictionary<string, string> GetNodebInfo()
 		{
-			if (!HasSameIpAddr(nodeIp))
+			// 从数据库模块中读取已经添加的节点信息
+			var nodesInfo = new Dictionary<string, string>();
+			if (BSConInfo.GetInstance().getBaseStationConInfo(nodesInfo))
 			{
-				Log.Debug($"待查询的节点{nodeIp}不存在，无法发送Si消息");
-				return false;
+				foreach (var nodeInfo in nodesInfo)
+				{
+					AddElement(nodeInfo.Value, nodeInfo.Key);
+				}
 			}
 
-			lock (lockObj)
-			{
-				var nodeb = mapElements[nodeIp] as NodeB;
-				return nodeb.SendSiMsg(dataBytes);
-			}
+			return nodesInfo;
 		}
 
 		/// <summary>
@@ -77,7 +85,10 @@ namespace SCMTOperationCore.Control
 			Element newNodeb = new NodeB(ip, friendlyName, port);
 			AddElement(ip, newNodeb);
 
-			//TODO 写入到配置文件中
+			if (!BSConInfo.GetInstance().addBaseStationConInfo(friendlyName, ip))
+			{
+				Log.Error("数据库模块增加节点配置失败");
+			}
 
 			return newNodeb;
 		}
@@ -91,16 +102,24 @@ namespace SCMTOperationCore.Control
 
 			RmElement(ip);
 
-			// TODO 从配置文件中删除
+			var fname = GetFriendlyNameByIp(ip);
+			if (null == fname)
+			{
+				Log.Error($"未找到{ip}对应的友好名");
+				return false;
+			}
+
+			if (!BSConInfo.GetInstance().delBaseStationConInfoByName(fname))
+			{
+				Log.Error($"数据库删除IP为{ip}的节点数据失败");
+				return false;
+			}
 
 			return true;
 		}
 
-
-		#region 私有函数区
-
-		//判断IP是否重复
-		public bool HasSameIpAddr(string ip)
+		//获取网元的友好名
+		public string GetFriendlyNameByIp(string ip)
 		{
 			if (null == ip || ip.Trim().Equals(""))
 			{
@@ -109,8 +128,13 @@ namespace SCMTOperationCore.Control
 
 			lock (lockObj)
 			{
-				return mapElements.ContainsKey(ip);
+				if (mapElements.ContainsKey(ip))
+				{
+					return mapElements[ip].FriendlyName;
+				}
 			}
+
+			return null;
 		}
 
 		//判断友好名是否重复
@@ -136,17 +160,8 @@ namespace SCMTOperationCore.Control
 			return false;
 		}
 
-		//判断网元数量是否已经到达最大值20
-		private bool HasTwentyNodebs()
-		{
-			lock (lockObj)
-			{
-				return (mapElements.Count >= 20);
-			}
-		}
-
-		//获取网元的友好名
-		public string GetFriendlyNameByIp(string ip)
+		//判断IP是否重复
+		public bool HasSameIpAddr(string ip)
 		{
 			if (null == ip || ip.Trim().Equals(""))
 			{
@@ -155,13 +170,35 @@ namespace SCMTOperationCore.Control
 
 			lock (lockObj)
 			{
-				if (mapElements.ContainsKey(ip))
-				{
-					return mapElements[ip].FriendlyName;
-				}
+				return mapElements.ContainsKey(ip);
 			}
+		}
 
-			return null;
+		// 连接基站，传入参数：友好名
+		public bool ConnectNodeb(string friendlyName)
+		{
+			var et = GetNodeByFName(friendlyName) as NodeB;
+			et?.Connect();
+			return true;
+		}
+
+		// 断开连接，传入参数：友好名
+		public bool DisConnectNodeb(string friendlyName)
+		{
+			var et = GetNodeByFName(friendlyName) as NodeB;
+			et?.DisConnect();
+			return true;
+		}
+
+		#region 私有函数区
+
+		//判断网元数量是否已经到达最大值20
+		private bool HasTwentyNodebs()
+		{
+			lock (lockObj)
+			{
+				return (mapElements.Count >= 20);
+			}
 		}
 
 		//往mapElements结构中增加元素
@@ -193,6 +230,41 @@ namespace SCMTOperationCore.Control
 				var node = mapElements[ip] as NodeB;
 				return node.HasConnected();
 			}
+		}
+
+		private bool SendSiMsgToTarget(string nodeIp, byte[] dataBytes)
+		{
+			if (!HasSameIpAddr(nodeIp))
+			{
+				Log.Debug($"待查询的节点{nodeIp}不存在，无法发送Si消息");
+				return false;
+			}
+
+			lock (lockObj)
+			{
+				var nodeb = mapElements[nodeIp] as NodeB;
+				return nodeb.SendSiMsg(dataBytes);
+			}
+		}
+
+		// 根据友好名获取节点信息
+		private Element GetNodeByFName(string name)
+		{
+			Dictionary<string, Element>.ValueCollection vc = null;
+			lock (lockObj)
+			{
+				vc = mapElements.Values;
+			}
+
+			foreach (var element in vc)
+			{
+				if (element.FriendlyName.Equals(name))
+				{
+					return element;
+				}
+			}
+
+			return null;
 		}
 
 		#endregion

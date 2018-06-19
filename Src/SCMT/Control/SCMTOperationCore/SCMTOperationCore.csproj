@@ -156,6 +156,10 @@
       <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
       <Name>MsgQueue</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BaseStationConInfo\BaseStationConInfo.csproj">
+      <Project>{8c99c928-f64f-4a49-9018-abddabc73a1a}</Project>
+      <Name>BaseStationConInfo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LogManager\LogManager.csproj">
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
       <Name>LogManager</Name>

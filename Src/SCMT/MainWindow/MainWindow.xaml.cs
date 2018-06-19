@@ -45,6 +45,7 @@ using MIBDataParser.JSONDataMgr;
 using SCMTMainWindow.Component.SCMTControl;
 using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
+using System.Windows.Media;
 
 namespace SCMTMainWindow
 {
@@ -78,9 +79,9 @@ namespace SCMTMainWindow
             // TODO 读取网元配置文件
 
             // 在异常由应用程序引发但未进行处理时发生。主要指的是UI线程。
-            Application.Current.DispatcherUnhandledException += new System.Windows.Threading.DispatcherUnhandledExceptionEventHandler(App_DispatcherUnhandledException);
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
             //  当某个异常未被捕获时出现。主要指的是非UI线程
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
         }
         
         /// <summary>
@@ -92,6 +93,13 @@ namespace SCMTMainWindow
             this.MibDataGrid.MouseMove += MibDataGrid_MouseMove;
             this.MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
             this.MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
+
+			// 解析保存的基站节点信息
+	        var nodeList = NBControler.GetNodebInfo();
+	        foreach (var node in nodeList)
+	        {
+		        AddNodeLabel(node.Key, node.Value);
+	        }
         }
 
         /// <summary>
@@ -135,19 +143,61 @@ namespace SCMTMainWindow
             ObjNode.main = this;
             //ObjNode.datagrid = this.MibDataGrid;
 
-            InitDataBase();                                                      // 创建数据库(第一个版本先加载本地的);
+            InitDataBase();                            // 创建数据库(第一个版本先加载本地的);
 
             // 向基站前端控件填入对应信息;
-            AddNodeBPageToWindow();                                              // 将基站添加到窗口页签中;
+            AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
 
-            node?.Connect();                                                  // 连接基站(第一个版本，暂时只连接一个基站);
-        }
-        
-        /// <summary>
-        /// 向对象树控件更新对象树模型以及叶节点模型;
-        /// </summary>
-        /// <param name="ItemsSource">对象树列表</param>
-        private void RefreshObj(IList<ObjNode> ItemsSource)
+			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
+		}
+
+	    private void AddNodeLabel(string friendlyName, string Ip)
+	    {
+			var nodeLabel = new MetroExpander();
+			nodeLabel.Header = friendlyName;
+		    nodeLabel.IsExpanded = true;
+			//nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
+
+			// 右键菜单的添加
+			var menu = new MetroContextMenu();
+		    var menuItem = new MetroMenuItem {Header = "连接基站"};
+		    menuItem.Click += ConnectStationMenu_Click;
+		    menu.Items.Add(menuItem);
+
+			menuItem = new MetroMenuItem() {Header = "断开连接"};
+		    menuItem.Click += DisconStationMenu_Click;
+			menu.Items.Add(menuItem);
+
+		    nodeLabel.ContextMenu = menu;
+
+			NodebList.Children.Add(nodeLabel);
+		}
+
+	    private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
+	    {
+		    var mui = sender as MenuItem;
+		    if (null != mui)
+		    {
+			    var target = ((ContextMenu) mui.Parent).PlacementTarget as MetroExpander;
+			    if (target != null) NodeBControl.GetInstance().ConnectNodeb(target.Header);
+		    }
+	    }
+
+		private void DisconStationMenu_Click(object sender, EventArgs e)
+		{
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var target = ((ContextMenu)mui.Parent).PlacementTarget as MetroExpander;
+				if (target != null) NodeBControl.GetInstance().DisConnectNodeb(target.Header);
+			}
+		}
+
+		/// <summary>
+		/// 向对象树控件更新对象树模型以及叶节点模型;
+		/// </summary>
+		/// <param name="ItemsSource">对象树列表</param>
+		private void RefreshObj(IList<ObjNode> ItemsSource)
         {
             // 将右侧叶节点容器容器加入到对象树子容器中;
             this.Obj_Root.SubExpender = this.FavLeaf_Lists;
@@ -377,7 +427,7 @@ namespace SCMTMainWindow
         #region 显示折线图事件
         private void Show_LineChart(object sender, EventArgs e)
         {
-            // 后续需要有一个界面元素管理类;
+            // TODO 后续需要有一个界面元素管理类;
             LayoutAnchorable sub = new LayoutAnchorable();
             LinechartContent content = new LinechartContent();
 
@@ -438,6 +488,8 @@ namespace SCMTMainWindow
             throw new NotImplementedException();
         }
 
+        
+
         #endregion
 
         #region 显示B方案Message列表控件
@@ -489,7 +541,7 @@ namespace SCMTMainWindow
             DbConn dbconn = new DbConn(opts);
             int ret = dbconn.CheckDatabaseTable(typeof(Event));
             if (ret < 0)
-            {                
+            {
                 return;
             }
             /*
@@ -1228,13 +1280,14 @@ namespace SCMTMainWindow
         private void MetroExpander_Click(object sender, EventArgs e)
         {
 
-            SCMTMainWindow.Component.SCMTControl.FileManager.TestTwoFileManager content = new Component.SCMTControl.FileManager.TestTwoFileManager("172.27.145.92");
+            var content = new Component.SCMTControl.FileManager.TestTwoFileManager("172.27.145.92");
 
-            LayoutAnchorable sub = new LayoutAnchorable();
+            var sub = new LayoutAnchorable
+            {
+                Content = content,
+                Title = "NewAvalon"
+            };
 
-            sub.Content = content;
-
-            sub.Title = "NewAvalon";
             this.FileManagerLAP.Children.Add(sub);
         }
 

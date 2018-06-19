@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Threading.Tasks;
+using System.Windows;
 using SCMTOperationCore.Connection;
 using SCMTOperationCore.Connection.Tcp;
 using SCMTOperationCore.Elements.BaseElement;
@@ -22,8 +24,12 @@ namespace SCMTOperationCore.Elements
 		public SiElement(string friendName, IPAddress neIp, ushort nePort = 5000)
 		: base(friendName, neIp, nePort)
 		{
-			NetworkEndPoint ep = new NetworkEndPoint(NeAddress, nePort, IPMode.IPv4);
-			connection = new TcpConnection(ep);
+			_targetPoint = new NetworkEndPoint(NeAddress, nePort, IPMode.IPv4);
+			connection = new TcpConnection(_targetPoint);
+			connection.DataReceived += OnDataReceived;
+			connection.Disconnected += OnDisconnected;
+			connection.Connected += OnConnected;
+
 			dealer = new SiMsgDealer(neIp.ToString());
 		}
 
@@ -37,13 +43,20 @@ namespace SCMTOperationCore.Elements
 		{
 			try
 			{
-				connection.DataReceived += OnDataReceived;
-				connection.Disconnected += OnDisconnected;
-				connection.Connected += OnConnected;
+				if (HasConnected())
+				{
+					var chose = MessageBox.Show("当前设备已连接，是否断开重连？", "重连确认", MessageBoxButton.YesNo, MessageBoxImage.Question);
+					if (MessageBoxResult.No == chose)
+					{
+						return;
+					}
 
-				connection.Connect();
+					DisConnect();
+				}
+
+				Task.Factory.StartNew(() => connection.Connect());
 			}
-			catch (Exception e)		//TODO 连接失败，会有异常抛出，需要处理
+			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
 			{
 				Console.WriteLine(e);
 				throw;
@@ -53,6 +66,7 @@ namespace SCMTOperationCore.Elements
 		//连接成功处理事件
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
+			MessageBox.Show("基站连接成功");
 			// 连接基站成功后，需要上传lm.dtz文件
 
 			// 需要激活界面的上控件
@@ -61,7 +75,7 @@ namespace SCMTOperationCore.Elements
 		//连接断开处理事件
 		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
-			Debug.WriteLine("disconnect server succeed");
+			MessageBox.Show("断开连接成功");
 		}
 
 		//收到数据处理事件
@@ -73,7 +87,7 @@ namespace SCMTOperationCore.Elements
 		//断开连接，在OnDisconnected中处理事件
 		public override void DisConnect()
 		{
-			connection.Close();
+			Task.Factory.StartNew(() => connection.Close());
 		}
 
 		//发送数据
@@ -84,10 +98,10 @@ namespace SCMTOperationCore.Elements
 				connection.SendBytes(msgBytes);
 				return true;
 			}
-			catch (Exception e)			//TODO 发送失败会throw异常，需要处理
+			catch (Exception e)			//发送失败会throw异常，需要处理
 			{
 				Console.WriteLine(e);
-				//throw;
+				throw;
 			}
 
 			return false;
@@ -102,9 +116,11 @@ namespace SCMTOperationCore.Elements
 		//---------------------------------属性区---------------------------------
 		public ConnectionState ConnectState => connection.State;
 
-		private readonly NetworkConnection connection;
+		private NetworkConnection connection;
 
-		private SiMsgDealer dealer;
+		private readonly SiMsgDealer dealer;
+
+		private NetworkEndPoint _targetPoint;
 	}
 
 	
