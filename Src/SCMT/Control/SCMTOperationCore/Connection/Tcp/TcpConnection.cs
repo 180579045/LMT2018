@@ -104,9 +104,9 @@ namespace SCMTOperationCore.Connection.Tcp
                 //Start receiving data
                 try
                 {
-					Debug.WriteLine($"Connect:waiting data ...");
-					//StartWaitingForHeader(BodyReadCallback);
-					StartReceiving();
+                    Debug.WriteLine($"Connect:waiting data ...");
+                    //StartWaitingForHeader(BodyReadCallback);
+                    StartReceiving();
                 }
                 catch (Exception e)
                 {
@@ -117,7 +117,7 @@ namespace SCMTOperationCore.Connection.Tcp
                 State = ConnectionState.Connected;
                 if (bytes != null)
                 {
-					Debug.WriteLine($"Connect:send date length {bytes.Length}");
+                    Debug.WriteLine($"Connect:send date length {bytes.Length}");
                     SendBytes(bytes);
                 }
             }
@@ -133,9 +133,9 @@ namespace SCMTOperationCore.Connection.Tcp
         /// </remarks>
         public override void SendBytes(byte[] bytes, SendOption sendOption = SendOption.FragmentedReliable)
         {
-			//Get bytes for length
-			//byte[] fullBytes = AppendLengthHeader(bytes);		//TODO 追加信息是个什么鬼
-			Debug.WriteLine($"SendBytes: send data length {bytes.Length}");
+            //Get bytes for length
+            //byte[] fullBytes = AppendLengthHeader(bytes);		//TODO 追加信息是个什么鬼
+            Debug.WriteLine($"SendBytes: send data length {bytes.Length}");
 
             //Write the bytes to the socket
             lock (socketLock)
@@ -167,7 +167,7 @@ namespace SCMTOperationCore.Connection.Tcp
         {
             //Get length 
             int length = GetLengthFromBytes(bytes);
-			Debug.WriteLine($"HeaderReadCallback:get bytes length:{length}");
+            Debug.WriteLine($"HeaderReadCallback:get bytes length:{length}");
 
             //Begin receiving the body
             try
@@ -199,7 +199,7 @@ namespace SCMTOperationCore.Connection.Tcp
 
             Statistics.LogFragmentedReceive(bytes.Length, bytes.Length);
 
-			Debug.WriteLine($"BodyReadCallback: recv data len {bytes.Length}");
+            Debug.WriteLine($"BodyReadCallback: recv data len {bytes.Length}");
 
             //Fire DataReceived event
             InvokeDataReceived(bytes, SendOption.FragmentedReliable);
@@ -212,9 +212,9 @@ namespace SCMTOperationCore.Connection.Tcp
         {
             try
             {
-				//StartWaitingForHeader(BodyReadCallback);
-				var state = new StateObject(50 * 1024, BodyReadCallback);	// TODO 此处先设置为接收50KB的数据
-				StartWaitingForChunk(state);		// 直接开始收数据，没有头信息
+                //StartWaitingForHeader(BodyReadCallback);
+                var state = new StateObject(50 * 1024, BodyReadCallback);	// TODO 此处先设置为接收50KB的数据
+                StartWaitingForChunk(state);		// 直接开始收数据，没有头信息
             }
             catch (Exception e)
             {
@@ -237,7 +237,7 @@ namespace SCMTOperationCore.Connection.Tcp
                         byte[] dataBytes = new byte[bytes.Length];
                         Buffer.BlockCopy(bytes, 0, dataBytes, 0, bytes.Length);
 
-						Debug.WriteLine($"StartWaitingForHandshake: dataBytes length {dataBytes.Length}, data {BitConverter.ToString(dataBytes)}");
+                        Debug.WriteLine($"StartWaitingForHandshake: dataBytes length {dataBytes.Length}, data {BitConverter.ToString(dataBytes)}");
                         callback.Invoke(dataBytes);
                     }
                 );
@@ -279,10 +279,10 @@ namespace SCMTOperationCore.Connection.Tcp
             {
                 //Double check we've not disconnected then begin receiving
                 if (State == ConnectionState.Connected || State == ConnectionState.Connecting)
-				{
-					socket.BeginReceive(state.buffer, state.totalBytesReceived, state.buffer.Length - state.totalBytesReceived, SocketFlags.None, ChunkReadCallback, state);
-				}
-			}
+                {
+                    socket.BeginReceive(state.buffer, state.totalBytesReceived, state.buffer.Length - state.totalBytesReceived, SocketFlags.None, ChunkReadCallback, state);
+                }
+            }
         }
 
         /// <summary>
@@ -301,7 +301,7 @@ namespace SCMTOperationCore.Connection.Tcp
             }
             catch (ObjectDisposedException)
             {
-				//If the socket's been disposed then we can just end there.
+                //If the socket's been disposed then we can just end there.
 				throw new HazelException("ChunkReadCallback:ObjectDisposedException");
                 return;
             }
@@ -314,12 +314,12 @@ namespace SCMTOperationCore.Connection.Tcp
             StateObject state = (StateObject)result.AsyncState;
 
             //state.totalBytesReceived += bytesReceived;      //TODO threading issues on state?
-			Debug.WriteLine($"ChunkReadCallback:received data length {bytesReceived}, total received {state.totalBytesReceived}");
+            Debug.WriteLine($"ChunkReadCallback:received data length {bytesReceived}, total received {state.totalBytesReceived}");
 
             //Exit if receive nothing
             if (bytesReceived == 0)
             {
-				Debug.WriteLine($"ChunkReadCallback:recv nothing, disconnect");
+                Debug.WriteLine($"ChunkReadCallback:recv nothing, disconnect");
                 HandleDisconnect();
                 return;
             }
@@ -327,7 +327,7 @@ namespace SCMTOperationCore.Connection.Tcp
             //If we need to receive more then wait for more, else process it.
     //        if (state.totalBytesReceived < state.buffer.Length)
     //        {
-				//Debug.WriteLine($"ChunkReadCallback:{state.totalBytesReceived} < {state.buffer.Length}, wait next ...");
+                //Debug.WriteLine($"ChunkReadCallback:{state.totalBytesReceived} < {state.buffer.Length}, wait next ...");
     //            try
     //            {
     //                StartWaitingForChunk(state);
@@ -339,22 +339,22 @@ namespace SCMTOperationCore.Connection.Tcp
     //            }
     //        }
     //        else
-			{
-				Debug.WriteLine($"ChunkReadCallback:invoke callback, buffer length {state.buffer.Length}");
-				state.callback.Invoke(state.buffer.Take(bytesReceived).ToArray());
-				state.totalBytesReceived = 0;
-				state.buffer = new byte[state.buffer.Length];	// 重新申请空间，丢弃原来的数据
-				try
-				{
-					StartWaitingForChunk(state);
-				}
-				catch (Exception e)
-				{
-					HandleDisconnect(new HazelException("An exception occured while initiating a chunk receive operation.", e));
-					return;
-				}
-			}
-		}
+            {
+                Debug.WriteLine($"ChunkReadCallback:invoke callback, buffer length {state.buffer.Length}");
+                state.callback.Invoke(state.buffer.Take(bytesReceived).ToArray());
+                state.totalBytesReceived = 0;
+                state.buffer = new byte[state.buffer.Length];	// 重新申请空间，丢弃原来的数据
+                try
+                {
+                    StartWaitingForChunk(state);
+                }
+                catch (Exception e)
+                {
+                    HandleDisconnect(new HazelException("An exception occured while initiating a chunk receive operation.", e));
+                    return;
+                }
+            }
+        }
 
         /// <summary>
         ///     Called when the socket has been disconnected at the remote host.
@@ -379,7 +379,14 @@ namespace SCMTOperationCore.Connection.Tcp
             {
                 InvokeDisconnected(e);
 
-                Dispose();
+                lock (socketLock)
+                {
+                    State = ConnectionState.NotConnected;
+
+                    if (socket.Connected)
+                        socket.Shutdown(SocketShutdown.Both);
+                    socket.Disconnect(true);
+                }
             }
         }
 
@@ -397,7 +404,7 @@ namespace SCMTOperationCore.Connection.Tcp
 
             if (invoke)
             {
-				Debug.WriteLine($"HandleConnect:connect succeed");
+                Debug.WriteLine($"HandleConnect:connect succeed");
                 InvokeConnected(e);
             }
         }
