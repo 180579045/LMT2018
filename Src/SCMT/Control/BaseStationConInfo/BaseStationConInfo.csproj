@@ -34,10 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\..\..\..\..\C#\SCMT_redis\SCMT_redis\Dll\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="ServiceStack.Text">
-      <HintPath>..\..\..\..\..\..\C#\SCMT_redis\SCMT_redis\Dll\RedisDll\ServiceStack.Text.dll</HintPath>
+      <HintPath>..\..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

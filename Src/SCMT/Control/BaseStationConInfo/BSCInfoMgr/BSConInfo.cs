@@ -10,11 +10,14 @@ using System.Text;
 using System.Text;
 using System.Threading.Tasks;
 
+using FriendName = System.String;
+using IpAddr = System.String;
+
 namespace BaseStationConInfo.BSCInfoMgr
 {
-    class BSConInfo : IBSConInfo
+    public class BSConInfo : IBSConInfo
     {
-        Dictionary<string, string> connectBSInfo;
+        Dictionary<FriendName, IpAddr> connectBSInfo;
         private static BSConInfo  _instance = null;/// 单例类的句柄
         private static object _syncLock = new object();
         private BSConInfo()///初始化
@@ -37,7 +40,7 @@ namespace BaseStationConInfo.BSCInfoMgr
             return _instance;
         }
 
-        public bool getBaseStationConInfo(Dictionary<string, string> allConInfo)
+        public bool getBaseStationConInfo(Dictionary<FriendName, IpAddr> allConInfo)
         {
             if (null == allConInfo)
                 return false;
