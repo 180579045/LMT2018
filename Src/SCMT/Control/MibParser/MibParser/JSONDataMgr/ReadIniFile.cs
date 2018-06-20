@@ -15,6 +15,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
+using CommonUtility;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -59,12 +60,9 @@ namespace MIBDataParser.JSONDataMgr
 
         public string getIniFilePath(string inifilename)
         {
-            string currentPath = AppDomain.CurrentDomain.BaseDirectory;
-            //Console.WriteLine("当前位置:{0}", currentPath);
-            //ReadIniFile iniFile = new ReadIniFile();
-            //string iniFilePath = currentPath + "JsonDataMgr.ini";
+            string currentPath = FilePathHelper.GetConfigPath();
+            string getInitPath = currentPath + inifilename;
 
-            string getInitPath = currentPath + @"..\..\" + inifilename;
             //是否存在
             if (!File.Exists(getInitPath))
             {

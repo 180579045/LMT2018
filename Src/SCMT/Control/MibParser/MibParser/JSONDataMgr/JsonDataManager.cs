@@ -14,6 +14,7 @@
 using System;
 using System.Threading;
 using System.Data;
+using CommonUtility;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -25,7 +26,7 @@ namespace MIBDataParser.JSONDataMgr
         string mibVersion;
         
         string mdbFile;
-        string jsonfilepath;
+        string _jsonFilePath;
 
         bool isMibJsonOK = false;
         bool isObjJsonOK = false;
@@ -40,9 +41,10 @@ namespace MIBDataParser.JSONDataMgr
             string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
             try
             {
-                string mdbfilePath = iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "mdbfilePath");
+				string appPath = FilePathHelper.GetAppPath();
+				string mdbfilePath = appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "mdbfilePath");
                 mdbFile = mdbfilePath + "lm.mdb";
-                this.jsonfilepath = iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
+                this._jsonFilePath = appPath + iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
 
             }
             catch (Exception ex)
@@ -121,7 +123,7 @@ namespace MIBDataParser.JSONDataMgr
             mibJsonDatat.MibParseDataSet(dataSet);//按格式解析
 
             // 把解析内容写成json文件
-            JsonFileWrite(jsonfilepath + "mib.json", mibJsonDatat.GetStringMibJson());
+            JsonFileWrite(_jsonFilePath + "mib.json", mibJsonDatat.GetStringMibJson());
             this.mibInfo = mibJsonDatat.GetStringMibJson();
 
             isMibJsonOK = true;
@@ -139,7 +141,7 @@ namespace MIBDataParser.JSONDataMgr
             ObjTressJsonData objTreeJson = new ObjTressJsonData();
             objTreeJson.ObjParseDataSet(dataSet);
 
-            JsonFileWrite(jsonfilepath + "obj.json", objTreeJson.GetStringObjTreeJson());
+            JsonFileWrite(_jsonFilePath + "obj.json", objTreeJson.GetStringObjTreeJson());
             this.objTreeInfo = objTreeJson.GetStringObjTreeJson();
 
             isObjJsonOK = true;
@@ -156,7 +158,7 @@ namespace MIBDataParser.JSONDataMgr
             ObjTressJsonData objTreeJson = new ObjTressJsonData(this.mibVersion);
             objTreeJson.TreeReferenceParseDataSet(dataSet);
 
-            JsonFileWrite(jsonfilepath + "Tree_Reference.json", objTreeJson.GetStringTreeReference());
+            JsonFileWrite(_jsonFilePath + "Tree_Reference.json", objTreeJson.GetStringTreeReference());
 
             isObjJson2OK = true;
         }
@@ -175,7 +177,7 @@ namespace MIBDataParser.JSONDataMgr
 
             JsonFile jsonObjFile = new JsonFile();
             //jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
-            jsonObjFile.WriteFile(jsonfilepath + "cmd.json", cmdJsonDatat.GetStringObjTreeJson());
+            jsonObjFile.WriteFile(_jsonFilePath + "cmd.json", cmdJsonDatat.GetStringObjTreeJson());
             this.cmdTreeInfo = cmdJsonDatat.GetStringObjTreeJson();
 
             isCmdJsonOK = true;

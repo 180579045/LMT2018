@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Windows;
+using CommonUtility;
 
 namespace SCMTOperationCore.Elements
 {
@@ -22,7 +23,7 @@ namespace SCMTOperationCore.Elements
 			try
 			{
 				this.m_IPAddress = IPAddress.Parse(neIp);
-				this.m_ObjTreeDataPath = @"Data\Tree_Reference.json";
+				this.m_ObjTreeDataPath = ConfigFileHelper.ObjTreeReferenceJson;
 
 			}
 			catch(Exception e)

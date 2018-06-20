@@ -16,6 +16,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Collections.Generic;
+using CommonUtility;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -136,12 +137,13 @@ namespace MIBDataParser.JSONDataMgr
             // 2. 获取信息
             try
             {
+                var appPath = FilePathHelper.GetAppPath();
                 readFile = new Dictionary<string, string>() {
                     { "zipFile",
-                        ( iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") + 
+                        ( appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") + 
                             iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName")) },
                     { "extractPath",
-                        iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath") } };
+                        appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath") } };
             }
             catch (Exception ex)
             {
