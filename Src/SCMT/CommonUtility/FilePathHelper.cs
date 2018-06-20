@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace CommonUility
+namespace CommonUtility
 {
 	// 文件路径操作助手
-	public class FilePathHelper
+	public static class FilePathHelper
 	{
 		// 获取当前程序运行路径。后面带有/
 		public static string GetAppPath()

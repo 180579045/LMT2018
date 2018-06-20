@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 //自定义异常信息，其他模块可以捕获异常以获得错误信息
-namespace CommonUility
+namespace CommonUtility
 {
 	public class CustomException : Exception
 	{

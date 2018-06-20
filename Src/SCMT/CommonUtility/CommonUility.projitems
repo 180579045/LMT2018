@@ -10,6 +10,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)BitField.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ConfigFileHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CustomException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)FilePathHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)IASerialize.cs" />

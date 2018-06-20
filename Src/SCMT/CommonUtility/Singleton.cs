@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonUility
+namespace CommonUtility
 {
 	/// <summary>
 	/// 泛化单例模式

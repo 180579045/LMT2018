@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonUility
+namespace CommonUtility
 {
 	public interface IASerialize
 	{

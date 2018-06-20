@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace CommonUility
+namespace CommonUtility
 {
 	/// <summary>
 	/// 序列化和反序列化类

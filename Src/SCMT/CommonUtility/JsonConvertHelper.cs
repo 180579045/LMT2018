@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Newtonsoft.Json;
 
-namespace CommonUility
+namespace CommonUtility
 {
 	/// <summary>
 	/// Json和对象转换助手

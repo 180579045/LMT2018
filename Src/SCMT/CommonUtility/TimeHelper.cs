@@ -4,7 +4,7 @@ using System.Data;
 using System.Text;
 
 //时间相关
-namespace CommonUility
+namespace CommonUtility
 {
 	public class TimeHelper
 	{

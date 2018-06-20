@@ -6,7 +6,7 @@
 //using System.Reflection;
 //using System.Text;
 
-//namespace CommonUility
+//namespace CommonUtility
 //{
 //	[System.AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
 //	public sealed class BitInfoAttribute : Attribute

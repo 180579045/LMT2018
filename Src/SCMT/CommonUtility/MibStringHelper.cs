@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CommonUility
+namespace CommonUtility
 {
 	// 从MIB取出的字符串处理助手
 
