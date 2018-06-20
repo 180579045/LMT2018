@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AtpMessage.MsgDefine;
-using CommonUility;
+using CommonUtility;
 
 namespace AtpMessage.LinkMgr
 {

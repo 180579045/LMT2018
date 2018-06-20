@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using BaseStationConInfo.BSCInfoMgr;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 
 //节点管理功能
@@ -248,7 +248,7 @@ namespace SCMTOperationCore.Control
 		}
 
 		// 根据友好名获取节点信息
-		private Element GetNodeByFName(string name)
+		public Element GetNodeByFName(string name)
 		{
 			Dictionary<string, Element>.ValueCollection vc = null;
 			lock (lockObj)

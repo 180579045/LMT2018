@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using CommonUility;
+using CommonUtility;
 using SCMTOperationCore.Elements;
 
 namespace SCMTOperationCore.Control

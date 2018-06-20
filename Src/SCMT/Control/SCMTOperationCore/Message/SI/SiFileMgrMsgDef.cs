@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using CommonUility;
+using CommonUtility;
 
 
 //文件管理模块需要用到的SI消息结构体定义文件
@@ -246,6 +246,11 @@ namespace SCMTOperationCore.Message.SI
 				used += u;
 
 				struFileInfo[i] = fileInfo;
+
+				//var fname = Encoding.Default.GetString(fileInfo.s8FileName).Replace("\0", "");
+				//var fver = Encoding.Default.GetString(fileInfo.s8FileMicroVer).Replace("\0", "");
+				//var ftime = fileInfo.struFileTime.GetStrTime();
+				//Debug.WriteLine($"{i}  {fname} {fver} {ftime} {fileInfo.u32FileLength}");
 			}
 
 			return used;
@@ -395,6 +400,8 @@ namespace SCMTOperationCore.Message.SI
 			u = SerializeHelper.DeserializeByte(bytes, offset + used, ref u8RdWrAttribute);
 			if (-1 == u) return -1;
 			used += u;
+
+			used += 3;		// 补齐3个字节
 
 			return used;
 		}

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using CommonUility;
+using CommonUtility;
 
 //IP报文头，UDP报文头的定义和解析
 namespace AtpMessage.GtsMsgParse

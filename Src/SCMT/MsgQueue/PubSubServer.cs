@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CommonUility;
+using CommonUtility;
 using ZeroMQ;
 
 namespace MsgQueue

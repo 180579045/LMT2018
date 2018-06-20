@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using CommonUility;
+using CommonUtility;
 
 namespace AtpMessage.MsgDefine
 {

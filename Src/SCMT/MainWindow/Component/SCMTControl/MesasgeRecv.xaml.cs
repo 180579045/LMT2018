@@ -17,7 +17,7 @@ using CDLBrowser.Parser.BPLAN;
 using MsgQueue;
 using SCMTMainWindow.Controls.PlanBParser;
 using Newtonsoft.Json;
-using CommonUility;
+using CommonUtility;
 
 namespace SCMTMainWindow.Component.SCMTControl
 {

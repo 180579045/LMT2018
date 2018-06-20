@@ -2,7 +2,7 @@
 using System.Text;
 using System.Collections.Generic;
 using System.Net;
-using CommonUility;
+using CommonUtility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SCMTOperationCore.Connection;
 using SCMTOperationCore.Elements;

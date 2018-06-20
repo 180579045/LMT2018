@@ -2,7 +2,7 @@
 using System.Timers;
 using AtpMessage.MsgDefine;
 using AtpMessage.SessionMgr;
-using CommonUility;
+using CommonUtility;
 using MsgQueue;
 using Timer = System.Timers.Timer;
 

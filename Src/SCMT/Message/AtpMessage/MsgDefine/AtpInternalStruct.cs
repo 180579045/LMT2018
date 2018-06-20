@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
-using CommonUility;
+using CommonUtility;
 using OSP_MSGSELECT = System.UInt16;	/*消息类型定义*/
 using OSP_MSGSIZE = System.UInt16;      /*消息长度定义*/
 using OSP_LINKID = System.UInt16;       /*链路ID定义*/

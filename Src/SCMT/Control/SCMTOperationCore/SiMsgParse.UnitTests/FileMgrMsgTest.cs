@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
-using CommonUility;
+using CommonUtility;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SCMTOperationCore.Message.SI;
 

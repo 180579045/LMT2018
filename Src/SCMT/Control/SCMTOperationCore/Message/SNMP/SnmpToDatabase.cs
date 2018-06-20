@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
@@ -12,7 +12,7 @@ using SnmpSharpNet;
 // snmp 到 database 的所需接口封装
 namespace SCMTOperationCore.Message.SNMP
 {
-	public class SnmpToDatabase
+	public static class SnmpToDatabase
 	{
 		#region 公共静态接口
 
@@ -173,6 +173,41 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			return vbList;
+		}
+
+		/// <summary>
+		/// 根据mibname获取该项对应的取值范围，并分割
+		/// </summary>
+		/// <param name="mibName">mib的叶子节点</param>
+		/// <param name="targetIp">目标IP</param>
+		/// <returns>null:查询该MIB信息失败</returns>
+		public static Dictionary<int, string> GetValueRangeByMibName(string mibName, string targetIp)
+		{
+			string error;
+			Dictionary<string, IReDataByEnglishName> retData = new Dictionary<string, IReDataByEnglishName> { [mibName] = null };
+			if (!Database.GetInstance().getDataByEnglishName(retData, targetIp, out error))
+			{
+				return null;
+			}
+
+			string mvr = retData[mibName].mangerValue;
+			if (string.IsNullOrWhiteSpace(mvr)) return null;
+
+			return MibStringHelper.SplitManageValue(mvr);
+		}
+
+		// 根据mib名称获取节点信息
+		public static IReDataByEnglishName GetMibNodeInfoByName(string mibName, string targetIp)
+		{
+			var mapName2Data = new Dictionary<string, IReDataByEnglishName> { [mibName] = null };
+			string errorInfo;
+
+			if (Database.GetInstance().getDataByEnglishName(mapName2Data, targetIp, out errorInfo))
+			{
+				return mapName2Data[mibName];
+			}
+
+			return null;
 		}
 
 		#endregion

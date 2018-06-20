@@ -6,7 +6,7 @@ using System.Windows.Media;
 using System.IO;
 using System.Windows.Media.Imaging;
 using FileManager;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Message.SI;
 using System.Text;

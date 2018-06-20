@@ -1,6 +1,6 @@
 ﻿using CDLBrowser.Parser.BPLAN;
 using CDLBrowser.Parser.Document.Event;
-using CommonUility;
+using CommonUtility;
 using MsgQueue;
 using SCMTMainWindow.Component.ViewModel;
 using System;

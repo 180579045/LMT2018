@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 
 namespace MsgQueue
