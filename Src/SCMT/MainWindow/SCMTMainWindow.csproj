@@ -278,6 +278,7 @@
     </Content>
     <Resource Include="Component\SCMTControl\FileManager\img\CLOSED.BMP" />
     <Resource Include="Component\SCMTControl\FileManager\img\OPEN.BMP" />
+    <Resource Include="Component\SCMTControl\FileManager\img\file.bmp" />
     <Content Include="Data\Mib_Data.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
