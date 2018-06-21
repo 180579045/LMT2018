@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Message.SNMP;
 
@@ -22,7 +22,7 @@ namespace FileManager.FileHandler
 		/// <param name="srcFileFullName"></param>
 		/// <param name="dstFilePath"></param>
 		/// <returns></returns>
-		public override ExecuteResult DoHandle(string srcFileFullName, string dstFilePath)
+		public override ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath)
 		{
 			if (!IsValidPath(srcFileFullName) || !IsValidPath(dstFilePath))
 			{
@@ -194,11 +194,13 @@ namespace FileManager.FileHandler
 				if (!confirmDlg.CmdSucceedFlag)
 				{
 					throw new CustomException("命令执行失败");
-					//return ExecuteResult.UpgradeFailed;
 				}
-
-				// TODO 进度条
 			}
+
+			var swPackInfo = new CSWPackPlanProcInfoMgr();
+			swPackInfo.SetInfo(confirmDlg.GetDlProcInfo());
+			WorkingForUpgrade = true;
+			UFO = swPackInfo;
 
 			return ExecuteResult.UpgradeFinish;
 		}
@@ -210,10 +212,18 @@ namespace FileManager.FileHandler
 		private bool GetDtzFileDetailInfo(string dtzFilePath, ref TswPackInfo swPackInfo)
 		{
 			CompressFileHead headinfo = new CompressFileHead();
-			var result = DtzFileHelper.Aom_Zip_GetFileHead_OupPut(dtzFilePath, ref headinfo);
-			if (0 != result)
+			try
 			{
-				Log.Error("获取压缩文件头信息失败");
+				var result = DtzFileHelper.Aom_Zip_GetFileHead_OupPut(dtzFilePath, ref headinfo);
+				//if (0 != result)
+				//{
+				//	Log.Error("获取压缩文件头信息失败");
+				//	return false;
+				//}
+			}
+			catch (Exception e)
+			{
+				Log.Error($"获取压缩文件头信息失败，{e.Message}");
 				return false;
 			}
 
@@ -313,7 +323,13 @@ namespace FileManager.FileHandler
 		// 判断是否存在详细信息节点
 		private bool IsExistVerDetailNode(string ipAddr)
 		{
-			throw new NotImplementedException();        //ling:3712
+			var mibNode = SnmpToDatabase.GetMibNodeInfoByName("swPackDetailVersion", ipAddr);
+			if (null == mibNode)
+			{
+				return false;
+			}
+
+			return (string.IsNullOrWhiteSpace(mibNode.oid) || string.IsNullOrEmpty(mibNode.oid));
 		}
 
 		//查询running sw pack version。index=.1;.2;.3
@@ -384,66 +400,4 @@ namespace FileManager.FileHandler
 
 		#endregion
 	}
-
-
-	#region 和dtz相关的struct定义
-
-	public struct TswPackInfo
-	{
-		public int nSWEqpType;					//软件包大类型，是外设还是基站软件包
-		public int nSWPackType;					//软件包类型
-		public string csSWPackName;				//软件包名称
-		public string csSWPackVersion;			//软件包版本号
-		public string csSWPackRelayVersion;		//软件包依赖版本
-		public string csSWPackTypeName;			//RRU软件
-	}
-
-	public struct TswPackDlProcInfo
-	{
-		public string FileTypeName;			//软件包类型名
-		public string Index;                //命令下发的索引号
-		public long SetReqId;                //流水号，对外提供，在探出进度条时使用。
-		public string m_csGetProcCmdName;       //进度获取命令名
-		public ulong FileSize;            //下载的文件大小
-		public bool IsSwPack;                //是否是基站软件包
-		public string ActiveIndValue;       //激活标志
-		public string FileName;				//文件名称
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct CompressFileHead
-	{
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-		public byte[] u8FileCheckHead;								/*必须是固定的数字*/
-
-		public byte u8FileVersion;									/*文件版本，只能压缩，解压缩比自己版本小的*/
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 10)]
-		public byte[] u8Reserve;									/*保留字节*/
-
-		public byte u8SuitableType;									/*适用网元类型*/
-		public ushort u16SuitableVersion;							/*适用网元型号*/
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
-		public char[] u8ZipFileBigVersion;							/*文件大版本30字节*/
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
-		public char[] u8ZipFileRelayVersion;						/*文件大版本依赖关系30字节*/
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 30)]
-		public char[] u8FileDateTime;								/*文件生成日期30字节*/
-
-		public byte u8ZipFileType;									/*压缩包类型，新增加，占用了一个保留字节*/
-		public byte u8ZipPatchType;									/*补丁包类型，占用了一个保留字节*/
-		public byte u8SubDtzNum;									/*拆分后小包的个数，0和1为未差分，大于1为小包个数，占用了一个保留字节*/
-		public byte u8SubFileNameType;								/*小文件名长度类型，0为40字节，1为240字节。占用了一个保留字节*/
-
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 36)]
-		public byte[] u8Reserve2;									/*保留字节，剩下36个字节*/
-
-		public ushort u16FileNum;									/*子文件个数*/
-	};
-	
-	
-	#endregion
-
 }

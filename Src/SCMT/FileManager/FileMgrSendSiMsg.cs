@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Control;
 using SCMTOperationCore.Message.SI;

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Message.SNMP;
 
@@ -23,7 +23,7 @@ namespace FileManager.FileHandler
 
 		#region 虚函数区
 
-		public override ExecuteResult DoHandle(string srcFileFullName, string dstFilePath)
+		public override ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath)
 		{
 			CfgFileSelDlg dlg = new CfgFileSelDlg();
 			var ret = dlg.ShowDialog();
@@ -74,7 +74,7 @@ namespace FileManager.FileHandler
 				dstPath = FileTransMacro.STR_FILEPATH_RNC;
 			}
 
-			return base.DoHandle(srcFileFullName, dstPath);
+			return base.DoPutFile(srcFileFullName, dstPath);
 		}
 
 		protected override Transfiletype5216 GetTransFileType()

@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows.Threading;
 using FileManager;
-using CommonUility;
+using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Message.SI;
 
@@ -200,6 +200,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             MenuItem myMUItem = new MenuItem();
             myMUItem.Header = "下载至基站";
             myMUItem.Name = "Menu01";
+            myMUItem.Click += downloadFileToBoard_Click;
             myContext.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
@@ -896,6 +897,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 FileInfoGet.ShellExecuteEx(ref FileInfo);
 
             }
+        }
+
+        private void downloadFileToBoard_Click(object sender, RoutedEventArgs e)
+        {
+            _fileHandler.SendFileToRemote("e:/LTEV5SF.dtz", "/ata2");
         }
 
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FileManager.FileHandler
 {
-	public class DtzFileHelper
+	public static class DtzFileHelper
 	{
 		[DllImport("LmtBZipUtil.dll", EntryPoint = "UnpackZipPackageSplitForDTFile", CallingConvention = CallingConvention.Cdecl)]
 		public static extern long UnpackZipPackageSplitForDTFile(string lpcstrSrcPath, string lpcstrDestPath, ref int subFileNum);

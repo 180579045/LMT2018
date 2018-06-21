@@ -16,11 +16,11 @@ namespace FileManager.FileHandler
 
 			string EXT = ext.ToUpper();
 
-			if (EXT.Equals("CFG"))
+			if (EXT.IndexOf("CFG", StringComparison.Ordinal) >= 0)
 			{
 				handler = new CfgFileHandler(targetIp);
 			}
-			else if (EXT.Equals("DTZ"))
+			else if (EXT.IndexOf("DTZ", StringComparison.Ordinal) >= 0)
 			{
 				handler = new DtzFileHandler(targetIp);
 			}

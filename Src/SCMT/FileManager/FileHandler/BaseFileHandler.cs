@@ -12,11 +12,22 @@ namespace FileManager.FileHandler
 		public BaseFileHandler(string ip)
 		{
 			boardAddr = ip;
+
+			WorkingForUpgrade = false;
+			WorkingForFileTrans = false;
+			TFO = null;
+			UFO = null;
 		}
 
 		#region 虚函数区
 
-		public virtual ExecuteResult DoHandle(string srcFileFullName, string dstFilePath)
+		/// <summary>
+		/// 上传文件到基站侧
+		/// </summary>
+		/// <param name="srcFileFullName">源文件名，包括绝对路径</param>
+		/// <param name="dstFilePath">目的路径</param>
+		/// <returns>执行结果。成功，失败，用户取消</returns>
+		public virtual ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath)
 		{
 			Transfiletype5216 type = GetTransFileType();
 
@@ -41,7 +52,9 @@ namespace FileManager.FileHandler
 				return ExecuteResult.UpgradeFailed;
 			}
 
-			// TODO AddFileTransProcess();
+			TFO = transFileObj;
+			WorkingForFileTrans = true;
+			WorkingTaskId = taskId;
 
 			return ExecuteResult.UpgradeFinish;
 		}
@@ -51,8 +64,42 @@ namespace FileManager.FileHandler
 			return Transfiletype5216.TRANSFILE_generalFile;
 		}
 
-		#endregion
+		/// <summary>
+		/// 上传文件到本地
+		/// </summary>
+		/// <param name="localPath">本地路径</param>
+		/// <param name="remoteFullPath">板卡上文件路径</param>
+		/// <returns>操作结果</returns>
+		public virtual ExecuteResult DoGetFile(string localPath, string remoteFullPath)
+		{
+			long reqId = 0;
+			long taskId = 0;
 
+			var type = GetTransFileType();
+			var tfo = FileTransTaskMgr.FormatTransInfo(localPath, remoteFullPath, type, TRANSDIRECTION.TRANS_UPLOAD);
+			var result = FileTransTaskMgr.SendTransFileTask(boardAddr, tfo, ref taskId, ref reqId);
+			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == result)
+			{
+				return ExecuteResult.UpgradeFailed;
+			}
+
+			TFO = tfo;
+			WorkingForFileTrans = true;
+			WorkingTaskId = taskId;
+
+			return ExecuteResult.UpgradeFinish;
+		}
+
+		public CDTCommonFileTrans TFO { get; protected set; }		// trans file object
+
+		public CSWPackPlanProcInfoMgr UFO { get; protected set; }	// upgrade file object
+
+		public bool WorkingForUpgrade { get; protected set; }
+
+		public bool WorkingForFileTrans { get; protected set; }
+
+		public long WorkingTaskId { get; protected set; }
+		#endregion
 
 		#region 基类函数区
 

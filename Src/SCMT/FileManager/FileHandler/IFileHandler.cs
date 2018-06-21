@@ -9,7 +9,10 @@ namespace FileManager.FileHandler
 {
 	public interface IFileHandler
 	{
-		// 开始干活吧
-		ExecuteResult DoHandle(string srcFileFullName, string dstFilePath);
+		// 本地文件到远端
+		ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath);
+
+		// 远端文件到本地
+		ExecuteResult DoGetFile(string localPath, string remoteFullPath);
 	}
 }

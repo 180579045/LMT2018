@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using CommonUility;
+using CommonUtility;
 using FileManager.FileHandler;
 using LogManager;
 using MIBDataParser;
@@ -46,6 +46,11 @@ namespace FileManager
 			_mTInfo.FileSize = (ulong)fileInfo.Length;
 		}
 
+		public TswPackDlProcInfo GetDlProcInfo()
+		{
+			return _mTInfo;
+		}
+
 		#endregion
 
 		#region 系统事件处理
@@ -79,7 +84,7 @@ namespace FileManager
 			}
 
 			// 激活类型
-			var activeTypeMap = GetValueRangeByMibName(mibname, TargetIp);
+			var activeTypeMap = SnmpToDatabase.GetValueRangeByMibName(mibname, TargetIp);
 			if (null == activeTypeMap)
 			{
 				throw new CustomException("获取软件包激活类型失败");
@@ -126,7 +131,7 @@ namespace FileManager
 				IDC_COMBO_FWACTIVEFLAG.Enabled = false;	//固件激活
 			}
 
-			var fwActive = GetValueRangeByMibName("swPackPlanFwActiveIndicator", TargetIp);
+			var fwActive = SnmpToDatabase.GetValueRangeByMibName("swPackPlanFwActiveIndicator", TargetIp);
 			if (null == fwActive)
 			{
 				throw new CustomException("获取软件包固件激活指示失败");
@@ -217,8 +222,8 @@ namespace FileManager
 
 			var subFileCount = Convert.ToString(subFileNum);
 
-			var pSwPackMibNode = GetMibNodeInfoByName("swPackPlanSubPackNumber");
-			var pPeriMibNode = GetMibNodeInfoByName("peripheralPackPlanSubPackNumber");
+			var pSwPackMibNode = SnmpToDatabase.GetMibNodeInfoByName("swPackPlanSubPackNumber", TargetIp);
+			var pPeriMibNode = SnmpToDatabase.GetMibNodeInfoByName("peripheralPackPlanSubPackNumber", TargetIp);
 
 			// 外设的
 			if (FileTransMacro.SWPACK_ENB_PERIPHERAL_TYPE == _mTSwPackInfo.nSWEqpType)
@@ -366,48 +371,12 @@ namespace FileManager
 			}
 		}
 
-		/// <summary>
-		/// 根据mibname获取该项对应的取值范围，并分割
-		/// </summary>
-		/// <param name="mibName">mib的叶子节点</param>
-		/// <param name="targetIp">目标IP</param>
-		/// <returns>null:查询该MIB信息失败</returns>
-		private Dictionary<int, string> GetValueRangeByMibName(string mibName, string targetIp)
-		{
-			string error;
-			Dictionary<string, IReDataByEnglishName> retData = new Dictionary<string, IReDataByEnglishName> {[mibName] = null};
-			if (!Database.GetInstance().getDataByEnglishName(retData, targetIp, out error))
-			{
-				return null;
-			}
-
-			//TODO string mvr = retData[mibName].managerValue;
-			string mvr = "";
-			if (string.IsNullOrWhiteSpace(mvr)) return null;
-
-			return MibStringHelper.SplitManageValue(mvr);
-		}
-
 		// 设置激活时间控件状态
 		private void SetTimeCtrlStatus()
 		{
 			var activeChoice = IDC_COMBO_ACTIVEFLAG.SelectedText;
 			dateTimePicker1.Enabled = activeChoice.Equals("定时激活");
 			dateTimePicker2.Enabled = activeChoice.Equals("定时激活");
-		}
-
-		// 根据mib名称获取节点信息。TODO 可以封装成一个单独的接口
-		private IReDataByEnglishName GetMibNodeInfoByName(string mibName)
-		{
-			var mapName2Data = new Dictionary<string, IReDataByEnglishName> {[mibName] = null};
-			string errorInfo;
-
-			if (Database.GetInstance().getDataByEnglishName(mapName2Data, TargetIp, out errorInfo))
-			{
-				return mapName2Data[mibName];
-			}
-
-			return null;
 		}
 
 		// 获取激活时间字符串
