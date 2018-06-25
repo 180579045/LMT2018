@@ -360,7 +360,7 @@ namespace SCMTOperationCore.Message.SNMP
 		// 打包执行Get命令所需的pdu
 		private bool PackGetCmdPdu(string cmdName, string index, string ip, bool bNeedCheck, ref CDTLmtbPdu pdu)
 		{
-			// 返回的结果中leaflist是一个叶节点名的集合，不是oid的集合
+			// TODO 返回的结果中leaflist是一个叶节点oid的集合
 			var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(cmdName, ip);
 			if (null == cmdInfo)
 			{
@@ -368,7 +368,8 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			// 把查到的命令行对应的leaflist转换为vblist
-			var oidList = SnmpToDatabase.ConvertNameToOid(cmdInfo.m_leaflist, ip);
+			//var oidList = SnmpToDatabase.ConvertNameToOid(cmdInfo.m_leaflist, ip);
+			var oidList = cmdInfo.m_leaflist;
 
 			// 在此处校验索引是否有效
 			if (bNeedCheck)

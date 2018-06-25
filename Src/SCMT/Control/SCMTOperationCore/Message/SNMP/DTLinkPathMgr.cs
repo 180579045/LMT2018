@@ -30,7 +30,10 @@ namespace SCMTOperationCore.Message.SNMP
 			{
 				if (!m_mapIpToSnmpObj.ContainsKey(destIp))
 				{
-					throw new CustomException($"地址为{destIp}的Snmp实例尚未初始化");
+					LmtbSnmpEx lmtbSnmpEx = new LmtbSnmpEx();
+					// 启动SNMP实例
+					int status = lmtbSnmpEx.SnmpLibStartUp(SnmpToDatabase.GetCommunityString(), destIp);
+					m_mapIpToSnmpObj.Add(destIp, lmtbSnmpEx);
 				}
 
 				return m_mapIpToSnmpObj[destIp];

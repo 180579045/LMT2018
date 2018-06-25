@@ -50,7 +50,7 @@ namespace SCMTOperationCore.Message.SNMP
 		// 根据命令名找到命令对应的所有信息
 	    public static IReCmdDataByCmdEnglishName GetCmdInfoByCmdName(string cmdName, string ip)
 	    {
-			throw new NotImplementedException();
+		    return Database.GetInstance().getCmdDataByCmdEnglishName(cmdName, ip);
 	    }
 
 		// 获取公共MIB前缀。最后带.字符
@@ -118,7 +118,7 @@ namespace SCMTOperationCore.Message.SNMP
 			{
 				if (!Database.GetInstance().getDataByEnglishName(name, out temp, ip, out errorMsg))
 				{
-					throw new CustomException("待查找的节点名{name}不存在，请确认MIB版本后重试");
+					throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
 				}
 
 				olidList.Add(temp.oid);
