@@ -329,7 +329,7 @@ namespace FileManager.FileHandler
 				return false;
 			}
 
-			return (string.IsNullOrWhiteSpace(mibNode.oid) || string.IsNullOrEmpty(mibNode.oid));
+			return (!string.IsNullOrWhiteSpace(mibNode.oid) && !string.IsNullOrEmpty(mibNode.oid));
 		}
 
 		//查询running sw pack version。index=.1;.2;.3
@@ -338,12 +338,13 @@ namespace FileManager.FileHandler
 			var cmdName = "GetRunningSWPack";
 			var mibName = "swPackRunningVersion";
 
-			if (_bDetailFlag)
-			{
-				cmdName = "GetRunningSWPackDetailVer";
-				mibName = "swPackRunningDetailVersion";
-			}
+			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+		}
 
+		private string GetRunningSwPackVerDetail(string index)
+		{
+			var cmdName = "GetRunningSWPackDetailVer";
+			var mibName = "swPackRunningDetailVersion";
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
