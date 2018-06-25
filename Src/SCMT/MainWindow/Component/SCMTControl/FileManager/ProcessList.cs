@@ -308,8 +308,34 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <summary>
         /// 获取文件的图标信息
         /// </summary>
-        public ImageSource ImgSource { get; set; }
+        ImageSource imgSource;
+        public ImageSource ImgSource {
+            get {
+                if(isDirectory)
+                {
+                    imgSource = new BitmapImage(new Uri("pack://application:,,/component/SCMTControl/FileManager/img/CLOSED.BMP"));
+                    return imgSource;
+                }
+                else
+                {
+                    imgSource = new BitmapImage(new Uri("pack://application:,,/component/SCMTControl/FileManager/img/file.bmp"));
+                    return imgSource;
+                }
+            }
+            set {
+                imgSource = value;
+            }
+        }
 
+        /// <summary>
+        /// 是否是文件夹，根据类型不同选择不同的图标显示
+        /// </summary>
+        bool isDirectory;
+        public bool IsDirectory
+        {
+            get { return isDirectory; }
+            set { isDirectory = value; }
+        }
         /// <summary>
         /// 文件名
         /// </summary>

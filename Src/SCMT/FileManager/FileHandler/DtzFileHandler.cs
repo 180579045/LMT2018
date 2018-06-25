@@ -39,9 +39,27 @@ namespace FileManager.FileHandler
 
 			//查询所有的软件包详细信息
 			var runningSwPackVer = GetRunningSwPackVer(".1");		// 软件包版本
+            if (_bDetailFlag)
+            {
+                var runningSwPackVerDetail = GetRunningSwPackVerDetail(".1");
+            }
+
 			var runningSwPackVerCP = GetRunningSwPackVer(".2");		// 冷补丁版本
+            if (_bDetailFlag)
+            {
+                var runningSwPackVerCPDetail = GetRunningSwPackVerDetail(".2");
+            }
+
 			var runningSwPackVerHP = GetRunningSwPackVer(".3");		// 热补丁版本
+            if (_bDetailFlag)
+            {
+                var runningSwPackVerHPDetail = GetRunningSwPackVerDetail(".3");
+            }
 			var PPRunningVer = GetRunningPeripheralVer(".1.1");		// 外设版本
+            if(_bDetailFlag)
+            {
+                var PPRunningVerDetail = GetRunningPeripheraVerDetail(".1.1");
+            }
 
 			List<string> nbArray = new List<string>();
 			for (var i = 1; i < 5; i++)
@@ -341,10 +359,16 @@ namespace FileManager.FileHandler
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
-		private string GetRunningSwPackVerDetail(string index)
-		{
-			var cmdName = "GetRunningSWPackDetailVer";
-			var mibName = "swPackRunningDetailVersion";
+        /// <summary>
+        /// 查询running sw pack version。index=.1;.2;.3  详细版本信息
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private string GetRunningSwPackVerDetail(string index)
+        {
+            var cmdName = "GetRunningSWPackDetailVer";
+            var mibName = "swPackRunningDetailVersion";
+
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
@@ -354,11 +378,18 @@ namespace FileManager.FileHandler
 			var cmdName = "GetRunningperipheralPack";
 			var mibName = "peripheralPackRunningVersion";
 
-			if (_bDetailFlag)
-			{
-				cmdName = "GetRunningperipheralPackDetailVer";
-				mibName = "peripheralPackRunningDetailVersion";
+			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 			}
+
+        /// <summary>
+        /// 查询running 外设的详细版本号  index = 1.1
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        private string GetRunningPeripheraVerDetail(string index)
+        {
+            var cmdName = "GetRunningperipheralPackDetailVer";
+            var mibName = "peripheralPackRunningDetailVersion";
 
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
