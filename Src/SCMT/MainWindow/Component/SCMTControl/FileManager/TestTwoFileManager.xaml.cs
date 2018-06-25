@@ -233,10 +233,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             //设置文件 list 的 移动事件
             lvLocalFileInfo.MouseMove += LvLocalFileInfo_MouseMove;
 
-            //鼠标双击时间
+            //鼠标双击事件
             lvLocalFileInfo.MouseDoubleClick += LvLocalFileInfo_MouseDoubleClick;
         }
-
         /// <summary>
         /// 本地文件双击事件
         /// </summary>
@@ -244,13 +243,24 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <param name="e"></param>
         private void LvLocalFileInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //if(lvLocalFileInfo.SelectedItem != null)
+            //if (lvLocalFileInfo.SelectedItem != null)
             //{
             //    FileInfoDemo selectedFile = lvLocalFileInfo.SelectedItem as FileInfoDemo;
 
             //    if (selectedFile.FileType == "文件夹")
             //    {
-
+            //        //MessageBox.Show(localSelectedDTVI.DirInfo.Name);
+            //        localSelectedDTVI.IsExpanded = true;
+            //        foreach(DirectoryTreeViewItem dirInfo in localSelectedDTVI.Items)
+            //        {
+            //            if(dirInfo.DirInfo.Name == selectedFile.FileName)
+            //            {
+            //                //DirectoryTreeViewItem newItem = new DirectoryTreeViewItem(dirInfo);
+            //                localSelectedDTVI = dirInfo;
+            //                localSelectedDTVI.IsExpanded = true;
+            //                localRefreshFileList();
+            //            }
+            //        }
             //    }
             //}
         }
