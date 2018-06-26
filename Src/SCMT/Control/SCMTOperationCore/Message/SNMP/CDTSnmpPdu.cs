@@ -123,13 +123,35 @@ namespace SCMTOperationCore.Message.SNMP
 		public void AddVb(CDTLmtbVb pLmtbVb)
 		{
 			m_VbList.Add(pLmtbVb);
+            if(!m_mapVBs.ContainsKey(pLmtbVb.Oid))
+            {
+                m_mapVBs.Add(pLmtbVb.Oid, pLmtbVb.Value);
+            }
+            else
+            {
+                Log.Debug("OID重复添加");
+                m_mapVBs[pLmtbVb.Oid] = pLmtbVb.Value;
+            }
 		}
 
 		// 在pdu中添加多个vb
 		public void AddVb(List<CDTLmtbVb> vbList)
 		{
 			m_VbList.AddRange(vbList);
-		}
+            foreach(var pLmtbVb in vbList)
+            {
+                if (!m_mapVBs.ContainsKey(pLmtbVb.Oid))
+                {
+                    m_mapVBs.Add(pLmtbVb.Oid, pLmtbVb.Value);
+                }
+                else
+                {
+                    Log.Debug("OID重复添加");
+                    m_mapVBs[pLmtbVb.Oid] = pLmtbVb.Value;
+                }
+
+            }
+        }
 
 		public void Clear()
 		{
@@ -158,7 +180,13 @@ namespace SCMTOperationCore.Message.SNMP
 			var temp = param[strMibName];
 			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
 			var oid = temp.oid.Trim('.');
-			var fulloid = $"{prefix}.{oid}";
+
+           var  fulloid = $"{prefix}.{oid}";
+            if (lpszIndex != null)
+            {
+                fulloid = $"{fulloid}.{lpszIndex.Trim('.')}";
+            }
+
 
 			if (m_mapVBs.Count == 0)
 			{
@@ -219,7 +247,9 @@ namespace SCMTOperationCore.Message.SNMP
 		// 记录oid对应的数据 原来的代码实现的是个鬼啊
 		public bool RecordOidValue(string strMibOID, out string lpszIndex)
 		{
-			throw new NotImplementedException();
+            //throw new NotImplementedException();
+            lpszIndex = ".1";
+            return true;
 		}
 
 		#endregion

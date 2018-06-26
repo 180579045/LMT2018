@@ -39,6 +39,8 @@ namespace FileManager
 		{
 			_mTSwPackInfo = packInfo;
 
+            _mTInfo = new TswPackDlProcInfo();
+
 			_mTInfo.FileTypeName = _mTSwPackInfo.csSWPackTypeName;
 			_mTInfo.FileName = _mTSwPackInfo.csSWPackName;
 
@@ -65,11 +67,12 @@ namespace FileManager
 		private void IDOK_Click(object sender, EventArgs e)
 		{
 			CmdSucceedFlag = InitCmdInfoAndSend();
+            this.Close();
 		}
 
 		private void IDCANCEL_Click(object sender, EventArgs e)
 		{
-
+            this.Close();
 		}
 
 		// 加载窗体事件处理。在此事件中控件的初始化。
@@ -158,6 +161,12 @@ namespace FileManager
 				dateTimePicker1.Enabled = false;
 				dateTimePicker2.Enabled = false;
 			}
+
+            //Add By Mayi   给控件添加变量
+            IDC_EDIT_SOFTPACKTYPE.Text = _mTSwPackInfo.csSWPackTypeName;
+            IDC_EDIT_SOFTPACKNAME.Text = _mTSwPackInfo.csSWPackName;
+            IDC_EDIT_SOFTPACKFACINFO.Text = _mTSwPackInfo.csSWPackRelayVersion;
+            textBox4.Text = _mTSwPackInfo.csSWPackVersion;
 		}
 
 		#endregion
@@ -215,10 +224,11 @@ namespace FileManager
 
 			var subFileNum = 0;
 			var unpackRet = DtzFileHelper.UnpackZipPackageSplitForDTFile(filePath, dstPath, ref subFileNum);
-			if (0 != unpackRet)
-			{
-				throw new CustomException("解压缩失败，请检查磁盘空间和压缩文件！");
-			}
+			//if (0 != unpackRet)
+			//{
+   //             //throw new CustomException("解压缩失败，请检查磁盘空间和压缩文件！");
+   //             return true;
+			//}
 
 			var subFileCount = Convert.ToString(subFileNum);
 

@@ -56,7 +56,7 @@ namespace SCMTOperationCore.Message.SNMP
 		// 获取公共MIB前缀。最后带.字符
 		public static string GetMibPrefix()
 		{
-			return "1.3.6.1.4.1.5105.";
+			return "1.3.6.1.4.1.5105.100.";
 		}
 
 		// 获取snmp的团体名
@@ -69,13 +69,13 @@ namespace SCMTOperationCore.Message.SNMP
 		public static string GetMibValueFromCmdExeResult(string index, string cmdName, string mibName, string boardAddr)
 		{
 			long lrequestId;
-			string csCmdValueTemp = null;
+			string csCmdValueTemp = index;
 			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
 
 			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out lrequestId, index, boardAddr, ref inOutPdu);
 			if (0 == ret)
 			{
-				inOutPdu.GetValueByMibName(boardAddr, mibName, out csCmdValueTemp);
+				inOutPdu.GetValueByMibName(boardAddr, mibName, out csCmdValueTemp, index);
 			}
 
 			return csCmdValueTemp;
@@ -151,10 +151,10 @@ namespace SCMTOperationCore.Message.SNMP
 			string errorInfo = "";
 			foreach (var name in nameList)
 			{
-				if (!Database.GetInstance().getDataByEnglishName(name, out nameToOid, ip, out errorInfo))
-				{
-					throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
-				}
+				//if (!Database.GetInstance().getDataByEnglishName(name, out nameToOid, ip, out errorInfo))
+				//{
+				//	throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
+				//}
 
 				if (!name2value.ContainsKey(name))
 				{
