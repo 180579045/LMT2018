@@ -75,7 +75,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /I /E /F /Y $(ProjectDir)jsonfile\* "$(SolutionDir)MainWindow\bin\x86\Debug\Data\"</PostBuildEvent>
+    <PostBuildEvent>xcopy /I /E /F /Y $(ProjectDir)jsonfile\* "$(SolutionDir)MainWindow\bin\x86\Debug\Data\"
+xcopy /I /E /F /Y $(ProjectDir)JsonDataMgr.ini "$(SolutionDir)MainWindow\bin\x86\Debug\Config\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
