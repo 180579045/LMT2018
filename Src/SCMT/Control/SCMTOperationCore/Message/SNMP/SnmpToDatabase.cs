@@ -90,12 +90,22 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			var prefix = GetMibPrefix();
-			var postfix = oidPostFix.Trim('.');	//删除oidPostFix的开始处的.
+			var postfix = "";
+			if (null != oidPostFix)
+			{
+				postfix = oidPostFix.Trim('.'); //删除oidPostFix的开始处的.
+			}
 			var vbList = new List<CDTLmtbVb>();
 			foreach (var oid in oidList)
 			{
-				var soid = oid.Trim('.');	// 不知道oid前后是否带有.，此处使用保守的方式，先尝试删掉，后面再追加
-				var vb = new CDTLmtbVb {Oid = $"{prefix}{soid}.{postfix}"};
+				var soid = oid.Trim('.');   // 不知道oid前后是否带有.，此处使用保守的方式，先尝试删掉，后面再追加
+				var fullOid = $"{prefix}{soid}";
+				if (!string.IsNullOrEmpty(postfix) && !string.IsNullOrWhiteSpace(postfix))
+				{
+					fullOid = $"{fullOid}.{postfix}";
+				}
+
+				var vb = new CDTLmtbVb { Oid = fullOid };
 				vbList.Add(vb);
 			}
 
