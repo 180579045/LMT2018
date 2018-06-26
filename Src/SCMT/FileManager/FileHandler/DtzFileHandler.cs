@@ -89,12 +89,12 @@ namespace FileManager.FileHandler
 
 			CompressFileHead zipFileHeader = new CompressFileHead();
 			var nRezCode = DtzFileHelper.Aom_Zip_GetFileHead_OupPut(srcFileFullName, ref zipFileHeader);
-			if (0 != nRezCode)
-			{
-				throw new CustomException("获取文件头信息失败");
-			}
+			//if (0 != nRezCode)
+			//{
+			//	throw new CustomException("获取文件头信息失败");
+			//}
 
-			var csRelayVersion = new string(zipFileHeader.u8ZipFileRelayVersion).Trim();
+			var csRelayVersion = new string(zipFileHeader.u8ZipFileRelayVersion).Trim('\0');
 
 			// 比对基站中的文件和本地文件的版本
 			if (FileTransMacro.SWPACK_ENB_TYPE == head.nSWEqpType)
@@ -206,6 +206,7 @@ namespace FileManager.FileHandler
 				TargetIp = boardAddr
 			};
 
+            confirmDlg.SetSwPackInfo(head);
 			var dlgRet = confirmDlg.ShowDialog();
 			if (DialogResult.OK == dlgRet)
 			{
@@ -213,7 +214,11 @@ namespace FileManager.FileHandler
 				{
 					throw new CustomException("命令执行失败");
 				}
-			}
+            }
+            else
+            {
+                return ExecuteResult.UserCancel;
+            }
 
 			var swPackInfo = new CSWPackPlanProcInfoMgr();
 			swPackInfo.SetInfo(confirmDlg.GetDlProcInfo());

@@ -955,7 +955,10 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
         private void downloadFileToBoard_Click(object sender, RoutedEventArgs e)
         {
-            _fileHandler.SendFileToRemote("e:/LTEV5SF.dtz", "/ata2");
+            if(_fileHandler.SendFileToRemote("e:/LTEV5SF.dtz", "/ata2"))
+            {
+                MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
+            }
         }
 
     }
