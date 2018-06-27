@@ -142,7 +142,7 @@ namespace SCMTOperationCore.Message.SI
 	//无符号6字节
 	public class SIu48
 	{
-		private byte[] m_value;		//6个字节
+		public byte[] m_value;		//6个字节
 
 		public SIu48()
 		{
@@ -197,6 +197,9 @@ namespace SCMTOperationCore.Message.SI
 
 			return value.ToUpper();
 		}
+
+		public ushort Len => 6;
+
 	}
 
 	//有符号8字节

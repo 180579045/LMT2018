@@ -125,9 +125,16 @@
     <Compile Include="Elements\BaseElement\SiMsgDealer.cs" />
     <Compile Include="Elements\NodeB.cs" />
     <Compile Include="Elements\BaseElement\SiElement.cs" />
+    <Compile Include="Message\MsgDispatcher\ConnectWorker.cs" />
+    <Compile Include="Message\MsgDispatcher\FileTransHelper.cs" />
+    <Compile Include="Message\MsgDispatcher\FtpServerHelper.cs" />
+    <Compile Include="Message\MsgDispatcher\MibSyncHelper.cs" />
+    <Compile Include="Message\MsgDispatcher\MsgDispatcher.cs" />
+    <Compile Include="Message\SI\SiGetPortVerMsgDef.cs" />
     <Compile Include="Message\SI\SiMacroDef.cs" />
     <Compile Include="Message\SI\SiFileMgrMsgDef.cs" />
     <Compile Include="Message\SI\SiMsgBaseTypeDef.cs" />
+    <Compile Include="Message\SI\SiNbphaseRspMsgDef.cs" />
     <Compile Include="Message\SNMP\CDTObjectRef.cs" />
     <Compile Include="Message\SNMP\CDTSnmpPdu.cs" />
     <Compile Include="Message\SNMP\CDTCmdExecuteMgr.cs" />

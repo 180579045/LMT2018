@@ -40,5 +40,30 @@ namespace SCMTOperationCore.Elements
 		// 对应的对象树模型;
 		// 对应的数据库;
 		// 在考虑;
+
+		// 节点的类型。5G的还要扩充
+		public void SetType(string neType)
+		{
+			if (!string.IsNullOrEmpty(neType) && !string.IsNullOrWhiteSpace(neType))
+			{
+				var type = byte.Parse(neType);
+				NodeType = (EnbTypeEnum) type;
+			}
+		}
+
+		#region 公共属性
+
+		public EnbTypeEnum NodeType { get; protected set; }
+
+		#endregion
 	}
+
+	public enum EnbTypeEnum : byte
+	{
+		ENB_NULL = 0,
+		ENB_TLB60A = 2,
+		ENB_EMB5216 = 3,
+		EMB5132_DTLTE = 4,
+		ENB_EMB5116 = 5
+	};
 }

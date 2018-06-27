@@ -7,7 +7,7 @@ namespace CommonUtility
 	/// <summary>
 	/// 序列化和反序列化类
 	/// </summary>
-	public class SerializeHelper
+	public static class SerializeHelper
 	{
 		/// <summary>
 		/// 字节数组转换为结构体对象
@@ -34,29 +34,49 @@ namespace CommonUtility
 			}
 		}
 
+		public static T BytesToStruct<T>(byte[] bytes)
+		{
+			var structType = typeof(T);
+			int size = Marshal.SizeOf(structType);
+			IntPtr buffer = Marshal.AllocHGlobal(size);
+			try
+			{
+				Marshal.Copy(bytes, 0, buffer, size);
+				return (T)Marshal.PtrToStructure(buffer, structType);
+			}
+			catch
+			{
+				return default(T);
+			}
+			finally
+			{
+				Marshal.FreeHGlobal(buffer);
+			}
+		}
+
 		//// <summary>
 		/// 结构体转byte数组
 		/// 这个方法有BUG。对于嵌套的结构体变量数组处理错误，结果byte[]长度不正确
 		/// </summary>
 		/// <param name="obj">要转换的结构体</param>
 		/// <returns>转换后的byte数组</returns>
-		public static byte[] StructToBytes(object obj)
-		{
-			//得到结构体的大小
-			int size = Marshal.SizeOf(obj);
-			//创建byte数组
-			byte[] bytes = new byte[size];
-			//分配结构体大小的内存空间
-			IntPtr structPtr = Marshal.AllocHGlobal(size);
-			//将结构体拷到分配好的内存空间
-			Marshal.StructureToPtr(obj, structPtr, false);
-			//从内存空间拷到byte数组
-			Marshal.Copy(structPtr, bytes, 0, size);
-			//释放内存空间
-			Marshal.FreeHGlobal(structPtr);
-			//返回byte数组
-			return bytes;
-		}
+		//public static byte[] StructToBytes(object obj)
+		//{
+		//	//得到结构体的大小
+		//	int size = Marshal.SizeOf(obj);
+		//	//创建byte数组
+		//	byte[] bytes = new byte[size];
+		//	//分配结构体大小的内存空间
+		//	IntPtr structPtr = Marshal.AllocHGlobal(size);
+		//	//将结构体拷到分配好的内存空间
+		//	Marshal.StructureToPtr(obj, structPtr, false);
+		//	//从内存空间拷到byte数组
+		//	Marshal.Copy(structPtr, bytes, 0, size);
+		//	//释放内存空间
+		//	Marshal.FreeHGlobal(structPtr);
+		//	//返回byte数组
+		//	return bytes;
+		//}
 
 		/// <summary>
 		/// 序列化一个byte数据到字节数组中

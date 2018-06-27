@@ -52,6 +52,11 @@ namespace MsgQueue
 			_pubClient.PublishMsg(topic, msgBytes);
 		}
 
+		public void Publish(string topic, byte[] msgBytes, string option)
+		{
+			_pubClient.PublishMsg(topic, msgBytes, option);
+		}
+
 		public static void PublishMsg(string topic, string msg,
 			[CallerFilePath] string filePath = null,
 			[CallerLineNumber] int lineNumber = 0,
@@ -68,6 +73,16 @@ namespace MsgQueue
 		{
 			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}");
 			GetInstance().Publish(topic, msgBytes);
+		}
+
+		// 扩展，增加扩展的信息，一般是IP地址
+		public static void PublishMSg(string topic, byte[] msgBytes, string option,
+			[CallerFilePath] string filePath = null,
+			[CallerLineNumber] int lineNumber = 0,
+			[CallerMemberName] string memeberName = null)
+		{
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}, option: {option}");
+			GetInstance().Publish(topic, msgBytes, option);
 		}
 
 		#endregion

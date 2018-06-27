@@ -190,6 +190,33 @@ namespace SCMTOperationCore.Control
 			return true;
 		}
 
+		// 设置网元的类型
+		public void SetNetElementType(string ip, string neType)
+		{
+			var et = GetNodeByIp(ip) as NodeB;
+			et?.SetType(neType);
+		}
+
+		// 根据友好名获取节点信息
+		public Element GetNodeByFName(string name)
+		{
+			Dictionary<string, Element>.ValueCollection vc = null;
+			lock (lockObj)
+			{
+				vc = mapElements.Values;
+			}
+
+			foreach (var element in vc)
+			{
+				if (element.FriendlyName.Equals(name))
+				{
+					return element;
+				}
+			}
+
+			return null;
+		}
+
 		#region 私有函数区
 
 		//判断网元数量是否已经到达最大值20
@@ -247,24 +274,19 @@ namespace SCMTOperationCore.Control
 			}
 		}
 
-		// 根据友好名获取节点信息
-		public Element GetNodeByFName(string name)
+		// 根据网元IP获取网元节点
+		private Element GetNodeByIp(string ip)
 		{
-			Dictionary<string, Element>.ValueCollection vc = null;
+			Element nodeb = null;
 			lock (lockObj)
 			{
-				vc = mapElements.Values;
-			}
-
-			foreach (var element in vc)
-			{
-				if (element.FriendlyName.Equals(name))
+				if (mapElements.ContainsKey(ip))
 				{
-					return element;
+					nodeb = mapElements[ip] as NodeB;
 				}
 			}
 
-			return null;
+			return nodeb;
 		}
 
 		#endregion

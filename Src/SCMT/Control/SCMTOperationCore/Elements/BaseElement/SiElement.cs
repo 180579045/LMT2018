@@ -3,9 +3,12 @@ using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using CommonUtility;
+using MsgQueue;
 using SCMTOperationCore.Connection;
 using SCMTOperationCore.Connection.Tcp;
 using SCMTOperationCore.Elements.BaseElement;
+using SCMTOperationCore.Message.SI;
 using DataReceivedEventArgs = SCMTOperationCore.Connection.DataReceivedEventArgs;
 
 namespace SCMTOperationCore.Elements
@@ -67,9 +70,9 @@ namespace SCMTOperationCore.Elements
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
 			MessageBox.Show("基站连接成功");
-			// 连接基站成功后，需要上传lm.dtz文件
 
-			// 需要激活界面的上控件
+			// c#中大括号的转义：需要连续两个{{或}}才会生成一个{或}
+			PublishHelper.PublishMsg("/station_connected", $"{{\"TargetIp\" : \"{base.NeAddress.ToString()}\"}}" );
 		}
 
 		//连接断开处理事件

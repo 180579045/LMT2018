@@ -21,6 +21,16 @@ namespace MsgQueue
 		}
 	}
 
+	public class SubMsgWithTargetIp : SubscribeMsg
+	{
+		public string TargetIp { get; }
+
+		public SubMsgWithTargetIp(byte[] data, string topic, string ip) : base(data, topic)
+		{
+			TargetIp = ip;
+		}
+	}
+
 	/// <summary>
 	/// 使用ZeroMQ实现的订阅者客户端
 	/// </summary>
@@ -117,10 +127,18 @@ namespace MsgQueue
 				{
 					var topic = msg[0].ReadString();
 					var msgBody = msg[1].Read();
+					var msgBody2 = "";
+					if (msg.Count > 2)
+					{
+						msgBody2 = msg[2].ReadString();
+						GetTopicHandler(topic)?.Invoke(new SubMsgWithTargetIp(msgBody, topic, msgBody2));
+					}
+					else
+					{
+						GetTopicHandler(topic)?.Invoke(new SubscribeMsg(msgBody, topic));
+					}
 
-					Log.Debug($"recv msg topic: {topic}, body: {BitConverter.ToString(msgBody)}");
-
-					GetTopicHandler(topic)?.Invoke(new SubscribeMsg(msgBody, topic));
+					//Log.Debug($"recv msg topic: {topic}, body: {BitConverter.ToString(msgBody)}");
 				}
 			}
 		}

@@ -70,6 +70,12 @@ namespace MsgQueue
 			Client.SendFrame(new ZFrame(msg));
 		}
 
+		public void PublishMsg(string topic, byte[] msg, string option)
+		{
+			PublishMsg(topic, msg);
+			Client.SendFrame(new ZFrame(option));
+		}
+
 		#endregion
 
 

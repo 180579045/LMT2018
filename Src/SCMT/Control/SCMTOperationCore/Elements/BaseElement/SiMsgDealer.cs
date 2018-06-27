@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtility;
 using MsgQueue;
 using SCMTOperationCore.Message.SI;
 
@@ -44,6 +45,7 @@ namespace SCMTOperationCore.Elements.BaseElement
 			return true;
 		}
 
+		#region 私有接口
 
 		private void DealMsgs()
 		{
@@ -87,10 +89,11 @@ namespace SCMTOperationCore.Elements.BaseElement
 		private bool ProcessOneMsg(byte[] msgBytes)
 		{
 			var head = SiMsgHelper.GetSiMsgHead(msgBytes);
+			string topic = "";
 			switch (head.u16MsgType)
 			{
 				case SiMacroDef.O_SILMTENB_GETFILEINFO_RES:
-					PublishHelper.PublishMsg($"/{BoardIp}/O_SILMTENB_GETFILEINFO_RES", msgBytes);
+					topic = $"/{BoardIp}/O_SILMTENB_GETFILEINFO_RES";
 					break;
 				case SiMacroDef.O_SILMTENB_GETFILEATTRIB_RES:
 					break;
@@ -100,13 +103,26 @@ namespace SCMTOperationCore.Elements.BaseElement
 					break;
 				case SiMacroDef.O_SILMTENB_GETCAPACITY_RES:
 					break;
+
+				case SiMacroDef.O_SILMTENB_NBPHASE_REP:
+					topic = "WM_DEAL_ENBPHASE";
+					break;
 				default:
 					//TODO 不知道是什么啊，老铁
 					break;
 			}
+
+			if (!topic.Equals(""))
+			{
+				PublishHelper.PublishMsg(topic, msgBytes, BoardIp);
+			}
+
 			return true;
 		}
 
+
+
+		#endregion  // 私有接口
 
 		//--------------------属性--------------------------
 		//保存未处理的数据。有两种情况：1.收到的数据分片了，还不够长；2.数据够长，处理后剩余的数据

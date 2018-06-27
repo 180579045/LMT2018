@@ -175,5 +175,17 @@ namespace CommonUtility
 		{
 			return File.Exists(filePath);
 		}
+
+		// 获取性能文件存放路径,最后带有/
+		public static string GetPmFilePath()
+		{
+			return $"{GetAppPath()}filestorage/PMDataFile/";
+		}
+
+		// 获取告警日志上传路径，最后带有/
+		public static string GetAlarmFilePath(string targetIp)
+		{
+			return $"{GetDataPath()}AlarmFile/TempFiles/{targetIp}/";
+		}
 	}
 }
