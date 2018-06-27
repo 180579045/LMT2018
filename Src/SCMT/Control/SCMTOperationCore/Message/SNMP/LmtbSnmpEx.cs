@@ -570,14 +570,40 @@ namespace SCMTOperationCore.Message.SNMP
 			return 0;
 		}
 
-		/// <summary>
-		/// 将LmtPdu转换为snmpPdu
-		/// </summary>
-		/// <param name="pdu"></param>
-		/// <param name="lmtPdu"></param>
-		/// <param name="strRemoteIp"></param>
-		/// <returns></returns>
-		private bool LmtPdu2SnmpPdu(out Pdu pdu, CDTLmtbPdu lmtPdu, string strRemoteIp)
+        /// <summary>
+        /// Add By Mayi  
+        /// </summary>
+        /// <param name="ipAddr"></param>
+        /// <param name="oid"></param>
+        /// <param name="mibProFix"></param>
+        /// <returns></returns>
+        private string GetNodeTypeByOIDInCache(string oid)
+        {
+            string csMIBPrefix = "1.3.6.1.4.1.5105.100.";
+
+            string strTempOid = oid.Replace(csMIBPrefix, ""); 
+
+            string strNodeType = "";
+
+            if ((strTempOid == "1.3.1.1.1.7.1") || (strTempOid == "1.3.1.1.1.10.1"))
+            {
+                strNodeType = "DateandTime";
+                return strNodeType;
+            }
+            else
+            {
+                return null;
+            }            
+        }
+
+        /// <summary>
+        /// 将LmtPdu转换为snmpPdu
+        /// </summary>
+        /// <param name="pdu"></param>
+        /// <param name="lmtPdu"></param>
+        /// <param name="strRemoteIp"></param>
+        /// <returns></returns>
+        private bool LmtPdu2SnmpPdu(out Pdu pdu, CDTLmtbPdu lmtPdu, string strRemoteIp)
 		{
 			pdu = new Pdu();
 			string strTmpOid;
@@ -595,10 +621,10 @@ namespace SCMTOperationCore.Message.SNMP
 
 				Vb vb = new Vb(new Oid(strTmpOid));
 
-				// CString strNodeType = GetNodeTypeByOIDInCache(csIpAddr, strOID, strMIBPrefix);
-				string strNodeType = "";
+                //String strNodeType = GetNodeTypeByOIDInCache(csIpAddr, strOID, strMIBPrefix);
+                string strNodeType = GetNodeTypeByOIDInCache(strTmpOid);
 
-				SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
+                SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
 
 				// TODO
 
@@ -990,7 +1016,16 @@ namespace SCMTOperationCore.Message.SNMP
 		{
 			if (string.Equals("DateandTime", strDataType, StringComparison.OrdinalIgnoreCase)) // 日期类型
 			{
-				return new OctetString(SnmpHelper.SnmpStrDateTime2Bytes(strValue));
+                byte[] buf = new byte[11];
+                byte[] buffer = SnmpHelper.SnmpStrDateTime2Bytes(strValue);
+                for(int i = 0; i < 8; i++)
+                {
+                    buf[i] = buffer[i];
+                }
+                buf[8] = (byte)'+';
+                buf[9] = 0;
+                buf[10] = 0;
+                return new OctetString(buf);
 			}
 			else if (string.Equals("inetaddress", strDataType, StringComparison.OrdinalIgnoreCase)) // Ip地址
 			{

@@ -280,9 +280,37 @@ namespace SCMTOperationCore.Message.SNMP
 			return rs;
 		}
 
+        /// <summary>
+        /// Add By Mayi  通过 oid 获取 父节点
+        /// </summary>
+        /// <param name="strIpAddr"></param>
+        /// <param name="strChildMibOid"></param>
+        /// <returns></returns>
+        //private MibNodeInfoTest GetParentMibNodeByChildOID(string strIpAddr, string strChildMibOid)
+        //{
+        //    string matchOid = strChildMibOid;
 
-		// test
-		private MibNodeInfoTest GetMibNodeInfoByOID(string strIpAddr, string strMibOid)
+        //    int oidLastSectionPos = matchOid.LastIndexOf('.');
+
+        //    while (-1 != oidLastSectionPos)
+        //    {
+        //        matchOid = matchOid.Substring(oidLastSectionPos);
+
+        //        MibNodeInfoTest parentNode = GetMibNodeInfoByOID(strIpAddr, matchOid);
+        //        if (null != parentNode)
+        //        {
+        //            return parentNode;
+        //        }
+
+        //        oidLastSectionPos = matchOid.LastIndexOf('.');
+        //    }
+
+        //    return null;
+        //}
+
+
+        // test
+        private MibNodeInfoTest GetMibNodeInfoByOID(string strIpAddr, string strMibOid)
 		{
 			Dictionary<string, MibNodeInfoTest> mibNodeInfoList = new Dictionary<string, MibNodeInfoTest>();
 

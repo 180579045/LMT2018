@@ -68,7 +68,7 @@ namespace SCMTOperationCore.Message.SNMP
 		// 同步方式获取cmd执行结果后从pdu中根据mib name获取对应的值
 		public static string GetMibValueFromCmdExeResult(string index, string cmdName, string mibName, string boardAddr)
 		{
-			long lrequestId;
+			long lrequestId = 0;
 			string csCmdValueTemp = index;
 			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
 
