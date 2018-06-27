@@ -213,7 +213,7 @@ namespace FileManager
 			}
 
 			var bAddCmdFalg = false;
-			var csRowStatusValue = SnmpToDatabase.GetMibValueFromCmdExeResult(csIndexToJudgeRowStatus, csCmdName, csCmdName, TargetIp);
+			var csRowStatusValue = SnmpToDatabase.GetMibValueFromCmdExeResult(csIndexToJudgeRowStatus, csCmdName, csRowStatus, TargetIp);
 			if (string.IsNullOrEmpty(csRowStatusValue) || csRowStatusValue.Equals(FileTransMacro.STR_DESTROY))
 			{
 				bAddCmdFalg = true;
@@ -296,7 +296,8 @@ namespace FileManager
 					csCmdName = "DelSWPackPlan";
 
 					mapName2Value.Add("swPackPlanRowStatus", "6"); //6是无效
-					var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
+                    lReqId = 0;
+                    var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
 						Log.Info("删除冷补丁软件规划命令下发成功!");
@@ -307,8 +308,8 @@ namespace FileManager
 					}
 
 					csswPackPlanTypeIndex = ".3";
-
-					ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
+                    lReqId = 1;
+                    ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
 						Log.Info("删除热补丁软件规划命令下发成功!");
@@ -359,7 +360,7 @@ namespace FileManager
 				mapName2Value.Add("swPackPlanScheduleActivateTime", GetActiveTimeString(ForceDlFlag));
 				mapName2Value.Add("swPackPlanRelyVesion", _mTSwPackInfo.csSWPackRelayVersion);
 
-				var fwActFlagIndex = Convert.ToString(IDC_COMBO_FWACTIVEFLAG.Text);
+				var fwActFlagIndex = Convert.ToString(IDC_COMBO_FWACTIVEFLAG.SelectedIndex);
 				mapName2Value.Add("swPackPlanFwActiveIndicator", fwActFlagIndex);
 
 				if (pSwPackMibNode != null)

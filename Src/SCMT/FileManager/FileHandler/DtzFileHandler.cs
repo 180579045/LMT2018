@@ -65,25 +65,41 @@ namespace FileManager.FileHandler
 			for (var i = 1; i < 5; i++)
 			{
 				nbArray.Add(GetSwPackVersion($".1.{i}"));
+                if(_bDetailFlag)
+                {
+                    nbArray.Add(GetSwPackVersionDetail($".1.{i}"));
+                }
 			}
 
 			List<string> nbArrayCP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
 				nbArrayCP.Add(GetSwPackVersion($".2.{i}"));
-			}
+                if (_bDetailFlag)
+                {
+                    nbArray.Add(GetSwPackVersionDetail($".2.{i}"));
+                }
+            }
 
 			List<string> nbArrayHP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
 				nbArrayHP.Add(GetSwPackVersion($".3.{i}"));
-			}
+                if (_bDetailFlag)
+                {
+                    nbArray.Add(GetSwPackVersionDetail($".3.{i}"));
+                }
+            }
 
 			List<string> wsArray = new List<string>();
 			for (var i = 1; i < 3; i++)
 			{
 				wsArray.Add(GetPeripheralVersion($".1.1.{i}"));
-			}
+                if (_bDetailFlag)
+                {
+                    nbArray.Add(GetPeripheralVersionDetail($".1.1.{i}"));
+                }                
+            }
 
 			var bTipForceFlag = false;         //是否提醒强制下载
 
@@ -405,35 +421,41 @@ namespace FileManager.FileHandler
 			var cmdName = "GetSWPack";
 			var mibName = "swPackVersion";
 
-			if (_bDetailFlag)
-			{
-				cmdName = "GetSWPackDetailVer";
-				mibName = "swPackDetailVersion";
-			}
-
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
-		//获取外设的版本。.1.1.1~.1.1.3
-		private string GetPeripheralVersion(string index)
+        //获取详细软件包的版本。.1.1~.1.5；.2.1~.2.5[冷补丁]；.3.1~.3.5[热补丁]
+        private string GetSwPackVersionDetail(string index)
+        {
+            var cmdName = "GetSWPackDetailVer";
+            var mibName = "swPackDetailVersion";
+
+            return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+        }
+
+        //获取外设的版本。.1.1.1~.1.1.3
+        private string GetPeripheralVersion(string index)
 		{
 			var cmdName = "GetperipheralPack";
 			var mibName = "peripheralPackVersion";
 
-			if (_bDetailFlag)
-			{
-				cmdName = "GetPeripheralPackDetailVer";
-				mibName = "peripheralPackDetailVersion";
-			}
-
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-		}
+        }
 
-		#endregion
+        //获取详细外设的版本。.1.1.1~.1.1.3
+        private string GetPeripheralVersionDetail(string index)
+        {
+            var cmdName = "GetPeripheralPackDetailVer";
+            var mibName = "peripheralPackDetailVersion";
 
-		#region 私有属性
+            return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+        }
 
-		private bool _bDetailFlag;
+        #endregion
+
+        #region 私有属性
+
+        private bool _bDetailFlag;
 
 		#endregion
 	}

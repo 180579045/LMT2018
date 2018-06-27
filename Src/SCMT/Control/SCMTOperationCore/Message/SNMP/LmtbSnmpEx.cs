@@ -1118,7 +1118,7 @@ namespace SCMTOperationCore.Message.SNMP
 		/// <param name="appendInfo"></param>
 		public void Push_appendInfo(long requestId, stru_LmtbPduAppendInfo appendInfo)
 		{
-			m_ReqIdPduInfo.Add(requestId, appendInfo);
+			m_ReqIdPduInfo[requestId] = appendInfo;
 		}
 
 		/// <summary>
