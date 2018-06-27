@@ -48,10 +48,10 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 根据命令名找到命令对应的所有信息
-	    public static IReCmdDataByCmdEnglishName GetCmdInfoByCmdName(string cmdName, string ip)
-	    {
-		    return Database.GetInstance().getCmdDataByCmdEnglishName(cmdName, ip);
-	    }
+		public static IReCmdDataByCmdEnglishName GetCmdInfoByCmdName(string cmdName, string ip)
+		{
+			return Database.GetInstance().getCmdDataByCmdEnglishName(cmdName, ip);
+		}
 
 		// 获取公共MIB前缀。最后带.字符
 		public static string GetMibPrefix()
@@ -138,6 +138,8 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 转换节点名列表为vb列表，针对每一个oid都有一个value值
+		// nameList每个元素是oid，且不带前缀，name2value的key是节点名，不是oid
+		// 需要把节点名转换为oid再进行转换
 		public static List<CDTLmtbVb> ConvertNameToVbList(List<string> nameList, string ip, string index,
 			bool bCheck, Dictionary<string, string> name2value)
 		{
@@ -146,7 +148,27 @@ namespace SCMTOperationCore.Message.SNMP
 				throw new CustomException("传入参数错误");
 			}
 
-			IReDataByEnglishName nameToOid = new ReDataByEnglishName();
+            //获取name2value 的 key 信息，即 EnglishName，再查询 mib 节点信息
+			var reData = new Dictionary<string, IReDataByEnglishName>();
+			foreach (var item in name2value)
+			{
+				reData[item.Key] = null;
+			}
+
+			string errorInfo = "";
+			if (!Database.GetInstance().getDataByEnglishName(reData, ip, out errorInfo))
+			{
+				throw new CustomException("查询信息失败");
+			}
+
+            //将 OId 和 EnglishName 进行 一 一 对应
+            var relation = new Dictionary<string, string>();
+            foreach (var item in reData)
+            {
+                relation[item.Value.oid] = item.Key;
+            }
+
+			//IReDataByEnglishName nameToOid = new ReDataByEnglishName();
 			var vbList = new List<CDTLmtbVb>();
 
 			var prefix = GetMibPrefix().Trim('.');
@@ -158,25 +180,26 @@ namespace SCMTOperationCore.Message.SNMP
 				throw new NotImplementedException("校验索引有效性功能尚未实现");
 			}
 
-			string errorInfo = "";
 			foreach (var name in nameList)
 			{
 				//if (!Database.GetInstance().getDataByEnglishName(name, out nameToOid, ip, out errorInfo))
 				//{
 				//	throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
 				//}
-
-				if (!name2value.ContainsKey(name))
+                
+				if (!relation.ContainsKey(name))
 				{
 					Log.Debug($"没有设置{name}的值，跳过");
 					continue;
 				}
 
+                var mibNode = reData[relation[name]];
+
 				var vb = new CDTLmtbVb
 				{
-					Oid = $"{prefix}.{nameToOid.oid.Trim('.')}.{postfix}",
-					Value = name2value[name],
-					SnmpSyntax = ConvertDataType(nameToOid.mibSyntax)
+					Oid = $"{prefix}.{name.Trim('.')}.{postfix}",
+					Value = name2value[ relation[name] ],
+					SnmpSyntax = ConvertDataType(mibNode.mibSyntax)
 				};
 
 				vbList.Add(vb);
