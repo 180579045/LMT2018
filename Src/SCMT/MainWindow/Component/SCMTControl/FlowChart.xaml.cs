@@ -23,10 +23,6 @@ namespace SCMTMainWindow.Component.SCMTControl
         public FlowChart()
         {
             InitializeComponent();
-            this.address.Address = System.Environment.CurrentDirectory + @"\FlowChart_JS\FlowChart.html";
-            //CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-            //this.address.RegisterJsObject("JsObj", new CallbackObjectForJs());
-            this.address.BeginInit();
         }
     }
 }
