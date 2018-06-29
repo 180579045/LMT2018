@@ -29,10 +29,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         }
 
         string strFileName;
+        long m_lTaskID;
         long nProgressValue;
         string strTextBloxkValue;
-        FILETRANSSTATE _FileState;
-        OPERTYPE _OperateType;
+        string  _FileState;
+        string _OperateType;
 
         /// <summary>
         /// 文件名称
@@ -41,6 +42,12 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         {
             get { return strFileName; }
             set { strFileName = value; }
+        }
+
+        public long TaskID
+        {
+            get { return m_lTaskID; }
+            set { m_lTaskID = value; }
         }
 
         /// <summary>
@@ -73,18 +80,25 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <summary>
         /// 文件状态
         /// </summary>
-        public FILETRANSSTATE FileState
+        public string FileState
         {
-            set { _FileState = value; }
+            set
+            {
+                _FileState = value;
+                RaisePropertyChanged("FileState");
+            }
             get { return _FileState; }
         }
 
         /// <summary>
         /// 操作类型
         /// </summary>
-        public OPERTYPE OperateType
+        public string OperateType
         {
-            set { _OperateType = value; }
+            set {
+                _OperateType = value;
+                RaisePropertyChanged("OperateType");
+            }
             get { return _OperateType; }
         }
 

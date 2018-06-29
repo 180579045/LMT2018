@@ -58,6 +58,7 @@ namespace SCMTOperationCore.Message.SNMP
 			if (rs != 0)
 			{
 				Log.Error("执行lmtbSnmpEx.SnmpGetSync()方法错误");
+                return rs;
 			}
 
 			return 0;

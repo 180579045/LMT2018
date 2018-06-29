@@ -231,10 +231,10 @@ namespace FileManager.FileHandler
 					throw new CustomException("命令执行失败");
 				}
             }
-            else
-            {
-                return ExecuteResult.UserCancel;
-            }
+            //else
+            //{
+            //    return ExecuteResult.UserCancel;
+            //}
 
 			var swPackInfo = new CSWPackPlanProcInfoMgr();
 			swPackInfo.SetInfo(confirmDlg.GetDlProcInfo());

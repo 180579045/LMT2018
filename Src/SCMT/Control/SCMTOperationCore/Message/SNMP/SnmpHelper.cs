@@ -869,6 +869,11 @@ namespace SCMTOperationCore.Message.SNMP
 					Log.Error("No response received from SNMP agent.");
 				}
 			}
+			catch(SnmpException e1)
+			{
+				Log.Error(e1.Message.ToString());
+				return null;
+			}
 			catch (Exception e)
 			{
 				Log.Error(e.Message.ToString());

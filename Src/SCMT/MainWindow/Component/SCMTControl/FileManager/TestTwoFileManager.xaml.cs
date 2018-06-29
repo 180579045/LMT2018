@@ -79,7 +79,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
             gvcColumn = new GridViewColumn();
             gvcColumn.Header = "进度";
-            gvcColumn.Width = 120;
+            gvcColumn.Width = 220;
 
             DataTemplate template = new DataTemplate();
 
@@ -89,7 +89,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             FrameworkElementFactory fileProgress = new FrameworkElementFactory(typeof(ProgressBar));
             //ProgressBar fileProgress = new ProgressBar();
             fileProgress.SetValue(ProgressBar.MaximumProperty, 100.0);
-            fileProgress.SetValue(ProgressBar.WidthProperty, 100.0);
+            fileProgress.SetValue(ProgressBar.WidthProperty, 200.0);
             fileProgress.SetValue(ProgressBar.HeightProperty, 15.0);
             fileProgress.SetBinding(ProgressBar.ValueProperty, new Binding("ProgressValue"));
 
@@ -109,11 +109,13 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             gvcColumn = new GridViewColumn();
             gvcColumn.Header = "文件状态";
             gvcColumn.Width = 100;
+            gvcColumn.DisplayMemberBinding = new Binding("FileState");
             gvListView.Columns.Add(gvcColumn);
 
             gvcColumn = new GridViewColumn();
             gvcColumn.Header = "操作类型";
             gvcColumn.Width = 100;
+            gvcColumn.DisplayMemberBinding = new Binding("OperateType");
             gvListView.Columns.Add(gvcColumn);
         }
 
@@ -442,6 +444,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             string boardIp = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
             _fileHandler = new FileMgrFileHandler(boardIp);
             _fileHandler.GetFileInfoRspArrived += GetFileInfoCallBack;
+            _fileHandler.UpdateProgressEvent += UpdateProgressCallBack;
+            _fileHandler.NewProgressEvent += NewProgressCallBack;
+            _fileHandler.EndProgressEvent += EndProgressCallBack;
 
             _boardIp = boardIp;
         }
@@ -687,7 +692,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 //添加进度条显示信息
                 myList.FileName = fSourceInfo.Name;
                 myList.ProgressValue = 0;
-                lvMainListView.Items.Add(myList);
+                //lvMainListView.Items.Add(myList);
 
                 while (nCurrentSize < nTotalSize)
                 {
@@ -953,12 +958,77 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             }
         }
 
+        /// <summary>
+        /// 右键菜单 下载至基站
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void downloadFileToBoard_Click(object sender, RoutedEventArgs e)
         {
             if(_fileHandler.SendFileToRemote("e:/LTEV5SF.dtz", "/ata2"))
             {
                 MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
             }
+        }
+
+        /// <summary>
+        /// 更新文件传输的进度
+        /// </summary>
+        /// <param name="pbInfo"></param>
+        private void UpdateProgressCallBack(TProgressBarInfo pbInfo)
+        {
+            //更新进度条
+            lvMainListView.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                foreach (ProcessList item in lvMainListView.Items)
+                {
+                    if (item.TaskID == pbInfo.m_lTaskID)
+                    {
+                        item.ProgressValue = pbInfo.m_nPercent;
+                        item.TextBloxkValue = pbInfo.m_nPercent.ToString() + "%";
+                        item.FileState = pbInfo.m_strStatus;
+                    }
+                }
+
+            }));
+        }
+
+        /// <summary>
+        /// 创建一个文件传输进度  显示信息
+        /// </summary>
+        /// <param name="pbInfo"></param>
+        private void NewProgressCallBack(TProgressBarInfo pbInfo)
+        {
+            lvMainListView.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    ProcessList newProcessBarInfo = new ProcessList();
+                    newProcessBarInfo.FileName = pbInfo.m_csFileName;
+                    newProcessBarInfo.TaskID = pbInfo.m_lTaskID;
+                    newProcessBarInfo.ProgressValue = 0;
+                    newProcessBarInfo.FileState = "";
+                    newProcessBarInfo.OperateType = "";
+                    lvMainListView.Items.Add(newProcessBarInfo);
+        }));
+        }
+
+        /// <summary>
+        /// 删除某条文件传输进度信息
+        /// </summary>
+        /// <param name="pbInfo"></param>
+        private void EndProgressCallBack(TProgressBarInfo pbInfo)
+        {
+            //删除某条进度信息
+            lvMainListView.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                foreach (ProcessList item in lvMainListView.Items)
+                {
+                    if (item.TaskID == pbInfo.m_lTaskID)
+                    {
+                        lvMainListView.Items.Remove(item);
+                        return;
+                    }
+                }
+            }));
         }
 
     }

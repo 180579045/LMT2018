@@ -110,6 +110,7 @@ namespace FileManager
 			}
 
 			_timer = new Timer(timerCallback, null, 0, 1000);
+            
 
 			return true;
 		}
@@ -446,11 +447,12 @@ namespace FileManager
 			{
 				var retryCount = _upgradePackInfo.iResCount++;
 				if (retryCount >= 5)        //如果5次查询均失败,则认为基站复位,需要关闭进度条
-				{
-					EndProgressBar();
+                {
+                    EndProgressBar();
 					_workingForUpgrade = false;
-				}
-				return;
+                }
+                EndUIProcessBar(processBarInfo);
+                return;
 			}
 
 			string swPackPlanUpgradeStateValue;
@@ -459,9 +461,9 @@ namespace FileManager
 			string swPackPlanUpgradeResultValue2;
 			_upgradePackInfo.iResCount = 0;         //连接失败计数清0
 
-			if (!pdu.GetValueByMibName(_boardIp, swPackPlanUpgradeState, out swPackPlanUpgradeStateValue)
-				|| pdu.GetValueByMibName(_boardIp, swPackPlanUpgradePercent, out swPackPlanUpgradePercentValue)
-				|| pdu.GetValueByMibName(_boardIp, swPackPlanUpgradeResult, out swPackPlanUpgradeResultValue))
+			if (!pdu.GetValueByMibName(_boardIp, swPackPlanUpgradeState, out swPackPlanUpgradeStateValue, ".1")
+				|| !pdu.GetValueByMibName(_boardIp, swPackPlanUpgradePercent, out swPackPlanUpgradePercentValue, ".1")
+				|| !pdu.GetValueByMibName(_boardIp, swPackPlanUpgradeResult, out swPackPlanUpgradeResultValue, ".1"))
 			{
 				Log.Error("查询文件传输进度参数失败！");
 				return;
@@ -696,6 +698,11 @@ namespace FileManager
 				UpdateProgressEvent?.Invoke(_swUpgradePbBarInfo);
 			}
 		}
+
+        private void EndUIProcessBar(TProgressBarInfo progressBarInfo)
+        {
+            EndProgressEvent?.Invoke(progressBarInfo);
+        }
 
 		// 更新当前进度条的信息。只有拖包升级才调用这个方法
 		private void SetProcessInfo(TProgressBarInfo progressBarInfo)
