@@ -520,14 +520,14 @@ namespace SCMTMainWindow
 		private void ShowFlowChart(object sender, EventArgs e)
 		{
 			LayoutAnchorable sub = new LayoutAnchorable();
-			FlowChart content = new FlowChart();
+			//FlowChart content = new FlowChart();
 
-			sub.Content = content;
-			sub.FloatingHeight = 300;
-			sub.FloatingWidth = 800;
+			//sub.Content = content;
+			//sub.FloatingHeight = 300;
+			//sub.FloatingWidth = 800;
 
-			this.Pane.Children.Add(sub);
-			sub.Float();
+			//this.Pane.Children.Add(sub);
+			//sub.Float();
 		}
 		#endregion
 		
@@ -1000,7 +1000,21 @@ namespace SCMTMainWindow
 			}
 
 		}
+        private void Flow_Click(object sender, RoutedEventArgs e) {
+            //FlowChart f1 = new FlowChart();
+            //f1.Show();
 
+            LayoutAnchorable sub = new LayoutAnchorable();
+            FlowChart content = new FlowChart();
+
+            sub.Content = content;
+            //sub.FloatingHeight = 300;
+            //sub.FloatingWidth = 800;
+
+            this.Pane.Children.Add(sub);
+            sub.Float();
+
+        }
 		/// <summary>
 		/// 每有一条新的MIB数据，都会调用该函数;
 		/// </summary>
@@ -1312,6 +1326,6 @@ namespace SCMTMainWindow
 			MessageBox.Show("消息:" + e.Exception.Message + "\r\n" + e.Exception.StackTrace);
 
 		}
-	}
+    }
 
 }
