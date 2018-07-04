@@ -26,7 +26,7 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 		private ConnectWorker()
 		{
 			// 订阅消息
-			SubscribeHelper.AddSubscribe("/station_connected", OnConnect);
+			SubscribeHelper.AddSubscribe(TopicHelper.EnbConnectedMsg, OnConnect);
 		}
 
 
@@ -48,14 +48,30 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 			var ip = netAddr.TargetIp;
 
+
 			//Step 1.设置MIB前缀
 			//SetMibPrefix(ip);
 
 			//Step 2.查询设备的MIB版本号
 			var mibVersionNo = QueryMibVersionNo(ip);
+			if (null == mibVersionNo)
+			{
+				ShowLogHelper.Show("查询MIB版本号失败!", ip);
+			}
+			else
+			{
+				ShowLogHelper.Show($"查询MIB版本号成功:{mibVersionNo}", ip);
+			}
 
 			//Step 3.设置FTPServer信息到网元
-			FtpServerHelper.SetFtpServerInfo(ip);
+			if (FtpServerHelper.SetFtpServerInfo(ip))
+			{
+				ShowLogHelper.Show("设置FTP服务器信息到网元成功!", ip);
+			}
+			else
+			{
+				ShowLogHelper.Show("设置FTP服务器信息到网元失败!", ip);
+			}
 
 			//Step 4.匹配MIB版本
 			//MibSyncHelper.MatchMib(ip, mibVersionNo);
@@ -77,6 +93,7 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 
 		#region 私有函数
 
+		// 下发SNMP命令查询MIB版本号，查询失败返回null
 		private string QueryMibVersionNo(string targetIp)
 		{
 			var oidList = new List<string>() { "1.9.1.2.0", "1.9.1.1.0" };

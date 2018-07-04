@@ -21,6 +21,7 @@ namespace SCMTMainWindow
 		{
 			MqInitial.Init();
 			ConnectWorker.GetInstance();
+			MsgDispatcher.GetInstance();
 			//AtpInitial.Init();
 
 			//NetElementConfig config = new NetElementConfig()

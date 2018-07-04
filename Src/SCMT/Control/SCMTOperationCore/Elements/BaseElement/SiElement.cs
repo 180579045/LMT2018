@@ -62,17 +62,14 @@ namespace SCMTOperationCore.Elements
 			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
 			{
 				Console.WriteLine(e);
-				throw;
 			}
 		}
 
 		//连接成功处理事件
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
-			MessageBox.Show("基站连接成功");
-
-			// c#中大括号的转义：需要连续两个{{或}}才会生成一个{或}
-			PublishHelper.PublishMsg("/station_connected", $"{{\"TargetIp\" : \"{base.NeAddress.ToString()}\"}}" );
+			//MessageBox.Show("基站连接成功");
+			//ShowLogHelper.Show("基站连接成功", NeAddress.ToString());
 		}
 
 		//连接断开处理事件

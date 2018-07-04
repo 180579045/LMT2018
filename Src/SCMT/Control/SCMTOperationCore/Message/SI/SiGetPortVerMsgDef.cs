@@ -19,8 +19,17 @@ namespace SCMTOperationCore.Message.SI
 
 			return SerializeHelper.SerializeStructToBytes(head);
 		}
-	}
 
+		public static GetSiPortVersionRspMsg_Head GetRspHead(byte[] rspBytes)
+		{
+			return GetHeaderHelper.GetHeader<GetSiPortVersionRspMsg_Head>(rspBytes);
+		}
+
+		public static GetSiPortVersionRspMsg GetRspV1(byte[] rspBytes)
+		{
+			return GetHeaderHelper.GetHeader<GetSiPortVersionRspMsg>(rspBytes);
+		}
+	}
 
 	public class GetSiPortVersionRspMsg_Head : IASerialize
 	{

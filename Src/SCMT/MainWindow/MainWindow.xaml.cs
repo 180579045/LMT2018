@@ -75,7 +75,7 @@ namespace SCMTMainWindow
 			InitView();                                                       // 初始化界面;
 			RegisterFunction();                                               // 注册功能;
 			deleteTempFile();
-
+			SubscribeMsgs();
 			// TODO 读取网元配置文件
 
 			// 在异常由应用程序引发但未进行处理时发生。主要指的是UI线程。
@@ -1326,6 +1326,123 @@ namespace SCMTMainWindow
 			MessageBox.Show("消息:" + e.Exception.Message + "\r\n" + e.Exception.StackTrace);
 
 		}
-    }
+
+		#region 订阅消息及处理
+
+		// 订阅消息
+		private void SubscribeMsgs()
+		{
+			SubscribeHelper.AddSubscribe(TopicHelper.SHOW_LOG, OnShowLog);
+		}
+
+		private void OnShowLog(SubscribeMsg msg)
+		{
+			var logInfo = ShowLogHelper.GetLogInfo(msg.Data);
+			var neName = NodeBControl.GetInstance().GetFriendlyNameByIp(logInfo.TargetIp);
+
+			var msgText = $"{GetLevel(logInfo.Type)}({neName}:{logInfo.TargetIp}):\n";
+			msgText += $"{TimeHelper.GetCurrentTime()} {logInfo.Msg} \n";
+
+			Application.Current.Dispatcher.BeginInvoke(
+				DispatcherPriority.Background, new Action(() =>
+					{
+						UiLogShow.AppendText(msgText);
+}
+				)
+			);
+		}
+
+		private Color GetColor(InfoTypeEnum level)
+		{
+			Color color = Color.FromRgb(0, 0, 0);
+			switch (level)
+			{
+				case InfoTypeEnum.OM_ALARM_CLEAR_INFO:
+				case InfoTypeEnum.SI_ALARM_INFO:
+					color = Color.FromRgb(176, 176, 176);
+					break;
+				case InfoTypeEnum.OM_BRKDWN_ALARM_INFO:
+					color = Color.FromRgb(255, 0, 0);
+					break;
+				case InfoTypeEnum.OM_EVENT_ALARM_INFO:
+					color = Color.FromRgb(233, 149, 22);
+					break;
+				case InfoTypeEnum.OM_EVENT_NOTIFY_INFO:
+					color = Color.FromRgb(36, 36, 255);
+					break;
+
+				case InfoTypeEnum.ENB_OTHER_INFO_IMPORT:
+					color = Color.FromRgb(221, 125, 232);
+					break;
+			}
+
+			return color;
+		}
+
+		private string GetLevel(InfoTypeEnum level)
+		{
+			string levelText = "";
+			switch (level)
+			{
+				case InfoTypeEnum.ENB_INFO:
+					levelText = "LMT信息";
+					break;
+				case InfoTypeEnum.ENB_TASK_DEAL_INFO:
+					levelText = "LMT-ENB任务处理";
+					break;
+				case InfoTypeEnum.SI_STR_INFO:
+					levelText = "启动阶段信息上报";
+					break;
+				case InfoTypeEnum.SI_ALARM_INFO:
+					levelText = "启动告警";
+					break;
+				case InfoTypeEnum.OM_BRKDWN_ALARM_INFO:
+					levelText = "告警提示";
+					break;
+				case InfoTypeEnum.OM_EVENT_ALARM_INFO:
+					levelText = "告警提示";
+					break;
+				case InfoTypeEnum.OM_ALARM_CLEAR_INFO:
+					levelText = "告警清除提示";
+					break;
+				case InfoTypeEnum.OM_EVENT_NOTIFY_INFO:
+					levelText = "事件通知";
+					break;
+				case InfoTypeEnum.ENB_GETOP_INFO:
+					levelText = "GET命令响应";
+					break;
+				case InfoTypeEnum.ENB_SETOP_INFO:
+					levelText = "SET命令响应";
+					break;
+				case InfoTypeEnum.ENB_GETOP_ERR_INFO:
+					levelText = "GET命令响应错误";
+					break;
+				case InfoTypeEnum.ENB_SETOP_ERR_INFO:
+					levelText = "SET命令响应错误";
+					break;
+				case InfoTypeEnum.ENB_VARY_INFO:
+					levelText = "变更通知";
+					break;
+				case InfoTypeEnum.ENB_OTHER_INFO:
+				case InfoTypeEnum.ENB_OTHER_INFO_IMPORT:
+					levelText = "其他信息";
+					break;
+				case InfoTypeEnum.CUSTOM_INFO:
+					break;
+				default:
+					break;
+			}
+			return levelText;
+		}
+
+		#endregion
+
+		private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+		{
+			DateTime thistime = DateTime.Now;
+			string strText = thistime.ToString("yyyy-mm-dd hh:mm:ss") + "  " + "test\n";
+			UiLogShow.AppendText(strText);
+		}
+	}
 
 }

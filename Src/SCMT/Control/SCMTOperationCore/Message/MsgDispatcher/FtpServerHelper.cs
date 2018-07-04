@@ -67,6 +67,7 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 			if (0 != lmtbSnmpEx.SnmpSetSync(pdu, out reqId, targetIp, 1000))
 			{
 				Log.Error($"设置FTP服务器信息到网元失败!");
+				return false;
 			}
 			Log.Info("设置FTP服务器信息到网元成功!");
 

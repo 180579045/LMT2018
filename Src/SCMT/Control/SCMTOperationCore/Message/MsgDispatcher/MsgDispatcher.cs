@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using CommonUtility;
 using MsgQueue;
 using SCMTOperationCore.Message.SI;
+using LogManager;
+using SCMTOperationCore.Control;
 
 // 消息中转处理
 
@@ -17,30 +20,95 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 
 		private MsgDispatcher()
 		{
-			SubscribeHelper.AddSubscribe("WM_DEAL_ENBPHASE", OnEnbPhase);
+			SubscribeHelper.AddSubscribe(TopicHelper.EnbPhaseMsg, OnEnbPhaseMsg);
+			SubscribeHelper.AddSubscribe(TopicHelper.QuerySiPortVerRsp, OnQuerySiVerRsp);
 		}
 
 		#endregion
 
 		#region 消息处理
 
-		private void OnEnbPhase(SubscribeMsg msg)
+		public void OnEnbPhaseMsg(SubscribeMsg msg)
 		{
-			var rspMsg = msg as SubMsgWithTargetIp;
-			AnalyseSIPhaseMsg(rspMsg.Data, rspMsg.TargetIp);
+			// TODO DataWithIp类型与SubscribeMsg类型的定义一样，但是SerializeJsonToObject转换时
+			// 设置TargetIp为null，还没有找到问题的原因，暂时用SubscribeMsg类型
+			//var rspMsg = JsonHelper.SerializeJsonToObject<DataWithIp>(msg.Data);
+			var rspMsg = JsonHelper.SerializeJsonToObject<SubscribeMsg>(msg.Data);
+			if (null == rspMsg)
+			{
+				Log.Error("转换消息为SubscribeMsg失败");
+				return;
+			}
+
+			// 查询SI接口版本
+			var reqHead = SiPortVerHelper.GetReqBytes();
+			NodeBControl.SendSiMsg(rspMsg.Topic, reqHead);
+
+			AnalyseSIPhaseMsg(rspMsg.Data, rspMsg.Topic);
+		}
+
+		private void OnQuerySiVerRsp(SubscribeMsg msg)
+		{
+			//var rspMsg = JsonHelper.SerializeJsonToObject<DataWithIp>(msg.Data);
+			var rspMsg = JsonHelper.SerializeJsonToObject<SubscribeMsg>(msg.Data);
+			var rspHead = SiPortVerHelper.GetRspHead(rspMsg.Data);
+			if (null == rspHead)
+			{
+				Log.Error("转换数据失败");
+				return;
+			}
+
+			if (rspHead.u8Result != 0)
+			{
+				Log.Error("查询SI接口版本号失败");
+				return;
+			}
+
+			ShowLogHelper.Show("查询si接口版本成功!", rspMsg.Topic, InfoTypeEnum.ENB_OTHER_INFO);
+
+			if (1 == rspHead.u8Version)
+			{
+				var rspV1 = SiPortVerHelper.GetRspV1(rspMsg.Data);
+				if (null == rspV1)
+				{
+					Log.Error("转换数据失败");
+					return;
+				}
+
+				//TODO LoadData(rspV1);
+			}
+			else
+			{
+				Log.Error($"SI接口版本回复的版本号 {rspHead.u8Version} 未定义，目前支持 1");
+			}
 		}
 
 		#endregion
 
 		#region 私有接口
 
+		// enb阶段消息
 		private void AnalyseSIPhaseMsg(byte[] msgBytes, string targetIp)
 		{
-			var rsp = SerializeHelper.BytesToStruct<SI_NBPHASE_REP_MSG>(msgBytes);
+			if (string.IsNullOrWhiteSpace(targetIp) ||
+				string.IsNullOrEmpty(targetIp))
+			{
+				Log.Error("解析出targetIp为null");
+				return;
+			}
+
+			var rsp = new SI_NBPHASE_REP_MSG();
+			if (-1 == rsp.DeserializeToStruct(msgBytes, 0))
+			{
+				Log.Error("enb阶段消息转换失败");
+				return;
+			}
+
 			var phase = (ENODEB_PHASE)rsp.u16NodeBPhase;
 			LMTORSYSTYPE type = (LMTORSYSTYPE) rsp.u8NodeBType;
 
 			var tipInfo = "";
+			var bBreakConnect = true;
 			switch (phase)
 			{
 				case ENODEB_PHASE.ENODEBPHASE_SI_OVERTIME:
@@ -50,11 +118,15 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 						type == LMTORSYSTYPE.NODEBTYPE_Macro)
 					{
 						// TODO 如果需要硬件版本号，在此处添加
+						// c#中大括号的转义：需要连续两个{{或}}才会生成一个{或}
+						PublishHelper.PublishMsg(TopicHelper.EnbConnectedMsg, $"{{\"TargetIp\" : \"{targetIp}\"}}");
 					}
 					else
 					{
 						tipInfo = $"IP为{targetIp}的基站类型不能识别！";
 					}
+
+					bBreakConnect = false;
 					break;
 				case ENODEB_PHASE.ENODEBPHASE_EXIST_CONNECT:
 					tipInfo = $"已有本地维护管理站与IP为{targetIp}的基站相连，请稍后再访问此基站！";
@@ -69,9 +141,23 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 					throw new ArgumentOutOfRangeException();
 			}
 
-			// TODO 前台显示tipInfo
+			if (!string.IsNullOrEmpty(tipInfo))
+			{
+				MessageBox.Show(tipInfo, "连接", MessageBoxButton.OK);
+			}
+
+			// TODO 断开连接
+			if (bBreakConnect)
+			{
+				
+			}
 		}
 
+
+		private void LoadData(Object rspObj)
+		{
+			throw new NotImplementedException("加载si port version数据尚未实现");
+		}
 		#endregion
 	}
 

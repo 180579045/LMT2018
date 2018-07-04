@@ -105,7 +105,10 @@ namespace SCMTOperationCore.Elements.BaseElement
 					break;
 
 				case SiMacroDef.O_SILMTENB_NBPHASE_REP:
-					topic = "WM_DEAL_ENBPHASE";
+					topic = TopicHelper.EnbPhaseMsg;
+					break;
+				case SiMacroDef.O_OMLMT_GET_SIPORTVERSION_RSP:
+					topic = TopicHelper.QuerySiPortVerRsp;
 					break;
 				default:
 					//TODO 不知道是什么啊，老铁
@@ -114,7 +117,7 @@ namespace SCMTOperationCore.Elements.BaseElement
 
 			if (!topic.Equals(""))
 			{
-				PublishHelper.PublishMsg(topic, msgBytes, BoardIp);
+				PublishHelper.PublishMsg(msgBytes, topic, BoardIp);
 			}
 
 			return true;
