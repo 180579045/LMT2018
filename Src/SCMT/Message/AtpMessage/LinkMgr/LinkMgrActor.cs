@@ -112,7 +112,7 @@ namespace AtpMessage.LinkMgr
 		private void OnLinkMsgFromBoard(SubscribeMsg msg)
 		{
 			byte[] msgBytes = msg.Data;
-			GtsMsgHeader header = GetHeaderFromBytes.GetHeader(msgBytes);
+			GtsMsgHeader header = GetHeaderHelper.GetHeader<GtsMsgHeader>(msgBytes);
 			string ip = GetIpFromTopic(msg.Topic);
 
 			switch (header.u16Opcode)

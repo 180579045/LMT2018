@@ -70,7 +70,6 @@
     <Compile Include="MsgDefine\FileUploadMsg.cs" />
     <Compile Include="MsgDefine\FilterResetMsg.cs" />
     <Compile Include="MsgDefine\FilterRuleMsg.cs" />
-    <Compile Include="MsgDefine\GetHeaderFromBytes.cs" />
     <Compile Include="MsgDefine\GtsHeader.cs" />
     <Compile Include="MsgDefine\GtsMsgType.cs" />
     <Compile Include="MsgDefine\KeepAliveMsg.cs" />
