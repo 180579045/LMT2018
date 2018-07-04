@@ -47,6 +47,7 @@
     <Compile Include="ConfigFileHelper.cs" />
     <Compile Include="CustomException.cs" />
     <Compile Include="FilePathHelper.cs" />
+    <Compile Include="GetHeaderHelper.cs" />
     <Compile Include="IASerialize.cs" />
     <Compile Include="JsonConvertHelper.cs" />
     <Compile Include="MibStringHelper.cs" />
