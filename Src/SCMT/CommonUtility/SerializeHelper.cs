@@ -18,6 +18,12 @@ namespace CommonUtility
 		public static object BytesToStruct(byte[] bytes, Type structType)
 		{
 			int size = Marshal.SizeOf(structType);
+
+			if (bytes.Length < size)
+			{
+				return null;
+			}
+
 			IntPtr buffer = Marshal.AllocHGlobal(size);
 			try
 			{
@@ -34,15 +40,23 @@ namespace CommonUtility
 			}
 		}
 
-		public static T BytesToStruct<T>(byte[] bytes)
+		public static T BytesToStruct<T>(byte[] bytes) where T : IASerialize, new ()
 		{
-			var structType = typeof(T);
-			int size = Marshal.SizeOf(structType);
+			//int size = Marshal.SizeOf(structType);
+			var obj = new T() as IASerialize;
+			int size = obj.Len;
+
+			if (bytes.Length < size)
+			{
+				return default(T);
+			}
+
 			IntPtr buffer = Marshal.AllocHGlobal(size);
 			try
 			{
+				var structType = typeof(T);
 				Marshal.Copy(bytes, 0, buffer, size);
-				return (T)Marshal.PtrToStructure(buffer, structType);
+				return (T)Marshal.PtrToStructure(buffer, typeof(T));
 			}
 			catch
 			{

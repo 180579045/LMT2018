@@ -37,8 +37,7 @@ namespace CommonUtility
 		/// <returns></returns>
 		public static T SerializeJsonToObject<T>(byte[] jsonBytes)
 		{
-			//var s = SendReceiveConstants.DefaultEncoding.GetString(jsonBytes);
-			var s = Encoding.Default.GetString(jsonBytes);
+			var s = Encoding.UTF8.GetString(jsonBytes);		// 使用utf8编码，避免中文转换后乱码
 			return JsonHelper.SerializeJsonToObject<T>(s);
 		}
 	}
