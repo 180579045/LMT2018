@@ -30,7 +30,7 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 
 		public void OnEnbPhaseMsg(SubscribeMsg msg)
 		{
-			// TODO DataWithIp类型与SubscribeMsg类型的定义一样，但是SerializeJsonToObject转换时
+			// DataWithIp类型与SubscribeMsg类型的定义一样，但是SerializeJsonToObject转换时
 			// 设置TargetIp为null，还没有找到问题的原因，暂时用SubscribeMsg类型
 			//var rspMsg = JsonHelper.SerializeJsonToObject<DataWithIp>(msg.Data);
 			var rspMsg = JsonHelper.SerializeJsonToObject<SubscribeMsg>(msg.Data);
@@ -40,9 +40,9 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 				return;
 			}
 
-			// 查询SI接口版本
-			var reqHead = SiPortVerHelper.GetReqBytes();
-			NodeBControl.SendSiMsg(rspMsg.Topic, reqHead);
+			// 查询SI接口版本 TODO 后续移动到UE相关的模块，不在此进行查询
+			//var reqHead = SiPortVerHelper.GetReqBytes();
+			//NodeBControl.SendSiMsg(rspMsg.Topic, reqHead);
 
 			AnalyseSIPhaseMsg(rspMsg.Data, rspMsg.Topic);
 		}
@@ -75,7 +75,7 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 					return;
 				}
 
-				//TODO LoadData(rspV1);
+				LoadData(rspV1);
 			}
 			else
 			{
@@ -154,9 +154,10 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 		}
 
 
-		private void LoadData(Object rspObj)
+		private void LoadData(object rspObj)
 		{
-			throw new NotImplementedException("加载si port version数据尚未实现");
+			var rsp = rspObj as GetSiPortVersionRspMsg;
+			// TODO UE相关的信息放到UE模块进行查询和处理，不需要连接上就查询吧？
 		}
 		#endregion
 	}
@@ -169,5 +170,11 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 		NODEBTYPE_SUPER,    /*超级基站*/
 		NODEBTYPE_LTE,      /*eNB*/
 		NODEBTYPE_CUSTOM    //自定义模式
+	}
+
+	// 通过SI接口版本查到的Ue相关信息
+	public class UeInfo
+	{
+		
 	}
 }
