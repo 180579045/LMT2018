@@ -8,7 +8,7 @@
              d:DesignHeight="800" d:DesignWidth="700">
     <Grid>
         <Viewbox Stretch="Uniform">
-            <Canvas Name="FlowChart_5216" Height="800" Width="700">
+            <Canvas Name="FlowChart_5216" Height="800" Width="700" >
                 <Canvas.RenderTransform>
                     <TranslateTransform  X="0" Y="0"/>
                 </Canvas.RenderTransform>
