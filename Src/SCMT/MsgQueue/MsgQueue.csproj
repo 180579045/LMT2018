@@ -58,8 +58,10 @@
     <Compile Include="ReqRspPattern\MajordomoClientApi.cs" />
     <Compile Include="ReqRspPattern\MajordomoCommon.cs" />
     <Compile Include="ReqRspPattern\MajordomoWorkerApi.cs" />
+    <Compile Include="ShowLogHelper.cs" />
     <Compile Include="SubscribeClient.cs" />
     <Compile Include="SubscribeHelper.cs" />
+    <Compile Include="TopicHelper.cs" />
     <Compile Include="TopicManager.cs" />
   </ItemGroup>
   <ItemGroup>
