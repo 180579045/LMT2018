@@ -86,7 +86,7 @@ namespace FileManager.FileHandler
 
 		#region 私有函数区
 
-		private bool CheckCfgFile(string fileFullPath, ref string errorInfo)
+		public bool CheckCfgFile(string fileFullPath, ref string errorInfo)
 		{
 			var mapCheckNode = GetNeedCheckNodeFromXml();
 			if (mapCheckNode.Count == 0)
@@ -195,7 +195,7 @@ namespace FileManager.FileHandler
 			}
 
 			var dataHeader = (DataHead)SerializeHelper.BytesToStruct(dataHeadBytes, typeof(DataHead));
-			var dataHeadVerify = BitConverter.ToString(dataHeader.u8VerifyStr);
+			var dataHeadVerify = Encoding.UTF8.GetString(dataHeader.u8VerifyStr).Replace("\0", "");
 			if (!dataHeadVerify.Equals("BEG"))
 			{
 				fs.Close();
@@ -230,7 +230,7 @@ namespace FileManager.FileHandler
 				}
 
 				var cfgTableInfo = (OM_STRU_CfgFile_TblInfo)SerializeHelper.BytesToStruct(cfgTableInfoBytes, typeof(OM_STRU_CfgFile_TblInfo));
-				var tableName = BitConverter.ToString(cfgTableInfo.s8TblName);
+				var tableName = Encoding.UTF8.GetString(cfgTableInfo.s8TblName).Replace("\0", "");
 				if (!tableName.Equals(checkTblName))
 				{
 					continue;
@@ -249,7 +249,7 @@ namespace FileManager.FileHandler
 						readLen = fs.Read(fieldInfoBytes, 0, OM_STRU_CfgFile_FieldInfo.SizeOf());
 						var fieldInfo =
 							(OM_STRU_CfgFile_FieldInfo) SerializeHelper.BytesToStruct(fieldInfoBytes, typeof(OM_STRU_CfgFile_FieldInfo));
-						var mibNodeName = BitConverter.ToString(fieldInfo.s8FieldName);
+						var mibNodeName = Encoding.UTF8.GetString(fieldInfo.s8FieldName).Replace("\0", "");
 						if (mibNodeName.Equals("omLinkIndex"))
 						{
 							OmLinkIndexNode = fieldInfo;

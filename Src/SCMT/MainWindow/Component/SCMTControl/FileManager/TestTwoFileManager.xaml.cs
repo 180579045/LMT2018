@@ -420,7 +420,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             enbSelectedItem = e.NewValue as enbDirectoryTreeViewItem;
 
             if(enbSelectedItem != null)
-            {                
+            {
                 if (!_fileHandler.GetBoardFileInfo(enbSelectedItem.DirInfo))
                 {
                     Log.Error($"获取板卡{_boardIp}路径信息失败");
@@ -965,7 +965,31 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <param name="e"></param>
         private void downloadFileToBoard_Click(object sender, RoutedEventArgs e)
         {
-            if(_fileHandler.SendFileToRemote("e:/LTEV5SF.dtz", "/ata2"))
+            // 处理本地的文件路径
+            var localFile = lvLocalFileInfo.SelectedItem as FileInfoDemo;
+            if (null == localFile)
+            {
+                Log.Error("获取本地选中文件信息失败");
+                return;
+            }
+
+            var localPath = localFile.FilePath + localFile.FileName;
+
+            // 处理基站侧文件路径
+            if (null == enbSelectedItem)
+            {
+                Log.Error("基站侧尚未选中任何目录，应该设置一个默认值");
+                return;
+            }
+
+            var dstPath = enbSelectedItem.DirInfo;
+            var enbPath = lvENBFileInfo.SelectedItem as FileInfoEnb;
+            if (null != enbPath)
+            {
+                dstPath += $"/{enbPath.FileName}";
+            }
+
+            if (_fileHandler.SendFileToRemote(localPath, dstPath))
             {
                 MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
             }

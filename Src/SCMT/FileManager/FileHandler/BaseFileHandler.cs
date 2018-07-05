@@ -46,6 +46,7 @@ namespace FileManager.FileHandler
 			long reqId = 0;
 			long taskId = 0;
 			var transFileObj = FileTransTaskMgr.FormatTransInfo(dstFilePath, srcFileFullName, type, TRANSDIRECTION.TRANS_DOWNLOAD);
+			transFileObj.IpAddr = boardAddr;
 			var result = FileTransTaskMgr.SendTransFileTask(boardAddr, transFileObj, ref taskId, ref reqId);
 			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == result)
 			{
@@ -77,6 +78,7 @@ namespace FileManager.FileHandler
 
 			var type = GetTransFileType();
 			var tfo = FileTransTaskMgr.FormatTransInfo(localPath, remoteFullPath, type, TRANSDIRECTION.TRANS_UPLOAD);
+			tfo.IpAddr = boardAddr;
 			var result = FileTransTaskMgr.SendTransFileTask(boardAddr, tfo, ref taskId, ref reqId);
 			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == result)
 			{
@@ -103,10 +105,10 @@ namespace FileManager.FileHandler
 
 		#region 基类函数区
 
-		// 判断基站中是否已经存在指定的文件
+		// TODO 判断基站中是否已经存在指定的文件。没有必要啊
 		protected bool FileExistInBoard(string fileFullPath)
 		{
-			throw new NotImplementedException("数据库模块需要实现CMData相关数据的存取");
+			return false;
 		}
 
 		#endregion

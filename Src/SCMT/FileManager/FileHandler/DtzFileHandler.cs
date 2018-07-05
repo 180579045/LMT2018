@@ -39,67 +39,67 @@ namespace FileManager.FileHandler
 
 			//查询所有的软件包详细信息
 			var runningSwPackVer = GetRunningSwPackVer(".1");		// 软件包版本
-            if (_bDetailFlag)
-            {
-                var runningSwPackVerDetail = GetRunningSwPackVerDetail(".1");
-            }
+			if (_bDetailFlag)
+			{
+				var runningSwPackVerDetail = GetRunningSwPackVerDetail(".1");
+			}
 
 			var runningSwPackVerCP = GetRunningSwPackVer(".2");		// 冷补丁版本
-            if (_bDetailFlag)
-            {
-                var runningSwPackVerCPDetail = GetRunningSwPackVerDetail(".2");
-            }
+			if (_bDetailFlag)
+			{
+				var runningSwPackVerCPDetail = GetRunningSwPackVerDetail(".2");
+			}
 
 			var runningSwPackVerHP = GetRunningSwPackVer(".3");		// 热补丁版本
-            if (_bDetailFlag)
-            {
-                var runningSwPackVerHPDetail = GetRunningSwPackVerDetail(".3");
-            }
+			if (_bDetailFlag)
+			{
+				var runningSwPackVerHPDetail = GetRunningSwPackVerDetail(".3");
+			}
 			var PPRunningVer = GetRunningPeripheralVer(".1.1");		// 外设版本
-            if(_bDetailFlag)
-            {
-                var PPRunningVerDetail = GetRunningPeripheraVerDetail(".1.1");
-            }
+			if(_bDetailFlag)
+			{
+				var PPRunningVerDetail = GetRunningPeripheraVerDetail(".1.1");
+			}
 
 			List<string> nbArray = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
 				nbArray.Add(GetSwPackVersion($".1.{i}"));
-                if(_bDetailFlag)
-                {
-                    nbArray.Add(GetSwPackVersionDetail($".1.{i}"));
-                }
+				if(_bDetailFlag)
+				{
+					nbArray.Add(GetSwPackVersionDetail($".1.{i}"));
+				}
 			}
 
 			List<string> nbArrayCP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
 				nbArrayCP.Add(GetSwPackVersion($".2.{i}"));
-                if (_bDetailFlag)
-                {
-                    nbArray.Add(GetSwPackVersionDetail($".2.{i}"));
-                }
-            }
+				if (_bDetailFlag)
+				{
+					nbArray.Add(GetSwPackVersionDetail($".2.{i}"));
+				}
+			}
 
 			List<string> nbArrayHP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
 				nbArrayHP.Add(GetSwPackVersion($".3.{i}"));
-                if (_bDetailFlag)
-                {
-                    nbArray.Add(GetSwPackVersionDetail($".3.{i}"));
-                }
-            }
+				if (_bDetailFlag)
+				{
+					nbArray.Add(GetSwPackVersionDetail($".3.{i}"));
+				}
+			}
 
 			List<string> wsArray = new List<string>();
 			for (var i = 1; i < 3; i++)
 			{
 				wsArray.Add(GetPeripheralVersion($".1.1.{i}"));
-                if (_bDetailFlag)
-                {
-                    nbArray.Add(GetPeripheralVersionDetail($".1.1.{i}"));
-                }                
-            }
+				if (_bDetailFlag)
+				{
+					nbArray.Add(GetPeripheralVersionDetail($".1.1.{i}"));
+				}
+			}
 
 			var bTipForceFlag = false;         //是否提醒强制下载
 
@@ -222,7 +222,7 @@ namespace FileManager.FileHandler
 				TargetIp = boardAddr
 			};
 
-            confirmDlg.SetSwPackInfo(head);
+			confirmDlg.SetSwPackInfo(head);
 			var dlgRet = confirmDlg.ShowDialog();
 			if (DialogResult.OK == dlgRet)
 			{
@@ -230,11 +230,11 @@ namespace FileManager.FileHandler
 				{
 					throw new CustomException("命令执行失败");
 				}
-            }
-            //else
-            //{
-            //    return ExecuteResult.UserCancel;
-            //}
+			}
+			//else
+			//{
+			//    return ExecuteResult.UserCancel;
+			//}
 
 			var swPackInfo = new CSWPackPlanProcInfoMgr();
 			swPackInfo.SetInfo(confirmDlg.GetDlProcInfo());
@@ -380,15 +380,15 @@ namespace FileManager.FileHandler
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
-        /// <summary>
-        /// 查询running sw pack version。index=.1;.2;.3  详细版本信息
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private string GetRunningSwPackVerDetail(string index)
-        {
-            var cmdName = "GetRunningSWPackDetailVer";
-            var mibName = "swPackRunningDetailVersion";
+		/// <summary>
+		/// 查询running sw pack version。index=.1;.2;.3  详细版本信息
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		private string GetRunningSwPackVerDetail(string index)
+		{
+			var cmdName = "GetRunningSWPackDetailVer";
+			var mibName = "swPackRunningDetailVersion";
 
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
@@ -402,15 +402,15 @@ namespace FileManager.FileHandler
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 			}
 
-        /// <summary>
-        /// 查询running 外设的详细版本号  index = 1.1
-        /// </summary>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        private string GetRunningPeripheraVerDetail(string index)
-        {
-            var cmdName = "GetRunningperipheralPackDetailVer";
-            var mibName = "peripheralPackRunningDetailVersion";
+		/// <summary>
+		/// 查询running 外设的详细版本号  index = 1.1
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		private string GetRunningPeripheraVerDetail(string index)
+		{
+			var cmdName = "GetRunningperipheralPackDetailVer";
+			var mibName = "peripheralPackRunningDetailVersion";
 
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
@@ -424,38 +424,38 @@ namespace FileManager.FileHandler
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
-        //获取详细软件包的版本。.1.1~.1.5；.2.1~.2.5[冷补丁]；.3.1~.3.5[热补丁]
-        private string GetSwPackVersionDetail(string index)
-        {
-            var cmdName = "GetSWPackDetailVer";
-            var mibName = "swPackDetailVersion";
+		//获取详细软件包的版本。.1.1~.1.5；.2.1~.2.5[冷补丁]；.3.1~.3.5[热补丁]
+		private string GetSwPackVersionDetail(string index)
+		{
+			var cmdName = "GetSWPackDetailVer";
+			var mibName = "swPackDetailVersion";
 
-            return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-        }
+			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+		}
 
-        //获取外设的版本。.1.1.1~.1.1.3
-        private string GetPeripheralVersion(string index)
+		//获取外设的版本。.1.1.1~.1.1.3
+		private string GetPeripheralVersion(string index)
 		{
 			var cmdName = "GetperipheralPack";
 			var mibName = "peripheralPackVersion";
 
 			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-        }
+		}
 
-        //获取详细外设的版本。.1.1.1~.1.1.3
-        private string GetPeripheralVersionDetail(string index)
-        {
-            var cmdName = "GetPeripheralPackDetailVer";
-            var mibName = "peripheralPackDetailVersion";
+		//获取详细外设的版本。.1.1.1~.1.1.3
+		private string GetPeripheralVersionDetail(string index)
+		{
+			var cmdName = "GetPeripheralPackDetailVer";
+			var mibName = "peripheralPackDetailVersion";
 
-            return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-        }
+			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+		}
 
-        #endregion
+		#endregion
 
-        #region 私有属性
+		#region 私有属性
 
-        private bool _bDetailFlag;
+		private bool _bDetailFlag;
 
 		#endregion
 	}

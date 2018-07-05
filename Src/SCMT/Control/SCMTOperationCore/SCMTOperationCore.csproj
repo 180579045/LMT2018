@@ -81,6 +81,8 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -125,6 +127,12 @@
     <Compile Include="Elements\BaseElement\SiMsgDealer.cs" />
     <Compile Include="Elements\NodeB.cs" />
     <Compile Include="Elements\BaseElement\SiElement.cs" />
+    <Compile Include="Message\MsgDispatcher\CDTSynAlarmDlg.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Message\MsgDispatcher\CDTSynAlarmDlg.Designer.cs">
+      <DependentUpon>CDTSynAlarmDlg.cs</DependentUpon>
+    </Compile>
     <Compile Include="Message\MsgDispatcher\ConnectWorker.cs" />
     <Compile Include="Message\MsgDispatcher\FileTransHelper.cs" />
     <Compile Include="Message\MsgDispatcher\FtpServerHelper.cs" />
@@ -179,6 +187,11 @@
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Message\MsgDispatcher\CDTSynAlarmDlg.resx">
+      <DependentUpon>CDTSynAlarmDlg.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

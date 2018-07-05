@@ -41,7 +41,7 @@
 			this.textBox1.Multiline = true;
 			this.textBox1.Name = "textBox1";
 			this.textBox1.ReadOnly = true;
-			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
+			this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
 			this.textBox1.Size = new System.Drawing.Size(381, 324);
 			this.textBox1.TabIndex = 0;
 			// 
@@ -57,6 +57,7 @@
 			// 
 			// IDOK
 			// 
+			this.IDOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.IDOK.Location = new System.Drawing.Point(83, 419);
 			this.IDOK.Name = "IDOK";
 			this.IDOK.Size = new System.Drawing.Size(75, 23);
@@ -67,6 +68,7 @@
 			// 
 			// IDCANCEL
 			// 
+			this.IDCANCEL.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.IDCANCEL.Location = new System.Drawing.Point(200, 419);
 			this.IDCANCEL.Name = "IDCANCEL";
 			this.IDCANCEL.Size = new System.Drawing.Size(75, 23);
@@ -86,6 +88,7 @@
 			this.Controls.Add(this.textBox1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
 			this.Name = "CfgFileCheckErrorDlg";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "传输参数校验";
 			this.Load += new System.EventHandler(this.form_load);
 			this.ResumeLayout(false);

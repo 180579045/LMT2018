@@ -124,7 +124,7 @@ namespace FileManager
 			if (0 == ret)
 			{
 				string csFileTrandId;
-				if ((InOutPdu.GetValueByMibName(ip, "fileTransNextAvailableIDForOthers", out csFileTrandId)))
+				if ((InOutPdu.GetValueByMibName(ip, "fileTransNextAvailableIDForOthers", out csFileTrandId, ".0")))
 				{
 					taskId = Int64.Parse(csFileTrandId);
 					return true;

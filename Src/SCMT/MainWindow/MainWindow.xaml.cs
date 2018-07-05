@@ -1000,21 +1000,21 @@ namespace SCMTMainWindow
 			}
 
 		}
-        private void Flow_Click(object sender, RoutedEventArgs e) {
-            //FlowChart f1 = new FlowChart();
-            //f1.Show();
+		private void Flow_Click(object sender, RoutedEventArgs e) {
+			//FlowChart f1 = new FlowChart();
+			//f1.Show();
 
-            LayoutAnchorable sub = new LayoutAnchorable();
-            FlowChart content = new FlowChart();
+			LayoutAnchorable sub = new LayoutAnchorable();
+			FlowChart content = new FlowChart();
 
-            sub.Content = content;
-            //sub.FloatingHeight = 300;
-            //sub.FloatingWidth = 800;
+			sub.Content = content;
+			//sub.FloatingHeight = 300;
+			//sub.FloatingWidth = 800;
 
-            this.Pane.Children.Add(sub);
-            sub.Float();
+			this.Pane.Children.Add(sub);
+			sub.Float();
 
-        }
+		}
 		/// <summary>
 		/// 每有一条新的MIB数据，都会调用该函数;
 		/// </summary>

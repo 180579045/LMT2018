@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="gb2312" standalone="no"?>
+<!--配置文件下发时增加保护，校验以下节点值，若与基站侧数据不一致，弹出不一致的节点值，并警告继续下发可能导致传输断开！-->
+<root>
+	<Task0 name="omLinkLocalIPAddress" key="本地IP地址"></Task0>
+	<Task1 name="omLinkLocalIpMask" key="子网掩码"></Task1>
+	<Task2 name="omLinkDefaultGWIpAddr" key="默认网关"></Task2>
+	<Task3 name="omLinkPeerIpAddr" key="对端IP地址"></Task3>
+	<Task4 name="omLinkVlanId" key="VLAN标识"></Task4>
+	<Task5 name="omLinkSlotNo" key="物理端口插槽号"></Task5>
+	<Task6 name="omLinkPhyPortId" key="物理端口号"></Task6>
+	<totalNum>7</totalNum>
+</root>

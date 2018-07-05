@@ -35,6 +35,7 @@ namespace FileManager
 			_boardIp = boardIp;
 			_operaFailCount = 0;
 			_mapTransFileType = new Dictionary<int, string>();
+			_mapTraningFileTask = new Dictionary<long, StruFileTransDes>();
 
 			// 订阅SI事件
 			SubscribeHelper.AddSubscribe($"/{_boardIp}/O_SILMTENB_GETFILEINFO_RES", OnGetFileInfoRsp);
@@ -109,8 +110,7 @@ namespace FileManager
 				AddFileTransProcess(baseHandler.TFO, baseHandler.WorkingTaskId);
 			}
 
-			_timer = new Timer(timerCallback, null, 0, 1000);
-            
+			_timer = new Timer(timerCallback, null, 1000, 1000);
 
 			return true;
 		}
@@ -241,6 +241,9 @@ namespace FileManager
 					precent = 100;
 					state = FILETRANSSTATE.TRANSSTATE_DOWNLOADFINISHED;
 					stateText = "下载已完成";
+
+					_mapTraningFileTask.Remove(taskId);
+					_workingForFileTrans = false;
 				}
 			}
 			else if (FILETRANSOPER.UnZipping == op)
@@ -265,10 +268,12 @@ namespace FileManager
 					precent = 100;
 					state = FILETRANSSTATE.TRANSSTATE_UPLOADFINISHED;
 					stateText = "上传已完成";
+
+					_mapTraningFileTask.Remove(taskId);
+					_workingForFileTrans = false;
 				}
 			}
 
-			var ftd = _mapTraningFileTask[taskId];
 			var pbInfo = new TProgressBarInfo
 			{
 				m_nPercent = precent,
@@ -401,7 +406,7 @@ namespace FileManager
 
 			if (!_upgradePackInfo.GetInfo(ref taskId, ref index))
 			{
-				// TODO 关闭进度条
+				EndProgressBar();
 				_workingForUpgrade = false;
 				return;
 			}
@@ -447,12 +452,12 @@ namespace FileManager
 			{
 				var retryCount = _upgradePackInfo.iResCount++;
 				if (retryCount >= 5)        //如果5次查询均失败,则认为基站复位,需要关闭进度条
-                {
-                    EndProgressBar();
+				{
+					EndProgressBar();
 					_workingForUpgrade = false;
-                }
-                EndUIProcessBar(processBarInfo);
-                return;
+				}
+				EndUIProcessBar(processBarInfo);
+				return;
 			}
 
 			string swPackPlanUpgradeStateValue;
@@ -638,8 +643,8 @@ namespace FileManager
 					//需要获取当前文件的状态（传输还是解压），和进度，文件名
 					string csFileTransState;
 					string csFileTransPercent;
-					if (inOutPdu.GetValueByMibName(_boardIp, "fileTransState", out csFileTransState) &&
-						inOutPdu.GetValueByMibName(_boardIp, "fileTransPercent", out csFileTransPercent))
+					if (inOutPdu.GetValueByMibName(_boardIp, "fileTransState", out csFileTransState, csIndex) &&
+						inOutPdu.GetValueByMibName(_boardIp, "fileTransPercent", out csFileTransPercent, csIndex))
 					{
 						var nPercent = int.Parse(csFileTransPercent);
 						Log.Info($"文件id={csIndex},文件状态 {csFileTransState},进度{nPercent}");
@@ -699,15 +704,15 @@ namespace FileManager
 			}
 		}
 
-        private void EndUIProcessBar(TProgressBarInfo progressBarInfo)
-        {
-            EndProgressEvent?.Invoke(progressBarInfo);
-        }
+		private void EndUIProcessBar(TProgressBarInfo progressBarInfo)
+		{
+			EndProgressEvent?.Invoke(progressBarInfo);
+		}
 
 		// 更新当前进度条的信息。只有拖包升级才调用这个方法
 		private void SetProcessInfo(TProgressBarInfo progressBarInfo)
 		{
-			if (null == _swUpgradePbBarInfo)	// 没有的时候要新增一个进度条。TODO 是不是可以合在一起
+			if (null == _swUpgradePbBarInfo)	// 没有的时候要新增一个进度条
 			{
 				_swUpgradePbBarInfo = progressBarInfo;
 				NewProgressEvent?.Invoke(_swUpgradePbBarInfo);
