@@ -232,7 +232,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 			lmtPdu.Clear();
 
-			PackSetCmdPdu(cmdName, strIpAddr, strIndex, needCheck, name2Value, ref lmtPdu);
+			PackSetCmdPdu(cmdName, strIndex, strIpAddr, needCheck, name2Value, ref lmtPdu);
 			lmtPdu.m_bIsNeedPrint = isPrint;
 			lmtPdu.SetSyncFlag(true);
 
