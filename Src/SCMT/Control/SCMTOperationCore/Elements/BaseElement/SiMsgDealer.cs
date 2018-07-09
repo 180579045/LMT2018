@@ -103,6 +103,7 @@ namespace SCMTOperationCore.Elements.BaseElement
 				case SiMacroDef.O_SILMTENB_DELFILE_RES:
 					break;
 				case SiMacroDef.O_SILMTENB_GETCAPACITY_RES:
+					topic = TopicHelper.QueryEnbCapacityRsp;
 					break;
 
 				case SiMacroDef.O_SILMTENB_NBPHASE_REP:
@@ -112,7 +113,6 @@ namespace SCMTOperationCore.Elements.BaseElement
 					topic = TopicHelper.QuerySiPortVerRsp;
 					break;
 				default:
-					//TODO 不知道是什么啊，老铁
 					break;
 			}
 
