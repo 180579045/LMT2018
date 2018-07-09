@@ -16,6 +16,8 @@ namespace FileManager
 
 	public delegate void UpdateProcessBar(TProgressBarInfo pbInfo);
 
+	public delegate void MenuClickHandler(IASerialize rsp);
+
 	// 只是把原来的函数先简单的封装在一个文件中
 	public class FileMgrFileHandler
 	{
@@ -25,7 +27,7 @@ namespace FileManager
 		public event UpdateProcessBar UpdateProgressEvent;				// 更新进度条事件
 		public event UpdateProcessBar NewProgressEvent;					// 增加一个新的进度条
 		public event UpdateProcessBar EndProgressEvent;					// 销毁进度条
-
+		public event MenuClickHandler MenuClickRspEvent;				// 右键菜单响应
 		#endregion
 
 		#region 构造、析构
@@ -39,6 +41,7 @@ namespace FileManager
 
 			// 订阅SI事件
 			SubscribeHelper.AddSubscribe($"/{_boardIp}/O_SILMTENB_GETFILEINFO_RES", OnGetFileInfoRsp);
+			SubscribeHelper.AddSubscribe(TopicHelper.QueryEnbCapacityRsp, OnGetCapacityRsp);
 		}
 
 
@@ -730,7 +733,7 @@ namespace FileManager
 				_swUpgradePbBarInfo.m_nPercent = 100;
 				_swUpgradePbBarInfo.m_eOperationType = OPERTYPE.OPERTYPE_FINISHED;
 				string stateText = "";
-				_swUpgradePbBarInfo.m_eStatus = CheckEndPhase(true, ref stateText);
+				_swUpgradePbBarInfo.m_eStatus = CheckEnbPhase(true, ref stateText);
 				_swUpgradePbBarInfo.m_strStatus = stateText;
 				UpdateProgressEvent?.Invoke(_swUpgradePbBarInfo);
 			}
@@ -756,7 +759,7 @@ namespace FileManager
 			}
 		}
 
-		private FILETRANSSTATE CheckEndPhase(bool bEndWork, ref string stateText)
+		private FILETRANSSTATE CheckEnbPhase(bool bEndWork, ref string stateText)
 		{
 			var tProgressBarInfo = _swUpgradePbBarInfo;
 			var state = FILETRANSSTATE.TRANSSTATE_UNKNOWN;
@@ -823,6 +826,28 @@ namespace FileManager
 		private List<long> GetUnFinishFileTransTaskId()
 		{
 			return _mapTraningFileTask.Keys.ToList();
+		}
+
+		private void OnGetCapacityRsp(SubscribeMsg msg)
+		{
+			var rspMsg = JsonHelper.SerializeJsonToObject<SubscribeMsg>(msg.Data);
+			if (null == rspMsg)
+			{
+				Log.Error("转换消息为SubscribeMsg失败");
+				return;
+			}
+
+			var ip = rspMsg.Topic;
+			if (ip.Equals(_boardIp))
+			{
+				var gcRsp = new SI_SILMTENB_GetCapacityRspMsg();
+				if (-1 == gcRsp.DeserializeToStruct(rspMsg.Data, 0))
+				{
+					gcRsp.s8GetResult = 1;
+				}
+
+				MenuClickRspEvent?.Invoke(gcRsp);
+			}
 		}
 
 		#endregion

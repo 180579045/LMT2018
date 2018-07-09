@@ -44,6 +44,10 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         //定义文件夹树，显示基站文件夹信息，因为基站需要使用回调函数显示，所以设置为全局变量
         private TreeView enbMainTree = new TreeView();
 
+        // 保存最后一次点击的右键菜单名称
+        private string latestEnbMenuName;
+
+
         public TestTwoFileManager(string strIP)
         {
             InitializeComponent();
@@ -366,6 +370,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myMUItem = new MenuItem();
             myMUItem.Header = "查询系统容量";
             myMUItem.Name = "SelectSystemCapacity";
+            myMUItem.Click += GetCapacity_Click;
             myContext.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
@@ -435,8 +440,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 enbPath += $"/{enbFi.FileName}";
             }
 
-            var ret = MessageBox.Show($"确定上传文件{enbFi.FileName}到管理侧{localDirName}？", "文件管理", MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
+            var ret = ShowTip_Confirm($"确定上传文件{enbFi.FileName}到管理侧{localDirName}？");
             if (MessageBoxResult.Yes != ret)
             {
                 return;
@@ -446,7 +450,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             var fileFullPath = localDirName + "\\" + enbFi.FileName;
             if (File.Exists(fileFullPath))
             {
-                if (MessageBoxResult.OK != MessageBox.Show("是否覆盖已有文件？", "文件管理", MessageBoxButton.OKCancel, MessageBoxImage.Question))
+                if (MessageBoxResult.Yes != ShowTip_Confirm("是否覆盖已有文件？"))
                 {
                     return;
                 }
@@ -458,7 +462,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
+                ShowTip_Error(exception.Message);
             }
         }
 
@@ -472,8 +476,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 if (!_fileHandler.GetBoardFileInfo(enbSelectedItem.DirInfo))
                 {
                     Log.Error($"获取板卡{_boardIp}路径信息{enbSelectedItem.DirInfo}失败");
-                    MessageBox.Show($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！", "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
+                    ShowTip_Error($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！");
                 }
             }
         }
@@ -495,6 +498,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             _fileHandler.UpdateProgressEvent += UpdateProgressCallBack;
             _fileHandler.NewProgressEvent += NewProgressCallBack;
             _fileHandler.EndProgressEvent += EndProgressCallBack;
+            _fileHandler.MenuClickRspEvent += MenuClickCallBack;
 
             _boardIp = boardIp;
         }
@@ -505,8 +509,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             if (!_fileHandler.GetBoardFileInfo(""))
             {
                 Log.Error($"获取板卡{_boardIp}路径信息失败");
-                MessageBox.Show($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！", "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                ShowTip_Error($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！");
             }
 
             // 等待si消息回复
@@ -1106,5 +1109,53 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             }));
         }
 
+        // 查询系统容量
+        private void GetCapacity_Click(object sender, RoutedEventArgs e)
+        {
+            latestEnbMenuName = "SelectSystemCapacity";
+
+            try
+            {
+                if (!FileMgrSendSiMsg.SendGetCapacityReq(_boardIp, "/ata2"))
+                {
+                    ShowTip_Error("查询系统容量失败！");
+                }
+            }
+            catch (Exception)
+            {
+                ShowTip_Error("查询系统容量失败！");
+            }
+        }
+
+        // ENB侧右键操作通知
+        private void MenuClickCallBack(IASerialize rsp)
+        {
+            if (latestEnbMenuName.Equals("SelectSystemCapacity"))		// 查询系统容量
+            {
+                var gcRsp = rsp as SI_SILMTENB_GetCapacityRspMsg;
+                if (gcRsp.s8GetResult == 1)
+                {
+                    ShowTip_Error("查询系统容量失败！");
+                    return;
+                }
+
+                var devName = Encoding.UTF8.GetString(gcRsp.s8DevName).TrimEnd('\0');
+                var restSpace = string.Format("{0:N0}", (gcRsp.u32AvailCapability + 1023) / 1024);
+                var allSpace = string.Format("{0:N0}", (gcRsp.u32TotalCapability + 1023) / 1024);
+                var capacityDlg = new SystemCapacity(devName, restSpace, allSpace);
+                capacityDlg.ShowDialog();
+            }
+        }
+
+
+        private MessageBoxResult ShowTip_Error(string msg)
+        {
+            return MessageBox.Show(msg, "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private MessageBoxResult ShowTip_Confirm(string msg, MessageBoxButton btn = MessageBoxButton.YesNo)
+        {
+            return MessageBox.Show(msg, "文件管理", btn, MessageBoxImage.Question);
+        }
     }
 }

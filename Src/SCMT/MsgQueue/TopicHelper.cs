@@ -31,6 +31,8 @@ namespace MsgQueue
 		#region SI消息对应的topic
 		public const string EnbPhaseMsg = "handle_enbphase_msg";
 		public const string QuerySiPortVerRsp = "handle_si_port_ver_rsp";
+		public const string QueryEnbCapacityRsp = "handle_enb_capacity_rsp";
+
 		#endregion
 
 
