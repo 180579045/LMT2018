@@ -95,8 +95,11 @@ namespace SCMTOperationCore.Elements
 		{
 			try
 			{
-				connection.SendBytes(msgBytes);
-				return true;
+				if (HasConnected())
+				{
+					connection.SendBytes(msgBytes);
+					return true;
+				}
 			}
 			catch (Exception e)			//发送失败会throw异常，需要处理
 			{

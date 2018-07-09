@@ -71,8 +71,8 @@ namespace FileManager
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
-				throw;
+				Log.Error($"发送SI消息失败，异常信息：{e.Message}");
+				return false;
 			}
 
 			return true;
