@@ -14,7 +14,6 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 		{
 			//var pAutoSynAlarmDlg = new CDTSynAlarmDlg(targetIp, ALARMTYPE.ACTIVE_ALARM_ENB5216);
 			//pAutoSynAlarmDlg.Start(INTERFACETYPE.INTERFACE_HIDE);
-			//throw new NotImplementedException("告警日志上传功能尚未实现");
 			return true;
 		}
 

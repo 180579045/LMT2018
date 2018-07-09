@@ -24,6 +24,7 @@ namespace MsgQueue
 		#region 后台进程间消息
 
 		public const string EnbConnectedMsg = "handle_enb_connected";
+		public const string SnmpAsyncMsg = "handl_snmp_async_msg";
 
 		#endregion
 
@@ -31,6 +32,7 @@ namespace MsgQueue
 		public const string EnbPhaseMsg = "handle_enbphase_msg";
 		public const string QuerySiPortVerRsp = "handle_si_port_ver_rsp";
 		#endregion
+
 
 	}
 }

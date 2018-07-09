@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using CommonUtility;
 using LogManager;
 using MsgQueue;
@@ -28,9 +24,6 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 			// 订阅消息
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbConnectedMsg, OnConnect);
 		}
-
-
-
 
 		#endregion
 
