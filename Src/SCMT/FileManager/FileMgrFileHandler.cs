@@ -132,9 +132,21 @@ namespace FileManager
 				return false;
 			}
 
-			_workingForFileTrans = true;
+			var baseHandler = (BaseFileHandler)handler;
+			_workingForUpgrade = baseHandler.WorkingForUpgrade;
+			_workingForFileTrans = baseHandler.WorkingForFileTrans;
 
-			// TODO UI模块启动定时器查询进度
+			if (_workingForUpgrade)
+			{
+				_upgradePackInfo = baseHandler.UFO;
+			}
+
+			if (_workingForFileTrans)
+			{
+				AddFileTransProcess(baseHandler.TFO, baseHandler.WorkingTaskId);
+			}
+
+			_timer = new Timer(timerCallback, null, 1000, 1000);
 
 			return true;
 		}
@@ -195,17 +207,23 @@ namespace FileManager
 		{
 			var state = FILETRANSSTATE.TRANSSTATE_UNKNOWN;
 			var op = OPERTYPE.OPERTYPE_UNKNOWN;
+			var opText = "";
+			var stateText = "";
 
 			var dd = ftd.enumFileTransOp;
 			if (dd == FILETRANSOPER.DownLoading)
 			{
 				state = FILETRANSSTATE.TRANSSTATE_DOWNLOADWAITING;
 				op = OPERTYPE.OPERTYPE_DOWNLOAD;
+				opText = "文件下载";
+				stateText = "文件下载等待中...";
 			}
 			else
 			{
 				state = FILETRANSSTATE.TRANSSTATE_UPLOADWAITING;
 				op = OPERTYPE.OPERTYPE_UPLOAD;
+				opText = "文件上传";
+				stateText = "文件上传等待中...";
 			}
 
 			var pbInfo = new TProgressBarInfo
@@ -214,7 +232,9 @@ namespace FileManager
 				m_lTaskID = ftd.nFileTransTaskId,
 				m_nPercent = 0,
 				m_eStatus = state,
-				m_eOperationType = op
+				m_strStatus = stateText,
+				m_eOperationType = op,
+				strOperationType = opText
 			};
 
 			NewProgressEvent?.Invoke(pbInfo);
@@ -661,6 +681,18 @@ namespace FileManager
 					else
 					{
 						Log.Error("从PDU中获取变量失败fileTransState fileTransPercent");
+
+						//防止命令下发失败后，进度条一直停在那动不动，收到传输完毕后仍没关闭
+						//_workingForFileTrans = true;
+						//_nGetSnmpFailCount++;
+						//if (_nGetSnmpFailCount > 3)
+						//{
+						//	_nGetSnmpFailCount = 0;
+						//	Log.Error("Get命令返回失败超过3次，取消文件传输任务");
+						//	_workingForFileTrans = false;
+						//	break;
+						//}
+
 						continue;
 					}
 
@@ -883,7 +915,7 @@ namespace FileManager
 		private bool GetTransFileTypeFromDB()
 		{
 			_mapTransFileType = SnmpToDatabase.GetValueRangeByMibName("fileTransType", _boardIp);
-			return (null == _mapTransFileType);
+			return (null != _mapTransFileType);
 		}
 
 		#endregion
@@ -913,6 +945,8 @@ namespace FileManager
 		public int m_nPercent;                      //操作完成百分比
 		public FILETRANSSTATE m_eStatus;            //状态
 		public OPERTYPE m_eOperationType;           //操作类型
+		public string strOperationType;				//操作类型文本描述
+
 		public long m_lTaskID;						//任务ID
 
 		public string m_strStatus;					//状态的文本描述
