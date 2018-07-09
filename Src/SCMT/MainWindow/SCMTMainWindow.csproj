@@ -106,6 +106,9 @@
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -154,6 +157,12 @@
     <Compile Include="Component\SCMTControl\FileManager\TestTwoFileManager.xaml.cs">
       <DependentUpon>TestTwoFileManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\SCMTControl\LogInfoShow\LogInfoShow.xaml.cs">
+      <DependentUpon>LogInfoShow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
+      <DependentUpon>OutputWin.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
     <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
@@ -193,6 +202,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Component\SCMTControl\FlowChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\LogInfoShow\LogInfoShow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

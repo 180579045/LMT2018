@@ -46,6 +46,7 @@ using SCMTMainWindow.Component.SCMTControl;
 using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
 using System.Windows.Media;
+using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
 
 namespace SCMTMainWindow
 {
@@ -1343,13 +1344,20 @@ namespace SCMTMainWindow
 			var msgText = $"{GetLevel(logInfo.Type)}({neName}:{logInfo.TargetIp}):\n";
 			msgText += $"{TimeHelper.GetCurrentTime()} {logInfo.Msg} \n";
 
-			Application.Current.Dispatcher.BeginInvoke(
-				DispatcherPriority.Background, new Action(() =>
-					{
-						UiLogShow.AppendText(msgText);
-}
-				)
-			);
+            LogInfoTitle newLogInfo = new LogInfoTitle();
+            newLogInfo.Type = logInfo.Type;
+            newLogInfo.LogInfo = logInfo.Msg;
+            newLogInfo.TargetIP = logInfo.TargetIp;
+
+            Application.Current.Dispatcher.BeginInvoke(
+                DispatcherPriority.Background, new Action(() =>
+                {
+                    //UiLogShow.AppendText(msgText);
+                    LogInfoShow.AddLogInfo(newLogInfo, MainLogInfoShow);
+                }
+                )
+            );
+           
 		}
 
 		private Color GetColor(InfoTypeEnum level)
@@ -1437,12 +1445,12 @@ namespace SCMTMainWindow
 
 		#endregion
 
-		private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
-		{
-			DateTime thistime = DateTime.Now;
-			string strText = thistime.ToString("yyyy-mm-dd hh:mm:ss") + "  " + "test\n";
-			UiLogShow.AppendText(strText);
-		}
+		//private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+		//{
+		//	DateTime thistime = DateTime.Now;
+		//	string strText = thistime.ToString("yyyy-mm-dd hh:mm:ss") + "  " + "test\n";
+		//	UiLogShow.AppendText(strText);
+		//}
 	}
 
 }
