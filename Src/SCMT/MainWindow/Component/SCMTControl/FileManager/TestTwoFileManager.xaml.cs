@@ -423,8 +423,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             {
                 if (!_fileHandler.GetBoardFileInfo(enbSelectedItem.DirInfo))
                 {
-                    Log.Error($"获取板卡{_boardIp}路径信息失败");
-                    // TODO 前台错误信息提示
+                    Log.Error($"获取板卡{_boardIp}路径信息{enbSelectedItem.DirInfo}失败");
+                    MessageBox.Show($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！", "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
             }
@@ -457,7 +457,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             if (!_fileHandler.GetBoardFileInfo(""))
             {
                 Log.Error($"获取板卡{_boardIp}路径信息失败");
-                // TODO 前台错误信息提示
+                MessageBox.Show($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！", "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
