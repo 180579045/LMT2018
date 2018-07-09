@@ -345,6 +345,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             MenuItem myMUItem = new MenuItem();
             myMUItem.Header = "上传文件至本地";
             myMUItem.Name = "UploadToLocal";
+            myMUItem.Click += UploadFileToMgr_Click;
             myContext.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
@@ -376,7 +377,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myMUItem.Header = "刷新";
             myMUItem.Name = "EnbRefresh";
             myMUItem.Click += enbRefresh;
-            myContext.Items.Add(myMUItem);            
+            myContext.Items.Add(myMUItem);
 
             lvENBFileInfo.ContextMenu = myContext;
 
@@ -412,6 +413,53 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         private void enbRefresh(object sender, RoutedEventArgs e)
         {
             enbRefreshList();
+        }
+
+        // 上传文件到本地功能
+        private void UploadFileToMgr_Click(object sender, RoutedEventArgs e)
+        {
+            // 处理本地的文件路径
+            var localDirName = localSelectedDTVI.DirInfo.FullName;
+
+            // 处理基站侧文件路径
+            if (null == enbSelectedItem)
+            {
+                Log.Error("基站侧尚未选中任何目录，应该设置一个默认值");
+                return;
+            }
+
+            var enbPath = enbSelectedItem.DirInfo;
+            var enbFi = lvENBFileInfo.SelectedItem as FileInfoEnb;
+            if (null != enbFi)
+            {
+                enbPath += $"/{enbFi.FileName}";
+            }
+
+            var ret = MessageBox.Show($"确定上传文件{enbFi.FileName}到管理侧{localDirName}？", "文件管理", MessageBoxButton.YesNo,
+                MessageBoxImage.Question);
+            if (MessageBoxResult.Yes != ret)
+            {
+                return;
+            }
+
+            // 判断是否覆盖已有文件
+            var fileFullPath = localDirName + "\\" + enbFi.FileName;
+            if (File.Exists(fileFullPath))
+            {
+                if (MessageBoxResult.OK != MessageBox.Show("是否覆盖已有文件？", "文件管理", MessageBoxButton.OKCancel, MessageBoxImage.Question))
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                _fileHandler.UploadFileToLocal(localDirName, enbPath);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "文件管理", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         //enb树的选择改变事件
@@ -533,7 +581,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             if (rsp != null)
             {
                 //获取父路径
-                var strFather = Encoding.Default.GetString(rsp.s8SrcPath).Replace("\0", "");
+                var strFather = Encoding.Default.GetString(rsp.s8SrcPath).Replace("\0", "").Replace("//", "/");
 
                 //如果当前选中的 items  再次被点击，则需要先进行清理
                 enbSelectedItem.Dispatcher.BeginInvoke(new Action(() =>
@@ -604,7 +652,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             int i = 0;
             while ((i = strRootPath.IndexOf('|')) > 0)
             {
-                string newStr = strRootPath.Substring(0,i);                
+                string newStr = strRootPath.Substring(0,i);
 
                 enbMainTree.Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -751,7 +799,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                     {
                         //执行文件的复制
                         DoFileCopy(dropFileInfo.FilePath + "\\" + dropFileInfo.FileName, localSelectedDTVI.DirInfo.FullName + "\\" + dropFileInfo.FileName);
-
                     }
                     catch (Exception)
                     {
@@ -991,7 +1038,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
             if (_fileHandler.SendFileToRemote(localPath, dstPath))
             {
-                MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
+                //MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
             }
         }
 
@@ -1013,7 +1060,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                         item.FileState = pbInfo.m_strStatus;
                     }
                 }
-
+                localRefreshFileList();
             }));
         }
 
@@ -1025,14 +1072,17 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         {
             lvMainListView.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    ProcessList newProcessBarInfo = new ProcessList();
-                    newProcessBarInfo.FileName = pbInfo.m_csFileName;
-                    newProcessBarInfo.TaskID = pbInfo.m_lTaskID;
-                    newProcessBarInfo.ProgressValue = 0;
-                    newProcessBarInfo.FileState = "";
-                    newProcessBarInfo.OperateType = "";
+                    var newProcessBarInfo = new ProcessList
+                    {
+                        FileName = pbInfo.m_csFileName,
+                        TaskID = pbInfo.m_lTaskID,
+                        ProgressValue = 0,
+                        FileState = pbInfo.m_strStatus,
+                        OperateType = pbInfo.strOperationType
+                    };
                     lvMainListView.Items.Add(newProcessBarInfo);
-        }));
+                    localRefreshFileList();
+                }));
         }
 
         /// <summary>
@@ -1052,6 +1102,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                         return;
                     }
                 }
+                localRefreshFileList();
             }));
         }
 
