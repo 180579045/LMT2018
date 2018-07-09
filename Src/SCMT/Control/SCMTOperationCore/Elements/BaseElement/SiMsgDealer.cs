@@ -94,7 +94,8 @@ namespace SCMTOperationCore.Elements.BaseElement
 			{
 				case SiMacroDef.O_SILMTENB_GETFILEINFO_RES:
 					topic = $"/{BoardIp}/O_SILMTENB_GETFILEINFO_RES";
-					break;
+					PublishHelper.PublishMsg(topic, msgBytes);
+					return true;
 				case SiMacroDef.O_SILMTENB_GETFILEATTRIB_RES:
 					break;
 				case SiMacroDef.O_SILMTENB_SETRDWRATTRIB_RES:
