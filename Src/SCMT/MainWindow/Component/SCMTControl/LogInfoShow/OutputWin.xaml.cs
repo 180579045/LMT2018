@@ -30,6 +30,8 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         public OutputWin(List<string> listIP, Dictionary<string, Dictionary<InfoTypeEnum, List<LogInfoTitle>>> g_AllLog)
         {
             InitializeComponent();
+            WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            this.Topmost = true;
 
             //根据参数得到全部日志信息
             g_outputLogInfo = g_AllLog;
@@ -124,7 +126,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new SaveFileDialog();
-            dlg.InitialDirectory = @"E:\";
+            dlg.InitialDirectory = @"C:\";
             dlg.Filter = "Excel文件|*.xls";
             dlg.ShowDialog();
 
@@ -185,11 +187,13 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             Microsoft.Office.Interop.Excel.Application excelApp = new Microsoft.Office.Interop.Excel.Application();
             Workbook excelWB = excelApp.Workbooks.Add(System.Type.Missing);
 
+            //每个IP地址是一个  sheet 表单
             for (int i = 1; i <= strIP.Count; i++)
             {
                 Worksheet excelWS = (Worksheet)excelWB.Worksheets.Add(System.Type.Missing);
                 excelWS.Name = strIP[i - 1];
 
+                //行数
                 int nRows = 0;
 
                 for (int j = 0; j < listType.Count; j++)
@@ -206,13 +210,30 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
             }
 
-            excelWB.SaveAs(strFileName);
+            try
+            {
+                excelWB.SaveAs(strFileName);
+            }
+            catch(Exception exception)
+            {
+                string strMsg = exception.ToString();
+                System.Windows.MessageBox.Show(strMsg);
+
+                excelWB.Close();
+                excelApp.Quit();
+            }
+
             excelWB.Close();
             excelApp.Quit();
 
             System.Windows.MessageBox.Show("导出成功");
         }
 
+        /// <summary>
+        /// 通过字符串信息获取InfoTypeEnum的值
+        /// </summary>
+        /// <param name="levelText"></param>
+        /// <returns></returns>
         private InfoTypeEnum GetEnumByString(string levelText)
         {
             InfoTypeEnum enumInfo = new InfoTypeEnum();
@@ -325,7 +346,9 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
     }
 
-
+    /// <summary>
+    /// listview中待选择的IP地址类
+    /// </summary>
     public class SelectedIP : INotifyPropertyChanged
     {
         //属性改变事件
@@ -339,11 +362,13 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             }
         }
 
+        //IP地址
         public string TextIP
         {
             get; set;
         }
 
+        //是否被选中的属性
         bool bIsSelectedIP;
         public bool IsSelectedIP
         {
@@ -358,12 +383,16 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             }
         }
 
+        //当前IP地址拥有的日志信息条数
         public int LogCount
         {
             get; set;
         }
     }
 
+    /// <summary>
+    /// ListView 中待选择的  Type  类型
+    /// </summary>
     public class SelectedType : INotifyPropertyChanged
     {
         //属性改变事件

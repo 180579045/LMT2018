@@ -37,6 +37,8 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             this.UiLogInfo.Items.SortDescriptions.Add(new SortDescription("LogTime", ListSortDirection.Ascending));
 
         }
+
+        //配置文件加载   待实现
         private void LoadJsonFile()
         {
 
@@ -48,11 +50,17 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         /// <param name="dirLogInfo"></param>
         private void InitOneDirectionLog(Dictionary<InfoTypeEnum, List<LogInfoTitle>> dirLogInfo)
         {
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < nMaxInfoTypeEnum; i++)
             {
                 dirLogInfo[(InfoTypeEnum)i] = new List<LogInfoTitle>();
             }
         }
+
+        /// <summary>
+        /// 静态方法，对外提供添加日志信息的方法
+        /// </summary>
+        /// <param name="newLogInfo"></param>
+        /// <param name="LogInfo"></param>
         public static void AddLogInfo(LogInfoTitle newLogInfo, LogInfoShow LogInfo)
         {
             DateTime nowTime = DateTime.Now;
@@ -218,6 +226,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             }
             newLogInfo.LogColor = new SolidColorBrush(color);
 
+            //如果当前IP地址被选中，则添加到界面，否则界面不变
             string strTargetIP = LogInfo.combTargetIP.SelectedItem.ToString();
             if (string.Compare(strTargetIP, newLogInfo.TargetIP) == 0)
             {
@@ -389,6 +398,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 }
             }
 
+            //按照时间升序进行排序
             this.UiLogInfo.Items.SortDescriptions.Add(new SortDescription("LogTime", ListSortDirection.Ascending));
         }
 
@@ -710,12 +720,218 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
             this.UiLogInfo.Items.Clear();
 
-            for (int i = 0; i < 15; i++)
+            for (int i = 0; i < nMaxInfoTypeEnum; i++)
             {
-                foreach (LogInfoTitle item in g_AllLog[strTargetIP][(InfoTypeEnum)i])
-                {
-                    this.UiLogInfo.Items.Add(item);
-                }
+                InsertSelectedTypeLog((InfoTypeEnum)i, strTargetIP);
+            }
+        }
+
+        /// <summary>
+        /// 判断每种类型是否显示，并将显示的类型添加到listview中
+        /// </summary>
+        /// <param name="enumType"></param>
+        /// <param name="strIP"></param>
+        private void InsertSelectedTypeLog(InfoTypeEnum enumType, string strIP)
+        {
+            switch (enumType)
+            {
+                case InfoTypeEnum.ENB_INFO:
+                    if (cbENB_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_TASK_DEAL_INFO:
+                    if (cbENB_TASK_DEAL_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_TASK_DEAL_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.SI_STR_INFO:
+                    if (cbSI_STR_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.SI_STR_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.SI_ALARM_INFO:
+                    if (cbSI_ALARM_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.SI_ALARM_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.OM_BRKDWN_ALARM_INFO:
+                    if (cbOM_BRKDWN_ALARM_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.OM_BRKDWN_ALARM_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.OM_EVENT_ALARM_INFO:
+                    if (cbOM_EVENT_ALARM_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.OM_EVENT_ALARM_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.OM_ALARM_CLEAR_INFO:
+                    if (cbOM_ALARM_CLEAR_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.OM_ALARM_CLEAR_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.OM_EVENT_NOTIFY_INFO:
+                    if (cbOM_EVENT_NOTIFY_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.OM_EVENT_NOTIFY_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_GETOP_INFO:
+                    if (cbENB_GETOP_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_GETOP_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_SETOP_INFO:
+                    if (cbENB_SETOP_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_SETOP_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_SETOP_ERR_INFO:
+                    if (cbENB_SETOP_ERR_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_SETOP_ERR_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_GETOP_ERR_INFO:
+                    if (cbENB_GETOP_ERR_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_GETOP_ERR_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_VARY_INFO:
+                    if (cbENB_VARY_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_VARY_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_OTHER_INFO:
+                    if (cbENB_OTHER_INFO.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_OTHER_INFO])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                case InfoTypeEnum.ENB_OTHER_INFO_IMPORT:
+                    if (cbENB_OTHER_INFO_IMPORT.IsChecked == false)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strIP][InfoTypeEnum.ENB_OTHER_INFO_IMPORT])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -743,7 +959,9 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         }
     }
 
-
+    /// <summary>
+    /// 日志信息类
+    /// </summary>
     public class LogInfoTitle : INotifyPropertyChanged
     {
         //属性改变事件
@@ -763,6 +981,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         InfoTypeEnum enumType;
         string strTargetIP;
 
+        //每条日志对应的IP地址
         public string TargetIP
         {
             get { return strTargetIP; }
