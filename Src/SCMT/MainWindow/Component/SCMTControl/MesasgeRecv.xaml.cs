@@ -27,7 +27,7 @@ namespace SCMTMainWindow.Component.SCMTControl
     public partial class MessageRecv : UserControl
     {
         //全局变量，定义3个集合，分别表示  UE，ENB， GNB 的信息
-        public ObservableCollection<ScriptMessage> UE_List = new ObservableCollection<ScriptMessage>();
+        //public ObservableCollection<ScriptMessage> UE_List = new ObservableCollection<ScriptMessage>();
         public ObservableCollection<ScriptMessage> ENB_List = new ObservableCollection<ScriptMessage>();
         public ObservableCollection<ScriptMessage> GNB_List = new ObservableCollection<ScriptMessage>();
 
@@ -41,7 +41,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             InitListView();
 
             //设置  ListView  的数据绑定，  整体都绑定到一个集合
-            lvUE.ItemsSource = UE_List;
+            //lvUE.ItemsSource = UE_List;
             lveNB.ItemsSource = ENB_List;
             lvgNB.ItemsSource = GNB_List;
 
@@ -69,12 +69,12 @@ namespace SCMTMainWindow.Component.SCMTControl
         {
             ScriptMessage scriptMessage = JsonHelper.SerializeJsonToObject<ScriptMessage>(msg.Data);
 
-            if (-1 != scriptMessage.UI.IndexOf("UE"))
-            {
-                this.lvUE.Dispatcher.Invoke(new Action(() => {
-                    UE_List.Add(scriptMessage);
-                }));
-            }
+            //if (-1 != scriptMessage.UI.IndexOf("UE"))
+            //{
+            //    this.lvUE.Dispatcher.Invoke(new Action(() => {
+            //        UE_List.Add(scriptMessage);
+            //    }));
+            //}
             if (-1 != scriptMessage.UI.IndexOf("eNB"))
             {
                 this.lveNB.Dispatcher.Invoke(new Action(() => {
@@ -94,17 +94,17 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void lvUE_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (lvUE.SelectedItem == null)
-            {
-                return;
-            }
-            ScriptMessage thisMsg = (ScriptMessage)lvUE.SelectedItem;
+        //private void lvUE_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
+        //    if (lvUE.SelectedItem == null)
+        //    {
+        //        return;
+        //    }
+        //    ScriptMessage thisMsg = (ScriptMessage)lvUE.SelectedItem;
 
-            lbUE.Text = "";
-            lbUE.Text = thisMsg.data;
-        }
+        //    lbUE.Text = "";
+        //    lbUE.Text = thisMsg.data;
+        //}
         /// <summary>
         /// ListView  的  选择改变事件，选择不同的 item 时，显示各自的 data 节点信息
         /// </summary>
@@ -143,48 +143,48 @@ namespace SCMTMainWindow.Component.SCMTControl
         private void InitListView()
         {
             //设置  ListView  的  GridView
-            GridView gvUE = new GridView();
+            //GridView gvUE = new GridView();
             GridView gvENB = new GridView();
             GridView gvGNB = new GridView();
 
             //设置具体的每一列  UE
             GridViewColumn colum = new GridViewColumn();
-            colum.Header = "No";
-            colum.Width = 30;
-            colum.DisplayMemberBinding = new Binding("NO");
-            gvUE.Columns.Add(colum);
+            //colum.Header = "No";
+            //colum.Width = 30;
+            //colum.DisplayMemberBinding = new Binding("NO");
+            //gvUE.Columns.Add(colum);
 
-            colum = new GridViewColumn();
-            colum.Header = "时间";
-            colum.Width = 60;
-            colum.DisplayMemberBinding = new Binding("time");
-            gvUE.Columns.Add(colum);
+            //colum = new GridViewColumn();
+            //colum.Header = "时间";
+            //colum.Width = 60;
+            //colum.DisplayMemberBinding = new Binding("time");
+            //gvUE.Columns.Add(colum);
 
-            colum = new GridViewColumn();
-            colum.Header = "ID";
-            colum.Width = 60;
-            colum.DisplayMemberBinding = new Binding("ENBUEID");
-            gvUE.Columns.Add(colum);
+            //colum = new GridViewColumn();
+            //colum.Header = "ID";
+            //colum.Width = 60;
+            //colum.DisplayMemberBinding = new Binding("ENBUEID");
+            //gvUE.Columns.Add(colum);
 
-            colum = new GridViewColumn();
-            colum.Header = "消息源";
-            colum.Width = 80;
-            colum.DisplayMemberBinding = new Binding("MessageSource");
-            gvUE.Columns.Add(colum);
+            //colum = new GridViewColumn();
+            //colum.Header = "消息源";
+            //colum.Width = 80;
+            //colum.DisplayMemberBinding = new Binding("MessageSource");
+            //gvUE.Columns.Add(colum);
 
-            colum = new GridViewColumn();
-            colum.Header = "消息目的";
-            colum.Width = 85;
-            colum.DisplayMemberBinding = new Binding("MessageDestination");
-            gvUE.Columns.Add(colum);
+            //colum = new GridViewColumn();
+            //colum.Header = "消息目的";
+            //colum.Width = 85;
+            //colum.DisplayMemberBinding = new Binding("MessageDestination");
+            //gvUE.Columns.Add(colum);
 
-            colum = new GridViewColumn();
-            colum.Header = "消息内容";
-            colum.Width = 125;
-            colum.DisplayMemberBinding = new Binding("message");
-            gvUE.Columns.Add(colum);
+            //colum = new GridViewColumn();
+            //colum.Header = "消息内容";
+            //colum.Width = 125;
+            //colum.DisplayMemberBinding = new Binding("message");
+            //gvUE.Columns.Add(colum);
 
-            lvUE.View = gvUE;
+            //lvUE.View = gvUE;
 
             //设置具体的每一列  enb
             colum = new GridViewColumn();
@@ -270,10 +270,10 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         public void ClearAll()
         {
-            UE_List.Clear();
+            //UE_List.Clear();
             ENB_List.Clear();
             GNB_List.Clear();
-            lbUE.Text = "";
+            //lbUE.Text = "";
             lbeNB.Text = "";
             lbgNB.Text = "";
 
