@@ -67,8 +67,9 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             newLogInfo.LogTime = nowTime.ToString("yyyy-MM-dd hh:mm:ss");
             
             Color color = Color.FromRgb(250, 250, 250);
+            newLogInfo.LogColor = new SolidColorBrush(color);
 
-            if(newLogInfo.TargetIP == string.Empty)
+            if (newLogInfo.TargetIP == string.Empty)
             {
                 MessageBox.Show("IP 地址为空的日志，无法判断");
                 return;
@@ -122,6 +123,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 case InfoTypeEnum.SI_ALARM_INFO:
                     newLogInfo.LogType = "启动告警";
                     color = Color.FromRgb(176, 176, 176);
+                    newLogInfo.LogColor = new SolidColorBrush(color);
                     LogInfo.g_AllLog[newLogInfo.TargetIP][InfoTypeEnum.SI_ALARM_INFO].Add(newLogInfo);
                     if (LogInfo.cbSI_ALARM_INFO.IsChecked == false)
                     {
@@ -131,6 +133,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 case InfoTypeEnum.OM_BRKDWN_ALARM_INFO:
                     newLogInfo.LogType = "故障类告警提示";
                     color = Color.FromRgb(255, 0, 0);
+                    newLogInfo.LogColor = new SolidColorBrush(color);
                     LogInfo.g_AllLog[newLogInfo.TargetIP][InfoTypeEnum.OM_BRKDWN_ALARM_INFO].Add(newLogInfo);
                     if (LogInfo.cbOM_BRKDWN_ALARM_INFO.IsChecked == false)
                     {
@@ -140,6 +143,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 case InfoTypeEnum.OM_EVENT_ALARM_INFO:
                     newLogInfo.LogType = "事件类告警提示";
                     color = Color.FromRgb(233, 149, 22);
+                    newLogInfo.LogColor = new SolidColorBrush(color);
                     LogInfo.g_AllLog[newLogInfo.TargetIP][InfoTypeEnum.OM_EVENT_ALARM_INFO].Add(newLogInfo);
                     if (LogInfo.cbOM_EVENT_ALARM_INFO.IsChecked == false)
                     {
@@ -157,6 +161,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 case InfoTypeEnum.OM_EVENT_NOTIFY_INFO:
                     newLogInfo.LogType = "事件通知";
                     color = Color.FromRgb(36, 36, 255);
+                    newLogInfo.LogColor = new SolidColorBrush(color);
                     LogInfo.g_AllLog[newLogInfo.TargetIP][InfoTypeEnum.OM_EVENT_NOTIFY_INFO].Add(newLogInfo);
                     if (LogInfo.cbOM_EVENT_NOTIFY_INFO.IsChecked == false)
                     {
@@ -214,6 +219,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 case InfoTypeEnum.ENB_OTHER_INFO_IMPORT:
                     newLogInfo.LogType = "其他信息(重要)";
                     color = Color.FromRgb(221, 125, 232);
+                    newLogInfo.LogColor = new SolidColorBrush(color);
                     LogInfo.g_AllLog[newLogInfo.TargetIP][InfoTypeEnum.ENB_OTHER_INFO_IMPORT].Add(newLogInfo);
                     if (LogInfo.cbENB_OTHER_INFO_IMPORT.IsChecked == false)
                     {
@@ -224,7 +230,6 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                     newLogInfo.LogType = "UNKNOW";
                     break;
             }
-            newLogInfo.LogColor = new SolidColorBrush(color);
 
             //如果当前IP地址被选中，则添加到界面，否则界面不变
             string strTargetIP = LogInfo.combTargetIP.SelectedItem.ToString();

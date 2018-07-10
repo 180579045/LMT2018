@@ -1300,10 +1300,13 @@ namespace SCMTMainWindow
 
 			var content = new Component.SCMTControl.FileManager.TestTwoFileManager("172.27.145.92");
 
-			var sub = new LayoutAnchorable
-			{
-				Content = content,
-				Title = "NewAvalon"
+            var sub = new LayoutAnchorable
+            {
+                Content = content,
+                Title = "newAvalon",
+                FloatingHeight = 800,
+                FloatingWidth = 600
+            
 			};
 
 			this.FileManagerLAP.Children.Add(sub);
