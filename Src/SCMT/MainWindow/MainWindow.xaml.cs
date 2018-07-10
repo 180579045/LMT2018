@@ -66,6 +66,7 @@ namespace SCMTMainWindow
 		ObservableCollection<DyDataGrid_MIBModel> content_list                // 用来存储MIBDataGrid中存放的值;
 			= new ObservableCollection<DyDataGrid_MIBModel>();
 
+        private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -155,6 +156,7 @@ namespace SCMTMainWindow
 			var nodeLabel = new MetroExpander();
 			nodeLabel.Header = friendlyName;
 			nodeLabel.IsExpanded = true;
+            nodeLabel.Click += NodeLabel_Click;
 			//nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
 
 			// 右键菜单的添加
@@ -171,6 +173,21 @@ namespace SCMTMainWindow
 
 			NodebList.Children.Add(nodeLabel);
 		}
+
+        /// <summary>
+        /// 基站节点  点击事件，获取被点击的IP地址，保存到全局变量
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NodeLabel_Click(object sender, EventArgs e)
+        {
+            var target = sender as MetroExpander;
+            if (null != target)
+            {
+                node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+                this.g_SelectedEnbIP = node.NeAddress.ToString();
+            }
+        }
 
 		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
 		{
@@ -1295,21 +1312,43 @@ namespace SCMTMainWindow
 			this.messageRecv.ClearAll();
 		}
 
+        private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
+            if(this.g_SelectedEnbIP == null)
+            {
+                MessageBox.Show("未选择基站，请单击需要显示的基站");
+                return;
+            }
 
-			var content = new Component.SCMTControl.FileManager.TestTwoFileManager("172.27.145.92");
+            string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(this.g_SelectedEnbIP);
+
+            foreach(LayoutAnchorable item in listAvalon)
+            {
+                if(item.Title == strFriendName)
+                {
+                    item.Show();
+                    return;
+                }
+            }
+
+            var content = new Component.SCMTControl.FileManager.TestTwoFileManager(this.g_SelectedEnbIP);
 
             var sub = new LayoutAnchorable
             {
                 Content = content,
-                Title = "newAvalon",
+                Title = strFriendName,
                 FloatingHeight = 800,
-                FloatingWidth = 600
+                FloatingWidth = 600,
+                CanHide = true,
+                CanClose = false,
+                CanAutoHide = true
             
 			};
 
-			this.FileManagerLAP.Children.Add(sub);
+            listAvalon.Add(sub);
+            this.FileManagerLAP.Children.Add(sub);
+
 		}
 
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
