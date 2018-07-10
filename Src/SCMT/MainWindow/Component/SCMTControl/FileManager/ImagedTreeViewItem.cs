@@ -350,7 +350,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             this.dir = parentPath + "/" +  pathName;
 
             Text = pathName;
-            Items.Add(null);
 
             SelectedImage = new BitmapImage(new Uri("pack://application:,,/component/SCMTControl/FileManager/img/OPEN.BMP"));
             UnselectedImage = new BitmapImage(new Uri("pack://application:,,/component/SCMTControl/FileManager/img/CLOSED.BMP"));
@@ -363,24 +362,5 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         {
             get { return dir; }
         }
-
-        /// <summary>
-        /// event override to populate subitem
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnExpanded(RoutedEventArgs e)
-        {
-            base.OnExpanded(e);
-            if (Items[0] == null)
-            {
-                Items.Remove(Items[0]);
-            }
-        }
-
-
     }
-
-
-
-
 }
