@@ -17,6 +17,7 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:uc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
         xmlns:fileManager="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
+        xmlns:logInfo="clr-namespace:SCMTMainWindow.Component.SCMTControl.LogInfoShow"
         mc:Ignorable="d"
         Height="778" Width="1024"
         Title="{Binding Title}"
@@ -344,7 +345,8 @@
                         <xcad:LayoutPanel>
                             <xcad:LayoutAnchorablePane>
                                 <xcad:LayoutAnchorable Title="信息浏览">
-                                    <Grid>
+                                    <logInfo:LogInfoShow x:Name="MainLogInfoShow"></logInfo:LogInfoShow>
+                                    <!--<Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="30"></RowDefinition>
                                             <RowDefinition></RowDefinition>
@@ -356,7 +358,7 @@
                                             <Button Width="80" Height="25" Content="清除" Margin="30,0,0,0" Click="ButtonBase_OnClick"/>
                                         </StackPanel>
                                         <RichTextBox Grid.Row="1" x:Name="UiLogShow"  />
-                                    </Grid>
+                                    </Grid>-->
                                 </xcad:LayoutAnchorable>
                             </xcad:LayoutAnchorablePane>
                         </xcad:LayoutPanel>
