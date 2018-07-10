@@ -16,7 +16,6 @@ using Microsoft.Office.Interop.Excel;
 using System.IO;
 using System.ComponentModel;
 using MsgQueue;
-using Microsoft.Win32;
 
 namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 {
