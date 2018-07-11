@@ -78,7 +78,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             /// 必须使用 this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate () {}
             /// 来实现，异线程调用
             this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate () {
-                this.circle5108.Fill = (Brush)brushConverter.ConvertFromString(colorStr[ran.Next(0, 4)]);
+                //this.circle5108.Fill = (Brush)brushConverter.ConvertFromString(colorStr[ran.Next(0, 4)]);
             });
 
             string boardAddr = "172.27.245.92";       // TODO 这里需要使用实际的IP地址

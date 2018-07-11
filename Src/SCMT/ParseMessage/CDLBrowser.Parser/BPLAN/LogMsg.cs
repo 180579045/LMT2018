@@ -136,7 +136,7 @@ namespace CDLBrowser.Parser.BPLAN
             }
 
             //判断日志文件大于2M，创建新的文件
-            if (size > (1024 * 1024 * 2))
+            if (size > (1024 * 1024 * 5))
             {
                 if(LogOfType.UE_MSGLOG == type)
                 {
