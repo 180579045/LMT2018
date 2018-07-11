@@ -148,10 +148,22 @@
     <Compile Include="Component\SCMTControl\DTDataGrid.xaml.cs">
       <DependentUpon>DTDataGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\EnbSoftVer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\EnbSoftVer.Designer.cs">
+      <DependentUpon>EnbSoftVer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Component\SCMTControl\FileManager\FileRename.xaml.cs">
       <DependentUpon>FileRename.xaml</DependentUpon>
     </Compile>
     <Compile Include="Component\SCMTControl\FileManager\ImagedTreeViewItem.cs" />
+    <Compile Include="Component\SCMTControl\FileManager\PerSoftwareVer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\PerSoftwareVer.Designer.cs">
+      <DependentUpon>PerSoftwareVer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Component\SCMTControl\FileManager\ProcessList.cs" />
     <Compile Include="Component\SCMTControl\FileManager\SystemCapacity.cs">
       <SubType>Form</SubType>
@@ -273,6 +285,12 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Resource Include="Resources\document.png" />
+    <EmbeddedResource Include="Component\SCMTControl\FileManager\EnbSoftVer.resx">
+      <DependentUpon>EnbSoftVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\SCMTControl\FileManager\PerSoftwareVer.resx">
+      <DependentUpon>PerSoftwareVer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Component\SCMTControl\FileManager\SystemCapacity.resx">
       <DependentUpon>SystemCapacity.cs</DependentUpon>
     </EmbeddedResource>

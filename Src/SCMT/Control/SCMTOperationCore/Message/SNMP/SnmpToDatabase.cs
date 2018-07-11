@@ -8,6 +8,7 @@ using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SnmpSharpNet;
+using MAP_STRING = System.Collections.Generic.Dictionary<string, string>;
 
 // snmp 到 database 的所需接口封装
 namespace SCMTOperationCore.Message.SNMP
@@ -81,6 +82,32 @@ namespace SCMTOperationCore.Message.SNMP
 			return csCmdValueTemp;
 		}
 
+		// 同步方式获取cmd执行结果，从pdu中取出mib name对应的值
+		public static bool GetMibValueFromCmdExeResult(string index, string cmdName, ref MAP_STRING mibNames,
+			string boardAddr)
+		{
+			long lrequestId = 0;
+			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
+
+			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out lrequestId, index, boardAddr, ref inOutPdu);
+			if (0 != ret)
+			{
+				return false;
+			}
+
+			string csCmdValueTemp = index;
+			for (int i = 0; i < mibNames.Count; i++)
+			{
+				var mibItem = mibNames.ElementAt(i);
+				if (inOutPdu.GetValueByMibName(boardAddr, mibItem.Key, out csCmdValueTemp, index))
+				{
+					mibNames[mibItem.Key] = csCmdValueTemp;
+				}
+			}
+
+			return true;
+		}
+
 		// oid列表转换为vb列表。oid无前缀；失败返回null
 		public static List<CDTLmtbVb> ConvertOidToVb(List<string> oidList, string oidPostFix)
 		{
@@ -148,7 +175,7 @@ namespace SCMTOperationCore.Message.SNMP
 				throw new CustomException("传入参数错误");
 			}
 
-            //获取name2value 的 key 信息，即 EnglishName，再查询 mib 节点信息
+			//获取name2value 的 key 信息，即 EnglishName，再查询 mib 节点信息
 			var reData = new Dictionary<string, IReDataByEnglishName>();
 			foreach (var item in name2value)
 			{
@@ -161,12 +188,12 @@ namespace SCMTOperationCore.Message.SNMP
 				throw new CustomException("查询信息失败");
 			}
 
-            //将 OId 和 EnglishName 进行 一 一 对应
-            var relation = new Dictionary<string, string>();
-            foreach (var item in reData)
-            {
-                relation[item.Value.oid] = item.Key;
-            }
+			//将 OId 和 EnglishName 进行 一 一 对应
+			var relation = new Dictionary<string, string>();
+			foreach (var item in reData)
+			{
+				relation[item.Value.oid] = item.Key;
+			}
 
 			//IReDataByEnglishName nameToOid = new ReDataByEnglishName();
 			var vbList = new List<CDTLmtbVb>();
@@ -186,14 +213,14 @@ namespace SCMTOperationCore.Message.SNMP
 				//{
 				//	throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
 				//}
-                
+				
 				if (!relation.ContainsKey(name))
 				{
 					Log.Debug($"没有设置{name}的值，跳过");
 					continue;
 				}
 
-                var mibNode = reData[relation[name]];
+				var mibNode = reData[relation[name]];
 
 				var vb = new CDTLmtbVb
 				{
@@ -241,6 +268,36 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			return null;
+		}
+
+		// 根据传入的行状态值，获取描述字符串
+		public static string GetRowStatusText(string rowStatus)
+		{
+			var rsText = "";
+
+			switch (rowStatus)
+			{
+				case "1":
+					rsText = "使用中";
+					break;
+				case "2":
+					rsText = "退服";
+					break;
+				case "3":
+					rsText = "未准备好";
+					break;
+				case "4":
+					rsText = "创建并运行";
+					break;
+				case "5":
+					rsText = "创建并等待";
+					break;
+				case "6":
+					rsText = "删除";
+					break;
+			}
+
+			return rsText;
 		}
 
 		#endregion
