@@ -437,7 +437,7 @@ namespace MIBDataParser.JSONDataMgr
 		/// <param name="connectIp"> 标识数据的归属，查询要用 </param>
 		private void DBInitDateBaseByIpConnect(object connectIp)
 		{
-			Console.WriteLine("Db init start ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			//Console.WriteLine("Db init start ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			// 1. 解压lm.dtz
 			if (!DBInitZip())
 			{
@@ -449,7 +449,8 @@ namespace MIBDataParser.JSONDataMgr
 			// 2. 解析lm.dtz => 写json文件(增加，叶子节点的读写属性) 解析.mdb文件
 			if (!DBInitParseMdbToWriteJson())
 			{
-				resultInitData(false);
+                Console.WriteLine("Db init writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                resultInitData(false);
 				return;
 			}
 			Console.WriteLine("Db init parse mdb ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));

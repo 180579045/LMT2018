@@ -199,7 +199,8 @@ namespace SCMTMainWindow
 				{
 					NodeBControl.GetInstance().ConnectNodeb(target.Header);
 					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-					InitDataBase();                            // TODO 应该是连接成功够才创建数据库(第一个版本先加载本地的);
+                    ObjNode.main = this;
+                    InitDataBase();                            // TODO 应该是连接成功够才创建数据库(第一个版本先加载本地的);
 				}
 			}
 		}
