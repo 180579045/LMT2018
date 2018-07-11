@@ -183,7 +183,7 @@ namespace FileManager
 		/// </summary>
 		private void AddFileTransProcess(CDTCommonFileTrans transFile, long taskId)
 		{
-			var tranFileFullPath = $"{transFile.FileTransFtpDir.TrimEnd('\\')}\\{transFile.FileTransFileName}";
+			var tranFileFullPath = $"{transFile.FileTransFtpDir.TrimEnd('\\')}{transFile.FileTransFileName}";
 			var ftd = new StruFileTransDes
 			{
 				nFileTransTaskId = taskId,
