@@ -77,7 +77,8 @@ namespace SCMTMainWindow.Component.SCMTControl
 
             /// 必须使用 this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate () {}
             /// 来实现，异线程调用
-            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate () {
+            this.Dispatcher.BeginInvoke(DispatcherPriority.Normal, (ThreadStart)delegate ()
+            {
                 //this.circle5108.Fill = (Brush)brushConverter.ConvertFromString(colorStr[ran.Next(0, 4)]);
             });
 
@@ -188,13 +189,13 @@ namespace SCMTMainWindow.Component.SCMTControl
         }
         private void keepCanvasRelatedcmd(XElement element)
         {
-            string strCmdName = element.Attribute("cmdName").Value;
-            int nPos = strCmdName.IndexOf('|');
-            if(nPos > 0)
-            {
-                string strCmd1 = strCmdName.Substring(0, nPos);
-            }
-               
+            //string strCmdName = element.Attribute("cmdName").Value;
+            //int nPos = strCmdName.IndexOf('|');
+            //if (nPos > 0)
+            //{
+            //    string strCmd1 = strCmdName.Substring(0, nPos);
+            //}
+
         }
         private void keepCanvasCmdleaf(XElement element)
         {
@@ -419,10 +420,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
-
-
     }
-
     /// <summary>
     /// 每一个流程图节点中的内容
     /// </summary>
