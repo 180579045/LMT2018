@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<UserControl>
+    <Grid>
+        <Viewbox Stretch="Uniform">
+               <Canvas Name="FlowChart_5216" Height="800" Width="700">
+                  <Canvas.RenderTransform>
+                    <TranslateTransform  X="0" Y="0"/>
+                  </Canvas.RenderTransform>
+                  <Ellipse Canvas.Left="250" Canvas.Top="0" Width="60" Height="60" Name="circle5103" Fill="#FF00FF00" Stroke="#00000000">
+                    <Ellipse.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 0"/>
+                    </Ellipse.RenderTransform>
+                  </Ellipse>
+                 <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="23" Name="text5105">基站启动</TextBlock>
+               </Canvas>
+                <Canvas Name="RequireStartInfo_5216">
+                    <Ellipse Canvas.Left="250" Canvas.Top="80" Width="60" Height="60" Name="circle5108" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="98" Name="text5110">启站信息</TextBlock>
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="115" Name="text5112">获取</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetSelfStartupAlgorithmInfo">
+								        <leaf name="selfStartupAlgorithmSwitch" value="0" property="*" compRules="EQ"/>
+								      </cmd>
+								      <cmd name="GetEquipSystemInfo">
+								        <leaf name="equipStartupStage" value="1" property="" compRules="NLT"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="OMLinkStartup_5216">
+                    <Ellipse Canvas.Left="250" Canvas.Top="160" Width="60" Height="60" Name="circle5121" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="257" Canvas.Top="178" Name="text5123">OM链路</TextBlock>
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="195" Name="text5125">建立</TextBlock>
+			              <relatedcmd>
+                    	<cmd name="GetOmLinkInfo">
+								        <leaf name="equipStartupStage" value="3" property="*" compRules="NLT"/>
+								        <leaf name="omLinkSetupStatus" value="2" property="*" compRules="NEQ"/>
+								        <leaf name="equipStartupStage" value="3" property="" compRules="NLT"/>
+								        <leaf name="omLinkSetupStatus" value="2" property="" compRules="EQ"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="SoftwareSync_5216">
+                    <Ellipse Canvas.Left="250" Canvas.Top="240" Width="60" Height="60" Name="circle5138" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="263" Name="text5140">软件同步</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetEquipSystemInfo">
+								        <leaf name="equipStartupStage" value="4" property="" compRules="NLT"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="ClockResStatus_5216">
+                    <Ellipse Canvas.Left="100" Canvas.Top="340" Width="60" Height="60" Name="circle5147" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="101" Canvas.Top="363" Name="text5149">时钟资源</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetClockUsableState">
+								        <leaf name="clkCommUsableState" value="1" property="" compRules="NLT"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="TransResStatus_5216">
+                    <Ellipse Canvas.Left="200" Canvas.Top="340" Width="60" Height="60" Name="circle5158" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="201" Canvas.Top="363" Name="text5162">传输资源</TextBlock>
+			              <relatedcmd>
+                    	<cmd name="GetlinkCommonOperationStatusInfo">
+								        <leaf name="linkCommonOperationStatus" value="1" property="" compRules="NLT"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="RRUResStatus_5216">
+                    <Ellipse Canvas.Left="300" Canvas.Top="340" Width="60" Height="60" Name="circle5171" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="301" Canvas.Top="363" Name="text5175">射频资源</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetNetRRUAntennaSetting">
+								        <leaf name="netSetRRUPortWithAntennaRowStatus" value="4" property="" compRules="EQ"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="BaseResStatus_5216">
+                    <Ellipse Canvas.Left="400" Canvas.Top="340" Width="60" Height="60" Name="circle5184" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="401" Canvas.Top="363" Name="text5188">基带资源</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetBaseBandwidthInfo">
+								        <leaf name="baseBandwidthRowStatus" value="4" property="" compRules="EQ"/>
+								        <leaf name="baseBandwidthOperationalState" value="0" property="" compRules="EQ"/>
+								        <leaf name="baseBandwidthLoadState" value="2" property="" compRules="EQ"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="LocalCellStartup_5216">
+                    <Ellipse Canvas.Left="250" Canvas.Top="440" Width="60" Height="60" Name="circle5201" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="458" Name="text5205">本地小区</TextBlock>
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="475" Name="text5207">建立</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetLocalCellInfo">
+								        <leaf name="lcRowStatus" value="4" property="" compRules="EQ"/>
+								        <leaf name="lcProcedureStatus" value="5" property="" compRules="EQ"/>
+								        <leaf name="lcOperationalState" value="0" property="" compRules="EQ"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Canvas Name="CellSetup_5216">
+                    <Ellipse Canvas.Left="250" Canvas.Top="520" Width="60" Height="60" Name="circle5220" Fill="#FFB5B5B5" Stroke="#00000000" />
+                    <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="543" Name="text5224">小区建立</TextBlock>
+                    <relatedcmd>
+                    	<cmd name="GetCellInfo">
+								        <leaf name="cellRowStatus" value="4" property="" compRules="EQ"/>
+								        <leaf name="cellOperationalState" value="0" property="" compRules="EQ"/>
+								      </cmd>
+                    </relatedcmd>
+                </Canvas>
+                <Line X1="280" Y1="60" X2="280" Y2="80" Name="line5303" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 0"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="280" Y1="140" X2="280" Y2="160" Name="line5305" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 80"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="280" Y1="220" X2="280" Y2="240" Name="line5307" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 160"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="280" Y1="300" X2="280" Y2="320" Name="line5309" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 240"/>
+                    </Line.RenderTransform>
+                </Line>
+
+                <Line X1="130" Y1="320" X2="430" Y2="320" Name="line5319" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 100 320"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="130" Y1="320" X2="130" Y2="340" Name="line5321" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 100 320"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="230" Y1="320" X2="230" Y2="340" Name="line5323" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 200 320"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="330" Y1="320" X2="330" Y2="340" Name="line5324" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 300 320"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="430" Y1="320" X2="430" Y2="340" Name="line5311" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 400 320"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="130" Y1="420" X2="430" Y2="420" Name="line5335" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 100 420"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="130" Y1="400" X2="130" Y2="420" Name="line5337" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 100 400"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="230" Y1="400" X2="230" Y2="420" Name="line5339" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 200 400"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="330" Y1="400" X2="330" Y2="420" Name="line5341" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 300 400"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="430" Y1="400" X2="430" Y2="420" Name="line5343" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 400 400"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="280" Y1="420" X2="280" Y2="440" Name="line5344" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 420"/>
+                    </Line.RenderTransform>
+                </Line>
+                <Line X1="280" Y1="500" X2="280" Y2="520" Name="line5345" Fill="#000000" Stroke="#FF000000">
+                    <Line.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 250 500"/>
+                    </Line.RenderTransform>
+                </Line>
+                <example>
+                  <Rectangle Canvas.Left="600" Canvas.Top="30" Width="28" Height="18" Name="rect5345" Fill="#FFB5B5B5" Stroke="#00000000">
+                    <Rectangle.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 600 30"/>
+                    </Rectangle.RenderTransform>
+                    <Rectangle.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 600 30"/>
+                    </Rectangle.RenderTransform>
+                  </Rectangle>
+                  <TextBlock FontSize="12" FontFamily="宋体" Foreground="#FFB5B5B5" Canvas.Left="636" Canvas.Top="33" Name="text5347">未知</TextBlock>
+                </example>
+                <example>
+                 <Rectangle Canvas.Left="600" Canvas.Top="58" Width="28" Height="18" Name="rect5349" Fill="#FF00FF00" Stroke="#00000000">
+                    <Rectangle.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 600 58"/>
+                    </Rectangle.RenderTransform>
+                 </Rectangle>
+                 <TextBlock FontSize="12" FontFamily="宋体" Foreground="#FFB5B5B5" Canvas.Left="636" Canvas.Top="61" Name="text5351">可用</TextBlock>
+                </example>
+                <example>
+                 <Rectangle Canvas.Left="600" Canvas.Top="86" Width="28" Height="18" Name="rect5353" Fill="#FFFF0000" Stroke="#00000000">
+                    <Rectangle.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 600 86"/>
+                    </Rectangle.RenderTransform>
+                 </Rectangle>
+                 <TextBlock FontSize="12" FontFamily="宋体" Foreground="#FFB5B5B5" Canvas.Left="636" Canvas.Top="89" Name="text5355">故障</TextBlock>
+                </example>
+                <example>
+                 <Rectangle Canvas.Left="600" Canvas.Top="114" Width="28" Height="18" Name="rect5357" Fill="#FFFFFF00" Stroke="#00000000">
+                    <Rectangle.RenderTransform>
+                        <MatrixTransform Matrix="1 0 0 1 600 114"/>
+                    </Rectangle.RenderTransform>
+                 </Rectangle>
+                 <TextBlock FontSize="12" FontFamily="宋体" Foreground="#FFB5B5B5" Canvas.Left="636" Canvas.Top="117" Name="text5359">跳过</TextBlock>
+                </example>
+        </Viewbox>
+    </Grid>
+</UserControl>
