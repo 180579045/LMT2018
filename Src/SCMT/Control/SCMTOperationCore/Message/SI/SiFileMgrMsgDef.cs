@@ -364,7 +364,7 @@ namespace SCMTOperationCore.Message.SI
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEVER_MAX_LEN)]
 		public byte[] s8FileMicroVer;				/* 文件小版本 */
 
-		public byte u8RdWrAttribute;				/* 文件读写属性 */
+		public byte u8RdWrAttribute;				/* 文件读写属性 0:可读可写 1：只读 */
 
 		public SI_STRU_FileInfo_V2()
 		{
