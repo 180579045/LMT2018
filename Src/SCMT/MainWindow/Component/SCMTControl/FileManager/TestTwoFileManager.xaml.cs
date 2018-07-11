@@ -185,8 +185,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myview.Columns.Add(mycolun);
 
             mycolun = new GridViewColumn();
-            mycolun.Header = "修改日期";
-            mycolun.Width = 120;
+            mycolun.Header = "最后修改时间";
+            mycolun.Width = 100;
             mycolun.DisplayMemberBinding = new Binding("LastModifyTime");
             myview.Columns.Add(mycolun);
 
@@ -198,7 +198,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
             mycolun = new GridViewColumn();
             mycolun.Header = "类型";
-            mycolun.Width = 40;
+            mycolun.Width = 50;
             mycolun.DisplayMemberBinding = new Binding("FileType");
             myview.Columns.Add(mycolun);
 
@@ -405,9 +405,15 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myview.Columns.Add(mycolun);
 
             mycolun = new GridViewColumn();
-            mycolun.Header = "类型";
-            mycolun.Width = 40;
-            mycolun.DisplayMemberBinding = new Binding("FileType");
+            mycolun.Header = "文件小版本";
+            mycolun.Width = 120;
+            mycolun.DisplayMemberBinding = new Binding("FileLittleVer");
+            myview.Columns.Add(mycolun);
+
+            mycolun = new GridViewColumn();
+            mycolun.Header = "读写属性";
+            mycolun.Width = 80;
+            mycolun.DisplayMemberBinding = new Binding("RWAttr");
             myview.Columns.Add(mycolun);
 
             //右键菜单添加
@@ -678,7 +684,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 
                 for (int i = 0; i < rsp.u8FileCount; i++)
                 {
-                    var strTest = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileName).Replace("\0", "");
+                    var strTest = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileName).Replace("\0", "").Replace("//", "/");
 
                     //根据<>判断是否是文件夹，否则是文件
                     if ((strTest[0] == '<') && (strTest[strTest.Length-1] == '>'))
@@ -703,6 +709,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 //                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
 //                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
                         newEnbFileInfo.LastModifyTime = rsp.struFileInfo[i].struFileTime.GetStrTime();
+                        newEnbFileInfo.RWAttr = rsp.struFileInfo[i].u8RdWrAttribute == 0 ? "可读可写" : "只读";
 
                         lvENBFileInfo.Dispatcher.BeginInvoke(new Action(() =>
                         {
@@ -720,6 +727,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 //                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
 //                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
                         newEnbFileInfo.LastModifyTime = rsp.struFileInfo[i].struFileTime.GetStrTime();
+                        newEnbFileInfo.FileLittleVer = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileMicroVer).Replace("\0", "");
+                        newEnbFileInfo.RWAttr = rsp.struFileInfo[i].u8RdWrAttribute == 0 ? "可读可写" : "只读";
 
                         lvENBFileInfo.Dispatcher.BeginInvoke(new Action(() =>
                         {

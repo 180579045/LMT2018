@@ -359,7 +359,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <summary>
         /// 文件类型
         /// </summary>
-        public string FileType { get; set; }
+        public string FileLittleVer { get; set; }
 
         /// <summary>
         /// 文件大小
@@ -370,6 +370,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// 最后一次修改时间
         /// </summary>
         public string LastModifyTime { get; set; }
+
+        // 读写属性
+        public string RWAttr { get; set; }
 
         /// <summary>
         /// 文件所在路径
