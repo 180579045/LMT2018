@@ -61,7 +61,7 @@
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="263" Name="text5140">软件同步</TextBlock>
                     --><!--Unknown tag: relatedcmd-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="ClockResStatus_5216">
                     <Canvas.RenderTransform>
@@ -89,7 +89,7 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="201" Canvas.Top="363" Name="text5162">传输资源</TextBlock>
                     --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="RRUResStatus_5216">
                     <Canvas.RenderTransform>
