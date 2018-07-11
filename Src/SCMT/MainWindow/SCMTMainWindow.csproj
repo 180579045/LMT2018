@@ -157,6 +157,12 @@
     <Compile Include="Component\SCMTControl\FileManager\EnbSoftVer.Designer.cs">
       <DependentUpon>EnbSoftVer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\EnbSoftwareActive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Component\SCMTControl\FileManager\EnbSoftwareActive.Designer.cs">
+      <DependentUpon>EnbSoftwareActive.cs</DependentUpon>
+    </Compile>
     <Compile Include="Component\SCMTControl\FileManager\FileRename.xaml.cs">
       <DependentUpon>FileRename.xaml</DependentUpon>
     </Compile>
@@ -304,6 +310,9 @@
     <Resource Include="Resources\document.png" />
     <EmbeddedResource Include="Component\SCMTControl\FileManager\EnbSoftVer.resx">
       <DependentUpon>EnbSoftVer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Component\SCMTControl\FileManager\EnbSoftwareActive.resx">
+      <DependentUpon>EnbSoftwareActive.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Component\SCMTControl\FileManager\PerSoftwareVer.resx">
       <DependentUpon>PerSoftwareVer.cs</DependentUpon>
