@@ -700,9 +700,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                         newEnbFileInfo.FileName = strCurrent;
                         newEnbFileInfo.IsDirectory = true;
                         newEnbFileInfo.Size = null;
-                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
-                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
-                        newEnbFileInfo.LastModifyTime = strTime;
+//                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
+//                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
+                        newEnbFileInfo.LastModifyTime = rsp.struFileInfo[i].struFileTime.GetStrTime();
 
                         lvENBFileInfo.Dispatcher.BeginInvoke(new Action(() =>
                         {
@@ -717,9 +717,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                         newEnbFileInfo.FileName = Encoding.Default.GetString(rsp.struFileInfo[i].s8FileName).Replace("\0", "");
                         newEnbFileInfo.IsDirectory = false;
                         newEnbFileInfo.Size = string.Format("{0:N0}KB", (rsp.struFileInfo[i].u32FileLength + 1023) / 1024);
-                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
-                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
-                        newEnbFileInfo.LastModifyTime = strTime;
+//                        string strTime = rsp.struFileInfo[i].struFileTime.dosdt_year.ToString() + "/" + rsp.struFileInfo[i].struFileTime.dosdt_month.ToString()
+//                            + rsp.struFileInfo[i].struFileTime.dosdt_day.ToString() + " " + rsp.struFileInfo[i].struFileTime.dosdt_hour.ToString() + ":" + rsp.struFileInfo[i].struFileTime.dosdt_minute.ToString();
+                        newEnbFileInfo.LastModifyTime = rsp.struFileInfo[i].struFileTime.GetStrTime();
 
                         lvENBFileInfo.Dispatcher.BeginInvoke(new Action(() =>
                         {

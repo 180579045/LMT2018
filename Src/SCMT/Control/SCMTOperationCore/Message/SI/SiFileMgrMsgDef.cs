@@ -423,7 +423,7 @@ namespace SCMTOperationCore.Message.SI
 			var hour = dosdt_hour.ToString("D2");
 			var min = dosdt_minute.ToString("D2");
 			var second = dosdt_second.ToString("D2");
-			var time = $"{year}-{month}-{day} {hour}:{min}:{second}";
+			var time = $"{year}/{month}/{day} {hour}:{min}:{second}";
 			return time;
 		}
 
