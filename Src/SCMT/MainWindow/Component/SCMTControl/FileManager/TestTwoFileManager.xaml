@@ -6,6 +6,11 @@
         xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
         mc:Ignorable="d"  
         d:DesignHeight="600" d:DesignWidth="800" >
+    <UserControl.Resources>
+        <Style x:Key="LocalListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseMove" Handler="LocalListViewItem_MouseMove"></EventSetter>
+        </Style>
+    </UserControl.Resources>
     <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="6*"></RowDefinition>
@@ -29,7 +34,7 @@
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ListView Name="lvLocalFileInfo" Grid.Column="2" ItemsSource="{Binding}" ></ListView>
+                <ListView Name="lvLocalFileInfo" Grid.Column="2" ItemsSource="{Binding}" ItemContainerStyle="{StaticResource LocalListViewItemStyle}"></ListView>
             </Grid>
 
             <Grid Grid.Column="2" Name="fmENB">

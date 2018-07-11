@@ -48,6 +48,10 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         private string latestEnbMenuName;
 
 
+        //右键菜单添加
+        ContextMenu myContext = new ContextMenu();
+
+
         public TestTwoFileManager(string strIP)
         {
             InitializeComponent();
@@ -197,8 +201,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             mycolun.DisplayMemberBinding = new Binding("FileType");
             myview.Columns.Add(mycolun);
 
-            //右键菜单添加
-            ContextMenu myContext = new ContextMenu();
 
             MenuItem myMUItem = new MenuItem();
             myMUItem.Header = "下载至基站";
@@ -230,18 +232,82 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myMUItem.Click += localNewFolder_Click;
             myContext.Items.Add(myMUItem);
 
-            lvLocalFileInfo.ContextMenu = myContext;
+        //    lvLocalFileInfo.ContextMenu = myContext;
 
             //设置文件列表的  鼠标拖拽事件
             lvLocalFileInfo.AllowDrop = true;
             lvLocalFileInfo.Drop += LvLocalFileInfo_Drop; ;
 
             //设置文件 list 的 移动事件
-            lvLocalFileInfo.MouseMove += LvLocalFileInfo_MouseMove;
+            lvLocalFileInfo.QueryContinueDrag += LvLocalFileInfo_QueryContinueDrag;
+            lvLocalFileInfo.MouseLeftButtonDown += LvLocalFileInfo_MouseLeftButtonDown;
+            lvLocalFileInfo.PreviewMouseRightButtonDown += LvENBFileInfo_PreviewMouseRightButtonDown;            
 
             //鼠标双击事件
             lvLocalFileInfo.MouseDoubleClick += LvLocalFileInfo_MouseDoubleClick;
         }
+
+        /// <summary>
+        /// 右键事件，判断当前是否存在选中的ListViewItem，存在则弹出右键菜单，否则，不弹出
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvENBFileInfo_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (lvLocalFileInfo == null)
+            {
+                return;
+            }
+
+            if (lvLocalFileInfo.SelectedItems.Count <= 0)
+            {
+                lvLocalFileInfo.ContextMenu = null;
+            }
+            else
+            {
+                lvLocalFileInfo.ContextMenu = myContext;
+            }
+        }
+
+        /// <summary>
+        /// ListView 的鼠标左键点击事件，目的是为了判断当前点击的是空白还是 item
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvLocalFileInfo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (lvLocalFileInfo.IsHitTestVisible)
+            {
+                //MessageBox.Show("OK");
+            }
+
+            //根据当前鼠标在 ListView中的位置，获取鼠标下的控件
+            IInputElement element = lvLocalFileInfo.InputHitTest(Mouse.GetPosition(lvLocalFileInfo));
+
+            if(element != null  )
+            {
+                if(element is System.Windows.Controls.ScrollViewer)
+                {
+                    lvLocalFileInfo.SelectedItems.Clear();
+                    return;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 查询文件拖放的状态，以决定是否继续拖拽
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvLocalFileInfo_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
+        {
+            if(!e.KeyStates.HasFlag(DragDropKeyStates.LeftMouseButton))
+            {
+                e.Action = DragAction.Cancel;
+            }
+        }
+
         /// <summary>
         /// 本地文件双击事件
         /// </summary>
@@ -675,34 +741,32 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
         }
 
-
         /// <summary>
-        /// 文件 list 的鼠标移动事件，用来执行拖拽
+        /// 本地文件拖拽功能
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LvLocalFileInfo_MouseMove(object sender, MouseEventArgs e)
+        private void LocalListViewItem_MouseMove(object sender, MouseEventArgs e)
         {
-            //只有鼠标左键处于按下状态时，才启用鼠标移动事件执行拖拽
-            if (e.LeftButton == MouseButtonState.Pressed)
+            //以本地文件管理的  ListViewItem  作为拖拽源进行拖拽
+            ListViewItem item = sender as ListViewItem;
+
+            //判断是否是 item  发出 MouseMove 事件，并且鼠标左键保持按下状态
+            if((item != null) && (e.LeftButton == MouseButtonState.Pressed ))
             {
-                if (lvLocalFileInfo.SelectedItem != null)
+                FileInfoDemo dragFileInfo = (FileInfoDemo)lvLocalFileInfo.SelectedItem;
+
+                try
                 {
-                    FileInfoDemo dragFileInfo = (FileInfoDemo)lvLocalFileInfo.SelectedItem;
-
-                    try
-                    {
-                        DragDropEffects dragInfo = DragDrop.DoDragDrop(lvLocalFileInfo, dragFileInfo, DragDropEffects.Copy);
-                    }
-                    catch (Exception)
-                    {
-
-                    }
+                    DragDropEffects dragInfo = DragDrop.DoDragDrop(lvLocalFileInfo, dragFileInfo, DragDropEffects.Copy);
+                }
+                catch (Exception)
+                {
 
                 }
-            }
+            } 
         }
-
+        
         //线程等待
         public static void Waite(int nTime)
         {
