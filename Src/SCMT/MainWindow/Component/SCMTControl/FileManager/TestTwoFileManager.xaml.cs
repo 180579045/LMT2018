@@ -20,6 +20,7 @@ using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Message.SI;
 
+
 namespace SCMTMainWindow.Component.SCMTControl.FileManager
 {
     /// <summary>
@@ -352,15 +353,16 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myMUItem.Click += UploadFileToMgr_Click;
             myContext.Items.Add(myMUItem);
 
-            myMUItem = new MenuItem();
-            myMUItem.Header = "激活基站软件包";
-            myMUItem.Name = "ActiveEnbSoftwarePackage";
-            myContext.Items.Add(myMUItem);
+            //myMUItem = new MenuItem();
+            //myMUItem.Header = "激活基站软件包";
+            //myMUItem.Name = "ActiveEnbSoftwarePackage";
+            //myMUItem.Click += ActiveEnvSoft_Click;
+            //myContext.Items.Add(myMUItem);
 
-            myMUItem = new MenuItem();
-            myMUItem.Header = "激活外设软件包";
-            myMUItem.Name = "ActivePeripheralSoftwarePackage";
-            myContext.Items.Add(myMUItem);
+            //myMUItem = new MenuItem();
+            //myMUItem.Header = "激活外设软件包";
+            //myMUItem.Name = "ActivePeripheralSoftwarePackage";
+            //myContext.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
             myMUItem.Header = "版本查询";
@@ -1173,6 +1175,20 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             var perVer = new PerSoftwareVer(_boardIp);
             perVer.ShowDialog();
         }
+
+        // 激活基站软件包
+        private void ActiveEnvSoft_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new EnbSoftwareActive(_boardIp);
+
+            if (System.Windows.Forms.DialogResult.OK != dlg.ShowDialog())
+            {
+                return;
+            }
+
+            
+        }
+
 
 
         private MessageBoxResult ShowTip_Error(string msg)

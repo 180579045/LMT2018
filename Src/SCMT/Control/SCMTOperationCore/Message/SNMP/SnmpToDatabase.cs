@@ -70,7 +70,7 @@ namespace SCMTOperationCore.Message.SNMP
 		public static string GetMibValueFromCmdExeResult(string index, string cmdName, string mibName, string boardAddr)
 		{
 			long lrequestId = 0;
-			string csCmdValueTemp = index;
+			string csCmdValueTemp = null;
 			CDTLmtbPdu inOutPdu = new CDTLmtbPdu();
 
 			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out lrequestId, index, boardAddr, ref inOutPdu);
