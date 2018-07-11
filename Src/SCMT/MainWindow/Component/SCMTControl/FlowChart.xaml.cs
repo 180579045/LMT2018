@@ -106,72 +106,7 @@ namespace SCMTMainWindow.Component.SCMTControl
 //OM链路建立
 
         }
-
-
-    }
-
-    /// <summary>
-    /// 每一个流程图节点中的内容
-    /// </summary>
-    class FlowChartNode
-    {
-        /// <summary>
-        /// 每个节点的编号
-        /// </summary>
-        int nodeNo;                           // 第几个流程图
-
-        /// <summary>
-        /// 索引相关内容
-        /// </summary>
-        List<                                 // List.No     : 索引的顺序
-            Dictionary<                       // List.value  : 索引的内容
-                int,                          // Dict.key    : 索引编号
-                string>>                      // Dict.value  : 索引信息 1.2.5105.x.y.....
-            index;                            // 索引数量<Dict<索引编号, 索引值>>
-
-        /// <summary>
-        /// 命令相关内容
-        /// </summary>
-        List<                                 // List.No     : 可能有n个命令，每个命令都有下发的顺序.
-            Dictionary<                       // List.value  : 每个命令相关的内容，节点信息，节点阈值.
-            string,                           // Dict1.key   : 命令名字
-            Dictionary<                       // Dict1.value : 命令中叶子节点信息(Dict2)
-                string,                       // Dict2.key   : 叶子节点名字
-                string>>>                     // Dict2.value : 叶子节点阈值
-            cmd;                              // 
-
-        public FlowChartNode()
-        {
-            this.nodeNo = -1;
-            //this.cmdList = new Dictionary<int, string>();
-            //this.cmdNode = new Dictionary<string, Dictionary<string, string>>();
-        }
-        public FlowChartNode(int nodeNo)
-        {
-            this.nodeNo = nodeNo;
-            //this.cmdList = new Dictionary<int, string>();
-            //this.cmdNode = new Dictionary<string, Dictionary<string, string>>();
-        }
-
-        void setFlowChartNodeColor()
-        {
-
-        }
-
-        /// <summary>
-        /// 判断条件
-        /// </summary>
-        /// <returns>-1:程序错误;0:未知;1;绿色;2:红色</returns>
-        int setWhichColor()
-        {
-            
-            int reColor = 0;
-
-
-
-            return reColor;
-        }
-        private void initInterface()
+                private void initInterface()
         {
             mapCanvasEllipse.Clear();
             mapCanvasTextBlock.Clear();
@@ -484,6 +419,72 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
+
+
+    }
+
+    /// <summary>
+    /// 每一个流程图节点中的内容
+    /// </summary>
+    class FlowChartNode
+    {
+        /// <summary>
+        /// 每个节点的编号
+        /// </summary>
+        int nodeNo;                           // 第几个流程图
+
+        /// <summary>
+        /// 索引相关内容
+        /// </summary>
+        List<                                 // List.No     : 索引的顺序
+            Dictionary<                       // List.value  : 索引的内容
+                int,                          // Dict.key    : 索引编号
+                string>>                      // Dict.value  : 索引信息 1.2.5105.x.y.....
+            index;                            // 索引数量<Dict<索引编号, 索引值>>
+
+        /// <summary>
+        /// 命令相关内容
+        /// </summary>
+        List<                                 // List.No     : 可能有n个命令，每个命令都有下发的顺序.
+            Dictionary<                       // List.value  : 每个命令相关的内容，节点信息，节点阈值.
+            string,                           // Dict1.key   : 命令名字
+            Dictionary<                       // Dict1.value : 命令中叶子节点信息(Dict2)
+                string,                       // Dict2.key   : 叶子节点名字
+                string>>>                     // Dict2.value : 叶子节点阈值
+            cmd;                              // 
+
+        public FlowChartNode()
+        {
+            this.nodeNo = -1;
+            //this.cmdList = new Dictionary<int, string>();
+            //this.cmdNode = new Dictionary<string, Dictionary<string, string>>();
+        }
+        public FlowChartNode(int nodeNo)
+        {
+            this.nodeNo = nodeNo;
+            //this.cmdList = new Dictionary<int, string>();
+            //this.cmdNode = new Dictionary<string, Dictionary<string, string>>();
+        }
+
+        void setFlowChartNodeColor()
+        {
+
+        }
+
+        /// <summary>
+        /// 判断条件
+        /// </summary>
+        /// <returns>-1:程序错误;0:未知;1;绿色;2:红色</returns>
+        int setWhichColor()
+        {
+            
+            int reColor = 0;
+
+
+
+            return reColor;
+        }
+
 
     }
    
