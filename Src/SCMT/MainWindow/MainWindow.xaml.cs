@@ -1342,7 +1342,7 @@ namespace SCMTMainWindow
                 FloatingWidth = 600,
                 CanHide = true,
                 CanClose = false,
-                CanAutoHide = true
+                CanAutoHide = false
             
 			};
 
