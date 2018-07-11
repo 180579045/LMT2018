@@ -365,6 +365,19 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             myMUItem = new MenuItem();
             myMUItem.Header = "版本查询";
             myMUItem.Name = "SelectVer";
+
+            var subItem = new MenuItem();
+            subItem.Header = "基站软件包版本";
+            subItem.Name = "QueryEnbSoftVersion";
+            subItem.Click += GetEnbSoftVer_Click;
+            myMUItem.Items.Add(subItem);
+
+            subItem = new MenuItem();
+            subItem.Header = "外设软件包版本";
+            subItem.Name = "QueryPerSoftVersion";
+            subItem.Click += GetPerSoftVer_Click;
+            myMUItem.Items.Add(subItem);
+
             myContext.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
@@ -1145,6 +1158,20 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 var capacityDlg = new SystemCapacity(devName, restSpace, allSpace);
                 capacityDlg.ShowDialog();
             }
+        }
+
+        // 查询基站软件包版本菜单响应
+        private void GetEnbSoftVer_Click(object sender, RoutedEventArgs e)
+        {
+            var enbVer = new EnbSoftVer(_boardIp);
+            enbVer.ShowDialog();
+        }
+
+        // 查询外设软件包版本菜单响应
+        private void GetPerSoftVer_Click(object sender, RoutedEventArgs e)
+        {
+            var perVer = new PerSoftwareVer(_boardIp);
+            perVer.ShowDialog();
         }
 
 
