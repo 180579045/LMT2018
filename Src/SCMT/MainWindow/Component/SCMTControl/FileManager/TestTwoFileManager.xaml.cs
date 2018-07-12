@@ -324,26 +324,26 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <param name="e"></param>
         private void LvLocalFileInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //if (lvLocalFileInfo.SelectedItem != null)
-            //{
-            //    FileInfoDemo selectedFile = lvLocalFileInfo.SelectedItem as FileInfoDemo;
+            if (lvLocalFileInfo.SelectedItem != null)
+            {
+                FileInfoDemo selectedFile = lvLocalFileInfo.SelectedItem as FileInfoDemo;
 
-            //    if (selectedFile.FileType == "文件夹")
-            //    {
-            //        //MessageBox.Show(localSelectedDTVI.DirInfo.Name);
-            //        localSelectedDTVI.IsExpanded = true;
-            //        foreach(DirectoryTreeViewItem dirInfo in localSelectedDTVI.Items)
-            //        {
-            //            if(dirInfo.DirInfo.Name == selectedFile.FileName)
-            //            {
-            //                //DirectoryTreeViewItem newItem = new DirectoryTreeViewItem(dirInfo);
-            //                localSelectedDTVI = dirInfo;
-            //                localSelectedDTVI.IsExpanded = true;
-            //                localRefreshFileList();
-            //            }
-            //        }
-            //    }
-            //}
+                if (selectedFile.FileType == "文件夹")
+                {
+                    //MessageBox.Show(localSelectedDTVI.DirInfo.Name);
+                    localSelectedDTVI.IsExpanded = true;
+                    foreach (DirectoryTreeViewItem dirInfo in localSelectedDTVI.Items)
+                    {
+                        if (dirInfo.DirInfo.Name == selectedFile.FileName)
+                        {
+                            //DirectoryTreeViewItem newItem = new DirectoryTreeViewItem(dirInfo);
+                            localSelectedDTVI = dirInfo;
+                            localSelectedDTVI.IsExpanded = true;
+                            localRefreshFileList();
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -685,6 +685,40 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             catch (Exception exception)
             {
                 ShowTip_Error(exception.Message);
+            }
+        }
+
+        /// <summary>
+        /// 基站侧文件夹双击事件，双击打开文件夹
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EnbListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            FileInfoEnb selectedFile = lvENBFileInfo.SelectedItem as FileInfoEnb;
+
+            if(selectedFile != null)
+            {
+                if(selectedFile.IsDirectory)
+                {
+                    enbSelectedItem.IsExpanded = true;
+
+                    foreach(enbDirectoryTreeViewItem item in enbSelectedItem.Items)
+                    {
+                        if(item.DirInfo == enbSelectedItem.DirInfo + "/" + selectedFile.FileName)
+                        {
+                            if (!_fileHandler.GetBoardFileInfo(item.DirInfo))
+                            {
+                                Log.Error($"获取板卡{_boardIp}路径信息{enbSelectedItem.DirInfo}失败");
+                                ShowTip_Error($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！");
+                            }
+                            enbSelectedItem = item;
+                            item.IsExpanded = true;
+                        }
+                    }
+
+                }
+                //MessageBox.Show(enbSelectedItem.DirInfo +"/" +  selectedFile.FileName);
             }
         }
 
