@@ -28,8 +28,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
     /// </summary>
     public partial class TestTwoFileManager : UserControl
     {
-        //全局变量
-        private ListView lvMainListView = new ListView();
         private ProcessList myList = new ProcessList();
 
         /// <summary>
@@ -73,10 +71,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// </summary>
         private void InitListView()
         {
-            //首先添加到  主界面  Grid  中
-            MainGrid.Children.Add(lvMainListView);
-            Grid.SetRow(lvMainListView, 2);
-
             //添加  字段名称
             GridView gvListView = new GridView();
             lvMainListView.View = gvListView;
@@ -84,7 +78,16 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             GridViewColumn gvcColumn = new GridViewColumn();
             gvcColumn.Header = "文件名称";
             gvcColumn.Width = 100;
-            gvcColumn.DisplayMemberBinding = new Binding("FileName");
+
+            //绑定一个TextBlock，然后设置为左对齐
+            DataTemplate fileNameTemplate = new DataTemplate();
+            FrameworkElementFactory fileNameTextBlock = new FrameworkElementFactory(typeof(TextBlock));
+            fileNameTextBlock.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            fileNameTextBlock.SetValue(TextBlock.WidthProperty, 1000.0);    //这里没有办法实时跟踪，只能设置一个很大的值，以防column被拉大之后随着改变宽度
+            fileNameTextBlock.SetBinding(TextBlock.TextProperty, new Binding("FileName"));
+
+            fileNameTemplate.VisualTree = fileNameTextBlock;
+            gvcColumn.CellTemplate = fileNameTemplate;
             gvListView.Columns.Add(gvcColumn);
 
             gvcColumn = new GridViewColumn();
