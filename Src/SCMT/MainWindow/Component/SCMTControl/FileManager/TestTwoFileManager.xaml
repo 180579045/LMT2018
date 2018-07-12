@@ -10,6 +10,9 @@
         <Style x:Key="LocalListViewItemStyle" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="MouseMove" Handler="LocalListViewItem_MouseMove"></EventSetter>
         </Style>
+        <Style x:Key="EnbListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseMove" Handler="EnbListViewItem_MouseMove"></EventSetter>
+        </Style>
     </UserControl.Resources>
     <Grid Name="MainGrid">
         <Grid.RowDefinitions>
@@ -43,7 +46,7 @@
                     <ColumnDefinition Width="auto"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
-                <ListView Name="lvENBFileInfo" Grid.Column="2" ItemsSource="{Binding}" ></ListView>
+                <ListView Name="lvENBFileInfo" Grid.Column="2" ItemsSource="{Binding}"  ItemContainerStyle="{StaticResource EnbListViewItemStyle}"></ListView>
             </Grid>
 
         </Grid>
