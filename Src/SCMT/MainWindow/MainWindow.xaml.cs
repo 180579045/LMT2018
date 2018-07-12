@@ -1374,7 +1374,6 @@ namespace SCMTMainWindow
 
 			listAvalon.Add(sub);
 			this.FileManagerLAP.Children.Add(sub);
-
 		}
 
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
