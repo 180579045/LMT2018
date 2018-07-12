@@ -54,6 +54,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
         public TestTwoFileManager(string strIP)
         {
+            _boardIp = strIP;
+
             InitializeComponent();
             //添加  ListView   显示文件传输进度
             InitListView();
@@ -748,15 +750,12 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         // 私有成员初始化
         private void InitMember()
         {
-            string boardIp = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
-            _fileHandler = new FileMgrFileHandler(boardIp);
+            _fileHandler = new FileMgrFileHandler(_boardIp);
             _fileHandler.GetFileInfoRspArrived += GetFileInfoCallBack;
             _fileHandler.UpdateProgressEvent += UpdateProgressCallBack;
             _fileHandler.NewProgressEvent += NewProgressCallBack;
             _fileHandler.EndProgressEvent += EndProgressCallBack;
             _fileHandler.MenuClickRspEvent += MenuClickCallBack;
-
-            _boardIp = boardIp;
         }
 
         // 调用接口，查询板卡上的目录信息，并填入到控件中
