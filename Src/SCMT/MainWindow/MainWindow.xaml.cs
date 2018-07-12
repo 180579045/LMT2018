@@ -131,7 +131,7 @@ namespace SCMTMainWindow
 
 			if (!ProcessHelper.StartProcess(ftpFullPath))
 			{
-				ShowLogHelper.Show("FTP工具启动失败，文件传输任务将会无法进行", "127.0.0.1");
+				ShowLogHelper.Show("FTP工具启动失败，文件传输任务将会无法进行", "SCMT");
 			}
 		}
 
