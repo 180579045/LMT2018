@@ -516,7 +516,9 @@
     <PostBuildEvent>xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ZeroMQ\* "$(TargetDir)"
 xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\LmtbZip\* "$(TargetDir)"
 xcopy /I /E /F /Y $(SolutionDir)UI\Chart\* "$(TargetDir)"
-xcopy /I /E /F /Y $(ProjectDir)Component\Configration\HotKey.json "$(TargetDir)"</PostBuildEvent>
+xcopy /I /E /F /Y $(ProjectDir)Component\Configration\HotKey.json "$(TargetDir)"
+xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ftp\* "$(TargetDir)tools\"
+xcopy /I /E /F /Y $(SolutionDir)config\* "$(TargetDir)config\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
