@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="800">
     <UserControl.Resources>
         <Style x:Key="LvItemStyle" TargetType="{x:Type ListViewItem}">
-            <Setter Property="Background" Value="{Binding LogColor}"></Setter>
+            <Setter Property="Foreground" Value="{Binding LogColor}"></Setter>
         </Style>
     </UserControl.Resources>
     <Grid>
