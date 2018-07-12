@@ -13,6 +13,9 @@
         <Style x:Key="EnbListViewItemStyle" TargetType="{x:Type ListViewItem}">
             <EventSetter Event="MouseMove" Handler="EnbListViewItem_MouseMove"></EventSetter>
         </Style>
+        <Style x:Key="ProcessListViewItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+        </Style>
     </UserControl.Resources>
     <Grid Name="MainGrid">
         <Grid.RowDefinitions>
@@ -53,5 +56,6 @@
 
         <GridSplitter Grid.Row="1" Height="6" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
 
+        <ListView Grid.Row="2" Name="lvMainListView" ItemContainerStyle="{StaticResource ProcessListViewItemStyle}"></ListView>
     </Grid>
 </UserControl>
