@@ -31,8 +31,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         //Timer tmr;
         FlowChartCommand fcNodeCmd; // 流程图的对应的命令类
         string fileXmlPath = @"..\..\..\Component\SCMTControl\FlowChart.xml";
-        private System.Timers.Timer timer = new System.Timers.Timer(1 * 60 * 1000);// 1min*60s*1000ms
-        //private List<FlowChartNode> FlowChartNL = new List<FlowChartNode>();
+        private System.Timers.Timer timer = new System.Timers.Timer();//1 * 60 * 1000);// 1min*60s*1000ms
         protected Dictionary<string, XElement> mapCanvasEllipse { get; set; }
         protected Dictionary<string, XElement> mapCanvasTextBlock { get; set; }
         protected Dictionary<string,XElement> mapLine { get; set; }
@@ -52,6 +51,7 @@ namespace SCMTMainWindow.Component.SCMTControl
 
             initGetFlowChartCommand();// 初始化 : 获取每个流程图的对应的命令
 
+            fcNodeCmd.parseFlowChartCmd();
             ////
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
             timer.Enabled = true;
@@ -72,6 +72,8 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// <param name="e"></param>
         void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
+            fcNodeCmd.parseFlowChartCmd();
+
             //模拟的做一些的操作
             List<string> colorStr = new List<string>() {
                 "#FFB5B5B5" ,//未知;
@@ -629,16 +631,37 @@ namespace SCMTMainWindow.Component.SCMTControl
                     //var cmdName = "GetOmLinkInfo";
                     //var mibName = "swPackRunningVersion"; //SCMTOperationCore.Message.SNMP
                     string mibName = leafDict["leafName"];
-                    string index = ".2";
 
-                    string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+                    int indexNum = int.Parse(leafDict["indexNum"]);
+                    for (int no = 0; no < indexNum; no++)
+                    {
+                        string strIndexNo = String.Format("index{0}", no + 1);
+                        string strIndexValue = leafDict[strIndexNo];
+
+                        /// 好多的好多。。。。
+                        string index = getIndexString(strIndexNo, strIndexValue);
+
+                        string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+                        if (String.Empty == csCmdValueTemp)
+                        {
+                            
+                        }
+                    }
+                    //string index = ".2";
+
+                    //string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 
                 }
             }
 
+            
+
             return 0;
         }
-
+        private string getIndexString(string indexNo, string indexValue)
+        {
+            return "";
+        }
 
         public void parseFlowChartCmd()
         {
