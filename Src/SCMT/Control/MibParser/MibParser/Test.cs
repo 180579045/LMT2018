@@ -35,7 +35,9 @@ namespace MIBDataParser
         /// <param name="connectIp"></param>
         void testForInitByConnetIp(string connectIp)
         {
-            Dictionary<string, IReDataByEnglishName> reData = new Dictionary<string, IReDataByEnglishName>() {
+            Dictionary<string, Dictionary<string, string>> reTrip = dataHandle.getTrapInfo();
+
+            Dictionary <string, IReDataByEnglishName> reData = new Dictionary<string, IReDataByEnglishName>() {
                 { "alarmCausePrimaryAlarmCauseNo",null },
                 { "hsdpaCQIReviseLcId", null},
                 { "eueTimerT304", null},

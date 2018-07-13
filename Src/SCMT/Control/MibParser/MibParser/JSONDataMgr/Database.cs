@@ -413,7 +413,25 @@ namespace MIBDataParser.JSONDataMgr
 		}
 
 
-		public bool testDictExample(Dictionary<string, IReDataByEnglishName> reData)
+        public Dictionary<string, Dictionary<string, string>> getTrapInfo()
+        {
+            Dictionary<string, Dictionary<string, string>> allTrapInfo = new Dictionary<string, Dictionary<string, string>>() {
+                { "alarmNotify", new Dictionary<string, string>() {{ "TrapID","24"},{ "TrapOid","alarmTrap"},{ "TrapTypeDes","alarmTraps"}}},
+                { "anrNotification", new Dictionary<string, string>() {{ "TrapID","200"},{ "TrapOid", "anrNotification" },{ "TrapTypeDes", "anrNotification" } }},
+                { "alterationNofication", new Dictionary<string, string>() {{ "TrapID","21"},{ "TrapOid", "configChgTrap" },{ "TrapTypeDes", "eventConfigChgTraps" } }},
+                { "eventGeneralEventTrap", new Dictionary<string, string>() {{ "TrapID","20"},{ "TrapOid", "eventGeneralEventTrap" },{ "TrapTypeDes", "eventGeneralEventTraps" } }},
+                { "eventSynchronizationTrap", new Dictionary<string, string>() {{ "TrapID","26"},{ "TrapOid", "eventSynchronizationTrap" },{ "TrapTypeDes", "eventSynchronizationTrap" } }},
+                { "fileTransNotification", new Dictionary<string, string>() {{ "TrapID","23"},{ "TrapOid", "fileTransTrap" },{ "TrapTypeDes", "eventFTPResultTraps" } }},
+                { "maintenceStateNotify", new Dictionary<string, string>() {{ "TrapID","203"},{ "TrapOid", "maintenceStateNotify" },{ "TrapTypeDes", "maintenceStateNotify" } }},
+                { "managementRequestTrap", new Dictionary<string, string>() {{ "TrapID","22"},{ "TrapOid", "managementRequestTrap" },{ "TrapTypeDes", "eventManagementRequestTraps" } }},
+                { "mroNotification", new Dictionary<string, string>() {{ "TrapID","201"},{ "TrapOid", "mroNotification" },{ "TrapTypeDes", "mroNotification" } }},
+                { "transactionResultNotification", new Dictionary<string, string>() {{ "TrapID","25"},{ "TrapOid", "transactionResultTrap" },{ "TrapTypeDes", "transactionResultTraps" } }},
+            };
+
+            return allTrapInfo;
+        }
+
+        public bool testDictExample(Dictionary<string, IReDataByEnglishName> reData)
 		{
 			string[] keys = new string [reData.Keys.Count];
 			reData.Keys.CopyTo(keys, 0);

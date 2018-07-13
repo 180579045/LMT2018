@@ -93,21 +93,8 @@ namespace SCMTMainWindow.Component.SCMTControl
 
         void test()
         {
-
-//            < relatedcmd cmdName = "GetOmLinkInfo:2" />
- 
-//             < cmdleaf leafName = "*equipStartupStage-NLT" leafValue = "3" />
-    
-//                < cmdleaf leafName = "*omLinkSetupStatus-NEQ" leafValue = "2" />
-       
-//                   < cmdleaf leafName = "equipStartupStage-NLT" leafValue = "3" />
-          
-//                      < cmdleaf leafName = "omLinkSetupStatus" leafValue = "2" />
-//             wangxiaoying 10:40:44
-//OM链路建立
-
         }
-                private void initInterface()
+        private void initInterface()
         {
             mapCanvasEllipse.Clear();
             mapCanvasTextBlock.Clear();
@@ -485,5 +472,117 @@ namespace SCMTMainWindow.Component.SCMTControl
 
 
     }
-   
+
+    class FlowChartCommand
+    {
+        /// <summary>
+        /// 初始化 : 从 xml中解析想要的信息
+        /// </summary>
+        /// <param name="nodeList"></param>
+        public FlowChartCommand(XmlNodeList nodeList)
+        {
+            if (null == nodeList)
+                return;
+            foreach (XmlNode xn in nodeList)
+            {
+                /// 一. 容错判断 1. 必须是 Canvas 2. Canvas中必须有椭圆属性"Ellipse"
+                if ((!String.Equals(xn.Name, "Canvas")) || (null == xn.SelectSingleNode("Ellipse")))
+                {
+                    continue;
+                }
+                /// 二. 获取命令相关内容
+                XmlNode cmds = xn.SelectSingleNode("relatedcmd"); // 1. 必须有relatedcmd属性
+                string flowChartName = xn.Attributes["Name"].Value; /// 用于操作图形的句柄
+                parseXml(flowChartName, cmds); // 2. 获取相关命令信息
+            }
+        }
+
+        /// <summary>
+        /// 每一个流程图中命令内容
+        /// Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> : Dictionary<流程图名, 对应的命令内容(可有多个命令)>
+        /// Dictionary<string, List<Dictionary<string, string>>> ; Dictionary<命令名字，命令的所有叶子>
+        /// List<Dictionary<string, string>> : List<叶子节点的所有属性>
+        /// Dictionary<string, string> : key: leafName叶子名,leafValue叶子节点,leafProperty叶子属性,leafCompRules叶子比较规则
+        /// </summary>
+        private Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> fcCmd = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
+        
+        /// <summary>
+        /// 从 xml中解析出每个流程图的相关命令
+        /// </summary>
+        /// <param name="flowChartName">流程图的名字</param>
+        /// <param name="cmds">流程的命令内容</param>
+        private void parseXml(string flowChartName, XmlNode cmds)
+        {
+            Dictionary<string, List<Dictionary<string, string>>> cmdList;
+            if (null == cmds)
+            {
+                cmdList = null;
+                return;
+            }
+            else
+            {
+                /// 2. 获取相关命令信息
+                cmdList = parseCommandList(cmds);
+            }
+            fcCmd.Add(flowChartName, cmdList);
+        }
+
+        /// <summary>
+        /// 解析所有命令内容
+        /// </summary>
+        /// <param name="cmds"></param>
+        /// <returns></returns>
+        private Dictionary<string, List<Dictionary<string, string>>> parseCommandList(XmlNode cmds)
+        {
+            Dictionary<string, List<Dictionary<string, string>>> cmdList = new Dictionary<string, List<Dictionary<string, string>>>();
+            ///解析每个命令
+            foreach (XmlNode cmd in cmds.ChildNodes)
+            {
+                List<Dictionary<string, string>> leafList = new List<Dictionary<string, string>>();
+                /// 解析每个节点
+                foreach (XmlNode leaf in cmd.ChildNodes)
+                {
+                    Dictionary<string, string> leafInfo = new Dictionary<string, string>()
+                    {
+                        { "leafName", leaf.Attributes["name"].Value },
+                        { "leafValue", leaf.Attributes["value"].Value },
+                        { "leafProperty", leaf.Attributes["property"].Value },
+                        { "leafCompRules", leaf.Attributes["compRules"].Value},
+                    };
+                    leafList.Add(leafInfo);
+                }
+                ///
+                string cmdName = cmd.Attributes["name"].Value;
+                cmdList.Add(cmdName, leafList);
+            }
+            return cmdList;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cmdContainer"></param>
+        /// <returns></returns>
+        public int parseCmdInfo(Dictionary<string, List<Dictionary<string, string>>> cmdContainer)
+        {
+            if (null == cmdContainer)
+                return -1;
+
+            List<string> keys = new List<string>();
+            foreach (var key in cmdContainer.Keys)
+            {
+                keys.Add(key);
+            }
+
+            foreach (var key in keys)
+            {
+                var cmd = cmdContainer[key];
+            }
+
+            return 0;
+        }
+
+    }
+
+
 }

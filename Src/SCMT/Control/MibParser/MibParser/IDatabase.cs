@@ -138,6 +138,13 @@ namespace MIBDataParser
         /// <returns></returns>
         bool getCmdDataByCmdEnglishName(Dictionary<string, IReCmdDataByCmdEnglishName> reData, string connectIp, out string err);
 
+        /// <summary>
+        /// 获取所有的trap 类型
+        /// Dictionary<string, Dictionary<string, string>> ; Dictionary<每个TrapOid_ENB5216, 其他信息Dictionary(TrapID,TrapOid,TrapTypeDes)>
+        /// Dictionary<string, string> : Dictionary({ TrapID:value},{TrapOid:value},{TrapTypeDes:value})
+        /// </summary>
+        /// <returns>10组trap</returns>
+        Dictionary<string, Dictionary<string, string>> getTrapInfo();
         //bool testDictExample(Dictionary<string, IReDataByEnglishName> reData);
     }
 }
