@@ -828,6 +828,37 @@ namespace FileManager
 			return _mapTraningFileTask.Keys.ToList();
 		}
 
+        //删除未完成任务
+        public void DeleteUnFinishedTransTask(long lTaskID)
+        {
+            if(_mapTraningFileTask.ContainsKey(lTaskID))
+            {
+                _mapTraningFileTask.Remove(lTaskID);
+            }
+
+            _workingForFileTrans = false;
+
+        }
+
+        
+		//停止文件传输操作。taskId作为索引使用
+		public static SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
+		{
+			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
+			mapName2Value.Add("fileTransRowStatus", FileTransMacro.STR_DESTROY);
+			long reqId = 0;
+
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("DelFileTransTask", out reqId, mapName2Value, $".{taskId}", targetIp);
+			if (0 == ret)
+			{
+				// TODO 取消成功后，需要处理后续的流程
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
+		}
+
+
 		private void OnGetCapacityRsp(SubscribeMsg msg)
 		{
 			var rspMsg = JsonHelper.SerializeJsonToObject<SubscribeMsg>(msg.Data);

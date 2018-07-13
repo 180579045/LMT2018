@@ -50,6 +50,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         private ContextMenu myContext = new ContextMenu();
         //右键菜单添加，基站文件管理
         ContextMenu myContext_ENB = new ContextMenu();
+        //右键菜单添加，进度条
+        ContextMenu myContext_Process = new ContextMenu();
 
 
         public TestTwoFileManager(string strIP)
@@ -76,6 +78,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             //添加  字段名称
             GridView gvListView = new GridView();
             lvMainListView.View = gvListView;
+            lvMainListView.SelectionMode = SelectionMode.Single;
 
             GridViewColumn gvcColumn = new GridViewColumn();
             gvcColumn.Header = "文件名称";
@@ -132,6 +135,80 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             gvcColumn.Width = 100;
             gvcColumn.DisplayMemberBinding = new Binding("OperateType");
             gvListView.Columns.Add(gvcColumn);
+
+            MenuItem processMenuItem = new MenuItem();
+            processMenuItem.Header = "删除任务";
+            processMenuItem.Click += ProcessMenuItem_Click;
+            myContext_Process.Items.Add(processMenuItem);
+
+            lvMainListView.MouseLeftButtonDown += LvMainListView_MouseLeftButtonDown;
+            lvMainListView.PreviewMouseRightButtonDown += LvMainListView_PreviewMouseRightButtonDown;
+        }
+
+        /// <summary>
+        /// 进度条列表 左键单击，判断鼠标下的控件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvMainListView_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            IInputElement element = lvMainListView.InputHitTest(Mouse.GetPosition(lvMainListView));
+
+            if(element != null)
+            {
+                if(element is System.Windows.Controls.ScrollViewer)
+                {
+                    lvMainListView.SelectedItems.Clear();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 进度条列表  右键单击 ，判断是否显示右键菜单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvMainListView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if(null == lvMainListView)
+            {
+                return;
+            }
+
+            if(lvMainListView.SelectedItems.Count == 0)
+            {
+                lvMainListView.ContextMenu = null;
+            }
+            else
+            {
+                lvMainListView.ContextMenu = myContext_Process;
+            }
+        }
+
+        /// <summary>
+        /// 进度条右键菜单，取消进度任务
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ProcessMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessList item = lvMainListView.SelectedItem as ProcessList;
+            
+            if(item != null)
+            {
+                if(!item.FileState.Contains("完成"))
+                {
+                    _fileHandler.DeleteUnFinishedTransTask(item.TaskID);
+
+                    item.FileState = "已取消";
+
+                    FileMgrFileHandler.CancelTransFileTask(item.TaskID, _boardIp);
+
+                }
+
+                lvMainListView.Items.Remove(item);
+            }
         }
 
 
@@ -140,6 +217,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// </summary>
         private void InitLocalFileManager()
         {
+            lvLocalFileInfo.SelectionMode = SelectionMode.Single;
             //定义文件夹树
             DirectoryTreeView localMainTree = new DirectoryTreeView();
             localMainTree.SelectedItemChanged += LocalMainTree_SelectedItemChanged;
@@ -353,6 +431,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// </summary>
         private void InitEnbFileManager()
         {
+            lvENBFileInfo.SelectionMode = SelectionMode.Single;
             fmENB.Children.Add(enbMainTree);
             Grid.SetColumn(enbMainTree, 0);
             enbMainTree.SelectedItemChanged += EnbMainTree_SelectedItemChanged;
@@ -1315,7 +1394,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 //MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
             }
         }
-
+        
         /// <summary>
         /// 更新文件传输的进度
         /// </summary>
@@ -1352,8 +1431,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                         TaskID = pbInfo.m_lTaskID,
                         ProgressValue = 0,
                         FileState = pbInfo.m_strStatus,
-                        OperateType = pbInfo.strOperationType
+                        OperateType = pbInfo.strOperationType                        
                     };
+                    
                     lvMainListView.Items.Add(newProcessBarInfo);
                     localRefreshFileList();
                 }));

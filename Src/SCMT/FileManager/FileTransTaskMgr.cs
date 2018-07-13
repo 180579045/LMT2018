@@ -98,23 +98,6 @@ namespace FileManager
 			return cft;
 		}
 
-		//停止文件传输操作。taskId作为索引使用
-		public static SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
-		{
-			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
-			mapName2Value.Add("fileTransRowStatus", FileTransMacro.STR_DESTROY);
-			long reqId = 0;
-
-			var ret = CDTCmdExecuteMgr.CmdSetAsync("DelFileTransTask", out reqId, mapName2Value, $".{taskId}", targetIp);
-			if (0 == ret)
-			{
-				// TODO 取消成功后，需要处理后续的流程
-				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
-			}
-
-			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
-		}
-
 		// 使用同步的方式获取可用的文件传输任务ID
 
 		private static bool GetFileTransAvailableId_Sync(string ip, ref long reqId, ref long taskId)
