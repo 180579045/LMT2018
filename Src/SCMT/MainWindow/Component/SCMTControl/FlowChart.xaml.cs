@@ -31,8 +31,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         //Timer tmr;
         FlowChartCommand fcNodeCmd; // 流程图的对应的命令类
         string fileXmlPath = @"..\..\..\Component\SCMTControl\FlowChart.xml";
-        private int setTimer = 1 * 60 * 1000;// 1min*60s*1000ms
-        private System.Timers.Timer timer = new System.Timers.Timer(setTimer);
+        private System.Timers.Timer timer = new System.Timers.Timer(1 * 60 * 1000);// 1min*60s*1000ms
         //private List<FlowChartNode> FlowChartNL = new List<FlowChartNode>();
         protected Dictionary<string, XElement> mapCanvasEllipse { get; set; }
         protected Dictionary<string, XElement> mapCanvasTextBlock { get; set; }
