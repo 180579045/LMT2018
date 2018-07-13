@@ -34,6 +34,8 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
             LoadJsonFile();
 
+            this.combTargetIP.Items.Add("All");
+
             this.UiLogInfo.Items.SortDescriptions.Add(new SortDescription("LogTime", ListSortDirection.Ascending));
 
         }
@@ -66,7 +68,7 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             DateTime nowTime = DateTime.Now;
             newLogInfo.LogTime = nowTime.ToString("yyyy-MM-dd hh:mm:ss");
             
-            Color color = Color.FromRgb(250, 250, 250);
+            Color color = Color.FromRgb(0, 0, 0);
             newLogInfo.LogColor = new SolidColorBrush(color);
 
             if (newLogInfo.TargetIP == string.Empty)
@@ -233,7 +235,10 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
             //如果当前IP地址被选中，则添加到界面，否则界面不变
             string strTargetIP = LogInfo.combTargetIP.SelectedItem.ToString();
-            if (string.Compare(strTargetIP, newLogInfo.TargetIP) == 0)
+            if (strTargetIP == "All")
+            {
+                LogInfo.UiLogInfo.Items.Add(newLogInfo);
+            }else if (string.Compare(strTargetIP, newLogInfo.TargetIP) == 0)
             {
                 LogInfo.UiLogInfo.Items.Add(newLogInfo);
             }
@@ -289,11 +294,22 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         {
             string strIP = this.combTargetIP.SelectedItem.ToString();
 
-            //清除的时候不可以直接对IP地址清空，必须对每个Type清空，否则造成第二个字典(Dictionary)中没有关键字(Key)
-            for (int i = 0; i < nMaxInfoTypeEnum; i++)
+            if(strIP == "All")
             {
-                g_AllLog[strIP][(InfoTypeEnum)i].Clear();
+                g_AllLog.Clear();
+
+                this.combTargetIP.Items.Clear();
+                this.combTargetIP.Items.Add("All");
             }
+            else
+            {
+                //清除的时候不可以直接对IP地址清空，必须对每个Type清空，否则造成第二个字典(Dictionary)中没有关键字(Key)
+                for (int i = 0; i < nMaxInfoTypeEnum; i++)
+                {
+                    g_AllLog[strIP][(InfoTypeEnum)i].Clear();
+                }
+            }
+
             this.UiLogInfo.Items.Clear();
         }
 
@@ -315,19 +331,9 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
                 listStr.Add(item);
             }
 
-            string strIP = this.combTargetIP.SelectedItem.ToString();
-
             foreach (LogInfoTitle item in listStr)
             {
-                //需要删除全局变量中对应的item，比较麻烦
-                for (int i = 0; i < nMaxInfoTypeEnum; i++)
-                {
-                    if (g_AllLog[strIP][(InfoTypeEnum)i].Contains(item))
-                    {
-                        g_AllLog[strIP][(InfoTypeEnum)i].Remove(item);
-                    }
-
-                }
+                g_AllLog[item.TargetIP][item.Type].Remove(item);
                 this.UiLogInfo.Items.Remove(item);
             }
         }
@@ -382,29 +388,62 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             }
 
             string strIP = this.combTargetIP.SelectedItem.ToString();
-
-            if (g_AllLog[strIP][LogFilterIndex] == null || g_AllLog[strIP][LogFilterIndex].Count == 0)
+            
+            if (strIP == "All")
             {
-                return;
-            }
-
-            if (b_AddOrRemove)
-            {
-                foreach (LogInfoTitle item in g_AllLog[strIP][LogFilterIndex])
+                foreach (string strItem in combTargetIP.Items)
                 {
-                    this.UiLogInfo.Items.Add(item);
+                    if (strItem == "All")
+                    {
+                        continue;
+                    }
+
+                    if (g_AllLog[strItem][LogFilterIndex] == null || g_AllLog[strItem][LogFilterIndex].Count == 0)
+                    {
+                        continue;
+                    }
+
+                    if (b_AddOrRemove)
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strItem][LogFilterIndex])
+                        {
+                            this.UiLogInfo.Items.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        foreach (LogInfoTitle item in g_AllLog[strItem][LogFilterIndex])
+                        {
+                            this.UiLogInfo.Items.Remove(item);
+                        }
+                    }
                 }
-            }
-            else
+            }else
             {
-                foreach (LogInfoTitle item in g_AllLog[strIP][LogFilterIndex])
+                if (g_AllLog[strIP][LogFilterIndex] == null || g_AllLog[strIP][LogFilterIndex].Count == 0)
                 {
-                    this.UiLogInfo.Items.Remove(item);
+                    return;
+                }
+
+                if (b_AddOrRemove)
+                {
+                    foreach (LogInfoTitle item in g_AllLog[strIP][LogFilterIndex])
+                    {
+                        this.UiLogInfo.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    foreach (LogInfoTitle item in g_AllLog[strIP][LogFilterIndex])
+                    {
+                        this.UiLogInfo.Items.Remove(item);
+                    }
                 }
             }
 
             //按照时间升序进行排序
             this.UiLogInfo.Items.SortDescriptions.Add(new SortDescription("LogTime", ListSortDirection.Ascending));
+
         }
 
         /// <summary>
@@ -716,18 +755,43 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         private void combTargetIP_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             object obj = this.combTargetIP.SelectedItem;
-            string strTargetIP = obj.ToString();
-
-            if (!g_AllLog.ContainsKey(strTargetIP))
+            if(null == obj)
             {
                 return;
             }
+            string strTargetIP = obj.ToString();
 
-            this.UiLogInfo.Items.Clear();
-
-            for (int i = 0; i < nMaxInfoTypeEnum; i++)
+            if (strTargetIP == "All")
             {
-                InsertSelectedTypeLog((InfoTypeEnum)i, strTargetIP);
+                this.UiLogInfo.Items.Clear();
+                foreach (string strIP in combTargetIP.Items)
+                {
+                    if (strIP == "All")
+                    {
+                        continue;
+                    }
+                    for (int i = 0; i < nMaxInfoTypeEnum; i++)
+                    {
+                        InsertSelectedTypeLog((InfoTypeEnum)i, strIP);
+                    }
+                }
+
+                this.UiLogInfo.Items.SortDescriptions.Add(new SortDescription("LogTime", ListSortDirection.Ascending));
+                return;
+            }
+            else
+            {
+                if (!g_AllLog.ContainsKey(strTargetIP))
+                {
+                    return;
+                }
+
+                this.UiLogInfo.Items.Clear();
+
+                for (int i = 0; i < nMaxInfoTypeEnum; i++)
+                {
+                    InsertSelectedTypeLog((InfoTypeEnum)i, strTargetIP);
+                }
             }
         }
 
@@ -950,6 +1014,10 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
             List<string> listIP = new List<string>();
             foreach (object obj in this.combTargetIP.Items)
             {
+                if(obj.ToString() == "All")
+                {
+                    continue;
+                }
                 listIP.Add(obj.ToString());
             }
 

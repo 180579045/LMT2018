@@ -28,8 +28,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
     /// </summary>
     public partial class TestTwoFileManager : UserControl
     {
-        //全局变量
-        private ListView lvMainListView = new ListView();
         private ProcessList myList = new ProcessList();
 
         /// <summary>
@@ -48,13 +46,16 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         // 保存最后一次点击的右键菜单名称
         private string latestEnbMenuName;
 
-
-        //右键菜单添加
-        ContextMenu myContext = new ContextMenu();
+        //右键菜单添加，本地文件管理模块
+        private ContextMenu myContext = new ContextMenu();
+        //右键菜单添加，基站文件管理
+        ContextMenu myContext_ENB = new ContextMenu();
 
 
         public TestTwoFileManager(string strIP)
         {
+            _boardIp = strIP;
+
             InitializeComponent();
             //添加  ListView   显示文件传输进度
             InitListView();
@@ -72,10 +73,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// </summary>
         private void InitListView()
         {
-            //首先添加到  主界面  Grid  中
-            MainGrid.Children.Add(lvMainListView);
-            Grid.SetRow(lvMainListView, 2);
-
             //添加  字段名称
             GridView gvListView = new GridView();
             lvMainListView.View = gvListView;
@@ -83,7 +80,16 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             GridViewColumn gvcColumn = new GridViewColumn();
             gvcColumn.Header = "文件名称";
             gvcColumn.Width = 100;
-            gvcColumn.DisplayMemberBinding = new Binding("FileName");
+
+            //绑定一个TextBlock，然后设置为左对齐
+            DataTemplate fileNameTemplate = new DataTemplate();
+            FrameworkElementFactory fileNameTextBlock = new FrameworkElementFactory(typeof(TextBlock));
+            fileNameTextBlock.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            fileNameTextBlock.SetValue(TextBlock.WidthProperty, 1000.0);    //这里没有办法实时跟踪，只能设置一个很大的值，以防column被拉大之后随着改变宽度
+            fileNameTextBlock.SetBinding(TextBlock.TextProperty, new Binding("FileName"));
+
+            fileNameTemplate.VisualTree = fileNameTextBlock;
+            gvcColumn.CellTemplate = fileNameTemplate;
             gvListView.Columns.Add(gvcColumn);
 
             gvcColumn = new GridViewColumn();
@@ -139,7 +145,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             localMainTree.SelectedItemChanged += LocalMainTree_SelectedItemChanged;
             fmLocal.Children.Add(localMainTree);
             Grid.SetColumn(localMainTree, 0);
+            localSelectedDTVI = localMainTree.Items[0] as DirectoryTreeViewItem;
+            localSelectedDTVI.IsExpanded = true;
+            localRefreshFileList();
 
+            
             //分隔条
             GridSplitter splite = new GridSplitter();
             splite.Width = 2;
@@ -316,26 +326,26 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <param name="e"></param>
         private void LvLocalFileInfo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            //if (lvLocalFileInfo.SelectedItem != null)
-            //{
-            //    FileInfoDemo selectedFile = lvLocalFileInfo.SelectedItem as FileInfoDemo;
+            if (lvLocalFileInfo.SelectedItem != null)
+            {
+                FileInfoDemo selectedFile = lvLocalFileInfo.SelectedItem as FileInfoDemo;
 
-            //    if (selectedFile.FileType == "文件夹")
-            //    {
-            //        //MessageBox.Show(localSelectedDTVI.DirInfo.Name);
-            //        localSelectedDTVI.IsExpanded = true;
-            //        foreach(DirectoryTreeViewItem dirInfo in localSelectedDTVI.Items)
-            //        {
-            //            if(dirInfo.DirInfo.Name == selectedFile.FileName)
-            //            {
-            //                //DirectoryTreeViewItem newItem = new DirectoryTreeViewItem(dirInfo);
-            //                localSelectedDTVI = dirInfo;
-            //                localSelectedDTVI.IsExpanded = true;
-            //                localRefreshFileList();
-            //            }
-            //        }
-            //    }
-            //}
+                if (selectedFile.FileType == "文件夹")
+                {
+                    //MessageBox.Show(localSelectedDTVI.DirInfo.Name);
+                    localSelectedDTVI.IsExpanded = true;
+                    foreach (DirectoryTreeViewItem dirInfo in localSelectedDTVI.Items)
+                    {
+                        if (dirInfo.DirInfo.Name == selectedFile.FileName)
+                        {
+                            //DirectoryTreeViewItem newItem = new DirectoryTreeViewItem(dirInfo);
+                            localSelectedDTVI = dirInfo;
+                            localSelectedDTVI.IsExpanded = true;
+                            localRefreshFileList();
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -416,25 +426,22 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             mycolun.DisplayMemberBinding = new Binding("RWAttr");
             myview.Columns.Add(mycolun);
 
-            //右键菜单添加
-            ContextMenu myContext = new ContextMenu();
-
             MenuItem myMUItem = new MenuItem();
             myMUItem.Header = "上传文件至本地";
             myMUItem.Name = "UploadToLocal";
             myMUItem.Click += UploadFileToMgr_Click;
-            myContext.Items.Add(myMUItem);
+            myContext_ENB.Items.Add(myMUItem);
 
             //myMUItem = new MenuItem();
             //myMUItem.Header = "激活基站软件包";
             //myMUItem.Name = "ActiveEnbSoftwarePackage";
             //myMUItem.Click += ActiveEnvSoft_Click;
-            //myContext.Items.Add(myMUItem);
+            //myContext_ENB.Items.Add(myMUItem);
 
             //myMUItem = new MenuItem();
             //myMUItem.Header = "激活外设软件包";
             //myMUItem.Name = "ActivePeripheralSoftwarePackage";
-            //myContext.Items.Add(myMUItem);
+            //myContext_ENB.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
             myMUItem.Header = "版本查询";
@@ -452,30 +459,122 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             subItem.Click += GetPerSoftVer_Click;
             myMUItem.Items.Add(subItem);
 
-            myContext.Items.Add(myMUItem);
+            myContext_ENB.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
             myMUItem.Header = "查询系统容量";
             myMUItem.Name = "SelectSystemCapacity";
             myMUItem.Click += GetCapacity_Click;
-            myContext.Items.Add(myMUItem);
+            myContext_ENB.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
             myMUItem.Header = "上传快照配置文件";
             myMUItem.Name = "UploadConfigFile";
-            myContext.Items.Add(myMUItem);
+            myContext_ENB.Items.Add(myMUItem);
 
             myMUItem = new MenuItem();
             myMUItem.Header = "刷新";
             myMUItem.Name = "EnbRefresh";
             myMUItem.Click += enbRefresh;
-            myContext.Items.Add(myMUItem);
+            myContext_ENB.Items.Add(myMUItem);
 
-            lvENBFileInfo.ContextMenu = myContext;
+            //lvENBFileInfo.ContextMenu = myContext_ENB;
+
+            //基站侧文件接收  本地文件  拖拽过来的文件信息并开始进行文件的传输
+            lvENBFileInfo.AllowDrop = true;
+            lvENBFileInfo.Drop += LvENBFileInfo_Drop;
+
+            lvENBFileInfo.MouseLeftButtonDown += LvENBFileInfo_MouseLeftButtonDown;
+            lvENBFileInfo.PreviewMouseRightButtonDown += LvENBFileInfo_PreviewMouseRightButtonDown1;
 
             //初始化和基站的连接
             InitMember();
             InitTargetFileTreeInfo();
+        }
+
+        /// <summary>
+        /// 基站侧右键单击，判断是否是空白区，空白区不弹出右键菜单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvENBFileInfo_PreviewMouseRightButtonDown1(object sender, MouseButtonEventArgs e)
+        {
+            if (lvENBFileInfo == null)
+            {
+                return;
+            }
+
+            if (lvENBFileInfo.SelectedItems.Count <= 0)
+            {
+                lvENBFileInfo.ContextMenu = null;
+            }
+            else
+            {
+                lvENBFileInfo.ContextMenu = myContext_ENB;
+            }
+        }
+
+        /// <summary>
+        /// 基站侧左键单击，判断鼠标点击区域，空白区将选中的item置空
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvENBFileInfo_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (lvENBFileInfo.IsHitTestVisible)
+            {
+                //MessageBox.Show("OK");
+            }
+
+            //根据当前鼠标在 ListView中的位置，获取鼠标下的控件
+            IInputElement element = lvENBFileInfo.InputHitTest(Mouse.GetPosition(lvENBFileInfo));
+
+            if (element != null)
+            {
+                if (element is System.Windows.Controls.ScrollViewer)
+                {
+                    lvENBFileInfo.SelectedItems.Clear();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 基站侧ListView 接收本地文件拖拽过来的信息，并进行文件的复制
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LvENBFileInfo_Drop(object sender, DragEventArgs e)
+        {
+            // 处理基站侧文件路径
+            if (null == enbSelectedItem)
+            {
+                Log.Error("基站侧尚未选中任何目录，应该设置一个默认值");
+                return;
+            } 
+
+            //获取被拖拽过来的文件信息
+            FileInfoDemo dropFileInfo = e.Data.GetData(typeof(FileInfoDemo)) as FileInfoDemo;
+
+            //根据文件路径进行文件的复制
+            if (null == dropFileInfo)
+            {
+                Log.Error("获取本地选中文件信息失败");
+                return;
+            }
+
+            var localPath = dropFileInfo.FilePath + dropFileInfo.FileName;
+            var dstPath = enbSelectedItem.DirInfo;
+            var enbPath = lvENBFileInfo.SelectedItem as FileInfoEnb;
+            if (null != enbPath)
+            {
+                dstPath += $"{enbPath.FileName}";
+            }
+
+            if (_fileHandler.SendFileToRemote(localPath, dstPath))
+            {
+                //MessageBox.Show("不知道发生了什么，反正没有问题，成功了吧？");
+            }
         }
 
         /// <summary>
@@ -505,6 +604,44 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         private void enbRefresh(object sender, RoutedEventArgs e)
         {
             enbRefreshList();
+        }
+
+        /// <summary>
+        /// 基站侧文件拖拽到本地
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EnbListViewItem_MouseMove(object sender, MouseEventArgs e)
+        {
+            //以基站文件管理的  ListViewItem  作为拖拽源进行拖拽
+            ListViewItem item = sender as ListViewItem;
+
+            //判断是否是 item  发出 MouseMove 事件，并且鼠标左键保持按下状态
+            if ((item != null) && (e.LeftButton == MouseButtonState.Pressed))
+            {
+                // 处理基站侧文件路径
+                if (null == enbSelectedItem)
+                {
+                    Log.Error("基站侧尚未选中任何目录，应该设置一个默认值");
+                    return;
+                }
+
+                var enbPath = enbSelectedItem.DirInfo;
+                var enbFi = lvENBFileInfo.SelectedItem as FileInfoEnb;
+                if (null != enbFi)
+                {
+                    enbFi.FilePath = enbPath;
+                }
+
+                try
+                {
+                    DragDropEffects dragInfo = DragDrop.DoDragDrop(lvENBFileInfo, enbFi, DragDropEffects.Copy);
+                }
+                catch (Exception)
+                {
+
+                }
+            }
         }
 
         // 上传文件到本地功能
@@ -553,6 +690,40 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             }
         }
 
+        /// <summary>
+        /// 基站侧文件夹双击事件，双击打开文件夹
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void EnbListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            FileInfoEnb selectedFile = lvENBFileInfo.SelectedItem as FileInfoEnb;
+
+            if(selectedFile != null)
+            {
+                if(selectedFile.IsDirectory)
+                {
+                    enbSelectedItem.IsExpanded = true;
+
+                    foreach(enbDirectoryTreeViewItem item in enbSelectedItem.Items)
+                    {
+                        if(item.DirInfo == enbSelectedItem.DirInfo + "/" + selectedFile.FileName)
+                        {
+                            if (!_fileHandler.GetBoardFileInfo(item.DirInfo))
+                            {
+                                Log.Error($"获取板卡{_boardIp}路径信息{enbSelectedItem.DirInfo}失败");
+                                ShowTip_Error($"获取基站{_boardIp}文件信息失败，请检查基站是否已断开连接！");
+                            }
+                            enbSelectedItem = item;
+                            item.IsExpanded = true;
+                        }
+                    }
+
+                }
+                //MessageBox.Show(enbSelectedItem.DirInfo +"/" +  selectedFile.FileName);
+            }
+        }
+
         //enb树的选择改变事件
         private void EnbMainTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
@@ -579,15 +750,12 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         // 私有成员初始化
         private void InitMember()
         {
-            string boardIp = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
-            _fileHandler = new FileMgrFileHandler(boardIp);
+            _fileHandler = new FileMgrFileHandler(_boardIp);
             _fileHandler.GetFileInfoRspArrived += GetFileInfoCallBack;
             _fileHandler.UpdateProgressEvent += UpdateProgressCallBack;
             _fileHandler.NewProgressEvent += NewProgressCallBack;
             _fileHandler.EndProgressEvent += EndProgressCallBack;
             _fileHandler.MenuClickRspEvent += MenuClickCallBack;
-
-            _boardIp = boardIp;
         }
 
         // 调用接口，查询板卡上的目录信息，并填入到控件中
@@ -761,6 +929,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             {
                 enbDirectoryTreeViewItem newItem = new enbDirectoryTreeViewItem(strRootPath, "");
                 enbMainTree.Items.Add(newItem);
+                enbSelectedItem = enbMainTree.Items[1] as enbDirectoryTreeViewItem;
+                enbSelectedItem.IsExpanded = true;
+                enbRefreshList();
             }));
 
         }
@@ -880,25 +1051,37 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         {
             if (localSelectedDTVI != null)
             {
+                // 处理本地的文件路径
+                var localDirName = localSelectedDTVI.DirInfo.FullName;
+
                 //获取被拖拽过来的文件信息
-                FileInfoDemo dropFileInfo = e.Data.GetData(typeof(FileInfoDemo)) as FileInfoDemo;
+                FileInfoEnb dropFileInfo = e.Data.GetData(typeof(FileInfoEnb)) as FileInfoEnb;
 
-                //根据文件路径进行文件的复制
-                if (dropFileInfo != null)
+                var ret = ShowTip_Confirm($"确定上传文件{dropFileInfo.FileName}到管理侧{localDirName}？");
+                if (MessageBoxResult.Yes != ret)
                 {
-                    try
+                    return;
+                }
+
+                // 判断是否覆盖已有文件
+                var fileFullPath = localDirName + "\\" + dropFileInfo.FileName;
+                if (File.Exists(fileFullPath))
+                {
+                    if (MessageBoxResult.Yes != ShowTip_Confirm("是否覆盖已有文件？"))
                     {
-                        //执行文件的复制
-                        DoFileCopy(dropFileInfo.FilePath + "\\" + dropFileInfo.FileName, localSelectedDTVI.DirInfo.FullName + "\\" + dropFileInfo.FileName);
+                        return;
                     }
-                    catch (Exception)
-                    {
-                    }
+                }
 
-                }//end if(null)
-
-            }//end if(selected = null)
-
+                try
+                {
+                    _fileHandler.UploadFileToLocal(localDirName, dropFileInfo.FilePath + "/" + dropFileInfo.FileName);
+                }
+                catch (Exception exception)
+                {
+                    ShowTip_Error(exception.Message);
+                }
+            }
         }
 
 
@@ -1124,7 +1307,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             var enbPath = lvENBFileInfo.SelectedItem as FileInfoEnb;
             if (null != enbPath)
             {
-                dstPath += $"/{enbPath.FileName}";
+                dstPath += $"{enbPath.FileName}";
             }
 
             if (_fileHandler.SendFileToRemote(localPath, dstPath))

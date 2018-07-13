@@ -37,6 +37,7 @@ using CommonUtility;
 using System.Windows.Threading;
 using System.Threading;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Interop;
 using CDLBrowser.Parser;
 using LogManager;
@@ -47,6 +48,7 @@ using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
 using System.Windows.Media;
 using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
+using Xceed.Wpf.Toolkit.Core.Converters;
 
 namespace SCMTMainWindow
 {
@@ -66,7 +68,7 @@ namespace SCMTMainWindow
 		ObservableCollection<DyDataGrid_MIBModel> content_list                // 用来存储MIBDataGrid中存放的值;
 			= new ObservableCollection<DyDataGrid_MIBModel>();
 
-        private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
+		private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -76,16 +78,26 @@ namespace SCMTMainWindow
 
 			InitView();                                                       // 初始化界面;
 			RegisterFunction();                                               // 注册功能;
-			deleteTempFile();
-			SubscribeMsgs();
-			// TODO 读取网元配置文件
+
+			// 启动线程，后台处理一些初始化功能
+			Task.Factory.StartNew(new Action(() =>
+			{
+				deleteTempFile();
+				SubscribeMsgs();
+
+				// 启动必须程序
+				StartMustTools();
+
+				// TODO 读取网元配置文件
+			}));
 
 			// 在异常由应用程序引发但未进行处理时发生。主要指的是UI线程。
 			Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 			//  当某个异常未被捕获时出现。主要指的是非UI线程
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		}
-		
+
+		#region 程序初始化
 		/// <summary>
 		/// 初始化用户界面;
 		/// </summary>
@@ -112,6 +124,20 @@ namespace SCMTMainWindow
 			//TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
 		}
 
+		// 启动FTP工具，如果不存在就提示用户
+		private void StartMustTools()
+		{
+			var ftpPath = ConfigFileHelper.GetFtpPath();
+			var ftpFullPath = FilePathHelper.GetAppPath() + ftpPath;
+
+			if (!ProcessHelper.StartProcess(ftpFullPath))
+			{
+				ShowLogHelper.Show("FTP工具启动失败，文件传输任务将会无法进行", "SCMT");
+			}
+		}
+
+		#endregion
+
 		/// <summary>
 		/// 窗口关闭;
 		/// 关闭先前注册的服务;
@@ -121,98 +147,6 @@ namespace SCMTMainWindow
 		private void MetroWindow_Closed(object sender, EventArgs e)
 		{
 			TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
-		}
-
-		/// <summary>
-		/// 当增加基站的窗口关闭的时候进行的处理;
-		/// 1、通过tcp接口连接基站
-		/// 2、连接成功后，向基站发送数据同步请求;
-		/// 3、请求成功后，对数据进行解析，并显示在前端界面上;
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void AddNB_Closed(object sender, EventArgs e)
-		{
-			// 如果参数为空，则表示用户没有添加基站;
-			if (!(e is NodeBArgs))
-			{
-				Log.Error("add nodeb failed");
-				return;
-			}
-
-			// 第一个版本所有数据先从本地获取;
-			node = ((NodeBArgs) e).m_NodeB;
-			ObjNode.main = this;
-			//ObjNode.datagrid = this.MibDataGrid;
-
-			// 向基站前端控件填入对应信息;
-			AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
-
-			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
-		}
-
-		private void AddNodeLabel(string friendlyName, string Ip)
-		{
-			var nodeLabel = new MetroExpander();
-			nodeLabel.Header = friendlyName;
-			nodeLabel.IsExpanded = true;
-            nodeLabel.Click += NodeLabel_Click;
-			//nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
-
-			// 右键菜单的添加
-			var menu = new MetroContextMenu();
-			var menuItem = new MetroMenuItem {Header = "连接基站"};
-			menuItem.Click += ConnectStationMenu_Click;
-			menu.Items.Add(menuItem);
-
-			menuItem = new MetroMenuItem() {Header = "断开连接"};
-			menuItem.Click += DisconStationMenu_Click;
-			menu.Items.Add(menuItem);
-
-			nodeLabel.ContextMenu = menu;
-
-			NodebList.Children.Add(nodeLabel);
-		}
-
-        /// <summary>
-        /// 基站节点  点击事件，获取被点击的IP地址，保存到全局变量
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void NodeLabel_Click(object sender, EventArgs e)
-        {
-            var target = sender as MetroExpander;
-            if (null != target)
-            {
-                node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-                this.g_SelectedEnbIP = node.NeAddress.ToString();
-            }
-        }
-
-		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var target = ((ContextMenu) mui.Parent).PlacementTarget as MetroExpander;
-				if (target != null)
-				{
-					NodeBControl.GetInstance().ConnectNodeb(target.Header);
-					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-                    ObjNode.main = this;
-                    InitDataBase();                            // TODO 应该是连接成功够才创建数据库(第一个版本先加载本地的);
-				}
-			}
-		}
-
-		private void DisconStationMenu_Click(object sender, EventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var target = ((ContextMenu)mui.Parent).PlacementTarget as MetroExpander;
-				if (target != null) NodeBControl.GetInstance().DisConnectNodeb(target.Header);
-			}
 		}
 
 		/// <summary>
@@ -261,17 +195,6 @@ namespace SCMTMainWindow
 					});
 				}
 			});
-		}
-		
-		/// <summary>
-		/// 添加基站按钮事件;
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void AddNodeB_Click(object sender, RoutedEventArgs e)
-		{
-			AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-			AddNodeB.NewInstance(this).ShowDialog();
 		}
 
 		//______________________________________________________________________主界面动态刷新____
@@ -527,12 +450,120 @@ namespace SCMTMainWindow
 		}
 		#endregion
 
-		#region 添加基站事件
+		#region 添加基站
+
 		private void AddeNB(object sender, EventArgs e)
 		{
-			AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-			AddNodeB.NewInstance(this).ShowDialog();
+			var nodebDlg = AddNodeB.NewInstance(this);
+			nodebDlg.Closed += AddNB_Closed;
+			nodebDlg.Owner = this;
+			nodebDlg.ShowDialog();
 		}
+
+		/// <summary>
+		/// 当增加基站的窗口关闭的时候进行的处理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void AddNB_Closed(object sender, EventArgs e)
+		{
+			// 如果参数为空，则表示用户没有添加基站;
+			if (!(e is NodeBArgs))
+			{
+				Log.Error("add nodeb failed");
+				return;
+			}
+
+			node = ((NodeBArgs)e).m_NodeB;
+			ObjNode.main = this;
+			//ObjNode.datagrid = this.MibDataGrid;
+
+			// 向基站前端控件填入对应信息;
+			AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
+			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
+		}
+
+		private void AddNodeLabel(string friendlyName, string Ip)
+		{
+			var nodeLabel = new MetroExpander
+			{
+				Header = friendlyName,
+				IsExpanded = true
+			};
+
+			nodeLabel.Click += NodeLabel_Click;
+			//nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
+
+			if (null == _nodebContextMenu)
+			{
+				_nodebContextMenu = CreateNodebMenu();
+			}
+
+			nodeLabel.ContextMenu = _nodebContextMenu;
+			ExistedNodebList.Children.Add(nodeLabel);
+		}
+
+		// 创建基站右键菜单
+		private MetroContextMenu CreateNodebMenu()
+		{
+			// 右键菜单的添加
+			var menu = new MetroContextMenu();
+			var menuItem = new MetroMenuItem { Header = "连接基站" };
+			menuItem.Click += ConnectStationMenu_Click;
+			menu.Items.Add(menuItem);
+
+			menuItem = new MetroMenuItem() { Header = "断开连接" };
+			menuItem.Click += DisconStationMenu_Click;
+			menu.Items.Add(menuItem);
+			return menu;
+		}
+
+		private MetroContextMenu _nodebContextMenu = null;
+
+		/// <summary>
+		/// 基站节点  点击事件，获取被点击的IP地址，保存到全局变量
+		/// </summary>
+		private void NodeLabel_Click(object sender, EventArgs e)
+		{
+			var target = sender as MetroExpander;
+			if (null != target)
+			{
+				node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+				this.g_SelectedEnbIP = node.NeAddress.ToString();
+
+				// TODO 选中后的样式改变待完善
+				//target.Background = new SolidColorBrush(Color.FromRgb(190, 180, 90));
+				//target.Background.Opacity = 50;
+				//target.Opacity = 50;
+			}
+		}
+
+		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
+		{
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var target = ((ContextMenu)mui.Parent).PlacementTarget as MetroExpander;
+				if (target != null)
+				{
+					NodeBControl.GetInstance().ConnectNodeb(target.Header);
+					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+					ObjNode.main = this;
+					InitDataBase();                            // TODO 应该是连接成功够才创建数据库(第一个版本先加载本地的);
+				}
+			}
+		}
+
+		private void DisconStationMenu_Click(object sender, EventArgs e)
+		{
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var target = ((ContextMenu)mui.Parent).PlacementTarget as MetroExpander;
+				if (target != null) NodeBControl.GetInstance().DisConnectNodeb(target.Header);
+			}
+		}
+
 		#endregion
 
 		#region 添加泳道图事件
@@ -989,7 +1020,6 @@ namespace SCMTMainWindow
 		private void Get_Nodeb_Focus(object sender, RoutedEventArgs e)
 		{
 			Console.WriteLine("Get Nodeb Focus");
-
 		}
 
 
@@ -1313,43 +1343,42 @@ namespace SCMTMainWindow
 			this.messageRecv.ClearAll();
 		}
 
-        private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
+		private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
-            if(this.g_SelectedEnbIP == null)
-            {
-                MessageBox.Show("未选择基站，请单击需要显示的基站");
-                return;
-            }
+			if(this.g_SelectedEnbIP == null)
+			{
+				MessageBox.Show("未选择基站，请单击需要显示的基站");
+				return;
+			}
 
-            string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(this.g_SelectedEnbIP);
+			string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(this.g_SelectedEnbIP);
 
-            foreach(LayoutAnchorable item in listAvalon)
-            {
-                if(item.Title == strFriendName)
-                {
-                    item.Show();
-                    return;
-                }
-            }
+			foreach(LayoutAnchorable item in listAvalon)
+			{
+				if(item.Title == strFriendName)
+				{
+					item.Show();
+					return;
+				}
+			}
 
-            var content = new Component.SCMTControl.FileManager.TestTwoFileManager(this.g_SelectedEnbIP);
+			var content = new Component.SCMTControl.FileManager.TestTwoFileManager(this.g_SelectedEnbIP);
 
-            var sub = new LayoutAnchorable
-            {
-                Content = content,
-                Title = strFriendName,
-                FloatingHeight = 800,
-                FloatingWidth = 600,
-                CanHide = true,
-                CanClose = false,
-                CanAutoHide = false
-            
+			var sub = new LayoutAnchorable
+			{
+				Content = content,
+				Title = strFriendName,
+				FloatingHeight = 800,
+				FloatingWidth = 600,
+				CanHide = true,
+				CanClose = false,
+				CanAutoHide = false
+			
 			};
 
-            listAvalon.Add(sub);
-            this.FileManagerLAP.Children.Add(sub);
-
+			listAvalon.Add(sub);
+			this.FileManagerLAP.Children.Add(sub);
 		}
 
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -1382,108 +1411,23 @@ namespace SCMTMainWindow
 		private void OnShowLog(SubscribeMsg msg)
 		{
 			var logInfo = ShowLogHelper.GetLogInfo(msg.Data);
-			var neName = NodeBControl.GetInstance().GetFriendlyNameByIp(logInfo.TargetIp);
+			//var neName = NodeBControl.GetInstance().GetFriendlyNameByIp(logInfo.TargetIp);
 
-			var msgText = $"{GetLevel(logInfo.Type)}({neName}:{logInfo.TargetIp}):\n";
-			msgText += $"{TimeHelper.GetCurrentTime()} {logInfo.Msg} \n";
-
-            LogInfoTitle newLogInfo = new LogInfoTitle();
-            newLogInfo.Type = logInfo.Type;
-            newLogInfo.LogInfo = logInfo.Msg;
-            newLogInfo.TargetIP = logInfo.TargetIp;
-
-            Application.Current.Dispatcher.BeginInvoke(
-                DispatcherPriority.Background, new Action(() =>
-                {
-                    //UiLogShow.AppendText(msgText);
-                    LogInfoShow.AddLogInfo(newLogInfo, MainLogInfoShow);
-                }
-                )
-            );
-           
-		}
-
-		private Color GetColor(InfoTypeEnum level)
-		{
-			Color color = Color.FromRgb(0, 0, 0);
-			switch (level)
+			var newLogInfo = new LogInfoTitle
 			{
-				case InfoTypeEnum.OM_ALARM_CLEAR_INFO:
-				case InfoTypeEnum.SI_ALARM_INFO:
-					color = Color.FromRgb(176, 176, 176);
-					break;
-				case InfoTypeEnum.OM_BRKDWN_ALARM_INFO:
-					color = Color.FromRgb(255, 0, 0);
-					break;
-				case InfoTypeEnum.OM_EVENT_ALARM_INFO:
-					color = Color.FromRgb(233, 149, 22);
-					break;
-				case InfoTypeEnum.OM_EVENT_NOTIFY_INFO:
-					color = Color.FromRgb(36, 36, 255);
-					break;
+				Type = logInfo.Type,
+				LogInfo = logInfo.Msg,
+				TargetIP = logInfo.TargetIp
+			};
 
-				case InfoTypeEnum.ENB_OTHER_INFO_IMPORT:
-					color = Color.FromRgb(221, 125, 232);
-					break;
-			}
-
-			return color;
-		}
-
-		private string GetLevel(InfoTypeEnum level)
-		{
-			string levelText = "";
-			switch (level)
-			{
-				case InfoTypeEnum.ENB_INFO:
-					levelText = "LMT信息";
-					break;
-				case InfoTypeEnum.ENB_TASK_DEAL_INFO:
-					levelText = "LMT-ENB任务处理";
-					break;
-				case InfoTypeEnum.SI_STR_INFO:
-					levelText = "启动阶段信息上报";
-					break;
-				case InfoTypeEnum.SI_ALARM_INFO:
-					levelText = "启动告警";
-					break;
-				case InfoTypeEnum.OM_BRKDWN_ALARM_INFO:
-					levelText = "告警提示";
-					break;
-				case InfoTypeEnum.OM_EVENT_ALARM_INFO:
-					levelText = "告警提示";
-					break;
-				case InfoTypeEnum.OM_ALARM_CLEAR_INFO:
-					levelText = "告警清除提示";
-					break;
-				case InfoTypeEnum.OM_EVENT_NOTIFY_INFO:
-					levelText = "事件通知";
-					break;
-				case InfoTypeEnum.ENB_GETOP_INFO:
-					levelText = "GET命令响应";
-					break;
-				case InfoTypeEnum.ENB_SETOP_INFO:
-					levelText = "SET命令响应";
-					break;
-				case InfoTypeEnum.ENB_GETOP_ERR_INFO:
-					levelText = "GET命令响应错误";
-					break;
-				case InfoTypeEnum.ENB_SETOP_ERR_INFO:
-					levelText = "SET命令响应错误";
-					break;
-				case InfoTypeEnum.ENB_VARY_INFO:
-					levelText = "变更通知";
-					break;
-				case InfoTypeEnum.ENB_OTHER_INFO:
-				case InfoTypeEnum.ENB_OTHER_INFO_IMPORT:
-					levelText = "其他信息";
-					break;
-				case InfoTypeEnum.CUSTOM_INFO:
-					break;
-				default:
-					break;
-			}
-			return levelText;
+			Application.Current.Dispatcher.BeginInvoke(
+				DispatcherPriority.Background, new Action(() =>
+				{
+					//UiLogShow.AppendText(msgText);
+					LogInfoShow.AddLogInfo(newLogInfo, MainLogInfoShow);
+				}
+				)
+			);
 		}
 
 		#endregion

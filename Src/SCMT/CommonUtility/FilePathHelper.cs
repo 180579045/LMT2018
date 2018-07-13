@@ -9,10 +9,15 @@ namespace CommonUtility
 	// 文件路径操作助手
 	public static class FilePathHelper
 	{
-		// 获取当前程序运行路径
+		/// <summary>
+		/// 获取当前程序运行路径。最后带有\
+		/// </summary>
+		/// <returns></returns>
 		public static string GetAppPath()
 		{
-			return System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+			var path = System.AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+			path = $"{path.TrimEnd('\\')}\\";	// 保证最后肯定有\
+			return path;
 		}
 
 		// 获取程序的Data目录。最后带有/
@@ -24,7 +29,7 @@ namespace CommonUtility
 		// 获取程序目录下config目录，最后带有/
 		public static string GetConfigPath()
 		{
-			return GetAppPath().TrimEnd('\\') + "/Config/";
+			return GetAppPath() + "Config/";
 		}
 
 		/// 获取tempfiles路径，后面追加调用时的时间。最后带有/

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
         mc:Ignorable="d"
-        Title="FileRename" Height="150" Width="300">
+        Title="FileRename" Height="150" Width="300" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
