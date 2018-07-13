@@ -229,7 +229,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         }
         private void paintPicture()
         {
-
+            mygrid.Children.Clear();
             Viewbox vie = new Viewbox();
             
             mygrid.Children.Add(vie);
@@ -413,6 +413,21 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
+        //修改圆圈颜色
+        private void modCanvasEllipse(Dictionary<string,string> modDic)
+        {
+            foreach(var item in modDic)
+            {
+                string name = item.Key;
+                string strFill = item.Value;
+                if (mapCanvasEllipse.ContainsKey(name))
+                {
+                    mapCanvasEllipse[name].SetAttributeValue("Fill", strFill);
+                }
+            }
+
+        }
+
     }
     /// <summary>
     /// 每一个流程图节点中的内容
