@@ -19,10 +19,10 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="115" Name="text5112">获取</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetSelfStartupAlgorithmInfo">
-								        <leaf name="selfStartupAlgorithmSwitch" value="0" property="*" compRules="EQ"/>
+								        <leaf name="selfStartupAlgorithmSwitch" value="0" property="*" compRules="EQ" indexNum="0"/>
 								      </cmd>
-								      <cmd name="GetEquipSystemInfo">
-								        <leaf name="equipStartupStage" value="1" property="" compRules="NLT"/>
+								      <cmd name="GetEquipSystemInfo" indexNum="0">
+								        <leaf name="equipStartupStage" value="1" property="" compRules="NLT" indexNum="0"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -31,11 +31,13 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="257" Canvas.Top="178" Name="text5123">OM链路</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="195" Name="text5125">建立</TextBlock>
 			              <relatedcmd>
-                    	<cmd name="GetOmLinkInfo">
-								        <leaf name="equipStartupStage" value="3" property="*" compRules="NLT"/>
-								        <leaf name="omLinkSetupStatus" value="2" property="*" compRules="NEQ"/>
-								        <leaf name="equipStartupStage" value="3" property="" compRules="NLT"/>
-								        <leaf name="omLinkSetupStatus" value="2" property="" compRules="EQ"/>
+                    	<cmd name="GetEquipSystemInfo">
+								        <leaf name="equipStartupStage" value="3" property="*" compRules="NLT" indexNum="0"/>
+								        <leaf name="equipStartupStage" value="3" property="" compRules="NLT" indexNum="0"/>
+								      </cmd>
+								      <cmd name="GetOmLinkInfo">
+								        <leaf name="omLinkSetupStatus" value="2" property="*" compRules="NEQ" indexNum="1" index1="0..1"/>
+								        <leaf name="omLinkSetupStatus" value="2" property="" compRules="EQ" indexNum="1" index1="0..1"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -44,7 +46,7 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="263" Name="text5140">软件同步</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetEquipSystemInfo">
-								        <leaf name="equipStartupStage" value="4" property="" compRules="NLT"/>
+								        <leaf name="equipStartupStage" value="4" property="" compRules="NLT" indexNum="0"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -53,7 +55,7 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="101" Canvas.Top="363" Name="text5149">时钟资源</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetClockUsableState">
-								        <leaf name="clkCommUsableState" value="1" property="" compRules="NLT"/>
+								        <leaf name="clkCommUsableState" value="1" property="" compRules="NLT" indexNum="0"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -62,7 +64,7 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="201" Canvas.Top="363" Name="text5162">传输资源</TextBlock>
 			              <relatedcmd>
                     	<cmd name="GetlinkCommonOperationStatusInfo">
-								        <leaf name="linkCommonOperationStatus" value="1" property="" compRules="NLT"/>
+								        <leaf name="linkCommonOperationStatus" value="1" property="" compRules="NLT" indexNum="0"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -71,7 +73,7 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="301" Canvas.Top="363" Name="text5175">射频资源</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetNetRRUAntennaSetting">
-								        <leaf name="netSetRRUPortWithAntennaRowStatus" value="4" property="" compRules="EQ"/>
+								        <leaf name="netSetRRUPortWithAntennaRowStatus" value="4" property="" compRules="EQ" indexNum="2" index1="0..191" index2="1..16"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -80,9 +82,9 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="401" Canvas.Top="363" Name="text5188">基带资源</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetBaseBandwidthInfo">
-								        <leaf name="baseBandwidthRowStatus" value="4" property="" compRules="EQ"/>
-								        <leaf name="baseBandwidthOperationalState" value="0" property="" compRules="EQ"/>
-								        <leaf name="baseBandwidthLoadState" value="2" property="" compRules="EQ"/>
+								        <leaf name="baseBandwidthRowStatus" value="4" property="" compRules="EQ" indexNum="4" index1="0..0" index2="0..0" index3="1..7" index4="0..47"/>
+								        <leaf name="baseBandwidthOperationalState" value="0" property="" compRules="EQ" indexNum="4" index1="0..0" index2="0..0" index3="1..7" index4="0..47"/>
+								        <leaf name="baseBandwidthLoadState" value="2" property="" compRules="EQ" indexNum="4" index1="0..0" index2="0..0" index3="1..7" index4="0..47"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -92,9 +94,9 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="475" Name="text5207">建立</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetLocalCellInfo">
-								        <leaf name="lcRowStatus" value="4" property="" compRules="EQ"/>
-								        <leaf name="lcProcedureStatus" value="5" property="" compRules="EQ"/>
-								        <leaf name="lcOperationalState" value="0" property="" compRules="EQ"/>
+								        <leaf name="lcRowStatus" value="4" property="" compRules="EQ" indexNum="1" index1="0..23"/>
+								        <leaf name="lcProcedureStatus" value="5" property="" compRules="EQ" indexNum="1" index1="0..23"/>
+								        <leaf name="lcOperationalState" value="0" property="" compRules="EQ" indexNum="1" index1="0..23"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>
@@ -103,8 +105,8 @@
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="543" Name="text5224">小区建立</TextBlock>
                     <relatedcmd>
                     	<cmd name="GetCellInfo">
-								        <leaf name="cellRowStatus" value="4" property="" compRules="EQ"/>
-								        <leaf name="cellOperationalState" value="0" property="" compRules="EQ"/>
+								        <leaf name="cellRowStatus" value="4" property="" compRules="EQ" indexNum="1" index1="0..23"/>
+								        <leaf name="cellOperationalState" value="0" property="" compRules="EQ" indexNum="1" index1="0..23"/>
 								      </cmd>
                     </relatedcmd>
                 </Canvas>

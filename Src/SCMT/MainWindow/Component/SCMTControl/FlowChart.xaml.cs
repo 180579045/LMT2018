@@ -29,8 +29,10 @@ namespace SCMTMainWindow.Component.SCMTControl
     public partial class FlowChart : UserControl
     {
         //Timer tmr;
+        FlowChartCommand fcNodeCmd; // 流程图的对应的命令类
+        string fileXmlPath = @"..\..\..\Component\SCMTControl\FlowChart.xml";
         private System.Timers.Timer timer = new System.Timers.Timer();
-        private List<FlowChartNode> FlowChartNL = new List<FlowChartNode>();
+        //private List<FlowChartNode> FlowChartNL = new List<FlowChartNode>();
         protected Dictionary<string, XElement> mapCanvasEllipse { get; set; }
         protected Dictionary<string, XElement> mapCanvasTextBlock { get; set; }
         protected Dictionary<string,XElement> mapLine { get; set; }
@@ -48,18 +50,19 @@ namespace SCMTMainWindow.Component.SCMTControl
             initInterface();
             paintPicture();
 
-            set123();
+            initGetFlowChartCommand();// 初始化 : 获取每个流程图的对应的命令
 
             ////
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
             timer.Enabled = true;
         }
 
-        void set123()
+        /// <summary>
+        /// 初始化 : 获取每个流程图的对应的命令
+        /// </summary>
+        void initGetFlowChartCommand()
         {
-            FlowChartNode node = new FlowChartNode();
-
-            FlowChartNL.Add(node);
+            fcNodeCmd = new FlowChartCommand(fileXmlPath);
         }
 
         void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -91,9 +94,6 @@ namespace SCMTMainWindow.Component.SCMTControl
             int aba = 1;
         }
 
-        void test()
-        {
-        }
         private void initInterface()
         {
             mapCanvasEllipse.Clear();
@@ -103,7 +103,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             mapExampleText.Clear();
 
 
-            XDocument document = XDocument.Load(@"..\..\..\Component\SCMTControl\FlowChart.xml");
+            XDocument document = XDocument.Load(fileXmlPath);
             XElement root = document.Root;
             XElement firttnode1 = (XElement)root.FirstNode;
             XElement firstnode2 = (XElement)firttnode1.FirstNode;
@@ -476,28 +476,6 @@ namespace SCMTMainWindow.Component.SCMTControl
     class FlowChartCommand
     {
         /// <summary>
-        /// 初始化 : 从 xml中解析想要的信息
-        /// </summary>
-        /// <param name="nodeList"></param>
-        public FlowChartCommand(XmlNodeList nodeList)
-        {
-            if (null == nodeList)
-                return;
-            foreach (XmlNode xn in nodeList)
-            {
-                /// 一. 容错判断 1. 必须是 Canvas 2. Canvas中必须有椭圆属性"Ellipse"
-                if ((!String.Equals(xn.Name, "Canvas")) || (null == xn.SelectSingleNode("Ellipse")))
-                {
-                    continue;
-                }
-                /// 二. 获取命令相关内容
-                XmlNode cmds = xn.SelectSingleNode("relatedcmd"); // 1. 必须有relatedcmd属性
-                string flowChartName = xn.Attributes["Name"].Value; /// 用于操作图形的句柄
-                parseXml(flowChartName, cmds); // 2. 获取相关命令信息
-            }
-        }
-
-        /// <summary>
         /// 每一个流程图中命令内容
         /// Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> : Dictionary<流程图名, 对应的命令内容(可有多个命令)>
         /// Dictionary<string, List<Dictionary<string, string>>> ; Dictionary<命令名字，命令的所有叶子>
@@ -505,6 +483,40 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// Dictionary<string, string> : key: leafName叶子名,leafValue叶子节点,leafProperty叶子属性,leafCompRules叶子比较规则
         /// </summary>
         private Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> fcCmd = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
+
+        /// <summary>
+        /// 初始化 : 从 xml中解析想要的信息
+        /// </summary>
+        /// <param name="nodeList"></param>
+        public FlowChartCommand(string xmlFilePath)
+        {
+            /// 1.
+            if (String.Equals("", xmlFilePath))
+                return;
+
+            /// 2. 查找<Viewbox>下面的内容   
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(xmlFilePath);//@"..\..\..\Component\SCMTControl\FlowChart.xml".
+            XmlNodeList nodeList = xmlDoc.SelectSingleNode("UserControl/Grid/Viewbox").ChildNodes;
+            if (null == nodeList)
+                return;
+
+            /// 3. 分析命令内容
+            foreach (XmlNode xn in nodeList)
+            {
+                /// 3.1. 容错判断 1. 必须是 Canvas 2. Canvas中必须有椭圆属性"Ellipse"
+                if ((!String.Equals(xn.Name, "Canvas")) || (null == xn.SelectSingleNode("Ellipse")))
+                {
+                    continue;
+                }
+                /// 3.2. 获取命令相关内容
+                /// 3.2.1. 必须有relatedcmd属性
+                XmlNode cmds = xn.SelectSingleNode("relatedcmd");
+                /// 3.2.2. 获取相关命令信息
+                string flowChartName = xn.Attributes["Name"].Value; /// 用于操作图形的句柄
+                parseXml(flowChartName, cmds); 
+            }
+        }
         
         /// <summary>
         /// 从 xml中解析出每个流程图的相关命令
@@ -542,20 +554,32 @@ namespace SCMTMainWindow.Component.SCMTControl
                 /// 解析每个节点
                 foreach (XmlNode leaf in cmd.ChildNodes)
                 {
-                    Dictionary<string, string> leafInfo = new Dictionary<string, string>()
-                    {
-                        { "leafName", leaf.Attributes["name"].Value },
-                        { "leafValue", leaf.Attributes["value"].Value },
-                        { "leafProperty", leaf.Attributes["property"].Value },
-                        { "leafCompRules", leaf.Attributes["compRules"].Value},
-                    };
-                    leafList.Add(leafInfo);
-                }
+                    leafList.Add(parseIndexNum(leaf));
+                }                
                 ///
                 string cmdName = cmd.Attributes["name"].Value;
                 cmdList.Add(cmdName, leafList);
             }
             return cmdList;
+        }
+
+        private Dictionary<string, string> parseIndexNum(XmlNode leaf)
+        {
+            Dictionary<string, string> leafInfo = new Dictionary<string, string>()
+            {
+                { "leafName", leaf.Attributes["name"].Value },
+                { "leafValue", leaf.Attributes["value"].Value },
+                { "leafProperty", leaf.Attributes["property"].Value },
+                { "leafCompRules", leaf.Attributes["compRules"].Value},
+                { "indexNum", leaf.Attributes["indexNum"].Value }
+            };
+            /// index1~x
+            for (int no = 0; no < int.Parse(leaf.Attributes["indexNum"].Value); no++)
+            {
+                string index = String.Format("index{0}", no + 1);
+                leafInfo.Add(index, leaf.Attributes[index].Value);
+            }
+            return leafInfo;
         }
 
         /// <summary>
@@ -568,18 +592,45 @@ namespace SCMTMainWindow.Component.SCMTControl
             if (null == cmdContainer)
                 return -1;
 
-            List<string> keys = new List<string>();
-            foreach (var key in cmdContainer.Keys)
+            List<string> cmds = new List<string>();
+            foreach (var cmd in cmdContainer.Keys)
             {
-                keys.Add(key);
+                cmds.Add(cmd);
             }
 
-            foreach (var key in keys)
+            foreach (var cmd in cmds)
             {
-                var cmd = cmdContainer[key];
+                string cmdName = cmd;
+                List<Dictionary<string, string>> leafInfoList = cmdContainer[cmd];
+                foreach (var leafDict in leafInfoList)
+                {
+                    /// leafDict: key: leafName 叶子名,leafValue 叶子节点,leafProperty 叶子属性,leafCompRules 叶子比较规则
+                    string boardAddr = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
+                    //var cmdName = "GetOmLinkInfo";
+                    //var mibName = "swPackRunningVersion"; //SCMTOperationCore.Message.SNMP
+                    string mibName = leafDict["leafName"];
+                    string index = ".2";
+
+                    string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+
+                }
             }
 
             return 0;
+        }
+
+
+        public void parseFlowChartCmd()
+        {
+            if (null == fcCmd)
+                return;
+
+            var keys = fcCmd.Keys;
+
+            foreach (var key in fcCmd.Keys)
+            {
+                int a = parseCmdInfo(fcCmd[key]);
+            }
         }
 
     }

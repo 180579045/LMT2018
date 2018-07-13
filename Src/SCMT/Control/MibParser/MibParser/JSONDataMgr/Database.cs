@@ -427,7 +427,6 @@ namespace MIBDataParser.JSONDataMgr
                 { "mroNotification", new Dictionary<string, string>() {{ "TrapID","201"},{ "TrapOid", "mroNotification" },{ "TrapTypeDes", "mroNotification" } }},
                 { "transactionResultNotification", new Dictionary<string, string>() {{ "TrapID","25"},{ "TrapOid", "transactionResultTrap" },{ "TrapTypeDes", "transactionResultTraps" } }},
             };
-
             return allTrapInfo;
         }
 
