@@ -347,7 +347,14 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         //Constructor requires SI_STRU_FileInfo object
         public enbDirectoryTreeViewItem(string pathName, string parentPath)
         {
-            this.dir = parentPath + "/" +  pathName;
+            if(string.Empty == parentPath)
+            {
+                this.dir = pathName;
+            }
+            else
+            {
+                this.dir = parentPath + "/" + pathName;
+            }
 
             Text = pathName;
 
