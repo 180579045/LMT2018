@@ -51,8 +51,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         //右键菜单添加，基站文件管理
         ContextMenu myContext_ENB = new ContextMenu();
 
-
-        public TestTwoFileManager(string strIP)
+		public TestTwoFileManager(string strIP)
         {
             _boardIp = strIP;
 
@@ -69,7 +68,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
 
         /// <summary>
-        /// 初始化  ListView    
+        /// 初始化  ListView
         /// </summary>
         private void InitListView()
         {

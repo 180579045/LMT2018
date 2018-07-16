@@ -74,7 +74,7 @@
                 <StackPanel x:Name="lists">
 
                     <Metro:MetroExpander Header="基站列表">
-                        <StackPanel Margin="20,0,0,0" Name="ExistedNodebList">
+                        <StackPanel Margin="20,0,0,0" Name="ExistedNodebList"> 
                             <Metro:MetroExpander Header="添加基站"  Icon="Resources/BaseInfo2.png"  Click="AddeNB"/>
                         </StackPanel>
                     </Metro:MetroExpander>

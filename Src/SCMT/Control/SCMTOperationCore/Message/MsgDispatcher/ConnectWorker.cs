@@ -10,7 +10,7 @@ using SCMTOperationCore.Message.SNMP;
 
 namespace SCMTOperationCore.Message.MsgDispatcher
 {
-	internal class NetAddr
+	public class NetAddr
 	{
 		public string TargetIp;
 	}

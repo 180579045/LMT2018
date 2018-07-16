@@ -78,7 +78,7 @@ namespace UICore.Controls.Metro
 
         public void Clear()
         {
-            Content = new StackPanel();
+            //Content = new StackPanel();
         }
 
         /// <summary>
