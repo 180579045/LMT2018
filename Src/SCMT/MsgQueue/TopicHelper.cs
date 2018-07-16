@@ -25,6 +25,7 @@ namespace MsgQueue
 
 		public const string EnbConnectedMsg = "handle_enb_connected";
 		public const string SnmpAsyncMsg = "handl_snmp_async_msg";
+		public const string EnbOfflineMsg = "handle_enb_offline";
 
 		#endregion
 

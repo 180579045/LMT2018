@@ -68,14 +68,12 @@ namespace SCMTOperationCore.Elements
 		//连接成功处理事件
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
-			//MessageBox.Show("基站连接成功");
-			//ShowLogHelper.Show("基站连接成功", NeAddress.ToString());
 		}
 
 		//连接断开处理事件
 		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
-			MessageBox.Show("断开连接成功");
+			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
 		}
 
 		//收到数据处理事件
