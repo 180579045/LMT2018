@@ -70,6 +70,9 @@
     <Reference Include="Common.Logging">
       <HintPath>..\..\packages\Lib\Common.Logging.dll</HintPath>
     </Reference>
+    <Reference Include="FileManager">
+      <HintPath>..\..\FileManager\bin\Debug\FileManager.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Lib\Newtonsoft.Json.dll</HintPath>
@@ -78,6 +81,9 @@
     <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperLMT.Utils">
+      <HintPath>..\..\ParseMessage\SuperLMT.Utils\obj\x86\Debug\SuperLMT.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -136,6 +142,7 @@
     <Compile Include="Message\SI\SiMsgBaseTypeDef.cs" />
     <Compile Include="Message\SI\SiNbphaseRspMsgDef.cs" />
     <Compile Include="Message\SNMP\CDTObjectRef.cs" />
+    <Compile Include="Message\SNMP\CDTSnmpMsgDispose.cs" />
     <Compile Include="Message\SNMP\CDTSnmpPdu.cs" />
     <Compile Include="Message\SNMP\CDTCmdExecuteMgr.cs" />
     <Compile Include="Message\SNMP\DTLinkPathMgr.cs" />
