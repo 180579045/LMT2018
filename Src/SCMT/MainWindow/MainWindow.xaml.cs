@@ -45,6 +45,7 @@ using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
 using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
 using SCMTOperationCore.Message.MsgDispatcher;
+using System.Windows.Media;
 
 namespace SCMTMainWindow
 {
@@ -530,10 +531,19 @@ namespace SCMTMainWindow
 				this.g_SelectedEnbIP = node.NeAddress.ToString();
 
 				// TODO 选中后的样式改变待完善
-				//target.Background = new SolidColorBrush(Color.FromRgb(190, 180, 90));
-				//target.Background.Opacity = 50;
-				//target.Opacity = 50;
-			}
+                //已完善
+
+                //改变被点击的 node，还原之前的 node
+                var Children = ExistedNodebList.Children;
+                for(int i = 0; i < ExistedNodebList.Children.Count; i++)
+                {
+                    var Item = ExistedNodebList.Children[i] as MetroExpander;
+                    Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                }
+                target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+                //target.Background.Opacity = 50;
+                //target.Opacity = 50;
+            }
 		}
 
 		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
@@ -1559,6 +1569,6 @@ namespace SCMTMainWindow
 			//}
 			return true;
 		}
-	}
+    }
 
 }
