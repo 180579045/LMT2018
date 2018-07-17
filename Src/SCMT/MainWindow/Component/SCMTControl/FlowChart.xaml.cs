@@ -32,11 +32,11 @@ namespace SCMTMainWindow.Component.SCMTControl
         FlowChartCommand fcNodeCmd; // 流程图的对应的命令类
         string fileXmlPath = @"..\..\..\Component\SCMTControl\FlowChart.xml";
         private System.Timers.Timer timer = new System.Timers.Timer();//1 * 60 * 1000);// 1min*60s*1000ms
-        protected Dictionary<string, XElement> mapCanvasEllipse { get; set; }
-        protected Dictionary<string, XElement> mapCanvasTextBlock { get; set; }
-        protected Dictionary<string,XElement> mapLine { get; set; }
-        protected Dictionary<string,XElement> mapExampleRectangle { get; set; }
-        protected Dictionary<string,XElement> mapExampleText { get; set; }
+        protected Dictionary<string, XElement> mapCanvasEllipse { get; set; }//保存Canvas的Ellipse信息
+        protected Dictionary<string, XElement> mapCanvasTextBlock { get; set; }//保存Canvas的TextBlock信息
+        protected Dictionary<string, XElement> mapLine { get; set; }//保存Line信息
+        protected Dictionary<string, XElement> mapExampleRectangle { get; set; }//保存示例图的矩形信息
+        protected Dictionary<string, XElement> mapExampleText { get; set; }//保存示例图的文字信息
 
         public FlowChart()
         {
@@ -51,7 +51,7 @@ namespace SCMTMainWindow.Component.SCMTControl
 
             initGetFlowChartCommand();// 初始化 : 获取每个流程图的对应的命令
 
-            fcNodeCmd.parseFlowChartCmd();
+            cycleTimeGetFlowChartColor();//设置
             ////
             timer.Elapsed += new System.Timers.ElapsedEventHandler(timer_Elapsed);
             timer.Enabled = true;
@@ -64,6 +64,13 @@ namespace SCMTMainWindow.Component.SCMTControl
         {
             fcNodeCmd = new FlowChartCommand(fileXmlPath);
         }
+        void cycleTimeGetFlowChartColor()
+        {
+            Dictionary<string, string> flowChartColors = fcNodeCmd.LightFlowCharts();
+            modCanvasEllipse(flowChartColors);
+            paintPicture();
+
+        }
 
         /// <summary>
         /// 周期更新任务
@@ -72,7 +79,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// <param name="e"></param>
         void timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            fcNodeCmd.parseFlowChartCmd();
+            Dictionary<string, string> flowChartColors = fcNodeCmd.LightFlowCharts();
 
             //模拟的做一些的操作
             List<string> colorStr = new List<string>() {
@@ -100,7 +107,9 @@ namespace SCMTMainWindow.Component.SCMTControl
             string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
             int aba = 1;
         }
-
+        /// <summary>
+        /// 初始化界面信息
+        /// </summary>
         private void initInterface()
         {
             mapCanvasEllipse.Clear();
@@ -143,6 +152,11 @@ namespace SCMTMainWindow.Component.SCMTControl
             }
 
         }
+        /// <summary>
+        /// 保存Canvas内的相关信息
+        /// </summary>
+        /// <param name="name">Canvas的Name</param>
+        /// <param name="element">Canvas下的所有元素</param>
         private void keepCanvasElement(string name,XElement element)
         {
             foreach(XElement item in element.Elements())
@@ -168,10 +182,20 @@ namespace SCMTMainWindow.Component.SCMTControl
                 }
             }
         }
+        /// <summary>
+        /// 保存Canvas的Ellipse信息
+        /// </summary>
+        /// <param name="name">Canvas的Name</param>
+        /// <param name="element">Ellipse的元素</param>
         private void keepCanvasEllipse(string name,XElement element)
         {
             mapCanvasEllipse.Add(name, element);
         }
+        /// <summary>
+        /// 保存Canvas的TextBlock信息
+        /// </summary>
+        /// <param name="name">Canvas的Name</param>
+        /// <param name="element">TextBlock的元素</param>
         private void keepCanvasTextBlock(string name,XElement element)
         {
             if(mapCanvasTextBlock.ContainsKey(name))
@@ -195,11 +219,19 @@ namespace SCMTMainWindow.Component.SCMTControl
         {
             string leafName = element.Attribute("leafName").Value;
         }
+        /// <summary>
+        /// 保存Line的信息
+        /// </summary>
+        /// <param name="element">Line的信息</param>
         private void keepLineElement(XElement element)
         {
             string lineName = element.Attribute("Name").Value;
             mapLine.Add(lineName, element);
         }
+        /// <summary>
+        /// 保存示例图的信息
+        /// </summary>
+        /// <param name="element">Example的元素</param>
         private void keepExampleElement(XElement element)
         {
             foreach(XElement item in element.Elements())
@@ -218,16 +250,27 @@ namespace SCMTMainWindow.Component.SCMTControl
                 }
             }
         }
+        /// <summary>
+        /// 保存示例图中矩形信息
+        /// </summary>
+        /// <param name="element">矩形元素</param>
         private void keepExampleRectangle(XElement element)
         {
             string strName = element.Attribute("Name").Value;
             mapExampleRectangle.Add(strName, element);
         }
+        /// <summary>
+        /// 保存示例图中文字信息
+        /// </summary>
+        /// <param name="element">文字元素</param>
         private void keepExampleTextBlock(XElement element)
         {
             string strName = element.Attribute("Name").Value;
             mapExampleText.Add(strName, element);
         }
+        /// <summary>
+        /// 画图
+        /// </summary>
         private void paintPicture()
         {
             mygrid.Children.Clear();
@@ -253,6 +296,10 @@ namespace SCMTMainWindow.Component.SCMTControl
             paintExampleText(bigCanv);
 
         }
+        /// <summary>
+        /// 画圆
+        /// </summary>
+        /// <param name="basicCanv">底板Canvas</param>
         private void paintCanvasEllipse(Canvas basicCanv)
         {
             foreach (var item in mapCanvasEllipse)
@@ -292,6 +339,10 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
+        /// <summary>
+        /// 写文字信息
+        /// </summary>
+        /// <param name="basicCanv">底板Canvas</param>
         private void paintCanvasTextBlock(Canvas basicCanv)
         {
             foreach (var item in mapCanvasTextBlock)
@@ -323,6 +374,10 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
+        /// <summary>
+        /// 画连接圆之间的线
+        /// </summary>
+        /// <param name="basicCanv">底板Canvas</param>
         private void paintLine(Canvas basicCanv)
         {
             foreach (var item in mapLine)
@@ -353,6 +408,10 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
+        /// <summary>
+        /// 画示例图的矩形
+        /// </summary>
+        /// <param name="basicCanv">底板Canvas</param>
         private void paintExampleRectangle(Canvas basicCanv)
         {
             foreach (var item in mapExampleRectangle)
@@ -383,6 +442,10 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
+        /// <summary>
+        /// 画示例图的文字
+        /// </summary>
+        /// <param name="basicCanv">底板Canvas</param>
         private void paintExampleText(Canvas basicCanv)
         {
             foreach (var item in mapExampleText)
@@ -414,7 +477,10 @@ namespace SCMTMainWindow.Component.SCMTControl
                 basicCanv.Children.Add(canv);
             }
         }
-        //修改圆圈颜色
+        /// <summary>
+        /// 修改圆圈颜色
+        /// </summary>
+        /// <param name="modDic">要修改的圆的Canvas的Name和颜色的集合</param>
         private void modCanvasEllipse(Dictionary<string,string> modDic)
         {
             foreach(var item in modDic)
@@ -498,7 +564,7 @@ namespace SCMTMainWindow.Component.SCMTControl
     class FlowChartCommand
     {
         /// <summary>
-        /// 每一个流程图中命令内容
+        /// [内存]每一个流程图中命令内容
         /// Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> : Dictionary<流程图名, 对应的命令内容(可有多个命令)>
         /// Dictionary<string, List<Dictionary<string, string>>> ; Dictionary<命令名字，命令的所有叶子>
         /// List<Dictionary<string, string>> : List<叶子节点的所有属性>
@@ -506,6 +572,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         private Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>> fcCmd = new Dictionary<string, Dictionary<string, List<Dictionary<string, string>>>>();
 
+        #region 0:解析xml信息.1.从xml解析每个流程图的cmdsInfo;->2.解析指定流程图的FlowChartOfCmdsInfo;->3.解析每个cmd的CmdOfLeafsInfo;->4.解析leafInfo属性.
         /// <summary>
         /// 初始化 : 从 xml中解析想要的信息
         /// </summary>
@@ -523,7 +590,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             if (null == nodeList)
                 return;
 
-            /// 3. 分析命令内容
+            /// 3. 分析命令内容 : 遍历解析每个流程图命令内容
             foreach (XmlNode xn in nodeList)
             {
                 /// 3.1. 容错判断 1. 必须是 Canvas 2. Canvas中必须有椭圆属性"Ellipse"
@@ -534,9 +601,9 @@ namespace SCMTMainWindow.Component.SCMTControl
                 /// 3.2. 获取命令相关内容
                 /// 3.2.1. 必须有relatedcmd属性
                 XmlNode cmds = xn.SelectSingleNode("relatedcmd");
-                /// 3.2.2. 获取相关命令信息
+                /// 3.2.2. 解析每个流程图的信息
                 string flowChartName = xn.Attributes["Name"].Value; /// 用于操作图形的句柄
-                parseXml(flowChartName, cmds); 
+                fccFromXmlParseFlowChartOfCmdsInfo(flowChartName, cmds); ///  
             }
         }
         
@@ -545,7 +612,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         /// <param name="flowChartName">流程图的名字</param>
         /// <param name="cmds">流程的命令内容</param>
-        private void parseXml(string flowChartName, XmlNode cmds)
+        private void fccFromXmlParseFlowChartOfCmdsInfo(string flowChartName, XmlNode cmds)
         {
             Dictionary<string, List<Dictionary<string, string>>> cmdList;
             if (null == cmds)
@@ -556,7 +623,14 @@ namespace SCMTMainWindow.Component.SCMTControl
             else
             {
                 /// 2. 获取相关命令信息
-                cmdList = parseCommandList(cmds);
+                cmdList = new Dictionary<string, List<Dictionary<string, string>>>();
+                foreach (XmlNode cmd in cmds.ChildNodes)
+                {
+                    List<Dictionary<string, string>> leafList = fccFromCommandsParseCmdOfLeafsList(cmd);
+                    ///
+                    string cmdName = cmd.Attributes["name"].Value;
+                    cmdList.Add(cmdName, leafList);
+                }
             }
             fcCmd.Add(flowChartName, cmdList);
         }
@@ -566,7 +640,8 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         /// <param name="cmds"></param>
         /// <returns></returns>
-        private Dictionary<string, List<Dictionary<string, string>>> parseCommandList(XmlNode cmds)
+        [Obsolete("Use Method List<Dictionary<string, string>> fccFromCommandsParseForLeafList ]")]
+        private Dictionary<string, List<Dictionary<string, string>>> fccFromCommandsParseCommandForListOld(XmlNode cmds)
         {
             Dictionary<string, List<Dictionary<string, string>>> cmdList = new Dictionary<string, List<Dictionary<string, string>>>();
             ///解析每个命令
@@ -576,7 +651,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                 /// 解析每个节点
                 foreach (XmlNode leaf in cmd.ChildNodes)
                 {
-                    leafList.Add(parseIndexNum(leaf));
+                    leafList.Add(fccFromCmdParseLeaf(leaf));
                 }                
                 ///
                 string cmdName = cmd.Attributes["name"].Value;
@@ -585,7 +660,28 @@ namespace SCMTMainWindow.Component.SCMTControl
             return cmdList;
         }
 
-        private Dictionary<string, string> parseIndexNum(XmlNode leaf)
+        /// <summary>
+        /// 解析每个 cmd 中的 leaf 信息
+        /// </summary>
+        /// <param name="cmd">每个命令及其他叶子信息</param>
+        /// <returns></returns>
+        private List<Dictionary<string, string>> fccFromCommandsParseCmdOfLeafsList(XmlNode cmd)
+        {
+            List<Dictionary<string, string>> leafList = new List<Dictionary<string, string>>();
+            /// 解析每个节点
+            foreach (XmlNode leaf in cmd.ChildNodes)
+            {
+                leafList.Add(fccFromCmdParseLeaf(leaf));
+            }
+            return leafList;
+        }
+
+        /// <summary>
+        /// 解析每个 leaf 信息的属性
+        /// </summary>
+        /// <param name="leaf">cmd中的leaf</param>
+        /// <returns></returns>
+        private Dictionary<string, string> fccFromCmdParseLeaf(XmlNode leaf)
         {
             Dictionary<string, string> leafInfo = new Dictionary<string, string>()
             {
@@ -603,80 +699,317 @@ namespace SCMTMainWindow.Component.SCMTControl
             }
             return leafInfo;
         }
+        #endregion
+
+        #region 点亮每个流程图颜色
+        /// <summary>
+        /// 循环解析每个流程图应该的颜色
+        /// </summary>
+        public Dictionary<string, string> LightFlowCharts()
+        {
+            if (null == fcCmd)
+                return null;
+            //模拟的做一些的操作
+            List<string> colorStr = new List<string>() {
+                "#FFB5B5B5" ,//未知;
+                "#FF00FF00" ,//可用
+                "#FFFF0000" ,//故障
+                "#FFFFFF00" ,//跳过
+            };
+
+            Dictionary<string, string> flowChartColor = new Dictionary<string, string>();
+            ///var keys = fcCmd.Keys;
+            foreach (var flowChartName in fcCmd.Keys)
+            {
+                /// 
+                string setColor = parseCmdInfo(flowChartName);
+                Console.WriteLine("flowChartName=({0}), setColor=({1})", flowChartName, setColor);
+                flowChartColor.Add(flowChartName, setColor);
+            }
+            return flowChartColor;
+        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="cmdContainer"></param>
         /// <returns></returns>
-        public int parseCmdInfo(Dictionary<string, List<Dictionary<string, string>>> cmdContainer)
+        public string parseCmdInfo(string flowChartName)
         {
+            Dictionary<string, List<Dictionary<string, string>>> cmdContainer = fcCmd[flowChartName];
             if (null == cmdContainer)
-                return -1;
+                return "";
 
-            List<string> cmds = new List<string>();
+            /// string boardAddr = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
+            List<string> colorList = new List<string>();
             foreach (var cmd in cmdContainer.Keys)
             {
-                cmds.Add(cmd);
-            }
-
-            foreach (var cmd in cmds)
-            {
                 string cmdName = cmd;
-                List<Dictionary<string, string>> leafInfoList = cmdContainer[cmd];
-                foreach (var leafDict in leafInfoList)
+                string color = DecisionAnalysisgetOneCmdColor(cmd,cmdContainer[cmd]);
+                colorList.Add(color);
+
+                /// 颜色
+                /// 逻辑 : 只要有一个命令cmd符合 跳过的颜色，就不继续判断了
+                if (String.Equals("#FFFFFF00", color)) // 跳过|| String.Equals("#FFFF0000", color)//故障
                 {
-                    /// leafDict: key: leafName 叶子名,leafValue 叶子节点,leafProperty 叶子属性,leafCompRules 叶子比较规则
-                    string boardAddr = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
-                    //var cmdName = "GetOmLinkInfo";
-                    //var mibName = "swPackRunningVersion"; //SCMTOperationCore.Message.SNMP
-                    string mibName = leafDict["leafName"];
-
-                    int indexNum = int.Parse(leafDict["indexNum"]);
-                    for (int no = 0; no < indexNum; no++)
-                    {
-                        string strIndexNo = String.Format("index{0}", no + 1);
-                        string strIndexValue = leafDict[strIndexNo];
-
-                        /// 好多的好多。。。。
-                        string index = getIndexString(strIndexNo, strIndexValue);
-
-                        string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-                        if (String.Empty == csCmdValueTemp)
-                        {
-                            
-                        }
-                    }
-                    //string index = ".2";
-
-                    //string csCmdValueTemp = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-
+                    break;
                 }
             }
 
-            
-
-            return 0;
-        }
-        private string getIndexString(string indexNo, string indexValue)
-        {
-            return "";
-        }
-
-        public void parseFlowChartCmd()
-        {
-            if (null == fcCmd)
-                return;
-
-            var keys = fcCmd.Keys;
-
-            foreach (var key in fcCmd.Keys)
+            string lastColor = "#FF00FF00";//可用
+            foreach (var color in colorList)
             {
-                int a = parseCmdInfo(fcCmd[key]);
+                if (String.Equals("#FFFFFF00", color)) // 跳过|| String.Equals("#FFFF0000", color)//故障
+                {
+                    lastColor = color;
+                    break;
+                }
+                if (String.Equals("#FFFF0000", color)) // 故障
+                {
+                    lastColor = color;
+                }
+            }
+            return lastColor;
+        }
+        /// <summary>
+        /// 判断分析 一个命令应该设置的颜色
+        /// </summary>
+        /// <param name="leafDictList"></param>
+        /// <returns></returns>
+        private string DecisionAnalysisgetOneCmdColor(string cmdName, List<Dictionary<string, string>> leafDictList)
+        {
+            string color = "";
+            List<bool> leafValueResult = new List<bool>();
+
+            foreach (var leafDict in leafDictList)
+            {
+                bool isLastLeaf = compLeafValueWithXmlValue(cmdName, leafDict);
+                leafValueResult.Add(isLastLeaf);
+
+                /// 逻辑 : 只要有一个叶子节点符合 跳过条件，就不继续判断
+                string leafProperty = leafDict["leafProperty"];
+                if (String.Equals("*", leafProperty) && isLastLeaf)
+                {
+                    color = "#FFFFFF00";//跳过
+                    break;
+                }
+            }
+            if (String.Empty == color)
+            {
+                color = "#FF00FF00";//可用
+                foreach (var result in leafValueResult)
+                {
+                    /// 只要有一个错误就错误
+                    if (!result)
+                    {
+                        color = "#FFFF0000";//故障
+                        break;
+                    }
+                }
+            }
+            return color;
+        }
+
+        /// <summary>
+        /// 获取这个节点基站内存值与xml参考值得比较结果
+        /// </summary>
+        /// <param name="leafDict"></param>
+        /// <returns>符合true,不符合false</returns>
+        private bool compLeafValueWithXmlValue(string cmdName, Dictionary<string, string> leafDict)
+        {
+            bool isLastLeaf = false;
+            string mibName = leafDict["leafName"];
+            string boardAddr = "172.27.245.92";
+            List<string> indexsList = new List<string>();
+            if (false == getLeafIndexList(leafDict, indexsList))
+            {
+                //string index = "";
+                string index = null;
+                string cmdLeafValue = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+                bool compResult = DecisionAnalysisgetFlowChartColor(leafDict, cmdLeafValue);
+                if (compResult)
+                {
+                    isLastLeaf = true;
+                }
+            }
+            else
+            {
+                /// 逻辑 : 只要有一个索引的值符合条件，就可以
+                foreach (var index in indexsList)
+                {
+                    string cmdLeafValue = SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+                                             //cmdLeafValues.Add(cmdLeafValue);
+                    bool compResult = DecisionAnalysisgetFlowChartColor(leafDict, cmdLeafValue);
+                    if (compResult)
+                    {
+                        isLastLeaf = true;
+                        break;
+                    }
+                }
+            }
+            return isLastLeaf;
+        }
+
+        /// <summary>
+        /// 获取单个叶子节点的所有的索引
+        /// </summary>
+        /// <param name="leafDict"></param>
+        /// <param name="indexsList">向内add所有的索引信息</param>
+        /// <returns>false没有索引</returns>
+        private bool getLeafIndexList(Dictionary<string, string> leafDict, List<string> indexsList)
+        {
+            if (null == leafDict || null == indexsList)
+                return false;
+            if (0 == int.Parse(leafDict["indexNum"]))
+            {
+                return false;
+            }
+            combineRecursionIndex(1, leafDict, "", indexsList);
+            return true;
+        }
+
+        /// <summary>
+        /// 递归 : 组合所有可能的 index ,".x.y.z.**"
+        /// </summary>
+        /// <param name="indexNum"></param>
+        /// <param name="leafDict"></param>
+        /// <param name="prefixIndex"></param>
+        /// <param name="moreIndexs"></param>
+        private void combineRecursionIndex(int indexNum, Dictionary<string, string> leafDict, string prefixIndex, List<string> moreIndexs)
+        {
+            int indexMax = int.Parse(leafDict["indexNum"]);
+            if (indexNum == 0 || indexNum > indexMax)
+            {
+                return;
+            }
+
+            string indexNo = "index" + indexNum.ToString();
+            Dictionary<string, int> index = splitIndexValueForStartEnd(indexNo, leafDict[indexNo]);
+            for (int start = index["start"]; start <= index["end"]; start++)
+            {
+                string postfixIndex = prefixIndex + "." + start.ToString();
+
+                int indexNext = indexNum + 1;
+                if (indexNext <= indexMax)
+                {
+                    combineRecursionIndex(indexNext, leafDict, postfixIndex, moreIndexs);
+                }
+                else
+                {
+                    moreIndexs.Add(postfixIndex);
+                }
             }
         }
 
+        /// <summary>
+        /// 拆分出 start 和 end
+        /// </summary>
+        /// <param name="indexName"></param>
+        /// <param name="indexValue"></param>
+        /// <returns></returns>
+        private Dictionary<string, int> splitIndexValueForStartEnd(string indexName, string indexValue)
+        {
+            int indexOf = indexValue.IndexOf('.');
+            if (-1 == indexOf)
+            {
+                // meiyou 
+                return new Dictionary<string, int>() { { "start", 0 }, { "end", 0 } }; ;
+            }
+            int intStart = int.Parse(indexValue.Substring(0, indexOf));
+            int intEnd = int.Parse(indexValue.Substring(indexOf + 2));
+            return new Dictionary<string, int>() { { "start", intStart }, { "end", intEnd } };
+        }
+
+
+        private delegate bool CompDataResult(int snmpReValue, int xmlValue);
+        private bool CompRulesIsGreaterThan(int snmpReValue, int xmlValue)
+        {
+            if (snmpReValue > xmlValue)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool CompRulesIsLessThan(int snmpReValue, int xmlValue)
+        {
+            if (snmpReValue < xmlValue)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool CompRulesIsEquals(int snmpReValue, int xmlValue)
+        {
+            if (snmpReValue == xmlValue)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool CompRulesIsNotGreaterThan(int snmpReValue, int xmlValue)
+        {
+            if (snmpReValue <= xmlValue)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool CompRulesIsNotLessThan(int snmpReValue, int xmlValue)
+        {
+            if (snmpReValue >= xmlValue)
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool CompRulesIsNotEquals(int snmpReValue, int xmlValue)
+        {
+            if (snmpReValue != xmlValue)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 判断分析颜色
+        /// </summary>
+        /// <param name="cmdName"></param>
+        /// <param name="mibName"></param>
+        /// <param name="leafInfo"></param>
+        /// <returns>flase 停止</returns>
+        private bool DecisionAnalysisgetFlowChartColor(Dictionary<string, string> leafInfo, string snmpReturnLeafValue)
+        {
+            int snmpLeafVal = -1;
+            int xmlValue = -1;
+            try
+            {
+                snmpLeafVal = int.Parse(snmpReturnLeafValue);
+                xmlValue = int.Parse(leafInfo["leafValue"]);
+            }
+            catch
+            {
+                //Console.WriteLine("FlowChartSetColor : err. DecisionAnalysisgetFlowChartColor {0}", ex.Message);
+                return false;//MessageBox.Show(ex.Message);//显示异常信息
+            }
+
+            // C# 委托: 函数指针
+            //-GT(Greater than)表示> ;-LT(Less than)表示< ;-EQ(Equals)     表示 =;
+            //-NGT(Not GT)     表示<=;-NLT(Not LT)  表示>=;-NEQ(Not Equals)表示!=;
+            Dictionary<string, CompDataResult> compRules = new Dictionary<string, CompDataResult>() {
+                { "GT", (CompRulesIsGreaterThan)},
+                { "LT", (CompRulesIsLessThan)},
+                { "EQ", (CompRulesIsEquals)},
+                { "NGT", (CompRulesIsNotGreaterThan)},
+                { "NLT", (CompRulesIsNotLessThan)},
+                { "NEQ", (CompRulesIsNotEquals)},
+            };
+            string mibComp = leafInfo["leafCompRules"];
+            bool compResult = compRules[mibComp](snmpLeafVal, xmlValue);
+
+            return compResult;// new Dictionary<string, string>() {{ cmdName, colorStr[1]}};
+        }
+        #endregion
+
     }
-
-
 }
