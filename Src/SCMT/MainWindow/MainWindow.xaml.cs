@@ -205,7 +205,8 @@ namespace SCMTMainWindow
 		{
 			string StrName = StrNodeName;
 			NodeB node = new NodeB("172.27.245.92", "NodeB");
-			string cfgFile = node.m_ObjTreeDataPath;
+			//string cfgFile = node.m_ObjTreeDataPath;
+            string cfgFile = @"..\..\..\bin\x86\Debug\Data\Tree_Collect.json";
 			
 			StreamReader reader = File.OpenText(cfgFile);
 			JObject JObj = new JObject();
@@ -235,12 +236,14 @@ namespace SCMTMainWindow
 						var ObjParentNodesId = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
 						var ObjChildRenCount = (int)JObj.First.Next.First[TempCount]["ChildRenCount"];
 						var ObjNameEn = (string)JObj.First.Next.First[TempCount]["ObjNameEn"];
+                        var ObjMibTableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
 						var ObjMibList = (string)JObj.First.Next.First[TempCount]["MIBList"];
 						JObject NewObjNodes = new JObject(new JProperty("ObjID", ObjNodesId),
 							new JProperty("ObjParentID", ObjParentNodesId),
 							new JProperty("ChildRenCount", ObjChildRenCount),
 							new JProperty("ObjName", name),
 							new JProperty("ObjNameEn", ObjNameEn),
+                            new JProperty("MibTableName", ObjMibTableName),
 							new JProperty("MIBList", ObjMibList),
 							new JProperty("ObjCollect",1));
 						JObj.First.Next.First[TempCount].Remove();
@@ -254,6 +257,7 @@ namespace SCMTMainWindow
 			FileStream fs = new FileStream(cfgFile, FileMode.OpenOrCreate);
 			StreamWriter sw = new StreamWriter(fs);
 			sw.Write(JObj);
+            sw.Flush();
 			sw.Close();
 			//File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
 
@@ -279,12 +283,19 @@ namespace SCMTMainWindow
 
 		private void Collect_Node_Click(object sender, EventArgs e)
 		{
+            object objCollect = this.Obj_Collect.Content;
+            if(objCollect != null)
+            {
+                this.Obj_Collect.Content = null;
+            }
+            objCollect = this.Obj_Collect.Content;
 			ObjNode Objnode;
 			List<ObjNode> m_NodeList = new List<ObjNode>();
 			List<ObjNode> RootNodeShow = new List<ObjNode>();
 			ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点", @"/");
 			NodeB node = new NodeB("172.27.245.92", "NodeB");
-			string cfgFile = node.m_ObjTreeDataPath;
+            //string cfgFile = node.m_ObjTreeDataPath;
+            string cfgFile = @"..\..\..\bin\x86\Debug\Data\Tree_Collect.json";
 			StreamReader reader = File.OpenText(cfgFile);
 			JObject JObj = new JObject();
 			JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -1563,9 +1574,27 @@ namespace SCMTMainWindow
 			InitDataBase();
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接", true);
+            string file1 = @"..\..\..\bin\x86\Debug\Data\Tree_Reference.json";
+            string file2 = @"..\..\..\bin\x86\Debug\Data\Tree_Collect.json";
+            //FileCopy(file1, file2);
+            //ConvertFileEncoding(file1, file2, System.Text.Encoding.Default);
 		}
-
-		// 断开连接
+        private void FileCopy(string path, string path2)
+        {
+            if(File.Exists(path2))
+            {
+                File.Delete(path2);
+            }
+            File.Copy(path, path2, true);
+        }
+        static void ConvertFileEncoding(string sourceFile, string destFile, System.Text.Encoding targetEncoding)
+        {
+            destFile = string.IsNullOrEmpty(destFile) ? sourceFile : destFile;
+            System.IO.File.WriteAllText(destFile,
+            System.IO.File.ReadAllText(sourceFile, System.Text.Encoding.Default),
+            targetEncoding);
+        }
+        // 断开连接
 		private void OnDisconnect(SubscribeMsg msg)
 		{
 			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
