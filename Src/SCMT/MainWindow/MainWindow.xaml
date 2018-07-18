@@ -97,6 +97,7 @@
                             <Metro:MetroExpander Header="基站数据表" Icon="Resources/NetPLanB.png" />
                             <Metro:MetroExpander Header="基站控制台" Icon="Resources/NetPLanB.png"/>
                             <Metro:MetroExpander Header="折线图" Click="Show_LineChart" Icon="Resources/NetPLanB.png" />
+                            <Metro:MetroExpander Header="柱状图" Click="Show_BarChart"  Icon="Resources/NetPLanB.png" />
                             <Metro:MetroExpander Header="流程图" Icon="Resources/NetPLanB.png" Click="ShowFlowChart"/>
                         </StackPanel>
                     </Metro:MetroExpander>

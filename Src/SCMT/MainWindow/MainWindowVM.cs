@@ -155,6 +155,7 @@ namespace SCMTMainWindow
         //add by MaYi   定义全局的legend  和 series  方便进行添加和删除;
         public List<string> listForLegend = new List<string>();
         public List<series> listForSeries = new List<series>();
+        public string[] listForXAxis = { };
 
         public static string OptionJsonString() {
 

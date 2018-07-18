@@ -148,6 +148,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Component\Model\DataGrid\DataGrid_Cell_MIB.cs" />
+    <Compile Include="Component\SCMTControl\BarChart.xaml.cs">
+      <DependentUpon>BarChart.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\SCMTControl\DTDataGrid.xaml.cs">
       <DependentUpon>DTDataGrid.xaml</DependentUpon>
     </Compile>
@@ -215,6 +218,10 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Page Include="Component\SCMTControl\BarChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Component\SCMTControl\DTDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
