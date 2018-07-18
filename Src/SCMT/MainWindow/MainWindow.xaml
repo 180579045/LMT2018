@@ -187,7 +187,7 @@
                                     <xcad:LayoutAnchorablePane x:Name="Pane">
                                         <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False">
                                             <!-- 显示MIB内容的DataGrid -->
-                                            <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" SelectionMode="Single" HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC"/>
+                                            <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" SelectionMode="Single" HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC" IsReadOnly="True"/>
                                         </xcad:LayoutAnchorable>
                                         <xcad:LayoutAnchorable ContentId="messageRecv" Title="信令消息" x:Name="subForMessageRecv" CanAutoHide="True" Hiding="subForMessageRecv_Hiding" CanClose="False" FloatingHeight="500" FloatingWidth="800">
                                             <uc:MessageRecv x:Name="messageRecv"></uc:MessageRecv>
