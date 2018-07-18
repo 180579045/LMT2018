@@ -79,7 +79,7 @@ namespace SCMTMainWindow
     }
     public class series
     {
-        public series(string name, string type, bool smooth, string symbol, string stack, double[] data)
+        public series(string name, string type, bool smooth, string symbol, string stack, string[] data)
         {
             this.name = name;
             this.type = type;
@@ -94,7 +94,7 @@ namespace SCMTMainWindow
         public bool smooth { get; set; }
         public string symbol { get; set; }
         public string stack { get; set; }
-        public double[] data { get; set; }
+        public string[] data { get; set; }
     }
 
     // ECharts 横坐标类型;

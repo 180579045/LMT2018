@@ -1590,6 +1590,34 @@ namespace SCMTMainWindow
 			//}
 			return true;
 		}
+
+        /// <summary>
+        /// 柱状图
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Show_BarChart(object sender, EventArgs e)
+        {
+            LayoutAnchorable sub = new LayoutAnchorable();
+            BarChart content = new BarChart();
+
+            // 当前的问题：这个Title显示不出来;
+            sub.Title = "柱状图";
+            sub.FloatingHeight = 400;
+            sub.FloatingWidth = 800;
+            sub.Content = content;
+            sub.FloatingLeft = 200;
+            sub.FloatingTop = 200;
+            sub.CanClose = true;
+            sub.CanAutoHide = false;
+
+            this.Pane.Children.Add(sub);
+            sub.Float();
+
+            // 当窗口发生变化时;
+            //sub.PropertyChanged += content.WindowProperty_Changed;
+            //sub.Closed += content.Sub_Closed;
+        }
     }
 
 }
