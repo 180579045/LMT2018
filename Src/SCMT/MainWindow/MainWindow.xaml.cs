@@ -1297,11 +1297,18 @@ namespace SCMTMainWindow
 					{
 						dynamic model = new DyDataGrid_MIBModel();
 
-						// 将ar当中所有匹配的结果取出,最后会取出了一行数据;
-						foreach(var iter3 in ar)
+                        // 将ar当中所有匹配的结果取出,最后会取出了一行数据;
+                        foreach (var iter3 in ar)
 						{
-							// 将所有相同索引取出;
-							if (iter3.Key.ToString().Contains(NowIndex))
+                            // 将所有相同索引取出;
+                            temp = iter3.Key.ToString().Split('.');
+                            string TempIndex = "";
+                            for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+                            {
+                                TempIndex += "." + temp[i];
+                            }
+                            //以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
+                            if (TempIndex == NowIndex)
 							{
 								foreach (var iter2 in oid_cn)
 								{
