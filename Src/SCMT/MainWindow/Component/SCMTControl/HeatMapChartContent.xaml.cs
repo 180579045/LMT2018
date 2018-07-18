@@ -23,8 +23,6 @@ namespace SCMTMainWindow.Component.SCMTControl
     /// </summary>
     public partial class HeatMapChartContent : UserControl
     {
-        private bool GettingValue = false;
-
         public HeatMapChartContent()
         {
             InitializeComponent();
@@ -33,7 +31,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         }
         public void Sub_Closed(object sender, EventArgs e)
         {
-            GettingValue = false;
+            return;
         }
 
         private void Button_ClickHeatMap(object sender, RoutedEventArgs e)
