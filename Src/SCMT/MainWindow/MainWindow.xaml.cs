@@ -430,12 +430,33 @@ namespace SCMTMainWindow
 			throw new NotImplementedException();
 		}
 
-		
+        private void Show_HeatMapChart(object sender, EventArgs e)
+        {
+            // TODO 后续需要有一个界面元素管理类;
+            LayoutAnchorable sub = new LayoutAnchorable();
+            HeatMapChartContent content = new HeatMapChartContent();
 
-		#endregion
+            // 当前的问题：这个Title显示不出来;
+            sub.Title = "PRB使用情况";
+            sub.FloatingHeight = 400;
+            sub.FloatingWidth = 800;
+            sub.Content = content;
+            sub.FloatingLeft = 200;
+            sub.FloatingTop = 200;
+            sub.CanClose = true;
+            sub.CanAutoHide = false;
 
-		#region 显示B方案Message列表控件
-		private void ShowMessage_Click(object sender, EventArgs e)
+            this.Pane.Children.Add(sub);
+            sub.Float();
+
+            // 当窗口发生变化时;
+            sub.Closed += content.Sub_Closed;
+        }
+
+        #endregion
+
+        #region 显示B方案Message列表控件
+        private void ShowMessage_Click(object sender, EventArgs e)
 		{
 			///后续需要有一个界面元素管理类;
 			//  LayoutAnchorable sub = new LayoutAnchorable();

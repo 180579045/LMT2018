@@ -183,6 +183,9 @@
     <Compile Include="Component\SCMTControl\FileManager\TestTwoFileManager.xaml.cs">
       <DependentUpon>TestTwoFileManager.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\SCMTControl\HeatMapChartContent.xaml.cs">
+      <DependentUpon>HeatMapChartContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\SCMTControl\LogInfoShow\LogInfoShow.xaml.cs">
       <DependentUpon>LogInfoShow.xaml</DependentUpon>
     </Compile>
@@ -228,6 +231,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Component\SCMTControl\FlowChart.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\HeatMapChartContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

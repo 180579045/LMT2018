@@ -5,6 +5,13 @@
     <title>ECharts</title>
     <!-- 引入 echarts.js -->
     <script src="../echarts.min.js"></script>
+    <!-- 引入 vintage 主题 -->
+    <script src="../theme/infographic.js"></script>
+    <script src="../theme/macarons.js"></script>
+    <script src="../theme/roma.js"></script>
+    <script src="../theme/shine.js"></script>
+    <script src="../theme/vintage.js"></script>
+    <script src="../theme/dark.js"></script>
 </head>
 <body>
     <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
@@ -20,8 +27,8 @@
         JsObj.canvasWidth = 600
         JsObj.canvasHeight = 400
 
-        // 基于准备好的dom，初始化echarts实例
-        var myChart = echarts.init(document.getElementById('main'));
+        // 基于准备好的dom，初始化echarts实例,第二个参数是指主题
+        var myChart = echarts.init(document.getElementById('main'), 'vintage');
         // 横坐标（调试使用，生产不用）
         var date = []; 
         var now = new Date();
