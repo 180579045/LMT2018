@@ -66,7 +66,10 @@ namespace SCMTMainWindow
 			= new ObservableCollection<DyDataGrid_MIBModel>();
 
 		private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
-		public MainWindow()
+
+        private LayoutAnchorable subForMessageRecv;       //信令消息界面
+        private Component.SCMTControl.MessageRecv messageRecv = new MessageRecv();
+        public MainWindow()
 		{
 			InitializeComponent();
 			this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
@@ -469,11 +472,26 @@ namespace SCMTMainWindow
         #region 显示B方案Message列表控件
         private void ShowMessage_Click(object sender, EventArgs e)
 		{
-			///后续需要有一个界面元素管理类;
-			//  LayoutAnchorable sub = new LayoutAnchorable();
-			//     MesasgeRecv content = new MesasgeRecv();
+            ///后续需要有一个界面元素管理类;
+            //  LayoutAnchorable sub = new LayoutAnchorable();
+            //     MesasgeRecv content = new MesasgeRecv();
 
-			subForMessageRecv.Show();
+            subForMessageRecv = new LayoutAnchorable
+            {
+                Content = messageRecv,
+                Title = "信令消息",
+                FloatingHeight = 500,
+                FloatingWidth = 800,
+                CanHide = true,
+                CanClose = false,
+                CanAutoHide = false
+            };
+
+            subForMessageRecv.Hiding += subForMessageRecv_Hiding;
+
+            this.Pane.Children.Add(subForMessageRecv);
+
+            subForMessageRecv.Show();
 			subForMessageRecv.Float();
 
 		}
