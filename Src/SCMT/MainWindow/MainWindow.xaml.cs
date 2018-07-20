@@ -1261,6 +1261,7 @@ namespace SCMTMainWindow
 		public void UpdateAllMibDataGrid(Dictionary<string, string> ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en, 
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
+            int RealIndexCount = IndexCount; // 真实的索引个数
 			// 将信息回填到DataGrid当中;
 			this.MibDataGrid.Dispatcher.Invoke(new Action(() =>
 			{
@@ -1303,10 +1304,36 @@ namespace SCMTMainWindow
 					}
 					Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex);
 
-					// 如果存在索引,且索引没有被添加到表中;
-					if (iter.Key.ToString().Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
+                    // 如果存在索引,且索引没有被添加到表中;
+                    if (iter.Key.ToString().Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
 					{
 						dynamic model = new DyDataGrid_MIBModel();
+                        //尝试填写表量表填写实例描述
+
+                        if(RealIndexCount > 0)
+                        {
+                            string IndexOIDPre = "";
+                            for (int i = 0; i < temp.Length - IndexCount - 1; i++)
+                            {
+                                IndexOIDPre += "." + temp[i];
+                            }           
+                            string IndexContent = "";
+                            for (int i = 0; i < RealIndexCount; i++)
+                            {
+                                string IndexOIDTemp = IndexOIDPre + "." + (i + 1).ToString();
+                                string IndexOID = IndexOIDTemp.Substring(1);
+                                IndexContent += oid_cn[IndexOID].ToString() + temp[temp.Length - RealIndexCount + i];
+                            }
+                            //如下DataGrid_Cell_MIB中的 oid暂时填写成这样
+                            model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+                            {
+                                m_Content = IndexContent,
+                                oid = IndexOIDPre+".",
+                                MibName_CN = "实例描述",
+                                MibName_EN = "indexlist"
+                            }, "实例描述");
+                            
+                        }
 
                         // 将ar当中所有匹配的结果取出,最后会取出了一行数据;
                         foreach (var iter3 in ar)
@@ -1321,34 +1348,34 @@ namespace SCMTMainWindow
                             //以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
                             if (TempIndex == NowIndex)
 							{
-								foreach (var iter2 in oid_cn)
-								{
-									// 将GetNext整表的OID数值取出到temp_compare;
-									string[] temp_nowoid = iter3.Key.ToString().Split('.');
-									string NowNodeOID = "";
-									for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
-									{
-										NowNodeOID += "." + temp_nowoid[i];
-									}
-									string temp_compare = NowNodeOID.Substring(1);
-									
-									// 如果OID匹配;
-									if (temp_compare == iter2.Key.ToString())
-									{
-										Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter3.Value.ToString() + " and Header is:" + iter2.Value.ToString());
+                                // 将GetNext整表的OID数值取出到temp_compare;
+                                string[] temp_nowoid = iter3.Key.ToString().Split('.');
+                                string NowNodeOID = "";
+                                for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
+                                {
+                                    NowNodeOID += "." + temp_nowoid[i];
+                                }
+                                string temp_compare = NowNodeOID.Substring(1);
 
-										model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
-										{
-											m_Content = iter3.Value.ToString(),
-											oid = iter3.Key,
-											MibName_CN = iter2.Value,
-											MibName_EN = oid_en[iter2.Key]
-										}, iter2.Value.ToString());
+                                // 如果OID匹配;
+                                if (oid_cn.ContainsKey(temp_compare))
+                                {
+                                    Console.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value.ToString() + " and Header is:" + oid_cn[temp_compare].ToString());
 
-										// 已经查询过该索引,后续不再参与查询;
-										AlreadyRead.Add(NowIndex);
-									}
-								}
+                                    model.AddProperty(oid_en[temp_compare], new DataGrid_Cell_MIB()
+                                    {
+                                        m_Content = iter3.Value.ToString(),
+                                        oid = iter3.Key,
+                                        MibName_CN = oid_cn[temp_compare].ToString(),
+                                        MibName_EN = oid_en[temp_compare].ToString()
+                                    }, oid_cn[temp_compare].ToString());
+
+                                    // 已经查询过该索引,后续不再参与查询;
+                                    if(!AlreadyRead.Contains(NowIndex))
+                                    {
+                                        AlreadyRead.Add(NowIndex);
+                                    }
+                                }
 							}
 						}
 
@@ -1360,17 +1387,29 @@ namespace SCMTMainWindow
 						}
 					}
 				}
-
+                //增加表量表索引的列名
+                if(RealIndexCount > 0)
+                {
+                    DataGridTextColumn column = new DataGridTextColumn();
+                    column.Header = "实例描述";
+                    column.Binding = new Binding("indexlist.m_Content");
+                    this.MibDataGrid.Columns.Add(column);
+                }
+                int Loop = 0;
 				foreach (var iter3 in oid_en)
 				{
+                    Loop++;
+                    if (Loop <= RealIndexCount)
+                    {
+                        //索引不对应列名
+                        continue;
+                    }
 					Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
 					DataGridTextColumn column = new DataGridTextColumn();
 					column.Header = oid_cn[iter3.Key];
 					column.Binding = new Binding(iter3.Value + ".m_Content");
-
 					this.MibDataGrid.Columns.Add(column);
-
-				}
+                }
 
 				this.MibDataGrid.DataContext = contentlist;
 			}));

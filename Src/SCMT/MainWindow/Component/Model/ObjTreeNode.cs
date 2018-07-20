@@ -292,7 +292,7 @@ namespace SCMTMainWindow
             {
                 Console.WriteLine("LeafNode Clicked!" + node.ObjName);
                 // 该节点有对应的表可查;
-                if (this.ObjTableName != @"/")
+                if (node.ObjTableName != @"/")
                 {
                     ObjTreeNode_Click(node);
                 }
@@ -394,6 +394,10 @@ namespace SCMTMainWindow
                 }
                 else
                 {
+                    //ty:增加索引的信息
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
                 }
 
                 // 如果是单个节点遍历，就只能在此处组DataGrid的VM类;
@@ -515,6 +519,11 @@ namespace SCMTMainWindow
                 }
                 else
                 {
+                    //ty:增加索引的信息
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+
                 }
 
                 // 如果是单个节点遍历，就只能在此处组DataGrid的VM类;

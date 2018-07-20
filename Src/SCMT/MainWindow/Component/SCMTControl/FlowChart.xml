@@ -17,97 +17,75 @@
                     <Ellipse Canvas.Left="250" Canvas.Top="80" Width="60" Height="60" Name="circle5108" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="98" Name="text5110">启站信息</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="115" Name="text5112">获取</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetSelfStartupAlgorithmInfo">
-								        <leaf name="selfStartupAlgorithmSwitch" value="0" property="*" compRules="EQ" indexNum="0"/>
-								      </cmd>
-								      <cmd name="GetEquipSystemInfo" indexNum="0">
-								        <leaf name="equipStartupStage" value="1" property="" compRules="NLT" indexNum="0"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetSelfStartupAlgorithmInfo|GetEquipSystemInfo:1">
+                      <leaf name="selfStartupAlgorithmSwitch" value="0" property="*" compRules="EQ" />
+                      <leaf name="equipStartupStage" value="1" property="" compRules="NLT" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="OMLinkStartup_5216">
                     <Ellipse Canvas.Left="250" Canvas.Top="160" Width="60" Height="60" Name="circle5121" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="257" Canvas.Top="178" Name="text5123">OM链路</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="195" Name="text5125">建立</TextBlock>
-			              <relatedcmd>
-                    	<cmd name="GetEquipSystemInfo">
-								        <leaf name="equipStartupStage" value="3" property="*" compRules="NLT" indexNum="0"/>
-								        <leaf name="equipStartupStage" value="3" property="" compRules="NLT" indexNum="0"/>
-								      </cmd>
-								      <cmd name="GetOmLinkInfo">
-								        <leaf name="omLinkSetupStatus" value="2" property="*" compRules="NEQ" indexNum="1" index1="0..1"/>
-								        <leaf name="omLinkSetupStatus" value="2" property="" compRules="EQ" indexNum="1" index1="0..1"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetOmLinkInfo:2">
+                      <leaf name="equipStartupStage" value="3" property="*" compRules="NLT" />
+                      <leaf name="omLinkSetupStatus" value="2" property="*" compRules="NEQ" />
+                      <leaf name="equipStartupStage" value="3" property="" compRules="NLT" />
+                      <leaf name="omLinkSetupStatus" value="2" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="SoftwareSync_5216">
                     <Ellipse Canvas.Left="250" Canvas.Top="240" Width="60" Height="60" Name="circle5138" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="263" Name="text5140">软件同步</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetEquipSystemInfo">
-								        <leaf name="equipStartupStage" value="4" property="" compRules="NLT" indexNum="0"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetEquipSystemInfo:3" >
+                      <leaf name="equipStartupStage" value="4" property="" compRules="NLT" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="ClockResStatus_5216">
                     <Ellipse Canvas.Left="100" Canvas.Top="340" Width="60" Height="60" Name="circle5147" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="101" Canvas.Top="363" Name="text5149">时钟资源</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetClockUsableState">
-								        <leaf name="clkCommUsableState" value="1" property="" compRules="NLT" indexNum="0"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetClockUsableState:4">
+                      <leaf name="clkCommUsableState" value="1" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="TransResStatus_5216">
                     <Ellipse Canvas.Left="200" Canvas.Top="340" Width="60" Height="60" Name="circle5158" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="201" Canvas.Top="363" Name="text5162">传输资源</TextBlock>
-			              <relatedcmd>
-                    	<cmd name="GetlinkCommonOperationStatusInfo">
-								        <leaf name="linkCommonOperationStatus" value="1" property="" compRules="NLT" indexNum="0"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetlinkCommonOperationStatusInfo:4" >
+                      <leaf name="linkCommonOperationStatus" value="1" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="RRUResStatus_5216">
                     <Ellipse Canvas.Left="300" Canvas.Top="340" Width="60" Height="60" Name="circle5171" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="301" Canvas.Top="363" Name="text5175">射频资源</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetNetRRUAntennaSetting">
-								        <leaf name="netSetRRUPortWithAntennaRowStatus" value="4" property="" compRules="EQ" indexNum="2" index1="0..191" index2="1..16"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetNetRRUAntennaSetting:4">
+                      <leaf name="netSetRRUPortWithAntennaRowStatus" value="4" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="BaseResStatus_5216">
                     <Ellipse Canvas.Left="400" Canvas.Top="340" Width="60" Height="60" Name="circle5184" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="401" Canvas.Top="363" Name="text5188">基带资源</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetBaseBandwidthInfo">
-								        <leaf name="baseBandwidthRowStatus" value="4" property="" compRules="EQ" indexNum="4" index1="0..0" index2="0..0" index3="1..7" index4="0..47"/>
-								        <leaf name="baseBandwidthOperationalState" value="0" property="" compRules="EQ" indexNum="4" index1="0..0" index2="0..0" index3="1..7" index4="0..47"/>
-								        <leaf name="baseBandwidthLoadState" value="2" property="" compRules="EQ" indexNum="4" index1="0..0" index2="0..0" index3="1..7" index4="0..47"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetBaseBandwidthInfo:4">
+                      <leaf name="baseBandwidthRowStatus" value="4" property="" compRules="EQ" />
+                      <leaf name="baseBandwidthOperationalState" value="0" property="" compRules="EQ" />
+                      <leaf name="baseBandwidthLoadState" value="2" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="LocalCellStartup_5216">
                     <Ellipse Canvas.Left="250" Canvas.Top="440" Width="60" Height="60" Name="circle5201" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="458" Name="text5205">本地小区</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="475" Name="text5207">建立</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetLocalCellInfo">
-								        <leaf name="lcRowStatus" value="4" property="" compRules="EQ" indexNum="1" index1="0..23"/>
-								        <leaf name="lcProcedureStatus" value="5" property="" compRules="EQ" indexNum="1" index1="0..23"/>
-								        <leaf name="lcOperationalState" value="0" property="" compRules="EQ" indexNum="1" index1="0..23"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetLocalCellInfo:5">
+                      <leaf name="lcRowStatus" value="4" property="" compRules="EQ" />
+                      <leaf name="lcProcedureStatus" value="5" property="" compRules="EQ" />
+                      <leaf name="lcOperationalState" value="0" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Canvas Name="CellSetup_5216">
                     <Ellipse Canvas.Left="250" Canvas.Top="520" Width="60" Height="60" Name="circle5220" Fill="#FFB5B5B5" Stroke="#00000000" />
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="543" Name="text5224">小区建立</TextBlock>
-                    <relatedcmd>
-                    	<cmd name="GetCellInfo">
-								        <leaf name="cellRowStatus" value="4" property="" compRules="EQ" indexNum="1" index1="0..23"/>
-								        <leaf name="cellOperationalState" value="0" property="" compRules="EQ" indexNum="1" index1="0..23"/>
-								      </cmd>
+                    <relatedcmd cmdName="GetCellInfo:6" >
+                      <leaf name="cellRowStatus" value="4" property="" compRules="EQ" />
+                      <leaf name="cellOperationalState" value="0" property="" compRules="EQ" />
                     </relatedcmd>
                 </Canvas>
                 <Line X1="280" Y1="60" X2="280" Y2="80" Name="line5303" Fill="#000000" Stroke="#FF000000">
