@@ -54,6 +54,7 @@ namespace SCMTMainWindow
 	/// </summary>
 	public partial class MainWindow : MetroWindow
 	{
+        private bool IsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
 		public static string StrNodeName;
 		private List<string> CollectList = new List<string>();
 		public NodeBControl NBControler;
