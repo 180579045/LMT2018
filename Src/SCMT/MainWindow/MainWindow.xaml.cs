@@ -594,6 +594,10 @@ namespace SCMTMainWindow
                 target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
                 //target.Background.Opacity = 50;
                 //target.Opacity = 50;
+                if (IsSingleMachineDebug)
+                {
+                    InitDataBase();
+                }
             }
 		}
 

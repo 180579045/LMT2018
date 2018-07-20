@@ -511,7 +511,9 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// Dictionary<string, string> : key: leafName叶子名,leafValue叶子节点,leafProperty叶子属性,leafCompRules叶子比较规则
         /// </summary>
         private Dictionary<string, List<Dictionary<string, string>>> fcCmd = new Dictionary<string, List<Dictionary<string, string>>>();
-
+        /// <summary>
+        /// 引用外部函数
+        /// </summary>
         public SetColorForFlowChart setColor;
 
         #region 0:解析xml信息.1.从xml解析每个流程图的cmdsInfo;->2.解析指定流程图的FlowChartOfCmdsInfo;->3.解析每个cmd的CmdOfLeafsInfo;->4.解析leafInfo属性.
@@ -545,7 +547,13 @@ namespace SCMTMainWindow.Component.SCMTControl
                 XmlNode cmd = xn.SelectSingleNode("relatedcmd");
                 /// 3.2.2. 解析每个流程图的信息
                 string flowChartName = xn.Attributes["Name"].Value; /// 用于操作图形的句柄
-                fccFromXmlParseFlowChartOfCmdsInfo(flowChartName, cmd); ///  
+                fccFromXmlParseFlowChartOfCmdInfo(flowChartName, cmd); ///  
+                // xml 结构变化 去掉 命令cmd相关内容
+                //XmlNode cmds = xn.SelectSingleNode("relatedcmd");
+                ///// 3.2.2. 解析每个流程图的信息
+                //string flowChartName = xn.Attributes["Name"].Value; /// 用于操作图形的句柄
+                //fccFromXmlParseFlowChartOfCmdsInfo(flowChartName, cmds); ///  
+                //fccFromXmlParseFlowChartOfCmdsInfo(flowChartName, cmd); ///  
             }
         }
 
@@ -554,7 +562,32 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         /// <param name="flowChartName">流程图的名字</param>
         /// <param name="cmds">流程的命令内容</param>
-        private void fccFromXmlParseFlowChartOfCmdsInfo(string flowChartName, XmlNode cmd)
+        private void fccFromXmlParseFlowChartOfCmdsInfo(string flowChartName, XmlNode cmds)
+        {
+            Dictionary<string, List<Dictionary<string, string>>> cmdList;
+            if (null != cmds)
+            {
+                /// 2. 获取相关命令信息
+                cmdList = new Dictionary<string, List<Dictionary<string, string>>>();
+                foreach (XmlNode cmd in cmds.ChildNodes)
+                {
+                    List<Dictionary<string, string>> leafList = fccFromCommandsParseCmdOfLeafsList(cmd);
+                    ///
+                    string cmdName = cmd.Attributes["name"].Value;
+                    cmdList.Add(cmdName, leafList);
+                }
+                // fcCmd 数据类型变化
+                // fcCmd.Add(flowChartName, cmdList);
+            }
+
+            return;
+        }
+        /// <summary>
+        /// 从 xml 中解析出每个流程图的相关命令 cmds(一个)
+        /// </summary>
+        /// <param name="flowChartName">流程图的名字</param>
+        /// <param name="cmds">流程的命令内容</param>
+        private void fccFromXmlParseFlowChartOfCmdInfo(string flowChartName, XmlNode cmd)
         {
             if (null != cmd)
             {
@@ -631,44 +664,43 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         public Dictionary<string, string> LightFlowCharts()
         {
+            string whichWay = "wayOne";// "wayTwo"
             if (null == fcCmd)
                 return null;
 
             Dictionary<string, string> flowChartColor = new Dictionary<string, string>();
 
-            ///var keys = fcCmd.Keys;
-            foreach (var flowChartName in fcCmd.Keys)
+            //// 方案一 ： 顺序点亮
+            if (String.Equals(whichWay, "wayOne"))
             {
-                /// 
-                string setColor = parseCmdInfo(flowChartName);
-                Console.WriteLine("flowChartName=({0}), setColor=({1})", flowChartName, setColor);
-                flowChartColor.Add(flowChartName, setColor);
+                foreach (var flowChartName in fcCmd.Keys)
+                {
+                    string setColor = parseCmdInfo(flowChartName.ToString());
+                    Console.WriteLine("flowChartName=({0}), setColor=({1})", flowChartName, setColor);
+                    flowChartColor.Add(flowChartName, setColor);
+                }
             }
-
-            Dictionary<Thread, object> threads = new Dictionary<Thread, object>();
-            foreach (var flowChartName in fcCmd.Keys)
+            else
             {
-                ParameterizedThreadStart ParStart = new ParameterizedThreadStart(parseCmdInfo);
-                Thread myThread = new Thread(ParStart);
-                object name = flowChartName;
-                threads.Add(myThread, name);
-            }
-
-            foreach (Thread t in threads.Keys)
-            {
-                t.Start(threads[t]);
-            }
-
-            foreach (Thread t in threads.Keys)
-            {
-                if (t.IsAlive)
-                    t.Abort();
+                /// 方案二 ： 同时点亮, 但没有返回值
+                Dictionary<Thread, object> threads = new Dictionary<Thread, object>();
+                foreach (var flowChartName in fcCmd.Keys)
+                {
+                    ParameterizedThreadStart ParStart = new ParameterizedThreadStart(parseCmdInfo);
+                    Thread myThread = new Thread(ParStart);
+                    object name = flowChartName;
+                    threads.Add(myThread, name);
+                }
+                foreach (Thread t in threads.Keys)
+                {
+                    t.Start(threads[t]);
+                }
             }
             return flowChartColor;
         }
 
         /// <summary>
-        /// 循环解析每个流程图应该的颜色
+        /// 同时分析每个流程图应该的颜色 thread
         ///  "#FFB5B5B5" ,//未知;"#FF00FF00" ,//可用
         ///  "#FFFF0000" ,//故障;"#FFFFFF00" ,//跳过
         /// </summary>
@@ -722,42 +754,9 @@ namespace SCMTMainWindow.Component.SCMTControl
             if (null == leafList)
                 return ;
             string lastColor = DecisionAnalysisgetOneCmdColor("", leafList);
-
-
-            ///// string boardAddr = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
-            //List<string> colorList = new List<string>();
-            //foreach (var leaf in leafList)
-            //{
-            //    string cmdName = cmd;
-            //    string color = DecisionAnalysisgetOneCmdColor(cmd,cmdContainer[cmd]);
-            //    colorList.Add(color);
-
-            //    /// 颜色
-            //    /// 逻辑 : 只要有一个命令cmd符合 跳过的颜色，就不继续判断了
-            //    if (String.Equals("#FFFFFF00", color)) // 跳过|| String.Equals("#FFFF0000", color)//故障
-            //    {
-            //        break;
-            //    }
-            //}
-
-            //string lastColor = "#FF00FF00";//可用
-            //foreach (var color in colorList)
-            //{
-            //    if (String.Equals("#FFFFFF00", color)) // 跳过|| String.Equals("#FFFF0000", color)//故障
-            //    {
-            //        lastColor = color;
-            //        break;
-            //    }
-            //    if (String.Equals("#FFFF0000", color)) // 故障
-            //    {
-            //        lastColor = color;
-            //    }
-            //}
-
-            ///
             Dictionary<string, string> colr = new Dictionary<string, string>() { { flowChartName, lastColor } };
             setColor(colr);
-            Console.WriteLine("======== {0} ======end====", flowChartName);
+            //Console.WriteLine("======== {0} ======end====", flowChartName);
             return ;
         }
 
@@ -768,42 +767,6 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// <returns></returns>
         public string parseCmdInfo(string flowChartName)
         {
-#if false
-            Dictionary<string, List<Dictionary<string, string>>> cmdContainer = fcCmd[flowChartName];
-            if (null == cmdContainer)
-                return "";
-
-            /// string boardAddr = "172.27.245.92";       // TODO 这里需要使用实际的IP地址
-            List<string> colorList = new List<string>();
-            foreach (var cmd in cmdContainer.Keys)
-            {
-                string cmdName = cmd;
-                string color = DecisionAnalysisgetOneCmdColor(cmd, cmdContainer[cmd]);
-                colorList.Add(color);
-
-                /// 颜色
-                /// 逻辑 : 只要有一个命令cmd符合 跳过的颜色，就不继续判断了
-                if (String.Equals("#FFFFFF00", color)) // 跳过|| String.Equals("#FFFF0000", color)//故障
-                {
-                    break;
-                }
-            }
-
-            string lastColor = "#FF00FF00";//可用
-            foreach (var color in colorList)
-            {
-                if (String.Equals("#FFFFFF00", color)) // 跳过|| String.Equals("#FFFF0000", color)//故障
-                {
-                    lastColor = color;
-                    break;
-                }
-                if (String.Equals("#FFFF0000", color)) // 故障
-                {
-                    lastColor = color;
-                }
-            }
-            return lastColor;
-#endif
             return "";
         }
         /// <summary>
@@ -960,7 +923,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             return isLastLeaf;
         }
 
-#region [废弃]原因 : 使用 snmp 的 getNext 功能 : 可以连续只获取有效行状态的实例的节点值，不用进行无效循环.
+        #region [废弃]原因 : 使用 snmp 的 getNext 功能 : 可以连续只获取有效行状态的实例的节点值，不用进行无效循环.
         /// <summary>
         /// 获取单个叶子节点的所有的索引
         /// </summary>
@@ -1032,6 +995,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         }
 #endregion
 
+        #region 比较颜色相关的函数
         private delegate bool CompDataResult(int snmpReValue, int xmlValue);
         private bool CompRulesIsGreaterThan(int snmpReValue, int xmlValue)
         {
@@ -1120,7 +1084,8 @@ namespace SCMTMainWindow.Component.SCMTControl
 
             return compResult;// new Dictionary<string, string>() {{ cmdName, colorStr[1]}};
         }
-#endregion
+        #endregion 比较颜色相关的函数
+        #endregion 点亮每个流程图颜色
 
     }
 }
