@@ -1395,11 +1395,10 @@ namespace SCMTMainWindow
                     column.Binding = new Binding("indexlist.m_Content");
                     this.MibDataGrid.Columns.Add(column);
                 }
-                int Loop = 0;
 				foreach (var iter3 in oid_en)
 				{
-                    Loop++;
-                    if (Loop <= RealIndexCount)
+                    string[] temp = iter3.Key.ToString().Split('.');
+                    if ((RealIndexCount >0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
                     {
                         //索引不对应列名
                         continue;
