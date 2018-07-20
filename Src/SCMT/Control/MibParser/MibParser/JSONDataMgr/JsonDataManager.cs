@@ -15,6 +15,7 @@ using System;
 using System.Threading;
 using System.Data;
 using CommonUtility;
+using System.IO;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -172,8 +173,23 @@ namespace MIBDataParser.JSONDataMgr
 
             isObjJson2OK = true;
             //Console.WriteLine("DbToJson : TreeReference end " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            ConvertFileEncoding(_jsonFilePath + "Tree_Reference.json", _jsonFilePath + "Tree_Collect.json", System.Text.Encoding.UTF8);
         }
-
+        private void FileCopy(string path, string path2)
+        {
+            if (File.Exists(path2))
+            {
+                File.Delete(path2);
+            }
+            File.Copy(path, path2, true);
+        }
+        static void ConvertFileEncoding(string sourceFile, string destFile, System.Text.Encoding targetEncoding)
+        {
+            destFile = string.IsNullOrEmpty(destFile) ? sourceFile : destFile;
+            System.IO.File.WriteAllText(destFile,
+            System.IO.File.ReadAllText(sourceFile, System.Text.Encoding.Default),
+            targetEncoding);
+        }
         /// <summary>
         /// 解析lm.dtz 写 cmd.json
         /// </summary>
