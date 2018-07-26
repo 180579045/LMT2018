@@ -47,7 +47,7 @@ namespace SCMTMainWindow.Component.ViewModel
                 ColName_Property.Add(column_name, name);
 
                 result = value;
-                return true;
+                 return true;
             }
             // StartEditing事件，判断应该使用那个属性操作;
             if (binder.Name == "JudgePropertyName_StartEditing" && binder.CallInfo.ArgumentCount == 1)

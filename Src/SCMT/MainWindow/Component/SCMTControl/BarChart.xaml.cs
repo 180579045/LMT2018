@@ -21,21 +21,21 @@ using System.Threading;
 namespace SCMTMainWindow.Component.SCMTControl
 {
     /// <summary>
-    /// LinechartContent.xaml 的交互逻辑
+    /// BarChart.xaml 的交互逻辑
     /// </summary>
-    public partial class LinechartContent : UserControl
+    public partial class BarChart : UserControl
     {
-        //Add By Mayi;
         //为了实现鼠标拖拽，创建全局变量，通过全局变量进行添加;
         public CallbackObjectForJs m_CbForJs = new CallbackObjectForJs();
         private bool GettingValue = false;
 
-        public LinechartContent()
+        public BarChart()
         {
             InitializeComponent();
+
             this.address.Address = System.Environment.CurrentDirectory + @"\LineChart_JS\LineChart.html";
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-            
+
             //string[] data = { "16:49:01", "16:49:02", "16:49:03", "16:49:04", "16:49:05", "16:49:06" };
             //double[] da_Num = CallbackObjectForJs.randomArr(36);       // 构造option，以显示在js中，作为初始默认显示;
             m_CbForJs.canvas_height = "300";
@@ -43,22 +43,11 @@ namespace SCMTMainWindow.Component.SCMTControl
 
             this.address.RegisterJsObject("JsObj", m_CbForJs);         // 向浏览器注册JavaScript对象,对象名称是JsObj，在前端可以访问;
             this.address.BeginInit();                                  // 刷新页面;
-            
+
             // Add By Mayi;
             // 创建  CefSharp  的  drop  事件，用来接收鼠标拖拽的对象;
             this.address.AllowDrop = true;
             this.address.Drop += Address_Drop;
-
-            //series mySeries = new series("testDefault", "line", false, "circle", "", da_Num);       // 向与前端交互的JsObj添加series,包含所有的折线数据;
-            //legend myLegend = new legend(m_CbForJs.listForLegend);                                  // 向与前端交互的JsObj添加legend;
-            //xAxis xaxis = new xAxis(data);                                                          // 向与前端交互的JsObj添加xAxis;
-
-            //m_CbForJs.listForLegend.Add("testDefault");
-            //m_CbForJs.listForSeries.Add(mySeries);
-
-            //Option myOption = new Option(myLegend, m_CbForJs.listForSeries, xaxis);
-            //m_CbForJs.Option = Option.ObjectToJson(myOption);                                       // 将数据转换为Json格式，让前端读取;
-            
         }
 
         /// <summary>
@@ -97,28 +86,27 @@ namespace SCMTMainWindow.Component.SCMTControl
             {
                 DataGridCell_MIB_MouseEventArgs cell = e.Data.GetData(typeof(DataGridCell_MIB_MouseEventArgs)) as DataGridCell_MIB_MouseEventArgs;
 
-                foreach(var iter in cell.SelectedCell.Properties)
+                foreach (var iter in cell.SelectedCell.Properties)
                 {
                     // 找与其对应的节点;
-                    if(cell.HeaderName == (iter.Value as DataGrid_Cell_MIB).MibName_CN)
+                    if (cell.HeaderName == (iter.Value as DataGrid_Cell_MIB).MibName_CN)
                     {
-                        Console.WriteLine("Selected Cell Keys is " + iter.Key + "and value is " + (iter.Value as DataGrid_Cell_MIB).MibName_CN + 
-                                          " This Node oid is "+ (iter.Value as DataGrid_Cell_MIB).oid);
+                        Console.WriteLine("Selected Cell Keys is " + iter.Key + "and value is " + (iter.Value as DataGrid_Cell_MIB).MibName_CN +
+                                          " This Node oid is " + (iter.Value as DataGrid_Cell_MIB).oid);
 
                         List<string> inputoid = new List<string>();
                         inputoid.Add((iter.Value as DataGrid_Cell_MIB).oid);
 
                         GettingValue = true;
+                        string[] data = { };
                         // 启动一个线程不断读取该节点的数值并回填到EChart的option中;
                         Task ReadValue_FromSNMP = new Task(() =>
                         {
-                            string[] data = { };
                             string[] da_Num = { };       // 构造option，以显示在js中，作为初始默认显示;
                             Dictionary<string, string> Ret = new Dictionary<string, string>();
                             List<string> da_Num_content = new List<string>();
                             List<string> data_content = new List<string>();
 
-                            //将前面部分置空
                             string[] db_temp = new string[m_CbForJs.listForXAxis.Length];
                             da_Num_content = da_Num_content.Concat(db_temp).ToList();
 
@@ -130,7 +118,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                                 Ret = snmpmsg1.GetRequest(inputoid, "public", "172.27.245.92");
                                 double temp = 0;
 
-                                foreach(var iter2 in Ret)
+                                foreach (var iter2 in Ret)
                                 {
                                     Console.WriteLine("Get MibValue is " + iter2.Value);
                                     Double.TryParse(iter2.Value, out temp);
@@ -140,12 +128,12 @@ namespace SCMTMainWindow.Component.SCMTControl
                                     data_content.Add(DateTime.Now.ToString("T"));
                                     data = data_content.ToArray();
                                 }
-
+                                
                                 Thread.Sleep(2000);
 
-                                series mySeries = new series((iter.Value as DataGrid_Cell_MIB).MibName_CN, "line", false, "circle", "", da_Num);
+                                series mySeries = new series((iter.Value as DataGrid_Cell_MIB).MibName_CN, "bar", false, "", "", da_Num);
 
-                                if(!m_CbForJs.listForLegend.Contains((iter.Value as DataGrid_Cell_MIB).MibName_CN))
+                                if (!m_CbForJs.listForLegend.Contains((iter.Value as DataGrid_Cell_MIB).MibName_CN))
                                 {
                                     m_CbForJs.listForLegend.Add((iter.Value as DataGrid_Cell_MIB).MibName_CN);
                                     m_CbForJs.listForSeries.Add(mySeries);
@@ -158,13 +146,11 @@ namespace SCMTMainWindow.Component.SCMTControl
                                     {
                                         m_CbForJs.listForXAxis = m_CbForJs.listForXAxis.Length > data.Length ? m_CbForJs.listForXAxis : data;
                                     }
-
                                 }
                                 else
                                 {
                                     int index = m_CbForJs.listForLegend.IndexOf((iter.Value as DataGrid_Cell_MIB).MibName_CN);
-                                    m_CbForJs.listForSeries[index] = mySeries;
-                                    if (m_CbForJs.listForSeries.Count == 0)
+                                    m_CbForJs.listForSeries[index] = mySeries; if (m_CbForJs.listForSeries.Count == 0)
                                     {
                                         m_CbForJs.listForXAxis = data;
                                     }
@@ -182,14 +168,14 @@ namespace SCMTMainWindow.Component.SCMTControl
                                 m_CbForJs.Option = Option.ObjectToJson(myOption);
                             }
 
-                            
+
 
                         });
 
                         ReadValue_FromSNMP.Start();
                     }
                 }
-                
+
             }
             catch (Exception ex)
             {

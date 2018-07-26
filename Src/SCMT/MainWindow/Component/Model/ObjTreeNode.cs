@@ -264,7 +264,8 @@ namespace SCMTMainWindow
             items.SubExpender.Children.Clear();
 
             // 将叶子节点加入右侧容器;
-            if ((items.obj_type as ObjNode).SubObj_Lsit != null)
+            ObjNode node = items.obj_type as ObjNode;
+            if (node.SubObj_Lsit != null)
             {
                 foreach (var iter in (items.obj_type as ObjNode).SubObj_Lsit)
                 {
@@ -282,17 +283,19 @@ namespace SCMTMainWindow
                     items.SubExpender.Children.Add(subitems);
                 }
                 // 该节点有对应的表可查;
-                if(this.ObjTableName != @"/")
+                if(node.ObjTableName != @"/")
                 {
-
+                    ObjTreeNode_Click(node);
                 }
             }
             else
             {
-                MetroExpander item = sender as MetroExpander;
-                ObjNode node = item.obj_type as ObjNode;
-
                 Console.WriteLine("LeafNode Clicked!" + node.ObjName);
+                // 该节点有对应的表可查;
+                if (node.ObjTableName != @"/")
+                {
+                    ObjTreeNode_Click(node);
+                }
             }
 
         }
@@ -328,11 +331,114 @@ namespace SCMTMainWindow
         /// <summary>
         /// 点击树枝节点时的处理方法;
         /// </summary>
-        public void ObjTreeNode_Click()
+        public void ObjTreeNode_Click(ObjNode node)
         {
-            Console.WriteLine("TreeNode Clicked!");
+            Console.WriteLine("TreeNode Clicked to show info!");
+            IReDataByTableEnglishName ret = new ReDataByTableEnglishName();
+            Dictionary<string, string> GetNextRet = new Dictionary<string, string>();
+            int IndexNum = 0;
+            contentlist.Clear();
+            GetNextResList.Clear();
+            ObjParentOID = String.Empty;
+
+            // 目前可以获取到节点对应的中文名以及对应的表名;
+            Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " + node.ObjTableName);
+
+            string errorInfo = "";
+            //根据表名获取该表内所有MIB节点;
+            nodeb.db = Database.GetInstance();
+            nodeb.db.getDataByTableEnglishName(node.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+
+            List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
+            name_cn.Clear();
+            oid_cn.Clear();
+            oid_en.Clear();         // 每个节点都有自己的表数据结构;
+            try
+            {
+                int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
+                IndexCount = int.Parse(ret.indexNum);
+                LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
+                ChildCount = ret.childrenList.Count - IndexNum;
+                ObjParentOID = ret.oid;                                // 将父节点OID赋值;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+
+
+
+            // 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
+            foreach (var iter in ret.childrenList)
+            {
+                oidlist.Clear();
+                // 索引不参与查询,将所有其他孩子节点进行GetNext查询操作;
+                if (int.Parse(iter.childNo) > IndexNum)
+                {
+                    // 如果不是真MIB，不参与查询;
+                    if (iter.isMib != "1")
+                    {
+                        ChildCount--;
+                        continue;
+                    }
+
+                    string temp = prev_oid + iter.childOid;
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+                    oidlist.Add(temp);
+
+                    // 通过GetNext查询单个节点数据;
+                    SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
+                    msg.GetNextRequestWhenStop(new AsyncCallback(ReceiveResBySingleNode), new AsyncCallback(NotifyMainUpdateDataGrid), oidlist);
+                }
+                else
+                {
+                    //ty:增加索引的信息
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+                }
+
+                // 如果是单个节点遍历，就只能在此处组DataGrid的VM类;
+            }
+
+            // 通过GetNext获取整表数据，后来发现基站不支持,如果基站支持后，在此处GetNext即可;
+            //SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
+            //msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
+
         }
 
+        /// <summary>
+        /// 按照单个节点进行GetNext;
+        /// 该函数将所有数据收集完成后再通知主界面DataGrid更新;
+        /// </summary>
+        /// <param name="ar"></param>
+        private void ReceiveResBySingleNode(IAsyncResult ar)
+        {
+            SnmpMessageResult res = ar as SnmpMessageResult;
+
+            // 遍历GetNext结果，添加到对应容器当中,GetNextResList容器中保存着全量集;
+            foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
+            {
+                GetNextResList.Add(iter.Key, iter.Value);
+            }
+
+        }
+        /// <summary>
+        /// ReceiveResBySingleNode的GetNext函数收集完成之后，调用主界面更新DataGrid
+        /// </summary>
+        /// <param name="ar"></param>
+        private void NotifyMainUpdateDataGrid(IAsyncResult ar)
+        {
+            LastColumn++;
+
+            // 全部节点都已经收集完毕;
+            if (LastColumn == ChildCount)
+            {
+                main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount);
+            }
+        }
     }
 
     /// <summary>
@@ -413,6 +519,11 @@ namespace SCMTMainWindow
                 }
                 else
                 {
+                    //ty:增加索引的信息
+                    name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                    oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+                    oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+
                 }
 
                 // 如果是单个节点遍历，就只能在此处组DataGrid的VM类;

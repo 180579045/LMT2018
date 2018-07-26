@@ -28,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Chart_JS", "Chart_JS", "{4D004F37-3F66-49CC-8614-AFCAB9606B6C}"
 	ProjectSection(SolutionItems) = preProject
 		UI\Chart\LineChart_JS\echarts.min.js = UI\Chart\LineChart_JS\echarts.min.js
+		UI\Chart\HeatMapChart_JS\heatmap-cartesian.html = UI\Chart\HeatMapChart_JS\heatmap-cartesian.html
 		UI\Chart\LineChart_JS\LineChart.html = UI\Chart\LineChart_JS\LineChart.html
 	EndProjectSection
 EndProject
