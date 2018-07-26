@@ -70,13 +70,13 @@ namespace SCMTMainWindow
 		private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
 
 		private LayoutAnchorable subForMessageRecv;       //信令消息界面
-		private Component.SCMTControl.MessageRecv messageRecv = new MessageRecv();
+		private MessageRecv messageRecv = new MessageRecv();
 		public MainWindow()
 		{
 			InitializeComponent();
-			this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
-			this.MinWidth = 1024;                                             // 设置一个最小分辨率;
-			this.MinHeight = 768;                                             // 设置一个最小分辨率;
+			WindowState = WindowState.Maximized;          // 默认全屏模式;
+			MinWidth = 1024;                                             // 设置一个最小分辨率;
+			MinHeight = 768;                                             // 设置一个最小分辨率;
 
 			InitView();                                                       // 初始化界面;
 			RegisterFunction();                                               // 注册功能;
@@ -106,9 +106,9 @@ namespace SCMTMainWindow
 		private void InitView()
 		{
 			NBControler = NodeBControl.GetInstance();
-			this.MibDataGrid.MouseMove += MibDataGrid_MouseMove;
-			this.MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
-			this.MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
+			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
+			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
+			MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
 
 			// 解析保存的基站节点信息
 			var nodeList = NBControler.GetNodebInfo();
@@ -158,11 +158,11 @@ namespace SCMTMainWindow
 		private void RefreshObj(IList<ObjNode> ItemsSource)
 		{
 			// 将右侧叶节点容器容器加入到对象树子容器中;
-			this.Obj_Root.SubExpender = this.FavLeaf_Lists;
+			Obj_Root.SubExpender = FavLeaf_Lists;
 
 			foreach (ObjNode items in ItemsSource)
 			{
-				items.TraverseChildren(this.Obj_Root, this.FavLeaf_Lists, 0);
+				items.TraverseChildren(Obj_Root, FavLeaf_Lists, 0);
 			}
 		}
 
@@ -190,7 +190,7 @@ namespace SCMTMainWindow
 				}
 				else
 				{
-					this.Dispatcher.Invoke(() =>
+					Dispatcher.Invoke(() =>
 					{
 						ObjNodeControl Ctrl = new ObjNodeControl(node);  // 初始化象树树信息;
 						RefreshObj(Ctrl.m_RootNode);                     // 向控件更新对象树;
@@ -289,12 +289,12 @@ namespace SCMTMainWindow
 
 		private void Collect_Node_Click(object sender, EventArgs e)
 		{
-			object objCollect = this.Obj_Collect.Content;
+			object objCollect = Obj_Collect.Content;
 			if(objCollect != null)
 			{
-				this.Obj_Collect.Content = null;
+				Obj_Collect.Content = null;
 			}
-			objCollect = this.Obj_Collect.Content;
+			objCollect = Obj_Collect.Content;
 			ObjNode Objnode;
 			List<ObjNode> m_NodeList = new List<ObjNode>();
 			List<ObjNode> RootNodeShow = new List<ObjNode>();
@@ -377,12 +377,12 @@ namespace SCMTMainWindow
 			RootNodeShow.Add(Root);
 
 			// 将右侧叶节点容器容器加入到对象树子容器中;
-			this.Obj_Collect.Clear();
-			this.Obj_Collect.SubExpender = this.FavLeaf_Lists;
+			Obj_Collect.Clear();
+			Obj_Collect.SubExpender = FavLeaf_Lists;
 
 			foreach (ObjNode items in RootNodeShow)
 			{
-				items.TraverseCollectChildren(this.Obj_Collect, this.FavLeaf_Lists, 0);
+				items.TraverseCollectChildren(Obj_Collect, FavLeaf_Lists, 0);
 			}
 		}
 		#endregion
@@ -404,7 +404,7 @@ namespace SCMTMainWindow
 			sub.CanClose = true;
 			sub.CanAutoHide = false;
 
-			this.Pane.Children.Add(sub);
+			Pane.Children.Add(sub);
 			sub.Float();
 
 			// 当窗口发生变化时;
@@ -467,7 +467,7 @@ namespace SCMTMainWindow
 			sub.CanClose = true;
 			sub.CanAutoHide = false;
 
-			this.Pane.Children.Add(sub);
+			Pane.Children.Add(sub);
 			sub.Float();
 
 			// 当窗口发生变化时;
@@ -496,7 +496,7 @@ namespace SCMTMainWindow
 
 			subForMessageRecv.Hiding += subForMessageRecv_Hiding;
 
-			this.Pane.Children.Add(subForMessageRecv);
+			Pane.Children.Add(subForMessageRecv);
 
 			subForMessageRecv.Show();
 			subForMessageRecv.Float();
@@ -585,7 +585,7 @@ namespace SCMTMainWindow
 			if (null != target)
 			{
 				node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-				this.g_SelectedEnbIP = node.NeAddress.ToString();
+				g_SelectedEnbIP = node.NeAddress.ToString();
 
 				// TODO 选中后的样式改变待完善
 				//已完善
@@ -623,7 +623,7 @@ namespace SCMTMainWindow
 				{
 					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
 					//NodeBControl.GetInstance().ConnectNodeb(target.Header);
-					ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress.ToString()}", "SCMT");
+					ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress}", "SCMT");
 					node.Connect();
 					ObjNode.main = this;
 				}
@@ -632,7 +632,7 @@ namespace SCMTMainWindow
 
 		private void DisconStationMenu_Click(object sender, RoutedEventArgs e)
 		{
-			var tip = $"基站将断开连接，并且该基站打开的功能窗口也将关闭。是否继续操作？";			
+			var tip = $"基站将断开连接，并且该基站打开的功能窗口也将关闭。是否继续操作？";
 
 			var mui = sender as MenuItem;
 			if (null != mui)
@@ -659,7 +659,34 @@ namespace SCMTMainWindow
 		// 基站节点右键菜单：删除，响应函数
 		private void DeleteStationMenu_Click(object sender, RoutedEventArgs e)
 		{
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var parent = (ContextMenu) mui.Parent;
+				if (null == parent)
+				{
+					return;
+				}
 
+				var target = parent.PlacementTarget as MetroExpander;
+				if (null == target)
+				{
+					return;
+				}
+
+				var tip = $"确定要删除该网元及其所有子网元？这将关闭该网元对应的所有窗口。";
+				var dr = MessageBox.Show(tip, "删除网元", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
+				if (MessageBoxResult.Yes != dr)
+				{
+					return;
+				}
+
+				var nodeName = target.Header;
+				NodeBControl.GetInstance().DisConnectNodeb(nodeName);
+				NodeBControl.GetInstance().DelElementByFriendlyName(nodeName);
+
+				ExistedNodebList.Children.Remove(target);
+			}
 		}
 
 		private void EnableMenu(ContextMenu menuRoot, string header, bool bEnable = true)
@@ -740,7 +767,6 @@ namespace SCMTMainWindow
 		{
 			List<Event> le = new List<Event>();
 			byte[] bytes = { 0x06 ,0xD6, 0x12, 0x09, 0x00, 0x20, 0xFF, 0xFF, 0xFF, 0x28,0xFF, 0xF0, 0x5A, 0xC4, 0x95, 0x6C, 0x1D, 0x36, 0xE3, 0xB4, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00, 0x5C, 0x00 };
-			IDbCommand sessionSqlCmd;
 			DbOptions opts = new DbOptions();
 			opts.ConnStr = DbConnSqlite.GetConnectString(DbConnProvider.DefaultSqliteDatabaseName); ;
 			opts.ConnType = CDLBrowser.Parser.DatabaseMgr.DbType.SQLite;
@@ -755,16 +781,16 @@ namespace SCMTMainWindow
 			dbconn.ExcuteNonQuery("PRAGMA journal_mode = MEMORY");
 			*/
 
-			sessionSqlCmd = dbconn.BeginTransaction();
+			var sessionSqlCmd = dbconn.BeginTransaction();
 			string sql = string.Empty;
 			EventParser parser = new EventParser();
-			parser.Version = "1.3.06659";    
+			parser.Version = "1.3.06659";
 
 			EventParserManager.Instance.AddEventParser(parser.Version, parser);
 			Event newe = ParseEvent(bytes,"1.3.06659");
 			le.Add(newe);
-		   sql = dbconn.CreateInsertSqlFromObject(typeof(Event), newe, "Event", true);
-		  //  dbconn.ExcuteByTrans(sql, sessionSqlCmd);
+			sql = dbconn.CreateInsertSqlFromObject(typeof(Event), newe, "Event", true);
+			//  dbconn.ExcuteByTrans(sql, sessionSqlCmd);
 
 			IDbDataParameter dbparameterRaw = null;
 			IDbDataParameter dbparameterBody = null;
@@ -785,10 +811,8 @@ namespace SCMTMainWindow
 		private Event  ParseEvent(byte[] eventsBuffer,string version) {
 			var memoryStream = new MemoryStream(eventsBuffer);
 			string timeCircleReport = String.Empty;
-			string strDateTime;
-			DateTime dtStart;
-			dtStart = DateTime.Now;
-			strDateTime = dtStart.ToString("yyyy-MM-dd hh:mm:ss.fff");
+			string strDateTime = TimeHelper.DateTimeToString(DateTime.Now, "yyyy-MM-dd hh:mm:ss.fff");
+
 			Event evt = null;
 			try
 			{
@@ -838,9 +862,9 @@ namespace SCMTMainWindow
 						{
 							string ueType = String.Empty;
 							if (evtNameForUeType.Equals("S1 Initial Context Setup Request"))
-								ueType = this.FindValueFromTarget(displayContent, "UERadioCapability");
+								ueType = FindValueFromTarget(displayContent, "UERadioCapability");
 							else if (evtNameForUeType.Equals("UECapabilityInformation"))
-								ueType = this.FindValueFromTarget(displayContent, "ueCapabilityRAT-Container");
+								ueType = FindValueFromTarget(displayContent, "ueCapabilityRAT-Container");
 							if (!string.IsNullOrEmpty(ueType))
 							{
 								int startPosition = ueType.LastIndexOf(')') + 1;
@@ -854,7 +878,7 @@ namespace SCMTMainWindow
 
 						}
 						catch (Exception ex)
-						{                           
+						{
 						}
 					}
 				}
@@ -939,10 +963,10 @@ namespace SCMTMainWindow
 		#region 快捷键在此
 		//Add by mayi 
 		//实现  鼠标的移动事件，执行拖拽
-		private void TreeViewItem_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+		private void TreeViewItem_MouseMove(object sender, MouseEventArgs e)
 		{
 			//判断鼠标左键是否按下，否则，只要鼠标在范围内移动就会一直触发事件
-			if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+			if (e.LeftButton == MouseButtonState.Pressed)
 			{
 				try
 				{
@@ -1213,7 +1237,7 @@ namespace SCMTMainWindow
 			//sub.FloatingHeight = 300;
 			//sub.FloatingWidth = 800;
 
-			this.Pane.Children.Add(sub);
+			Pane.Children.Add(sub);
 			sub.Float();
 
 		}
@@ -1229,30 +1253,30 @@ namespace SCMTMainWindow
 			SnmpMessageResult res = ar as SnmpMessageResult;
 			
 			// 将信息回填到DataGrid当中;
-			this.MibDataGrid.Dispatcher.Invoke(new Action(()=>
+			MibDataGrid.Dispatcher.Invoke(new Action(()=>
 			{
-				this.MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
+				MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
 				dynamic model = new DyDataGrid_MIBModel();
 				
 				// 遍历GetNext的结果;
 				foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
 				{
-					Console.WriteLine("NextIndex" + iter.Key.ToString() + " Value:" + iter.Value.ToString());
+					Console.WriteLine("NextIndex" + iter.Key + " Value:" + iter.Value);
 
 					// 通过基站反馈回来的一行结果，动态生成一个类型，用来与DataGrid对应;
 					foreach (var iter2 in oid_cn)
 					{
 						// 如果存在对应关系;
-						if (iter.Key.ToString().Contains(iter2.Key))
+						if (iter.Key.Contains(iter2.Key))
 						{
-							Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value.ToString() + " and Header is:" + iter2.Value.ToString());
+							Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value + " and Header is:" + iter2.Value);
 							model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
 							{
-								m_Content = iter.Value.ToString(),
+								m_Content = iter.Value,
 								oid = iter.Key,
 								MibName_CN = iter2.Value,
 								MibName_EN = oid_en[iter2.Key]
-							}, iter2.Value.ToString());
+							}, iter2.Value);
 						}
 					}
 				}
@@ -1271,11 +1295,11 @@ namespace SCMTMainWindow
 					column.Header = oid_cn[iter3.Key];
 					column.Binding = new Binding(iter3.Value + ".m_Content");
 
-					this.MibDataGrid.Columns.Add(column);
+					MibDataGrid.Columns.Add(column);
   
 				}
 
-				this.MibDataGrid.DataContext = contentlist;
+				MibDataGrid.DataContext = contentlist;
 
 			}));
 		}
@@ -1292,9 +1316,9 @@ namespace SCMTMainWindow
 		{
 			int RealIndexCount = IndexCount; // 真实的索引个数
 			// 将信息回填到DataGrid当中;
-			this.MibDataGrid.Dispatcher.Invoke(new Action(() =>
+			MibDataGrid.Dispatcher.Invoke(new Action(() =>
 			{
-				this.MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
+				MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
 
 				if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
 					IndexCount = 1;
@@ -1304,7 +1328,7 @@ namespace SCMTMainWindow
 				// 调试打印,正式版本记得删除;
 				foreach (var iter in ar)
 				{
-					string[] temp = iter.Key.ToString().Split('.');
+					string[] temp = iter.Key.Split('.');
 					string NowIndex = "";
 					string NowNodeOID = "";
 
@@ -1317,7 +1341,7 @@ namespace SCMTMainWindow
 						NowNodeOID += "." + temp[i];
 					}
 					
-					Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex + 
+					Console.WriteLine("NextIndex " + iter.Key + " and Value is " + iter.Value + " OID Index is " + NowIndex + 
 						" Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
 				}
 
@@ -1325,16 +1349,16 @@ namespace SCMTMainWindow
 				foreach (var iter in ar)
 				{
 					// 获取当前遍历到的节点的索引值(即取最后N位数字);
-					string[] temp = iter.Key.ToString().Split('.');
+					string[] temp = iter.Key.Split('.');
 					string NowIndex = "";
 					for (int i = temp.Length - IndexCount; i < temp.Length; i++)
 					{
 						NowIndex += "." + temp[i];
 					}
-					Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex);
+					Console.WriteLine("NextIndex " + iter.Key + " and Value is " + iter.Value + " OID Index is " + NowIndex);
 
 					// 如果存在索引,且索引没有被添加到表中;
-					if (iter.Key.ToString().Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
+					if (iter.Key.Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
 					{
 						dynamic model = new DyDataGrid_MIBModel();
 						//尝试填写表量表填写实例描述
@@ -1349,9 +1373,9 @@ namespace SCMTMainWindow
 							string IndexContent = "";
 							for (int i = 0; i < RealIndexCount; i++)
 							{
-								string IndexOIDTemp = IndexOIDPre + "." + (i + 1).ToString();
+								string IndexOIDTemp = IndexOIDPre + "." + (i + 1);
 								string IndexOID = IndexOIDTemp.Substring(1);
-								IndexContent += oid_cn[IndexOID].ToString() + temp[temp.Length - RealIndexCount + i];
+								IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
 							}
 							//如下DataGrid_Cell_MIB中的 oid暂时填写成这样
 							model.AddProperty("indexlist", new DataGrid_Cell_MIB()
@@ -1368,7 +1392,7 @@ namespace SCMTMainWindow
 						foreach (var iter3 in ar)
 						{
 							// 将所有相同索引取出;
-							temp = iter3.Key.ToString().Split('.');
+							temp = iter3.Key.Split('.');
 							string TempIndex = "";
 							for (int i = temp.Length - IndexCount; i < temp.Length; i++)
 							{
@@ -1378,7 +1402,7 @@ namespace SCMTMainWindow
 							if (TempIndex == NowIndex)
 							{
 								// 将GetNext整表的OID数值取出到temp_compare;
-								string[] temp_nowoid = iter3.Key.ToString().Split('.');
+								string[] temp_nowoid = iter3.Key.Split('.');
 								string NowNodeOID = "";
 								for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
 								{
@@ -1389,15 +1413,15 @@ namespace SCMTMainWindow
 								// 如果OID匹配;
 								if (oid_cn.ContainsKey(temp_compare))
 								{
-									Console.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value.ToString() + " and Header is:" + oid_cn[temp_compare].ToString());
+									Console.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
 
 									model.AddProperty(oid_en[temp_compare], new DataGrid_Cell_MIB()
 									{
-										m_Content = iter3.Value.ToString(),
+										m_Content = iter3.Value,
 										oid = iter3.Key,
-										MibName_CN = oid_cn[temp_compare].ToString(),
-										MibName_EN = oid_en[temp_compare].ToString()
-									}, oid_cn[temp_compare].ToString());
+										MibName_CN = oid_cn[temp_compare],
+										MibName_EN = oid_en[temp_compare]
+									}, oid_cn[temp_compare]);
 
 									// 已经查询过该索引,后续不再参与查询;
 									if(!AlreadyRead.Contains(NowIndex))
@@ -1422,11 +1446,11 @@ namespace SCMTMainWindow
 					DataGridTextColumn column = new DataGridTextColumn();
 					column.Header = "实例描述";
 					column.Binding = new Binding("indexlist.m_Content");
-					this.MibDataGrid.Columns.Add(column);
+					MibDataGrid.Columns.Add(column);
 				}
 				foreach (var iter3 in oid_en)
 				{
-					string[] temp = iter3.Key.ToString().Split('.');
+					string[] temp = iter3.Key.Split('.');
 					if ((RealIndexCount >0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
 					{
 						//索引不对应列名
@@ -1436,10 +1460,10 @@ namespace SCMTMainWindow
 					DataGridTextColumn column = new DataGridTextColumn();
 					column.Header = oid_cn[iter3.Key];
 					column.Binding = new Binding(iter3.Value + ".m_Content");
-					this.MibDataGrid.Columns.Add(column);
+					MibDataGrid.Columns.Add(column);
 				}
 
-				this.MibDataGrid.DataContext = contentlist;
+				MibDataGrid.DataContext = contentlist;
 			}));
 		}
 
@@ -1457,7 +1481,7 @@ namespace SCMTMainWindow
 				{
 
 					Console.WriteLine("MouseMove;函数参数e反馈的实体是单元格内数据内容:" +
-						((e.OriginalSource as DataGridCell).Column).Header.ToString());
+						((e.OriginalSource as DataGridCell).Column).Header);
 
 					DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
 
@@ -1470,7 +1494,7 @@ namespace SCMTMainWindow
 					DataGridCell item = e.OriginalSource as DataGridCell;
 
 					// 在MouseMove事件当中可以添加鼠标拖拽事件;
-					if (e.MiddleButton == System.Windows.Input.MouseButtonState.Pressed)
+					if (e.MiddleButton == MouseButtonState.Pressed)
 					{
 						DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
 						{
@@ -1482,7 +1506,7 @@ namespace SCMTMainWindow
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine("MouseMove Exception" + ex.ToString());
+				Console.WriteLine("MouseMove Exception" + ex);
 			}
 		}
 
@@ -1491,7 +1515,7 @@ namespace SCMTMainWindow
 			if (e.OriginalSource is DataGridCell)
 			{
 				Console.WriteLine("PreviewMouseMove;函数参数e反馈的实体是单元格内数据内容:" +
-					((e.OriginalSource as DataGridCell).Column).Header.ToString());
+					((e.OriginalSource as DataGridCell).Column).Header);
 			}
 		}
 
@@ -1506,13 +1530,13 @@ namespace SCMTMainWindow
 
 					foreach (var iter in (e.OriginalSource as DataGrid).SelectedCells)
 					{
-						Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header.ToString());
+						Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header);
 						SelectedIter = iter.Item as DyDataGrid_MIBModel;
 
 						DataGrid item = e.OriginalSource as DataGrid;
 
 						// 在MouseMove事件当中可以添加鼠标拖拽事件;
-						if (e.LeftButton == System.Windows.Input.MouseButtonState.Pressed)
+						if (e.LeftButton == MouseButtonState.Pressed)
 						{
 							DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
 							{
@@ -1538,19 +1562,19 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		private void subForMessageRecv_Hiding(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			this.messageRecv.ClearAll();
+			messageRecv.ClearAll();
 		}
 
 		private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
-			if(this.g_SelectedEnbIP == null)
+			if(g_SelectedEnbIP == null)
 			{
 				MessageBox.Show("未选择基站，请单击需要显示的基站");
 				return;
 			}
 
-			string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(this.g_SelectedEnbIP);
+			string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(g_SelectedEnbIP);
 
 			foreach(LayoutAnchorable item in listAvalon)
 			{
@@ -1561,7 +1585,7 @@ namespace SCMTMainWindow
 				}
 			}
 
-			var content = new Component.SCMTControl.FileManager.TestTwoFileManager(this.g_SelectedEnbIP);
+			var content = new Component.SCMTControl.FileManager.TestTwoFileManager(g_SelectedEnbIP);
 
 			var sub = new LayoutAnchorable
 			{
@@ -1575,20 +1599,20 @@ namespace SCMTMainWindow
 			};
 
 			listAvalon.Add(sub);
-			this.FileManagerLAP.Children.Add(sub);
+			FileManagerLAP.Children.Add(sub);
 		}
 
 		void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			//可以记录日志并转向错误bug窗口友好提示用户
-			if (e.ExceptionObject is System.Exception)
+			if (e.ExceptionObject is Exception)
 			{
-				Exception ex = (System.Exception)e.ExceptionObject;
+				Exception ex = (Exception)e.ExceptionObject;
 				Log.WriteLogFatal(ex);
 				MessageBox.Show(ex.Message);
 			}
 		}
-		void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+		void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
 		{
 			//可以记录日志并转向错误bug窗口友好提示用户
 			e.Handled = true;
@@ -1640,7 +1664,7 @@ namespace SCMTMainWindow
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
 			InitDataBase();
 			EnableMenu(ip, "连接基站", false);
-			EnableMenu(ip, "断开连接", true);
+			EnableMenu(ip, "断开连接");
 		}
 		// 断开连接
 		private void OnDisconnect(SubscribeMsg msg)
@@ -1650,7 +1674,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
-			EnableMenu(ip, "连接基站", true);
+			EnableMenu(ip, "连接基站");
 			EnableMenu(ip, "断开连接", false);
 
 			// 文件管理按钮禁用，文件管理窗口关闭
@@ -1695,7 +1719,7 @@ namespace SCMTMainWindow
 			sub.CanClose = true;
 			sub.CanAutoHide = false;
 
-			this.Pane.Children.Add(sub);
+			Pane.Children.Add(sub);
 			sub.Float();
 
 			// 当窗口发生变化时;

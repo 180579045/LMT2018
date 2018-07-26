@@ -42,7 +42,7 @@ namespace SCMTMainWindow
 			{
 				ObjNode.nodeb = node;
 
-				var jsonContent = FileRdWrHelper.GetFileContent(FilePathHelper.GetAppPath() + m_ObjFilePath);
+				var jsonContent = FileRdWrHelper.GetFileContent(FilePathHelper.GetAppPath() + m_ObjFilePath, Encoding.Default);
 				var nodeList = JsonHelper.SerializeJsonToObject<Nodes>(jsonContent);
 
 				ParseJObject(nodeList);

@@ -93,14 +93,13 @@ namespace SCMTOperationCore.Control
 			return newNodeb;
 		}
 
+		// 删除网元
 		public override bool DelElement(string ip)
 		{
 			if (null == ip || ip.Trim().Equals(""))
 			{
 				throw new ArgumentNullException("ip is null or only space char");
 			}
-
-			RmElement(ip);
 
 			var fname = GetFriendlyNameByIp(ip);
 			if (null == fname)
@@ -109,9 +108,28 @@ namespace SCMTOperationCore.Control
 				return false;
 			}
 
-			if (!BSConInfo.GetInstance().delBaseStationConInfoByName(fname))
+			return DelElementByFriendlyName(fname);
+		}
+
+		// 删除网元，传入参数：网元友好名
+		public bool DelElementByFriendlyName(string friendlyName)
+		{
+			if (string.IsNullOrEmpty(friendlyName))
 			{
-				Log.Error($"数据库删除IP为{ip}的节点数据失败");
+				return false;
+			}
+
+			var node = GetNodeByFName(friendlyName);
+			if (null == node)
+			{
+				return false;
+			}
+
+			RmElement(node.NeAddress.ToString());
+
+			if (!BSConInfo.GetInstance().delBaseStationConInfoByName(friendlyName))
+			{
+				Log.Error($"数据库删除友好名为{friendlyName}的节点数据失败");
 				return false;
 			}
 
