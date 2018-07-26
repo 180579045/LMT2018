@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace SCMTOperationCore.Message.SNMP
 {
+	[Serializable]
 	public class CDTObjectRef : IDTObjectRefInterface, IDisposable
 	{
 		public CDTObjectRef()

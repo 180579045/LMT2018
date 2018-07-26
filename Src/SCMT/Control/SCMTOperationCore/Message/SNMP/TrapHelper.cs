@@ -21,6 +21,24 @@ namespace SCMTOperationCore.Message.SNMP
 		protected byte[] _inBuffer;
 		// 对端IP
 		protected IPEndPoint _peerIp;
+		// Trap端口号
+		protected int m_port = 162;
+
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		public TrapHelper()
+		{
+		}
+
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		/// <param name="port"></param>
+		public TrapHelper(int port)
+		{
+			m_port = port;
+		}
 
 		/// <summary>
 		/// 初始化Trap服务
@@ -53,14 +71,15 @@ namespace SCMTOperationCore.Message.SNMP
 			try
 			{
 				// 绑定本地端口
-				EndPoint localEp = new IPEndPoint(IPAddress.Any, 162);
+				EndPoint localEp = new IPEndPoint(IPAddress.Any, m_port);
 				_socket.Bind(localEp);
 			}
-			catch (Exception ex)
+			catch (SocketException ex)
 			{
 				Log.Error(ex.Message.ToString());
 				_socket.Close();
 				_socket = null;
+				 throw ex;
 			}
 
 			if (_socket == null)

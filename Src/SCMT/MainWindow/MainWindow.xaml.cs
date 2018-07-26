@@ -46,6 +46,7 @@ using System.Windows.Data;
 using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
 using SCMTOperationCore.Message.MsgDispatcher;
 using System.Windows.Media;
+using System.Threading;
 
 namespace SCMTMainWindow
 {
@@ -430,9 +431,102 @@ namespace SCMTMainWindow
 			throw new NotImplementedException();
 		}
 
-		
+
 
 		#endregion
+
+		#region 测试代码==========================================================
+
+		// 主线程捕捉子线程异常
+		private delegate void ThreadExceptionHandler(Exception ex);
+		private static ThreadExceptionHandler exceptionHappend;
+		private static Exception exception;
+
+		private void TestFun(object sender, EventArgs e)
+		{
+			//			LmtTrapMgr.GetInstance();
+			/*
+						CDTSnmpMsgDispose tt = new CDTSnmpMsgDispose();
+						tt.OnTrap(null, null);
+
+			*/
+
+			/*
+			// 捕捉子线程异常
+			exceptionHappend = new ThreadExceptionHandler(ShowThreadException);
+
+
+			try
+			{
+				Thread lmtTrapThd = new Thread(InitLmtTrap);
+				lmtTrapThd.IsBackground = true;
+				lmtTrapThd.Start();
+
+			}
+			catch (Exception ex)
+			{
+				OnThreadExceptionHappend(ex);
+			}
+
+			*/
+
+			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+			lmtPdu.SetCmdName("cmd1");
+
+			CDTLmtbVb lmtVb = new CDTLmtbVb();
+			lmtVb.Oid = "12345";
+			lmtVb.Value = "abcd";
+			lmtPdu.AddVb(lmtVb);
+
+			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
+
+			// 订阅消息
+			SubscribeHelper.AddSubscribe("kkk", MySub);
+
+
+
+			// 发布消息
+			PublishHelper.PublishMsg("kkk", bytes);
+
+
+			Console.WriteLine("=============");
+		}
+
+		private void MySub(SubscribeMsg msg)
+		{
+			Console.WriteLine("topic={0}", msg.Topic);
+
+			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+
+			CDTLmtbVb lmtVb = new CDTLmtbVb();
+			lmtPdu.GetVbByIndex(0, ref lmtVb);
+
+			Console.WriteLine("lmtPdu.cmdName={0}", lmtPdu.get_CmdName());
+			Console.WriteLine("lmtVb.Oid={0}", lmtVb.Oid);
+			Console.WriteLine("lmtVb.Value={0}", lmtVb.Value);
+
+		}
+
+		private static void ShowThreadException(Exception ex)
+		{
+			exception = ex;
+		}
+
+		private static void OnThreadExceptionHappend(Exception ex)
+		{
+			if (exceptionHappend != null)
+			{
+				exceptionHappend(ex);
+			}
+		}
+
+		private void InitLmtTrap()
+		{
+			LmtTrapMgr.GetInstance();
+		}
+
+		# endregion 测试代码==========================================================
+
 
 		#region 显示B方案Message列表控件
 		private void ShowMessage_Click(object sender, EventArgs e)
@@ -531,19 +625,19 @@ namespace SCMTMainWindow
 				this.g_SelectedEnbIP = node.NeAddress.ToString();
 
 				// TODO 选中后的样式改变待完善
-                //已完善
+				//已完善
 
-                //改变被点击的 node，还原之前的 node
-                var Children = ExistedNodebList.Children;
-                for(int i = 0; i < ExistedNodebList.Children.Count; i++)
-                {
-                    var Item = ExistedNodebList.Children[i] as MetroExpander;
-                    Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                }
-                target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
-                //target.Background.Opacity = 50;
-                //target.Opacity = 50;
-            }
+				//改变被点击的 node，还原之前的 node
+				var Children = ExistedNodebList.Children;
+				for(int i = 0; i < ExistedNodebList.Children.Count; i++)
+				{
+					var Item = ExistedNodebList.Children[i] as MetroExpander;
+					Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+				}
+				target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+				//target.Background.Opacity = 50;
+				//target.Opacity = 50;
+			}
 		}
 
 		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
@@ -1569,6 +1663,6 @@ namespace SCMTMainWindow
 			//}
 			return true;
 		}
-    }
+	}
 
 }

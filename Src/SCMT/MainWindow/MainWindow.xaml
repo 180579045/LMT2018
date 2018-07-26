@@ -78,6 +78,12 @@
                             <Metro:MetroExpander Header="添加基站"  Icon="Resources/BaseInfo2.png"  Click="AddeNB"/>
                         </StackPanel>
                     </Metro:MetroExpander>
+                    
+                    <Metro:MetroExpander Header="Test">
+                        <StackPanel Margin="20,0,0,0" Name="TestList">
+                            <Metro:MetroExpander Header="测试按钮"  Icon="Resources/BaseInfo2.png"  Click="TestFun"/>
+                        </StackPanel>
+                    </Metro:MetroExpander>
 
                     <!--
                     <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>

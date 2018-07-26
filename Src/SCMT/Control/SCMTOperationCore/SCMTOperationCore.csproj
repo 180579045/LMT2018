@@ -158,6 +158,7 @@
     <Compile Include="Message\SNMP\IDTObjectRefInterface.cs" />
     <Compile Include="Message\SNMP\ILmtbSnmp.cs" />
     <Compile Include="Message\SNMP\LmtbSnmpEx.cs" />
+    <Compile Include="Message\SNMP\LmtTrapMgr.cs" />
     <Compile Include="Message\SNMP\SnmpControl.cs" />
     <Compile Include="Message\SNMP\SnmpHelper.cs" />
     <Compile Include="Message\SNMP\SnmpMessage.cs" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using MIBDataParser.JSONDataMgr;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SCMTOperationCore.Message.SNMP;
 using System;
 using System.Collections.Generic;
@@ -26,9 +27,14 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		[TestMethod]
 		public void OnTrapTest()
 		{
-			CDTSnmpMsgDispose tt = new CDTSnmpMsgDispose();
-			tt.OnTrap(null, null);
+			// 初始化数据库
+			Database db = Database.GetInstance();
+			db.initDatabase("172.27.245.92");
 
+//			CDTSnmpMsgDispose tt = new CDTSnmpMsgDispose();
+//			tt.OnTrap(null, null);
+
+			Thread.Sleep(50000);
 			Debug.WriteLine("===========");
 		}
 
