@@ -41,7 +41,7 @@
             "配置文件",
             "一般文件",
             "RNC容灾数据文件"});
-			this.comboBox1.Location = new System.Drawing.Point(42, 53);
+			this.comboBox1.Location = new System.Drawing.Point(40, 30);
 			this.comboBox1.Name = "comboBox1";
 			this.comboBox1.Size = new System.Drawing.Size(289, 20);
 			this.comboBox1.TabIndex = 0;
@@ -49,7 +49,8 @@
 			// 
 			// IDOK
 			// 
-			this.IDOK.Location = new System.Drawing.Point(79, 140);
+			this.IDOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+			this.IDOK.Location = new System.Drawing.Point(84, 81);
 			this.IDOK.Name = "IDOK";
 			this.IDOK.Size = new System.Drawing.Size(75, 23);
 			this.IDOK.TabIndex = 1;
@@ -59,7 +60,8 @@
 			// 
 			// IDCANCEL
 			// 
-			this.IDCANCEL.Location = new System.Drawing.Point(202, 140);
+			this.IDCANCEL.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.IDCANCEL.Location = new System.Drawing.Point(207, 81);
 			this.IDCANCEL.Name = "IDCANCEL";
 			this.IDCANCEL.Size = new System.Drawing.Size(75, 23);
 			this.IDCANCEL.TabIndex = 2;
@@ -71,13 +73,14 @@
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(367, 212);
+			this.ClientSize = new System.Drawing.Size(367, 134);
 			this.ControlBox = false;
 			this.Controls.Add(this.IDCANCEL);
 			this.Controls.Add(this.IDOK);
 			this.Controls.Add(this.comboBox1);
 			this.Name = "CfgFileSelDlg";
 			this.ShowIcon = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "请选择文件下载类型";
 			this.Load += new System.EventHandler(this.form_load);
 			this.ResumeLayout(false);

@@ -85,16 +85,12 @@ namespace SCMTOperationCore.Message.SI
 		public ushort ContentLen => sizeof(ushort) * 2;
 	}
 
-	//助手函数。TODO 可以和其他的几个合并在一起，做一个模板
+	//助手函数
 	public static class SiMsgHelper
 	{
 		public static SiMsgHead GetSiMsgHead(byte[] data, int offset = 0)
 		{
-			SiMsgHead head = new SiMsgHead();
-			if (-1 == head.DeserializeToStruct(data, offset))
-				return null;
-
-			return head;
+			return GetHeaderHelper.GetHeader<SiMsgHead>(data, offset);
 		}
 	}
 }

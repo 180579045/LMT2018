@@ -94,7 +94,8 @@ namespace SCMTOperationCore.Elements.BaseElement
 			{
 				case SiMacroDef.O_SILMTENB_GETFILEINFO_RES:
 					topic = $"/{BoardIp}/O_SILMTENB_GETFILEINFO_RES";
-					break;
+					PublishHelper.PublishMsg(topic, msgBytes);
+					return true;
 				case SiMacroDef.O_SILMTENB_GETFILEATTRIB_RES:
 					break;
 				case SiMacroDef.O_SILMTENB_SETRDWRATTRIB_RES:
@@ -102,19 +103,22 @@ namespace SCMTOperationCore.Elements.BaseElement
 				case SiMacroDef.O_SILMTENB_DELFILE_RES:
 					break;
 				case SiMacroDef.O_SILMTENB_GETCAPACITY_RES:
+					topic = TopicHelper.QueryEnbCapacityRsp;
 					break;
 
 				case SiMacroDef.O_SILMTENB_NBPHASE_REP:
-					topic = "WM_DEAL_ENBPHASE";
+					topic = TopicHelper.EnbPhaseMsg;
+					break;
+				case SiMacroDef.O_OMLMT_GET_SIPORTVERSION_RSP:
+					topic = TopicHelper.QuerySiPortVerRsp;
 					break;
 				default:
-					//TODO 不知道是什么啊，老铁
 					break;
 			}
 
 			if (!topic.Equals(""))
 			{
-				PublishHelper.PublishMsg(topic, msgBytes, BoardIp);
+				PublishHelper.PublishMsg(msgBytes, topic, BoardIp);
 			}
 
 			return true;

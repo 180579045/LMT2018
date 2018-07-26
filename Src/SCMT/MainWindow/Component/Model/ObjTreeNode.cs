@@ -367,6 +367,7 @@ namespace SCMTMainWindow
 
             string errorInfo = "";
             //根据表名获取该表内所有MIB节点;
+            nodeb.db = Database.GetInstance();
             nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
             
             List<string> oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;

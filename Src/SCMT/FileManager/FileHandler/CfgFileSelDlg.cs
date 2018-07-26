@@ -27,12 +27,13 @@ namespace FileManager.FileHandler
 
 		private void IDOK_Click(object sender, EventArgs e)
 		{
-			FileTypeString = comboBox1.SelectedText;
+			FileTypeString = comboBox1.SelectedItem.ToString();
+			
 		}
 
 		private void IDCANCEL_Click(object sender, EventArgs e)
 		{
-
+			Close();
 		}
 
 		private void form_load(object sender, EventArgs e)

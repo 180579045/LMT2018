@@ -240,7 +240,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         private const uint SHGFI_USEFILEATTRIBUTES = 0x10;
         private const uint FILE_ATTRIBUTE_NORMAL = 0x80;
         private const uint FILE_ATTRIBUTE_DIRECTORY = 0x10;
-        
+        private const uint SHGFI_DISPLAYNAME = 0x200;
+
         /// <summary>
         /// 自定义函数，获取文件的图标，可以指定大小图标，或者文件夹图标
         /// </summary>
@@ -358,7 +359,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// <summary>
         /// 文件类型
         /// </summary>
-        public string FileType { get; set; }
+        public string FileLittleVer { get; set; }
 
         /// <summary>
         /// 文件大小
@@ -369,6 +370,9 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         /// 最后一次修改时间
         /// </summary>
         public string LastModifyTime { get; set; }
+
+        // 读写属性
+        public string RWAttr { get; set; }
 
         /// <summary>
         /// 文件所在路径

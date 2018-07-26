@@ -111,6 +111,8 @@ namespace CDLBrowser.Parser.BPLAN
             inputMessage.time = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss.fff");
             string originUI = inputMessage.UI;
             //区分三类消息，对应于界面呈现使用
+            //2018.7.11与测试、研发经理确认，不再显示UE的内容
+            /*
             if (-1 != originUI.IndexOf("UE"))
             {
                 inputMessage.NO = UENo++;
@@ -120,6 +122,7 @@ namespace CDLBrowser.Parser.BPLAN
                 //记录日志
                 logMsg.WriteLog(LogOfType.UE_MSGLOG, msg);
             }
+            */
             if (-1 != originUI.IndexOf("eNB"))
             {
                 inputMessage.NO = eNBNo++;

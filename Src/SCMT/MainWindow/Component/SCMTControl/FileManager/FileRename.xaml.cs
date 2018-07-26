@@ -25,6 +25,8 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
         {
             InitializeComponent();
 
+            this.Title = "重命名 " + strOldName;
+
             Width = 300;
             Height = 150;
 
@@ -32,7 +34,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             this.tbNewName.Focus();
 
             //如果不存在后缀名，则全选，否则只选中  文件名
-            if (strExtension == null)
+            if (strExtension == null || strExtension == "文件夹")
             {
                 this.tbNewName.Select(0, strOldName.Length);
             }

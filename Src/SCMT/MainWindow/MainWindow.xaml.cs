@@ -20,10 +20,8 @@ using System.Linq;
 using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
-using CefSharp.Wpf;
 using Xceed.Wpf.AvalonDock.Layout;
 using SCMTMainWindow.Component.View;
-using Microsoft.Win32;
 using System.Data;
 using CDLBrowser.Parser.Document.Event;
 using SuperLMT.Utils;
@@ -35,8 +33,8 @@ using CDLBrowser.Parser.BPLAN;
 using MsgQueue;
 using CommonUtility;
 using System.Windows.Threading;
-using System.Threading;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows.Interop;
 using CDLBrowser.Parser;
 using LogManager;
@@ -45,6 +43,8 @@ using MIBDataParser.JSONDataMgr;
 using SCMTMainWindow.Component.SCMTControl;
 using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
+using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
+using SCMTOperationCore.Message.MsgDispatcher;
 using System.Windows.Media;
 
 namespace SCMTMainWindow
@@ -65,6 +65,7 @@ namespace SCMTMainWindow
 		ObservableCollection<DyDataGrid_MIBModel> content_list                // 用来存储MIBDataGrid中存放的值;
 			= new ObservableCollection<DyDataGrid_MIBModel>();
 
+		private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -74,16 +75,26 @@ namespace SCMTMainWindow
 
 			InitView();                                                       // 初始化界面;
 			RegisterFunction();                                               // 注册功能;
-			deleteTempFile();
 
-			// TODO 读取网元配置文件
+			// 启动线程，后台处理一些初始化功能
+			Task.Factory.StartNew(new Action(() =>
+			{
+				deleteTempFile();
+				SubscribeMsgs();
+
+				// 启动必须程序
+				StartMustTools();
+
+				// TODO 读取网元配置文件
+			}));
 
 			// 在异常由应用程序引发但未进行处理时发生。主要指的是UI线程。
 			Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 			//  当某个异常未被捕获时出现。主要指的是非UI线程
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 		}
-		
+
+		#region 程序初始化
 		/// <summary>
 		/// 初始化用户界面;
 		/// </summary>
@@ -110,6 +121,20 @@ namespace SCMTMainWindow
 			//TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
 		}
 
+		// 启动FTP工具，如果不存在就提示用户
+		private void StartMustTools()
+		{
+			var ftpPath = ConfigFileHelper.GetFtpPath();
+			var ftpFullPath = FilePathHelper.GetAppPath() + ftpPath;
+
+			if (!ProcessHelper.StartProcess(ftpFullPath))
+			{
+				ShowLogHelper.Show("FTP工具启动失败，文件传输任务将会无法进行", "SCMT");
+			}
+		}
+
+		#endregion
+
 		/// <summary>
 		/// 窗口关闭;
 		/// 关闭先前注册的服务;
@@ -119,81 +144,6 @@ namespace SCMTMainWindow
 		private void MetroWindow_Closed(object sender, EventArgs e)
 		{
 			TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
-		}
-
-		/// <summary>
-		/// 当增加基站的窗口关闭的时候进行的处理;
-		/// 1、通过tcp接口连接基站
-		/// 2、连接成功后，向基站发送数据同步请求;
-		/// 3、请求成功后，对数据进行解析，并显示在前端界面上;
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void AddNB_Closed(object sender, EventArgs e)
-		{
-			// 如果参数为空，则表示用户没有添加基站;
-			if (!(e is NodeBArgs))
-			{
-				Log.Error("add nodeb failed");
-				return;
-			}
-
-			// 第一个版本所有数据先从本地获取;
-			node = ((NodeBArgs) e).m_NodeB;
-			ObjNode.main = this;
-			//ObjNode.datagrid = this.MibDataGrid;
-
-			// 向基站前端控件填入对应信息;
-			AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
-
-			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
-		}
-
-		private void AddNodeLabel(string friendlyName, string Ip)
-		{
-			var nodeLabel = new MetroExpander();
-			nodeLabel.Header = friendlyName;
-			nodeLabel.IsExpanded = true;
-			//nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
-
-			// 右键菜单的添加
-			var menu = new MetroContextMenu();
-			var menuItem = new MetroMenuItem {Header = "连接基站"};
-			menuItem.Click += ConnectStationMenu_Click;
-			menu.Items.Add(menuItem);
-
-			menuItem = new MetroMenuItem() {Header = "断开连接"};
-			menuItem.Click += DisconStationMenu_Click;
-			menu.Items.Add(menuItem);
-
-			nodeLabel.ContextMenu = menu;
-
-			NodebList.Children.Add(nodeLabel);
-		}
-
-		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var target = ((ContextMenu) mui.Parent).PlacementTarget as MetroExpander;
-				if (target != null)
-				{
-					NodeBControl.GetInstance().ConnectNodeb(target.Header);
-					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-					InitDataBase();                            // TODO 应该是连接成功够才创建数据库(第一个版本先加载本地的);
-				}
-			}
-		}
-
-		private void DisconStationMenu_Click(object sender, EventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var target = ((ContextMenu)mui.Parent).PlacementTarget as MetroExpander;
-				if (target != null) NodeBControl.GetInstance().DisConnectNodeb(target.Header);
-			}
 		}
 
 		/// <summary>
@@ -225,13 +175,13 @@ namespace SCMTMainWindow
 		private void InitDataBase()
 		{
 			node.db = Database.GetInstance();
-			node.db.initDatabase("172.27.245.92");
+			node.db.initDatabase(node.NeAddress.ToString());
 
 			node.db.resultInitData = new ResultInitData((bool ret) =>
 			{
 				if (ret == false)
 				{
-					Console.WriteLine("DataBase Init Failed!");
+					ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
 				}
 				else
 				{
@@ -242,17 +192,6 @@ namespace SCMTMainWindow
 					});
 				}
 			});
-		}
-		
-		/// <summary>
-		/// 添加基站按钮事件;
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void AddNodeB_Click(object sender, RoutedEventArgs e)
-		{
-			AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-			AddNodeB.NewInstance(this).ShowDialog();
 		}
 
 		//______________________________________________________________________主界面动态刷新____
@@ -508,12 +447,215 @@ namespace SCMTMainWindow
 		}
 		#endregion
 
-		#region 添加基站事件
+		#region 添加基站
+
 		private void AddeNB(object sender, EventArgs e)
 		{
-			AddNodeB.NewInstance(this).Closed += AddNB_Closed;
-			AddNodeB.NewInstance(this).ShowDialog();
+			var nodebDlg = AddNodeB.NewInstance(this);
+			nodebDlg.Closed += AddNB_Closed;
+			nodebDlg.Owner = this;
+			nodebDlg.ShowDialog();
 		}
+
+		/// <summary>
+		/// 当增加基站的窗口关闭的时候进行的处理
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void AddNB_Closed(object sender, EventArgs e)
+		{
+			// 如果参数为空，则表示用户没有添加基站;
+			if (!(e is NodeBArgs))
+			{
+				Log.Error("add nodeb failed");
+				return;
+			}
+
+			node = ((NodeBArgs)e).m_NodeB;
+			ObjNode.main = this;
+			//ObjNode.datagrid = this.MibDataGrid;
+
+			// 向基站前端控件填入对应信息;
+			AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
+			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
+		}
+
+		private void AddNodeLabel(string friendlyName, string Ip)
+		{
+			var nodeLabel = new MetroExpander
+			{
+				Header = friendlyName,
+				IsExpanded = true
+			};
+
+			nodeLabel.Click += NodeLabel_Click;
+			//nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
+
+			var menu = CreateNodebMenu();	// 每个基站创建一个右键菜单，都有自己的状态
+
+			nodeLabel.ContextMenu = menu;
+			ExistedNodebList.Children.Add(nodeLabel);
+		}
+
+		// 创建基站右键菜单
+		private MetroContextMenu CreateNodebMenu()
+		{
+			// 右键菜单的添加
+			var menu = new MetroContextMenu();
+			var menuItem = new MetroMenuItem { Header = "连接基站" };
+			menuItem.Click += ConnectStationMenu_Click;
+			menu.Items.Add(menuItem);
+
+			menuItem = new MetroMenuItem() { Header = "断开连接" };
+			menuItem.Click += DisconStationMenu_Click;
+			menuItem.IsEnabled = true;
+			menu.Items.Add(menuItem);
+
+			menuItem = new MetroMenuItem() { Header = "删除" };
+			menuItem.Click += DeleteStationMenu_Click;
+			menuItem.IsEnabled = true;
+			menu.Items.Add(menuItem);
+
+			return menu;
+		}
+
+		/// <summary>
+		/// 基站节点  点击事件，获取被点击的IP地址，保存到全局变量
+		/// </summary>
+		private void NodeLabel_Click(object sender, EventArgs e)
+		{
+			var target = sender as MetroExpander;
+			if (null != target)
+			{
+				node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+				this.g_SelectedEnbIP = node.NeAddress.ToString();
+
+				// TODO 选中后的样式改变待完善
+                //已完善
+
+                //改变被点击的 node，还原之前的 node
+                var Children = ExistedNodebList.Children;
+                for(int i = 0; i < ExistedNodebList.Children.Count; i++)
+                {
+                    var Item = ExistedNodebList.Children[i] as MetroExpander;
+                    Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                }
+                target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+                //target.Background.Opacity = 50;
+                //target.Opacity = 50;
+            }
+		}
+
+		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
+		{
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var parent = (ContextMenu)mui.Parent;
+				if (null == parent)
+				{
+					return;
+				}
+
+				var target = parent.PlacementTarget as MetroExpander;
+				if (target != null)
+				{
+					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+					//NodeBControl.GetInstance().ConnectNodeb(target.Header);
+					ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress.ToString()}", "SCMT");
+					node.Connect();
+					ObjNode.main = this;
+				}
+			}
+		}
+
+		private void DisconStationMenu_Click(object sender, RoutedEventArgs e)
+		{
+			var tip = $"基站将断开连接，并且该基站打开的功能窗口也将关闭。是否继续操作？";			
+
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var parent = (ContextMenu)mui.Parent;
+				if (null == parent)
+				{
+					return;
+				}
+
+				var target = parent.PlacementTarget as MetroExpander;
+
+				// 如果MessageBox放在上一句的前面，parent.PlacementTarget将会变成null，拿不到信息
+				var dr = MessageBox.Show(tip, "断开连接", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
+				if (MessageBoxResult.Yes != dr)
+				{
+					return;
+				}
+
+				if (target != null) NodeBControl.GetInstance().DisConnectNodeb(target.Header);
+			}
+		}
+
+		// 基站节点右键菜单：删除，响应函数
+		private void DeleteStationMenu_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void EnableMenu(ContextMenu menuRoot, string header, bool bEnable = true)
+		{
+			var menu = GetMenuItemByHeader(menuRoot, header);
+			if (null != menu)
+			{
+				menu.IsEnabled = bEnable;
+			}
+		}
+
+		// 根据ip找到对应的控件，然后根据menuDesc也就是header，找到menu，然后设置menu的状态
+		private void EnableMenu(string targetIp, string menuDesc, bool bEnable = true)
+		{
+			if (string.IsNullOrEmpty(targetIp) || string.IsNullOrEmpty(menuDesc))
+				return;
+
+			var header = NodeBControl.GetInstance().GetFriendlyNameByIp(targetIp);
+
+			ExistedNodebList.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				var children = ExistedNodebList.Children;
+				if (null == children) return;
+
+				var count = children.Count;
+				for (var index = 0; index < count; index++)
+				{
+					var target = children[index] as MetroExpander;
+					if (target.Header.Equals(header))
+					{
+						EnableMenu(target.ContextMenu, menuDesc, bEnable);
+						break;
+					}
+				}
+			}));
+			
+		}
+
+		private MenuItem GetMenuItemByHeader(ContextMenu menuRoot, string header)
+		{
+			if (null == menuRoot || string.IsNullOrEmpty(header))
+			{
+				return null;
+			}
+
+			var menuItems = menuRoot.Items;
+			foreach (var submenu in menuItems)
+			{
+				var item = submenu as MenuItem;
+				if (header.Equals(item.Header))
+				{
+					return item;
+				}
+			}
+			return null;
+		}
+
 		#endregion
 
 		#region 添加泳道图事件
@@ -970,7 +1112,6 @@ namespace SCMTMainWindow
 		private void Get_Nodeb_Focus(object sender, RoutedEventArgs e)
 		{
 			Console.WriteLine("Get Nodeb Focus");
-
 		}
 
 
@@ -1000,21 +1141,21 @@ namespace SCMTMainWindow
 			}
 
 		}
-        private void Flow_Click(object sender, RoutedEventArgs e) {
-            //FlowChart f1 = new FlowChart();
-            //f1.Show();
+		private void Flow_Click(object sender, RoutedEventArgs e) {
+			//FlowChart f1 = new FlowChart();
+			//f1.Show();
 
-            LayoutAnchorable sub = new LayoutAnchorable();
-            FlowChart content = new FlowChart();
+			LayoutAnchorable sub = new LayoutAnchorable();
+			FlowChart content = new FlowChart();
 
-            sub.Content = content;
-            //sub.FloatingHeight = 300;
-            //sub.FloatingWidth = 800;
+			sub.Content = content;
+			//sub.FloatingHeight = 300;
+			//sub.FloatingWidth = 800;
 
-            this.Pane.Children.Add(sub);
-            sub.Float();
+			this.Pane.Children.Add(sub);
+			sub.Float();
 
-        }
+		}
 		/// <summary>
 		/// 每有一条新的MIB数据，都会调用该函数;
 		/// </summary>
@@ -1294,17 +1435,40 @@ namespace SCMTMainWindow
 			this.messageRecv.ClearAll();
 		}
 
+		private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
+			if(this.g_SelectedEnbIP == null)
+			{
+				MessageBox.Show("未选择基站，请单击需要显示的基站");
+				return;
+			}
 
-			var content = new Component.SCMTControl.FileManager.TestTwoFileManager("172.27.145.92");
+			string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(this.g_SelectedEnbIP);
+
+			foreach(LayoutAnchorable item in listAvalon)
+			{
+				if(item.Title == strFriendName)
+				{
+					item.Show();
+					return;
+				}
+			}
+
+			var content = new Component.SCMTControl.FileManager.TestTwoFileManager(this.g_SelectedEnbIP);
 
 			var sub = new LayoutAnchorable
 			{
 				Content = content,
-				Title = "NewAvalon"
+				Title = strFriendName,
+				FloatingHeight = 800,
+				FloatingWidth = 600,
+				CanHide = true,
+				CanClose = false,
+				CanAutoHide = false
 			};
 
+			listAvalon.Add(sub);
 			this.FileManagerLAP.Children.Add(sub);
 		}
 
@@ -1325,6 +1489,85 @@ namespace SCMTMainWindow
 			Log.WriteLogFatal(e.Exception);
 			MessageBox.Show("消息:" + e.Exception.Message + "\r\n" + e.Exception.StackTrace);
 
+		}
+
+		#region 订阅消息及处理
+
+		// 订阅消息
+		private void SubscribeMsgs()
+		{
+			SubscribeHelper.AddSubscribe(TopicHelper.SHOW_LOG, OnShowLog);
+			SubscribeHelper.AddSubscribe(TopicHelper.EnbConnectedMsg, OnConnect);
+			SubscribeHelper.AddSubscribe(TopicHelper.EnbOfflineMsg, OnDisconnect);
+		}
+
+		// 打印日志
+		private void OnShowLog(SubscribeMsg msg)
+		{
+			var logInfo = ShowLogHelper.GetLogInfo(msg.Data);
+			//var neName = NodeBControl.GetInstance().GetFriendlyNameByIp(logInfo.TargetIp);
+
+			var newLogInfo = new LogInfoTitle
+			{
+				Type = logInfo.Type,
+				LogInfo = logInfo.Msg,
+				TargetIP = logInfo.TargetIp
+			};
+
+			Application.Current.Dispatcher.BeginInvoke(
+				DispatcherPriority.Background, new Action(() =>
+				{
+					//UiLogShow.AppendText(msgText);
+					LogInfoShow.AddLogInfo(newLogInfo, MainLogInfoShow);
+				}
+				)
+			);
+		}
+
+		// 连接成功
+		private void OnConnect(SubscribeMsg msg)
+		{
+			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
+			var ip = netAddr.TargetIp;
+
+			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
+			InitDataBase();
+			EnableMenu(ip, "连接基站", false);
+			EnableMenu(ip, "断开连接", true);
+		}
+
+		// 断开连接
+		private void OnDisconnect(SubscribeMsg msg)
+		{
+			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
+			var ip = netAddr.TargetIp;
+
+			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+			ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
+			EnableMenu(ip, "连接基站", true);
+			EnableMenu(ip, "断开连接", false);
+
+			// 文件管理按钮禁用，文件管理窗口关闭
+			CloseFileMgrDlg(fname);
+
+			// 清理工作
+			//this.Obj_Root.Clear();
+		}
+
+		#endregion
+
+		// 关闭文件管理的窗口
+		private bool CloseFileMgrDlg(string friendlyName)
+		{
+			//foreach (var itemAnchorable in listAvalon)
+			//{
+			//	if (itemAnchorable.Title == friendlyName)
+			//	{
+			//		itemAnchorable.Close();
+			//	}
+			//}
+			return true;
 		}
     }
 

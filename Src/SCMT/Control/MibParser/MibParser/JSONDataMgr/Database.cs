@@ -413,7 +413,24 @@ namespace MIBDataParser.JSONDataMgr
 		}
 
 
-		public bool testDictExample(Dictionary<string, IReDataByEnglishName> reData)
+        public Dictionary<string, Dictionary<string, string>> getTrapInfo()
+        {
+            Dictionary<string, Dictionary<string, string>> allTrapInfo = new Dictionary<string, Dictionary<string, string>>() {
+                { "alarmNotify", new Dictionary<string, string>() {{ "TrapID","24"},{ "TrapOid","alarmTrap"},{ "TrapTypeDes","alarmTraps"}}},
+                { "anrNotification", new Dictionary<string, string>() {{ "TrapID","200"},{ "TrapOid", "anrNotification" },{ "TrapTypeDes", "anrNotification" } }},
+                { "alterationNofication", new Dictionary<string, string>() {{ "TrapID","21"},{ "TrapOid", "configChgTrap" },{ "TrapTypeDes", "eventConfigChgTraps" } }},
+                { "eventGeneralEventTrap", new Dictionary<string, string>() {{ "TrapID","20"},{ "TrapOid", "eventGeneralEventTrap" },{ "TrapTypeDes", "eventGeneralEventTraps" } }},
+                { "eventSynchronizationTrap", new Dictionary<string, string>() {{ "TrapID","26"},{ "TrapOid", "eventSynchronizationTrap" },{ "TrapTypeDes", "eventSynchronizationTrap" } }},
+                { "fileTransNotification", new Dictionary<string, string>() {{ "TrapID","23"},{ "TrapOid", "fileTransTrap" },{ "TrapTypeDes", "eventFTPResultTraps" } }},
+                { "maintenceStateNotify", new Dictionary<string, string>() {{ "TrapID","203"},{ "TrapOid", "maintenceStateNotify" },{ "TrapTypeDes", "maintenceStateNotify" } }},
+                { "managementRequestTrap", new Dictionary<string, string>() {{ "TrapID","22"},{ "TrapOid", "managementRequestTrap" },{ "TrapTypeDes", "eventManagementRequestTraps" } }},
+                { "mroNotification", new Dictionary<string, string>() {{ "TrapID","201"},{ "TrapOid", "mroNotification" },{ "TrapTypeDes", "mroNotification" } }},
+                { "transactionResultNotification", new Dictionary<string, string>() {{ "TrapID","25"},{ "TrapOid", "transactionResultTrap" },{ "TrapTypeDes", "transactionResultTraps" } }},
+            };
+            return allTrapInfo;
+        }
+
+        public bool testDictExample(Dictionary<string, IReDataByEnglishName> reData)
 		{
 			string[] keys = new string [reData.Keys.Count];
 			reData.Keys.CopyTo(keys, 0);
@@ -437,35 +454,38 @@ namespace MIBDataParser.JSONDataMgr
 		/// <param name="connectIp"> 标识数据的归属，查询要用 </param>
 		private void DBInitDateBaseByIpConnect(object connectIp)
 		{
-			Console.WriteLine("Db init start ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			// 1. 解压lm.dtz
-			if (!DBInitZip())
+            Console.WriteLine("Db init : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            // 1. 解压lm.dtz
+            if (!DBInitZip())
 			{
-				resultInitData(false);
+                Console.WriteLine("Db init : zip err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                resultInitData(false);
 				return;
 			}
-			Console.WriteLine("Db init zip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			//Console.WriteLine("Db init zip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
 			// 2. 解析lm.dtz => 写json文件(增加，叶子节点的读写属性) 解析.mdb文件
 			if (!DBInitParseMdbToWriteJson())
 			{
-				resultInitData(false);
+                Console.WriteLine("Db init : writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                resultInitData(false);
 				return;
 			}
-			Console.WriteLine("Db init parse mdb ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			//Console.WriteLine("Db init parse mdb ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
 			// 3. 解析json 文件
 			if (!DBInitParseJsonToMemory(connectIp.ToString()))
 			{
-				resultInitData(false);
+                Console.WriteLine("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                resultInitData(false);
 				return;
 			}
-			Console.WriteLine("mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			//Console.WriteLine("Db init : mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
 			// 4. 结果
-			resultInitData(true);
-			//Console.WriteLine("mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			return;
+            Console.WriteLine("Db init : Ok..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            resultInitData(true);
+            return;
 		}
 
 		//初始化(1.解压lm.dtz;2.解析.mdb,生成json;3.解析json;)
@@ -520,7 +540,8 @@ namespace MIBDataParser.JSONDataMgr
 		/// 2. 解析lm.mdb,写json文件; 解析lm.dtz => json文件(增加，叶子节点的读写属性) 解析.mdb文件
 		private bool DBInitParseMdbToWriteJson()
 		{
-			return new JsonDataManager("5.10.11").ConvertAccessDbToJsonForThread();
+            JsonDataManager jdm = new JsonDataManager("5.10.11");
+            return jdm.ConvertAccessDbToJsonForThread();
 		}
 		/// 3. 解析json文件到内存中
 		private bool DBInitParseJsonToMemory(string connectIp)

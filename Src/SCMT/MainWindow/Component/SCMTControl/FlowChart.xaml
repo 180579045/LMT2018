@@ -6,8 +6,8 @@
              xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="700">
-    <Grid>
-        <Viewbox Stretch="Uniform">
+    <Grid Name="mygrid">
+        <!--<Viewbox Stretch="Uniform" Name="myview">
             <Canvas Name="FlowChart_5216" Height="800" Width="700">
                 <Canvas.RenderTransform>
                     <TranslateTransform  X="0" Y="0"/>
@@ -29,9 +29,9 @@
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="98" Name="text5110">启站信息</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="115" Name="text5112">获取</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="OMLinkStartup_5216">
                     <Canvas.RenderTransform>
@@ -44,11 +44,11 @@
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="257" Canvas.Top="178" Name="text5123">OM链路</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="195" Name="text5125">建立</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="SoftwareSync_5216">
                     <Canvas.RenderTransform>
@@ -60,8 +60,8 @@
                         </Ellipse.RenderTransform>
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="263" Name="text5140">软件同步</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
-                    <!--Unknown tag: cmdleaf-->
+                    --><!--Unknown tag: relatedcmd-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="ClockResStatus_5216">
                     <Canvas.RenderTransform>
@@ -73,9 +73,9 @@
                         </Ellipse.RenderTransform>
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="101" Canvas.Top="363" Name="text5149">时钟资源</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="TransResStatus_5216">
                     <Canvas.RenderTransform>
@@ -87,9 +87,9 @@
                         </Ellipse.RenderTransform>
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="201" Canvas.Top="363" Name="text5162">传输资源</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="RRUResStatus_5216">
                     <Canvas.RenderTransform>
@@ -101,9 +101,9 @@
                         </Ellipse.RenderTransform>
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="301" Canvas.Top="363" Name="text5175">射频资源</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="BaseResStatus_5216">
                     <Canvas.RenderTransform>
@@ -115,11 +115,11 @@
                         </Ellipse.RenderTransform>
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="401" Canvas.Top="363" Name="text5188">基带资源</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="LocalCellStartup_5216">
                     <Canvas.RenderTransform>
@@ -132,11 +132,11 @@
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="458" Name="text5205">本地小区</TextBlock>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="265" Canvas.Top="475" Name="text5207">建立</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Canvas Name="CellSetup_5216">
                     <Canvas.RenderTransform>
@@ -148,10 +148,10 @@
                         </Ellipse.RenderTransform>
                     </Ellipse>
                     <TextBlock FontSize="14" FontFamily="宋体" Foreground="Black" Canvas.Left="251" Canvas.Top="543" Name="text5224">小区建立</TextBlock>
-                    <!--Unknown tag: relatedcmd-->
+                    --><!--Unknown tag: relatedcmd-->
                     <!--Unknown tag: cmdleaf-->
                     <!--Unknown tag: cmdleaf-->
-                    <!--Unknown tag: cmdleaf-->
+                    <!--Unknown tag: cmdleaf--><!--
                 </Canvas>
                 <Line X1="30" Y1="60" X2="30" Y2="80" Name="line5303" Fill="#000000" Stroke="#FF000000">
                     <Line.RenderTransform>
@@ -257,8 +257,8 @@
                         <MatrixTransform Matrix="1 0 0 1 600 114"/>
                     </Rectangle.RenderTransform>
                 </Rectangle>
-                <TextBlock FontSize="12" FontFamily="宋体" Foreground="#FFB5B5B5" Canvas.Left="636" Canvas.Top="117" Name="text5359">跳过</TextBlock>
+            <TextBlock FontSize="12" FontFamily="宋体" Foreground="#FFB5B5B5" Canvas.Left="636" Canvas.Top="117" Name="text5359">跳过</TextBlock>
             </Canvas>
-        </Viewbox>
+        </Viewbox>-->
     </Grid>
 </UserControl>

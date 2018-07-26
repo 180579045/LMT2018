@@ -21,16 +21,6 @@ namespace MsgQueue
 		}
 	}
 
-	public class SubMsgWithTargetIp : SubscribeMsg
-	{
-		public string TargetIp { get; }
-
-		public SubMsgWithTargetIp(byte[] data, string topic, string ip) : base(data, topic)
-		{
-			TargetIp = ip;
-		}
-	}
-
 	/// <summary>
 	/// 使用ZeroMQ实现的订阅者客户端
 	/// </summary>
@@ -42,7 +32,7 @@ namespace MsgQueue
 
 		public SubscribeClient(string pubServer = CommonPort.PubBus)
 		{
-			_dictionaryTopicHandlers = new Dictionary<string, HandlerSubscribeMsg>();
+			_dictionaryTopicHandlers = new Dictionary<string, List<HandlerSubscribeMsg> >();
 			PublishServer = pubServer;
 
 			ConnectToPubServer();
@@ -67,10 +57,18 @@ namespace MsgQueue
 		/// <returns>true:增加订阅成功；false:订阅失败</returns>
 		public bool AddSubscribeTopic(string topic, HandlerSubscribeMsg handler)
 		{
-			if (_dictionaryTopicHandlers.ContainsKey(topic)) return false;
-
-			Client.Subscribe(topic);
-			_dictionaryTopicHandlers[topic] = handler;
+			if (_dictionaryTopicHandlers.ContainsKey(topic))
+			{
+				var handlerList = _dictionaryTopicHandlers[topic];
+				handlerList.Add(handler);
+			}
+			else
+			{
+				var handlerList = new List<HandlerSubscribeMsg>();
+				handlerList.Add(handler);
+				_dictionaryTopicHandlers.Add(topic, handlerList);
+				Client.Subscribe(topic);
+			}
 
 			return true;
 		}
@@ -84,6 +82,7 @@ namespace MsgQueue
 		{
 			if (!_dictionaryTopicHandlers.ContainsKey(topic)) return false;
 
+			// TODO 这里还需要其他参数，唯一确定一个对象的handler
 			_dictionaryTopicHandlers.Remove(topic);
 			Client.Unsubscribe(topic);
 			return true;
@@ -127,15 +126,14 @@ namespace MsgQueue
 				{
 					var topic = msg[0].ReadString();
 					var msgBody = msg[1].Read();
-					var msgBody2 = "";
-					if (msg.Count > 2)
+
+					var handlers = GetTopicHandler(topic);
+					if (null == handlers)
+						continue;
+
+					foreach (var handler in handlers)
 					{
-						msgBody2 = msg[2].ReadString();
-						GetTopicHandler(topic)?.Invoke(new SubMsgWithTargetIp(msgBody, topic, msgBody2));
-					}
-					else
-					{
-						GetTopicHandler(topic)?.Invoke(new SubscribeMsg(msgBody, topic));
+						handler?.Invoke(new SubscribeMsg(msgBody, topic));
 					}
 
 					//Log.Debug($"recv msg topic: {topic}, body: {BitConverter.ToString(msgBody)}");
@@ -143,7 +141,7 @@ namespace MsgQueue
 			}
 		}
 
-		private HandlerSubscribeMsg GetTopicHandler(string topic)
+		private List<HandlerSubscribeMsg> GetTopicHandler(string topic)
 		{
 			return _dictionaryTopicHandlers.ContainsKey(topic) ? _dictionaryTopicHandlers[topic] : null;
 		}
@@ -167,7 +165,8 @@ namespace MsgQueue
 			}
 		}
 
-		private readonly Dictionary<string, HandlerSubscribeMsg> _dictionaryTopicHandlers;
+		// 同一个topic，可能会有多个订阅者
+		private readonly Dictionary<string, List<HandlerSubscribeMsg> > _dictionaryTopicHandlers;
 		private bool _running;
 		private bool _stop;
 	}

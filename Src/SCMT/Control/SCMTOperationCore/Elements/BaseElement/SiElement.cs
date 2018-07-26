@@ -62,23 +62,18 @@ namespace SCMTOperationCore.Elements
 			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
 			{
 				Console.WriteLine(e);
-				throw;
 			}
 		}
 
 		//连接成功处理事件
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
-			MessageBox.Show("基站连接成功");
-
-			// c#中大括号的转义：需要连续两个{{或}}才会生成一个{或}
-			PublishHelper.PublishMsg("/station_connected", $"{{\"TargetIp\" : \"{base.NeAddress.ToString()}\"}}" );
 		}
 
 		//连接断开处理事件
 		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
-			MessageBox.Show("断开连接成功");
+			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
 		}
 
 		//收到数据处理事件
@@ -98,8 +93,11 @@ namespace SCMTOperationCore.Elements
 		{
 			try
 			{
-				connection.SendBytes(msgBytes);
-				return true;
+				if (HasConnected())
+				{
+					connection.SendBytes(msgBytes);
+					return true;
+				}
 			}
 			catch (Exception e)			//发送失败会throw异常，需要处理
 			{

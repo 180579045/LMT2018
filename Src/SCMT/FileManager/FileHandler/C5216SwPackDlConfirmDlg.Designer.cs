@@ -246,6 +246,7 @@
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "C5216SwPackDlConfirmDlg";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "软件包下载激活配置";
 			this.Load += new System.EventHandler(this.form_Load);
 			this.ResumeLayout(false);

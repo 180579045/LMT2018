@@ -35,10 +35,10 @@
       <HintPath>..\..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PacketDotNet">
-      <HintPath>..\..\packages\PacketDotNet.0.16.0\lib\PacketDotNet.dll</HintPath>
+      <HintPath>..\..\packages\Lib\PacketDotNet.dll</HintPath>
     </Reference>
     <Reference Include="SharpPcap, Version=4.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\SharpPcap.4.4.0\lib\SharpPcap.dll</HintPath>
+      <HintPath>..\..\packages\Lib\SharpPcap.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -70,7 +70,6 @@
     <Compile Include="MsgDefine\FileUploadMsg.cs" />
     <Compile Include="MsgDefine\FilterResetMsg.cs" />
     <Compile Include="MsgDefine\FilterRuleMsg.cs" />
-    <Compile Include="MsgDefine\GetHeaderFromBytes.cs" />
     <Compile Include="MsgDefine\GtsHeader.cs" />
     <Compile Include="MsgDefine\GtsMsgType.cs" />
     <Compile Include="MsgDefine\KeepAliveMsg.cs" />

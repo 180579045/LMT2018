@@ -9,9 +9,10 @@
              d:DesignHeight="500" d:DesignWidth="800" >
     <Grid Name="MainGrid">
         <!--定义3列，分别显示UE，eNB，GNB信息-->
+        <!--2018-07-10  删除UE的列 -->
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition Width="auto"></ColumnDefinition>
+            <!--<ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="auto"></ColumnDefinition>-->
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition Width="auto"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
@@ -24,7 +25,7 @@
 
         <!--每列都分为两部分，一部分是listview  显示主要信息， 另一部分暂时定为listbox  显示 data  字符串-->
 
-        <Grid Grid.Column="0" Grid.Row="1" Name="gridUE">
+        <!--<Grid Grid.Column="0" Grid.Row="1" Name="gridUE">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition></RowDefinition>
@@ -32,20 +33,20 @@
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
 
-            <!--定义表头-->
+            --><!--定义表头--><!--
             <Label Grid.Row="0" HorizontalAlignment="Center">UE</Label>
 
-            <!--定义  ListView-->
+            --><!--定义  ListView--><!--
             <ListView Grid.Row="1" Name="lvUE" SelectionChanged="lvUE_SelectionChanged"></ListView>
 
-            <!--定义  分隔条-->
+            --><!--定义  分隔条--><!--
             <GridSplitter Grid.Row="2" Height="3" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch"></GridSplitter>
 
-            <!--定义  TextBox-->
+            --><!--定义  TextBox--><!--
             <TextBox Name="lbUE" Grid.Row="3" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"></TextBox>
-        </Grid>
+        </Grid>-->
 
-        <Grid Grid.Column="2" Grid.Row="1" Name="gridENB">
+        <Grid Grid.Column="0" Grid.Row="1" Name="gridENB">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition></RowDefinition>
@@ -66,7 +67,7 @@
             <TextBox Grid.Row="3" Name="lbeNB" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" IsReadOnly="True"></TextBox>
         </Grid>
 
-        <Grid Grid.Column="4" Grid.Row="1" Name="gridGNB">
+        <Grid Grid.Column="2" Grid.Row="1" Name="gridGNB">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition></RowDefinition>
@@ -89,7 +90,7 @@
 
         <!--定义  3  列的分隔条-->
         <GridSplitter Width="5" Grid.Column="1" Grid.Row="1" ResizeBehavior="PreviousAndNext"></GridSplitter>
-        <GridSplitter Width="5" Grid.Column="3" Grid.Row="1" ResizeBehavior="PreviousAndNext"></GridSplitter>
+        <!--<GridSplitter Width="5" Grid.Column="3" Grid.Row="1" ResizeBehavior="PreviousAndNext"></GridSplitter>-->
 
         <!--定义  开始跟踪  按钮-->
         <Button Width="100" Height="30" Name="btnStartTrace" Click="btnStartTrace_Click" Grid.Row="0" Grid.ColumnSpan="5">开始跟踪</Button>

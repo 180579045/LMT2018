@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Threading;
 using System.IO;
-using System.Runtime.Remoting.Messaging;
+using System.Linq;
 using System.Text;
-
-using System.Text;
-using System.Threading.Tasks;
 using CommonUtility;
 using LogManager;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using FriendName = System.String;
 using IpAddr = System.String;
 
@@ -20,7 +15,7 @@ namespace BaseStationConInfo.BSCInfoMgr
 	public class BSConInfo : IBSConInfo
 	{
 		Dictionary<FriendName, IpAddr> connectBSInfo;
-		private static BSConInfo  _instance = null;/// 单例类的句柄
+		private static BSConInfo  _instance;/// 单例类的句柄
 		private static object _syncLock = new object();
 		private BSConInfo()///初始化
 		{
@@ -42,7 +37,7 @@ namespace BaseStationConInfo.BSCInfoMgr
 			return _instance;
 		}
 
-		public bool getBaseStationConInfo(Dictionary<FriendName, IpAddr> allConInfo)
+		public bool getBaseStationConInfo(Dictionary<string, string> allConInfo)
 		{
 			if (null == allConInfo)
 				return false;
@@ -59,10 +54,10 @@ namespace BaseStationConInfo.BSCInfoMgr
 		}
 		public bool addBaseStationConInfo(string strName, string strIp)
 		{
-			if ((String.Empty == strName) | (String.Empty == strIp)|( null == connectBSInfo))
+			if ((string.Empty == strName) | (string.Empty == strIp)|( null == connectBSInfo))
 				return false;
 
-			///存在相同 key 或 value
+			// 存在相同 key 或 value
 			if ((connectBSInfo.ContainsKey(strName))| (connectBSInfo.Keys.Contains(strIp)))
 				return false;
 
@@ -73,9 +68,9 @@ namespace BaseStationConInfo.BSCInfoMgr
 		}
 		public bool delBaseStationConInfoByName(string strName)
 		{
-			if ((String.Empty == strName) |  (null == connectBSInfo))
+			if ((string.Empty == strName) |  (null == connectBSInfo))
 				return false;
-			///不存在返回 false
+			// 不存在返回 false
 			if (!connectBSInfo.ContainsKey(strName)) 
 				return false;
 
@@ -95,21 +90,14 @@ namespace BaseStationConInfo.BSCInfoMgr
 		{
 			string currentPath = FilePathHelper.GetAppPath();
 			string jsonFilePath = currentPath + ConfigFileHelper.NodebListJson;
-			if (File.Exists(jsonFilePath))
-			{
-				this.WriteFile(jsonFilePath, JsonConvert.SerializeObject(connectBSInfo, Formatting.Indented));
-			}
-			else
-			{
-				Log.Error($"文件：{jsonFilePath}不存在，无法写入");
-			}
+			WriteFile(jsonFilePath, JsonConvert.SerializeObject(connectBSInfo, Formatting.Indented));
 		}
 
 		private void WriteFile(string filepath, string content)
 		{
 			try
 			{
-				FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件
+				FileStream fs = new FileStream(filepath, FileMode.OpenOrCreate, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件
 				//清空文件
 				fs.SetLength(0);
 				StreamWriter sw = new StreamWriter(fs, Encoding.Default);
@@ -144,7 +132,7 @@ namespace BaseStationConInfo.BSCInfoMgr
 
 			foreach (var obj in JObjThree)
 			{
-				connectBSInfo.Add(obj.Key.ToString(), obj.Value.ToString());
+				connectBSInfo.Add(obj.Key, obj.Value.ToString());
 			}
 		}
 
@@ -152,7 +140,7 @@ namespace BaseStationConInfo.BSCInfoMgr
 		{
 			FileStream fs = new FileStream(sFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 			StreamReader sr = new StreamReader(fs, Encoding.GetEncoding("gb2312"));
-			JObject JObj = JObject.Parse(sr.ReadToEnd().ToString());
+			JObject JObj = JObject.Parse(sr.ReadToEnd());
 			fs.Close();
 			return JObj;
 		}

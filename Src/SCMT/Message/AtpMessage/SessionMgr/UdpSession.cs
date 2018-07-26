@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using AtpMessage.MsgDefine;
+using CommonUtility;
 using MsgQueue;
 
 namespace AtpMessage.SessionMgr
@@ -88,7 +89,7 @@ namespace AtpMessage.SessionMgr
 				try
 				{
 					var revBytes = _udpClient.Receive(ref _ipTargetEp);
-					var header = GetHeaderFromBytes.GetHeader(revBytes);
+					var header = GetHeaderHelper.GetHeader<GtsMsgHeader>(revBytes);
 					PublishHelper.PublishMsg($"udp-recv://{_prefix}", revBytes);
 				}
 				catch (SocketException e)

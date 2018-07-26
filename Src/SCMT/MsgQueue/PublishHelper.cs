@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Text;
 using CommonUtility;
 using LogManager;
 
@@ -76,15 +77,28 @@ namespace MsgQueue
 		}
 
 		// 扩展，增加扩展的信息，一般是IP地址
-		public static void PublishMSg(string topic, byte[] msgBytes, string option,
+		public static void PublishMsg(byte[] msgBytes, string topic, string option,
 			[CallerFilePath] string filePath = null,
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}, option: {option}");
-			GetInstance().Publish(topic, msgBytes, option);
-		}
+			var msg = new SubscribeMsg(msgBytes, option);
 
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}, option: {option}");
+			GetInstance().Publish(topic, JsonHelper.SerializeObjectToString(msg));
+		}
 		#endregion
+	}
+
+	public class DataWithIp
+	{
+		public string TargetIp { get; }
+		public byte[] Data { get; }
+
+		public DataWithIp(byte[] data, string ip)
+		{
+			TargetIp = ip;
+			Data = data;
+		}
 	}
 }

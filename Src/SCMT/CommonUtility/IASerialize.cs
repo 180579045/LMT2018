@@ -12,7 +12,7 @@ namespace CommonUtility
 		/// <param name="ret">保存序列化后的结果。</param>
 		/// <param name="offset">保存结果的数组从什么位置开始写</param>
 		/// <returns>返回往ret数组写入了多少字节数据。-1：字节数组剩余空间不够保存结构体数据</returns>
-		int SerializeToBytes(ref byte[] ret, int offset);
+		int SerializeToBytes(ref byte[] ret, int offset = 0);
 
 		/// <summary>
 		/// 将字节数组中的内容反序列化为结构体
@@ -20,7 +20,7 @@ namespace CommonUtility
 		/// <param name="bytes">保存原始数据的字节数组</param>
 		/// <param name="offset">字节数组的偏移量</param>
 		/// <returns>此次从字节数组中读出了多少字节数据。-1：字节数组数据长度小于结构体长度</returns>
-		int DeserializeToStruct(byte[] bytes, int offset);
+		int DeserializeToStruct(byte[] bytes, int offset = 0);
 
 		/// <summary>
 		/// 计算结构体的占用内存，包括header长度

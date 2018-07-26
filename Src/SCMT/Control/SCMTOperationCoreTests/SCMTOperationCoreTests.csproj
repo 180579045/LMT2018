@@ -70,6 +70,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Message\MsgDispatcher\MsgDispatcherTests.cs" />
     <Compile Include="Message\SNMP\CDTCmdExecuteMgrTests.cs" />
     <Compile Include="Message\SNMP\CommTest.cs" />
     <Compile Include="Message\SNMP\LmtbSnmpExTests.cs" />

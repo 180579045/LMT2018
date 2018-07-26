@@ -17,6 +17,7 @@
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:uc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
         xmlns:fileManager="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
+        xmlns:logInfo="clr-namespace:SCMTMainWindow.Component.SCMTControl.LogInfoShow"
         mc:Ignorable="d"
         Height="778" Width="1024"
         Title="{Binding Title}"
@@ -73,8 +74,8 @@
                 <StackPanel x:Name="lists">
 
                     <Metro:MetroExpander Header="基站列表">
-                        <StackPanel Margin="20,0,0,0">
-                            <Metro:MetroExpander Header="添加基站"  Icon="Resources/BaseInfo2.png"  Click="AddeNB" />
+                        <StackPanel Margin="20,0,0,0" Name="ExistedNodebList"> 
+                            <Metro:MetroExpander Header="添加基站"  Icon="Resources/BaseInfo2.png"  Click="AddeNB"/>
                         </StackPanel>
                     </Metro:MetroExpander>
 
@@ -113,7 +114,7 @@
                                 </Metro:MetroExpander.ContextMenu>
                             </Metro:MetroExpander>-->
                         </StackPanel>
-                           
+
                     </Metro:MetroExpander>
 
                 </StackPanel>
@@ -144,6 +145,11 @@
 
         <!-- 页签的基础控件 -->
         <Grid Grid.Column="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="6"></RowDefinition>
+                <RowDefinition Height="0.2*"></RowDefinition>
+            </Grid.RowDefinitions>
             <TabControl x:Name="MainHorizenTab" TabStripPlacement="Top" Style="{StaticResource TabControlStyle}" >
 
                 <!-- 页签一：MIB数据操作配置页签 -->
@@ -172,7 +178,7 @@
                                             <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" SelectionMode="Single"/>
                                         </xcad:LayoutAnchorable>
                                         <xcad:LayoutAnchorable ContentId="messageRecv" Title="信令消息" x:Name="subForMessageRecv" CanAutoHide="True" Hiding="subForMessageRecv_Hiding" CanClose="False" FloatingHeight="500" FloatingWidth="800">
-                                            <uc:MessageRecv x:Name="messageRecv"></uc:MessageRecv>   
+                                            <uc:MessageRecv x:Name="messageRecv"></uc:MessageRecv>
                                         </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>
@@ -190,23 +196,23 @@
                 <TabItem Header="文件管理" Style="{StaticResource TabItemStyle}" >
                     <Grid Name="TestFileManager">
                         <!--阿瓦隆界面布局-->
-                            <xcad:DockingManager  BorderBrush="Blue" >
+                        <xcad:DockingManager  BorderBrush="Blue" >
 
-                                <!-- 根页签 -->
-                                <xcad:LayoutRoot>
-                                    <xcad:LayoutPanel Orientation="Horizontal">
-                                        <xcad:LayoutAnchorablePane x:Name="FileManagerLAP">
-                                            <!--<xcad:LayoutAnchorable ContentId="FileManager" Title="192.168.0.22" x:Name="tabFileManager" CanAutoHide="False" CanHide="False"  CanClose="False" FloatingHeight="600" FloatingWidth="800">
+                            <!-- 根页签 -->
+                            <xcad:LayoutRoot>
+                                <xcad:LayoutPanel Orientation="Horizontal">
+                                    <xcad:LayoutAnchorablePane x:Name="FileManagerLAP">
+                                        <!--<xcad:LayoutAnchorable ContentId="FileManager" Title="192.168.0.22" x:Name="tabFileManager" CanAutoHide="False" CanHide="False"  CanClose="False" FloatingHeight="600" FloatingWidth="800">
                                             <fileManager:TestTwoFileManager></fileManager:TestTwoFileManager>
                                             </xcad:LayoutAnchorable>
                                         <xcad:LayoutAnchorable ContentId="FileManager1" Title="文件管理1" x:Name="tabFileManager1" CanAutoHide="False" CanHide="False"  CanClose="False" FloatingHeight="600" FloatingWidth="800">
                                             <fileManager:TestTwoFileManager></fileManager:TestTwoFileManager>
                                         </xcad:LayoutAnchorable>-->
-                                        </xcad:LayoutAnchorablePane>
-                                    </xcad:LayoutPanel>
-                                </xcad:LayoutRoot>
+                                    </xcad:LayoutAnchorablePane>
+                                </xcad:LayoutPanel>
+                            </xcad:LayoutRoot>
 
-                            </xcad:DockingManager>
+                        </xcad:DockingManager>
 
                     </Grid>
                 </TabItem>
@@ -216,7 +222,7 @@
 
                     </Grid>
                 </TabItem>
-                
+
                 <TabItem Header="工具箱" Style="{StaticResource TabItemStyle}">
                     <Grid Margin="0,40,0,0">
 
@@ -331,7 +337,35 @@
                 </TabItem>
 
             </TabControl>
+            <GridSplitter Grid.Row="1" Height="6" ResizeBehavior="PreviousAndNext" HorizontalAlignment="Stretch" ></GridSplitter>
 
+            <Grid Grid.Row="2">
+                <xcad:DockingManager>
+                    <xcad:LayoutRoot>
+                        <xcad:LayoutPanel>
+                            <xcad:LayoutAnchorablePane>
+                                <xcad:LayoutAnchorable Title="信息浏览">
+                                    <logInfo:LogInfoShow x:Name="MainLogInfoShow"></logInfo:LogInfoShow>
+                                    <!--<Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="30"></RowDefinition>
+                                            <RowDefinition></RowDefinition>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                            <Label Content="来源："/>
+                                            <ComboBox Width="100" Height="25"/>
+                                            <Button Width="80" Height="25" Content="清除" Margin="30,0,0,0" Click="ButtonBase_OnClick"/>
+                                        </StackPanel>
+                                        <RichTextBox Grid.Row="1" x:Name="UiLogShow"  />
+                                    </Grid>-->
+                                </xcad:LayoutAnchorable>
+                            </xcad:LayoutAnchorablePane>
+                        </xcad:LayoutPanel>
+                    </xcad:LayoutRoot>
+                </xcad:DockingManager>
+
+            </Grid>
         </Grid>
 
 

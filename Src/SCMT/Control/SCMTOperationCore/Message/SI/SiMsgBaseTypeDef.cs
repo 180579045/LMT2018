@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
@@ -142,6 +143,7 @@ namespace SCMTOperationCore.Message.SI
 	//无符号6字节
 	public class SIu48
 	{
+		[MarshalAs(UnmanagedType.ByValArray)]
 		public byte[] m_value;		//6个字节
 
 		public SIu48()

@@ -60,10 +60,13 @@
     <Compile Include="ConfigFileHelper.cs" />
     <Compile Include="CustomException.cs" />
     <Compile Include="FilePathHelper.cs" />
+    <Compile Include="FileRdWrHelper.cs" />
+    <Compile Include="GetHeaderHelper.cs" />
     <Compile Include="IASerialize.cs" />
     <Compile Include="JsonConvertHelper.cs" />
     <Compile Include="MibStringHelper.cs" />
     <Compile Include="NetAddrConvertHelper.cs" />
+    <Compile Include="ProcessHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializeHelper.cs" />
     <Compile Include="Singleton.cs" />

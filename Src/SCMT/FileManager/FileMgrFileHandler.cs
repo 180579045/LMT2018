@@ -16,6 +16,8 @@ namespace FileManager
 
 	public delegate void UpdateProcessBar(TProgressBarInfo pbInfo);
 
+	public delegate void MenuClickHandler(IASerialize rsp);
+
 	// 只是把原来的函数先简单的封装在一个文件中
 	public class FileMgrFileHandler
 	{
@@ -25,7 +27,7 @@ namespace FileManager
 		public event UpdateProcessBar UpdateProgressEvent;				// 更新进度条事件
 		public event UpdateProcessBar NewProgressEvent;					// 增加一个新的进度条
 		public event UpdateProcessBar EndProgressEvent;					// 销毁进度条
-
+		public event MenuClickHandler MenuClickRspEvent;				// 右键菜单响应
 		#endregion
 
 		#region 构造、析构
@@ -35,9 +37,11 @@ namespace FileManager
 			_boardIp = boardIp;
 			_operaFailCount = 0;
 			_mapTransFileType = new Dictionary<int, string>();
+			_mapTraningFileTask = new Dictionary<long, StruFileTransDes>();
 
 			// 订阅SI事件
 			SubscribeHelper.AddSubscribe($"/{_boardIp}/O_SILMTENB_GETFILEINFO_RES", OnGetFileInfoRsp);
+			SubscribeHelper.AddSubscribe(TopicHelper.QueryEnbCapacityRsp, OnGetCapacityRsp);
 		}
 
 
@@ -109,8 +113,7 @@ namespace FileManager
 				AddFileTransProcess(baseHandler.TFO, baseHandler.WorkingTaskId);
 			}
 
-			_timer = new Timer(timerCallback, null, 0, 1000);
-            
+			_timer = new Timer(timerCallback, null, 1000, 1000);
 
 			return true;
 		}
@@ -132,9 +135,21 @@ namespace FileManager
 				return false;
 			}
 
-			_workingForFileTrans = true;
+			var baseHandler = (BaseFileHandler)handler;
+			_workingForUpgrade = baseHandler.WorkingForUpgrade;
+			_workingForFileTrans = baseHandler.WorkingForFileTrans;
 
-			// TODO UI模块启动定时器查询进度
+			if (_workingForUpgrade)
+			{
+				_upgradePackInfo = baseHandler.UFO;
+			}
+
+			if (_workingForFileTrans)
+			{
+				AddFileTransProcess(baseHandler.TFO, baseHandler.WorkingTaskId);
+			}
+
+			_timer = new Timer(timerCallback, null, 1000, 1000);
 
 			return true;
 		}
@@ -168,7 +183,7 @@ namespace FileManager
 		/// </summary>
 		private void AddFileTransProcess(CDTCommonFileTrans transFile, long taskId)
 		{
-			var tranFileFullPath = $"{transFile.FileTransFtpDir.TrimEnd('\\')}\\{transFile.FileTransFileName}";
+			var tranFileFullPath = $"{transFile.FileTransFtpDir.TrimEnd('\\').TrimEnd('/')}\\{transFile.FileTransFileName}";
 			var ftd = new StruFileTransDes
 			{
 				nFileTransTaskId = taskId,
@@ -195,17 +210,23 @@ namespace FileManager
 		{
 			var state = FILETRANSSTATE.TRANSSTATE_UNKNOWN;
 			var op = OPERTYPE.OPERTYPE_UNKNOWN;
+			var opText = "";
+			var stateText = "";
 
 			var dd = ftd.enumFileTransOp;
 			if (dd == FILETRANSOPER.DownLoading)
 			{
 				state = FILETRANSSTATE.TRANSSTATE_DOWNLOADWAITING;
 				op = OPERTYPE.OPERTYPE_DOWNLOAD;
+				opText = "文件下载";
+				stateText = "文件下载等待中...";
 			}
 			else
 			{
 				state = FILETRANSSTATE.TRANSSTATE_UPLOADWAITING;
 				op = OPERTYPE.OPERTYPE_UPLOAD;
+				opText = "文件上传";
+				stateText = "文件上传等待中...";
 			}
 
 			var pbInfo = new TProgressBarInfo
@@ -214,7 +235,9 @@ namespace FileManager
 				m_lTaskID = ftd.nFileTransTaskId,
 				m_nPercent = 0,
 				m_eStatus = state,
-				m_eOperationType = op
+				m_strStatus = stateText,
+				m_eOperationType = op,
+				strOperationType = opText
 			};
 
 			NewProgressEvent?.Invoke(pbInfo);
@@ -241,6 +264,9 @@ namespace FileManager
 					precent = 100;
 					state = FILETRANSSTATE.TRANSSTATE_DOWNLOADFINISHED;
 					stateText = "下载已完成";
+
+					_mapTraningFileTask.Remove(taskId);
+					_workingForFileTrans = false;
 				}
 			}
 			else if (FILETRANSOPER.UnZipping == op)
@@ -265,10 +291,12 @@ namespace FileManager
 					precent = 100;
 					state = FILETRANSSTATE.TRANSSTATE_UPLOADFINISHED;
 					stateText = "上传已完成";
+
+					_mapTraningFileTask.Remove(taskId);
+					_workingForFileTrans = false;
 				}
 			}
 
-			var ftd = _mapTraningFileTask[taskId];
 			var pbInfo = new TProgressBarInfo
 			{
 				m_nPercent = precent,
@@ -401,7 +429,7 @@ namespace FileManager
 
 			if (!_upgradePackInfo.GetInfo(ref taskId, ref index))
 			{
-				// TODO 关闭进度条
+				EndProgressBar();
 				_workingForUpgrade = false;
 				return;
 			}
@@ -447,12 +475,12 @@ namespace FileManager
 			{
 				var retryCount = _upgradePackInfo.iResCount++;
 				if (retryCount >= 5)        //如果5次查询均失败,则认为基站复位,需要关闭进度条
-                {
-                    EndProgressBar();
+				{
+					EndProgressBar();
 					_workingForUpgrade = false;
-                }
-                EndUIProcessBar(processBarInfo);
-                return;
+				}
+				EndUIProcessBar(processBarInfo);
+				return;
 			}
 
 			string swPackPlanUpgradeStateValue;
@@ -638,8 +666,8 @@ namespace FileManager
 					//需要获取当前文件的状态（传输还是解压），和进度，文件名
 					string csFileTransState;
 					string csFileTransPercent;
-					if (inOutPdu.GetValueByMibName(_boardIp, "fileTransState", out csFileTransState) &&
-						inOutPdu.GetValueByMibName(_boardIp, "fileTransPercent", out csFileTransPercent))
+					if (inOutPdu.GetValueByMibName(_boardIp, "fileTransState", out csFileTransState, csIndex) &&
+						inOutPdu.GetValueByMibName(_boardIp, "fileTransPercent", out csFileTransPercent, csIndex))
 					{
 						var nPercent = int.Parse(csFileTransPercent);
 						Log.Info($"文件id={csIndex},文件状态 {csFileTransState},进度{nPercent}");
@@ -656,6 +684,18 @@ namespace FileManager
 					else
 					{
 						Log.Error("从PDU中获取变量失败fileTransState fileTransPercent");
+
+						//防止命令下发失败后，进度条一直停在那动不动，收到传输完毕后仍没关闭
+						//_workingForFileTrans = true;
+						//_nGetSnmpFailCount++;
+						//if (_nGetSnmpFailCount > 3)
+						//{
+						//	_nGetSnmpFailCount = 0;
+						//	Log.Error("Get命令返回失败超过3次，取消文件传输任务");
+						//	_workingForFileTrans = false;
+						//	break;
+						//}
+
 						continue;
 					}
 
@@ -693,21 +733,21 @@ namespace FileManager
 				_swUpgradePbBarInfo.m_nPercent = 100;
 				_swUpgradePbBarInfo.m_eOperationType = OPERTYPE.OPERTYPE_FINISHED;
 				string stateText = "";
-				_swUpgradePbBarInfo.m_eStatus = CheckEndPhase(true, ref stateText);
+				_swUpgradePbBarInfo.m_eStatus = CheckEnbPhase(true, ref stateText);
 				_swUpgradePbBarInfo.m_strStatus = stateText;
 				UpdateProgressEvent?.Invoke(_swUpgradePbBarInfo);
 			}
 		}
 
-        private void EndUIProcessBar(TProgressBarInfo progressBarInfo)
-        {
-            EndProgressEvent?.Invoke(progressBarInfo);
-        }
+		private void EndUIProcessBar(TProgressBarInfo progressBarInfo)
+		{
+			EndProgressEvent?.Invoke(progressBarInfo);
+		}
 
 		// 更新当前进度条的信息。只有拖包升级才调用这个方法
 		private void SetProcessInfo(TProgressBarInfo progressBarInfo)
 		{
-			if (null == _swUpgradePbBarInfo)	// 没有的时候要新增一个进度条。TODO 是不是可以合在一起
+			if (null == _swUpgradePbBarInfo)	// 没有的时候要新增一个进度条
 			{
 				_swUpgradePbBarInfo = progressBarInfo;
 				NewProgressEvent?.Invoke(_swUpgradePbBarInfo);
@@ -719,7 +759,7 @@ namespace FileManager
 			}
 		}
 
-		private FILETRANSSTATE CheckEndPhase(bool bEndWork, ref string stateText)
+		private FILETRANSSTATE CheckEnbPhase(bool bEndWork, ref string stateText)
 		{
 			var tProgressBarInfo = _swUpgradePbBarInfo;
 			var state = FILETRANSSTATE.TRANSSTATE_UNKNOWN;
@@ -786,6 +826,59 @@ namespace FileManager
 		private List<long> GetUnFinishFileTransTaskId()
 		{
 			return _mapTraningFileTask.Keys.ToList();
+		}
+
+        //删除未完成任务
+        public void DeleteUnFinishedTransTask(long lTaskID)
+        {
+            if(_mapTraningFileTask.ContainsKey(lTaskID))
+            {
+                _mapTraningFileTask.Remove(lTaskID);
+            }
+
+            _workingForFileTrans = false;
+
+        }
+
+        
+		//停止文件传输操作。taskId作为索引使用
+		public static SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
+		{
+			Dictionary<string, string> mapName2Value = new Dictionary<string, string>();
+			mapName2Value.Add("fileTransRowStatus", FileTransMacro.STR_DESTROY);
+			long reqId = 0;
+
+			var ret = CDTCmdExecuteMgr.CmdSetAsync("DelFileTransTask", out reqId, mapName2Value, $".{taskId}", targetIp);
+			if (0 == ret)
+			{
+				// TODO 取消成功后，需要处理后续的流程
+				return SENDFILETASKRES.TRANSFILE_TASK_SUCCEED;
+			}
+
+			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
+		}
+
+
+		private void OnGetCapacityRsp(SubscribeMsg msg)
+		{
+			var rspMsg = JsonHelper.SerializeJsonToObject<SubscribeMsg>(msg.Data);
+			if (null == rspMsg)
+			{
+				Log.Error("转换消息为SubscribeMsg失败");
+				return;
+			}
+
+			var ip = rspMsg.Topic;
+			if (ip.Equals(_boardIp))
+			{
+				var gcRsp = new SI_SILMTENB_GetCapacityRspMsg();
+				if (-1 == gcRsp.DeserializeToStruct(rspMsg.Data, 0))
+				{
+					gcRsp.s8GetResult = 1;
+				}
+
+				MenuClickRspEvent?.Invoke(gcRsp);
+			}
 		}
 
 		#endregion
@@ -878,7 +971,7 @@ namespace FileManager
 		private bool GetTransFileTypeFromDB()
 		{
 			_mapTransFileType = SnmpToDatabase.GetValueRangeByMibName("fileTransType", _boardIp);
-			return (null == _mapTransFileType);
+			return (null != _mapTransFileType);
 		}
 
 		#endregion
@@ -908,6 +1001,8 @@ namespace FileManager
 		public int m_nPercent;                      //操作完成百分比
 		public FILETRANSSTATE m_eStatus;            //状态
 		public OPERTYPE m_eOperationType;           //操作类型
+		public string strOperationType;				//操作类型文本描述
+
 		public long m_lTaskID;						//任务ID
 
 		public string m_strStatus;					//状态的文本描述
