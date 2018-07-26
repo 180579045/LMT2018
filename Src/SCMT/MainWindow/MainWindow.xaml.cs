@@ -55,7 +55,7 @@ namespace SCMTMainWindow
 	/// </summary>
 	public partial class MainWindow : MetroWindow
 	{
-        private bool IsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
+		private bool IsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
 		public static string StrNodeName;
 		private List<string> CollectList = new List<string>();
 		public NodeBControl NBControler;
@@ -69,9 +69,9 @@ namespace SCMTMainWindow
 
 		private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
 
-        private LayoutAnchorable subForMessageRecv;       //信令消息界面
-        private Component.SCMTControl.MessageRecv messageRecv = new MessageRecv();
-        public MainWindow()
+		private LayoutAnchorable subForMessageRecv;       //信令消息界面
+		private Component.SCMTControl.MessageRecv messageRecv = new MessageRecv();
+		public MainWindow()
 		{
 			InitializeComponent();
 			this.WindowState = System.Windows.WindowState.Maximized;          // 默认全屏模式;
@@ -209,10 +209,10 @@ namespace SCMTMainWindow
 		private void AddToCollect_Click(object sender, RoutedEventArgs e)
 		{
 			string StrName = StrNodeName;
+			//TODO 硬编码，需要修改
 			NodeB node = new NodeB("172.27.245.92", "NodeB");
-			//string cfgFile = node.m_ObjTreeDataPath;
-            string cfgFile = @"..\..\..\bin\x86\Debug\Data\Tree_Collect.json";
-			
+			string cfgFile = FilePathHelper.GetDataPath() + "Tree_Collect.json";
+
 			StreamReader reader = File.OpenText(cfgFile);
 			JObject JObj = new JObject();
 			JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -241,14 +241,14 @@ namespace SCMTMainWindow
 						var ObjParentNodesId = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
 						var ObjChildRenCount = (int)JObj.First.Next.First[TempCount]["ChildRenCount"];
 						var ObjNameEn = (string)JObj.First.Next.First[TempCount]["ObjNameEn"];
-                        var ObjMibTableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
+						var ObjMibTableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
 						var ObjMibList = (string)JObj.First.Next.First[TempCount]["MIBList"];
 						JObject NewObjNodes = new JObject(new JProperty("ObjID", ObjNodesId),
 							new JProperty("ObjParentID", ObjParentNodesId),
 							new JProperty("ChildRenCount", ObjChildRenCount),
 							new JProperty("ObjName", name),
 							new JProperty("ObjNameEn", ObjNameEn),
-                            new JProperty("MibTableName", ObjMibTableName),
+							new JProperty("MibTableName", ObjMibTableName),
 							new JProperty("MIBList", ObjMibList),
 							new JProperty("ObjCollect",1));
 						JObj.First.Next.First[TempCount].Remove();
@@ -262,9 +262,9 @@ namespace SCMTMainWindow
 			FileStream fs = new FileStream(cfgFile, FileMode.OpenOrCreate);
 			StreamWriter sw = new StreamWriter(fs,Encoding.UTF8);
 			sw.Write(JObj);
-            sw.Flush();
+			sw.Flush();
 			sw.Close();
-            fs.Close();
+			fs.Close();
 			//File.WriteAllText(cfgFile, JsonConvert.SerializeObject(JObj));
 
 		}
@@ -289,19 +289,23 @@ namespace SCMTMainWindow
 
 		private void Collect_Node_Click(object sender, EventArgs e)
 		{
-            object objCollect = this.Obj_Collect.Content;
-            if(objCollect != null)
-            {
-                this.Obj_Collect.Content = null;
-            }
-            objCollect = this.Obj_Collect.Content;
+			object objCollect = this.Obj_Collect.Content;
+			if(objCollect != null)
+			{
+				this.Obj_Collect.Content = null;
+			}
+			objCollect = this.Obj_Collect.Content;
 			ObjNode Objnode;
 			List<ObjNode> m_NodeList = new List<ObjNode>();
 			List<ObjNode> RootNodeShow = new List<ObjNode>();
 			ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点", @"/");
+
+			// TODO 硬编码
 			NodeB node = new NodeB("172.27.245.92", "NodeB");
-            //string cfgFile = node.m_ObjTreeDataPath;
-            string cfgFile = @"..\..\..\bin\x86\Debug\Data\Tree_Collect.json";
+			//string cfgFile = node.m_ObjTreeDataPath;
+			string cfgFile = FilePathHelper.GetDataPath() + "Tree_Collect.json";
+
+			// TODO 不判断文件是否存在
 			StreamReader reader = File.OpenText(cfgFile);
 			JObject JObj = new JObject();
 			JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
@@ -447,54 +451,54 @@ namespace SCMTMainWindow
 			throw new NotImplementedException();
 		}
 
-        private void Show_HeatMapChart(object sender, EventArgs e)
-        {
-            // TODO 后续需要有一个界面元素管理类;
-            LayoutAnchorable sub = new LayoutAnchorable();
-            HeatMapChartContent content = new HeatMapChartContent();
-
-            // 当前的问题：这个Title显示不出来;
-            sub.Title = "PRB使用情况";
-            sub.FloatingHeight = 400;
-            sub.FloatingWidth = 800;
-            sub.Content = content;
-            sub.FloatingLeft = 200;
-            sub.FloatingTop = 200;
-            sub.CanClose = true;
-            sub.CanAutoHide = false;
-
-            this.Pane.Children.Add(sub);
-            sub.Float();
-
-            // 当窗口发生变化时;
-            sub.Closed += content.Sub_Closed;
-        }
-
-        #endregion
-
-        #region 显示B方案Message列表控件
-        private void ShowMessage_Click(object sender, EventArgs e)
+		private void Show_HeatMapChart(object sender, EventArgs e)
 		{
-            ///后续需要有一个界面元素管理类;
-            //  LayoutAnchorable sub = new LayoutAnchorable();
-            //     MesasgeRecv content = new MesasgeRecv();
+			// TODO 后续需要有一个界面元素管理类;
+			LayoutAnchorable sub = new LayoutAnchorable();
+			HeatMapChartContent content = new HeatMapChartContent();
 
-            subForMessageRecv = new LayoutAnchorable
-            {
-                Content = messageRecv,
-                Title = "信令消息",
-                FloatingHeight = 500,
-                FloatingWidth = 800,
-                CanHide = true,
-                CanClose = false,
-                CanAutoHide = false
-            };
+			// 当前的问题：这个Title显示不出来;
+			sub.Title = "PRB使用情况";
+			sub.FloatingHeight = 400;
+			sub.FloatingWidth = 800;
+			sub.Content = content;
+			sub.FloatingLeft = 200;
+			sub.FloatingTop = 200;
+			sub.CanClose = true;
+			sub.CanAutoHide = false;
 
-            subForMessageRecv.Hiding += subForMessageRecv_Hiding;
+			this.Pane.Children.Add(sub);
+			sub.Float();
 
-            this.Pane.Children.Add(subForMessageRecv);
+			// 当窗口发生变化时;
+			sub.Closed += content.Sub_Closed;
+		}
 
-            subForMessageRecv.Show();
+		#endregion
+
+		#region 显示B方案Message列表控件
+		private void ShowMessage_Click(object sender, EventArgs e)
+		{
+			///后续需要有一个界面元素管理类;
+			//  LayoutAnchorable sub = new LayoutAnchorable();
+			//     MesasgeRecv content = new MesasgeRecv();
+
+			subForMessageRecv = new LayoutAnchorable
+			{
+				Content = messageRecv,
+				Title = "信令消息",
+				FloatingHeight = 500,
+				FloatingWidth = 800,
+				CanHide = true,
+				CanClose = false,
+				CanAutoHide = false
+			};
+
+			subForMessageRecv.Hiding += subForMessageRecv_Hiding;
+
+			this.Pane.Children.Add(subForMessageRecv);
+
+			subForMessageRecv.Show();
 			subForMessageRecv.Float();
 
 		}
@@ -584,23 +588,23 @@ namespace SCMTMainWindow
 				this.g_SelectedEnbIP = node.NeAddress.ToString();
 
 				// TODO 选中后的样式改变待完善
-                //已完善
+				//已完善
 
-                //改变被点击的 node，还原之前的 node
-                var Children = ExistedNodebList.Children;
-                for(int i = 0; i < ExistedNodebList.Children.Count; i++)
-                {
-                    var Item = ExistedNodebList.Children[i] as MetroExpander;
-                    Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                }
-                target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
-                //target.Background.Opacity = 50;
-                //target.Opacity = 50;
-                if (IsSingleMachineDebug)
-                {
-                    InitDataBase();
-                }
-            }
+				//改变被点击的 node，还原之前的 node
+				var Children = ExistedNodebList.Children;
+				for(int i = 0; i < ExistedNodebList.Children.Count; i++)
+				{
+					var Item = ExistedNodebList.Children[i] as MetroExpander;
+					Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+				}
+				target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+				//target.Background.Opacity = 50;
+				//target.Opacity = 50;
+				if (IsSingleMachineDebug)
+				{
+					InitDataBase();
+				}
+			}
 		}
 
 		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
@@ -1286,7 +1290,7 @@ namespace SCMTMainWindow
 		public void UpdateAllMibDataGrid(Dictionary<string, string> ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en, 
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
-            int RealIndexCount = IndexCount; // 真实的索引个数
+			int RealIndexCount = IndexCount; // 真实的索引个数
 			// 将信息回填到DataGrid当中;
 			this.MibDataGrid.Dispatcher.Invoke(new Action(() =>
 			{
@@ -1329,78 +1333,78 @@ namespace SCMTMainWindow
 					}
 					Console.WriteLine("NextIndex " + iter.Key.ToString() + " and Value is " + iter.Value.ToString() + " OID Index is " + NowIndex);
 
-                    // 如果存在索引,且索引没有被添加到表中;
-                    if (iter.Key.ToString().Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
+					// 如果存在索引,且索引没有被添加到表中;
+					if (iter.Key.ToString().Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
 					{
 						dynamic model = new DyDataGrid_MIBModel();
-                        //尝试填写表量表填写实例描述
+						//尝试填写表量表填写实例描述
 
-                        if(RealIndexCount > 0)
-                        {
-                            string IndexOIDPre = "";
-                            for (int i = 0; i < temp.Length - IndexCount - 1; i++)
-                            {
-                                IndexOIDPre += "." + temp[i];
-                            }           
-                            string IndexContent = "";
-                            for (int i = 0; i < RealIndexCount; i++)
-                            {
-                                string IndexOIDTemp = IndexOIDPre + "." + (i + 1).ToString();
-                                string IndexOID = IndexOIDTemp.Substring(1);
-                                IndexContent += oid_cn[IndexOID].ToString() + temp[temp.Length - RealIndexCount + i];
-                            }
-                            //如下DataGrid_Cell_MIB中的 oid暂时填写成这样
-                            model.AddProperty("indexlist", new DataGrid_Cell_MIB()
-                            {
-                                m_Content = IndexContent,
-                                oid = IndexOIDPre+".",
-                                MibName_CN = "实例描述",
-                                MibName_EN = "indexlist"
-                            }, "实例描述");
-                            
-                        }
-
-                        // 将ar当中所有匹配的结果取出,最后会取出了一行数据;
-                        foreach (var iter3 in ar)
+						if(RealIndexCount > 0)
 						{
-                            // 将所有相同索引取出;
-                            temp = iter3.Key.ToString().Split('.');
-                            string TempIndex = "";
-                            for (int i = temp.Length - IndexCount; i < temp.Length; i++)
-                            {
-                                TempIndex += "." + temp[i];
-                            }
-                            //以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
-                            if (TempIndex == NowIndex)
+							string IndexOIDPre = "";
+							for (int i = 0; i < temp.Length - IndexCount - 1; i++)
 							{
-                                // 将GetNext整表的OID数值取出到temp_compare;
-                                string[] temp_nowoid = iter3.Key.ToString().Split('.');
-                                string NowNodeOID = "";
-                                for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
-                                {
-                                    NowNodeOID += "." + temp_nowoid[i];
-                                }
-                                string temp_compare = NowNodeOID.Substring(1);
+								IndexOIDPre += "." + temp[i];
+							}           
+							string IndexContent = "";
+							for (int i = 0; i < RealIndexCount; i++)
+							{
+								string IndexOIDTemp = IndexOIDPre + "." + (i + 1).ToString();
+								string IndexOID = IndexOIDTemp.Substring(1);
+								IndexContent += oid_cn[IndexOID].ToString() + temp[temp.Length - RealIndexCount + i];
+							}
+							//如下DataGrid_Cell_MIB中的 oid暂时填写成这样
+							model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+							{
+								m_Content = IndexContent,
+								oid = IndexOIDPre+".",
+								MibName_CN = "实例描述",
+								MibName_EN = "indexlist"
+							}, "实例描述");
+							
+						}
 
-                                // 如果OID匹配;
-                                if (oid_cn.ContainsKey(temp_compare))
-                                {
-                                    Console.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value.ToString() + " and Header is:" + oid_cn[temp_compare].ToString());
+						// 将ar当中所有匹配的结果取出,最后会取出了一行数据;
+						foreach (var iter3 in ar)
+						{
+							// 将所有相同索引取出;
+							temp = iter3.Key.ToString().Split('.');
+							string TempIndex = "";
+							for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+							{
+								TempIndex += "." + temp[i];
+							}
+							//以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
+							if (TempIndex == NowIndex)
+							{
+								// 将GetNext整表的OID数值取出到temp_compare;
+								string[] temp_nowoid = iter3.Key.ToString().Split('.');
+								string NowNodeOID = "";
+								for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
+								{
+									NowNodeOID += "." + temp_nowoid[i];
+								}
+								string temp_compare = NowNodeOID.Substring(1);
 
-                                    model.AddProperty(oid_en[temp_compare], new DataGrid_Cell_MIB()
-                                    {
-                                        m_Content = iter3.Value.ToString(),
-                                        oid = iter3.Key,
-                                        MibName_CN = oid_cn[temp_compare].ToString(),
-                                        MibName_EN = oid_en[temp_compare].ToString()
-                                    }, oid_cn[temp_compare].ToString());
+								// 如果OID匹配;
+								if (oid_cn.ContainsKey(temp_compare))
+								{
+									Console.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value.ToString() + " and Header is:" + oid_cn[temp_compare].ToString());
 
-                                    // 已经查询过该索引,后续不再参与查询;
-                                    if(!AlreadyRead.Contains(NowIndex))
-                                    {
-                                        AlreadyRead.Add(NowIndex);
-                                    }
-                                }
+									model.AddProperty(oid_en[temp_compare], new DataGrid_Cell_MIB()
+									{
+										m_Content = iter3.Value.ToString(),
+										oid = iter3.Key,
+										MibName_CN = oid_cn[temp_compare].ToString(),
+										MibName_EN = oid_en[temp_compare].ToString()
+									}, oid_cn[temp_compare].ToString());
+
+									// 已经查询过该索引,后续不再参与查询;
+									if(!AlreadyRead.Contains(NowIndex))
+									{
+										AlreadyRead.Add(NowIndex);
+									}
+								}
 							}
 						}
 
@@ -1412,28 +1416,28 @@ namespace SCMTMainWindow
 						}
 					}
 				}
-                //增加表量表索引的列名
-                if(RealIndexCount > 0)
-                {
-                    DataGridTextColumn column = new DataGridTextColumn();
-                    column.Header = "实例描述";
-                    column.Binding = new Binding("indexlist.m_Content");
-                    this.MibDataGrid.Columns.Add(column);
-                }
+				//增加表量表索引的列名
+				if(RealIndexCount > 0)
+				{
+					DataGridTextColumn column = new DataGridTextColumn();
+					column.Header = "实例描述";
+					column.Binding = new Binding("indexlist.m_Content");
+					this.MibDataGrid.Columns.Add(column);
+				}
 				foreach (var iter3 in oid_en)
 				{
-                    string[] temp = iter3.Key.ToString().Split('.');
-                    if ((RealIndexCount >0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
-                    {
-                        //索引不对应列名
-                        continue;
-                    }
+					string[] temp = iter3.Key.ToString().Split('.');
+					if ((RealIndexCount >0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
+					{
+						//索引不对应列名
+						continue;
+					}
 					Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
 					DataGridTextColumn column = new DataGridTextColumn();
 					column.Header = oid_cn[iter3.Key];
 					column.Binding = new Binding(iter3.Value + ".m_Content");
 					this.MibDataGrid.Columns.Add(column);
-                }
+				}
 
 				this.MibDataGrid.DataContext = contentlist;
 			}));
@@ -1637,8 +1641,8 @@ namespace SCMTMainWindow
 			InitDataBase();
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接", true);
-        }
-        // 断开连接
+		}
+		// 断开连接
 		private void OnDisconnect(SubscribeMsg msg)
 		{
 			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
@@ -1671,33 +1675,33 @@ namespace SCMTMainWindow
 			return true;
 		}
 
-        /// <summary>
-        /// 柱状图
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void Show_BarChart(object sender, EventArgs e)
-        {
-            LayoutAnchorable sub = new LayoutAnchorable();
-            BarChart content = new BarChart();
+		/// <summary>
+		/// 柱状图
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void Show_BarChart(object sender, EventArgs e)
+		{
+			LayoutAnchorable sub = new LayoutAnchorable();
+			BarChart content = new BarChart();
 
-            // 当前的问题：这个Title显示不出来;
-            sub.Title = "柱状图";
-            sub.FloatingHeight = 400;
-            sub.FloatingWidth = 800;
-            sub.Content = content;
-            sub.FloatingLeft = 200;
-            sub.FloatingTop = 200;
-            sub.CanClose = true;
-            sub.CanAutoHide = false;
+			// 当前的问题：这个Title显示不出来;
+			sub.Title = "柱状图";
+			sub.FloatingHeight = 400;
+			sub.FloatingWidth = 800;
+			sub.Content = content;
+			sub.FloatingLeft = 200;
+			sub.FloatingTop = 200;
+			sub.CanClose = true;
+			sub.CanAutoHide = false;
 
-            this.Pane.Children.Add(sub);
-            sub.Float();
+			this.Pane.Children.Add(sub);
+			sub.Float();
 
-            // 当窗口发生变化时;
-            //sub.PropertyChanged += content.WindowProperty_Changed;
-            //sub.Closed += content.Sub_Closed;
-        }
-    }
+			// 当窗口发生变化时;
+			//sub.PropertyChanged += content.WindowProperty_Changed;
+			//sub.Closed += content.Sub_Closed;
+		}
+	}
 
 }
