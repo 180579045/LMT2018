@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 
 namespace CommonUtility
 {
@@ -382,6 +384,102 @@ namespace CommonUtility
 
 		//	return succeed;
 		//}
+
+
+
+		#region 对象序列化与反序列化
+
+		/// <summary>
+		/// 使用UTF8编码将byte数组转成字符串
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		public static string Convert2String(byte[] bytes)
+		{
+			return Encoding.UTF8.GetString(bytes, 0, bytes.Length);
+		}
+
+		/// <summary>
+		/// 使用指定字符编码将byte数组转成字符串
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <param name="encoding"></param>
+		/// <returns></returns>
+		public static string Convert2String(byte[] bytes, Encoding encoding)
+		{
+			return encoding.GetString(bytes, 0, bytes.Length);
+		}
+
+		/// <summary>
+		/// 使用UTF8编码将字符串转成byte数组
+		/// </summary>
+		/// <param name="strData"></param>
+		/// <returns></returns>
+		public static byte[] Convert2Bytes(string strData)
+		{
+			return Encoding.UTF8.GetBytes(strData);
+		}
+
+		/// <summary>
+		/// 使用指定字符编码将字符串转成byte数组
+		/// </summary>
+		/// <param name="strData"></param>
+		/// <param name="encoding"></param>
+		/// <returns></returns>
+		public static byte[] Convert2Bytes(string strData, Encoding encoding)
+		{
+			return encoding.GetBytes(strData);
+		}
+
+
+		/// <summary>
+		/// 将对象序列化为二进制数据
+		/// </summary>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		public static byte[] Serialize2Binary(object obj)
+		{
+			MemoryStream stream = new MemoryStream();
+			BinaryFormatter bf = new BinaryFormatter();
+			bf.Serialize(stream, obj);
+
+			byte[] bytes = stream.ToArray();
+			stream.Close();
+
+			return bytes;
+		}
+
+		/// <summary>
+		/// 将二进制数据反序列化
+		/// </summary>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		public static object DeserializeWithBinary(byte[] bytes)
+		{
+			MemoryStream stream = new MemoryStream();
+			stream.Write(bytes, 0 , bytes.Length);
+			stream.Position = 0;
+			BinaryFormatter bf = new BinaryFormatter();
+			object obj = bf.Deserialize(stream);
+
+			stream.Close();
+
+			return obj;
+		}
+
+		/// <summary>
+		/// 将二进制数据反序列化为指定类型对象
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="bytes"></param>
+		/// <returns></returns>
+		public static T DeserializeWithBinary<T>(byte[] bytes)
+		{
+			return (T)DeserializeWithBinary(bytes);
+		}
+
+		#endregion
+
 	}
 
 
@@ -497,5 +595,6 @@ namespace CommonUtility
 	//};
 
 	#endregion
+
 
 }

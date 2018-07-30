@@ -21,6 +21,24 @@ namespace SCMTOperationCore.Message.SNMP
 		protected byte[] _inBuffer;
 		// 对端IP
 		protected IPEndPoint _peerIp;
+		// Trap端口号
+		protected int m_port = 162;
+
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		public TrapHelper()
+		{
+		}
+
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		/// <param name="port"></param>
+		public TrapHelper(int port)
+		{
+			m_port = port;
+		}
 
 		/// <summary>
 		/// 初始化Trap服务
@@ -53,14 +71,15 @@ namespace SCMTOperationCore.Message.SNMP
 			try
 			{
 				// 绑定本地端口
-				EndPoint localEp = new IPEndPoint(IPAddress.Any, 162);
+				EndPoint localEp = new IPEndPoint(IPAddress.Any, m_port);
 				_socket.Bind(localEp);
 			}
-			catch (Exception ex)
+			catch (SocketException ex)
 			{
 				Log.Error(ex.Message.ToString());
 				_socket.Close();
 				_socket = null;
+				 throw ex;
 			}
 
 			if (_socket == null)
@@ -124,9 +143,10 @@ namespace SCMTOperationCore.Message.SNMP
 			// 接收的数据大小
 			int intLen;
 
+			EndPoint ep = null;
 			try
 			{
-				EndPoint ep = (EndPoint)_peerIp;
+				ep = (EndPoint)_peerIp;
 				intLen = sock.EndReceiveFrom(result, ref ep);
 				_peerIp = (IPEndPoint)ep;
 
@@ -153,8 +173,8 @@ namespace SCMTOperationCore.Message.SNMP
 			int packetVersion = SnmpPacket.GetProtocolVersion(_inBuffer, intLen);
 			if (packetVersion == (int)SnmpVersion.Ver1)
 			{
-				// 
-				Log.Error("接收到的SNMP Trap消息版本为V1");
+
+				// Log.Error("接收到的SNMP Trap消息版本为V1");
 			}
 			else if (packetVersion == (int)SnmpVersion.Ver2)
 			{
@@ -173,33 +193,33 @@ namespace SCMTOperationCore.Message.SNMP
 				{
 					if (pkt.Pdu.Type == PduType.V2Trap) // trap
 					{
-						Log.Info(string.Format("** SNMPv2 Trap from {0}", _peerIp.ToString()));
+						//Log.Info(string.Format("** SNMPv2 Trap from {0}", _peerIp.ToString()));
 					}
 					else if (pkt.Pdu.Type == PduType.Inform) // inform
 					{
-						Log.Info(string.Format("** SNMPv2 Trap from {0}", _peerIp.ToString()));
+						//Log.Info(string.Format("** SNMPv2 Trap from {0}", _peerIp.ToString()));
 					}
 					else
 					{
-						Log.Error(string.Format("Invalid SNMPv2 packet from {0}", _peerIp.ToString()));
+						//Log.Error(string.Format("Invalid SNMPv2 packet from {0}", _peerIp.ToString()));
 						pkt = null;
 					}
 					if (pkt != null)
 					{
-						Log.Debug(string.Format("*** community: {0}, sysUpTime: {1}, trapObjectID: {2}"
-							, pkt.Community, pkt.Pdu.TrapSysUpTime.ToString(), pkt.Pdu.TrapObjectID.ToString()));
+						//Log.Debug(string.Format("*** community: {0}, sysUpTime: {1}, trapObjectID: {2}"
+						//	, pkt.Community, pkt.Pdu.TrapSysUpTime.ToString(), pkt.Pdu.TrapObjectID.ToString()));
 
-						Log.Debug(string.Format("*** PDU count: {0}", pkt.Pdu.VbCount));
+						//Log.Debug(string.Format("*** PDU count: {0}", pkt.Pdu.VbCount));
 
 						foreach (Vb vb in pkt.Pdu.VbList)
 						{
-							Log.Debug(string.Format("**** Trap Vb oid: {0}, type: {1}, value: {2}"
-								,vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString()));
+							//Log.Debug(string.Format("**** Trap Vb oid: {0}, type: {1}, value: {2}"
+							//	,vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString()));
 						}
 
 						if (pkt.Pdu.Type == PduType.V2Trap)
 						{
-							Log.Debug("** End of SNMPv2 Trap");
+							//Log.Debug("** End of SNMPv2 Trap");
 						}
 						else
 						{
@@ -210,6 +230,10 @@ namespace SCMTOperationCore.Message.SNMP
 							byte[] buf = response.encode();
 							_socket.SendTo(buf, (EndPoint)_peerIp);
 						}
+
+						// Trap消息处理
+						CDTSnmpMsgDispose cDTSnmpMsgDispose = new CDTSnmpMsgDispose();
+						cDTSnmpMsgDispose.OnTrap(pkt.Pdu, (IPEndPoint)ep);
 					}
 
 				}

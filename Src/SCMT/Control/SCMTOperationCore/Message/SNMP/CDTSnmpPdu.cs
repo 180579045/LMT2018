@@ -11,7 +11,7 @@ using MIBDataParser.JSONDataMgr;
 namespace SCMTOperationCore.Message.SNMP
 {
 	#region snmp pdu 封装
-
+	[Serializable]
 	public class CDTLmtbPdu : CDTObjectRef
 	{
 
@@ -300,6 +300,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 	}
 
+	[Serializable]
 	public class stru_LmtbPduAppendInfo
 	{
 		public stru_LmtbPduAppendInfo()
@@ -331,6 +332,7 @@ namespace SCMTOperationCore.Message.SNMP
 	#region snmp vb定义
 
 	// snmp vb 封装
+	[Serializable]
 	public class CDTLmtbVb : CDTObjectRef
 	{
 		public CDTLmtbVb()

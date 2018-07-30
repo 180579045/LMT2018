@@ -30,6 +30,18 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Lib\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\Lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="LogManager">
+      <HintPath>..\MainWindow\bin\x86\Debug\LogManager.dll</HintPath>
+    </Reference>
+    <Reference Include="MIBDataParser">
+      <HintPath>..\Control\MibParser\MibParser\bin\Debug\MIBDataParser.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -44,6 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitField.cs" />
+    <Compile Include="CommonFunctions.cs" />
     <Compile Include="ConfigFileHelper.cs" />
     <Compile Include="CustomException.cs" />
     <Compile Include="FilePathHelper.cs" />

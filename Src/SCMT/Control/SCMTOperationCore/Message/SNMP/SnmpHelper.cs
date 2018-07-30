@@ -573,6 +573,225 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 
+		/// <summary>
+		/// UTF8字符串转ANSI编码字符串
+		/// </summary>
+		/// <param name="strUtf8"></param>
+		/// <returns></returns>
+		public static string Utf8ToAnsi(string strUtf8)
+		{
+			Encoding utf8 = Encoding.UTF8;
+			Encoding ansi = Encoding.Default;
+
+			byte[] bytes = utf8.GetBytes(strUtf8);
+			bytes = Encoding.Convert(utf8, ansi, bytes);
+
+			return ansi.GetString(bytes);
+		}
+
+		/// <summary>
+		/// Ansi编码字符串转换为Utf8编码字符串
+		/// </summary>
+		/// <param name="strAnsi"></param>
+		/// <returns></returns>
+		public static string AnsiToUtf8(string strAnsi)
+		{
+			Encoding utf8 = Encoding.UTF8;
+			Encoding ansi = Encoding.Default;
+
+			byte[] bytes = ansi.GetBytes(strAnsi);
+			bytes = Encoding.Convert(ansi, utf8, bytes);
+
+			return utf8.GetString(bytes);
+		}
+
+		/// <summary>
+		/// 将SNMP Vb中的值转换为字符串
+		/// </summary>
+		/// <returns></returns>
+		public static int GetVbValue(Vb vb, ref string strValue)
+		{
+			string rs = "";
+			string strValTmp = "";
+
+			// TODO 感觉不对
+			switch (vb.Type)
+			{
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_BITS:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS:
+					strValTmp = vb.Value.ToString();
+					strValTmp = Utf8ToAnsi(strValTmp);
+					break;
+
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NULL:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_IPADDR:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_TIMETICKS:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR64:
+					strValTmp = vb.Value.ToString();
+					break;
+
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR32:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_GAUGE32:
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OPAQUE:
+					strValTmp = vb.Value.ToString();
+					break;
+
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHOBJECT:
+					// TODO
+					// csTemp.LoadString (IDS_STRING_NO_SUCH_OBJECT);
+					break;
+
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHINSTANCE:
+					// csTemp.LoadString(IDS_STRING_NO_SUCH_INSTANCE);
+					break;
+
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW:
+					// csTemp.LoadString (IDS_STRING_END_OF_MIBVIEW);
+					break;
+				default:
+					strValTmp = vb.Value.ToString();
+					break;
+			}
+
+			strValue = strValTmp;
+
+			return 0;
+		}
+
+		/// <summary>
+		/// 将String类型的value值根据SYNTAX类型转化为协议中的vb value值
+		/// </summary>
+		/// <param name="vb"></param>
+		/// <param name="syntaxType"></param>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static int SetVbValue(ref Vb vb, SNMP_SYNTAX_TYPE syntaxType, string value, string strDataType = "")
+		{
+			if (vb == null)
+			{
+				return -1;
+			}
+
+			try
+			{
+				switch (syntaxType)
+				{
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT:
+						vb.Value = new Integer32(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_BITS:
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS:
+						if (value == null)
+						{
+							// TODO null的处理这样好像不对？？？？
+							vb.Value = new OctetString("null");
+						}
+						else
+						{
+							vb.Value = PacketOctetStr(vb.Oid.ToString(), value, strDataType);
+						}
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NULL:
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OID:
+						// TODO:
+						vb.Value = new Oid(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_IPADDR:
+						vb.Value = new IpAddress(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR32:
+						vb.Value = new Counter32(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_GAUGE32:
+						vb.Value = new UInteger32(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_TIMETICKS:
+						vb.Value = new TimeTicks(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OPAQUE:
+						vb.Value = new Opaque(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR64:
+						// TODO 是否需要大小端转换？？？？
+						vb.Value = new Counter64(value);
+						break;
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHOBJECT:
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHINSTANCE:
+					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW:
+						// do nothing
+						break;
+					default:
+						// do nothing
+						break;
+
+				}
+
+			}
+			catch (Exception e)
+			{
+				Log.Error(e.Message.ToString());
+				throw e;
+			}
+
+			return 0;
+		}
+
+		/// <summary>
+		/// 根据oid、值、数据类型组装OctetString实例
+		/// </summary>
+		/// <param name="strOid"></param>
+		/// <param name="strValue"></param>
+		/// <param name="strDataTyep"></param>
+		/// <returns></returns>
+		public static OctetString PacketOctetStr(string strOid, string strValue, string strDataType)
+		{
+			if (string.Equals("DateandTime", strDataType, StringComparison.OrdinalIgnoreCase)) // 日期类型
+			{
+				byte[] buf = new byte[11];
+				byte[] buffer = SnmpHelper.SnmpStrDateTime2Bytes(strValue);
+				for (int i = 0; i < 8; i++)
+				{
+					buf[i] = buffer[i];
+				}
+				buf[8] = (byte)'+';
+				buf[9] = 0;
+				buf[10] = 0;
+				return new OctetString(buf);
+			}
+			else if (string.Equals("inetaddress", strDataType, StringComparison.OrdinalIgnoreCase)) // Ip地址
+			{
+				if (strOid.IndexOf("1.3.6.1.4.1.5105.100.1.10.1.1.1.10") >= 0)
+				{
+					// TODO
+				}
+				else
+				{
+					return new OctetString(SnmpHelper.SnmpStrIpAddr2Bytes(strValue));
+				}
+			}
+			else if (string.Equals("MacAddress", strDataType, StringComparison.OrdinalIgnoreCase)) // MAC地址
+			{
+				return new OctetString(SnmpHelper.StrMacAddr2Bytes(strValue));
+			}
+			else if (string.Equals("Unsigned32Array", strDataType, StringComparison.OrdinalIgnoreCase)
+				|| string.Equals("INTEGER32ARRAY", strDataType, StringComparison.OrdinalIgnoreCase))
+			{
+				return new OctetString(SnmpHelper.Unsigned32Array2Bytes(strValue));
+			}
+			else if (string.Equals("MncMccType", strDataType, StringComparison.OrdinalIgnoreCase))
+			{
+				// TODO (与原来逻辑不一样，不知道是否正确？？？？)
+				return new OctetString(SnmpHelper.MncMccType2Bytes(strValue));
+			}
+
+			// TODO 转换为UTF8编码(与原来逻辑不一样，不知道是否正确？？？？)
+			return new OctetString(Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(strValue)));
+		}
+
+
+
 	}
 	/// <summary>
 	/// 异步获取SNMP结果参数;

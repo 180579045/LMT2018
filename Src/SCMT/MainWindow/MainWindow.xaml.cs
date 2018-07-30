@@ -46,6 +46,7 @@ using System.Windows.Data;
 using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
 using SCMTOperationCore.Message.MsgDispatcher;
 using System.Windows.Media;
+using System.Threading;
 using System.Text;
 
 namespace SCMTMainWindow

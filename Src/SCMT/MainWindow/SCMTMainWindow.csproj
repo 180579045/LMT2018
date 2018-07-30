@@ -119,6 +119,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
     </Reference>
+    <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
