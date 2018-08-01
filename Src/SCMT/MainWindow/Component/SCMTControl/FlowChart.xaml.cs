@@ -815,7 +815,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// <returns>有效值的队列</returns>
         private List<string> GetsAllSnmpValuesForALeafNode(string leafOid)
         {
-            string oidPrefix = "1.3.6.1.4.1.5105.1.";                        // oid 前缀
+            string oidPrefix = "1.3.6.1.4.1.5105.100.";                        // oid 前缀
             string boardAddr = "172.27.245.92";                              // 板块地址
             LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(boardAddr);// snmp 操作句柄
             List<CDTLmtbVb> lmtVbs = new List<CDTLmtbVb>() {                 // snmp 查询的输入oid的容器

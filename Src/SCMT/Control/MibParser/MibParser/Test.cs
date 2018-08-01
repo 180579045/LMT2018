@@ -116,6 +116,18 @@ namespace MIBDataParser
             {
                 Console.WriteLine( tableData.Values);
             }
+
+            // test_5 : 增加查找标量表节点的校验
+            IReDataByOid reDataTest5 = null;
+            if (!dataHandle.getDataByOid("1.3.6.1.4.1.5105.100.1.5.2.1.2.4.0", out reDataTest5, connectIp, out err))
+            {
+                Console.WriteLine(err);
+            }
+            else
+            {
+                Console.WriteLine(String.Format("**Test_5 : In_oid={0}, Out_name_en={1}", "1.3.6.1.4.1.5105.100.1.5.2.1.2.4.0", reDataTest5.nameEn));
+            }
+
             Console.WriteLine("testForInitByConnetIp is over.");
             Console.Read();
         }

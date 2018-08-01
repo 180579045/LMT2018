@@ -395,7 +395,7 @@ namespace MIBDataParser.JSONDataMgr
 
             // 处理1. 去前缀
             int indexNum = 0;
-            string findKey = key.Replace("1.3.6.1.4.1.5105.1.", "");
+            string findKey = key.Replace("1.3.6.1.4.1.5105.100.", "");
             while (findKey.Count(ch => ch == '.') > 4)
             {
                 if (!oidInfoDb.ContainsKey(findKey))
@@ -406,8 +406,21 @@ namespace MIBDataParser.JSONDataMgr
                 else
                 {
                     oidInfo = oidInfoDb[findKey];
+                    // 表量表有索引，索引个数应该与移位个数相同
                     if (indexNum == oidInfo.m_indexNum)
+                    {
                         return true;
+                    }
+                    // 标量表无索引，但最后一位以".0"占位 例如"1.3.6.1.4.1.5105.100.1.5.2.1.2.4.0" alterationNotiTime 配置变更时间
+                    else if ((0 == oidInfo.m_indexNum) && (indexNum == oidInfo.m_indexNum + 1))
+                    {
+                        return true;
+                    }
+                    // 索引为唯一OID列表，不能有重复oid存在
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             return false;
