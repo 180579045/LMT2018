@@ -611,11 +611,10 @@ namespace SCMTOperationCore.Message.SNMP
 		/// <returns></returns>
 		public static int GetVbValue(Vb vb, ref string strValue)
 		{
-			string rs = "";
 			string strValTmp = "";
 
-			// TODO 感觉不对
-			switch (vb.Type)
+			// 值转换
+			switch (vb.Value.Type)
 			{
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_BITS:
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS:
@@ -638,16 +637,15 @@ namespace SCMTOperationCore.Message.SNMP
 					break;
 
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHOBJECT:
-					// TODO
-					// csTemp.LoadString (IDS_STRING_NO_SUCH_OBJECT);
+					strValTmp = "没有这个对象";
 					break;
 
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHINSTANCE:
-					// csTemp.LoadString(IDS_STRING_NO_SUCH_INSTANCE);
+					strValTmp = "没有这个实例";
 					break;
 
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW:
-					// csTemp.LoadString (IDS_STRING_END_OF_MIBVIEW);
+					strValTmp = "到达MIB结尾";
 					break;
 				default:
 					strValTmp = vb.Value.ToString();

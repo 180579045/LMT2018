@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LogManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,16 +37,32 @@ namespace SCMTOperationCore.Message.SNMP
 				if(_lmtTrapMgr == null)
 				{
 					_lmtTrapMgr = new LmtTrapMgr();
-					// 创建Trap监听实例
-					m_TrapHelper = new TrapHelper(m_TrapPort);
-					if (false == m_TrapHelper.InitReceiver())
-					{
-
-					}
+					
 				}
 			}
 
 			return _lmtTrapMgr;
+		}
+
+		/// <summary>
+		/// 启动Trap监听
+		/// </summary>
+		/// <returns></returns>
+		public bool StartLmtTrap()
+		{
+			bool rs = true;
+
+			// 创建Trap监听实例
+			m_TrapHelper = new TrapHelper(m_TrapPort);
+			m_TrapHelper.StopReceiver();
+
+			if (false == m_TrapHelper.InitReceiver())
+			{
+				Log.Error("Trap监听实例创建失败！");
+				rs = false;
+			}
+
+			return rs;
 		}
 
 	}

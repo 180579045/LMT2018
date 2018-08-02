@@ -3,6 +3,7 @@ using FileManager;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
+using MsgQueue;
 using SnmpSharpNet;
 using SuperLMT.Utils;
 using System;
@@ -230,7 +231,7 @@ namespace SCMTOperationCore.Message.SNMP
 			// 文件传输类型
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiIndicator", out strValue);
 			// ForTest
-			strValue = "1";
+			// strValue = "1";
 			if (string.IsNullOrEmpty(strValue) || Convert.ToInt32(strValue) != 1)
 			{
 				Log.Error("不是文件上传.");
@@ -249,7 +250,7 @@ namespace SCMTOperationCore.Message.SNMP
 			// 含FTP服务器路径的文件名
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiFileName", out strValue);
 			// ForTest
-			strValue = "E:\\afyf\\src\\LMT2018\\Src\\SCMT\\MainWindow\\bin\\x86\\Debug\\filestorage\\DATA_CONSISTENCY\\enb_0_20090101000015+8_dataconsistency.dcb";
+			// strValue = "E:\\afyf\\src\\LMT2018\\Src\\SCMT\\MainWindow\\bin\\x86\\Debug\\filestorage\\DATA_CONSISTENCY\\enb_0_20090101000015+8_dataconsistency.dcb";
 			if (string.IsNullOrEmpty(strValue))
 			{
 				Log.Error("文件名为空.");
@@ -282,6 +283,12 @@ namespace SCMTOperationCore.Message.SNMP
 					(LPARAM)(LPCTSTR)uploadFilePath,
 					lRes);
 				*/
+
+				string strUploadFilePath = strValue;
+				// 发布消息
+				PublishHelper.PublishMsg(TopicHelper.LoadLmdtzToVersionDb
+					, $"{{\"SourceIp\" : \"{lmtPdu.m_SourceIp}\", \"UploadFilePath\" :\"{strUploadFilePath}\" }}");
+
 				return;
 			}
 
@@ -324,6 +331,10 @@ namespace SCMTOperationCore.Message.SNMP
 					(LPARAM)(LPCTSTR)strUpdatePath,
 					lRes);
 				*/
+
+				// 发布消息
+				PublishHelper.PublishMsg(TopicHelper.ParseDataConFile
+					, $"{{\"SourceIp\" : \"{lmtPdu.m_SourceIp}\", \"UpdatePath\" : \"{strUpLoadPath}\"}}");
 
 				return;
 			}
@@ -456,11 +467,11 @@ namespace SCMTOperationCore.Message.SNMP
 					{
 						// 根据Mib值获取其描述
 						
-						if (false == CommonFunctions.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue, true))
+						if (false == CommFuns.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue, true))
 						{
 							return false;
 						}
-						sb.Append(strValue).Append(" ");
+						sb.Append(strReValue).Append(" ");
 					}
 
 					// fileTransTrapResult
@@ -469,11 +480,11 @@ namespace SCMTOperationCore.Message.SNMP
 					if (!string.IsNullOrEmpty(strValue))
 					{
 						// 根据Mib值获取其描述
-						if (false == CommonFunctions.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue, true))
+						if (false == CommFuns.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue, true))
 						{
 							return false;
 						}
-						sb.Append(strValue).Append(" ");
+						sb.Append(strReValue).Append(" ");
 					}
 
 					if ("3".Equals(strTrapResult))
@@ -481,7 +492,7 @@ namespace SCMTOperationCore.Message.SNMP
 						lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiErrorCode", out strValue);
 						if (!string.IsNullOrEmpty(strValue))
 						{
-							if (false == CommonFunctions.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue, true))
+							if (false == CommFuns.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue, true))
 							{
 								return false;
 							}
@@ -499,18 +510,18 @@ namespace SCMTOperationCore.Message.SNMP
 					strGeneralEventType = strValue;
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (false == CommonFunctions.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue, true))
+						if (false == CommFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue, true))
 						{
 							return false;
 						}
-						sb.Append("事件类型:").Append(";");
+						sb.Append("事件类型:").Append(strReValue).Append(";");
 					}
 
 					// eventGeneralEventResult
 					lmtPdu.GetValueByMibName(strNodeBIp, "eventGeneralEventResult", out strValue);
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (false == CommonFunctions.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue, true))
+						if (false == CommFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue, true))
 						{
 							return false;
 						}
@@ -665,7 +676,7 @@ namespace SCMTOperationCore.Message.SNMP
 			lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommonFunctions.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue, true);
+				CommFuns.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue, true);
 				sbReVal.Append("网元类型:").Append(strReValue).Append("; ");
 			}
 
@@ -676,7 +687,7 @@ namespace SCMTOperationCore.Message.SNMP
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				string strTmpVal;
-				CommonFunctions.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal, true);
+				CommFuns.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal, true);
 				if ("1".Equals(strValue)) //失败
 				{
 					bTransSuccess = false;
@@ -1078,8 +1089,6 @@ namespace SCMTOperationCore.Message.SNMP
 		public bool CheckTrapOIDValidity(string strIpAddr, string strTrapOid, string strOidPrefix, out int intTrapType)
 		{
 			intTrapType = 0;
-			intTrapType = 23;
-			return true;
 
 			if (string.IsNullOrEmpty(strTrapOid))
 			{
@@ -1285,7 +1294,7 @@ namespace SCMTOperationCore.Message.SNMP
 			{
 				logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
 					, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
-//				Log.Debug(logMsg);
+				Log.Debug(logMsg);
 
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
 
@@ -1297,7 +1306,7 @@ namespace SCMTOperationCore.Message.SNMP
 				string strValue = vb.Value.ToString();
 
 				// TODO
-				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Type; //vb.GetType();
+				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type; //vb.GetType();
 
 				// 如果是getbulk响应返回的SNMP_SYNTAX_ENDOFMIBVIEW，则不处理这个vb，继续
 				if (lmtVb.SnmpSyntax == SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW)
@@ -1310,7 +1319,23 @@ namespace SCMTOperationCore.Message.SNMP
 				{
 					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
 					// CString strNodeType = GetNodeTypeByOIDInCache(csIpAddr, strOID, strMIBPrefix);
-					string strNodeType = "";
+					// 获取Mib节点信息
+					IReDataByOid reDataByOid = new ReDataByOid();
+					string strError;
+					if (false == Database.GetInstance().getDataByOid(lmtVb.Oid, out reDataByOid, lmtPdu.m_SourceIp, out strError))
+					{
+						Log.Error(string.Format("获取MIb节点信息错误，oid={0}", lmtVb.Oid));
+						return false;
+					}
+					IReDataByEnglishName getNameInfo = null;
+					if (!Database.GetInstance().getDataByEnglishName(reDataByOid.nameEn, out getNameInfo, lmtPdu.m_SourceIp, out strError))
+					{
+						Log.Error(string.Format("获取MIb节点信息错误，oid={0}", lmtVb.Oid));
+						return false;
+					}
+					string strNodeType = getNameInfo.mibSyntax;
+
+					// string strNodeType = "";
 					// strNodeType = "DateandTime";
 
 					if (string.Equals("DateandTime", strNodeType, StringComparison.OrdinalIgnoreCase))

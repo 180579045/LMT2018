@@ -15,11 +15,10 @@ namespace SCMTOperationCoreTests.Message.SNMP
 		[TestMethod()]
 		public void MyTest()
 		{
+			string targetIp = "192.168.5.198";
+			string str1 = $"{{\"TargetIp\" : \"{targetIp}\", \"UpdatePath\" : \"{targetIp}\"}}";
 
-			string fmt = "";
-			fmt = DateTime.Now.ToString("yyyyMMdd_HHmmss_fff");
-
-			Debug.WriteLine(fmt);
+			Debug.WriteLine(str1);
 		}
 	}
 }

@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CommonUtility
+namespace SCMTOperationCore.Message.SNMP
 {
 	/// <summary>
 	/// 提供一些公共功能的函数接口
 	/// </summary>
-	public class CommonFunctions
+	public class CommFuns
 	{
 		/// <summary>
 		/// 把Mib的数值翻译成描述，或者是把描述翻译为实际的值
@@ -23,7 +23,7 @@ namespace CommonUtility
 		/// <param name="strReValue">返回值，Mib描述或值</param>
 		/// <param name="bValueToDesc">true:将值翻译为描述；false:将描述翻译为值</param>
 		/// <returns></returns>
-		public static bool TranslateMibValue(string strIpAddr, string strMibName, string strMibValue, out string strReValue,  bool bValueToDesc = true)
+		public static bool TranslateMibValue(string strIpAddr, string strMibName, string strMibValue, out string strReValue, bool bValueToDesc = true)
 		{
 			strReValue = "";
 
@@ -42,9 +42,9 @@ namespace CommonUtility
 			}
 
 			// 节点取值范围
-			string strMibValList = "0:本地文件/1:远端文件";//mibNodeInfo.mangerValue;
-												   // 节点类型
-			string strMibSyntax = "LONG"; // mibNodeInfo.mibSyntax;
+			string strMibValList = mibNodeInfo.mangerValue;
+			// 节点类型
+			string strMibSyntax = mibNodeInfo.mibSyntax;
 
 			string strInMibValue = strMibValue;
 			// 处理BITS类型
@@ -58,7 +58,7 @@ namespace CommonUtility
 			if (!string.IsNullOrEmpty(strMibValList))
 			{
 				string[] keyValList = strMibValList.Split('/');
-				foreach(string item in keyValList)
+				foreach (string item in keyValList)
 				{
 					string[] keyVal = item.Split(':');
 					if (keyVal.Count() >= 2)
@@ -80,7 +80,7 @@ namespace CommonUtility
 							}
 						}
 					}
-					
+
 				}
 			}
 
@@ -122,7 +122,7 @@ namespace CommonUtility
 			// 解析“0:时钟故障/1:传输故障”格式的字符串
 			Dictionary<int, string> dicBit2Desc = new Dictionary<int, string>();
 			string[] keyValList = strValueList.Split('/');
-			foreach(string item in keyValList)
+			foreach (string item in keyValList)
 			{
 				string[] keyVal = item.Split(':');
 				dicBit2Desc.Add(Convert.ToInt32(keyVal[0]), keyVal[1]);
@@ -130,7 +130,7 @@ namespace CommonUtility
 
 			// 将bits值转换为unsigned long
 			UInt32 u32BitsTypeValue = Convert.ToUInt32(strBitsTypeValue);
-			for(int i = 0; i < 32; i++)
+			for (int i = 0; i < 32; i++)
 			{
 				UInt32 u32BitValue = (UInt32)1 << i;
 				UInt32 u32Tmp = u32BitsTypeValue & u32BitValue;
@@ -151,8 +151,6 @@ namespace CommonUtility
 
 			return true;
 		}
-
-
 
 	}
 }

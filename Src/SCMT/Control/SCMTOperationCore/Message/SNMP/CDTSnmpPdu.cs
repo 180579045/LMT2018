@@ -122,8 +122,11 @@ namespace SCMTOperationCore.Message.SNMP
 		//在Pdu里添加Vb
 		public void AddVb(CDTLmtbVb pLmtbVb)
 		{
+			
 			m_VbList.Add(pLmtbVb);
-			if(!m_mapVBs.ContainsKey(pLmtbVb.Oid))
+
+			// 需要将oid的索引去掉，然后添加到m_mapVBs中
+			if (!m_mapVBs.ContainsKey(pLmtbVb.Oid))
 			{
 				m_mapVBs.Add(pLmtbVb.Oid, pLmtbVb.Value);
 			}
@@ -199,13 +202,35 @@ namespace SCMTOperationCore.Message.SNMP
 				RecordOidValue(oid, out lpszIndex);
 			}
 
-			if (!m_mapVBs.ContainsKey(oid))
+			// TODO: 老版本的LMT的m_mapVBs中存储的是去掉索引的Oid，现在存的是带索引的Oid，所以修改获取方法为：
+			// 只要参数传递的Oid为m_mapVBs中的Oid的子字符串就认为是同一个oid（这样处理应该是对的，原来的RecordOidValue()方法处理太复杂了！）
+			/*			if (!m_mapVBs.ContainsKey(oid))
+						{
+							Log.Error($"PDU中没有OID为{oid}的VB");
+							return false;
+						}
+
+						strValue = m_mapVBs[oid];
+			*/
+			string strTmpOid = "";
+			foreach(KeyValuePair<string, string> item in m_mapVBs)
+			{
+				// oid相等或oid为子字符串，就认为是同一个oid
+				if (oid.Equals(item.Key) || item.Key.Contains(oid + "."))
+				{
+					strTmpOid = item.Key;
+					break;
+                }
+			}
+
+			if (string.IsNullOrEmpty(strTmpOid))
 			{
 				Log.Error($"PDU中没有OID为{oid}的VB");
 				return false;
 			}
 
-			strValue = m_mapVBs[oid];
+			strValue = m_mapVBs[strTmpOid];
+
 			return true;
 		}
 

@@ -153,6 +153,7 @@
     <Compile Include="Message\SNMP\CDTSnmpMsgDispose.cs" />
     <Compile Include="Message\SNMP\CDTSnmpPdu.cs" />
     <Compile Include="Message\SNMP\CDTCmdExecuteMgr.cs" />
+    <Compile Include="Message\SNMP\CommFuns.cs" />
     <Compile Include="Message\SNMP\DTLinkPathMgr.cs" />
     <Compile Include="Message\SNMP\ICDTLinkPathMgr.cs" />
     <Compile Include="Message\SNMP\IDTObjectRefInterface.cs" />

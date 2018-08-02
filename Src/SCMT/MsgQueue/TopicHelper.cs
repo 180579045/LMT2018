@@ -36,6 +36,13 @@ namespace MsgQueue
 
 		#endregion
 
+		#region SNMP相关消息
+		// 解析数据一致性文件
+		public const string ParseDataConFile = "parse_data_con_file";
+		// 通知加载lm.dtz数据到MIBVersionDB中的消息
+		public const string LoadLmdtzToVersionDb = "Load_Lmdtz_to_versiondb";
+
+		#endregion
 
 	}
 }
