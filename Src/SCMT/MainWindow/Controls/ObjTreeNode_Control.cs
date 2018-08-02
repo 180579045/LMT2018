@@ -40,21 +40,16 @@ namespace SCMTMainWindow
 			//JObject JObj = new JObject();
 			try
 			{
-				//using (StreamReader reader = File.OpenText(m_ObjFilePath))
-				//{
-				//	JObj = (JObject)JToken.ReadFrom(new JsonTextReader(reader));
-				//}
-
 				ObjNode.nodeb = node;
 
-				var jsonContent = File.ReadAllText(m_ObjFilePath, Encoding.Default);
+				var jsonContent = FileRdWrHelper.GetFileContent(FilePathHelper.GetAppPath() + m_ObjFilePath, Encoding.Default);
 				var nodeList = JsonHelper.SerializeJsonToObject<Nodes>(jsonContent);
 
 				ParseJObject(nodeList);
 			}
 			catch(Exception e)
 			{
-				MessageBox.Show("1加载数据库失败;" + e.ToString());
+				MessageBox.Show("1加载数据库失败\r\n" + e.ToString());
 			}
 		}
 

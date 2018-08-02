@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using CommonUtility;
+//using CommonUtility;
 using Newtonsoft.Json.Linq;
 
 
@@ -399,8 +399,9 @@ namespace MIBDataParser.JSONDataMgr
 
 			if (cmdL == null)
 			{
-				throw new CustomException("命令清单数据库未初始化");
-			}
+                //throw new CustomException("命令清单数据库未初始化");
+                throw new ArgumentNullException();
+            }
 
 			ReCmdDataByCmdEnglishName cmdData;
 			string err;
