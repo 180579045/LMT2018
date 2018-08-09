@@ -146,10 +146,10 @@ namespace SCMTOperationCore.Message.MsgDispatcher
 				MessageBox.Show(tipInfo, "连接", MessageBoxButton.OK);
 			}
 
-			// TODO 断开连接
 			if (bBreakConnect)
 			{
-				
+				var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(targetIp);
+				NodeBControl.GetInstance().DisConnectNodeb(fname);
 			}
 		}
 

@@ -566,7 +566,7 @@ namespace SCMTMainWindow
 
 			menuItem = new MetroMenuItem() { Header = "断开连接" };
 			menuItem.Click += DisconStationMenu_Click;
-			menuItem.IsEnabled = true;
+			menuItem.IsEnabled = false;
 			menu.Items.Add(menuItem);
 
 			menuItem = new MetroMenuItem() { Header = "删除" };
@@ -623,10 +623,20 @@ namespace SCMTMainWindow
 				if (target != null)
 				{
 					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+					var menuItem = GetMenuItemByIp(node.NeAddress.ToString(), "连接基站");
+					if (null != menuItem)
+					{
 					//NodeBControl.GetInstance().ConnectNodeb(target.Header);
 					ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress}", "SCMT");
 					node.Connect();
 					ObjNode.main = this;
+						ChangeMenuHeader(node.NeAddress.ToString(), "连接基站", "取消连接");
+					}
+					else
+					{
+						node.DisConnect();
+						ChangeMenuHeader(node.NeAddress.ToString(), "取消连接", "连接基站");
+					}
 				}
 			}
 		}
@@ -636,24 +646,22 @@ namespace SCMTMainWindow
 			var tip = $"基站将断开连接，并且该基站打开的功能窗口也将关闭。是否继续操作？";
 
 			var mui = sender as MenuItem;
-			if (null != mui)
-			{
+			if (null == mui) return;
+
 				var parent = (ContextMenu)mui.Parent;
-				if (null == parent)
+			var target = parent?.PlacementTarget as MetroExpander;
+			if (target == null)
 				{
 					return;
 				}
 
-				var target = parent.PlacementTarget as MetroExpander;
 
 				// 如果MessageBox放在上一句的前面，parent.PlacementTarget将会变成null，拿不到信息
 				var dr = MessageBox.Show(tip, "断开连接", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
-				if (MessageBoxResult.Yes != dr)
+			if (MessageBoxResult.Yes == dr)
 				{
-					return;
-				}
 
-				if (target != null) NodeBControl.GetInstance().DisConnectNodeb(target.Header);
+				NodeBControl.GetInstance().DisConnectNodeb(target.Header);
 			}
 		}
 
@@ -743,6 +751,70 @@ namespace SCMTMainWindow
 				}
 			}
 			return null;
+		}
+		private MenuItem GetMenuItemByIp(string ip, string menuText)
+		{
+			if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(menuText))
+				return null;
+			var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+			MenuItem retMenu = null;
+				var children = ExistedNodebList.Children;
+				if (null == children) return null;
+				ContextMenu contextMenu = null;
+				var count = children.Count;
+				for (var index = 0; index < count; index++)
+				{
+					var target = children[index] as MetroExpander;
+					if (target != null && target.Header.Equals(header))
+					{
+						contextMenu = target.ContextMenu;
+						break;
+					}
+				}
+				retMenu = GetMenuItemByHeader(contextMenu, menuText);
+			return retMenu;
+		}
+		private bool ChangeMenuHeaderAsync(string ip, string oldText, string newText)
+		{
+			if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(oldText) || string.IsNullOrEmpty(newText))
+				return false;
+			var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+			ExistedNodebList.Dispatcher.BeginInvoke(new Action(() =>
+			{
+				var children = ExistedNodebList.Children;
+				if (null == children) return ;
+				ContextMenu contextMenu = null;
+				var count = children.Count;
+				for (var index = 0; index < count; index++)
+				{
+					var target = children[index] as MetroExpander;
+					if (target != null && target.Header.Equals(header))
+					{
+						contextMenu = target.ContextMenu;
+						break;
+					}
+				}
+				if (contextMenu == null)
+					return;
+				var menuItems = contextMenu.Items;
+				foreach (var submenu in menuItems)
+				{
+					var item = submenu as MenuItem;
+					if (item != null && oldText.Equals(item.Header))
+					{
+						item.Header = newText;
+					}
+				}
+			}));
+			return true;
+		}
+		private bool ChangeMenuHeader(string ip, string oldText, string newText)
+		{
+			var item = GetMenuItemByIp(ip, oldText);
+			if (null == item)
+				return false;
+			item.Header = newText;
+			return true;
 		}
 
 		#endregion
@@ -1664,6 +1736,7 @@ namespace SCMTMainWindow
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
 			InitDataBase();
+			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
 		}
@@ -1675,6 +1748,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
+			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站");
 			EnableMenu(ip, "断开连接", false);
 

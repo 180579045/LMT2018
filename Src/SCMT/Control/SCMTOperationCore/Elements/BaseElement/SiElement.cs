@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using CommonUtility;
+using LogManager;
 using MsgQueue;
 using SCMTOperationCore.Connection;
 using SCMTOperationCore.Connection.Tcp;
@@ -18,6 +20,7 @@ namespace SCMTOperationCore.Elements
 	/// </summary>
 	public class SiElement : Element, IElement
 	{
+		#region 构造、析构
 		/// <summary>
 		/// 构造函数。后面追加别的参数
 		/// </summary>
@@ -34,6 +37,7 @@ namespace SCMTOperationCore.Elements
 			connection.Connected += OnConnected;
 
 			dealer = new SiMsgDealer(neIp.ToString());
+			_cancelConnectFlag = false;
 		}
 
 		~SiElement()
@@ -41,11 +45,14 @@ namespace SCMTOperationCore.Elements
 			DisConnect();
 		}
 
+		#endregion
+		#region 公共接口
 		//连接网元。
 		public override void Connect()
 		{
 			try
 			{
+				SetCancelConnectFlag(false);
 				if (HasConnected())
 				{
 					var chose = MessageBox.Show("当前设备已连接，是否断开重连？", "重连确认", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -57,34 +64,35 @@ namespace SCMTOperationCore.Elements
 					DisConnect();
 				}
 
-				Task.Factory.StartNew(() => connection.Connect());
+				Task.Factory.StartNew(() => {
+					while(!IsCancelConnect() && !HasConnected())
+					{
+						try
+						{
+							connection.Connect();
 			}
-			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
+						catch
 			{
-				Console.WriteLine(e);
+							// ignored
+							Thread.Sleep(100);
 			}
 		}
-
+				});
 		//连接成功处理事件
-		private void OnConnected(object sender, ConnectedEventArgs e)
-		{
 		}
-
+			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
 		//连接断开处理事件
-		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
-			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
+				Log.Error(e.Message);
 		}
 
 		//收到数据处理事件
-		private void OnDataReceived(object sender, DataReceivedEventArgs e)
-		{
-			dealer.DealSiMsg(e.Bytes);
 		}
 
 		//断开连接，在OnDisconnected中处理事件
 		public override void DisConnect()
 		{
+			SetCancelConnectFlag(true);
 			Task.Factory.StartNew(() => connection.Close());
 		}
 
@@ -114,6 +122,35 @@ namespace SCMTOperationCore.Elements
 			return (ConnectState == ConnectionState.Connected);
 		}
 
+		#endregion
+		#region 私有方法
+		private void OnConnected(object sender, ConnectedEventArgs e)
+		{
+		}
+		private void OnDisconnected(object sender, DisconnectedEventArgs e)
+		{
+			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
+		}
+		private void OnDataReceived(object sender, DataReceivedEventArgs e)
+		{
+			dealer.DealSiMsg(e.Bytes);
+		}
+		private bool IsCancelConnect()
+		{
+			lock (_lockObj)
+			{
+				return _cancelConnectFlag;
+			}
+		}
+		private void SetCancelConnectFlag(bool bCancel)
+		{
+			lock (_lockObj)
+			{
+				_cancelConnectFlag = bCancel;
+			}
+		}
+		#endregion
+		#region 私有成员、属性
 		//---------------------------------属性区---------------------------------
 		public ConnectionState ConnectState => connection.State;
 
@@ -122,6 +159,9 @@ namespace SCMTOperationCore.Elements
 		private readonly SiMsgDealer dealer;
 
 		private NetworkEndPoint _targetPoint;
+		private bool _cancelConnectFlag;
+		private static object _lockObj = new object();
+		#endregion
 	}
 
 	

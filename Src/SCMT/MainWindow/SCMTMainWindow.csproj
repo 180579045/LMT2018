@@ -109,9 +109,6 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
@@ -119,7 +116,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
     </Reference>
-    <Reference Include="SnmpSharpNet, Version=0.9.5.0, Culture=neutral, PublicKeyToken=b2181aa3b9571feb" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SnmpSharpNet">
+      <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.SQLite">
