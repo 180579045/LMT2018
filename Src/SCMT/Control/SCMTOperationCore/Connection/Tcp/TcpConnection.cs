@@ -78,7 +78,7 @@ namespace SCMTOperationCore.Connection.Tcp
         }
 
         /// <inheritdoc />
-        public override void Connect(byte[] bytes = null, int timeout = 5000)
+        public override void Connect(byte[] bytes = null, int timeout = 200)
         {
             lock(socketLock)
             {
@@ -89,12 +89,18 @@ namespace SCMTOperationCore.Connection.Tcp
                 {
                     IAsyncResult result = socket.BeginConnect(RemoteEndPoint, null, null);
 
-                    result.AsyncWaitHandle.WaitOne(timeout);
+                    bool bSucceed = result.AsyncWaitHandle.WaitOne(timeout);
 
+                    if (bSucceed)
+                    {
                     socket.EndConnect(result);
 
                     HandleConnect();
-
+                    }
+                    else
+                    {
+                        throw new HazelException($"Could not connect as an exception occured.\r\n");
+                    }
                 }
                 catch (Exception e)
                 {
@@ -303,7 +309,6 @@ namespace SCMTOperationCore.Connection.Tcp
             {
                 //If the socket's been disposed then we can just end there.
 				throw new HazelException("ChunkReadCallback:ObjectDisposedException");
-                return;
             }
             catch (Exception e)
             {
@@ -367,25 +372,23 @@ namespace SCMTOperationCore.Connection.Tcp
             lock (socketLock)
             {
                 //Only invoke the disconnected event if we're not already disconnecting
-                if (State == ConnectionState.Connected)
+                if (State != ConnectionState.NotConnected)
                 {
-                    State = ConnectionState.Disconnecting;
+                    State = ConnectionState.NotConnected;
                     invoke = true;
                 }
-            }
 
             //Invoke event outide lock if need be
             if (invoke)
             {
                 InvokeDisconnected(e);
 
-                lock (socketLock)
-                {
-                    State = ConnectionState.NotConnected;
-
                     if (socket.Connected)
+                {
+
                         socket.Shutdown(SocketShutdown.Both);
                     socket.Disconnect(true);
+                    }
                 }
             }
         }
