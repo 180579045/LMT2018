@@ -10,8 +10,8 @@ namespace SCMTMainWindow
     public class EChartJS
     {
         public Option option { get; set; }
-        public string canvasHeight { get; set; }         
-        public string canvasWidth { get; set; }            
+        public string canvasHeight { get; set; }
+        public string canvasWidth { get; set; }
 
         public EChartJS(Option option, string width, string height)
         {

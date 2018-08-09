@@ -33,9 +33,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="NetMQ">
-      <HintPath>..\packages\Lib\NetMQ.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>

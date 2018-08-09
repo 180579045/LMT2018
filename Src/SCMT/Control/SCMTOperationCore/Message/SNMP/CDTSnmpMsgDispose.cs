@@ -1,5 +1,5 @@
 ﻿using CommonUtility;
-using FileManager;
+//using FileManager;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
@@ -376,20 +376,21 @@ namespace SCMTOperationCore.Message.SNMP
 			long requestId = 0;
 			//收到初配上报事件, 发起一致性文件上传
 			string strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
-			var transFileObj = FileTransTaskMgr.FormatTransInfo(
-															strDataConsisFolderPath
-															,""
-															, Transfiletype5216.TRANSFILE_dataConsistency
-															, TRANSDIRECTION.TRANS_UPLOAD);
-			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(strNodeIp, transFileObj, ref taskId, ref requestId))
-			{
-				Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}", strDataConsisFolderPath, strNodeIp));
+			// TODO 先保证编译通过
+			//var transFileObj = FileTransTaskMgr.FormatTransInfo(
+			//												strDataConsisFolderPath
+			//												,""
+			//												, Transfiletype5216.TRANSFILE_dataConsistency
+			//												, TRANSDIRECTION.TRANS_UPLOAD);
+			//if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(strNodeIp, transFileObj, ref taskId, ref requestId))
+			//{
+			//	Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}", strDataConsisFolderPath, strNodeIp));
 
-			}
-			else
-			{
-				Log.Error("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strNodeIp);
-			}
+			//}
+			//else
+			//{
+			//	Log.Error("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strNodeIp);
+			//}
 
 			return;
 		}
@@ -735,28 +736,28 @@ namespace SCMTOperationCore.Message.SNMP
 			{
 				long taskId = 0;
 				long requestId = 0;
+
 				//收到初配上报事件, 发起一致性文件上传
 				string strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
-				var transFileObj = FileTransTaskMgr.FormatTransInfo(
-					strDataConsisFolderPath
-					, ""
-					, Transfiletype5216.TRANSFILE_dataConsistency
-					, TRANSDIRECTION.TRANS_UPLOAD);
-				if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(strIpAddr, transFileObj, ref taskId, ref requestId))
-				{
-					Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}", strDataConsisFolderPath, strIpAddr));
+				
+				//TODO 暂时注销，先保证编译通过
+				//var transFileObj = FileTransTaskMgr.FormatTransInfo(
+				//	strDataConsisFolderPath
+				//	, ""
+				//	, Transfiletype5216.TRANSFILE_dataConsistency
+				//	, TRANSDIRECTION.TRANS_UPLOAD);
+				//if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(strIpAddr, transFileObj, ref taskId, ref requestId))
+				//{
+				//	Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}", strDataConsisFolderPath, strIpAddr));
 
-				}
-				else
-				{
-					Log.Error("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strIpAddr);
-				}
-
+				//}
+				//else
+				//{
+				//	Log.Error("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strIpAddr);
+				//}
 			}
 
-
 			return true;
-
 		}
 
 		/// <summary>
