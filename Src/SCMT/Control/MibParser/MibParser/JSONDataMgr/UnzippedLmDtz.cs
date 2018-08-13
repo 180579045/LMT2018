@@ -20,14 +20,81 @@ using CommonUtility;
 
 namespace MIBDataParser.JSONDataMgr
 {
+    class ZipOper
+    {
+        /// <summary>
+        /// 查看文件是否真实存在
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        public bool isFileExist(string filePath, out string err)
+        {
+            err = "";
+            // 校验
+            if (filePath == string.Empty)
+            {
+                err = filePath + " 文件名不能为空！";
+                return false;
+            }
+            if (!File.Exists(filePath))
+            {
+                err = filePath + " 文件不存在！";
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        public bool delFile(List<string> filePathList, out string err)
+        {
+            err = "";
+            foreach (var filePath in filePathList)
+            {
+                if (isFileExist(filePath, out err))
+                {
+                    File.Delete(filePath);
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 解压缩文件
+        /// </summary>
+        /// <param name="sourceFile">解压缩的文件</param>
+        /// <param name="destPath">解放后的位置</param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        public bool decompressedFile(string sourceFile, string destPath, out string err)
+        {
+            err = "";
+            try
+            {
+                ZipFile.ExtractToDirectory(sourceFile, destPath);
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;//显示异常信息
+                return false;
+            }
+            return true;
+        }
+    }
+
     /// <summary>
     /// 解压 JsonDataMgr.ini中的压缩文件
     /// </summary>
-    class UnzippedLmDtz
+    class UnzippedLmDtz : ZipOper
     {     
-        /// <summary> 解压缩文件 </summary>
+        /// <summary> 解压缩文件-废弃 </summary>
         /// <returns> flase/true </returns>
-        public bool UnZipFileOid(out string err)
+        public bool UnZipFileOld(out string err)
         {
             err = "";
             string zipfilePath = "";
@@ -90,6 +157,11 @@ namespace MIBDataParser.JSONDataMgr
             return true;
         }//解压结束
 
+        /// <summary>
+        /// 解压缩zip文件
+        /// </summary>
+        /// <param name="err"></param>
+        /// <returns></returns>
         public bool UnZipFile(out string err)
         {
             err = "";
@@ -104,7 +176,7 @@ namespace MIBDataParser.JSONDataMgr
             }
 
             //2. 校验
-            if (!UzipIsFileExist(readFile["zipFile"], out errNew))
+            if (!isFileExist(readFile["zipFile"], out errNew))
             {
                 err += errNew;
                 return false;
@@ -119,6 +191,12 @@ namespace MIBDataParser.JSONDataMgr
             return true;
         }//解压结束
 
+        /// <summary>
+        /// 读取.ini配置文件中压缩文件的相关路径等
+        /// </summary>
+        /// <param name="readFile"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
         public bool UzipReadIni( out Dictionary<string,string> readFile, out string err)
         {
             err = "";
@@ -153,53 +231,42 @@ namespace MIBDataParser.JSONDataMgr
             return true;
         }
 
-        public bool UzipIsFileExist(string filePath, out string err)
+        /// <summary>
+        /// 解压缩文件前处理
+        /// </summary>
+        /// <param name="sourceArchiveFileName"></param>
+        /// <param name="destinationDirectoryName"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        bool UzipExtractToDirectoryPreDeal(string sourceArchiveFileName, string destinationDirectoryName, out string err)
         {
             err = "";
-            //2. 校验
-            if (filePath == string.Empty)
-            {
-                err = filePath + " 压缩文件不能为空！";
-                return false;
-            }
-            if (!File.Exists(filePath))
-            {
-                err = filePath + " 压缩文件不存在！";
-                return false;
-            }
+            //解压缩前，把lm 和 lm.mdb 删除
+            delFile( new List<string>() {destinationDirectoryName + "lm",
+                destinationDirectoryName + "lm.mdb",}, out err);
             return true;
         }
-
-        public bool UzipExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, out string err)
+        /// <summary>
+        /// 解压缩文件
+        /// </summary>
+        /// <param name="sourceArchiveFileName"></param>
+        /// <param name="destinationDirectoryName"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        bool UzipExtractToDirectoryDeal(string sourceArchiveFileName, string destinationDirectoryName, out string err)
         {
-            err = "";
-            //3. 解压缩rar文件
-            try
-            {
-                if (File.Exists(destinationDirectoryName + "lm"))
-                {
-                    File.Delete(destinationDirectoryName + "lm");
-                }
-                if (File.Exists(destinationDirectoryName + "lm.mdb"))
-                {
-                    File.Delete(destinationDirectoryName + "lm.mdb");
-                }
-                ZipFile.ExtractToDirectory(sourceArchiveFileName, destinationDirectoryName);
-            }
-            catch (Exception ex)
-            {
-                err = ex.Message;//显示异常信息
+            if (!decompressedFile(sourceArchiveFileName, destinationDirectoryName, out err))
                 return false;
-            }
-            // 解压后处理:重命名
-            if (!UzipRenameDirectory(destinationDirectoryName, out err))
-            {
-                return false;
-            }
-            return true;
+            else
+                return true;
         }
-
-        public bool UzipRenameDirectory(string destinationDirectoryName, out string err)
+        /// <summary>
+        /// 解压后处理:重命名
+        /// </summary>
+        /// <param name="destinationDirectoryName"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        bool UzipRenameDirectoryAssisDeal(string destinationDirectoryName, out string err)
         {
             err = "";
             try
@@ -213,6 +280,36 @@ namespace MIBDataParser.JSONDataMgr
             }
             return true;
         }
-    }
 
+        /// <summary>
+        /// 解压缩文件相关的操作
+        /// </summary>
+        /// <param name="sourceArchiveFileName"></param>
+        /// <param name="destinationDirectoryName"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        public bool UzipExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName, out string err)
+        {
+            err = "";
+            // 预处理
+            if ( !UzipExtractToDirectoryPreDeal(sourceArchiveFileName, destinationDirectoryName, out err))
+            {
+                return false;
+            }
+            // 处理  解压缩rar文件
+            if(!UzipExtractToDirectoryDeal(sourceArchiveFileName, destinationDirectoryName, out err))
+            {
+                return false;
+            }
+            // 后处理
+            // 解压后处理:重命名
+            if (!UzipRenameDirectoryAssisDeal(destinationDirectoryName, out err))
+            {
+                return false;
+            }
+            return true;
+        }
+
+    }
+    
 }

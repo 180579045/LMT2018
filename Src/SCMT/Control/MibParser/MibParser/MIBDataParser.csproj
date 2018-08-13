@@ -56,6 +56,7 @@
     <Compile Include="JSONDataMgr\CmdInfoList.cs" />
     <Compile Include="JSONDataMgr\CmdTreeJsonData.cs" />
     <Compile Include="JSONDataMgr\Database.cs" />
+    <Compile Include="JSONDataMgr\DatabaseForCfg.cs" />
     <Compile Include="JSONDataMgr\MibInfoList.cs" />
     <Compile Include="JSONDataMgr\ReadIniFile.cs" />
     <Compile Include="JSONDataMgr\UnzippedLmDtz.cs" />

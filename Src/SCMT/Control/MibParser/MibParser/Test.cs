@@ -43,8 +43,6 @@ namespace MIBDataParser
                 { "eueTimerT304", null},
                 { "cellAdjCellLcId", null}
             };
-            dataHandle.testDictExample(reData);
-
 
             string err = "";
             // 查询数据 test_1 命令树

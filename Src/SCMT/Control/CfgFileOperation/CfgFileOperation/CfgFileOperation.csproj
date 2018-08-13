@@ -44,12 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CfgFileOp.cs" />
-    <Compile Include="CfgFileOperationTest.cs" />
-    <Compile Include="CfgFileOpAboutBase.cs" />
+    <Compile Include="CfgFileOpTest.cs" />
+    <Compile Include="CfgFileOpBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MibParser\MibParser\MIBDataParser.csproj">
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

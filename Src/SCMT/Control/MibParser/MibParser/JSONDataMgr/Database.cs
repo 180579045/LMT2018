@@ -89,18 +89,32 @@ namespace MIBDataParser.JSONDataMgr
 		}
 	}
 
-	public sealed class Database : IDatabase
+    /// <summary>
+    /// 数据库操作相关的类
+    /// C# sealed修饰符表示密封用于类时，表示该类不能再被继承
+    /// </summary>
+	public sealed partial class Database : IDatabase
 	{
 		public  ResultInitData resultInitData; // 委托, 返回初始化的结果
 
 		private MibInfoList mibL = null; // MIB 相关数据的操作句柄
 		private CmdInfoList cmdL = null; // Cmd 相关数据的操作句柄
 
-		private static Database _instance = null;//private static readonly object SynObj = new object();
-		private static object _syncLock = new object();
+		private static Database _instance = null;// private static readonly object SynObj = new object();
+                                                 // 数据库句柄
+        private static object _syncLock = new object();// 数据库锁
 
+        // 构造函数
+        /// <summary>
+        /// 构造函数
+        /// </summary>
 		private Database(){}
 
+        // 获取数据库句柄
+        /// <summary>
+        /// 获取数据库句柄
+        /// </summary>
+        /// <returns></returns>
 		public static Database GetInstance()
 		{
 			if (null == _instance)
@@ -116,11 +130,12 @@ namespace MIBDataParser.JSONDataMgr
 			return _instance;
 		}
 
-		/// <summary>
-		/// 初始化 线程: 调用 DBInitDateBaseByIpConnect 。
-		/// </summary>
-		/// <param name="connectIp">基站连接的ip，标记数据库的归属，是哪个基站的数据</param>
-		public void initDatabase(string connectIp)
+        // 初始化
+        /// <summary>
+        /// 初始化 线程: 调用 DBInitDateBaseByIpConnect 。
+        /// </summary>
+        /// <param name="connectIp">基站连接的ip，标记数据库的归属，是哪个基站的数据</param>
+        public void initDatabase(string connectIp)
 		{
 			try{
 				new Thread(
@@ -132,6 +147,7 @@ namespace MIBDataParser.JSONDataMgr
 			return;
 		}
 
+        // 删除数据库列表
 		public bool delDatabase(string connectIp)
 		{
 			if (String.Empty == connectIp)
@@ -143,7 +159,8 @@ namespace MIBDataParser.JSONDataMgr
 
 		}
 
-		[Obsolete("Use Method bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err); instead", true)]
+        // [查询]通过节点英文名字，查询节点信息。
+        [Obsolete("Use Method bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err); instead", true)]
 		public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData)
 		{
 			reData = null;
@@ -238,7 +255,8 @@ namespace MIBDataParser.JSONDataMgr
 			return true;
 		}
 
-		[Obsolete("Use Method bool getDataByOid(Dictionary<string, IReDataByOid> reData, string connectIp, out string err); instead", true)]
+        // [查询]通过节点oid，查询节点信息。
+        [Obsolete("Use Method bool getDataByOid(Dictionary<string, IReDataByOid> reData, string connectIp, out string err); instead", true)]
 		public bool getDataByOid(string oid, out IReDataByOid reData, string curConnectIp)
 		{
 			reData = null;
@@ -299,7 +317,8 @@ namespace MIBDataParser.JSONDataMgr
 			return true;
 		}
 
-		[Obsolete("Use Method bool getDataByTableEnglishName(Dictionary<string, IReDataByTableEnglishName> reData, string connectIp, out string err); instead", true)]
+        // [查询]通过表英文名字，查询表信息。
+        [Obsolete("Use Method bool getDataByTableEnglishName(Dictionary<string, IReDataByTableEnglishName> reData, string connectIp, out string err); instead", true)]
 		public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string curConnectIp)
 		{
 			reData = null;
@@ -371,8 +390,8 @@ namespace MIBDataParser.JSONDataMgr
 			return true;
 		}
 
-
-		public bool getCmdDataByCmdEnglishName(Dictionary<string, IReCmdDataByCmdEnglishName> reData, string connectIp, out string err)
+        // [查询]通过命令英文名字，查询命令信息。
+        public bool getCmdDataByCmdEnglishName(Dictionary<string, IReCmdDataByCmdEnglishName> reData, string connectIp, out string err)
 		{
 			err = "";
 			// 参数判断
@@ -413,7 +432,12 @@ namespace MIBDataParser.JSONDataMgr
 			return null;
 		}
 
-
+        // [查询]提供Trap所有类型
+        /// <summary>
+        /// 提供Trap所有类型的查找
+        /// 现有10种。
+        /// </summary>
+        /// <returns></returns>
         public Dictionary<string, Dictionary<string, string>> getTrapInfo()
         {
             Dictionary<string, Dictionary<string, string>> allTrapInfo = new Dictionary<string, Dictionary<string, string>>() {
@@ -431,24 +455,8 @@ namespace MIBDataParser.JSONDataMgr
             return allTrapInfo;
         }
 
-        public bool testDictExample(Dictionary<string, IReDataByEnglishName> reData)
-		{
-			string[] keys = new string [reData.Keys.Count];
-			reData.Keys.CopyTo(keys, 0);
 
-			foreach (var key in keys)
-			{
-				ReDataByEnglishName dat = new ReDataByEnglishName();
-				reData[key] = dat;
-				break;
-			}
-
-			//reData = reDataN;
-
-			return true;
-		}
-
-		///**********   私有函数   **********/
+		/**********   私有函数   **********/
 		/// <summary>
 		/// 真实执行初始化内容的函数。
 		/// </summary>
@@ -591,4 +599,6 @@ namespace MIBDataParser.JSONDataMgr
 		//    return true;
 		//}
 	}
+
+    
 }

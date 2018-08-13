@@ -145,7 +145,16 @@ namespace MIBDataParser
         /// </summary>
         /// <returns>10组trap</returns>
         Dictionary<string, Dictionary<string, string>> getTrapInfo();
-        //bool testDictExample(Dictionary<string, IReDataByEnglishName> reData);
+
+        /* 为 cfg 操作模块提供相关接口 */
+        /// <summary>
+        /// 解压lmdtz文件到指定目录下
+        /// </summary>
+        /// <param name="strFileToUnzip">目标dtz文件</param>
+        /// <param name="strFileToDirectory">解压释放目录</param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        bool UnzipDtzForCfg(string strFileToUnzip, string strFileToDirectory, out string err);
     }
 }
 

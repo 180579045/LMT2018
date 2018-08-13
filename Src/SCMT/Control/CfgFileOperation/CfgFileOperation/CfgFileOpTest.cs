@@ -10,7 +10,7 @@ namespace CfgFileOperation
     /// <summary>
     /// .cfg 文件相关操作的测试代码
     /// </summary>
-    class CfgFileOperationTest
+    class CfgFileOpTest
     {
         static void Main(string[] args)
         {

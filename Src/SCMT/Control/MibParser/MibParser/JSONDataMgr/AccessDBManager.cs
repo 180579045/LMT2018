@@ -17,7 +17,7 @@ using System.Data.OleDb;
 
 namespace MIBDataParser.JSONDataMgr
 {
-    class AccessDBManager
+    public class AccessDBManager
     {
         private string fileName;
         private string connectionString;
