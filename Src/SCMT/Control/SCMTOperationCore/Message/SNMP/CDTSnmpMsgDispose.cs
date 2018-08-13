@@ -692,7 +692,7 @@ namespace SCMTOperationCore.Message.SNMP
 				if ("1".Equals(strValue)) //失败
 				{
 					bTransSuccess = false;
-					string strErrorValue, strErrorMultiLang;
+					string strErrorValue;
 					StringBuilder sbErrorMsg = new StringBuilder();
 					//第一个出错表的OID标示
 					lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiFirstErrVariableOID", out strErrorValue);

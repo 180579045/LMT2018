@@ -33,11 +33,13 @@ namespace SCMTOperationCore.Message.SNMP
 		{
 			if (_lmtTrapMgr == null)
 			{
-				lock(_synObj);
-				if(_lmtTrapMgr == null)
+				lock (_synObj)
 				{
-					_lmtTrapMgr = new LmtTrapMgr();
-					
+					if (_lmtTrapMgr == null)
+					{
+						_lmtTrapMgr = new LmtTrapMgr();
+
+					}
 				}
 			}
 

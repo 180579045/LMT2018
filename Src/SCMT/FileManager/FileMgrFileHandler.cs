@@ -828,19 +828,19 @@ namespace FileManager
 			return _mapTraningFileTask.Keys.ToList();
 		}
 
-        //删除未完成任务
-        public void DeleteUnFinishedTransTask(long lTaskID)
-        {
-            if(_mapTraningFileTask.ContainsKey(lTaskID))
-            {
-                _mapTraningFileTask.Remove(lTaskID);
-            }
+		//删除未完成任务
+		public void DeleteUnFinishedTransTask(long lTaskID)
+		{
+			if(_mapTraningFileTask.ContainsKey(lTaskID))
+			{
+				_mapTraningFileTask.Remove(lTaskID);
+			}
 
-            _workingForFileTrans = false;
+			_workingForFileTrans = false;
 
-        }
+		}
 
-        
+		
 		//停止文件传输操作。taskId作为索引使用
 		public static SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
 		{

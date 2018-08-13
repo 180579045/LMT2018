@@ -27,29 +27,30 @@ namespace SCMTMainWindow
 	class ObjNodeControl
 	{
 		public NodeB m_NodeB { get; set; }                          // 对应的基站;
+
 		public List<ObjNode> m_NodeList { get; set; }               // 对用的对象树列表(后续会改为以基站为索引的dictionary);
+
 		public List<ObjNode> m_RootNode { get; set; }               // Demo只有一个基站，暂时用来保存根节点;
-		private string m_ObjFilePath;                               // 暂时用一下，保存JSON文件路径;
 
 		/// <summary>
 		/// 实验程序先假定一个LMT只连接一个基站，在构造函数中直接读取默认JSON文件;
 		/// </summary>
 		public ObjNodeControl(NodeB node)
 		{
-			m_ObjFilePath = node.m_ObjTreeDataPath;
+			var dataPath = node.m_ObjTreeDataPath;
 			//JObject JObj = new JObject();
 			try
 			{
 				ObjNode.nodeb = node;
 
-				var jsonContent = FileRdWrHelper.GetFileContent(FilePathHelper.GetAppPath() + m_ObjFilePath, Encoding.Default);
+				var jsonContent = FileRdWrHelper.GetFileContent(FilePathHelper.GetAppPath() + dataPath, Encoding.Default);
 				var nodeList = JsonHelper.SerializeJsonToObject<Nodes>(jsonContent);
 
 				ParseJObject(nodeList);
 			}
 			catch(Exception e)
 			{
-				MessageBox.Show("1加载数据库失败\r\n" + e.ToString());
+				MessageBox.Show($"解析文件{dataPath}失败\r\n" + e);
 			}
 		}
 
@@ -62,7 +63,6 @@ namespace SCMTMainWindow
 		{
 			var AllNodes = nodes.NodeList;
 			m_NodeList = new List<ObjNode>();
-			int TempCount = 0;
 
 			var version = nodes.version;
 
@@ -93,7 +93,7 @@ namespace SCMTMainWindow
 		/// </summary>
 		/// <param name="NodeList"></param>
 		/// <returns></returns>
-		public static List<ObjNode> ArrangeParentage(List<ObjNode> NodeList)
+		private static List<ObjNode> ArrangeParentage(List<ObjNode> NodeList)
 		{
 			List<ObjNode> RootNodeShow = new List<ObjNode>();
 			ObjNode Root = new ObjTreeNode(0, 0, "1.0", "基站节点列表",@"/");
