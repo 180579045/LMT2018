@@ -37,7 +37,7 @@ namespace SCMTMainWindow
 	{
 		private static AddNodeB m_AddNB = null;
 
-		private static NodeBControl m_NBControl { get; set; }
+		//private static NodeBControl m_NBControl { get; set; }
 
 		private static NodeB m_nb { get; set; }
 
@@ -57,7 +57,7 @@ namespace SCMTMainWindow
 				m_AddNB.Closed += M_AddNB_Closed;            // 注册窗口关闭时得处理;
 				m_AddNB.ShowInTaskbar = false;
 				m_AddNB.IsSubWindowShow = true;
-				m_NBControl = obj.NBControler;
+				//m_NBControl = obj.m_objNBControler;
 			}
 			return m_AddNB;
 		}
@@ -100,7 +100,7 @@ namespace SCMTMainWindow
 
 			try
 			{
-				var nodeb = (NodeB)m_NBControl.AddElement(IpAddress.Text, FriendName.Text);
+				var nodeb = (NodeB)NodeBControl.GetInstance().AddElement(IpAddress.Text, FriendName.Text);
 
 				// 后续需要用Control类管理，第一版只连接一个基站;
 				this.Close();

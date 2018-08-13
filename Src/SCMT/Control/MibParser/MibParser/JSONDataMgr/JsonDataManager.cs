@@ -42,8 +42,8 @@ namespace MIBDataParser.JSONDataMgr
             string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
             try
             {
-				string appPath = FilePathHelper.GetAppPath();
-				string mdbfilePath = appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "mdbfilePath");
+                string appPath = FilePathHelper.GetAppPath();
+                string mdbfilePath = appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "mdbfilePath");
                 mdbFile = mdbfilePath + "lm.mdb";
                 this._jsonFilePath = appPath + iniFile.IniReadValue(iniFilePath, "JsonFileInfo", "jsonfilepath");
 
@@ -100,16 +100,32 @@ namespace MIBDataParser.JSONDataMgr
                     foreach (Thread t in threads)
                     {
                         if (t.IsAlive)
-                            t.Abort();
+                        {
+                            try
+                            {
+                                t.Join();
+                            }
+                            catch (ThreadStateException e)
+                            {
+                                Console.WriteLine(e);
+                            }
+                        }
                     }
                     return false;
                 }
 
-                if (true == isMibJsonOK && true == isObjJson2OK && true == isCmdJsonOK)
+                if (isMibJsonOK && isObjJson2OK && isCmdJsonOK)
                 {
                     if (threads[3].IsAlive)
                     {
-                        threads[3].Abort();
+                        try
+                        {
+                            threads[3].Join();
+                        }
+                        catch (ThreadStateException e)
+                        {
+                            Console.WriteLine(e);
+                        }
                     }
                     return true;
                 }

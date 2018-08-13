@@ -1109,11 +1109,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
                 localRefreshFileList();
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 MessageBox.Show("文件不存在，请确认");
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 MessageBox.Show("文件已存在");
             }

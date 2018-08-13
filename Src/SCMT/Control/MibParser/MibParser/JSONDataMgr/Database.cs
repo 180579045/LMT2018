@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 //using CommonUtility;
 using Newtonsoft.Json.Linq;
 
@@ -138,13 +139,11 @@ namespace MIBDataParser.JSONDataMgr
         public void initDatabase(string connectIp)
 		{
 			try{
-				new Thread(
-					new ParameterizedThreadStart(DBInitDateBaseByIpConnect)).Start(connectIp);
+				new Thread(DBInitDateBaseByIpConnect).Start(connectIp);
 			}
 			catch{
 				resultInitData(false);
 			}
-			return;
 		}
 
         // 删除数据库列表
