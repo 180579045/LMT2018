@@ -46,5 +46,6 @@ CDtCfgOp.CreateCfgFile(...)
 	
 	
      
-	
-	
+// 外面的调用	
+void CDTTreeCtrl::OnExportdatatocfg()
+	CDtCfgOp * 应用

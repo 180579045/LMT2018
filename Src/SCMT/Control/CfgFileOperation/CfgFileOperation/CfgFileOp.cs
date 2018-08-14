@@ -22,11 +22,30 @@ namespace CfgFileOperation
         /// <returns></returns>
         public bool CreateCfgFile(string strCfgFileName, string FileToUnzip, string FileToDirectory)//const CString &strEquipType, CAdoConnection* pAdoCon, vector<CString>&strTalbename)
         {
+            // string FileToUnzip = currentPath + "\\Data\\lmdtz\\lm.dtz";//
+            // string FileToDirectory = currentPath + "\\Data\\lmdtz";
             string err = "";
+
             // 获取原始数据
-            // 查数据库，遍历所有的 mibTree 生成 配置文件
-            string strSQL = ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
-            
+            /// 1. 解压 lm.dtz -> lm.mdb
+            if (!Database.GetInstance().cfgUnzipDtz(FileToUnzip, FileToDirectory, out err))
+            {
+                return false;
+            }
+
+            /// 2. 查数据库，遍历所有的 mibTree 生成 配置文件
+            Database.GetInstance().makeMain(FileToDirectory);
+
+            /// sql 获取所有的 table 和 entry 
+            //string strSQL = ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
+            //var df = Database.GetInstance().cfgGetRecordByAccessDb(FileToDirectory+ "\\lm.mdb", strSQL);
+
+            //if (df.Tables[0].Rows.Count > 0)
+            //{
+            //    //Database.GetInstance().MibParseDataSet(df);
+            //}
+
+            /// 
 
             return false;
         }

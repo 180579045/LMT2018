@@ -154,7 +154,15 @@ namespace MIBDataParser
         /// <param name="strFileToDirectory">解压释放目录</param>
         /// <param name="err"></param>
         /// <returns></returns>
-        bool UnzipDtzForCfg(string strFileToUnzip, string strFileToDirectory, out string err);
+        bool cfgUnzipDtz(string strFileToUnzip, string strFileToDirectory, out string err);
+
+        /// <summary>
+        /// 通过 sql 语句获取 数据
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="sqlContent"></param>
+        /// <returns></returns>
+        //Object cfgGetRecordByAccessDb(string fileName, string sqlContent);
     }
 }
 

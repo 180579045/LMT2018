@@ -46,6 +46,28 @@ namespace MIBDataParser.JSONDataMgr
         }
 
         /// <summary>
+        /// 重命令文件
+        /// </summary>
+        /// <param name="sourceFileName"></param>
+        /// <param name="destFileName"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
+        public bool moveFile(string sourceFileName, string destFileName, out string err)
+        {
+            err = "";
+            try
+            {
+                File.Move(sourceFileName, destFileName);
+            }
+            catch (Exception ex)
+            {
+                err = ex.Message;//显示异常信息
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// 删除文件
         /// </summary>
         /// <param name="filePath"></param>
@@ -54,12 +76,14 @@ namespace MIBDataParser.JSONDataMgr
         public bool delFile(List<string> filePathList, out string err)
         {
             err = "";
+            string outErr = "";
             foreach (var filePath in filePathList)
             {
-                if (isFileExist(filePath, out err))
+                if (isFileExist(filePath, out outErr))
                 {
                     File.Delete(filePath);
                 }
+                err += outErr;
             }
             return true;
         }
@@ -85,6 +109,8 @@ namespace MIBDataParser.JSONDataMgr
             }
             return true;
         }
+
+
     }
 
     /// <summary>
@@ -268,17 +294,7 @@ namespace MIBDataParser.JSONDataMgr
         /// <returns></returns>
         bool UzipRenameDirectoryAssisDeal(string destinationDirectoryName, out string err)
         {
-            err = "";
-            try
-            {
-                File.Move(destinationDirectoryName + "lm", destinationDirectoryName + "lm.mdb");
-            }
-            catch (Exception ex)
-            {
-                err = ex.Message;//显示异常信息
-                return false;
-            }
-            return true;
+            return moveFile(destinationDirectoryName + "lm", destinationDirectoryName + "lm.mdb" , out err);
         }
 
         /// <summary>
