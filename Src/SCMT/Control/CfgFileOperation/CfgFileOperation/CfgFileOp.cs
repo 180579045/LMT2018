@@ -47,7 +47,13 @@ namespace CfgFileOperation
 
             /// 
 
+            Database.GetInstance().setCfgFile_Header();
+
             return false;
+        }
+        public void test()
+        {
+            Database.GetInstance().setCfgFile_Header();
         }
             
     }
