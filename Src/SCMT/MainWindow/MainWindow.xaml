@@ -16,6 +16,8 @@
         xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:uc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
+        xmlns:ViewModel="clr-namespace:SCMTMainWindow.ViewModel"
+        xmlns:View="clr-namespace:SCMTMainWindow.View"
         xmlns:fileManager="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
         xmlns:logInfo="clr-namespace:SCMTMainWindow.Component.SCMTControl.LogInfoShow"
         mc:Ignorable="d"
@@ -25,6 +27,11 @@
         Closed="MetroWindow_Closed" SizeChanged="OnSizeChanged" Loaded="MetroWindow_Loaded">
 
     <Window.Resources>
+        <ResourceDictionary>
+            <DataTemplate DataType="{x:Type ViewModel:NetPlanModel}">
+                <View:NetPlan></View:NetPlan>
+            </DataTemplate>
+        </ResourceDictionary>
     </Window.Resources>
 
     <!-- 绑定VM层 -->
@@ -229,6 +236,16 @@
                 <TabItem Header="基站数据" Style="{StaticResource TabItemStyle}">
                     <Grid Margin="0,40,0,0">
 
+                    </Grid>
+                </TabItem>
+                <TabItem Header="网络规划" Style="{StaticResource TabItemStyle}">
+                    <Grid Margin="0,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0">
+                            <ViewModel:NetPlanModel/>
+                        </ScrollViewer>
                     </Grid>
                 </TabItem>
 
