@@ -1767,7 +1767,7 @@ namespace SCMTMainWindow
 			// 文件管理按钮禁用，文件管理窗口关闭
 			CloseFileMgrDlg(fname);
 
-			Dispatcher.Invoke(() => Obj_Root.Children.Clear());
+			Dispatcher.Invoke(() => Obj_Root.Children?.Clear());
 		}
 
 		#endregion
