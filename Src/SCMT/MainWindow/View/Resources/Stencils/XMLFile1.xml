@@ -64,7 +64,7 @@
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
 
-  <Grid x:Name="g_TwoPathRRU" Width="100" Height="60">
+  <Grid x:Name="g_TwoPathRRU">
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource TwoPathRRU}"
               Stretch="Fill"
