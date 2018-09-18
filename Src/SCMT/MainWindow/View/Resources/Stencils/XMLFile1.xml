@@ -1,0 +1,105 @@
+﻿<StackPanel xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:s="clr-namespace:SCMTMainWindow.View;assembly=SCMTMainWindow"
+                    xmlns:c="clr-namespace:SCMTMainWindow.View.Controls;assembly=SCMTMainWindow">
+
+  <!--资源，用来保存一些几何画图的信息，以便在后面的 Path 中调用-->
+  
+  <StackPanel.Resources>
+    <!--单通道RRU-->
+    <GeometryGroup x:Key="OnePathRRU">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="40,20" EndPoint="40,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+    </GeometryGroup>
+    <!--双通道RRU-->
+    <GeometryGroup x:Key="TwoPathRRU">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="35,20" EndPoint="35,0"></LineGeometry>
+      <LineGeometry StartPoint="45,20" EndPoint="45,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+    </GeometryGroup>
+    <!--四通道RRU-->
+    <GeometryGroup x:Key="FourPathRRU">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="25,20" EndPoint="25,0"></LineGeometry>
+      <LineGeometry StartPoint="35,20" EndPoint="35,0"></LineGeometry>
+      <LineGeometry StartPoint="45,20" EndPoint="45,0"></LineGeometry>
+      <LineGeometry StartPoint="55,20" EndPoint="55,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+    </GeometryGroup>
+    <!--八通道RRU-->
+    <GeometryGroup x:Key="EightPathRRU">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="40,20" EndPoint="40,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+    </GeometryGroup>
+    <!--十六通道RRU-->
+    <GeometryGroup x:Key="SixteenPathRRU">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="40,20" EndPoint="40,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+    </GeometryGroup>
+  </StackPanel.Resources>
+
+  <Grid x:Name="g_OnePathRRU">
+    <Path Fill="Red" Stroke="Black"
+          Data="{StaticResource OnePathRRU}"
+          Stretch="Fill"
+          IsHitTestVisible="False"/>
+    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <Grid x:Name="g_TwoPathRRU" Width="100" Height="60">
+    <Path Fill="Red" Stroke="Black"
+              Data="{StaticResource TwoPathRRU}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <Grid x:Name="g_FourPathRRU">
+    <Path Fill="Red" Stroke="Black"
+              Data="{StaticResource FourPathRRU}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.313,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+</StackPanel>
