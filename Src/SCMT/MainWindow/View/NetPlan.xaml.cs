@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SCMTMainWindow.Property;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace SCMTMainWindow.View
     /// </summary>
     public partial class NetPlan : UserControl
     {
+        Propertyies p1 = new Propertyies("botton1","good","luck");
         public NetPlan()
         {
             InitializeComponent();
@@ -59,5 +61,23 @@ namespace SCMTMainWindow.View
                 serializer.Serialize(stream);
             }
         }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            myGrid.Instance = p1;
+           
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            myGrid.Instance = p1;
+        }
+
+        private void myGrid_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
+
     }
 }
