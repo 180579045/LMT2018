@@ -46,6 +46,8 @@
       <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
     </GeometryGroup>
   </StackPanel.Resources>
+  
+  
 
   <Grid x:Name="g_OnePathRRU">
     <Path Fill="Red" Stroke="Black"
@@ -101,5 +103,19 @@
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
+
+  <Grid x:Name="g_IR">
+    <Rectangle Width="15" Height="10" Fill="Red" >
+    </Rectangle>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,0"></s:Connector>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+  
+
 
 </StackPanel>

@@ -226,6 +226,9 @@
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
+    <Compile Include="View\AddBoardWindow.xaml.cs">
+      <DependentUpon>AddBoardWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ChooseRRUType.xaml.cs">
       <DependentUpon>ChooseRRUType.xaml</DependentUpon>
     </Compile>
@@ -239,6 +242,8 @@
     <Compile Include="View\DesignerCanvas.Commands.cs" />
     <Compile Include="View\DesignerCanvas.cs" />
     <Compile Include="View\DesignerItem.cs" />
+    <Compile Include="View\Document\BoradDetailData.cs" />
+    <Compile Include="View\Document\WorkMode.cs" />
     <Compile Include="View\IGroupable.cs" />
     <Compile Include="View\ISelectable.cs" />
     <Compile Include="View\NetPlan.xaml.cs">
@@ -322,6 +327,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Style\TabControlStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddBoardWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

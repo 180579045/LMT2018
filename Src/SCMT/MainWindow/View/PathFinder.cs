@@ -210,7 +210,7 @@ namespace SCMTMainWindow.View
         internal static List<Point> GetConnectionLine(ConnectorInfo source, Point sinkPoint, ConnectorOrientation preferredOrientation)
         {
             List<Point> linePoints = new List<Point>();
-            Rect rectSource = GetRectWithMargin(source, 10);
+            Rect rectSource = GetRectWithMargin(source, 0);
             Point startPoint = GetOffsetPoint(source, rectSource);
             Point endPoint = sinkPoint;
 

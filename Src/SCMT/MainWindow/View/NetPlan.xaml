@@ -56,7 +56,7 @@
                                 <GroupBox Header="Diagram" Grid.Column="1" Margin="3,0,0,0">
                                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-                                        <local:DesignerCanvas Focusable="true" x:Name="MyDesigner"
+                                        <local:DesignerCanvas Focusable="true" x:Name="MyDesigner" SizeChanged="MyDesigner_SizeChanged"
                             Background="{StaticResource WindowBackgroundBrush}"
                             Margin="10" FocusVisualStyle="{x:Null}"/>
                                     </ScrollViewer>
