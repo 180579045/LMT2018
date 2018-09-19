@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SCMTMainWindow.Property;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,6 +30,7 @@ namespace SCMTMainWindow.View
     public partial class NetPlan : UserControl
     {
         //全局变量，板卡的画板
+        Propertyies p1 = new Propertyies("botton1","good","luck");
         private Canvas boardCanvas;
 
         //全局变量  板卡的列数
@@ -198,5 +200,23 @@ namespace SCMTMainWindow.View
             Canvas.SetLeft(boardCanvas, (MyDesigner.ActualWidth - boardCanvas.Width) / 2);
             Canvas.SetTop(boardCanvas, (MyDesigner.ActualHeight - boardCanvas.Height) / 2);
         }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            myGrid.Instance = p1;
+           
+        }
+
+        private void button1_Click(object sender, RoutedEventArgs e)
+        {
+            myGrid.Instance = p1;
+        }
+
+        private void myGrid_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+
+        }
+
+
     }
 }
