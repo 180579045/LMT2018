@@ -226,9 +226,34 @@
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
+    <Compile Include="View\AddBoardWindow.xaml.cs">
+      <DependentUpon>AddBoardWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ChooseRRUType.xaml.cs">
+      <DependentUpon>ChooseRRUType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Connection.cs" />
+    <Compile Include="View\ConnectionAdorner.cs" />
+    <Compile Include="View\Connector.cs" />
+    <Compile Include="View\ConnectorAdorner.cs" />
+    <Compile Include="View\Controls\DragThumb.cs" />
+    <Compile Include="View\Controls\RelativePositionPanel.cs" />
+    <Compile Include="View\Controls\ResizeThumb.cs" />
+    <Compile Include="View\DesignerCanvas.Commands.cs" />
+    <Compile Include="View\DesignerCanvas.cs" />
+    <Compile Include="View\DesignerItem.cs" />
+    <Compile Include="View\Document\BoradDetailData.cs" />
+    <Compile Include="View\Document\WorkMode.cs" />
+    <Compile Include="View\IGroupable.cs" />
+    <Compile Include="View\ISelectable.cs" />
     <Compile Include="View\NetPlan.xaml.cs">
       <DependentUpon>NetPlan.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\PathFinder.cs" />
+    <Compile Include="View\RubberbandAdorner.cs" />
+    <Compile Include="View\SelectionService.cs" />
+    <Compile Include="View\Toolbox.cs" />
+    <Compile Include="View\ToolboxItem.cs" />
     <Page Include="Component\SCMTControl\BarChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -305,9 +330,65 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\AddBoardWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ChooseRRUType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\NetPlan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Resources\ApplicationToolbar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Connection.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\DesignerItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Stencils\FlowChartStencils.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Stencils\ShapeStencils.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Styles\Expander.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Styles\GroupBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Styles\ScrollBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Styles\Shared.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Styles\ToolBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\Toolbox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Resources\ToolboxItem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -333,6 +414,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="View\Resources\Stencils\XMLFile1.xml" />
     <Resource Include="Resources\document.png" />
     <EmbeddedResource Include="Component\SCMTControl\FileManager\EnbSoftVer.resx">
       <DependentUpon>EnbSoftVer.cs</DependentUpon>
@@ -459,6 +541,10 @@
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\WPG\WPG.csproj">
+      <Project>{022EDA6A-0B76-44C3-A530-8312C1B40030}</Project>
+      <Name>WPG</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileManager\FileManager.csproj">
       <Project>{07daacce-62bf-4681-9014-d36515c67882}</Project>

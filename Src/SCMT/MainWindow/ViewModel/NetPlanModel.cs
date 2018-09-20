@@ -27,14 +27,7 @@ namespace SCMTMainWindow.ViewModel
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;
-        public void ChangeProperty(Object sender, RoutedEventArgs e)
-        {
-            Propertyies p = new Propertyies("good", "luck");
-            for (int i = 0; i < 10; i++)
-            {
-                alP.Add(p);
-            }
-        }
+
 
         public void Ellipse_MouseEnter(object sender, MouseEventArgs e)
         {
