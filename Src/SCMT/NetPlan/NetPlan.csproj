@@ -43,9 +43,14 @@
     <Compile Include="DevAttributeInfo.cs" />
     <Compile Include="EnumDevType.cs" />
     <Compile Include="MibLeafNodeInfo.cs" />
+    <Compile Include="NPEBoardHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonUtility\CommonUtility.csproj">
+      <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
+      <Name>CommonUtility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\MibParser\MibParser\MIBDataParser.csproj">
       <Project>{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}</Project>
       <Name>MIBDataParser</Name>

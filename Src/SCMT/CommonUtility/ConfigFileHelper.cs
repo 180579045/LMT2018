@@ -12,6 +12,7 @@ namespace CommonUtility
 		public const string JsonDataFilePathMgrIni = @"config/JsonDataMgr.ini";
 		public const string NodebListJson = @"Data/BaseStationConnectInfo.Json";
 		public const string MainConfigJson = @"config/AppConfig.json";
+		public const string NetPlanShelfJson = @"config/NetPlanElement_Board.json";
 
 		/// <summary>
 		/// 获取配置文件AppConfig.json中Ftp的路径

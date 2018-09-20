@@ -1,0 +1,814 @@
+﻿{
+  "netPlanElements": [
+    {
+      "number": 0,
+      "elementName": "机框"
+    },
+    {
+      "number": 1,
+      "elementName": "板卡"
+    },
+    {
+      "number": 2,
+      "elementName": "RRU"
+    },
+    {
+      "number": 3,
+      "elementName": "天线阵"
+    },
+    {
+      "number": 4,
+      "elementName": "rHUB"
+    },
+    {
+      "number": 5,
+      "elementName": "pRRU"
+    },
+    {
+      "number": 6,
+      "elementName": "一体化基站"
+    }
+  ],
+  "shelfEquipment": [
+    {
+      "number": 1,
+      "equipNEType": 5,
+      "equipNETypeName": "emb5116|EMB5116",
+      "totalSlotNum": 12,
+      "supportPlanSlotNum": 8,
+      "columnsUI": 2,
+      "planSlotInfo": [
+        {
+          "slotIndex": 0,
+          "supportBoardType": []
+        },
+        {
+          "slotIndex": 1,
+          "supportBoardType": [
+            {
+              "value": "178",
+              "desc": "scte|SCTE板"
+            },
+            {
+              "value": "240",
+              "desc": "sctf|SCTF板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 2,
+          "supportBoardType": [
+            {
+              "value": "143",
+              "desc": "bpog|BPOG板"
+            },
+            {
+              "value": "177",
+              "desc": "bpoh|BPOH板"
+            },
+            {
+              "value": "241",
+              "desc": "bpoi|BPOI板"
+            },
+            {
+              "value": "243",
+              "desc": "bpok|BPOK板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 3,
+          "supportBoardType": [
+            {
+              "value": "143",
+              "desc": "bpog|BPOG板"
+            },
+            {
+              "value": "177",
+              "desc": "bpoh|BPOH板"
+            },
+            {
+              "value": "241",
+              "desc": "bpoi|BPOI板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 4,
+          "supportBoardType": [
+            {
+              "value": "143",
+              "desc": "bpog|BPOG板"
+            },
+            {
+              "value": "177",
+              "desc": "bpoh|BPOH板"
+            },
+            {
+              "value": "241",
+              "desc": "bpoi|BPOI板"
+            },
+            {
+              "value": "243",
+              "desc": "bpok|BPOK板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 5,
+          "supportBoardType": [
+            {
+              "value": "143",
+              "desc": "bpog|BPOG板"
+            },
+            {
+              "value": "177",
+              "desc": "bpoh|BPOH板"
+            },
+            {
+              "value": "241",
+              "desc": "bpoi|BPOI板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 6,
+          "supportBoardType": [
+            {
+              "value": "143",
+              "desc": "bpog|BPOG板"
+            },
+            {
+              "value": "177",
+              "desc": "bpoh|BPOH板"
+            },
+            {
+              "value": "241",
+              "desc": "bpoi|BPOI板"
+            },
+            {
+              "value": "243",
+              "desc": "bpok|BPOK板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 7,
+          "supportBoardType": [
+            {
+              "value": "143",
+              "desc": "bpog|BPOG板"
+            },
+            {
+              "value": "177",
+              "desc": "bpoh|BPOH板"
+            },
+            {
+              "value": "241",
+              "desc": "bpoi|BPOI板"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "equipNEType": 10,
+      "equipNETypeName": "emb6116|EMB6116",
+      "totalSlotNum": 13,
+      "supportPlanSlotNum": 12,
+      "columnsUI": 2,
+      "planSlotInfo": [
+        {
+          "slotIndex": 0,
+          "supportBoardType": [
+            {
+              "value": "23",
+              "desc": "hsctd|HSCTD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 1,
+          "supportBoardType": [
+            {
+              "value": "23",
+              "desc": "hsctd|HSCTD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 2,
+          "supportBoardType": []
+        },
+        {
+          "slotIndex": 3,
+          "supportBoardType": []
+        },
+        {
+          "slotIndex": 4,
+          "supportBoardType": []
+        },
+        {
+          "slotIndex": 5,
+          "supportBoardType": []
+        },
+        {
+          "slotIndex": 6,
+          "supportBoardType": [
+            {
+              "value": "22",
+              "desc": "hbpod|HBPOD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 7,
+          "supportBoardType": [
+            {
+              "value": "22",
+              "desc": "hbpod|HBPOD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 8,
+          "supportBoardType": [
+            {
+              "value": "22",
+              "desc": "hbpod|HBPOD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 9,
+          "supportBoardType": [
+            {
+              "value": "22",
+              "desc": "hbpod|HBPOD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 10,
+          "supportBoardType": [
+            {
+              "value": "22",
+              "desc": "hbpod|HBPOD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 11,
+          "supportBoardType": [
+            {
+              "value": "22",
+              "desc": "hbpod|HBPOD板"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "boardEquipment": [
+    {
+      "number": 0,
+      "boardType": 143,
+      "boardTypeName": "bpog|BPOG板",
+      "supportEquipType": 5,
+      "supportConnectElement": [
+        {
+          "value": 2,
+		  "desc" : ""
+        }
+      ],
+      "irOfpNum": 3,
+      "irOfpPortInfo": [
+        {
+          "ofpIndex": 0,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 1,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 2,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 1,
+      "boardType": 177,
+      "boardTypeName": "bpoh|BPOH板",
+      "supportEquipType": 5,
+      "supportConnectElement": [
+        {
+          "value": 2,
+		  "desc" : ""
+        },
+        {
+          "value": 4,
+		  "desc" : ""
+        }
+      ],
+      "irOfpNum": 6,
+      "irOfpPortInfo": [
+        {
+          "ofpIndex": 0,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 1,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 2,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 3,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 4,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 5,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "boardType": 178,
+      "boardTypeName": "scte|SCTE板",
+      "supportEquipType": 5,
+      "supportConnectElement": [],
+      "irOfpNum": 0,
+      "irOfpPortInfo": []
+    },
+    {
+      "number": 3,
+      "boardType": 240,
+      "boardTypeName": "sctf|SCTF板",
+      "supportEquipType": 5,
+      "supportConnectElement": [],
+      "irOfpNum": 0,
+      "irOfpPortInfo": []
+    },
+    {
+      "number": 4,
+      "boardType": 241,
+      "boardTypeName": "bpoi|BPOI板",
+      "supportEquipType": 5,
+      "supportConnectElement": [
+        {
+          "value": 2,
+		  "desc" : ""
+        },
+        {
+          "value": 4,
+		  "desc" : ""
+        }
+      ],
+      "irOfpNum": 6,
+      "irOfpPortInfo": [
+        {
+          "ofpIndex": 0,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 1,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 2,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 3,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 4,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 5,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "0",
+              "desc": "mbps2500|2.5G"
+            },
+            {
+              "value": "1",
+              "desc": "mbps5000|5G"
+            },
+            {
+              "value": "3",
+              "desc": "mbps10000|10G"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "boardType": 243,
+      "boardTypeName": "bpok|BPOK板",
+      "supportEquipType": 5,
+      "supportConnectElement": [
+        {
+          "value": 2,
+		  "desc" : ""
+        }
+      ],
+      "irOfpNum": 6,
+      "irOfpPortInfo": [
+        {
+          "ofpIndex": 0,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 1,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 2,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 3,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 4,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 5,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "boardType": 22,
+      "boardTypeName": "hbpod|HBPOD板",
+      "supportEquipType": 6,
+      "supportConnectElement": [
+        {
+          "value": 2,
+		  "desc" : ""
+        },
+        {
+          "value": 4,
+		  "desc" : ""
+        }
+      ],
+      "irOfpNum": 8,
+      "irOfpPortInfo": [
+        {
+          "ofpIndex": 0,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "5",
+              "desc": "mbps100000|100G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 1,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "5",
+              "desc": "mbps100000|100G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 2,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 3,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 4,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 5,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 6,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        },
+        {
+          "ofpIndex": 7,
+          "irOfpPortTransSpeed": [
+            {
+              "value": "4",
+              "desc": "mbps25000|25G"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "boardType": 23,
+      "boardTypeName": "hsctd|HSCTD板",
+      "supportEquipType": 6,
+      "supportConnectElement": [],
+      "irOfpNum": 0,
+      "irOfpPortInfo": []
+    }
+  ],
+  "rHubEquipment": [
+    {
+      "number": 0,
+      "rHubType": "pRHB3112",
+      "friendlyUIName": "rHUB1.0",
+      "irOfpNum": 2,
+      "irOfpPortTransSpeed": [
+        {
+          "value": "3",
+          "desc": "mbps10000|10G"
+        }
+      ],
+      "ethPortRNum": 8,
+      "ethPortTransSpeed": [
+        {
+          "value": "0",
+          "desc": "mbps1250|1.25G"
+        },
+        {
+          "value": "1",
+          "desc": "mbps2500|2.5G"
+        },
+        {
+          "value": "2",
+          "desc": "mbps5000|5G"
+        }
+      ]
+    },
+    {
+      "number": 1,
+      "rHubType": "pRHB3112V2",
+      "friendlyUIName": "rHUB2.0",
+      "irOfpNum": 4,
+      "irOfpPortTransSpeed": [
+        {
+          "value": "3",
+          "desc": "mbps10000|10G"
+        }
+      ],
+      "ethPortRNum": 8,
+      "ethPortTransSpeed": [
+        {
+          "value": "0",
+          "desc": "mbps1250|1.25G"
+        },
+        {
+          "value": "1",
+          "desc": "mbps2500|2.5G"
+        },
+        {
+          "value": "2",
+          "desc": "mbps5000|5G"
+        }
+      ]
+    }
+  ]
+}
