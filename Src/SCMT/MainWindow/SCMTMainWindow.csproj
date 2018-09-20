@@ -542,10 +542,6 @@
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Control\WPG\WPG.csproj">
-      <Project>{022EDA6A-0B76-44C3-A530-8312C1B40030}</Project>
-      <Name>WPG</Name>
-    </ProjectReference>
     <ProjectReference Include="..\FileManager\FileManager.csproj">
       <Project>{07daacce-62bf-4681-9014-d36515c67882}</Project>
       <Name>FileManager</Name>
@@ -593,6 +589,10 @@
     <ProjectReference Include="..\UI\WPFView\UICore.csproj">
       <Project>{f5dbbc65-f7d3-4a0d-8a9f-3dafd3deb7ed}</Project>
       <Name>UICore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UI\WPGProperty\WPG\WPG.csproj">
+      <Project>{022EDA6A-0B76-44C3-A530-8312C1B40030}</Project>
+      <Name>WPG</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
