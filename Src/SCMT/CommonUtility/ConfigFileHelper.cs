@@ -13,6 +13,7 @@ namespace CommonUtility
 		public const string NodebListJson = @"Data/BaseStationConnectInfo.Json";
 		public const string MainConfigJson = @"config/AppConfig.json";
 		public const string NetPlanShelfJson = @"config/NetPlanElement_Board.json";
+		public const string NetPlanRruJson = @"config/NetPlanElement_RruType.json";
 
 		/// <summary>
 		/// 获取配置文件AppConfig.json中Ftp的路径
