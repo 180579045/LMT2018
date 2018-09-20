@@ -52,6 +52,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="NPEBoardHelperTests.cs" />
+    <Compile Include="NPECmdHelperTests.cs" />
     <Compile Include="NPERruHelperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

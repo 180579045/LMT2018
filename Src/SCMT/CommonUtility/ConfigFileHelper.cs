@@ -14,6 +14,7 @@ namespace CommonUtility
 		public const string MainConfigJson = @"config/AppConfig.json";
 		public const string NetPlanShelfJson = @"config/NetPlanElement_Board.json";
 		public const string NetPlanRruJson = @"config/NetPlanElement_RruType.json";
+		public const string NetPlanCmdJson = @"config/NetPlanElement_MibCmd.json";
 
 		/// <summary>
 		/// 获取配置文件AppConfig.json中Ftp的路径
