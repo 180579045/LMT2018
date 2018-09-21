@@ -96,6 +96,17 @@ namespace SCMTMainWindow.View
             }
         }
 
+        private void SetConnectorDecoratorTemplate(DesignerItem item)
+        {
+            if (item.ApplyTemplate() && item.Content is UIElement)
+            {
+                ControlTemplate template = DesignerItem.GetConnectorDecoratorTemplate(item.Content as UIElement);
+                Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
+                if (decorator != null && template != null)
+                    decorator.Template = template;
+            }
+        }
+
         private void RectItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Rectangle targetItem = (Rectangle)sender as Rectangle;
@@ -148,17 +159,32 @@ namespace SCMTMainWindow.View
                 targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
 
                 DesignerItem designerItem = new DesignerItem();
-                Rectangle rect = new Rectangle();
-                rect.Fill = new SolidColorBrush(Colors.Red);
-                rect.Width = 15;
-                rect.Height = 10;
-                designerItem.Content = rect;
+                //Rectangle rect = new Rectangle();
+                //rect.Fill = new SolidColorBrush(Colors.Red);
+                //rect.Width = 15;
+                //rect.Height = 10;
 
 
-                Canvas.SetRight(designerItem, 80 + 240 * (boardColumn -1 - nColumn));
-                Canvas.SetBottom(designerItem, 10 + 40 * nRow);
+                Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+                Stream stream = Application.GetResourceStream(strUri).Stream;
 
-                boardCanvas.Children.Add(designerItem);
+                FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+                Object content = el.FindName("g_IR") as Grid;
+
+                string strXAML = XamlWriter.Save(content);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
+                designerItem.Content = testContent;
+
+                //获取 Canvas 相对于 DesignerCanvas 的位置，方便进行光口的添加
+
+                double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
+                double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
+
+                Canvas.SetLeft(designerItem, CanvasLeft + 160 + 240 * nColumn);
+                Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
+
+                MyDesigner.Children.Add(designerItem);
+                SetConnectorDecoratorTemplate(designerItem);
             }
         }
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -199,7 +225,33 @@ namespace SCMTMainWindow.View
         {
             Canvas.SetLeft(boardCanvas, (MyDesigner.ActualWidth - boardCanvas.Width) / 2);
             Canvas.SetTop(boardCanvas, (MyDesigner.ActualHeight - boardCanvas.Height) / 2);
+
+            //除了 Canvas 之外，重新绘制相对大小
+            for(int i = 1; i < MyDesigner.Children.Count; i++)
+            {
+                UIElement uiItem = MyDesigner.Children[i];
+
+                double uiLeft = DesignerCanvas.GetLeft(uiItem) + (e.NewSize.Width - e.PreviousSize.Width) / 2;
+                double uiTop = DesignerCanvas.GetTop(uiItem) + (e.NewSize.Height - e.PreviousSize.Height) / 2;
+
+                uiLeft = uiLeft < 0 ? 0 : uiLeft;
+                uiTop = uiTop < 0 ? 0 : uiTop;
+
+                DesignerCanvas.SetLeft(uiItem, uiLeft);
+                DesignerCanvas.SetTop(uiItem, uiTop);
+
+                
+
+            }
+            
         }
+
+        //protected override Size MeasureOverride(Size constraint)
+        //{
+
+        //    MyDesigner.Measure(constraint);
+        //    return base.MeasureOverride(constraint);
+        //}
 
         private void button_Click(object sender, RoutedEventArgs e)
         {

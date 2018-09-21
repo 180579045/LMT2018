@@ -27,6 +27,11 @@ namespace SCMTMainWindow.View
             }
             set
             {
+                if(value == null)
+                {
+                    return;
+                }
+
                 if (source != value)
                 {
                     if (source != null)
@@ -55,6 +60,11 @@ namespace SCMTMainWindow.View
             get { return sink; }
             set
             {
+                if(value == null)
+                {
+                    return;
+                }
+
                 if (sink != value)
                 {
                     if (sink != null)

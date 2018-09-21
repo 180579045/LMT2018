@@ -102,6 +102,10 @@ namespace SCMTMainWindow.View
         {
             base.OnDrop(e);
             DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
+
+            //这样子便可以设置  元素的大小了
+            //dragObject.DesiredSize = new Size(400, 180);
+
             if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
             {
                 DesignerItem newItem = null;

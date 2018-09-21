@@ -104,18 +104,17 @@
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
 
+  <!--光口的实现-->
   <Grid x:Name="g_IR">
     <Rectangle Width="15" Height="10" Fill="Red" >
     </Rectangle>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
-        <c:RelativePositionPanel Margin="-4">
+        <c:RelativePositionPanel Margin="0, 1, 0, 0">
           <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,0"></s:Connector>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
-  
-
 
 </StackPanel>
