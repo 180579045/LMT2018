@@ -1,0 +1,38 @@
+﻿{
+	"board" : {
+		"get" : ["GetNetBoard"],
+		"set" : ["SetNetBoard"],
+		"add" : ["AddNetBoard"],
+		"del" : ["DelNetBoard"]	
+	},
+	"rru" : {
+		"get" : ["GetNetRRU", "GetNetRRUPGCInfo", "GetNetRRUJamResistantInfo"],
+		"set" : ["SetNetRRU", "SetNetRRUPGCInfo", "SetNetRRUJamResistantInfo"],
+		"add" : ["AddNetRRU"],
+		"del" : ["DelNetRRU"]
+	},
+	"rhub" : {
+		"get" : ["GetNetRHUB"],
+		"set" : ["SetNetRHUBGsm", "SetNetRHUB"],
+		"add" : ["AddNetRHUB"],
+		"del" : ["DelNetRHUB"]
+	},
+	"ant" : {
+		"get" : ["GetNetAntennaArray", "GetTDSInheritNetAntennaArray"],
+		"set" : ["SetNetAntennaArray", "SetNetAntRAEScan"],
+		"add" : ["AddNetAntennaArray"],
+		"del" : ["DelNetAntennaArray"]
+	},
+	"rru_ant" : {
+		"get" : ["GetNetRRUAntennaSetting"],
+		"set" : ["SetNetRRUAntennaSetting", "SetNetRRUAntennaLcID"],
+		"add" : ["AddNetRRUAntennaSetting"],
+		"del" : ["DelNetRRUAntennaSetting"]
+	},
+	"board_rru" : {
+		"get" : ["GetIROfpPortInfo"],
+		"set" : ["SetIROfpPortInfo"],
+		"add" : ["AddIROfpPortInfo"],
+		"del" : ["DelIROfpPortInfo"]
+	}
+}
