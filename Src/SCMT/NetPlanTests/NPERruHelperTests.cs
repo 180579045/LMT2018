@@ -16,5 +16,11 @@ namespace NetPlan.Tests
 		{
 			NPERruHelper.GetInstance().GetAllRruInfo();
 		}
+
+		[TestMethod()]
+		public void GetRruInfoMapTest()
+		{
+			NPERruHelper.GetInstance().GetRruInfoMap();
+		}
 	}
 }

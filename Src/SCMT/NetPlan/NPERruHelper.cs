@@ -145,5 +145,10 @@ namespace NetPlan
 		public int rruTypeMaxAntPathNum;
 		public List<string> rruWorkMode;
 		public string rruInfoDesc;			// RRU主要信息描述
+
+		public InitialRruInfo()
+		{
+			rruWorkMode = new List<string>();
+		}
 	}
 }
