@@ -139,6 +139,17 @@ namespace SCMTOperationCore.Message.SNMP
 			return vbList;
 		}
 
+		// 把节点名列表转换为节点名对应的MIB列表
+		public static List<IReDataByEnglishName> ConvertNameListToMibInfoList(List<string> leafNameList, string ip)
+		{
+			if (null == leafNameList || string.IsNullOrEmpty(ip))
+			{
+				throw new CustomException("传入参数错误");
+			}
+
+			return leafNameList.Select(name => GetMibNodeInfoByName(name, ip)).ToList();
+		}
+
 		// 把节点名列表转换为oid列表。需要连接到数据模块查找
 		public static List<string> ConvertNameToOid(List<string> nameList, string ip)
 		{

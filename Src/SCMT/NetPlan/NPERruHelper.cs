@@ -18,6 +18,33 @@ namespace NetPlan
 			return _npeRru?.rruTypeInfo;
 		}
 
+		// 初始化时获取所有的RRU信息
+		public Dictionary<string, InitialRruInfo> GetRruInfoMap()
+		{
+			var retInfo = new Dictionary<string, InitialRruInfo>();
+
+			foreach (var rruInfo in _npeRru?.rruTypeInfo)
+			{
+				var tempRru = new InitialRruInfo
+				{
+					rruTypeIndex = rruInfo.rruTypeIndex,
+					rruTypeName = rruInfo.rruTypeName,
+					rruTypeMaxAntPathNum = rruInfo.rruTypeMaxAntPathNum,
+					rruInfoDesc = FormatRruDesc(rruInfo)
+				};
+
+				foreach (var wm in rruInfo.rruTypeNotMibSupportNetWorkMode)
+				{
+					var mapKv = MibStringHelper.SplitMibEnumString(wm.desc);
+					tempRru.rruWorkMode.AddRange(mapKv.Select(kv => kv.Value));
+				}
+
+				retInfo.Add(rruInfo.rruTypeName, tempRru);
+			}
+
+			return retInfo;
+		}
+
 		#endregion
 
 		#region 私有方法
@@ -37,6 +64,17 @@ namespace NetPlan
 				Console.WriteLine(e);
 				throw;
 			}
+		}
+
+		// 格式化RRU的概述信息
+		private string FormatRruDesc(RruInfo ri)
+		{
+			var sb = new StringBuilder();
+			sb.AppendFormat("{0}设备信息简述：\n", ri.rruTypeName);
+			sb.AppendFormat("设备类型名：{0}\n", ri.rruTypeName);
+			sb.AppendFormat("最大通道数：{0:d}\n", ri.rruTypeMaxAntPathNum);
+			sb.AppendFormat("最大输出功率：{0:d}\n", ri.rruTypeMaxTxPower);
+			return sb.ToString();
 		}
 
 		#endregion
@@ -97,5 +135,15 @@ namespace NetPlan
 		public int rruTypePortCalPinRxNom;
 		public int rruTypePortAntMaxPower;
 		public List<VD> rruTypePortNotMibRxTxStatus;
+	}
+
+	// 初始化RRU信息时获取的简短信息
+	public class InitialRruInfo
+	{
+		public int rruTypeIndex;
+		public string rruTypeName;
+		public int rruTypeMaxAntPathNum;
+		public List<string> rruWorkMode;
+		public string rruInfoDesc;			// RRU主要信息描述
 	}
 }

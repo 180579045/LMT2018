@@ -58,7 +58,7 @@ namespace SCMTOperationCore.Message.SNMP
 			if (rs != 0)
 			{
 				Log.Error("执行lmtbSnmpEx.SnmpGetSync()方法错误");
-                return rs;
+				return rs;
 			}
 
 			return 0;
@@ -167,8 +167,8 @@ namespace SCMTOperationCore.Message.SNMP
 			{
 				sbOid.Clear();
 				sbOid.AppendFormat("{0}.{1}", strPreFixOid, v);
-			    CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = sbOid.ToString()};
-			    lmtbVbs.Add(lmtVb);
+				CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = sbOid.ToString()};
+				lmtbVbs.Add(lmtVb);
 			}
 
 			Dictionary<string, string> tmpResult;
@@ -281,37 +281,37 @@ namespace SCMTOperationCore.Message.SNMP
 			return rs;
 		}
 
-        /// <summary>
-        /// Add By Mayi  通过 oid 获取 父节点
-        /// </summary>
-        /// <param name="strIpAddr"></param>
-        /// <param name="strChildMibOid"></param>
-        /// <returns></returns>
-        //private MibNodeInfoTest GetParentMibNodeByChildOID(string strIpAddr, string strChildMibOid)
-        //{
-        //    string matchOid = strChildMibOid;
+		/// <summary>
+		/// Add By Mayi  通过 oid 获取 父节点
+		/// </summary>
+		/// <param name="strIpAddr"></param>
+		/// <param name="strChildMibOid"></param>
+		/// <returns></returns>
+		//private MibNodeInfoTest GetParentMibNodeByChildOID(string strIpAddr, string strChildMibOid)
+		//{
+		//    string matchOid = strChildMibOid;
 
-        //    int oidLastSectionPos = matchOid.LastIndexOf('.');
+		//    int oidLastSectionPos = matchOid.LastIndexOf('.');
 
-        //    while (-1 != oidLastSectionPos)
-        //    {
-        //        matchOid = matchOid.Substring(oidLastSectionPos);
+		//    while (-1 != oidLastSectionPos)
+		//    {
+		//        matchOid = matchOid.Substring(oidLastSectionPos);
 
-        //        MibNodeInfoTest parentNode = GetMibNodeInfoByOID(strIpAddr, matchOid);
-        //        if (null != parentNode)
-        //        {
-        //            return parentNode;
-        //        }
+		//        MibNodeInfoTest parentNode = GetMibNodeInfoByOID(strIpAddr, matchOid);
+		//        if (null != parentNode)
+		//        {
+		//            return parentNode;
+		//        }
 
-        //        oidLastSectionPos = matchOid.LastIndexOf('.');
-        //    }
+		//        oidLastSectionPos = matchOid.LastIndexOf('.');
+		//    }
 
-        //    return null;
-        //}
+		//    return null;
+		//}
 
 
-        // test
-        private MibNodeInfoTest GetMibNodeInfoByOID(string strIpAddr, string strMibOid)
+		// test
+		private MibNodeInfoTest GetMibNodeInfoByOID(string strIpAddr, string strMibOid)
 		{
 			Dictionary<string, MibNodeInfoTest> mibNodeInfoList = new Dictionary<string, MibNodeInfoTest>();
 

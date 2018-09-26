@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using MIBDataParser.JSONDataMgr;
+using SCMTOperationCore.Message.SNMP;
 
 namespace NetPlan
 {
@@ -45,6 +47,21 @@ namespace NetPlan
 			}
 
 			return retCmd;
+		}
+
+		// TODO 提供一个获取当前操作的基站IP的函数
+		// 获取指定设备的所有MIB信息，并填入到属性框中
+		public void GetDevAttributesFromMib(string devType)
+		{
+			var cmdObj = GetAllCmdByType(devType);
+			var getCmdList = cmdObj?.get;
+			foreach (var getCmd in getCmdList)
+			{
+				var target = "172.27.245.92";   // TODO 硬编码IP地址
+				var cmdInfo = Database.GetInstance().getCmdDataByCmdEnglishName(getCmd, target);
+				var cmdMibInfoList = SnmpToDatabase.ConvertNameListToMibInfoList(cmdInfo.m_leaflist, target);
+
+			}
 		}
 
 		#endregion

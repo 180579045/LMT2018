@@ -57,6 +57,10 @@
       <Project>{FCFD2BD9-9D15-4DD5-AF74-FDE4A0CBE9B0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
+      <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
+      <Name>SCMTOperationCore</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
