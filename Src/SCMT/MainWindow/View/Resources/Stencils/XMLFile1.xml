@@ -34,14 +34,36 @@
     <!--八通道RRU-->
     <GeometryGroup x:Key="EightPathRRU">
       <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
-      <LineGeometry StartPoint="40,20" EndPoint="40,0"></LineGeometry>
+      <LineGeometry StartPoint="16.66,20" EndPoint="16.66,0"></LineGeometry>
+      <LineGeometry StartPoint="23.33,20" EndPoint="23.33,0"></LineGeometry>
+      <LineGeometry StartPoint="29.99,20" EndPoint="29.99,0"></LineGeometry>
+      <LineGeometry StartPoint="36.66,20" EndPoint="36.66,0"></LineGeometry>
+      <LineGeometry StartPoint="43.33,20" EndPoint="43.33,0"></LineGeometry>
+      <LineGeometry StartPoint="49.99,20" EndPoint="49.99,0"></LineGeometry>
+      <LineGeometry StartPoint="56.66,20" EndPoint="56.66,0"></LineGeometry>
+      <LineGeometry StartPoint="63.33,20" EndPoint="63.33,0"></LineGeometry>
       <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
       <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
     </GeometryGroup>
     <!--十六通道RRU-->
     <GeometryGroup x:Key="SixteenPathRRU">
       <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
-      <LineGeometry StartPoint="40,20" EndPoint="40,0"></LineGeometry>
+      <LineGeometry StartPoint="13.53,20" EndPoint="13.53,0"></LineGeometry>
+      <LineGeometry StartPoint="17.06,20" EndPoint="17.06,0"></LineGeometry>
+      <LineGeometry StartPoint="20.59,20" EndPoint="20.59,0"></LineGeometry>
+      <LineGeometry StartPoint="24.12,20" EndPoint="24.12,0"></LineGeometry>
+      <LineGeometry StartPoint="27.65,20" EndPoint="27.65,0"></LineGeometry>
+      <LineGeometry StartPoint="31.18,20" EndPoint="31.18,0"></LineGeometry>
+      <LineGeometry StartPoint="34.71,20" EndPoint="34.71,0"></LineGeometry>
+      <LineGeometry StartPoint="38.24,20" EndPoint="38.24,0"></LineGeometry>
+      <LineGeometry StartPoint="41.77,20" EndPoint="41.77,0"></LineGeometry>
+      <LineGeometry StartPoint="45.3,20" EndPoint="45.3,0"></LineGeometry>
+      <LineGeometry StartPoint="48.83,20" EndPoint="48.83,0"></LineGeometry>
+      <LineGeometry StartPoint="52.36,20" EndPoint="52.36,0"></LineGeometry>
+      <LineGeometry StartPoint="55.89,20" EndPoint="55.89,0"></LineGeometry>
+      <LineGeometry StartPoint="59.42,20" EndPoint="59.42,0"></LineGeometry>
+      <LineGeometry StartPoint="62.95,20" EndPoint="62.95,0"></LineGeometry>
+      <LineGeometry StartPoint="66.48,20" EndPoint="66.48,0"></LineGeometry>
       <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
       <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
     </GeometryGroup>
@@ -104,6 +126,61 @@
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
 
+  <Grid x:Name="g_EightPathRRU">
+    <Path Fill="Red" Stroke="Black"
+              Data="{StaticResource EightPathRRU}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+  
+  <Grid x:Name="g_SixteenPathRRU">
+    <Path Fill="Red" Stroke="Black"
+              Data="{StaticResource SixteenPathRRU}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.169,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.213,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.257,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.301,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.345,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.389,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.477,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.433,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.521,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.565,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.609,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.653,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.697,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.741,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.785,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.829,0"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
   <!--光口的实现-->
   <Grid x:Name="g_IR">
     <Rectangle Width="15" Height="10" Fill="Red" >

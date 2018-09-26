@@ -28,7 +28,11 @@ namespace SCMTMainWindow.View
             InitializeComponent(); this.cbRRUtype.Items.Add("单通道");
             this.cbRRUtype.Items.Add("双通道");
             this.cbRRUtype.Items.Add("四通道");
-            //this.cbRRUtype.Items.Add("八通道");
+            this.cbRRUtype.Items.Add("八通道");
+            this.cbRRUtype.Items.Add("十六通道");
+
+            this.txtRRUNumber.Text = "1";
+            this.txtRRUNumber.Focus();
 
             this.cbRRUtype.SelectedIndex = 0;
         }

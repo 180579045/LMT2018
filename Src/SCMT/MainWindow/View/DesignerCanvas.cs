@@ -89,6 +89,13 @@ namespace SCMTMainWindow.View
             else if (strRRU == "四通道")
             {
                 strName = "g_FourPathRRU";
+            }else if(strRRU == "八通道")
+            {
+                strName = "g_EightPathRRU";
+            }
+            else if (strRRU == "十六通道")
+            {
+                strName = "g_SixteenPathRRU";
             }
 
             Object content = el.FindName(strName) as Grid;
@@ -103,8 +110,6 @@ namespace SCMTMainWindow.View
             base.OnDrop(e);
             DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
 
-            //这样子便可以设置  元素的大小了
-            //dragObject.DesiredSize = new Size(400, 180);
 
             if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
             {

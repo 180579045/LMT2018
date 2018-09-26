@@ -24,24 +24,24 @@ namespace SCMTMainWindow.View
             rubberbandPen.DashStyle = new DashStyle(new double[] { 2 }, 1);
         }
 
-        protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                if (!this.IsMouseCaptured)
-                    this.CaptureMouse();
+        //protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
+        //{
+        //    if (e.LeftButton == MouseButtonState.Pressed)
+        //    {
+        //        if (!this.IsMouseCaptured)
+        //            this.CaptureMouse();
 
-                endPoint = e.GetPosition(this);
-                UpdateSelection();
-                this.InvalidateVisual();
-            }
-            else
-            {
-                if (this.IsMouseCaptured) this.ReleaseMouseCapture();
-            }
+        //        endPoint = e.GetPosition(this);
+        //        UpdateSelection();
+        //        this.InvalidateVisual();
+        //    }
+        //    else
+        //    {
+        //        if (this.IsMouseCaptured) this.ReleaseMouseCapture();
+        //    }
 
-            e.Handled = true;
-        }
+        //    e.Handled = true;
+        //}
 
         protected override void OnMouseUp(System.Windows.Input.MouseButtonEventArgs e)
         {

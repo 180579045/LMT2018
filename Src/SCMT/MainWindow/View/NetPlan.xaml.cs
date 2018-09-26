@@ -71,6 +71,7 @@ namespace SCMTMainWindow.View
 
             boardCanvas.Width = boardColumn * 240;
             boardCanvas.Height = boardRow * 40;
+            boardCanvas.Background = new SolidColorBrush(Colors.Red);
 
             MyDesigner.Children.Add(boardCanvas);
         }

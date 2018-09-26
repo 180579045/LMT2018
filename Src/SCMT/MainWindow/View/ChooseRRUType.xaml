@@ -4,23 +4,35 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SCMTMainWindow.View"
-             mc:Ignorable="d" 
-             Height="300" Width="300" WindowStartupLocation="CenterScreen">
+             mc:Ignorable="d" Title="RRU属性"
+             Height="310" Width="300" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="50"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
 
         <Label Grid.Row="1" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">RRU类型</Label>
-
         <ComboBox Name="cbRRUtype" Width="100" Height="30" Grid.Row="1" VerticalAlignment="Center" Margin="80,0,80,0" VerticalContentAlignment="Center"></ComboBox>
 
-
-        <Button Name="btnOK" Click="btnOK_Click" Width="70" Height="30" Grid.Row="3" Margin="50,0,150,0">确定</Button>
-        <Button Name="btnCancle" Click="btnCancle_Click" Width="70" Height="30" Margin="150,0,50,0" Grid.Row="3">取消</Button>
+        <!--RRU 工作模式-->
+        <Label Grid.Row="2" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">工作模式</Label>
+        <ComboBox Name="cbRRUWorkModel" Width="100" Height="30" Grid.Row="2" VerticalAlignment="Center" Margin="80,0,80,0" VerticalContentAlignment="Center"></ComboBox>
+        
+        <!--添加的RRU的数量-->
+        <Label Grid.Row="3" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">数量：</Label>
+        <TextBox Grid.Row="3" Width="100" Height="30" Margin="80,0,80,0" Name="txtRRUNumber"></TextBox>
+        
+        <!--RRU 类型描述-->
+        <Label Grid.Row="4" VerticalAlignment="Center" Width="200" Margin="0,0,0,0">test</Label>
+        
+        <Button Name="btnOK" Click="btnOK_Click" Width="70" Height="30" Grid.Row="5" Margin="50,0,150,0">确定</Button>
+        <Button Name="btnCancle" Click="btnCancle_Click" Width="70" Height="30" Margin="150,0,50,0" Grid.Row="5">取消</Button>
 
     </Grid>
 </Window>
