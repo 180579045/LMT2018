@@ -70,48 +70,62 @@
   </StackPanel.Resources>
   
   
-
+<!--单通道-->
   <Grid x:Name="g_OnePathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
           Data="{StaticResource OnePathRRU}"
           Stretch="Fill"
-          IsHitTestVisible="False"/>
-    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+          IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
 
+  <!--双通道-->
   <Grid x:Name="g_TwoPathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource TwoPathRRU}"
               Stretch="Fill"
-              IsHitTestVisible="False"/>
-    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+              IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
 
+  <!--四通道-->
   <Grid x:Name="g_FourPathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="30"></RowDefinition>
+    </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource FourPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
-    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
@@ -119,19 +133,24 @@
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
 
+  <!--八通道-->
   <Grid x:Name="g_EightPathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource EightPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
-    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
@@ -143,19 +162,24 @@
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
   
+  <!--十六通道-->
   <Grid x:Name="g_SixteenPathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource SixteenPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
-    <TextBlock FontSize="20" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,20,0,0"></TextBlock>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
@@ -175,12 +199,13 @@
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.741,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.785,0"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.829,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.667"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.667"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
+  
   <!--光口的实现-->
   <Grid x:Name="g_IR">
     <Rectangle Width="15" Height="10" Fill="Red" >
