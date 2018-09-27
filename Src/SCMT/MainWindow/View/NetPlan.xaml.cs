@@ -247,6 +247,11 @@ namespace SCMTMainWindow.View
             
         }
 
+        private void PropertyGrid_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+
+        }
+
         //protected override Size MeasureOverride(Size constraint)
         //{
 
@@ -254,21 +259,7 @@ namespace SCMTMainWindow.View
         //    return base.MeasureOverride(constraint);
         //}
 
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            myGrid.Instance = p1;
-           
-        }
 
-        private void button1_Click(object sender, RoutedEventArgs e)
-        {
-            myGrid.Instance = p1;
-        }
-
-        private void myGrid_FocusableChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-
-        }
 
 
     }
