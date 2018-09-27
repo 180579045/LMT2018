@@ -597,10 +597,6 @@
       <Project>{f5dbbc65-f7d3-4a0d-8a9f-3dafd3deb7ed}</Project>
       <Name>UICore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\UI\WPGProperty\WPG\WPG.csproj">
-      <Project>{022EDA6A-0B76-44C3-A530-8312C1B40030}</Project>
-      <Name>WPG</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
