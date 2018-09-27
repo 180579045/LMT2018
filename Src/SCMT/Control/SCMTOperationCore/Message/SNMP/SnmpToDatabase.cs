@@ -140,7 +140,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 把节点名列表转换为节点名对应的MIB列表
-		public static List<MibLeaf> ConvertNameListToMibInfoList(List<string> leafNameList, string ip)
+		public static IEnumerable<MibLeaf> ConvertNameListToMibInfoList(List<string> leafNameList, string ip)
 		{
 			if (null == leafNameList || string.IsNullOrEmpty(ip))
 			{

@@ -51,10 +51,12 @@ namespace NetPlan
 
 		// TODO 提供一个获取当前操作的基站IP的函数
 		// 获取指定设备的所有MIB信息，并填入到属性框中
-		public void GetDevAttributesFromMib(string devType)
+		public List<MibLeafNodeInfo> GetDevAttributesFromMib(string devType)
 		{
 			var cmdObj = GetAllCmdByType(devType);
 			var getCmdList = cmdObj?.get;
+			var devAttributList = new List<MibLeafNodeInfo>();
+
 			foreach (var getCmd in getCmdList)
 			{
 				var target = "172.27.245.92";   // TODO 硬编码IP地址
@@ -65,17 +67,10 @@ namespace NetPlan
 				}
 
 				var cmdMibInfoList = SnmpToDatabase.ConvertNameListToMibInfoList(cmdInfo.m_leaflist, target);
-				foreach (var cmdMibInfo in cmdMibInfoList)
-				{
-					if (null == cmdMibInfo)
-					{
-						continue;
-					}
-
-					var mibLeaf = new MibLeafNodeInfo {mibAttri = cmdMibInfo};
-
-				}
+				devAttributList.AddRange(from cmdMibInfo in cmdMibInfoList where null != cmdMibInfo select new MibLeafNodeInfo {mibAttri = cmdMibInfo});
 			}
+
+			return devAttributList;
 		}
 
 		#endregion
