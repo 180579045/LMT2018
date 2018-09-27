@@ -8,74 +8,15 @@ using Newtonsoft.Json.Linq;
 
 namespace MIBDataParser.JSONDataMgr
 {
-	///
-	public class ReDataByEnglishName : IReDataByEnglishName
-	{
-		public string oid { get;}
-		public string mibSyntax { get;}//MIB_Syntax取值类型
-		public string mangerValue { get;}//取值范围
-		public string mibDesc { get;}//描述信息 MIBDesc
-		public string parentOid { get;}//父oid，table=""
-		public ReDataByEnglishName(){}
-		public ReDataByEnglishName(string oid, string mibSyntax, string mangerValue, string mibDesc, string parentOid)
-		{
-			this.oid = oid;
-			this.mibSyntax = mibSyntax;//MIB_Syntax
-			this.mangerValue = mangerValue;//取值范围,管理站取值范围
-			this.mibDesc = mibDesc;//描述信息 MIBDesc
-			this.parentOid = parentOid;//父oid，table=null
-		}
-	}
-
-	public class ReDataByOid : IReDataByOid
-	{
-		//// OidInfo 实现
-		public string nameEn { get; }
-		public string isLeaf { get; }
-		public string indexNum { get; }
-		public ReDataByOid() { }
-		public ReDataByOid(string nameEn, string isLeaf, string indexNum)
-		{
-			this.nameEn = nameEn;
-			this.isLeaf = isLeaf;
-			this.indexNum = indexNum;
-		}
-	}
-
-	public class ReDataByTableEnglishNameChild : IReDataByTableEnglishNameChild
-	{
-		public string childNameMib {get; set;} // "alarmCauseNopublic string  ,
-		public string childNo {get; set;} // 1,
-		public string childOid {get; set;} // "1.1.1.1.1.1",
-		public string childNameCh {get; set;} // "告警原因编号",
-		public string isMib {get; set;} // 1,
-		public string ASNType {get; set;} // "Integer32",
-		public string OMType {get; set;} // "s32",
-		public string UIType {get; set;} // 0,
-		public string managerValueRange {get; set;} // "0-2147483647",
-		public string defaultValue {get; set;} // "×",
-		public string detailDesc {get; set;} // "告警原因编号， 取值  :0..2147483647。",
-		public string leafProperty {get; set;} // 0,
-		public string unit {get; set;} // ""
-		public bool idIndex { get; set; }
-	}
-	public class ReDataByTableEnglishName : IReDataByTableEnglishName
-	{
-		//// TableInfo 实现
-		public string oid { get; set; }
-		public string indexNum { get; set; }
-		public List<IReDataByTableEnglishNameChild> childrenList { get; set; }
-	}
-
-	public class ReCmdDataByCmdEnglishName : IReCmdDataByCmdEnglishName
+	public class CmdMibInfo
 	{
 		public string m_cmdNameEn { get;} // 命令的英文名
 		public string m_tableName { get;  } // 命令的mib表英文名
 		public string m_cmdType { get; } //命令类型
 		public string m_cmdDesc { get; } //命令描述
-		public List<string> m_leaflist { get; } // 命令节点名
+		public List<string> m_leaflist { get; } // 命令节点oid
 
-		public ReCmdDataByCmdEnglishName(JObject value, string cmdNameEn)
+		public CmdMibInfo(JObject value, string cmdNameEn)
 		{
 			this.m_cmdNameEn = cmdNameEn;
 			this.m_tableName = value["TableName"].ToString();
@@ -90,32 +31,16 @@ namespace MIBDataParser.JSONDataMgr
 		}
 	}
 
-    /// <summary>
-    /// 数据库操作相关的类
-    /// C# sealed修饰符表示密封用于类时，表示该类不能再被继承
-    /// </summary>
+	/// <summary>
+	/// 数据库操作相关的类
+	/// C# sealed修饰符表示密封用于类时，表示该类不能再被继承
+	/// </summary>
 	public sealed partial class Database : IDatabase
 	{
 		public  ResultInitData resultInitData; // 委托, 返回初始化的结果
 
-		private MibInfoList mibL = null; // MIB 相关数据的操作句柄
-		private CmdInfoList cmdL = null; // Cmd 相关数据的操作句柄
+		#region 公有接口
 
-		private static Database _instance = null;// private static readonly object SynObj = new object();
-                                                 // 数据库句柄
-        private static object _syncLock = new object();// 数据库锁
-
-        // 构造函数
-        /// <summary>
-        /// 构造函数
-        /// </summary>
-		private Database(){}
-
-        // 获取数据库句柄
-        /// <summary>
-        /// 获取数据库句柄
-        /// </summary>
-        /// <returns></returns>
 		public static Database GetInstance()
 		{
 			if (null == _instance)
@@ -131,98 +56,79 @@ namespace MIBDataParser.JSONDataMgr
 			return _instance;
 		}
 
-        // 初始化
-        /// <summary>
-        /// 初始化 线程: 调用 DBInitDateBaseByIpConnect 。
-        /// </summary>
-        /// <param name="connectIp">基站连接的ip，标记数据库的归属，是哪个基站的数据</param>
-        public void initDatabase(string connectIp)
+		// 初始化
+		/// <summary>
+		/// 初始化 线程: 调用 DBInitDateBaseByIpConnect 。
+		/// </summary>
+		/// <param name="connectIp">基站连接的ip，标记数据库的归属，是哪个基站的数据</param>
+		public void initDatabase(string connectIp)
 		{
-			try{
+			try
+			{
 				new Thread(DBInitDateBaseByIpConnect).Start(connectIp);
 			}
-			catch{
+			catch
+			{
 				resultInitData(false);
 			}
 		}
 
-        // 删除数据库列表
+		// 删除数据库列表
 		public bool delDatabase(string connectIp)
 		{
-			if (String.Empty == connectIp)
+			if (string.IsNullOrEmpty(connectIp))
+			{
 				return false;
+			}
 
-			if (!mibL.DelDBList(connectIp))
-				return false;
-			return true;
+			lock (_syncLock)
+			{
+				if (ipToMibInfoMap.ContainsKey(connectIp))
+				{
+					ipToMibInfoMap.Remove(connectIp);
+				}
 
-		}
+				if (ipToCmdInfoMap.ContainsKey(connectIp))
+				{
+					ipToCmdInfoMap.Remove(connectIp);
+				}
+			}
 
-        // [查询]通过节点英文名字，查询节点信息。
-        [Obsolete("Use Method bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err); instead", true)]
-		public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData)
-		{
-			reData = null;
-			//ReDataByEnglishName reDataC = new ReDataByEnglishName();
-			////dynamic getNameInfo;
-
-			//if (nameEn.Length == 0 | mibL == null)
-			//    return false;
-
-			////if (!mibL.getNameEnInfo(nameEn, out getNameInfo))
-			////    return false;
-			////reDataC._myOid = getNameInfo["oid"];
-			//reData = reDataC;
 			return true;
 		}
-		[Obsolete("Use Method bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err); instead", true)]
-		public bool getDataByEnglishName(List<string> nameEnList, out List<IReDataByEnglishName> reDataList, string curConnectIp)
-		{
-			string err = "";
-			reDataList = new List<IReDataByEnglishName>();
-			//foreach (var nameEn in nameEnList)
-			//{
-			//    IReDataByEnglishName nameInfo = new ReDataByEnglishName();
-			//    if (!this.getDataByEnglishName(nameEn, out nameInfo, curConnectIp,out err))
-			//    {
-			//        reDataList = null;
-			//        return false;
-			//    }
-			//    reDataList.Add(nameInfo);
-			//}
-			return true;
-		}
-		public bool getDataByEnglishName(string nameEn, out IReDataByEnglishName reData, string curConnectIp, out string err)
+
+		// 根据MIB名获取MIB信息
+		public bool getDataByEnglishName(string nameEn, out MibLeaf reData, string curConnectIp, out string err)
 		{
 			err = "";
 			reData = null;
 			// 参数判断
-			if ((String.Empty == nameEn) || (String.Empty == curConnectIp) || mibL == null)
+			if (string.IsNullOrEmpty(nameEn) || string.IsNullOrEmpty(curConnectIp))
 			{
-				err = "nameEn is null , or connectIp is null or 数据库没有初始化.";
-				return false;
-			}
-			NameEnInfo getNameInfo;
-			TableInfo getTableInfo ;
-			if ((false == mibL.getNameEnInfo(nameEn, out getNameInfo, curConnectIp))
-				|| (false == mibL.getTableInfo(getNameInfo.m_tableNameEn, out getTableInfo, curConnectIp)))
-			{
-				err = String.Format("get nameEn({0}) err.", nameEn);
+				err = "nameEn is null , or connectIp is null";
 				return false;
 			}
 
-			if (getNameInfo.m_isLeaf)//1,为叶子节点
+			lock (_syncLock)
 			{
-				LeafInfo child = getTableInfo.childList.Find(x => String.Equals(x.childNameMib, nameEn));
-				reData = new ReDataByEnglishName(getNameInfo.m_oid, child.mibSyntax, child.managerValueRange,
-					child.mibDesc, getTableInfo.oid);
+				if (!ipToMibInfoMap.ContainsKey(curConnectIp))
+				{
+					err = $"IP{curConnectIp}的数据库尚未初始化";
+					return false;
+				}
+
+				var mib = ipToMibInfoMap[curConnectIp];
+				reData = mib.getNameEnInfo(nameEn);
+				if (null == reData)
+				{
+					err = $"未找到名为{nameEn}的MIB信息";
+					return false;
+				}
 			}
-			else//1,为叶子节点//0,为父节点
-			{
-				reData = new ReDataByEnglishName(getNameInfo.m_oid, getTableInfo.mibSyntax, "", getTableInfo.mibDesc, "");
-			}
+
 			return true;
 		}
+
 		/// <summary>
 		/// [查询]通过节点英文名字，查询节点信息。支持多节点查找。
 		/// </summary>
@@ -230,244 +136,288 @@ namespace MIBDataParser.JSONDataMgr
 		/// <param name="connectIp">信息归属的标识</param>
 		/// <param name="err">查询失败的原因</param>
 		/// <returns></returns>
-		public bool getDataByEnglishName(Dictionary<string, IReDataByEnglishName> reData, string connectIp, out string err)
+		public bool getDataByEnglishName(Dictionary<string, MibLeaf> reData, string connectIp, out string err)
 		{
 			err = "";
-			// 参数判断
-			if ((reData == null) || (reData.Keys.Count == 0) || (String.Empty == connectIp) || (mibL == null)){
-				err = "reData, connectIp or mibDb is err.";
+
+			if (reData == null || reData.Keys.Count == 0 || string.IsNullOrEmpty(connectIp))
+			{
+				err = "nameEn is null , or connectIp is null";
 				return false;
 			}
+
 			// 获取keys
-			string[] dtKeys = new string[reData.Keys.Count];//.Copy(reData.Keys, dtKeys, 0);
+			var dtKeys = new string[reData.Keys.Count];//.Copy(reData.Keys, dtKeys, 0);
 			reData.Keys.CopyTo(dtKeys, 0);
 
 			// 查询
-			IReDataByEnglishName getNameInfo = null;
+			MibLeaf getNameInfo = null;
 			foreach (var key in dtKeys)
 			{
-				if (!getDataByEnglishName(key, out getNameInfo, connectIp,out  err)) {
+				if (!getDataByEnglishName(key, out getNameInfo, connectIp,out  err))
+				{
 					return false;
 				}
 				reData[key] = getNameInfo;
 			}
+
 			return true;
 		}
 
-        // [查询]通过节点oid，查询节点信息。
-        [Obsolete("Use Method bool getDataByOid(Dictionary<string, IReDataByOid> reData, string connectIp, out string err); instead", true)]
-		public bool getDataByOid(string oid, out IReDataByOid reData, string curConnectIp)
-		{
-			reData = null;
-			//ReDataByOid reOidInfo = new ReDataByOid();
-			//dynamic getOidInfo;
-
-			//if (oid.Length == 0 | mibL == null)
-			//    return false;
-
-			//if (!mibL.getOidEnInfo(oid, out getOidInfo, curConnectIp))
-			//    return false;
-			//reOidInfo.myNameEn = getOidInfo["nameMib"];
-			//reOidInfo.myIsLeaf = getOidInfo["isLeaf"];
-			//reOidInfo.myIndexNum = getOidInfo["indexNum"];
-			//reData = reOidInfo;
-			return false;
-		}
-		public bool getDataByOid(string oid, out IReDataByOid reData, string curConnectIp, out string err)
+		public bool GetMibDataByOid(string oid, out MibLeaf reData, string curConnectIp, out string err)
 		{
 			reData = null;
 			err = "";
 
-			if ((String.Empty == oid) || (String.Empty == curConnectIp) || (mibL == null)){
-				err = "oid , mibDb or connectIp is err.";
+			if (string.IsNullOrEmpty(oid) || string.IsNullOrEmpty(curConnectIp))
+			{
+				err = "nameEn is null , or connectIp is null";
 				return false;
 			}
 
-			OidInfo oidInfo;
-			if (!mibL.getOidEnInfo(oid,out oidInfo, curConnectIp)){
-				err = String.Format("get db by {0},err.", oid);
-				return false;
+			lock (_syncLock)
+			{
+				if (!ipToMibInfoMap.ContainsKey(curConnectIp))
+				{
+					err = $"IP{curConnectIp}的数据库尚未初始化";
+					return false;
+				}
+
+				var mib = ipToMibInfoMap[curConnectIp];
+				reData = mib.getOidEnInfo(oid);
+				if (null == reData)
+				{
+					err = $"未找到OID为{oid}为MIB信息";
+					return false;
+				}
 			}
 
-			reData = new ReDataByOid(oidInfo.m_nameEn, oidInfo.m_isLeaf.ToString(), oidInfo.m_indexNum.ToString());
 			return true;
 		}
-		public bool getDataByOid(Dictionary<string, IReDataByOid> reData, string connectIp, out string err)
+
+		public bool GetMibDataByOids(Dictionary<string, MibLeaf> reData, string connectIp, out string err)
 		{
 			err = "";
 			// 参数判断
-			if ((reData == null) || (reData.Keys.Count == 0) || (String.Empty == connectIp) || (mibL == null))
+			if (reData == null || reData.Keys.Count == 0 || string.IsNullOrEmpty(connectIp))
 			{
 				err = "reData , mibDb or connectIp is err.";
 				return false;
 			}
+
 			// 获取keys
-			string[] dtKeys = new string[reData.Keys.Count];
+			var dtKeys = new string[reData.Keys.Count];
 			reData.Keys.CopyTo(dtKeys, 0);
 
-			//
-			IReDataByOid getOidInfo;
+			MibLeaf getOidInfo;
 			foreach (var key in dtKeys)
 			{
-				if (!getDataByOid(key, out getOidInfo, connectIp, out err))
+				if (!GetMibDataByOid(key, out getOidInfo, connectIp, out err))
 					return false;
+
 				reData[key] = getOidInfo;
 			}
+
 			return true;
 		}
 
-        // [查询]通过表英文名字，查询表信息。
-        [Obsolete("Use Method bool getDataByTableEnglishName(Dictionary<string, IReDataByTableEnglishName> reData, string connectIp, out string err); instead", true)]
-		public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string curConnectIp)
-		{
-			reData = null;
-			return false;
-		}
-		public bool getDataByTableEnglishName(string nameEn, out IReDataByTableEnglishName reData, string curConnectIp, out string err)
+		/// <summary>
+		/// 根据传入的表名，查询MIB信息
+		/// </summary>
+		/// <param name="nameEn"></param>
+		/// <param name="reData"></param>
+		/// <param name="curConnectIp"></param>
+		/// <param name="err"></param>
+		/// <returns>true:查询成功，false:查询失败</returns>
+		public bool GetMibDataByTableName(string nameEn, out MibTable reData, string curConnectIp, out string err)
 		{
 			reData = null;
 			err = "";
 
-			if ((nameEn == String.Empty) | (curConnectIp == String.Empty) | mibL == null)
+			if (string.IsNullOrEmpty(nameEn) || string.IsNullOrEmpty(curConnectIp))
 			{
 				err = "input err or mibDb is null";
 				return false;
 			}
 
-			TableInfo getTable ;
-			if (!mibL.getTableInfo(nameEn.Replace("Table", "Entry"), out getTable, curConnectIp))
+			lock (_syncLock)
 			{
-				err = String.Format("get nameEn({0}) err.", nameEn);
-				return false;
+				if (!ipToMibInfoMap.ContainsKey(curConnectIp))
+				{
+					err = $"IP为{curConnectIp}的数据库尚未初始化";
+					return false;
+				}
+
+				var mib = ipToMibInfoMap[curConnectIp];
+				reData = mib.getTableInfo(nameEn.Replace("Table", "Entry"));
+				if (null == reData)
+				{
+					err = $"查找名为{nameEn}的表信息失败";
+					return false;
+				}
 			}
-			ReDataByTableEnglishName table = new ReDataByTableEnglishName();
-			table.oid = getTable.oid;
-			table.indexNum = getTable.indexNum.ToString();
-			table.childrenList = new List<IReDataByTableEnglishNameChild>();
-			foreach (LeafInfo getChild in getTable.childList)
-			{
-				table.childrenList.Add(new ReDataByTableEnglishNameChild(){
-					childNameMib = getChild.childNameMib, // "alarmCauseNopublic string  ,
-					childNo = getChild.childNo.ToString(), // 1,
-					childOid = getChild.childOid, // "1.1.1.1.1.1",
-					childNameCh = getChild.childNameCh, // "告警原因编号",
-					isMib = getChild.isMib.ToString(), // 1,
-					ASNType = getChild.ASNType, // "Integer32",
-					OMType = getChild.OMType, // "s32",
-					UIType = getChild.UIType.ToString(), // 0,
-					managerValueRange = getChild.managerValueRange, // "0-2147483647",
-					defaultValue = getChild.defaultValue, // "×",
-					detailDesc = getChild.defaultValue, // "告警原因编号， 取值  :0..2147483647。",
-					leafProperty = getChild.leafProperty.ToString(), // 0,
-					unit = getChild.unit, // ""
-				});
-			}
-			reData = table;
+
 			return true;
 		}
-		public bool getDataByTableEnglishName(Dictionary<string, IReDataByTableEnglishName> reData, string connectIp, out string err)
+
+		/// <summary>
+		/// 根据表名查询MIB数据，支持同时传入多个表名
+		/// </summary>
+		/// <param name="strMibName"></param>
+		/// <param name="targetIp"></param>
+		/// <returns>true:查询成功，false:查询失败</returns>
+		public bool GetMibDataByTableName(Dictionary<string, MibTable> reData, string connectIp, out string err)
 		{
 			err = "";
 			// 参数判断
-			if ((reData == null) || (reData.Keys.Count == 0) ||(String.Empty == connectIp)|| (mibL == null))
+			if (reData == null || reData.Keys.Count == 0 ||string.IsNullOrEmpty(connectIp))
 			{
 				err = "reData ,mibDb,  or connectIp is err.";
 				return false;
 			}
 			// 获取keys
-			string[] dtKeys = new string[reData.Keys.Count];
+			var dtKeys = new string[reData.Keys.Count];
 			reData.Keys.CopyTo(dtKeys, 0);
 
 			// 查询
-			IReDataByTableEnglishName getTable;
+			MibTable getTable;
 			foreach (var key in dtKeys)
 			{
-				if (!getDataByTableEnglishName(key, out getTable, connectIp, out err))
+				if (!GetMibDataByTableName(key, out getTable, connectIp, out err))
 					return false;
+
 				reData[key] = getTable;
 			}
+
 			return true;
 		}
 
-        // [查询]通过命令英文名字，查询命令信息。
-        public bool getCmdDataByCmdEnglishName(Dictionary<string, IReCmdDataByCmdEnglishName> reData, string connectIp, out string err)
+		/// <summary>
+		/// [查询]通过命令英文名字，查询命令信息。同时查询多个
+		/// </summary>
+		/// <param name="reData"></param>
+		/// <param name="connectIp"></param>
+		/// <param name="err"></param>
+		/// <returns></returns>
+		public bool GetCmdDataByNames(Dictionary<string, CmdMibInfo> reData, string connectIp, out string err)
 		{
 			err = "";
+
 			// 参数判断
-			if ((reData == null) || (reData.Keys.Count == 0) || (String.Empty == connectIp))
+			if (reData == null || reData.Keys.Count == 0 || string.IsNullOrEmpty(connectIp))
 			{
 				err = "reData is null , reData keys count is 0 or connectIp is null.";
 				return false;
 			}
-			if (cmdL == null)
+
+			lock (_syncLock)
 			{
-				err = "数据库没有初始化";
-				return false;
+				if (!ipToCmdInfoMap.ContainsKey(connectIp))
+				{
+					return false;
+				}
+
+				var cmd = ipToCmdInfoMap[connectIp];
+
+				return cmd.getCmdInfoByName(reData, out err);
 			}
-			return cmdL.getCmdInfoByCmdEnglishName(reData, connectIp, out err);
 		}
 
-		// 提供单个命令信息查询接口
-		public IReCmdDataByCmdEnglishName getCmdDataByCmdEnglishName(string cmdName, string targetIp)
+		/// <summary>
+		/// 通过命令英文名字，查询命令信息
+		/// </summary>
+		/// <param name="cmdName"></param>
+		/// <param name="targetIp"></param>
+		/// <returns></returns>
+		public CmdMibInfo GetCmdDataByName(string cmdName, string targetIp)
 		{
 			if (string.IsNullOrEmpty(cmdName) || string.IsNullOrEmpty(targetIp))
 			{
-				throw new ArgumentNullException();
+				//throw new ArgumentNullException();
+				return null;
 			}
 
-			if (cmdL == null)
+			lock (_syncLock)
 			{
-                //throw new CustomException("命令清单数据库未初始化");
-                throw new ArgumentNullException();
-            }
+				if (!ipToCmdInfoMap.ContainsKey(targetIp))
+				{
+					return null;
+				}
 
-			ReCmdDataByCmdEnglishName cmdData;
-			string err;
-			if (cmdL.getCmdInfoByCmdEnglishName(cmdName, targetIp, out cmdData, out err))
-			{
-				return cmdData;
+				var cmd = ipToCmdInfoMap[targetIp];
+				string err;
+				CmdMibInfo cmdData = null;
+				if (cmd.getCmdInfoByName(cmdName, out cmdData, out err))
+				{
+					return cmdData;
+				}
 			}
 
 			return null;
 		}
 
-        // [查询]提供Trap所有类型
-        /// <summary>
-        /// 提供Trap所有类型的查找
-        /// 现有10种。
-        /// </summary>
-        /// <returns></returns>
-        public Dictionary<string, Dictionary<string, string>> getTrapInfo()
-        {
-            Dictionary<string, Dictionary<string, string>> allTrapInfo = new Dictionary<string, Dictionary<string, string>>() {
-                { "alarmNotify", new Dictionary<string, string>() {{ "TrapID","24"},{ "TrapOid","alarmTrap"},{ "TrapTypeDes","alarmTraps"}}},
-                { "anrNotification", new Dictionary<string, string>() {{ "TrapID","200"},{ "TrapOid", "anrNotification" },{ "TrapTypeDes", "anrNotification" } }},
-                { "alterationNofication", new Dictionary<string, string>() {{ "TrapID","21"},{ "TrapOid", "configChgTrap" },{ "TrapTypeDes", "eventConfigChgTraps" } }},
-                { "eventGeneralEventTrap", new Dictionary<string, string>() {{ "TrapID","20"},{ "TrapOid", "eventGeneralEventTrap" },{ "TrapTypeDes", "eventGeneralEventTraps" } }},
-                { "eventSynchronizationTrap", new Dictionary<string, string>() {{ "TrapID","26"},{ "TrapOid", "eventSynchronizationTrap" },{ "TrapTypeDes", "eventSynchronizationTrap" } }},
-                { "fileTransNotification", new Dictionary<string, string>() {{ "TrapID","23"},{ "TrapOid", "fileTransTrap" },{ "TrapTypeDes", "eventFTPResultTraps" } }},
-                { "maintenceStateNotify", new Dictionary<string, string>() {{ "TrapID","203"},{ "TrapOid", "maintenceStateNotify" },{ "TrapTypeDes", "maintenceStateNotify" } }},
-                { "managementRequestTrap", new Dictionary<string, string>() {{ "TrapID","22"},{ "TrapOid", "managementRequestTrap" },{ "TrapTypeDes", "eventManagementRequestTraps" } }},
-                { "mroNotification", new Dictionary<string, string>() {{ "TrapID","201"},{ "TrapOid", "mroNotification" },{ "TrapTypeDes", "mroNotification" } }},
-                { "transactionResultNotification", new Dictionary<string, string>() {{ "TrapID","25"},{ "TrapOid", "transactionResultTrap" },{ "TrapTypeDes", "transactionResultTraps" } }},
-            };
-            return allTrapInfo;
-        }
+		/// <summary>
+		/// 提供Trap所有类型的查找
+		/// 现有10种。
+		/// </summary>
+		/// <returns></returns>
+		public Dictionary<string, Dictionary<string, string>> GetTrapInfo()
+		{
+			var allTrapInfo = new Dictionary<string, Dictionary<string, string>>() {
+				{ "alarmNotify", new Dictionary<string, string>() {{ "TrapID","24"},{ "TrapOid","alarmTrap"},{ "TrapTypeDes","alarmTraps"}}},
+				{ "anrNotification", new Dictionary<string, string>() {{ "TrapID","200"},{ "TrapOid", "anrNotification" },{ "TrapTypeDes", "anrNotification" } }},
+				{ "alterationNofication", new Dictionary<string, string>() {{ "TrapID","21"},{ "TrapOid", "configChgTrap" },{ "TrapTypeDes", "eventConfigChgTraps" } }},
+				{ "eventGeneralEventTrap", new Dictionary<string, string>() {{ "TrapID","20"},{ "TrapOid", "eventGeneralEventTrap" },{ "TrapTypeDes", "eventGeneralEventTraps" } }},
+				{ "eventSynchronizationTrap", new Dictionary<string, string>() {{ "TrapID","26"},{ "TrapOid", "eventSynchronizationTrap" },{ "TrapTypeDes", "eventSynchronizationTrap" } }},
+				{ "fileTransNotification", new Dictionary<string, string>() {{ "TrapID","23"},{ "TrapOid", "fileTransTrap" },{ "TrapTypeDes", "eventFTPResultTraps" } }},
+				{ "maintenceStateNotify", new Dictionary<string, string>() {{ "TrapID","203"},{ "TrapOid", "maintenceStateNotify" },{ "TrapTypeDes", "maintenceStateNotify" } }},
+				{ "managementRequestTrap", new Dictionary<string, string>() {{ "TrapID","22"},{ "TrapOid", "managementRequestTrap" },{ "TrapTypeDes", "eventManagementRequestTraps" } }},
+				{ "mroNotification", new Dictionary<string, string>() {{ "TrapID","201"},{ "TrapOid", "mroNotification" },{ "TrapTypeDes", "mroNotification" } }},
+				{ "transactionResultNotification", new Dictionary<string, string>() {{ "TrapID","25"},{ "TrapOid", "transactionResultTrap" },{ "TrapTypeDes", "transactionResultTraps" } }},
+			};
+			return allTrapInfo;
+		}
+
+		#endregion
+
+		#region 私有数据、属性区
+
+		// 保存每个IP对应的MIB信息
+		private Dictionary<string, MibInfoList> ipToMibInfoMap;
+
+		//保存每个IP对应的CMD信息
+		private Dictionary<string, CmdInfoList> ipToCmdInfoMap;
+
+		private static Database _instance = null;   // 数据库实例
+		private static readonly object _syncLock = new object();	// 数据库同步锁
+
+		#endregion
 
 
-		/**********   私有函数   **********/
+		#region 私有方法区
+
+		// 构造函数
+		/// <summary>
+		/// 构造函数
+		/// </summary>
+		private Database()
+		{
+			ipToMibInfoMap = new Dictionary<string, MibInfoList>();
+			ipToCmdInfoMap = new Dictionary<string, CmdInfoList>();
+		}
+
 		/// <summary>
 		/// 真实执行初始化内容的函数。
 		/// </summary>
 		/// <param name="connectIp"> 标识数据的归属，查询要用 </param>
 		private void DBInitDateBaseByIpConnect(object connectIp)
 		{
-            Console.WriteLine("Db init : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-            // 1. 解压lm.dtz
-            if (!DBInitZip())
+			Console.WriteLine("Db init : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			// 1. 解压lm.dtz
+			if (!DBInitZip())
 			{
-                Console.WriteLine("Db init : zip err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-                resultInitData(false);
+				Console.WriteLine("Db init : zip err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+				resultInitData(false);
 				return;
 			}
 			//Console.WriteLine("Db init zip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
@@ -475,8 +425,8 @@ namespace MIBDataParser.JSONDataMgr
 			// 2. 解析lm.dtz => 写json文件(增加，叶子节点的读写属性) 解析.mdb文件
 			if (!DBInitParseMdbToWriteJson())
 			{
-                Console.WriteLine("Db init : writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-                resultInitData(false);
+				Console.WriteLine("Db init : writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+				resultInitData(false);
 				return;
 			}
 			//Console.WriteLine("Db init parse mdb ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
@@ -484,54 +434,17 @@ namespace MIBDataParser.JSONDataMgr
 			// 3. 解析json 文件
 			if (!DBInitParseJsonToMemory(connectIp.ToString()))
 			{
-                Console.WriteLine("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-                resultInitData(false);
+				Console.WriteLine("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+				resultInitData(false);
 				return;
 			}
 			//Console.WriteLine("Db init : mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
 			// 4. 结果
-            Console.WriteLine("Db init : Ok..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-            resultInitData(true);
-            return;
-		}
-
-		//初始化(1.解压lm.dtz;2.解析.mdb,生成json;3.解析json;)
-		private void DBInitDateBase()
-		{
-			// 初始化
-			// 1. 解压lm.dtz
-			UnzippedLmDtz unZip = new UnzippedLmDtz();
-			string err = "";
-			if (!unZip.UnZipFile(out err))
-			{
-				Console.WriteLine("Err:Unzip fail, {0}", err);
-				resultInitData(false);
-				return;
-			}
-			Console.WriteLine("unzip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-
-			// 2. 解析lm.dtz => json文件(增加，叶子节点的读写属性)
-			//解析.mdb文件
-			JsonDataManager JsonDataM = new JsonDataManager("5.10.11");
-			JsonDataM = new JsonDataManager("5.10.11");
-			//JsonDataM.ConvertAccessDbToJson();
-			JsonDataM.ConvertAccessDbToJsonForThread();
-			Console.WriteLine("write json ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-
-			// 3. 解析json 文件
-			//MibInfoList mibL = new MibInfoList();
-			mibL = new MibInfoList();// mib 节点
-			cmdL = new CmdInfoList();// cmd 节点
-			//mibL.GeneratedMibInfoList();
-			//cmdL.GeneratedCmdInfoList();
-			Console.WriteLine("mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			//mibL.getOidEnInfo(@"1.3.6.1.4.1.5105.1.2.100.1.1.5.6.1.20.33",out oidInfo);
-
-			//
+			Console.WriteLine("Db init : Ok..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			resultInitData(true);
-			return;
 		}
+
 		/// 1. 解压lm.dtz
 		private bool DBInitZip()
 		{
@@ -548,56 +461,48 @@ namespace MIBDataParser.JSONDataMgr
 		/// 2. 解析lm.mdb,写json文件; 解析lm.dtz => json文件(增加，叶子节点的读写属性) 解析.mdb文件
 		private bool DBInitParseMdbToWriteJson()
 		{
-            JsonDataManager jdm = new JsonDataManager("5.10.11");
-            return jdm.ConvertAccessDbToJsonForThread();
+			// TODO 5.10.11是什么？
+			JsonDataManager jdm = new JsonDataManager("5.10.11");
+			return jdm.ConvertAccessDbToJsonForThread();
 		}
 		/// 3. 解析json文件到内存中
 		private bool DBInitParseJsonToMemory(string connectIp)
 		{
-			mibL = new MibInfoList();// mib 节点
-			cmdL = new CmdInfoList();// cmd 节点
-			if (!mibL.GeneratedMibInfoList(connectIp))
+			var mibL = new MibInfoList();// mib 节点
+
+			if (!mibL.GeneratedMibInfoList())
 				return false;
-			cmdL.GeneratedCmdInfoList(connectIp);
 
-			//Console.WriteLine("Db init list1 start ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			//MibInfoList tets1 = new MibInfoList();
-			//tets1.GeneratedMibInfoList(connectIp);
+			var cmdL = new CmdInfoList();// cmd 节点
+			if (!cmdL.GeneratedCmdInfoList())
+				return false;
 
-			//Console.WriteLine("Db init list1 ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			lock (_syncLock)
+			{
+				// 如果已经有了该IP对应的数据，重新设置指向的对象即可
+				if (ipToMibInfoMap.ContainsKey(connectIp))
+				{
+					ipToMibInfoMap[connectIp] = mibL;
+				}
+				else
+				{
+					ipToMibInfoMap.Add(connectIp, mibL);
+				}
 
-			//Console.WriteLine("Db init list2 start ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			//MibInfoList tets2 = new MibInfoList();
-			//tets2.GeneratedMibInfoListThread(connectIp);
-			//Console.WriteLine("Db init list2 ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+				if (ipToCmdInfoMap.ContainsKey(connectIp))
+				{
+					ipToCmdInfoMap[connectIp] = cmdL;
+				}
+				else
+				{
+					ipToCmdInfoMap.Add(connectIp, cmdL);
+				}
+			}
+
 			return true;
 		}
-		/**********   私有函数   **********/
-
-
-		//////////
-
-		//public bool testGetDataByTableEnglishName()
-		//{
-		//    ReadIniFile iniFile = new ReadIniFile();
-		//    string jsonfilepath = iniFile.IniReadValue(iniFile.getIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
-
-		//    JsonFile json = new JsonFile();
-		//    JObject JObj = json.ReadJsonFileForJObject(jsonfilepath + "Tree_Reference.json");
-		//    foreach (var table in JObj["NodeList"])
-		//    {
-		//        IReDataByTableEnglishName reData;
-		//        string MibTableName = table["MibTableName"].ToString();
-		//        if (String.Equals("/", MibTableName))
-		//            continue;
-		//        if (false == getDataByTableEnglishName(MibTableName, out reData))
-		//        {
-		//            Console.WriteLine("===={0} not exist.", MibTableName);
-		//        }
-		//    }
-		//    return true;
-		//}
+		#endregion
 	}
 
-    
+
 }

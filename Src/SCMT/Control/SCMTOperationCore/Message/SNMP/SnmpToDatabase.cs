@@ -49,9 +49,9 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 根据命令名找到命令对应的所有信息
-		public static IReCmdDataByCmdEnglishName GetCmdInfoByCmdName(string cmdName, string ip)
+		public static CmdMibInfo GetCmdInfoByCmdName(string cmdName, string ip)
 		{
-			return Database.GetInstance().getCmdDataByCmdEnglishName(cmdName, ip);
+			return Database.GetInstance().GetCmdDataByName(cmdName, ip);
 		}
 
 		// 获取公共MIB前缀。最后带.字符
@@ -140,7 +140,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 把节点名列表转换为节点名对应的MIB列表
-		public static List<IReDataByEnglishName> ConvertNameListToMibInfoList(List<string> leafNameList, string ip)
+		public static List<MibLeaf> ConvertNameListToMibInfoList(List<string> leafNameList, string ip)
 		{
 			if (null == leafNameList || string.IsNullOrEmpty(ip))
 			{
@@ -159,17 +159,17 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			var olidList = new List<string>();
-			IReDataByEnglishName temp = new ReDataByEnglishName();
-			string errorMsg = "";
 
 			foreach (var name in nameList)
 			{
+				MibLeaf temp;
+				var errorMsg = "";
 				if (!Database.GetInstance().getDataByEnglishName(name, out temp, ip, out errorMsg))
 				{
 					throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
 				}
 
-				olidList.Add(temp.oid);
+				olidList.Add(temp.childOid);
 			}
 
 			return olidList;
@@ -187,7 +187,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			//获取name2value 的 key 信息，即 EnglishName，再查询 mib 节点信息
-			var reData = new Dictionary<string, IReDataByEnglishName>();
+			var reData = new Dictionary<string, MibLeaf>();
 			foreach (var item in name2value)
 			{
 				reData[item.Key] = null;
@@ -203,7 +203,7 @@ namespace SCMTOperationCore.Message.SNMP
 			var relation = new Dictionary<string, string>();
 			foreach (var item in reData)
 			{
-				relation[item.Value.oid] = item.Key;
+				relation[item.Value.childOid] = item.Key;
 			}
 
 			//IReDataByEnglishName nameToOid = new ReDataByEnglishName();
@@ -255,22 +255,22 @@ namespace SCMTOperationCore.Message.SNMP
 		public static Dictionary<int, string> GetValueRangeByMibName(string mibName, string targetIp)
 		{
 			string error;
-			Dictionary<string, IReDataByEnglishName> retData = new Dictionary<string, IReDataByEnglishName> { [mibName] = null };
+			var retData = new Dictionary<string, MibLeaf> { [mibName] = null };
 			if (!Database.GetInstance().getDataByEnglishName(retData, targetIp, out error))
 			{
 				return null;
 			}
 
-			string mvr = retData[mibName].mangerValue;
+			string mvr = retData[mibName].managerValueRange;
 			if (string.IsNullOrWhiteSpace(mvr)) return null;
 
 			return MibStringHelper.SplitManageValue(mvr);
 		}
 
 		// 根据mib名称获取节点信息
-		public static IReDataByEnglishName GetMibNodeInfoByName(string mibName, string targetIp)
+		public static MibLeaf GetMibNodeInfoByName(string mibName, string targetIp)
 		{
-			var mapName2Data = new Dictionary<string, IReDataByEnglishName> { [mibName] = null };
+			var mapName2Data = new Dictionary<string, MibLeaf> { [mibName] = null };
 			string errorInfo;
 
 			if (Database.GetInstance().getDataByEnglishName(mapName2Data, targetIp, out errorInfo))

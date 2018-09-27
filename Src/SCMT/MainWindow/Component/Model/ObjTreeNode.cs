@@ -359,7 +359,7 @@ namespace SCMTMainWindow
         private void ObjTreeNode_Click(ObjNode node)
         {
             //Console.WriteLine("TreeNode Clicked to show info!");
-            IReDataByTableEnglishName ret = new ReDataByTableEnglishName();
+            var ret = new MibTable();
             var GetNextRet = new Dictionary<string, string>();
             var IndexNum = 0;
             contentlist.Clear();
@@ -372,7 +372,7 @@ namespace SCMTMainWindow
             var errorInfo = "";
             //根据表名获取该表内所有MIB节点;
             nodeb.db = Database.GetInstance();
-            nodeb.db.getDataByTableEnglishName(node.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+            nodeb.db.GetMibDataByTableName(node.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
 
             var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
             name_cn.Clear();
@@ -381,10 +381,10 @@ namespace SCMTMainWindow
 
             try
             {
-                int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
-                IndexCount = int.Parse(ret.indexNum);
+                int.TryParse(ret.indexNum.ToString(), out IndexNum);              // 获取这张表索引的个数;
+                IndexCount = ret.indexNum;
                 LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
-                ChildCount = ret.childrenList.Count - IndexNum;
+                ChildCount = ret.childList.Count - IndexNum;
                 ObjParentOID = ret.oid;                                // 将父节点OID赋值;
             }
             catch (Exception ex)
@@ -394,14 +394,14 @@ namespace SCMTMainWindow
 
 
             // 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
-            foreach (var iter in ret.childrenList)
+            foreach (var iter in ret.childList)
             {
                 oidlist.Clear();
                 // 索引不参与查询,将所有其他孩子节点进行GetNext查询操作;
-                if (int.Parse(iter.childNo) > IndexNum)
+                if (iter.childNo > IndexNum)
                 {
                     // 如果不是真MIB，不参与查询;
-                    if (iter.isMib != "1")
+                    if (iter.isMib != 1)
                     {
                         ChildCount--;
                         continue;
@@ -415,7 +415,7 @@ namespace SCMTMainWindow
 
                     // 通过GetNext查询单个节点数据;
                     var msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
-                    msg.GetNextRequestWhenStop(new AsyncCallback(ReceiveResBySingleNode), new AsyncCallback(NotifyMainUpdateDataGrid), oidlist);
+                    msg.GetNextRequestWhenStop(ReceiveResBySingleNode, NotifyMainUpdateDataGrid, oidlist);
                 }
                 else
                 {
@@ -486,7 +486,7 @@ namespace SCMTMainWindow
         {
             var item = sender as MetroExpander;
             var node = item.obj_type as ObjNode;
-            IReDataByTableEnglishName ret = new ReDataByTableEnglishName();
+            var ret = new MibTable();
             var GetNextRet = new Dictionary<string, string>();
             var IndexNum = 0;
             contentlist.Clear();
@@ -499,16 +499,16 @@ namespace SCMTMainWindow
             var errorInfo = "";
             //根据表名获取该表内所有MIB节点;
             nodeb.db = Database.GetInstance();
-            nodeb.db.getDataByTableEnglishName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+            nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
             
             var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
             name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;
             try
             {
-                int.TryParse(ret.indexNum, out IndexNum);              // 获取这张表索引的个数;
-                IndexCount = int.Parse(ret.indexNum);
+                int.TryParse(ret.indexNum.ToString(), out IndexNum);              // 获取这张表索引的个数;
+                IndexCount = ret.indexNum;
                 LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
-                ChildCount = ret.childrenList.Count - IndexNum;
+                ChildCount = ret.childList.Count - IndexNum;
                 ObjParentOID = ret.oid;                                // 将父节点OID赋值;
             }
             catch(Exception ex)
@@ -517,14 +517,14 @@ namespace SCMTMainWindow
             }
 
             // 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
-            foreach (var iter in ret.childrenList)
+            foreach (var iter in ret.childList)
             {
                 oidlist.Clear();
                 // 索引不参与查询,将所有其他孩子节点进行GetNext查询操作;
-                if(int.Parse(iter.childNo) > IndexNum )
+                if(iter.childNo > IndexNum )
                 {
                     // 如果不是真MIB，不参与查询;
-                    if (iter.isMib != "1")
+                    if (iter.isMib != 1)
                     {
                         ChildCount--;
                         continue;

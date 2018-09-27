@@ -560,9 +560,9 @@ namespace SCMTOperationCore.Message.SNMP
 						}
 
 						// 获取Mib节点信息
-						IReDataByOid reDataByOid = new ReDataByOid();
+						var reDataByOid = new MibLeaf();
 						string strError;
-						if(false == Database.GetInstance().getDataByOid(strValueTmp, out reDataByOid, strNodeBIp, out strError))
+						if(false == Database.GetInstance().GetMibDataByOid(strValueTmp, out reDataByOid, strNodeBIp, out strError))
 						{
 							Log.Error(string.Format("获取MIb节点信息错误，oid={0}", strValueTmp));
 							return false;
@@ -1106,22 +1106,22 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			// 根据oid获取Mib节点信息
-			IReDataByOid reNodeInfo = new ReDataByOid();
-			Dictionary<string, IReDataByOid> reData = new Dictionary<string, IReDataByOid>();
+			var reNodeInfo = new MibLeaf();
+			var reData = new Dictionary<string, MibLeaf>();
 			reData.Add(strTrapOid, reNodeInfo);
 			string strError;
 
-			if(false == Database.GetInstance().getDataByOid(reData, strIpAddr, out strError))
+			if(false == Database.GetInstance().GetMibDataByOids(reData, strIpAddr, out strError))
 			{
 				Log.Error("获取Mib节点信息失败！");
 				return false;
 			}
 
 			// Mib名称
-			string strMibName = reData[strTrapOid].nameEn;
+			string strMibName = reData[strTrapOid].childNameMib;
 
 			// 查询是否有该类型的Trap
-			Dictionary<string,Dictionary<string, string>> trapTypeInfo = Database.GetInstance().getTrapInfo();
+			Dictionary<string,Dictionary<string, string>> trapTypeInfo = Database.GetInstance().GetTrapInfo();
 			string strTrapId = trapTypeInfo[strMibName]["TrapID"];
 			if (string.IsNullOrEmpty(strTrapId))
 			{
@@ -1321,17 +1321,17 @@ namespace SCMTOperationCore.Message.SNMP
 					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
 					// CString strNodeType = GetNodeTypeByOIDInCache(csIpAddr, strOID, strMIBPrefix);
 					// 获取Mib节点信息
-					IReDataByOid reDataByOid = new ReDataByOid();
+					var reDataByOid = new MibLeaf();
 					string strError;
-					if (false == Database.GetInstance().getDataByOid(lmtVb.Oid, out reDataByOid, lmtPdu.m_SourceIp, out strError))
+					if (false == Database.GetInstance().GetMibDataByOid(lmtVb.Oid, out reDataByOid, lmtPdu.m_SourceIp, out strError))
 					{
-						Log.Error(string.Format("获取MIb节点信息错误，oid={0}", lmtVb.Oid));
+						Log.Error($"获取MIb节点信息错误，oid={lmtVb.Oid}");
 						return false;
 					}
-					IReDataByEnglishName getNameInfo = null;
-					if (!Database.GetInstance().getDataByEnglishName(reDataByOid.nameEn, out getNameInfo, lmtPdu.m_SourceIp, out strError))
+					MibLeaf getNameInfo = null;
+					if (!Database.GetInstance().getDataByEnglishName(reDataByOid.childNameMib, out getNameInfo, lmtPdu.m_SourceIp, out strError))
 					{
-						Log.Error(string.Format("获取MIb节点信息错误，oid={0}", lmtVb.Oid));
+						Log.Error($"获取MIb节点信息错误，oid={lmtVb.Oid}");
 						return false;
 					}
 					string strNodeType = getNameInfo.mibSyntax;

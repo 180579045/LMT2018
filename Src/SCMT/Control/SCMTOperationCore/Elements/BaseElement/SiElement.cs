@@ -70,21 +70,21 @@ namespace SCMTOperationCore.Elements
 						try
 						{
 							connection.Connect();
-			}
+						}
 						catch
-			{
+						{
 							// ignored
 							Thread.Sleep(100);
-			}
-		}
+						}
+					}
 				});
 		//连接成功处理事件
-		}
+			}
 			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
 		//连接断开处理事件
-		{
+			{
 				Log.Error(e.Message);
-		}
+			}
 
 		//收到数据处理事件
 		}

@@ -174,7 +174,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 			string error = "";
 			// 根据ip和mibname从数据库模块找到所需的信息，主要是oid
-			var param = new Dictionary<string, IReDataByEnglishName> {[strMibName] = null};
+			var param = new Dictionary<string, MibLeaf> {[strMibName] = null};
 			if (!Database.GetInstance().getDataByEnglishName(param, strIPAddr, out error))
 			{
 				return false;
@@ -182,7 +182,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 			var temp = param[strMibName];
 			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
-			var oid = temp.oid.Trim('.');
+			var oid = temp.childOid.Trim('.');
 
 			var fulloid = $"{prefix}.{oid}";
 			if (lpszIndex != null)
@@ -220,7 +220,7 @@ namespace SCMTOperationCore.Message.SNMP
 				{
 					strTmpOid = item.Key;
 					break;
-                }
+				}
 			}
 
 			if (string.IsNullOrEmpty(strTmpOid))

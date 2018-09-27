@@ -368,7 +368,7 @@ namespace FileManager.FileHandler
 				return false;
 			}
 
-			return (!string.IsNullOrWhiteSpace(mibNode.oid) && !string.IsNullOrEmpty(mibNode.oid));
+			return (!string.IsNullOrWhiteSpace(mibNode.childOid) && !string.IsNullOrEmpty(mibNode.childOid));
 		}
 
 		//查询running sw pack version。index=.1;.2;.3

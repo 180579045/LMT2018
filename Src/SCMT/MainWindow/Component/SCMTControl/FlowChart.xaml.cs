@@ -899,7 +899,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             string boardAddr = "172.27.245.92";
             string errorInfo;
 
-            var mapNameData = new Dictionary<string, IReDataByEnglishName> {
+            var mapNameData = new Dictionary<string, MibLeaf> {
                 { mibName, null }
             };
 
@@ -908,7 +908,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                 return false;
             }
             // 获取所有有效的(行状态有效)数值
-            List<string> effectiveVal = GetsAllSnmpValuesForALeafNode(mapNameData[mibName].oid);
+            List<string> effectiveVal = GetsAllSnmpValuesForALeafNode(mapNameData[mibName].childOid);
             /// 逻辑 : 只要有一个索引的值符合条件，就可以
             foreach (var value in effectiveVal)
             {

@@ -130,7 +130,7 @@ namespace MIBDataParser.JSONDataMgr
 
             //1. 获取ini配置文件中的相关信息
             ReadIniFile iniFile = new ReadIniFile();
-            string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
+            string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini");
             if (String.Empty == iniFilePath)
             {
                 err = "JsonDataMgr.ini找不到！";
@@ -139,9 +139,9 @@ namespace MIBDataParser.JSONDataMgr
 
             try
             {
-                zipfilePath = iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath");
-                zipName     = iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName");
-                extractPath = iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath");
+                zipfilePath = ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath");
+                zipName     = ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName");
+                extractPath = ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath");
                 zipFile = zipfilePath + zipName;
             }
             catch (Exception ex)
@@ -230,7 +230,7 @@ namespace MIBDataParser.JSONDataMgr
 
             //获取ini配置文件中的相关信息
             ReadIniFile iniFile = new ReadIniFile();
-            string iniFilePath = iniFile.getIniFilePath("JsonDataMgr.ini");
+            string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini");
             // 1.校验
             if (String.Empty == iniFilePath)
             {
@@ -244,10 +244,10 @@ namespace MIBDataParser.JSONDataMgr
                 var appPath = FilePathHelper.GetAppPath();
                 readFile = new Dictionary<string, string>() {
                     { "zipFile",
-                        ( appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") + 
-                            iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName")) },
+                        ( appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") + 
+                            ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName")) },
                     { "extractPath",
-                        appPath + iniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath") } };
+                        appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath") } };
             }
             catch (Exception ex)
             {

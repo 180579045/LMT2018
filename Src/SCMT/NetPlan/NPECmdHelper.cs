@@ -58,9 +58,23 @@ namespace NetPlan
 			foreach (var getCmd in getCmdList)
 			{
 				var target = "172.27.245.92";   // TODO 硬编码IP地址
-				var cmdInfo = Database.GetInstance().getCmdDataByCmdEnglishName(getCmd, target);
-				var cmdMibInfoList = SnmpToDatabase.ConvertNameListToMibInfoList(cmdInfo.m_leaflist, target);
+				var cmdInfo = Database.GetInstance().GetCmdDataByName(getCmd, target);
+				if (null == cmdInfo)
+				{
+					continue;
+				}
 
+				var cmdMibInfoList = SnmpToDatabase.ConvertNameListToMibInfoList(cmdInfo.m_leaflist, target);
+				foreach (var cmdMibInfo in cmdMibInfoList)
+				{
+					if (null == cmdMibInfo)
+					{
+						continue;
+					}
+
+					var mibLeaf = new MibLeafNodeInfo {mibAttri = cmdMibInfo};
+
+				}
 			}
 		}
 

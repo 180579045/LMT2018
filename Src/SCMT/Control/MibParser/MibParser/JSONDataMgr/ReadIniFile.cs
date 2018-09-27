@@ -22,7 +22,7 @@ namespace MIBDataParser.JSONDataMgr
     /// <summary>
     /// 读取配置文件 JsonDataMgr.ini
     /// </summary>
-    class ReadIniFile
+    internal class ReadIniFile
     {
         [DllImport("kernel32")]
         private static extern long WritePrivateProfileString(string section, string key,
@@ -51,14 +51,14 @@ namespace MIBDataParser.JSONDataMgr
         /// <param name="Section">某个小节名(不区分大小写)</param>
         /// <param name="Key">欲获取信息的某个键名(不区分大小写)</param>
         /// <returns>上面key对应的keyValue</returns>
-        public string IniReadValue(string filePath, string Section, string Key)
+        public static string IniReadValue(string filePath, string Section, string Key)
         {
             StringBuilder temp = new StringBuilder(255);
             int i = GetPrivateProfileString(Section, Key, "", temp, 255, filePath);
             return temp.ToString();
         }
 
-        public string getIniFilePath(string inifilename)
+        public static string GetIniFilePath(string inifilename)
         {
             string currentPath = FilePathHelper.GetConfigPath();
             string getInitPath = currentPath + inifilename;

@@ -28,7 +28,7 @@ namespace SCMTOperationCore.Message.SNMP
 			strReValue = "";
 
 			// 节点信息
-			IReDataByEnglishName mibNodeInfo;
+			MibLeaf mibNodeInfo;
 			string strError = "";
 			if (false == Database.GetInstance().getDataByEnglishName(strMibName, out mibNodeInfo, strIpAddr, out strError))
 			{
@@ -42,7 +42,7 @@ namespace SCMTOperationCore.Message.SNMP
 			}
 
 			// 节点取值范围
-			string strMibValList = mibNodeInfo.mangerValue;
+			string strMibValList = mibNodeInfo.managerValueRange;
 			// 节点类型
 			string strMibSyntax = mibNodeInfo.mibSyntax;
 

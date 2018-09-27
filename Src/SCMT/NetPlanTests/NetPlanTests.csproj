@@ -61,6 +61,10 @@
       <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
       <Name>CommonUtility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\MibParser\MibParser\MIBDataParser.csproj">
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NetPlan\NetPlan.csproj">
       <Project>{9E4E635C-D97A-42A9-AD58-2923C1803CA3}</Project>
       <Name>NetPlan</Name>
