@@ -112,5 +112,13 @@ namespace NetPlan
 		public List<string> set;
 		public List<string> add;
 		public List<string> del;
+
+		public ObjOperCmd()
+		{
+			get = new List<string>();
+			set = new List<string>();
+			add = new List<string>();
+			del = new List<string>();
+		}
 	}
 }

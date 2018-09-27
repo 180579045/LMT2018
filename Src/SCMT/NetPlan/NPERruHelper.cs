@@ -90,6 +90,12 @@ namespace NetPlan
 	{
 		public List<RruInfo> rruTypeInfo;
 		public List<RruPortInfo> rruTypePortInfo;
+
+		public NPERru()
+		{
+			rruTypeInfo = new List<RruInfo>();
+			rruTypePortInfo = new List<RruPortInfo>();
+		}
 	}
 
 	public class IrBand
@@ -97,6 +103,11 @@ namespace NetPlan
 		public string value;
 		public string desc;
 		public List<VD> bandwidth;
+
+		public IrBand()
+		{
+			bandwidth = new List<VD>();
+		}
 	}
 
 	public class RruInfo
@@ -116,6 +127,16 @@ namespace NetPlan
 		public List<VD> rruTypeNotMibSupportNetWorkMode;
 		public List<VD> rruTypeNotMibIrRate;
 		public List<IrBand> rruTypeNotMibIrBand;
+
+		public RruInfo()
+		{
+			rruTypeFiberLength = new List<VD>();
+			rruTypeIrCompressMode = new List<VD>();
+			rruTypeSupportCellWorkMode = new List<VD>();
+			rruTypeNotMibSupportNetWorkMode = new List<VD>();
+			rruTypeNotMibIrRate = new List<VD>();
+			rruTypeNotMibIrBand = new List<IrBand>();
+		}
 	}
 
 	public class RruPortInfo
@@ -135,6 +156,12 @@ namespace NetPlan
 		public int rruTypePortCalPinRxNom;
 		public int rruTypePortAntMaxPower;
 		public List<VD> rruTypePortNotMibRxTxStatus;
+
+		public RruPortInfo()
+		{
+			rruTypePortSupportFreqBand = new List<VD>();
+			rruTypePortNotMibRxTxStatus = new List<VD>();
+		}
 	}
 
 	// 初始化RRU信息时获取的简短信息

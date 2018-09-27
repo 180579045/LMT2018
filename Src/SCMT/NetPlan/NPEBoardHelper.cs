@@ -112,6 +112,14 @@ namespace NetPlan
 		public List<Shelf> shelfEquipment;
 		public List<BoardEquipment> boardEquipment;
 		public List<RHUBEquipment> rHubEquipment;
+
+		public NetPlanElement()
+		{
+			netPlanElements = new List<NetPlanElementType>();
+			shelfEquipment = new List<Shelf>();
+			boardEquipment = new List<BoardEquipment>();
+			rHubEquipment = new List<RHUBEquipment>();
+		}
 	}
 
 	#region 机架的信息
@@ -126,6 +134,11 @@ namespace NetPlan
 	{
 		public int slotIndex { get; set; }
 		public List<VD> supportBoardType;
+
+		public ShelfSlotInfo()
+		{
+			supportBoardType = new List<VD>();
+		}
 	}
 
 	public class Shelf
@@ -137,6 +150,11 @@ namespace NetPlan
 		public int supportPlanSlotNum;
 		public int columnsUI;
 		public List<ShelfSlotInfo> planSlotInfo;
+
+		public Shelf()
+		{
+			planSlotInfo = new List<ShelfSlotInfo>();
+		}
 	}
 
 	#endregion
@@ -147,6 +165,11 @@ namespace NetPlan
 	{
 		public int ofpIndex;
 		public List<VD> irOfpPortTransSpeed;
+
+		public OfpPortInfo()
+		{
+			irOfpPortTransSpeed = new List<VD>();
+		}
 	}
 
 	public class BoardEquipment
@@ -158,6 +181,12 @@ namespace NetPlan
 		public List<VD> supportConnectElement;
 		public int irOfpNum;
 		public List<OfpPortInfo> irOfpPortInfo;
+
+		public BoardEquipment()
+		{
+			supportConnectElement = new List<VD>();
+			irOfpPortInfo = new List<OfpPortInfo>();
+		}
 	}
 
 	#endregion
@@ -173,6 +202,12 @@ namespace NetPlan
 		public List<VD> irOfpPortTransSpeed;
 		public int ethPortRNum;
 		public List<VD> ethPortTransSpeed;
+
+		public RHUBEquipment()
+		{
+			irOfpPortTransSpeed = new List<VD>();
+			ethPortTransSpeed = new List<VD>();
+		}
 	}
 
 	#endregion
