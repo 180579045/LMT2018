@@ -66,7 +66,7 @@ namespace NetPlan
 					continue;
 				}
 
-				var cmdMibInfoList = SnmpToDatabase.ConvertNameListToMibInfoList(cmdInfo.m_leaflist, target);
+				var cmdMibInfoList = SnmpToDatabase.ConvertOidListToMibInfoList(cmdInfo.m_leaflist, target);
 				devAttributList.AddRange(from cmdMibInfo in cmdMibInfoList where null != cmdMibInfo select new MibLeafNodeInfo {mibAttri = cmdMibInfo});
 			}
 

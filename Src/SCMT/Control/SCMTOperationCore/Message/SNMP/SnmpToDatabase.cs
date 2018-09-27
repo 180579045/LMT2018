@@ -140,14 +140,31 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		// 把节点名列表转换为节点名对应的MIB列表
-		public static IEnumerable<MibLeaf> ConvertNameListToMibInfoList(List<string> leafNameList, string ip)
+		public static IEnumerable<MibLeaf> ConvertOidListToMibInfoList(List<string> leafNameList, string ip)
 		{
 			if (null == leafNameList || string.IsNullOrEmpty(ip))
 			{
 				throw new CustomException("传入参数错误");
 			}
 
-			return leafNameList.Select(name => GetMibNodeInfoByName(name, ip)).ToList();
+			return leafNameList.Select(name => GetMibNodeInfoByOid(name, ip)).Where(mibnode => null != mibnode).ToList();
+		}
+
+		// 根据oid获取MIB信息
+		public static MibLeaf GetMibNodeInfoByOid(string oid, string ip)
+		{
+			if (string.IsNullOrEmpty(oid) || string.IsNullOrEmpty(ip))
+			{
+				return null;
+			}
+
+			MibLeaf mibLeaf = null;
+			string errInfo;
+			if (Database.GetInstance().GetMibDataByOid(oid, out mibLeaf, ip, out errInfo))
+			{
+				return mibLeaf;
+			}
+			return null;
 		}
 
 		// 把节点名列表转换为oid列表。需要连接到数据模块查找
