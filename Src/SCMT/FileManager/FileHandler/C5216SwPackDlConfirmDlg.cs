@@ -6,8 +6,9 @@ using CommonUtility;
 using FileManager.FileHandler;
 using LogManager;
 using MIBDataParser;
-using SCMTOperationCore.Message.SNMP;
 using MIBDataParser.JSONDataMgr;
+using LinkPath;
+using LmtbSnmp;
 
 namespace FileManager
 {
@@ -213,7 +214,7 @@ namespace FileManager
 			}
 
 			var bAddCmdFalg = false;
-			var csRowStatusValue = SnmpToDatabase.GetMibValueFromCmdExeResult(csIndexToJudgeRowStatus, csCmdName, csRowStatus, TargetIp);
+			var csRowStatusValue = CommLinkPath.GetMibValueFromCmdExeResult(csIndexToJudgeRowStatus, csCmdName, csRowStatus, TargetIp);
 			if (string.IsNullOrEmpty(csRowStatusValue) || csRowStatusValue.Equals(FileTransMacro.STR_DESTROY))
 			{
 				bAddCmdFalg = true;
@@ -297,7 +298,7 @@ namespace FileManager
 
 					mapName2Value.Add("swPackPlanRowStatus", "6"); //6是无效
                     lReqId = 0;
-                    var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
+					var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
 						Log.Info("删除冷补丁软件规划命令下发成功!");
@@ -309,7 +310,7 @@ namespace FileManager
 
 					csswPackPlanTypeIndex = ".3";
                     lReqId = 1;
-                    ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
+					ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
 						Log.Info("删除热补丁软件规划命令下发成功!");

@@ -15,8 +15,8 @@ using System.Windows.Shapes;
 using CefSharp;
 using CefSharp.Wpf;
 using Xceed.Wpf.AvalonDock.Layout;
-using SCMTOperationCore.Message.SNMP;
 using System.Threading;
+using LmtbSnmp;
 
 namespace SCMTMainWindow.Component.SCMTControl
 {

@@ -17,7 +17,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
 using System.Linq;
-using SCMTOperationCore.Message.SNMP;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Control;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -45,10 +44,11 @@ using SCMTMainWindow.Component.SCMTControl;
 using SCMTMainWindow.Component.ViewModel;
 using System.Windows.Data;
 using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
-using SCMTOperationCore.Message.MsgDispatcher;
 using System.Windows.Media;
 using System.Threading;
 using System.Text;
+using MsgDispatcher;
+using LmtbSnmp;
 
 namespace SCMTMainWindow
 {

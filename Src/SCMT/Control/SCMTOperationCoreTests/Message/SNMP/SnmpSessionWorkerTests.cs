@@ -12,7 +12,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 	[TestClass()]
 	public class SnmpSessionWorkerTests
 	{
-		[TestMethod()]
+/*		[TestMethod()]
 		public void SnmpGetSyncTest()
 		{
 			string strIpAddr = "172.27.245.92";
@@ -96,6 +96,6 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 			SnmpSessionWorker.SnmpSetSync(strIpAddr, lmtVbs, 0);
 		}
 
-
+	*/
 	}
 }

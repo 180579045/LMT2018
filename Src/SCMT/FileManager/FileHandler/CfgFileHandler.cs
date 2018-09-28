@@ -8,10 +8,12 @@ using System.Windows.Forms;
 using System.Xml;
 using CommonUtility;
 using LogManager;
-using SCMTOperationCore.Message.SNMP;
+using LinkPath;
 
 namespace FileManager.FileHandler
 {
+	using LinkPath;
+	using LmtbSnmp;
 	using MIBValMAP = Dictionary<string, string>;
 
 	public sealed class CfgFileHandler : BaseFileHandler

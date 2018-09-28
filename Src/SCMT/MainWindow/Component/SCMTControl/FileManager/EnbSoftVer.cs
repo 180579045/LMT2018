@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CommonUtility;
-using SCMTOperationCore.Message.SNMP;
 using MAP_STRING = System.Collections.Generic.Dictionary<string, string>;
-
+using LmtbSnmp;
+using LinkPath;
 
 namespace SCMTMainWindow.Component.SCMTControl.FileManager
 {
@@ -84,7 +84,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 					};
 
 					var index = $".{index1}.{index2}";
-					if (SnmpToDatabase.GetMibValueFromCmdExeResult(index, "GetSWPack", ref mibValues, _boardIp))
+					if (CommLinkPath.GetMibValueFromCmdExeResult(index, "GetSWPack", ref mibValues, _boardIp))
 					{
 						var sv = new SoftwareVersion
 						{

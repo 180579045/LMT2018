@@ -5,7 +5,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CommonUtility;
 using LogManager;
-using SCMTOperationCore.Message.SNMP;
+using LmtbSnmp;
+using LinkPath;
 
 namespace FileManager.FileHandler
 {
@@ -377,8 +378,9 @@ namespace FileManager.FileHandler
 			var cmdName = "GetRunningSWPack";
 			var mibName = "swPackRunningVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-		}
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			
+        }
 
 		/// <summary>
 		/// 查询running sw pack version。index=.1;.2;.3  详细版本信息
@@ -390,7 +392,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetRunningSWPackDetailVer";
 			var mibName = "swPackRunningDetailVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
 		//查询running外设详细版本号。index = .1.1
@@ -399,7 +401,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetRunningperipheralPack";
 			var mibName = "peripheralPackRunningVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 			}
 
 		/// <summary>
@@ -412,7 +414,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetRunningperipheralPackDetailVer";
 			var mibName = "peripheralPackRunningDetailVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
 		//获取软件包的版本。.1.1~.1.5；.2.1~.2.5[冷补丁]；.3.1~.3.5[热补丁]
@@ -421,7 +423,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetSWPack";
 			var mibName = "swPackVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
 		//获取详细软件包的版本。.1.1~.1.5；.2.1~.2.5[冷补丁]；.3.1~.3.5[热补丁]
@@ -430,7 +432,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetSWPackDetailVer";
 			var mibName = "swPackDetailVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
 		//获取外设的版本。.1.1.1~.1.1.3
@@ -439,7 +441,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetperipheralPack";
 			var mibName = "peripheralPackVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
 		//获取详细外设的版本。.1.1.1~.1.1.3
@@ -448,7 +450,7 @@ namespace FileManager.FileHandler
 			var cmdName = "GetPeripheralPackDetailVer";
 			var mibName = "peripheralPackDetailVersion";
 
-			return SnmpToDatabase.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
+			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
 		#endregion

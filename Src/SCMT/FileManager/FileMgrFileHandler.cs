@@ -8,7 +8,8 @@ using FileManager.FileHandler;
 using LogManager;
 using MsgQueue;
 using SCMTOperationCore.Message.SI;
-using SCMTOperationCore.Message.SNMP;
+using LinkPath;
+using LmtbSnmp;
 
 namespace FileManager
 {

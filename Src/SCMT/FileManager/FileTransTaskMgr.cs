@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using CommonUtility;
 using LogManager;
-using SCMTOperationCore.Message.SNMP;
 using SnmpSharpNet;
+using LinkPath;
+using LmtbSnmp;
 
 namespace FileManager
 {
