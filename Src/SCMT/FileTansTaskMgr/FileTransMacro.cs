@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SCMTOperationCore.Message.SNMP;
 
-namespace FileManager
+namespace SCMT.Base.FileTransTaskMgr
 {
 	public static class FileTransMacro
 	{

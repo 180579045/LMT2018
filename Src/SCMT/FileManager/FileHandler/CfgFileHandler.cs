@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Xml;
 using CommonUtility;
 using LogManager;
+using SCMT.Base.FileTransTaskMgr;
 using SCMTOperationCore.Message.SNMP;
 
 namespace FileManager.FileHandler

@@ -59,6 +59,10 @@
       <Project>{07DAACCE-62BF-4681-9014-D36515C67882}</Project>
       <Name>FileManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FileTansTaskMgr\FileTransTaskMgr.csproj">
+      <Project>{d7a266ce-f984-4820-a34e-2371e4247b5c}</Project>
+      <Name>FileTransTaskMgr</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

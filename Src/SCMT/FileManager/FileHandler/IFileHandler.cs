@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SCMT.Base.FileTransTaskMgr;
 
 //文件处理
 namespace FileManager.FileHandler

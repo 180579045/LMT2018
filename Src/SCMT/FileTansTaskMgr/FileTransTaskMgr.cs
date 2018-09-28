@@ -6,7 +6,7 @@ using LogManager;
 using SCMTOperationCore.Message.SNMP;
 using SnmpSharpNet;
 
-namespace FileManager
+namespace SCMT.Base.FileTransTaskMgr
 {
 	public class FileTransTaskMgr : Singleton<FileTransTaskMgr>
 	{

@@ -8,6 +8,7 @@ using LogManager;
 using MIBDataParser;
 using SCMTOperationCore.Message.SNMP;
 using MIBDataParser.JSONDataMgr;
+using SCMT.Base.FileTransTaskMgr;
 
 namespace FileManager
 {
@@ -39,7 +40,7 @@ namespace FileManager
 		{
 			_mTSwPackInfo = packInfo;
 
-            _mTInfo = new TswPackDlProcInfo();
+			_mTInfo = new TswPackDlProcInfo();
 
 			_mTInfo.FileTypeName = _mTSwPackInfo.csSWPackTypeName;
 			_mTInfo.FileName = _mTSwPackInfo.csSWPackName;
@@ -67,12 +68,12 @@ namespace FileManager
 		private void IDOK_Click(object sender, EventArgs e)
 		{
 			CmdSucceedFlag = InitCmdInfoAndSend();
-            this.Close();
+			this.Close();
 		}
 
 		private void IDCANCEL_Click(object sender, EventArgs e)
 		{
-            this.Close();
+			this.Close();
 		}
 
 		// 加载窗体事件处理。在此事件中控件的初始化。
@@ -127,7 +128,7 @@ namespace FileManager
 
 			// 判断是否是冷热不定
 			var bIsPatch = ((FileTransMacro.EQUIP_SWPACK_BBU_COLDPATCH == _mTSwPackInfo.nSWPackType) ||
-			                 (FileTransMacro.EQUIP_SWPACK_HOTPATCH == _mTSwPackInfo.nSWPackType));
+							 (FileTransMacro.EQUIP_SWPACK_HOTPATCH == _mTSwPackInfo.nSWPackType));
 
 			if (!bHasRelay && bIsPatch)		//是冷热补丁的
 			{
@@ -162,11 +163,11 @@ namespace FileManager
 				dateTimePicker2.Enabled = false;
 			}
 
-            //Add By Mayi   给控件添加变量
-            IDC_EDIT_SOFTPACKTYPE.Text = _mTSwPackInfo.csSWPackTypeName;
-            IDC_EDIT_SOFTPACKNAME.Text = _mTSwPackInfo.csSWPackName;
-            IDC_EDIT_SOFTPACKFACINFO.Text = _mTSwPackInfo.csSWPackRelayVersion;
-            textBox4.Text = _mTSwPackInfo.csSWPackVersion;
+			//Add By Mayi   给控件添加变量
+			IDC_EDIT_SOFTPACKTYPE.Text = _mTSwPackInfo.csSWPackTypeName;
+			IDC_EDIT_SOFTPACKNAME.Text = _mTSwPackInfo.csSWPackName;
+			IDC_EDIT_SOFTPACKFACINFO.Text = _mTSwPackInfo.csSWPackRelayVersion;
+			textBox4.Text = _mTSwPackInfo.csSWPackVersion;
 		}
 
 		#endregion
@@ -296,8 +297,8 @@ namespace FileManager
 					csCmdName = "DelSWPackPlan";
 
 					mapName2Value.Add("swPackPlanRowStatus", "6"); //6是无效
-                    lReqId = 0;
-                    var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
+					lReqId = 0;
+					var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
 						Log.Info("删除冷补丁软件规划命令下发成功!");
@@ -308,8 +309,8 @@ namespace FileManager
 					}
 
 					csswPackPlanTypeIndex = ".3";
-                    lReqId = 1;
-                    ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
+					lReqId = 1;
+					ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
 						Log.Info("删除热补丁软件规划命令下发成功!");

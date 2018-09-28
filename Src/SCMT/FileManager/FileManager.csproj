@@ -79,8 +79,6 @@
     <Compile Include="FileMgrFileHandler.cs" />
     <Compile Include="FileMgrSendSiMsg.cs" />
     <Compile Include="FileMgrSnmpHandle.cs" />
-    <Compile Include="FileTransMacro.cs" />
-    <Compile Include="FileTransTaskMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +97,10 @@
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\FileTansTaskMgr\FileTransTaskMgr.csproj">
+      <Project>{d7a266ce-f984-4820-a34e-2371e4247b5c}</Project>
+      <Name>FileTransTaskMgr</Name>
     </ProjectReference>
     <ProjectReference Include="..\MsgQueue\MsgQueue.csproj">
       <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>

@@ -7,6 +7,7 @@ using CommonUtility;
 using FileManager.FileHandler;
 using LogManager;
 using MsgQueue;
+using SCMT.Base.FileTransTaskMgr;
 using SCMTOperationCore.Message.SI;
 using SCMTOperationCore.Message.SNMP;
 
