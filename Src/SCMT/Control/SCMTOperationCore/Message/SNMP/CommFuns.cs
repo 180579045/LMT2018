@@ -152,5 +152,26 @@ namespace SCMTOperationCore.Message.SNMP
 			return true;
 		}
 
+
+		/// <summary>
+		/// 通过OID和对应的值，获得相关的信息（名字、描述、以及单位）
+		/// </summary>
+		/// <param name="oid"></param>
+		/// <param name="strValue"></param>
+		/// <param name="strName"></param>
+		/// <param name="strValueDesc"></param>
+		/// <param name="strUnitName"></param>
+		public static bool GetInfoByOID(string oid, string strValue, out string strName
+			, out string strValueDesc, out string strUnitName)
+		{
+			strName = "";
+			strValueDesc = "";
+			strUnitName = "";
+
+			// TODO: 待实现
+
+			return true;
+		}
+
 	}
 }

@@ -126,7 +126,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/// <summary>
-		/// 同步Get操作(请求的结果通过消息方式返回给上层)
+		/// 同步Get操作
 		/// </summary>
 		/// <param name="lmtPdu"></param>
 		/// <param name="requestId"></param>
@@ -187,7 +187,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/// <summary>
-		/// 同步Get操作(请求的结果通过out参数返回)
+		/// 同步Get操作(提供给SnmpSessionWorker调用)
 		/// </summary>
 		/// <param name="strIpAddr"></param>
 		/// <param name="queryVbs"></param>
@@ -388,7 +388,7 @@ namespace SCMTOperationCore.Message.SNMP
 
 
 		/// <summary>
-		/// 同步Set操作(请求结果通过消息返回给上层)
+		/// 同步Set操作
 		/// </summary>
 		/// <param name="lmtPdu"></param>
 		/// <param name="requestId"></param>
@@ -447,7 +447,7 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/// <summary>
-		/// SNMP Set同步操作(无须向上层抛消息的同步设置)
+		/// SNMP Set同步操作(提供给SnmpSessionWorker调用)
 		/// </summary>
 		/// <param name="strIpAddr"></param>
 		/// <param name="setVbs"></param>

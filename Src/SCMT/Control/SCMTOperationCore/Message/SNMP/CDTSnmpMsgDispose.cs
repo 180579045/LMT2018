@@ -135,6 +135,365 @@ namespace SCMTOperationCore.Message.SNMP
 		}
 
 		/// <summary>
+		/// 处理SNMP模块发来的Get/Set的Response
+		/// </summary>
+		/// <param name="msg"></param>
+		/// <returns></returns>
+		public int OnResponse(SubscribeMsg msg)
+		{
+			Log.Info("msg={0}", msg.Topic);
+
+			// 反序列化参数
+			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+
+			Log.Info("收到网元Response，网元IP:{0}", lmtPdu.m_SourceIp);
+
+			// 获取MIB前缀
+			string prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
+			if (string.IsNullOrEmpty(prefix))
+			{
+				Log.Error(string.Format("获取MIB前缀失败!"));
+				return -1;
+			}
+
+			// 验证RequestID的合法性，从数据库中读出信息并删除
+			IDToTableStruct idToTb = new IDToTableStruct();
+			idToTb.pduType = lmtPdu.getReqMsgType();
+			idToTb.messageType = lmtPdu.m_requestId;
+			idToTb.strCmdName = lmtPdu.get_CmdName();
+
+			// 验证包的合法性
+			string strErrorMsg = "";
+			if(false == CheckPDUValidity(lmtPdu, out strErrorMsg))
+			{
+				if (strErrorMsg != "")
+				{
+					ShowLogHelper.Show(strErrorMsg, lmtPdu.m_SourceIp, InfoTypeEnum.ENB_OTHER_INFO_IMPORT);
+					Log.Error("CheckPDUValidity()函数返回失败");
+					return -1;
+				}
+			}
+
+			// Response PDU处理函数
+			if(lmtPdu.reason != -5 ) // SNMP_CLASS_TIMEOUT
+			{
+				if(lmtPdu.m_LastErrorStatus == 0) // SNMP_ERROR_SUCCESS
+				{
+					DealSuccResponsePDU(idToTb, lmtPdu);
+				} // 如果是非getbulk的错误响应，不需要打印响应，则不用生成出错信息
+				else if (lmtPdu.m_bIsNeedPrint == true || lmtPdu.getReqMsgType() == (int)PduType.GetBulk)
+				{
+					DealFailResponsePDU(idToTb, lmtPdu);
+				}
+            }
+			else if (lmtPdu.m_bIsNeedPrint == true)
+			{
+				string strTimeoutMsg = string.Format(CommString.IDS_STR_MSGDISPOSE_FMT1, lmtPdu.get_CmdName());
+				ShowLogHelper.Show(strTimeoutMsg, lmtPdu.m_SourceIp, InfoTypeEnum.ENB_INFO);
+			}
+
+			// 向消息分发中心发送，必须注册为同步
+
+			// 如果是同步的Snmp命令，不需要分发该响应
+			if (lmtPdu.getSyncId() == false)
+			{
+				// TODO
+				//LRESULT lt;
+				//CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_APPRESPONSE, (WPARAM)pLmtbPdu, (LPARAM)(&idToTb), lt);
+
+			}
+
+            return 0;
+		}
+
+
+		/// <summary>
+		/// 失败的Response PDU处理函数
+		/// </summary>
+		/// <param name="idToTable"></param>
+		/// <param name="lmtPdu"></param>
+		private void DealFailResponsePDU(IDToTableStruct idToTable, CDTLmtbPdu lmtPdu)
+		{
+			// 保活命令下发的信息不需要打印
+			if (idToTable.strCmdName.Equals(CommStructs.EPC_KEEPALIVE_SNMPFUNCNAME))
+			{
+				// TODO
+				// m_pLinkMgr->SetNetElemAlive(strIpAddr);
+				return;
+			}
+
+			// 错误信息
+			string strFailedReason = "";
+
+			switch (lmtPdu.m_LastErrorStatus)
+			{
+				case SnmpConstants.ErrTooBig:
+					strFailedReason = CommString.IDS_ERROR_TOO_BIG;//报文太大
+					break;
+				case SnmpConstants.ErrNoSuchName:
+					strFailedReason = CommString.IDS_ERROR_NO_SUCH_NAME;//不存在
+					break;
+				case SnmpConstants.ErrBadValue:
+					strFailedReason = CommString.IDS_ERROR_BAD_VALUE;//错误的值
+					break;
+				case SnmpConstants.ErrReadOnly:
+					strFailedReason = CommString.IDS_ERROR_READ_ONLY;//只读
+					break;
+				case SnmpConstants.ErrGenError:
+					strFailedReason = CommString.IDS_ERROR_GENERAL_VB_ERR;//产生其它错误
+					break;
+				case SnmpConstants.ErrNoAccess:
+					strFailedReason = CommString.IDS_ERROR_NO_ACCESS;//不可访问
+					break;
+				case SnmpConstants.ErrWrongType:
+					strFailedReason = CommString.IDS_ERROR_WRONG_TYPE;//设置类型与要求类型不一致
+					break;
+				case SnmpConstants.ErrWrongLength:
+					strFailedReason = CommString.IDS_ERROR_WRONG_LENGTH;//设置长度与要求长度不一致
+					break;
+				case SnmpConstants.ErrWrongEncoding:
+					strFailedReason = CommString.IDS_ERROR_WRONG_ENCODING;//ASN.1标签编码错误
+					break;
+				case SnmpConstants.ErrWrongValue:
+					strFailedReason = CommString.IDS_ERROR_WRONG_VALUE;//不可赋为设置值
+					break;
+				case SnmpConstants.ErrNoCreation:
+					strFailedReason = CommString.IDS_ERROR_NO_CREATION;//不存在
+					break;
+				case SnmpConstants.ErrInconsistentValue:
+					strFailedReason = CommString.IDS_ERROR_INCONSIST_VAL;//不适合当前环境
+					break;
+				case SnmpConstants.ErrResourceUnavailable:
+					strFailedReason = CommString.IDS_ERROR_RESOURCE_UNAVAIL;//赋值所需资源当前不可得到
+					break;
+				case SnmpConstants.ErrCommitFailed:
+					strFailedReason = CommString.IDS_ERROR_COMITFAIL;//提交失败
+					break;
+				case SnmpConstants.ErrUndoFailed:
+					strFailedReason = CommString.IDS_ERROR_UNDO_FAIL;//撤销失败
+					break;
+				case SnmpConstants.ErrAuthorizationError:
+					strFailedReason = CommString.IDS_ERROR_AUTH_ERR;//授权错误
+					break;
+				case SnmpConstants.ErrNotWritable:
+					strFailedReason = CommString.IDS_ERROR_NOT_WRITEABLE;//不可修改
+					break;
+				case SnmpConstants.ErrInconsistentName:
+					strFailedReason = CommString.IDS_ERROR_INCONSIS_NAME;//不存在,且在当前环境下不能生成
+					// TODO 新工具还要一下操作吗？
+					// CDTDataSyncMgr::GetInstance()->RemoveCMDData(pAdoConn, pLmtbPdu);
+					break;
+				case CommNums.SNMP_ERROR_LOGIN:
+					strFailedReason = CommString.IDS_ERROR_LOGIN;//LMT-eNB首次登录为错误报文
+					break;
+				case CommNums.SNMP_ERROR_ACTIONSHIELD:
+					strFailedReason = CommString.IDS_ERROR_ACTIONSHIELD;//该操作被屏蔽
+					break;
+				case CommNums.SNMP_ERROR_ACTIONFAILD:
+					strFailedReason = CommString.IDS_ERROR_ACTIONFAILD;//操作失败
+					break;
+				case CommNums.SNMP_ERROR_OMBUSY:
+					strFailedReason = CommString.IDS_ERROR_OMBUSY;//由于OM忙不能操作实现
+					break;
+				case CommNums.SNMP_ERROR_OBSOLETE:
+					strFailedReason = CommString.IDS_ERROR_OBSOLETE;//该操作目前已经废弃
+					break;
+				case CommNums.SNMP_ERROR_OVERTIME:
+					strFailedReason = CommString.IDS_ERROR_OVERTIME;//OM出现超时错误
+					break;
+				default:
+					// TODO:未实现
+					/*CDTErrInfo errInfo;
+					if (!GetErrDesc(pLmtbPdu->get_LastErrorStatus(), strIpAddr, errInfo))
+					{
+						//如果获取错误码描述失败，则将错误码赋值给描述
+						CString strError;
+						strError.Format("%d", pLmtbPdu->get_LastErrorStatus());
+						errInfo.errDesc = strError;
+					}
+					*/
+					strFailedReason = "XXXXXXXX";
+					break;
+			}
+
+			// 获取名称、描述信息等信息
+			CDTLmtbVb lmtVb = new CDTLmtbVb();
+			string strName = "";
+			string strDesc = "";
+			string strUnitName = "";
+			if (lmtPdu.m_LastErrorIndex > 0)
+			{
+				int idx = (int)lmtPdu.m_LastErrorIndex - 1;
+				if (idx > 0 && idx < lmtPdu.VbCount())
+				{
+					lmtPdu.GetVbByIndex(idx, ref lmtVb);
+					if (false == CommFuns.GetInfoByOID(lmtVb.Oid, lmtVb.Value
+						, out strName, out strDesc, out strUnitName))
+					{
+						Log.Error(string.Format("GetInfoByOID调用不成功,:OID = {0}", lmtVb.Oid));
+					}
+				}
+				else
+				{
+					Log.Error(string.Format("idx 超出PDU Count数 idx={0} lmtPdu.VbCount()={1}"
+						, idx, lmtPdu.VbCount()));
+				}
+			}
+
+			// 后台执行的命令,不要显示在界面上了
+
+			// 控制台显示信息
+			string strShowMsg = "";
+			string strStyle = "";
+			string strTmp = "";
+
+			if (strName != null)
+			{
+				// 变量 %s %s
+				strTmp = string.Format("变量 {0} {1}", strName, strFailedReason);
+            }
+			else
+			{
+				strTmp = strFailedReason;
+			}
+
+			if (idToTable.pduType == (int)PduType.Set)
+			{
+				strStyle = CommString.IDS_SETPDU_ERROR; //SET命令响应错误
+			}
+			else if (idToTable.pduType == (int)PduType.Get) //GET命令响应错误
+			{
+				strStyle = CommString.IDS_GETPDU_ERROR;
+            }
+			else
+			{
+				strStyle = CommString.IDS_PDU_ERROR;  //命令响应错误
+			}
+
+			strShowMsg = string.Format("{0}:{1}", strStyle, strTmp);
+
+
+			ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, InfoTypeEnum.ENB_INFO);
+
+			// TODO
+			//wangyun1 For CmdLine 2011-8-11----------------------------->
+			//LPARAM lt;
+			//char* pStrMsg = (char*)(LPCTSTR)strMsg;
+			//CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_MSGCMD_LOG, (WPARAM)pStrMsg, 0, lt);
+			//wangyun1 For CmdLine 2011-8-11<-----------------------------
+
+		}
+
+		/// <summary>
+		/// 成功的Response PDU处理函数
+		/// </summary>
+		/// <param name="idToTable"></param>
+		/// <param name="lmtPdu"></param>
+		private void DealSuccResponsePDU(IDToTableStruct idToTable, CDTLmtbPdu lmtPdu)
+		{
+			// 保活命令下发的信息不需要打印
+			if (idToTable.strCmdName.Equals(CommStructs.EPC_KEEPALIVE_SNMPFUNCNAME)) 
+            {
+				return;
+			}
+
+			InfoTypeEnum infoType;
+			if (idToTable.pduType == (int)PduType.Get || idToTable.pduType == (int)PduType.GetBulk)
+			{
+				// GET命令响应
+				infoType = InfoTypeEnum.ENB_GETOP_INFO;
+            }
+			else if (idToTable.pduType == (int)PduType.Set)
+			{
+				// SET命令响应
+				infoType = InfoTypeEnum.ENB_SETOP_INFO;
+			}
+			else
+			{
+				// 命令响应
+				infoType = InfoTypeEnum.ENB_INFO;
+			}
+
+			// 显示信息
+			string strShowMsg = "";
+			// 操作结果
+			string strOperResult = "成功";
+
+			// 遍历vb对，通知上层更新数据
+			int vbCount = lmtPdu.VbCount();
+			for (int i = 0; i < vbCount; i++)
+			{
+				CDTLmtbVb lmtVb = new CDTLmtbVb();
+				lmtPdu.GetVbByIndex(i, ref lmtVb);
+				// 获取名称及描述等信息
+				string strName = "";
+				string strDesc = "";
+				string strUnitName = "";
+				if (lmtPdu.m_bIsNeedPrint == true 
+					&& false == CommFuns.GetInfoByOID(lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
+				{
+					Log.Error(string.Format("GetInfoByOID调用不成功:OID = {0}", lmtVb.Oid));
+					continue;
+				}
+
+				// 长度校验
+				if (lmtVb.Value != null && lmtVb.Value.Length > CommStructs.MAX_OID_SIZE)
+				{
+					Log.Error("PDU的OID长度超过定义的最大长度");
+					return;
+				}
+				if (lmtVb.Oid.Length > CommStructs.MAX_VALUE_LEN)
+				{
+					Log.Error("PDU的Value长度超过定义的最大长度");
+					return;
+				}
+
+				// 需要打印信息
+				if (lmtPdu.m_bIsNeedPrint == true)
+				{
+					string strMsg = string.Format("被管对象 {0} ,值为: {1}", strName, strDesc);
+					if (strUnitName != null)
+					{
+						strMsg = string.Format("{0} (单位/精度: {1})", strMsg, strUnitName);
+					}
+
+					// 时间信息
+					// TODO:还需要吗？
+
+					strShowMsg = strShowMsg + strMsg + ";";
+
+					// 如果是set操作，写日志
+					if (idToTable.pduType == (int)PduType.Set)
+					{
+						// TODO
+					}
+
+
+                } // end if
+
+
+
+			} // end for
+
+			// 数据写入到数据库中
+			// CDTDataSyncMgr::GetInstance()->DealResponse(pAdoConn, pLmtbPdu);
+			// TODO
+
+			if (lmtPdu.m_bIsNeedPrint == true)
+			{
+				// 往消息输出窗体显示信息
+				ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, infoType);
+
+				// TODO
+				//LPARAM lt;
+				//char* pStrMsg = (char*)(LPCTSTR)strMsg;
+				//CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_MSGCMD_LOG, (WPARAM)pStrMsg, 0, lt);
+
+			}
+
+		}
+
+		/// <summary>
 		/// 事件Trap处理
 		/// </summary>
 		/// <param name="intTrapType"></param>
