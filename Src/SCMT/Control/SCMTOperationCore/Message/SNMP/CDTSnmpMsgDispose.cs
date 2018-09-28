@@ -320,7 +320,7 @@ namespace SCMTOperationCore.Message.SNMP
 					return;
 				}
 
-				Log.Info(string.Format("数据一致性文件, 发送解析消息, 网元标示:{0}, 文件路径:{1}", strIPAddr, strUpLoadFullPath));
+				Log.Info($"数据一致性文件, 发送解析消息, 网元标示:{strIPAddr}, 文件路径:{strUpLoadFullPath}");
 
 				// 让数据同步模块解析一致性文件
 				// TODO

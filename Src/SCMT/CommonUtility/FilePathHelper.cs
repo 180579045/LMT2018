@@ -201,6 +201,12 @@ namespace CommonUtility
 			return path.Equals('/');
 		}
 
+		// 获取一致性文件路径，最后带有/字符
+		public static string GetConsistencyFilePath()
+		{
+			return $"{GetAppPath()}filestorage/data_consistency/";
+		}
+
 		private static string GetFileName(string fullPath)
 		{
 			if (string.IsNullOrEmpty(fullPath))

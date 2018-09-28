@@ -155,6 +155,18 @@ namespace SCMTOperationCore.Control
 			return null;
 		}
 
+		// 根据友好名获取网元IP地址
+		public string GetNodeIpByFriendlyName(string friendlyName)
+		{
+			if (string.IsNullOrEmpty(friendlyName))
+			{
+				throw new ArgumentNullException("friendlyName is null or only space char");
+			}
+
+			var node = GetNodeByFName(friendlyName) as NodeB;
+			return node?.m_IPAddress.ToString();
+		}
+
 		//判断友好名是否重复
 		public bool HasSameFriendlyName(string friendlyName)
 		{

@@ -49,6 +49,7 @@ using SCMTOperationCore.Message.MsgDispatcher;
 using System.Windows.Media;
 using System.Threading;
 using System.Text;
+using SCMT.Base.FileTransTaskMgr;
 
 namespace SCMTMainWindow
 {
@@ -604,6 +605,11 @@ namespace SCMTMainWindow
 			menuItem.IsEnabled = false;
 			menu.Items.Add(menuItem);
 
+			menuItem = new MetroMenuItem {Header = "数据同步" };
+			menuItem.Click += DataSync_Click;
+			menuItem.IsEnabled = false;
+			menu.Items.Add(menuItem);
+
 			menuItem = new MetroMenuItem { Header = "删除" };
 			menuItem.Click += DeleteStationMenu_Click;
 			menuItem.IsEnabled = true;
@@ -727,6 +733,50 @@ namespace SCMTMainWindow
 				NodeBControl.GetInstance().DelElementByFriendlyName(nodeName);
 
 				ExistedNodebList.Children.Remove(target);
+			}
+		}
+
+		// 发起数据同步菜单响应函数
+		private void DataSync_Click(object sender, RoutedEventArgs e)
+		{
+			var mui = sender as MenuItem;
+			if (null != mui)
+			{
+				var parent = (ContextMenu)mui.Parent;
+				if (null == parent)
+				{
+					return;
+				}
+
+				var target = parent.PlacementTarget as MetroExpander;
+				if (null == target)
+				{
+					return;
+				}
+
+				var nodeName = target.Header;
+				var targetIp = NodeBControl.GetInstance().GetNodeIpByFriendlyName(nodeName);
+				if (null == targetIp)
+				{
+					return;
+				}
+
+				var tip = $"即将发起与设备的数据同步过程，耗时较长，请确认是否继续？";
+				var dr = MessageBox.Show(tip, "数据同步", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
+				if (MessageBoxResult.Yes != dr)
+				{
+					return;
+				}
+
+				// 发送消息，开始数据同步
+				long taskId = 0;
+				long reqId = 0;
+				var dstPath = FilePathHelper.GetConsistencyFilePath();
+				FilePathHelper.CreateFolder(dstPath);
+				var fto = FileTransTaskMgr.FormatTransInfo(dstPath, "", Transfiletype5216.TRANSFILE_dataConsistency,
+					TRANSDIRECTION.TRANS_UPLOAD);
+				fto.IpAddr = targetIp;
+				FileTransTaskMgr.SendTransFileTask(targetIp, fto, ref taskId, ref reqId);
 			}
 		}
 
@@ -1751,6 +1801,7 @@ namespace SCMTMainWindow
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
+			EnableMenu(ip, "数据同步");
 		}
 		// 断开连接
 		private void OnDisconnect(SubscribeMsg msg)
@@ -1763,6 +1814,7 @@ namespace SCMTMainWindow
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站");
 			EnableMenu(ip, "断开连接", false);
+			EnableMenu(ip, "数据同步", false);
 
 			// 文件管理按钮禁用，文件管理窗口关闭
 			CloseFileMgrDlg(fname);
