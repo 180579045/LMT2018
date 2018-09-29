@@ -123,14 +123,14 @@
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
     </Reference>
     <Reference Include="MsgDispatcher">
-      <HintPath>..\Control\MsgDispatcher\bin\Debug\MsgDispatcher.dll</HintPath>
+      <HintPath>..\Control\MsgDispatcher\obj\Debug\MsgDispatcher.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SCMTOperationCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Control\SCMTOperationCore\bin\Debug\SCMTOperationCore.dll</HintPath>
+      <HintPath>..\Control\SCMTOperationCore\obj\Debug\SCMTOperationCore.dll</HintPath>
     </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
