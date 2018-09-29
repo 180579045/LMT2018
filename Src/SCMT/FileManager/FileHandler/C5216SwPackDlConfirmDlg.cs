@@ -6,9 +6,10 @@ using CommonUtility;
 using FileManager.FileHandler;
 using LogManager;
 using MIBDataParser;
-using SCMTOperationCore.Message.SNMP;
 using MIBDataParser.JSONDataMgr;
 using SCMT.Base.FileTransTaskMgr;
+using LinkPath;
+using LmtbSnmp;
 
 namespace FileManager
 {
@@ -214,7 +215,7 @@ namespace FileManager
 			}
 
 			var bAddCmdFalg = false;
-			var csRowStatusValue = SnmpToDatabase.GetMibValueFromCmdExeResult(csIndexToJudgeRowStatus, csCmdName, csRowStatus, TargetIp);
+			var csRowStatusValue = CommLinkPath.GetMibValueFromCmdExeResult(csIndexToJudgeRowStatus, csCmdName, csRowStatus, TargetIp);
 			if (string.IsNullOrEmpty(csRowStatusValue) || csRowStatusValue.Equals(FileTransMacro.STR_DESTROY))
 			{
 				bAddCmdFalg = true;

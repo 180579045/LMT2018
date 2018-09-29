@@ -1,6 +1,6 @@
-﻿using MIBDataParser.JSONDataMgr;
+﻿using LmtbSnmp;
+using MIBDataParser.JSONDataMgr;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SCMTOperationCore.Message.SNMP;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

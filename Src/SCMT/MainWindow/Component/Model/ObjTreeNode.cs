@@ -18,9 +18,9 @@ using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Elements;
 using SCMTMainWindow.Component.SCMTControl;
-using SCMTOperationCore.Message.SNMP;
 using SCMTMainWindow.Component.ViewModel;
 using System.Collections.ObjectModel;
+using LmtbSnmp;
 
 namespace SCMTMainWindow
 {

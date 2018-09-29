@@ -1,6 +1,6 @@
-﻿using LogManager;
+﻿using LmtbSnmp;
+using LogManager;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using SCMTOperationCore.Message.SNMP;
 using SnmpSharpNet;
 using System;
 using System.Collections.Generic;

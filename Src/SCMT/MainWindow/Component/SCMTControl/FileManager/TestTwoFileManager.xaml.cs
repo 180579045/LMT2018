@@ -19,6 +19,7 @@ using FileManager;
 using CommonUtility;
 using LogManager;
 using SCMTOperationCore.Message.SI;
+using MsgQueue;
 
 
 namespace SCMTMainWindow.Component.SCMTControl.FileManager
@@ -758,8 +759,10 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 }
             }
 
-            try
-            {
+			ShowLogHelper.Show($"远程文件路径：{enbPath}", "SCMT");
+
+			try
+			{
                 _fileHandler.UploadFileToLocal(localDirName, enbPath);
             }
             catch (Exception exception)
