@@ -8,7 +8,6 @@ using System.Windows.Forms;
 using System.Xml;
 using CommonUtility;
 using LogManager;
-using SCMT.Base.FileTransTaskMgr;
 using LinkPath;
 
 namespace FileManager.FileHandler
