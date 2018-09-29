@@ -1,0 +1,18 @@
+{
+  "rruFileColumnHeader":"RRU型号编号&RRU厂家名称&RRU硬件类型&RRU名称&支持的天线根数&通道的最大发射功率&支持的频带总宽度（M）&支持的工作模式&支持建立的小区类型&射频通道数&射频通道编号&通道支持频段&各频段支持的载波数&各射频通道支持的载波数&通道支持带宽（M）&所属天线编号&通道支持的最大发送功率&通道TX基带信号的标定振幅&通道RX基带信号的标定振幅&通道天线单元的标定输出(1/256dbm)&通道天线单元的标定输入(1/256dbm)&拉远属性&压缩属性&支持的IR口速率&压缩属性与带宽约束关系&通道收发",
+  "rruTypeManufacturerIndex":"4:datang|大唐",
+  "rruTypeFiberLength":"1:ten|10km/2:twenty|20km/4:forty|40km",
+  "rruTypeIrCompressMode":"1:notCompress|不压缩/2:compress|压缩",
+  "rruTypeSupportCellWorkMode":"1:lte|LTE TDD/2:td|TD-SCDMA/4:nr|NR/8:fdd|LTE FDD",
+  "rruTypePortSupportFreqBand":"1:a|A频段(2010-2025)/2:d|D频段(2570-2620)/4:e|E频段(2300-2400)/8:f|F频段(1880-1920)/16:dl|DL频段(2545-2575)/32:v|V频段(1447-1467)/64:b41|B41频段(2496-2690)/128:t|T频段(1785-1805)/256:b03|B03频段(1805-1880)/512:b01|B01频段(2110-2170)/1024:b44|B44频段(703-803)/2048:b42|B42频段(3400-3600)/4096:n78|N78频段(3300-3800)/8192:b08|B08频段(930-960)/16384:n79|N79频段(4400-5000)",
+  "netRRUOfpWorkMode":"1:normal|正常模式/2:lined|级联模式/3:backup|主备模式/4:shared|负荷分担模式",
+  "netIROfpTransPlanSpeed":"0:mbps2500|2.5G/1:mbps5000|5G/3:mbps10000|10G/4:mbps25000|25G/5:mbps100000|100G",
+  "netEthTransPlanSpeed":"0:mbps1250|1.25G/1:mbps2500|2.5G/2:mbps5000|5G",
+  "netLcFreqBandWidth":"0:val5M|5MHz/1:val10M|10MHz/2:val15M|15MHz/3:val20M|20MHz/4:val100M|100MHz",
+  "netSetRRUPortTxRxStatus":"1:rx|接收有效/2:tx|发送有效/3:rxAndTx|接收发送均有效/4:invalid|无效",
+  "equipNEType":"0:unknown|未知/2:tlb60a|TLB60A/3:emb5116tdlte|EMB5116 TD-LTE/4:emb5132tdlte|EMB5132 TD-LTE/5:emb5116|EMB5116/10:emb6116|EMB6116/21:epc|EPC/41:ims|IMS",
+  "netBoardType":"0:unknown|未知板型/19:hbpoas|HBPOA-S板/20:hbpoam|HBPOA-M板/21:hscta|HSCTA板/22:hbpod|HBPOD板/23:hsctd|HSCTD板/97:scta|SCTA板/98:bpia|BPIA板/99:bpoa|BPOA板/103:emau|EMAU板/104:etpa|ETPA板/105:etpd|ETPD板/106:psu|PSU板/107:fcu|FCU板/109:bpoe|BPOE板/110:emdu|EMDU板/111:etpc|ETPC板/128:bpof|BPOF板/129:etpe|ETPE板/130:sctc|SCTC板/141:sctd|SCTA-IP板/143:bpog|BPOG板/177:bpoh|BPOH板/178:scte|SCTE板/240:sctf|SCTF板/241:bpoi|BPOI板/243:bpok|BPOK板",
+  "netAntArrayLossFlag":"0:unloss|无损/1:loss|有损",
+  "antArrayType":"0:ula|线阵/1:uca|圆阵/2:polar|极化阵",
+  "alarmCauseFaultObjectType":"1:nodeB|基站/2:board|板卡/3:processor|处理器/4:fan|风扇/5:env|环境监控/6:oab|OAB/7:dryContact|干接点/8:airConditioner|空调/9:rru|RRU/10:rcu|电调天线单元/11:cell|LTE小区/12:localcell|LTE本地小区/13:antArray|天线阵/14:antPath|天线通道/15:clock|时钟/16:emTemperatureSensior|温度传感器/17:emHumiditySensior|湿度传感器/18:emSmokeSensior|烟雾传感器/19:emWaterSensior|水浸传感器/20:emTheftSensior|门禁传感器/21:emThunderboltSensior|雷击传感器/22:power|电源/23:netBoard|规划板卡/24:netRru|规划RRU/25:ofPort|光模块/26:sctp|sctp/27:topoRRUAntSetting|射频通道/28:heatEx|热交换器/29:processorCore|处理器核/30:ethernetOAM|以太OAM链路/31:remoteClockModule|拉远时钟/32:tdsLocalCell|TD-SCDMA本地小区/33:rruOfpPort|RRU光模块/34:netRHUB|规划RHUB/35:topologyRHUB|RHUB/36:rruDryConnect|RRU干接点"
+}
