@@ -237,6 +237,7 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
     <Compile Include="View\AddBoardWindow.xaml.cs">

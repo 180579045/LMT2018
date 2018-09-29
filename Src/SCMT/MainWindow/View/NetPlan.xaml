@@ -67,7 +67,7 @@
                             <avalondock:LayoutAnchorablePane x:Name="PropertyView"  DockWidth="1*" >
                                 <avalondock:LayoutAnchorable Title="属性">
                                     <Grid >
-                                        <xctk:PropertyGrid SelectedObject="{Binding ElementName=MyDesigner}" PropertyChanged="PropertyGrid_PropertyChanged"/>
+                                        <xctk:PropertyGrid x:Name="propertyGrid" SelectedObject="{Binding ElementName=MyDesigner}" PropertyValueChanged="PropertyGrid_PropertyValueChanged" />
                                         <!--<WPG:PropertyGrid AutomaticlyExpandObjects="False" Canvas.Left="308" Canvas.Top="11" Foreground="White" Instance="{Binding ElementName=MyDesigner}" Name="myGrid" ShowDescription="False" ShowPreview="True" DataContext="{Binding}" Margin="0,10,0,-349" />-->
                                         <!--<ListView x:Name="Property" Margin="0" ItemsSource="{Binding alPropertyies}">
                                             <ListView.View >
