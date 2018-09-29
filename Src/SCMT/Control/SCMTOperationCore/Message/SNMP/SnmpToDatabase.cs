@@ -284,6 +284,21 @@ namespace SCMTOperationCore.Message.SNMP
 			return MibStringHelper.SplitManageValue(mvr);
 		}
 
+		/// <summary>
+		/// 给定mibName，从数据库中找到该节点名对应的数据类型，把strValue转换为相关的格式
+		/// 1.如果是DateAndTime，就转换为可读的时间字符串
+		/// 2.如果是枚举值，就返回strValue对应的取值
+		/// 3.
+		/// </summary>
+		/// <param name="mibName"></param>
+		/// <param name="strValue"></param>
+		/// <param name="targetIp"></param>
+		/// <returns></returns>
+		public static string ConvertSnmpValueToString(string mibName, string strValue, string targetIp)
+		{
+			throw new NotImplementedException();
+		}
+
 		// 根据mib名称获取节点信息
 		public static MibLeaf GetMibNodeInfoByName(string mibName, string targetIp)
 		{
