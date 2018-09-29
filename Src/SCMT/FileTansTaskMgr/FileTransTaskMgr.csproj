@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinkPath">
+      <HintPath>..\Control\LinkPath\bin\Debug\LinkPath.dll</HintPath>
+    </Reference>
+    <Reference Include="LmtbSnmp">
+      <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
+    </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>

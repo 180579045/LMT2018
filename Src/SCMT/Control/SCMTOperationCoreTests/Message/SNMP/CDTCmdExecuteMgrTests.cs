@@ -8,7 +8,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
     [TestClass()]
     public class CDTCmdExecuteMgrTests
     {
-        [TestMethod()]
+ /*       [TestMethod()]
         public void CmdGetSyncTest()
         {
             //_unity.Dispose();
@@ -155,7 +155,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 
 
         }
-
+		*/
 
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
 using MIBDataParser.JSONDataMgr;
-using SCMTOperationCore.Message.SNMP;
+using LmtbSnmp;
 
 namespace NetPlan
 {

@@ -33,8 +33,19 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinkPath, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Control\LinkPath\bin\Debug\LinkPath.dll</HintPath>
+    </Reference>
+    <Reference Include="LmtbSnmp">
+      <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SCMTOperationCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Control\SCMTOperationCore\bin\Debug\SCMTOperationCore.dll</HintPath>
     </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>

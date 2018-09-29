@@ -8,7 +8,7 @@ using System.Windows;
 using AtpMessage;
 using AtpMessage.LinkMgr;
 using MsgQueue;
-using SCMTOperationCore.Message.MsgDispatcher;
+using MsgDispatcher;
 
 namespace SCMTMainWindow
 {
@@ -21,7 +21,7 @@ namespace SCMTMainWindow
 		{
 			MqInitial.Init();
 			ConnectWorker.GetInstance();
-			MsgDispatcher.GetInstance();
+			DoMsgDispatcher.GetInstance();
 			//AtpInitial.Init();
 
 			//NetElementConfig config = new NetElementConfig()

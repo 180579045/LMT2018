@@ -13,10 +13,10 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading;
-using SCMTOperationCore.Message.SNMP;
 using System.ComponentModel;
 using Xceed.Wpf.AvalonDock.Layout;
 using Xceed.Wpf.AvalonDock;
+using LmtbSnmp;
 
 namespace SnmpWindow
 {

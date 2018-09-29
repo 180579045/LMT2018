@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F3CAE40A-A1D7-4A0B-80DA-A09DDE0B8EF5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LinkPath</RootNamespace>
+    <AssemblyName>LinkPath</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CommonUtility">
+      <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
+    </Reference>
+    <Reference Include="LmtbSnmp">
+      <HintPath>..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
+    </Reference>
+    <Reference Include="LogManager">
+      <HintPath>..\LogManager\obj\Debug\LogManager.dll</HintPath>
+    </Reference>
+    <Reference Include="MIBDataParser">
+      <HintPath>..\MibParser\MibParser\obj\Debug\MIBDataParser.dll</HintPath>
+    </Reference>
+    <Reference Include="MsgQueue">
+      <HintPath>..\..\MsgQueue\bin\Debug\MsgQueue.dll</HintPath>
+    </Reference>
+    <Reference Include="SnmpSharpNet">
+      <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
+    </Reference>
+    <Reference Include="SuperLMT.Utils">
+      <HintPath>..\..\ParseMessage\SuperLMT.Utils\obj\x86\Debug\SuperLMT.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CDTCmdExecuteMgr.cs" />
+    <Compile Include="CDTSnmpMsgDispose.cs" />
+    <Compile Include="CommLinkPath.cs" />
+    <Compile Include="DTLinkPathMgr.cs" />
+    <Compile Include="ICDTLinkPathMgr.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SnmpSessionWorker.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

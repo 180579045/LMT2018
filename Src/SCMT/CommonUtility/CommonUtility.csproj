@@ -53,12 +53,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitField.cs" />
+    <Compile Include="CommNums.cs" />
+    <Compile Include="CommString.cs" />
+    <Compile Include="CommStructs.cs" />
     <Compile Include="ConfigFileHelper.cs" />
     <Compile Include="CustomException.cs" />
     <Compile Include="FilePathHelper.cs" />
     <Compile Include="FileRdWrHelper.cs" />
     <Compile Include="GetHeaderHelper.cs" />
     <Compile Include="IASerialize.cs" />
+    <Compile Include="IDToTableStruct.cs" />
     <Compile Include="JsonConvertHelper.cs" />
     <Compile Include="MibStringHelper.cs" />
     <Compile Include="NetAddrConvertHelper.cs" />

@@ -106,6 +106,12 @@
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
     </Reference>
+    <Reference Include="LinkPath">
+      <HintPath>..\Control\LinkPath\bin\Debug\LinkPath.dll</HintPath>
+    </Reference>
+    <Reference Include="LmtbSnmp">
+      <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -116,8 +122,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
     </Reference>
+    <Reference Include="MsgDispatcher">
+      <HintPath>..\Control\MsgDispatcher\bin\Debug\MsgDispatcher.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="SCMTOperationCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Control\SCMTOperationCore\bin\Debug\SCMTOperationCore.dll</HintPath>
     </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
@@ -540,10 +553,6 @@
     <ProjectReference Include="..\Control\MibParser\MibParser\MIBDataParser.csproj">
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
-      <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
-      <Name>SCMTOperationCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileManager\FileManager.csproj">
       <Project>{07daacce-62bf-4681-9014-d36515c67882}</Project>
