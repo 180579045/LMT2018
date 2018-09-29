@@ -4,10 +4,10 @@ using System.Linq;
 using CommonUtility;
 using LogManager;
 using SnmpSharpNet;
-using LinkPath;
 using LmtbSnmp;
+using MsgQueue;
 
-namespace SCMT.Base.FileTransTaskMgr
+namespace LinkPath
 {
 	public class FileTransTaskMgr : Singleton<FileTransTaskMgr>
 	{
@@ -125,6 +125,34 @@ namespace SCMT.Base.FileTransTaskMgr
 		{
 			return (0 == CDTCmdExecuteMgr.GetInstance().CmdGetAsync("GetFileTransNextID", out reqId, ".0", ip));
 		}
+
+		#endregion
+
+		#region 消息订阅
+
+		/// <summary>
+		/// 订阅ResposeDeal()方法
+		/// </summary>
+		public void SubscribeResposeDeal()
+		{
+			// 订阅消息
+			SubscribeHelper.AddSubscribe("ResponseDeal", CallResponseDeal);
+        }
+
+		/// <summary>
+		/// 调用订阅方法
+		/// </summary>
+		/// <param name="msg"></param>
+		private void CallResponseDeal(SubscribeMsg msg)
+		{
+			string msgTpic = msg.Topic;
+			Log.Info("msg.Topic = {0}", msg.Topic);
+
+			// 转换参数类型
+			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+
+			this.ResponseDeal(lmtPdu);
+        }
 
 		#endregion
 

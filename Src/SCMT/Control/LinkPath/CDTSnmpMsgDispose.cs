@@ -1,6 +1,5 @@
 ﻿using CommonUtility;
 using LmtbSnmp;
-//using FileManager;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
@@ -204,7 +203,9 @@ namespace LinkPath
 
 			}
 
-            return 0;
+			// 文件管理的处理，通过消息订阅调用
+
+			return 0;
 		}
 
 
