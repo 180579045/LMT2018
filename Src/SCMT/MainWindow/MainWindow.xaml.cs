@@ -1653,7 +1653,7 @@ namespace SCMTMainWindow
 
 							var dgm = new DataGrid_Cell_MIB()
 							{
-								m_Content = iter3.Value,	// 原始数据，没有处理
+								m_Content = SnmpToDatabase.ConvertSnmpValueToString(oid_en[temp_compare], iter3.Value, "172.27.245.92") as string,	// 原始数据，没有处理
 								oid = iter3.Key,
 								MibName_CN = oid_cn[temp_compare],
 								MibName_EN = oid_en[temp_compare]
@@ -1681,9 +1681,11 @@ namespace SCMTMainWindow
 			//增加表量表索引的列名
 			if (RealIndexCount > 0)
 			{
-				DataGridTextColumn column = new DataGridTextColumn();
-				column.Header = "实例描述";
-				column.Binding = new Binding("indexlist.m_Content");
+				var column = new DataGridTextColumn
+				{
+					Header = "实例描述",
+					Binding = new Binding("indexlist.m_Content")
+				};
 				MibDataGrid.Columns.Add(column);
 			}
 

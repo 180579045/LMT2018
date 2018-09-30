@@ -19,6 +19,11 @@ namespace CommonUtility
 			return t.ToString(format);
 		}
 
+		public static string DateTimeToStringEx(this DateTime t, string format = "yyyy-MM-dd HH:mm:ss")
+		{
+			return t.ToString(format);
+		}
+
 		// 获取用于做文件夹名字的时间信息：yearmonday_hourminsec_millsec
 		public static string GetFolderNameWithTime()
 		{
@@ -33,7 +38,7 @@ namespace CommonUtility
 		}
 
 		// 基站返回的时间字符串转为本地时间。基站返回的时间字符串形如：07D90101010312002B0800，2B要换成+
-		// 转换时，需要格式：yyyyMMddHHmmss00zz00。07D9这种16进制字符串需要先转换成十进制
+		// 转换时，只支持格式：yyyyMMddHHmmss00zz00。07D9这种16进制字符串需要先转换成十进制
 		public static DateTime ConvertUtcTimeTextToDateTime(string utcTimeText)
 		{
 			if (string.IsNullOrEmpty(utcTimeText) || utcTimeText.Length < 14) // 14是从年到秒的字符串长度
@@ -91,6 +96,7 @@ namespace CommonUtility
 
 			return bytes;
 		}
+
 
 	}
 }

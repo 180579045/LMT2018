@@ -252,9 +252,99 @@ namespace LmtbSnmp
 		/// <param name="strValue"></param>
 		/// <param name="targetIp"></param>
 		/// <returns></returns>
-		public static string ConvertSnmpValueToString(string mibName, string strValue, string targetIp)
+		public static dynamic ConvertSnmpValueToString(string mibName, string strValue, string targetIp)
 		{
-			throw new NotImplementedException();
+			if (string.IsNullOrEmpty(mibName) || string.IsNullOrEmpty(targetIp) || string.IsNullOrEmpty(strValue))
+			{
+				return null;
+			}
+
+			string error;
+			MibLeaf retData;
+			if (!Database.GetInstance().getDataByEnglishName(mibName, out retData, targetIp, out error))
+			{
+				return null;
+			}
+
+			if (retData.IsTable)	// 给定的Mib名是表入口
+			{
+				return null;
+			}
+
+			// TODO 莫忘记取值范围校验
+			var omType = retData.OMType;
+			var asnType = retData.ASNType;
+			var uiType = retData.UIType;
+
+			if (omType.Equals("u32") || omType.Equals("s32"))
+			{
+				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
+				{
+					// BITS类型的，需要转换
+				}
+				else
+				{
+					// 返回原值
+					return strValue;
+				}
+			}
+			else if (omType.Equals("u32[]"))
+			{
+				
+			}
+			else if (omType.Equals("s32[]"))
+			{
+
+			}
+			else if (omType.Equals("enum"))
+			{
+				// 1.取出该节点的取值范围
+				var mvr = retData.managerValueRange;
+
+				// 2.分解取值范围
+				var mapKv = MibStringHelper.SplitManageValue(mvr);
+				var value = int.Parse(strValue);
+
+				// 3.比对是否存在对应的枚举值
+				return mapKv.ContainsKey(value) ? mapKv[value] : null;
+			}
+			else if (omType.Equals("s8[]"))
+			{
+
+			}
+			else if (omType.Equals("u8[]"))
+			{
+				if (asnType.Equals("DateAndTime"))
+				{
+					return TimeHelper.ConvertUtcTimeTextToDateTime(strValue).ConvertTimeZoneToLocal().DateTimeToStringEx();
+				}
+				else if (asnType.Equals("InetAddress"))
+				{
+					
+				}
+				else if (asnType.Equals("MacAddress"))
+				{
+
+				}
+				else if (asnType.Equals("MncMccType"))
+				{
+
+				}
+				else
+				{
+
+				}
+			}
+			else if (omType.Equals("u16") || omType.Equals("s16"))
+			{
+				return strValue;
+			}
+			else
+			{
+				return strValue;
+			}
+
+			return strValue;
 		}
 
 		// 根据mib名称获取节点信息
