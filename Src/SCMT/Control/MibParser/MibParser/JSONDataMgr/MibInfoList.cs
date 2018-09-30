@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json.Linq;
@@ -133,12 +134,32 @@ namespace MIBDataParser.JSONDataMgr
 					var tableLeaf = new MibLeaf(mibTemp);
 
 					HandleSameNameMib(mibTemp.nameMib, tableLeaf);
-					oidToMib.Add(mibTemp.oid, tableLeaf);
+					if (oidToMib.ContainsKey(mibTemp.oid))
+					{
+						var cname = mibTemp.nameMib;
+						var existname = oidToMib[mibTemp.oid].childNameMib;
+						var eoid = oidToMib[mibTemp.oid].childOid;
+						Debug.WriteLine($"已存在MIB：name={existname},oid={eoid},新添加节点：name={cname},oid={mibTemp.oid}");
+					}
+					else
+					{
+						oidToMib.Add(mibTemp.oid, tableLeaf);
+					}
 
 					foreach (var mibChild in mibTemp.childList)
 					{
 						HandleSameNameMib(mibChild.childNameMib, mibChild);
-						oidToMib.Add(mibChild.childOid, mibChild);
+						if (oidToMib.ContainsKey(mibChild.childOid))
+						{
+							var cname = mibChild.childNameMib;
+							var existname = oidToMib[mibChild.childOid].childNameMib;
+							var eoid = oidToMib[mibChild.childOid].childOid;
+							Debug.WriteLine($"已存在MIB：name={existname},oid={eoid},新添加节点：name={cname},oid={mibChild.childOid}");
+						}
+						else
+						{
+							oidToMib.Add(mibChild.childOid, mibChild);
+						}
 					}
 				}
 			}

@@ -381,7 +381,6 @@ namespace SCMTMainWindow
 
             try
             {
-                int.TryParse(ret.indexNum.ToString(), out IndexNum);              // 获取这张表索引的个数;
                 IndexCount = ret.indexNum;
                 LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
                 ChildCount = ret.childList.Count - IndexNum;
