@@ -182,7 +182,7 @@ namespace RruAntAlarmError
                     {
                         JObject objRec = new JObject{
                               { "value", loop.ToString() },
-                              { "desc", temp.Substring(0, temp.IndexOf(":") + 1)}
+                              { "desc", temp.Substring(temp.IndexOf(":") + 1)}
                              };
                         subCauseJArray.Add(objRec);
                     }
