@@ -7,7 +7,6 @@ using FileManager.FileHandler;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
-using SCMT.Base.FileTransTaskMgr;
 using LinkPath;
 using LmtbSnmp;
 

@@ -47,10 +47,10 @@ using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
 using System.Windows.Media;
 using System.Threading;
 using System.Text;
-using SCMT.Base.FileTransTaskMgr;
 using dict_d_string = System.Collections.Generic.Dictionary<string, string>;
 using MsgDispatcher;
 using LmtbSnmp;
+using LinkPath;
 
 namespace SCMTMainWindow
 {

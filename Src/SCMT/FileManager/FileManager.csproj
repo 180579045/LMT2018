@@ -35,7 +35,7 @@
   <ItemGroup>
     <Reference Include="LinkPath, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Control\LinkPath\bin\Debug\LinkPath.dll</HintPath>
+      <HintPath>..\Control\LinkPath\obj\Debug\LinkPath.dll</HintPath>
     </Reference>
     <Reference Include="LmtbSnmp">
       <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
@@ -108,10 +108,6 @@
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\FileTansTaskMgr\FileTransTaskMgr.csproj">
-      <Project>{d7a266ce-f984-4820-a34e-2371e4247b5c}</Project>
-      <Name>FileTransTaskMgr</Name>
     </ProjectReference>
     <ProjectReference Include="..\MsgQueue\MsgQueue.csproj">
       <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>

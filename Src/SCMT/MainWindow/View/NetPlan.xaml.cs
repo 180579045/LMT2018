@@ -21,6 +21,7 @@ using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using SCMTMainWindow.View.Document;
 using System.Windows.Markup;
 using System.Xml;
+using Xceed.Wpf.Toolkit.PropertyGrid;
 
 namespace SCMTMainWindow.View
 {
@@ -43,7 +44,7 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
-
+            propertyGrid.SelectedObject = p1;
             boardCanvas = new Canvas();
 
             //设置 2 列 4 行 的板卡框架
@@ -247,10 +248,15 @@ namespace SCMTMainWindow.View
             
         }
 
-        private void PropertyGrid_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PropertyGrid_PropertyValueChanged(object sender, Xceed.Wpf.Toolkit.PropertyGrid.PropertyValueChangedEventArgs e)
         {
+           
+           var property= e.OriginalSource as PropertyItem;
+            string a = property.PropertyName;
+            object o = e.NewValue;
 
         }
+
 
         //protected override Size MeasureOverride(Size constraint)
         //{

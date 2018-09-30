@@ -1,7 +1,7 @@
-﻿using System;
+﻿using LinkPath;
+using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using SCMT.Base.FileTransTaskMgr;
 
 namespace FileManager.FileHandler
 {

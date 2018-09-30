@@ -36,6 +36,10 @@
     <Reference Include="LmtbSnmp">
       <HintPath>..\Control\LmtbSnmp\obj\Debug\LmtbSnmp.dll</HintPath>
     </Reference>
+    <Reference Include="MsgQueue, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\MsgQueue\bin\Debug\MsgQueue.dll</HintPath>
+    </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>
@@ -49,8 +53,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FileTransMacro.cs" />
-    <Compile Include="FileTransTaskMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

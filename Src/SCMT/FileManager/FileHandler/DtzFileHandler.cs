@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CommonUtility;
 using LogManager;
-using SCMT.Base.FileTransTaskMgr;
 using LmtbSnmp;
 using LinkPath;
 
