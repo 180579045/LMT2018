@@ -316,7 +316,7 @@ namespace LmtbSnmp
 				}
 				else if (asnType.Equals("InetAddress"))
 				{
-					
+					return ConvertInetToString(strValue);
 				}
 				else if (asnType.Equals("MacAddress"))
 				{
@@ -364,6 +364,44 @@ namespace LmtbSnmp
 
 			// 3.返回对应的描述信息
 			return mapKv.ContainsKey(value) ? mapKv[value] : null;
+		}
+
+		/// <summary>
+		/// 转换IP地址到string
+		/// 在本函数内部处理了IPV4和IPV6
+		/// </summary>
+		/// <param name="strInetAddr"></param>
+		/// <returns></returns>
+		public static dynamic ConvertInetToString(string strInetAddr)
+		{
+			if (string.IsNullOrEmpty(strInetAddr))
+			{
+				return null;
+			}
+
+			// 剔除字符串中的空格
+			var strTemp = strInetAddr.Replace(" ", "");
+
+			// 根据字符串的长度判断是ipv4还是ipv6
+			var len = strTemp.Length;
+			if (len == 8)
+			{
+				// ipv4地址字符串的处理
+				var ipv4 = TimeHelper.StrHex2Bytes(strTemp);
+				return $"{ipv4[0]}.{ipv4[1]}.{ipv4[2]}.{ipv4[3]}";
+			}
+			else if (len == 32)
+			{
+				string ipv6 = "";
+				// ipv6地址字符串的处理
+				for (var i = 0; i < len;)
+				{
+					ipv6 = $"{ipv6}:{strTemp.Substring(i, 4)}";
+					i += 4;
+				}
+				return ipv6.TrimStart(':');
+			}
+			return strInetAddr;
 		}
 
 		// 根据mib名称获取节点信息
