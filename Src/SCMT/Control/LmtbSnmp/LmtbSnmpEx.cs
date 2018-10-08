@@ -1,4 +1,6 @@
-﻿using LogManager;
+﻿using CommonUtility;
+using LogManager;
+using MsgQueue;
 using SnmpSharpNet;
 using System;
 using System.Collections.Generic;
@@ -161,6 +163,8 @@ namespace LmtbSnmp
 				return -1;
 			}
 
+			lmtPdu.setReqMsgType((int)PduType.Get);
+
 			Pdu pdu;
 			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 			if (!rs)
@@ -182,6 +186,15 @@ namespace LmtbSnmp
 
 			rs = SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false);
 
+			// Snmp Get Response处理
+			// TODO
+			//if (IsWindow(m_hWnd))
+			//{
+				// 实例序列化
+				byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
+				// 发布消息
+				PublishHelper.PublishMsg("CDTSnmpMsgDispose_OnResponse", bytes);
+			//}
 
 			return 0;
 		}
@@ -216,6 +229,7 @@ namespace LmtbSnmp
 				Log.Error(logMsg);
 				return false;
 			}
+
 
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
@@ -289,6 +303,8 @@ namespace LmtbSnmp
 				Log.Error(msg);
 				return -1;
 			}
+			
+			lmtPdu.setReqMsgType((int)PduType.Get);
 
 			Pdu pdu = new Pdu();
 			requestId = pdu.RequestId;
@@ -426,7 +442,6 @@ namespace LmtbSnmp
 				return -1;
 			}
 
-			// TODO
 			 lmtPdu.setReqMsgType((int)PduType.Set);
 
 
@@ -537,7 +552,6 @@ namespace LmtbSnmp
 				return -1;
 			}
 
-			// TODO
 			lmtPdu.setReqMsgType((int)PduType.Set);
 
 

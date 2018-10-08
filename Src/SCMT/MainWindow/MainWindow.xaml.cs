@@ -100,6 +100,7 @@ namespace SCMTMainWindow
 			// 启动线程，后台处理一些初始化功能
 			Task.Factory.StartNew(new Action(() =>
 			{
+
 				deleteTempFile();
 				SubscribeMsgs();
 
@@ -142,6 +143,11 @@ namespace SCMTMainWindow
 		private void RegisterFunction()
 		{
 			//TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
+			// 初始化通信管理器
+			DTLinkPathMgr.GetInstance().Initialize();
+
+
+
 		}
 
 		// 启动FTP工具，如果不存在就提示用户

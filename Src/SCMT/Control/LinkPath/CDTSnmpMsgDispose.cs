@@ -26,6 +26,41 @@ namespace LinkPath
 
 		public int FileTransMacro { get; private set; }
 
+		public DTLinkPathMgr m_LinkMgr;
+
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		/// <param name="linkPathMgr"></param>
+		public CDTSnmpMsgDispose(DTLinkPathMgr linkPathMgr)
+		{
+			// 订阅SNMP模块发来的消息
+			 SubscribeHelper.AddSubscribe("CDTSnmpMsgDispose_OnResponse", CallOnResponse);
+
+			this.m_LinkMgr = linkPathMgr;
+
+			// TODO
+			// alarmDealWorker = (CDTAlarmDealOpr*)AfxBeginThread(RUNTIME_CLASS(CDTAlarmDealOpr));
+
+		}
+
+		#region 订阅消息调用
+		/// <summary>
+		/// 调用OnResponse方法
+		/// </summary>
+		/// <param name="msg"></param>
+		private void CallOnResponse(SubscribeMsg msg)
+		{
+			// 消息类型转换
+			string strTopic = msg.Topic;
+			Log.Info(string.Format("msg.Topic = {0}", msg.Topic));
+
+			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+			this.OnResponse(lmtPdu);
+
+		}
+		#endregion
+
 		/// <summary>
 		/// 处理接收到的Trap消息
 		/// </summary>
@@ -137,15 +172,10 @@ namespace LinkPath
 		/// <summary>
 		/// 处理SNMP模块发来的Get/Set的Response
 		/// </summary>
-		/// <param name="msg"></param>
+		/// <param name="lmtPdu"></param>
 		/// <returns></returns>
-		public int OnResponse(SubscribeMsg msg)
+		public int OnResponse(CDTLmtbPdu lmtPdu)
 		{
-			Log.Info("msg={0}", msg.Topic);
-
-			// 反序列化参数
-			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
-
 			Log.Info("收到网元Response，网元IP:{0}", lmtPdu.m_SourceIp);
 
 			// 获取MIB前缀
@@ -160,7 +190,14 @@ namespace LinkPath
 			IDToTableStruct idToTb = new IDToTableStruct();
 			idToTb.pduType = lmtPdu.getReqMsgType();
 			idToTb.messageType = lmtPdu.m_requestId;
-			idToTb.strCmdName = lmtPdu.get_CmdName();
+			if (lmtPdu.get_CmdName() != null)
+			{
+				idToTb.strCmdName = lmtPdu.get_CmdName();
+			}
+			else
+			{
+				idToTb.strCmdName = "";
+			}
 
 			// 验证包的合法性
 			string strErrorMsg = "";
@@ -204,6 +241,7 @@ namespace LinkPath
 			}
 
 			// 文件管理的处理，通过消息订阅调用
+			FileTransTaskMgr.GetInstance().ResponseDeal(lmtPdu);
 
 			return 0;
 		}
@@ -485,6 +523,7 @@ namespace LinkPath
 			{
 				// 往消息输出窗体显示信息
 				ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, infoType);
+				//ShowLogHelper.Show(strShowMsg, "SCMT");
 
 				// TODO
 				//LPARAM lt;
