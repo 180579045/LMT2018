@@ -320,7 +320,7 @@ namespace LmtbSnmp
 				}
 				else if (asnType.Equals("MacAddress"))
 				{
-
+					return ConvertMacAddrToString(strValue);
 				}
 				else if (asnType.Equals("MncMccType"))
 				{
@@ -402,6 +402,16 @@ namespace LmtbSnmp
 				return ipv6.TrimStart(':');
 			}
 			return strInetAddr;
+		}
+
+		public static dynamic ConvertMacAddrToString(string strMac)
+		{
+			if (string.IsNullOrEmpty(strMac))
+			{
+				return null;
+			}
+
+			return strMac.Replace(" ", ":").ToUpper();
 		}
 
 		// 根据mib名称获取节点信息
