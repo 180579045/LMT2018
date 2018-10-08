@@ -290,7 +290,12 @@ namespace LmtbSnmp
 			}
 			else if (omType.Equals("s32[]"))
 			{
-
+				// oid类型
+				if (asnType.Equals("notification-type", StringComparison.OrdinalIgnoreCase) ||
+					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase))
+				{
+					
+				}
 			}
 			else if (omType.Equals("enum"))
 			{
@@ -304,10 +309,10 @@ namespace LmtbSnmp
 				// 3.比对是否存在对应的枚举值
 				return mapKv.ContainsKey(value) ? mapKv[value] : null;
 			}
-			else if (omType.Equals("s8[]"))
-			{
+			//else if (omType.Equals("s8[]"))
+			//{
 
-			}
+			//}
 			else if (omType.Equals("u8[]"))
 			{
 				if (asnType.Equals("DateAndTime"))
@@ -326,19 +331,15 @@ namespace LmtbSnmp
 				{
 
 				}
-				else
-				{
-
-				}
 			}
-			else if (omType.Equals("u16") || omType.Equals("s16"))
-			{
-				return strValue;
-			}
-			else
-			{
-				return strValue;
-			}
+			//else if (omType.Equals("u16") || omType.Equals("s16"))
+			//{
+			//	return strValue;
+			//}
+			//else
+			//{
+			//	return strValue;
+			//}
 
 			return strValue;
 		}
