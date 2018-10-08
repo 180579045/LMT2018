@@ -274,18 +274,14 @@ namespace LmtbSnmp
 			// TODO 莫忘记取值范围校验
 			var omType = retData.OMType;
 			var asnType = retData.ASNType;
-			var uiType = retData.UIType;
+			//var uiType = retData.UIType;
 
 			if (omType.Equals("u32") || omType.Equals("s32"))
 			{
 				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
 				{
 					// BITS类型的，需要转换
-				}
-				else
-				{
-					// 返回原值
-					return strValue;
+					return ConvertBitsToString(retData.managerValueRange, strValue);
 				}
 			}
 			else if (omType.Equals("u32[]"))
@@ -345,6 +341,29 @@ namespace LmtbSnmp
 			}
 
 			return strValue;
+		}
+
+		/// <summary>
+		/// 转换BITS类型的数据为描述信息
+		/// </summary>
+		/// <param name="strValueRange">MIB中的取值范围</param>
+		/// <param name="strValue">实际取值</param>
+		/// <returns></returns>
+		public static dynamic ConvertBitsToString(string strValueRange, string strValue)
+		{
+			if (string.IsNullOrEmpty(strValueRange) || string.IsNullOrEmpty(strValue))
+			{
+				return null;
+			}
+
+			// 1.分隔取值范围
+			var mapKv = MibStringHelper.SplitManageValue(strValueRange);
+
+			// 2.TODO 简单处理，实际取值只有一个
+			var value = int.Parse(strValue);
+
+			// 3.返回对应的描述信息
+			return mapKv.ContainsKey(value) ? mapKv[value] : null;
 		}
 
 		// 根据mib名称获取节点信息
