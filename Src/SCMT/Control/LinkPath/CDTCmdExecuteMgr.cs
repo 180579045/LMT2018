@@ -210,17 +210,17 @@ namespace LinkPath
 		/// <summary>
 		/// 执行一条类型为Set的同步操作命令
 		/// </summary>
-		/// <param name="cmdName"></param>
+		/// <param name="cmdName">命令名</param>
 		/// <param name="requestId"></param>
-		/// <param name="name2Value"></param>
-		/// <param name="strIndex"></param>
-		/// <param name="strIpAddr"></param>
+		/// <param name="name2Value">命令对应的MIB及其值</param>
+		/// <param name="strIndex">索引</param>
+		/// <param name="strIpAddr">目标基站IP地址</param>
 		/// <param name="lmtPdu"></param>
 		/// <param name="isPrint"></param>
 		/// <param name="needCheck"></param>
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
-		public static int CmdSetSync(String cmdName, out long requestId, Dictionary<string,string> name2Value
+		public static int CmdSetSync(string cmdName, out long requestId, Dictionary<string,string> name2Value
 			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = false
 			, bool needCheck = false, long timeOut = 0)
 		{
