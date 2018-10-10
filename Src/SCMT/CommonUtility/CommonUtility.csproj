@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BitField.cs" />
+    <Compile Include="CommFuns.cs" />
     <Compile Include="CommNums.cs" />
     <Compile Include="CommString.cs" />
     <Compile Include="CommStructs.cs" />

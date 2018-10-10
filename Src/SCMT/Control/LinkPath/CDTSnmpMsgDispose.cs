@@ -367,7 +367,7 @@ namespace LinkPath
 				if (idx > 0 && idx < lmtPdu.VbCount())
 				{
 					lmtPdu.GetVbByIndex(idx, ref lmtVb);
-					if (false == CommFuns.GetInfoByOID(lmtVb.Oid, lmtVb.Value
+					if (false == CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value
 						, out strName, out strDesc, out strUnitName))
 					{
 						Log.Error(string.Format("GetInfoByOID调用不成功,:OID = {0}", lmtVb.Oid));
@@ -470,7 +470,7 @@ namespace LinkPath
 				string strDesc = "";
 				string strUnitName = "";
 				if (lmtPdu.m_bIsNeedPrint == true 
-					&& false == CommFuns.GetInfoByOID(lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
+					&& false == CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
 				{
 					Log.Error(string.Format("GetInfoByOID调用不成功:OID = {0}", lmtVb.Oid));
 					continue;
@@ -868,7 +868,7 @@ namespace LinkPath
 					{
 						// 根据Mib值获取其描述
 						
-						if (false == CommFuns.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue, true))
+						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue, true))
 						{
 							return false;
 						}
@@ -881,7 +881,7 @@ namespace LinkPath
 					if (!string.IsNullOrEmpty(strValue))
 					{
 						// 根据Mib值获取其描述
-						if (false == CommFuns.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue, true))
+						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue, true))
 						{
 							return false;
 						}
@@ -893,7 +893,7 @@ namespace LinkPath
 						lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiErrorCode", out strValue);
 						if (!string.IsNullOrEmpty(strValue))
 						{
-							if (false == CommFuns.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue, true))
+							if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue, true))
 							{
 								return false;
 							}
@@ -911,7 +911,7 @@ namespace LinkPath
 					strGeneralEventType = strValue;
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (false == CommFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue, true))
+						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue, true))
 						{
 							return false;
 						}
@@ -922,7 +922,7 @@ namespace LinkPath
 					lmtPdu.GetValueByMibName(strNodeBIp, "eventGeneralEventResult", out strValue);
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (false == CommFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue, true))
+						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue, true))
 						{
 							return false;
 						}
@@ -1077,7 +1077,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommFuns.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue, true);
+				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue, true);
 				sbReVal.Append("网元类型:").Append(strReValue).Append("; ");
 			}
 
@@ -1088,7 +1088,7 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				string strTmpVal;
-				CommFuns.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal, true);
+				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal, true);
 				if ("1".Equals(strValue)) //失败
 				{
 					bTransSuccess = false;

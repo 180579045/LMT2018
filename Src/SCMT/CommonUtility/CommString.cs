@@ -42,6 +42,8 @@ namespace CommonUtility
 
 		public const string IDS_STR_MSGDISPOSE_FMT1 = "命令{0}响应等待超时";
 
+		public const string IDS_INSTANCE = "实例";
+
 
 
 	}
