@@ -213,6 +213,15 @@ namespace MIBDataParser.JSONDataMgr
 			int indexNum = 0;
 			string findKey = key.Replace("1.3.6.1.4.1.5105.100.", "");
 			MibLeaf oidInfo = null;
+
+			if (oidToMib.ContainsKey(findKey))
+			{
+				oidInfo = oidToMib[findKey];
+			}
+
+			return oidInfo;
+
+			// TODO 不知道为什么要判断oid中.的数量，并且要大于4
 			while (findKey.Count(ch => ch == '.') > 4)
 			{
 				if (!oidToMib.ContainsKey(findKey))
