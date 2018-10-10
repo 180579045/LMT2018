@@ -195,6 +195,23 @@ namespace MIBDataParser.JSONDataMgr
 			return true;
 		}
 
+		/// <summary>
+		/// 通过oid获取mib节点信息
+		/// </summary>
+		/// <param name="oid">不带前缀的oid</param>
+		/// <param name="targetIp">目标基站地址</param>
+		/// <returns>null:获取失败</returns>
+		public MibLeaf GetMibDataByOid(string oid, string targetIp)
+		{
+			MibLeaf targetLeaf;
+			string err;
+			if (GetMibDataByOid(oid, out targetLeaf, targetIp, out err))
+			{
+				return targetLeaf;
+			}
+			return null;
+		}
+
 		public bool GetMibDataByOids(Dictionary<string, MibLeaf> reData, string connectIp, out string err)
 		{
 			err = "";
