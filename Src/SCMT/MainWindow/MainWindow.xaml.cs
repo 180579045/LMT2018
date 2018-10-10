@@ -47,6 +47,7 @@ using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
 using System.Windows.Media;
 using System.Threading;
 using System.Text;
+using dict_d_string = System.Collections.Generic.Dictionary<string, string>;
 using MsgDispatcher;
 using LmtbSnmp;
 using LinkPath;
@@ -1536,160 +1537,183 @@ namespace SCMTMainWindow
 		/// <param name="oid_cn"></param>
 		/// <param name="oid_en"></param>
 		/// <param name="contentlist"></param>
-		public void UpdateAllMibDataGrid(Dictionary<string, string> ar, Dictionary<string, string> oid_cn, Dictionary<string, string> oid_en,
+		public void UpdateAllMibDataGrid(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
+			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
+		{
+			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, 
+				string, int>(UpdateMibDataGridCallback);
+			MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
+		}
+
+		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
 			int RealIndexCount = IndexCount; // 真实的索引个数
 											 // 将信息回填到DataGrid当中;
-			MibDataGrid.Dispatcher.Invoke(new Action(() =>
+
+			MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
+
+			if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
+				IndexCount = 1;
+
+			var AlreadyRead = new List<string>();
+
+			// TODO 调试打印,正式版本记得删除;
+			//foreach (var iter in ar)
+			//{
+			//	string[] temp = iter.Key.Split('.');
+			//	string NowIndex = "";
+			//	string NowNodeOID = "";
+
+			//	for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+			//	{
+			//		NowIndex += "." + temp[i];
+			//	}
+			//	for (int i = 0; i < temp.Length - IndexCount; i++)
+			//	{
+			//		NowNodeOID += "." + temp[i];
+			//	}
+
+			//	Console.WriteLine("NextIndex " + iter.Key + " and Value is " + iter.Value + " OID Index is " + NowIndex +
+			//		" Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
+			//}
+
+			// 遍历GetNext结果后，将结果填入到DataGrid控件当中;
+			foreach (var iter in ar)
 			{
-				MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
+				var fulloid = iter.Key;
 
-				if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
-					IndexCount = 1;
-
-				List<string> AlreadyRead = new List<string>();
-
-				// TODO 调试打印,正式版本记得删除;
-				foreach (var iter in ar)
+				// 获取当前遍历到的节点的索引值(即取最后N位数字);
+				var temp = fulloid.Split('.');
+				var NowIndex = "";
+				for (var i = temp.Length - IndexCount; i < temp.Length; i++)
 				{
-					string[] temp = iter.Key.Split('.');
-					string NowIndex = "";
-					string NowNodeOID = "";
-
-					for (int i = temp.Length - IndexCount; i < temp.Length; i++)
-					{
-						NowIndex += "." + temp[i];
-					}
-					for (int i = 0; i < temp.Length - IndexCount; i++)
-					{
-						NowNodeOID += "." + temp[i];
-					}
-
-					Console.WriteLine("NextIndex " + iter.Key + " and Value is " + iter.Value + " OID Index is " + NowIndex +
-						" Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
+					NowIndex += "." + temp[i];
 				}
 
-				// 遍历GetNext结果后，将结果填入到DataGrid控件当中;
-				foreach (var iter in ar)
-				{
-					// 获取当前遍历到的节点的索引值(即取最后N位数字);
-					string[] temp = iter.Key.Split('.');
-					string NowIndex = "";
-					for (int i = temp.Length - IndexCount; i < temp.Length; i++)
-					{
-						NowIndex += "." + temp[i];
-					}
-					Console.WriteLine("NextIndex " + iter.Key + " and Value is " + iter.Value + " OID Index is " + NowIndex);
+				Debug.WriteLine("NextIndex " + fulloid + " and Value is " + iter.Value + " OID Index is " + NowIndex);
 
-					// 如果存在索引,且索引没有被添加到表中;
-					if (iter.Key.Contains(NowIndex) && !AlreadyRead.Contains(NowIndex))
-					{
-						dynamic model = new DyDataGrid_MIBModel();
-						//尝试填写表量表填写实例描述
+				// 如果存在索引,且索引没有被添加到表中;
+				if (!fulloid.Contains(NowIndex) || AlreadyRead.Contains(NowIndex))
+					continue;
 
-						if (RealIndexCount > 0)
-						{
-							string IndexOIDPre = "";
-							for (int i = 0; i < temp.Length - IndexCount - 1; i++)
-							{
-								IndexOIDPre += "." + temp[i];
-							}
-							string IndexContent = "";
-							for (int i = 0; i < RealIndexCount; i++)
-							{
-								string IndexOIDTemp = IndexOIDPre + "." + (i + 1);
-								string IndexOID = IndexOIDTemp.Substring(1);
-								IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
-							}
-							//如下DataGrid_Cell_MIB中的 oid暂时填写成这样
-							model.AddProperty("indexlist", new DataGrid_Cell_MIB()
-							{
-								m_Content = IndexContent,
-								oid = IndexOIDPre + ".",
-								MibName_CN = "实例描述",
-								MibName_EN = "indexlist"
-							}, "实例描述");
 
-						}
+				dynamic model = new DyDataGrid_MIBModel();
+				//尝试填写表量表填写实例描述
 
-						// 将ar当中所有匹配的结果取出,最后会取出了一行数据;
-						foreach (var iter3 in ar)
-						{
-							// 将所有相同索引取出;
-							temp = iter3.Key.Split('.');
-							string TempIndex = "";
-							for (int i = temp.Length - IndexCount; i < temp.Length; i++)
-							{
-								TempIndex += "." + temp[i];
-							}
-							//以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
-							if (TempIndex == NowIndex)
-							{
-								// 将GetNext整表的OID数值取出到temp_compare;
-								string[] temp_nowoid = iter3.Key.Split('.');
-								string NowNodeOID = "";
-								for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
-								{
-									NowNodeOID += "." + temp_nowoid[i];
-								}
-								string temp_compare = NowNodeOID.Substring(1);
-
-								// 如果OID匹配;
-								if (oid_cn.ContainsKey(temp_compare))
-								{
-									Console.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
-
-									model.AddProperty(oid_en[temp_compare], new DataGrid_Cell_MIB()
-									{
-										m_Content = iter3.Value,
-										oid = iter3.Key,
-										MibName_CN = oid_cn[temp_compare],
-										MibName_EN = oid_en[temp_compare]
-									}, oid_cn[temp_compare]);
-
-									// 已经查询过该索引,后续不再参与查询;
-									if (!AlreadyRead.Contains(NowIndex))
-									{
-										AlreadyRead.Add(NowIndex);
-									}
-								}
-							}
-						}
-
-						// 将这个整行数据填入List;
-						if (model.Properties.Count != 0)
-						{
-							// 向单元格内添加内容;
-							contentlist.Add(model);
-						}
-					}
-				}
-				//增加表量表索引的列名
 				if (RealIndexCount > 0)
 				{
-					DataGridTextColumn column = new DataGridTextColumn();
-					column.Header = "实例描述";
-					column.Binding = new Binding("indexlist.m_Content");
-					MibDataGrid.Columns.Add(column);
-				}
-				foreach (var iter3 in oid_en)
-				{
-					string[] temp = iter3.Key.Split('.');
-					if ((RealIndexCount > 0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
+					var IndexOIDPre = "";
+					for (int i = 0; i < temp.Length - IndexCount - 1; i++)
 					{
-						//索引不对应列名
-						continue;
+						IndexOIDPre += "." + temp[i];
 					}
-					Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
-					DataGridTextColumn column = new DataGridTextColumn();
-					column.Header = oid_cn[iter3.Key];
-					column.Binding = new Binding(iter3.Value + ".m_Content");
-					MibDataGrid.Columns.Add(column);
+
+					var IndexContent = "";
+					for (int i = 0; i < RealIndexCount; i++)
+					{
+						string IndexOIDTemp = IndexOIDPre + "." + (i + 1);
+						string IndexOID = IndexOIDTemp.Substring(1);
+						IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
+					}
+
+					//如下DataGrid_Cell_MIB中的 oid暂时填写成这样
+					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+					{
+						m_Content = IndexContent,
+						oid = IndexOIDPre + ".",
+						MibName_CN = "实例描述",
+						MibName_EN = "indexlist"
+					}, "实例描述");
 				}
 
-				MibDataGrid.DataContext = contentlist;
-			}));
+				// 将ar当中所有匹配的结果取出,最后会取出了一行数据;
+				foreach (var iter3 in ar)
+				{
+					// 将所有相同索引取出;
+					temp = iter3.Key.Split('.');
+					string TempIndex = "";
+
+					// TODO 这里和上面有什么区别？
+					for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+					{
+						TempIndex += "." + temp[i];
+					}
+
+					//以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
+					if (TempIndex == NowIndex)
+					{
+						// 将GetNext整表的OID数值取出到temp_compare;
+						string[] temp_nowoid = iter3.Key.Split('.');
+						string NowNodeOID = "";
+						for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
+						{
+							NowNodeOID += "." + temp_nowoid[i];
+						}
+						string temp_compare = NowNodeOID.Substring(1);
+
+						// 如果OID匹配;
+						if (oid_cn.ContainsKey(temp_compare))
+						{
+							Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
+
+							var dgm = new DataGrid_Cell_MIB()
+							{
+								m_Content = SnmpToDatabase.ConvertSnmpValueToString(oid_en[temp_compare], iter3.Value, "172.27.245.92") as string,	// 原始数据，没有处理
+								oid = iter3.Key,
+								MibName_CN = oid_cn[temp_compare],
+								MibName_EN = oid_en[temp_compare]
+							};
+
+							model.AddProperty(oid_en[temp_compare], dgm, oid_cn[temp_compare]);
+
+							// 已经查询过该索引,后续不再参与查询;
+							if (!AlreadyRead.Contains(NowIndex))
+							{
+								AlreadyRead.Add(NowIndex);
+							}
+						}
+					}
+				}
+
+				// 将这个整行数据填入List;
+				if (model.Properties.Count != 0)
+				{
+					// 向单元格内添加内容;
+					contentlist.Add(model);
+				}
+
+			}
+			//增加表量表索引的列名
+			if (RealIndexCount > 0)
+			{
+				var column = new DataGridTextColumn
+				{
+					Header = "实例描述",
+					Binding = new Binding("indexlist.m_Content")
+				};
+				MibDataGrid.Columns.Add(column);
+			}
+
+			foreach (var iter3 in oid_en)
+			{
+				string[] temp = iter3.Key.Split('.');
+				if ((RealIndexCount > 0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
+				{
+					//索引不对应列名
+					continue;
+				}
+
+				var column = new DataGridTextColumn
+				{
+					Header = oid_cn[iter3.Key],
+					Binding = new Binding(iter3.Value + ".m_Content")
+				};
+
+				MibDataGrid.Columns.Add(column);
+			}
+
+			MibDataGrid.DataContext = contentlist;
 		}
 
 		#endregion

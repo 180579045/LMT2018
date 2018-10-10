@@ -113,24 +113,24 @@ namespace MIBDataParser.JSONDataMgr
 							}
 						}
 					}
-					return false;
-				}
-
-				if (isMibJsonOK && isObjJson2OK && isCmdJsonOK)
-				{
-					if (threads[3].IsAlive)
-					{
-						try
-						{
-							threads[3].Join();
-						}
-						catch (ThreadStateException e)
-						{
-							Console.WriteLine(e);
-						}
-					}
 					return true;
 				}
+
+				//if (isMibJsonOK && isObjJson2OK && isCmdJsonOK)
+				//{
+				//	if (threads[3].IsAlive)
+				//	{
+				//		try
+				//		{
+				//			threads[3].Join();
+				//		}
+				//		catch (ThreadStateException e)
+				//		{
+				//			Console.WriteLine(e);
+				//		}
+				//	}
+				//	return true;
+				//}
 			}
 			//Console.WriteLine("end   to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			//Console.Read();
@@ -236,7 +236,7 @@ namespace MIBDataParser.JSONDataMgr
 		/// </summary>
 		private void ConvertAccessDbToJsonProtect()
 		{
-			Thread.Sleep(3000);
+			//Thread.Sleep(3000);
 			isJsonProtect = true;
 			Console.WriteLine("DbToJson : Thread Protect Timer over, err.");
 		}

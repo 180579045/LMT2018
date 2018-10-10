@@ -31,10 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LinkPath">
-      <HintPath>..\Control\LinkPath\bin\Debug\LinkPath.dll</HintPath>
+      <HintPath>..\Control\LinkPath\obj\Debug\LinkPath.dll</HintPath>
     </Reference>
     <Reference Include="LmtbSnmp">
-      <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
+      <HintPath>..\Control\LmtbSnmp\obj\Debug\LmtbSnmp.dll</HintPath>
     </Reference>
     <Reference Include="MsgQueue, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

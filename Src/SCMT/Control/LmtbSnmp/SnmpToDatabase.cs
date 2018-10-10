@@ -242,6 +242,179 @@ namespace LmtbSnmp
 			return MibStringHelper.SplitManageValue(mvr);
 		}
 
+		/// <summary>
+		/// 给定mibName，从数据库中找到该节点名对应的数据类型，把strValue转换为相关的格式
+		/// 1.如果是DateAndTime，就转换为可读的时间字符串
+		/// 2.如果是枚举值，就返回strValue对应的取值
+		/// 3.
+		/// </summary>
+		/// <param name="mibName"></param>
+		/// <param name="strValue"></param>
+		/// <param name="targetIp"></param>
+		/// <returns></returns>
+		public static dynamic ConvertSnmpValueToString(string mibName, string strValue, string targetIp)
+		{
+			if (string.IsNullOrEmpty(mibName) || string.IsNullOrEmpty(targetIp) || string.IsNullOrEmpty(strValue))
+			{
+				return null;
+			}
+
+			string error;
+			MibLeaf retData;
+			if (!Database.GetInstance().getDataByEnglishName(mibName, out retData, targetIp, out error))
+			{
+				return null;
+			}
+
+			if (retData.IsTable)	// 给定的Mib名是表入口
+			{
+				return null;
+			}
+
+			// TODO 莫忘记取值范围校验
+			var omType = retData.OMType;
+			var asnType = retData.ASNType;
+			//var uiType = retData.UIType;
+
+			if (omType.Equals("u32") || omType.Equals("s32"))
+			{
+				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
+				{
+					// BITS类型的，需要转换
+					return ConvertBitsToString(retData.managerValueRange, strValue);
+				}
+			}
+			else if (omType.Equals("u32[]"))
+			{
+				
+			}
+			else if (omType.Equals("s32[]"))
+			{
+				// oid类型
+				if (asnType.Equals("notification-type", StringComparison.OrdinalIgnoreCase) ||
+					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase))
+				{
+					
+				}
+			}
+			else if (omType.Equals("enum"))
+			{
+				// 1.取出该节点的取值范围
+				var mvr = retData.managerValueRange;
+
+				// 2.分解取值范围
+				var mapKv = MibStringHelper.SplitManageValue(mvr);
+				var value = int.Parse(strValue);
+
+				// 3.比对是否存在对应的枚举值
+				return mapKv.ContainsKey(value) ? mapKv[value] : null;
+			}
+			//else if (omType.Equals("s8[]"))
+			//{
+
+			//}
+			else if (omType.Equals("u8[]"))
+			{
+				if (asnType.Equals("DateAndTime"))
+				{
+					return TimeHelper.ConvertUtcTimeTextToDateTime(strValue).ConvertTimeZoneToLocal().DateTimeToStringEx();
+				}
+				else if (asnType.Equals("InetAddress"))
+				{
+					return ConvertInetToString(strValue);
+				}
+				else if (asnType.Equals("MacAddress"))
+				{
+					return ConvertMacAddrToString(strValue);
+				}
+				else if (asnType.Equals("MncMccType"))
+				{
+
+				}
+			}
+			//else if (omType.Equals("u16") || omType.Equals("s16"))
+			//{
+			//	return strValue;
+			//}
+			//else
+			//{
+			//	return strValue;
+			//}
+
+			return strValue;
+		}
+
+		/// <summary>
+		/// 转换BITS类型的数据为描述信息
+		/// </summary>
+		/// <param name="strValueRange">MIB中的取值范围</param>
+		/// <param name="strValue">实际取值</param>
+		/// <returns></returns>
+		public static dynamic ConvertBitsToString(string strValueRange, string strValue)
+		{
+			if (string.IsNullOrEmpty(strValueRange) || string.IsNullOrEmpty(strValue))
+			{
+				return null;
+			}
+
+			// 1.分隔取值范围
+			var mapKv = MibStringHelper.SplitManageValue(strValueRange);
+
+			// 2.TODO 简单处理，实际取值只有一个
+			var value = int.Parse(strValue);
+
+			// 3.返回对应的描述信息
+			return mapKv.ContainsKey(value) ? mapKv[value] : null;
+		}
+
+		/// <summary>
+		/// 转换IP地址到string
+		/// 在本函数内部处理了IPV4和IPV6
+		/// </summary>
+		/// <param name="strInetAddr"></param>
+		/// <returns></returns>
+		public static dynamic ConvertInetToString(string strInetAddr)
+		{
+			if (string.IsNullOrEmpty(strInetAddr))
+			{
+				return null;
+			}
+
+			// 剔除字符串中的空格
+			var strTemp = strInetAddr.Replace(" ", "");
+
+			// 根据字符串的长度判断是ipv4还是ipv6
+			var len = strTemp.Length;
+			if (len == 8)
+			{
+				// ipv4地址字符串的处理
+				var ipv4 = TimeHelper.StrHex2Bytes(strTemp);
+				return $"{ipv4[0]}.{ipv4[1]}.{ipv4[2]}.{ipv4[3]}";
+			}
+			else if (len == 32)
+			{
+				string ipv6 = "";
+				// ipv6地址字符串的处理
+				for (var i = 0; i < len;)
+				{
+					ipv6 = $"{ipv6}:{strTemp.Substring(i, 4)}";
+					i += 4;
+				}
+				return ipv6.TrimStart(':');
+			}
+			return strInetAddr;
+		}
+
+		public static dynamic ConvertMacAddrToString(string strMac)
+		{
+			if (string.IsNullOrEmpty(strMac))
+			{
+				return null;
+			}
+
+			return strMac.Replace(" ", ":").ToUpper();
+		}
+
 		// 根据mib名称获取节点信息
 		public static MibLeaf GetMibNodeInfoByName(string mibName, string targetIp)
 		{

@@ -6,7 +6,7 @@ namespace CommonUtility
 {
 	// 从MIB取出的字符串处理助手
 
-	public class MibStringHelper
+	public static class MibStringHelper
 	{
 		/// <summary>
 		/// 分解MIB项的取值范围字符串。

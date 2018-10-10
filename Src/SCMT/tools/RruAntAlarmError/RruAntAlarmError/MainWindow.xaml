@@ -1,0 +1,90 @@
+﻿<Window x:Class="RruAntAlarmError.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RruAntAlarmError"
+        mc:Ignorable="d"
+        Title="解析工具" Height="408.613" Width="581.937" Background="#FF77A06D" Icon=".\res\DTXMLtoExcel.ico">
+    <Grid Margin="0,0,2,2" Background="#FFE9F3F2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="58*"/>
+            <ColumnDefinition Width="503*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="button_Rru" Content="选择RRU基本信息表" HorizontalAlignment="Left" Margin="275,42,0,0" VerticalAlignment="Top" Width="147" Click="button_RruClick" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.525"/>
+                    <GradientStop Color="#FF89AEAC" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBox x:Name="textBox_Rru" HorizontalAlignment="Left" Height="23" Margin="8,41,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="248" TextChanged="textBox_RruTextChanged" Background="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" Grid.Column="1"/>
+        <Button x:Name="button_AntWeight" Content="选择天线权值表" HorizontalAlignment="Left" Margin="275,94,0,0" VerticalAlignment="Top" Width="147" Click="button_AntWeightClick" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FF89AEAC" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBox x:Name="textBox_AntWeight" HorizontalAlignment="Left" Height="23" Margin="8,93,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="248" TextChanged="textBox_AntWeightTextChanged" Background="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" Grid.Column="1"/>
+        <Button x:Name="button_Alarm" Content="选择告警信息表" HorizontalAlignment="Left" Margin="275,149,0,0" VerticalAlignment="Top" Width="147" Click="button_AlarmClick" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FF89AEAC" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBox x:Name="textBox_Alarm" HorizontalAlignment="Left" Height="23" Margin="8,148,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="248" TextChanged="textBox_AlarmTextChanged" Background="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" Grid.Column="1"/>
+        <Button x:Name="button_ErrorCode" Content="选择ErrorCode信息表" HorizontalAlignment="Left" Margin="275,204,0,0" VerticalAlignment="Top" Width="147" Click="button_ErrorCodeClick" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FF89AEAC" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <TextBox x:Name="textBox_ErrorCode" HorizontalAlignment="Left" Height="23" Margin="8,203,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="248" TextChanged="textBox_ErrorCodeTextChanged" Background="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" Grid.Column="1"/>
+        <TextBox x:Name="textBox_NetPlanElements" HorizontalAlignment="Left" Height="23" Margin="8,252,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="248" TextChanged="textBox_NetPlanElements_TextChanged" Grid.Column="1"/>
+        <Button x:Name="button_NetPlanElements" Content="选择器件表" HorizontalAlignment="Left" Margin="275,252,0,0" VerticalAlignment="Top" Width="147" Click="button_NetPlanElementsClick" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FF89AEAC" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="button_OK" Content="开始解析" HorizontalAlignment="Left" Margin="115,320,0,0" VerticalAlignment="Top" Width="75" Click="button_ClickOK" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FFB1B823" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+        <Button x:Name="button_Cancel" Content="取消" HorizontalAlignment="Left" Margin="250,320,0,0" VerticalAlignment="Top" Width="75" Click="button_ClickCancel" Grid.Column="1" Height="22">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FFBBBBB8" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
+    </Grid>
+</Window>

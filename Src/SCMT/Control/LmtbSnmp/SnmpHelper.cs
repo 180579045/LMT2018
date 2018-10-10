@@ -62,8 +62,6 @@ namespace LmtbSnmp
 			ConnectToAgent(m_Community, m_DestIPAddr);
 		}
 
-   
-
 		/// <summary>
 		/// GetRequest的对外接口
 		/// </summary>
@@ -190,31 +188,19 @@ namespace LmtbSnmp
 		/// </summary>
 		/// <param name="v"></param>
 		/// <returns></returns>
-		public static String SnmpDateTime2String(OctetString v)
+		public static string SnmpDateTime2String(OctetString v)
 		{
 			byte[] bts = v.ToArray();
 
 			byte[] format_str = new byte[128];   //保存格式化过后的时间字符串  
 
-			int year;
-
-			int month;
-
-			int day;
-
-			int hour;
-
-			int minute;
-
-			int second;
-
 			//int msecond;        
-			year = bts[0] * 256 + bts[1]; // 前2个字节为年份
-			month = bts[2];
-			day = bts[3];
-			hour = bts[4];
-			minute = bts[5];
-			second = bts[6];
+			var year = bts[0] * 256 + bts[1];
+			int month = bts[2];
+			int day = bts[3];
+			int hour = bts[4];
+			int minute = bts[5];
+			int second = bts[6];
 			//msecond = bts[7];  
 			//以下为格式化字符串  
 			int index = 3;
@@ -226,7 +212,7 @@ namespace LmtbSnmp
 				temp /= 10;
 			}
 
-			format_str[4] = (Byte)'-';
+			format_str[4] = (byte)'-';
 			index = 6;
 			temp = month;
 			for (; index >= 5; index--)
@@ -235,7 +221,7 @@ namespace LmtbSnmp
 				temp /= 10;
 			}
 
-			format_str[7] = (Byte)'-';
+			format_str[7] = (byte)'-';
 			index = 9;
 			temp = day;
 			for (; index >= 8; index--)
@@ -246,7 +232,7 @@ namespace LmtbSnmp
 				temp /= 10;
 
 			}
-			format_str[10] = (Byte)' ';
+			format_str[10] = (byte)' ';
 			index = 12;
 			temp = hour;
 			for (; index >= 11; index--)
@@ -255,7 +241,7 @@ namespace LmtbSnmp
 				temp /= 10;
 			}
 
-			format_str[13] = (Byte)':';
+			format_str[13] = (byte)':';
 			index = 15;
 			temp = minute;
 			for (; index >= 14; index--)
@@ -267,7 +253,7 @@ namespace LmtbSnmp
 
 			}
 
-			format_str[16] = (Byte)':';
+			format_str[16] = (byte)':';
 			index = 18;
 			temp = second;
 			for (; index >= 17; index--)
@@ -428,13 +414,13 @@ namespace LmtbSnmp
 					break;
 				}
 
-				uint intVal = UInt32.Parse(strVal);
+				uint intVal = uint.Parse(strVal);
 				byte[] bytesTmp = BitConverter.GetBytes(intVal);
 				if (BitConverter.IsLittleEndian) // 转换为网络序
 				{
 					Array.Reverse(bytesTmp);
 				}
-				Buffer.BlockCopy(bytesTmp, 0, bytes, index * 4, sizeof(UInt32));
+				Buffer.BlockCopy(bytesTmp, 0, bytes, index * 4, sizeof(uint));
 				index++;
 			}
 
@@ -449,7 +435,7 @@ namespace LmtbSnmp
 		public static string OctetStrToU32Array(OctetString octStr)
 		{
 			// 数组个数
-			int valCount = octStr.Length / sizeof(UInt32);
+			int valCount = octStr.Length / sizeof(uint);
 			if (valCount <= 0)
 			{
 				return "";
@@ -464,15 +450,15 @@ namespace LmtbSnmp
 			for (int i = 0; i < valCount;)
 			{
 				// 拷贝4个字节，转换为整数
-				byte[] bsTmp = new byte[sizeof(UInt32)];
-				Buffer.BlockCopy(bsTmp, 0, bytes, i * 4, sizeof(UInt32));
+				byte[] bsTmp = new byte[sizeof(uint)];
+				Buffer.BlockCopy(bsTmp, 0, bytes, i * 4, sizeof(uint));
 				// 大小端转换
 				if (BitConverter.IsLittleEndian)
 				{
 					Array.Reverse(bsTmp);
 				}
 
-				UInt32 intTmp = BitConverter.ToUInt32(bsTmp, 0);
+				uint intTmp = BitConverter.ToUInt32(bsTmp, 0);
 				sb.Append(intTmp);
 
 				i++;
@@ -495,7 +481,7 @@ namespace LmtbSnmp
 		public static string OctetStrToS32Array(OctetString octStr)
 		{
 			// 数字长度
-			int valCount = octStr.Length / sizeof(Int32);
+			int valCount = octStr.Length / sizeof(int);
 			if (valCount <= 0)
 			{
 				return "";
@@ -509,15 +495,15 @@ namespace LmtbSnmp
 			// 每4个字节转换为一个Int32数字
 			for (int i = 0; i < valCount;)
 			{
-				byte[] bsTmp = new byte[sizeof(Int32)];
-				Buffer.BlockCopy(bsTmp, 0, bytes, i * 4, sizeof(Int32));
+				byte[] bsTmp = new byte[sizeof(int)];
+				Buffer.BlockCopy(bsTmp, 0, bytes, i * 4, sizeof(int));
 				// 大小端转换
 				if (BitConverter.IsLittleEndian)
 				{
 					Array.Reverse(bsTmp);
 				}
 
-				Int32 intTmp = BitConverter.ToInt32(bsTmp, 0);
+				int intTmp = BitConverter.ToInt32(bsTmp, 0);
 				sb.Append(intTmp);
 
 				i++;
@@ -1292,7 +1278,7 @@ namespace LmtbSnmp
 			catch (Exception ex)
 			{
 				// If exception happens, it will be returned here
-				Console.WriteLine(String.Format("Request failed with exception: {0}", ex.Message));
+				Console.WriteLine(string.Format("Request failed with exception: {0}", ex.Message));
 				target.Close();
 				return;
 			}
@@ -1306,13 +1292,13 @@ namespace LmtbSnmp
 				// Check if we received an SNMP error from the agent
 				if (response.Pdu.ErrorStatus != 0)
 				{
-					Console.WriteLine(String.Format("SNMP agent returned ErrorStatus {0} on index {1}",
+					Console.WriteLine(string.Format("SNMP agent returned ErrorStatus {0} on index {1}",
 						response.Pdu.ErrorStatus, response.Pdu.ErrorIndex));
 				}
 				else
 				{
 					// Everything is ok. Agent will return the new value for the OID we changed
-					Console.WriteLine(String.Format("Agent response {0}: {1}",
+					Console.WriteLine(string.Format("Agent response {0}: {1}",
 						response.Pdu[0].Oid.ToString(), response.Pdu[0].Value.ToString()));
 				}
 			}

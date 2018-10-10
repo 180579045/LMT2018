@@ -123,14 +123,14 @@
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
     </Reference>
     <Reference Include="MsgDispatcher">
-      <HintPath>..\Control\MsgDispatcher\bin\Debug\MsgDispatcher.dll</HintPath>
+      <HintPath>..\Control\MsgDispatcher\obj\Debug\MsgDispatcher.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SCMTOperationCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Control\SCMTOperationCore\bin\Debug\SCMTOperationCore.dll</HintPath>
+      <HintPath>..\Control\SCMTOperationCore\obj\Debug\SCMTOperationCore.dll</HintPath>
     </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
@@ -237,6 +237,7 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
     <Compile Include="View\AddBoardWindow.xaml.cs">
@@ -545,6 +546,10 @@
     <ProjectReference Include="..\CommonUtility\CommonUtility.csproj">
       <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
       <Name>CommonUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\BaseStationConInfo\BaseStationConInfo.csproj">
+      <Project>{8c99c928-f64f-4a49-9018-abddabc73a1a}</Project>
+      <Name>BaseStationConInfo</Name>
     </ProjectReference>
     <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
