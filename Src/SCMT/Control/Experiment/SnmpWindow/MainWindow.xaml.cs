@@ -109,17 +109,17 @@ namespace SnmpWindow
 
             // 获取基站中对应数值;
             SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-            Ret1 = snmpmsg1.GetRequest(inputoid1, "public", "172.27.245.92");
+            Ret1 = snmpmsg1.GetRequest(inputoid1, "public", "172.27.245.92");  // TODO 需要确定真正的enb地址
 
-            // 获取基站中对应数值;
-            SnmpMessageV2c snmpmsg2 = new SnmpMessageV2c();
+			// 获取基站中对应数值;
+			SnmpMessageV2c snmpmsg2 = new SnmpMessageV2c();
             Ret2 = snmpmsg2.GetRequest(inputoid2, "public", "172.27.245.92");
 
-            // 获取基站中对应数值;
-            SnmpMessageV2c snmpmsg3 = new SnmpMessageV2c();
+			// 获取基站中对应数值;
+			SnmpMessageV2c snmpmsg3 = new SnmpMessageV2c();
             Ret3 = snmpmsg3.GetRequest(inputoid3, "public", "172.27.245.92");
 
-            var RetTemp = Ret1.Union(Ret2);
+			var RetTemp = Ret1.Union(Ret2);
             var AllRet = RetTemp.Union(Ret3);
 
             foreach (var RetShow in AllRet)
@@ -152,9 +152,9 @@ namespace SnmpWindow
 
             // 获取基站中对应数值;
             SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-            snmpmsg1.GetRequest(new AsyncCallback(AsyncGetSNMP), inputoid1, "public", "172.27.245.92");
+            snmpmsg1.GetRequest(AsyncGetSNMP, inputoid1, "public", "172.27.245.92"); // TODO 需要确定真正的enb地址
 
-        }
+		}
 
         private void AsyncGetSNMP(IAsyncResult ar)
         {
@@ -179,8 +179,8 @@ namespace SnmpWindow
 
             while (GetValueStatus)
             {
-                Ret = snmpmsg.GetRequest(inputpdu, "public", "172.27.245.92");
-                string temp = "";
+                Ret = snmpmsg.GetRequest(inputpdu, "public", "172.27.245.92");  // TODO 需要确定真正的enb地址
+				string temp = "";
                 foreach (var RetShow in Ret)
                 {
                     temp += RetShow.Value + ",";
@@ -210,8 +210,8 @@ namespace SnmpWindow
             Pdulist1.Add(oid3, value3);
 
             SnmpMessageV2c SetValue = new SnmpMessageV2c();
-            SetValue.SetRequest(Pdulist1, "public", "172.27.245.92");
-        }
+            SetValue.SetRequest(Pdulist1, "public", "172.27.245.92");  // TODO 需要确定真正的enb地址
+		}
 
         private void GetNext_Click(object sender, RoutedEventArgs e)
         {
@@ -219,7 +219,7 @@ namespace SnmpWindow
 
             List<string> inputoid1 = new List<string>();
             
-            SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");
+            SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");  // TODO 需要确定真正的enb地址
             //Dictionary<string,string> ret = msg.GetNext(UserInputList1);
         }
 
@@ -234,8 +234,8 @@ namespace SnmpWindow
                 OidsArgs.Add(iter);
             }
 
-            SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");
-            msg.GetNextRequest(new AsyncCallback(ReceiveRes), OidsArgs);
+            SnmpMessageV2c msg = new SnmpMessageV2c("public", "172.27.245.92");  // TODO 需要确定真正的enb地址
+			msg.GetNextRequest(ReceiveRes, OidsArgs);
         }
 
         void ReceiveRes(IAsyncResult ar)

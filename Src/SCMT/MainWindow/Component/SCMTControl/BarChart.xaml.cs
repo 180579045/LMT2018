@@ -110,7 +110,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                             string[] db_temp = new string[m_CbForJs.listForXAxis.Length];
                             da_Num_content = da_Num_content.Concat(db_temp).ToList();
 
-                            // 持续获取数据;
+                            // 持续获取数据 TODO 需要配置这个表针对的是哪个基站
                             while (GettingValue)
                             {
                                 // ！！！后续需要扩展功能，保存日志文件;

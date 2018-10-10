@@ -817,7 +817,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         private List<string> GetsAllSnmpValuesForALeafNode(string leafOid)
         {
             string oidPrefix = "1.3.6.1.4.1.5105.100.";                        // oid 前缀
-            string boardAddr = "172.27.245.92";                              // 板块地址
+            string boardAddr = "172.27.245.92";                              // 板卡地址 TODO 需要确定真正的板卡地址
 			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(boardAddr);// snmp 操作句柄
             List<CDTLmtbVb> lmtVbs = new List<CDTLmtbVb>() {                 // snmp 查询的输入oid的容器
                 new CDTLmtbVb() { Oid = (oidPrefix + leafOid) }};            //("1.3.6.1.4.1.5105.100.2.4.1.1.2.1.1.11");
@@ -853,7 +853,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         /// </summary>
         void GetAllSnmpDataForEachLeafNode()
         {
-            string boardAddr = "172.27.245.92";
+            string boardAddr = "172.27.245.92"; // TODO 需要确定真正的板卡地址
 			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(boardAddr);     /// 查询snmp的句柄
             List<CDTLmtbVb> lmtVbs = new List<CDTLmtbVb>();                       /// 多个叶子节点组成的队列
             /// 一起查询多个叶子节点内容
@@ -897,8 +897,8 @@ namespace SCMTMainWindow.Component.SCMTControl
         {
             bool isLastLeaf = false;
             string mibName = leafDict["leafName"];
-            string boardAddr = "172.27.245.92";
-            string errorInfo;
+            string boardAddr = "172.27.245.92";  // TODO 需要确定真正的板卡地址
+			string errorInfo;
 
             var mapNameData = new Dictionary<string, MibLeaf> {
                 { mibName, null }

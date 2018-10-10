@@ -49,7 +49,6 @@ namespace NetPlan
 			return retCmd;
 		}
 
-		// TODO 提供一个获取当前操作的基站IP的函数
 		// 获取指定设备的所有MIB信息，并填入到属性框中
 		public List<MibLeafNodeInfo> GetDevAttributesFromMib(string devType)
 		{
@@ -57,9 +56,14 @@ namespace NetPlan
 			var getCmdList = cmdObj?.get;
 			var devAttributList = new List<MibLeafNodeInfo>();
 
+			var target = CSEnbHelper.GetCurEnbAddr();
+			if (null == target)
+			{
+				throw new CustomException("当前未选中基站");
+			}
+
 			foreach (var getCmd in getCmdList)
 			{
-				var target = "172.27.245.92";   // TODO 硬编码IP地址
 				var cmdInfo = Database.GetInstance().GetCmdDataByName(getCmd, target);
 				if (null == cmdInfo)
 				{

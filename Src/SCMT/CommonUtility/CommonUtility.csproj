@@ -57,6 +57,7 @@
     <Compile Include="CommString.cs" />
     <Compile Include="CommStructs.cs" />
     <Compile Include="ConfigFileHelper.cs" />
+    <Compile Include="CSEnbHelper.cs" />
     <Compile Include="CustomException.cs" />
     <Compile Include="FilePathHelper.cs" />
     <Compile Include="FileRdWrHelper.cs" />

@@ -127,8 +127,9 @@ namespace SCMTMainWindow.Component.SCMTControl
                             {
                                 // ！！！后续需要扩展功能，保存日志文件;
                                 SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-                                Ret = snmpmsg1.GetRequest(inputoid, "public", "172.27.245.92");
-                                double temp = 0;
+                                Ret = snmpmsg1.GetRequest(inputoid, "public", "172.27.245.92"); // TODO 需要确定真正的板卡地址
+
+								double temp = 0;
 
                                 foreach(var iter2 in Ret)
                                 {

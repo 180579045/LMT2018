@@ -63,8 +63,7 @@ namespace SCMTMainWindow
 
 		private bool m_bIsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
 		private bool m_bIsRepeat;
-		private IntPtr m_Hwnd;                                 // 当前主窗口句柄;
-		private string g_SelectedEnbIP;                               //保存当前被选中的基站的IP地址
+		private IntPtr m_Hwnd;                            // 当前主窗口句柄;
 		private LayoutAnchorable subForMessageRecv;       //信令消息界面
 		private readonly MessageRecv messageRecv = new MessageRecv();
 
@@ -248,8 +247,13 @@ namespace SCMTMainWindow
 		private void AddToCollect_Click(object sender, RoutedEventArgs e)
 		{
 			string StrName = m_strNodeName;
-			//TODO 硬编码，需要修改
-			NodeB node = new NodeB("172.27.245.92", "NodeB");
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (null == targetIp)
+			{
+				throw new CustomException("尚未选择要操作的基站");
+			}
+
+			NodeB node = new NodeB(targetIp, "NodeB");
 			string cfgFile = FilePathHelper.GetDataPath() + "Tree_Collect.json";
 
 			StreamReader reader = File.OpenText(cfgFile);
@@ -339,8 +343,13 @@ namespace SCMTMainWindow
 			List<ObjNode> RootNodeShow = new List<ObjNode>();
 			ObjNode Root = new ObjTreeNode(0, 0, "1.0", "收藏节点", @"/");
 
-			// TODO 硬编码
-			NodeB node = new NodeB("172.27.245.92", "NodeB");
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (null == targetIp)
+			{
+				throw new CustomException("尚未选中要操作的基站");
+			}
+
+			NodeB node = new NodeB(targetIp, "NodeB");
 			string cfgFile = FilePathHelper.GetDataPath() + "Tree_Collect.json";
 
 			// TODO 不判断文件是否存在
@@ -628,7 +637,7 @@ namespace SCMTMainWindow
 			if (null != target)
 			{
 				node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-				g_SelectedEnbIP = node.NeAddress.ToString();
+				CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
 
 				//改变被点击的 node，还原之前的 node
 				var Children = ExistedNodebList.Children;
@@ -1653,7 +1662,7 @@ namespace SCMTMainWindow
 
 							var dgm = new DataGrid_Cell_MIB()
 							{
-								m_Content = SnmpToDatabase.ConvertSnmpValueToString(oid_en[temp_compare], iter3.Value, "172.27.245.92") as string,	// 原始数据，没有处理
+								m_Content = SnmpToDatabase.ConvertSnmpValueToString(oid_en[temp_compare], iter3.Value, "172.27.245.92") as string,  // TODO 需要确定真正的板卡地址
 								oid = iter3.Key,
 								MibName_CN = oid_cn[temp_compare],
 								MibName_EN = oid_en[temp_compare]
@@ -1727,13 +1736,14 @@ namespace SCMTMainWindow
 
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
-			if(g_SelectedEnbIP == null)
+			var enbIp = CSEnbHelper.GetCurEnbAddr();
+			if(enbIp == null)
 			{
 				MessageBox.Show("未选择基站，请单击需要显示的基站");
 				return;
 			}
 
-			string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(g_SelectedEnbIP);
+			string strFriendName =  NodeBControl.GetInstance().GetFriendlyNameByIp(enbIp);
 
 			foreach(LayoutAnchorable item in listAvalon)
 			{
@@ -1744,7 +1754,7 @@ namespace SCMTMainWindow
 				}
 			}
 
-			var content = new Component.SCMTControl.FileManager.TestTwoFileManager(g_SelectedEnbIP);
+			var content = new Component.SCMTControl.FileManager.TestTwoFileManager(enbIp);
 
 			var sub = new LayoutAnchorable
 			{

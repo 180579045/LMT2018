@@ -100,7 +100,7 @@ namespace AtpMessage.LinkMgr
 
 		private void OnSendTraceSwtich(SubscribeMsg msg)
 		{
-			string ip = "172.27.245.92";     //TODO
+			string ip = "172.27.245.92";     // TODO 需要确定真正的板卡地址
 			if (!HasLinkWithSameIp(ip))     //没有对应的连接，返回。需要加入提示
 			{
 				return;
