@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
 using LmtbSnmp;
+using MIBDataParser.JSONDataMgr;
 
 namespace LinkPath
 {
@@ -133,42 +134,44 @@ namespace LinkPath
 				return -1;
 			}
 
-			// TODO: 数据库先打桩
-			string strMibList = "";
-			// test
-			strMibList = "2.2.1.2.1.1.2|2.2.1.2.1.1.3";
-
-
-			if (string.IsNullOrEmpty(strMibList))
+			var cmdInfo = Database.GetInstance().GetCmdDataByName(cmdName, targetIp: strIpAddr);
+			if (null == cmdInfo)
 			{
-				return -1;
+				Log.Error($"未找到命令{cmdName}的信息");
+				return -2;
 			}
 
-			// 转换为oid数组
-			string[] mibList = StringToArray(strMibList);
-			if (mibList == null)
-			{
-				return -1;
-			}
-
+			var mibList = cmdInfo.m_leaflist;
 
 			// TODO : bNeedCheck
 			if (needCheck)
 			{
 			}
 
-			// TODO:
 			// 获取oid的前缀
-			string strPreFixOid = "1.3.6.1.4.1.5105.100";
-			StringBuilder sbOid = new StringBuilder();
-			List<CDTLmtbVb> lmtbVbs = new List<CDTLmtbVb>();
+			var strPreFixOid = SnmpToDatabase.GetMibPrefix().TrimEnd('.');
+			var sbOid = new StringBuilder();
+			var lmtbVbs = new List<CDTLmtbVb>();
 
 			// 组装lmtbVb参数
-			foreach (string v in mibList)
+			foreach (var v in mibList)
 			{
+				var leaf = Database.GetInstance().GetMibDataByOid(v, strIpAddr);
+				if (null == leaf)
+				{
+					Log.Error($"根据oid {v} 未找到关联的mib信息");
+					continue;
+				}
+
+				if (0 == leaf.isMib)
+				{
+					// 过滤掉假mib
+					continue;
+				}
+
 				sbOid.Clear();
 				sbOid.AppendFormat("{0}.{1}", strPreFixOid, v);
-				CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = sbOid.ToString()};
+				var lmtVb = new CDTLmtbVb {Oid = sbOid.ToString()};
 				lmtbVbs.Add(lmtVb);
 			}
 
@@ -177,20 +180,20 @@ namespace LinkPath
 			ILmtbSnmp lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
 			while (true)
 			{
-				if (true == lmtbSnmpEx.GetNextRequest(strIpAddr, lmtbVbs, out tmpResult, 0))
+				if (lmtbSnmpEx.GetNextRequest(strIpAddr, lmtbVbs, out tmpResult, 0))
 				{
 					// 清除查询参数
 					lmtbVbs.Clear();
-					foreach (KeyValuePair<string, string> item in tmpResult)
+					foreach (var item in tmpResult)
 					{
-						logMsg = string.Format("ObjectName={0}, Value={1}", item.Key, item.Value);
+						logMsg = $"ObjectName={item.Key}, Value={item.Value}";
 						//Log.Debug(logMsg);
 
 						// 保存结果
 						results.Add(item.Key, item.Value);
 
 						// 组装新的查询oid
-						CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = item.Key};
+						var lmtVb = new CDTLmtbVb {Oid = item.Key};
 						lmtbVbs.Add(lmtVb);
 					}
 
@@ -200,7 +203,6 @@ namespace LinkPath
 					break;
 				}
 			} //end while
-
 
 			return 0;
 		}
