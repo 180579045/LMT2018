@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CommonUtility
@@ -81,7 +82,70 @@ namespace CommonUtility
 			return retData;
 		}
 
+		/// <summary>
+		/// 根据索引级数拆出索引值。注意，不判断拆掉索引值后的oid是否有效
+		/// </summary>
+		/// <param name="fulloid"></param>
+		/// <param name="grade">索引级数</param>
+		/// <returns>null:截取失败</returns>
+		public static string GetIndexValueByGrade(string fulloid, int grade)
+		{
+			if (string.IsNullOrEmpty(fulloid))
+			{
+				return null;
+			}
 
+			// 如果是标量，grade = 0。索引级数范围(0,6]
+			if (grade <= 0 || grade > 6)
+			{
+				return null;
+			}
 
+			// 如果fulloid中.字符的数量小于级数，直接返回null
+			if (fulloid.Count(ch => ch == '.') < grade)
+				return null;
+
+			var startIndex = fulloid.Length;
+
+			for (var i = 0; i < grade; i++)
+			{
+				startIndex = fulloid.LastIndexOf('.', startIndex - 1);
+				if (-1 == startIndex)
+				{
+					return null;
+				}
+			}
+
+			var sss = fulloid.Substring(startIndex, fulloid.Length - startIndex);
+			return sss;
+		}
+
+		/// <summary>
+		/// 从索引值字符串中取出指定序号的一段
+		/// e.g. 从.0.0.1中取出第2级索引的真实值为0，第3级索引的真实值为1
+		/// </summary>
+		/// <param name="strIndex">索引值字符串</param>
+		/// <param name="partNo">要取出段的序号，从0开始计数</param>
+		/// <returns></returns>
+		public static string GetRealValueFromIndex(string strIndex, int partNo)
+		{
+			if (string.IsNullOrEmpty(strIndex) || partNo < 0)
+			{
+				return null;
+			}
+
+			// 处理索引值字符串，只保留最前的.字符
+			var temp = strIndex.Trim('.');
+			temp = $".{temp}";
+
+			var partIndex = strIndex.Split('.');
+
+			if (partIndex.Length < partNo)  // 如果索引级数小于要查询的序号，就返回null
+			{
+				return null;
+			}
+
+			return partIndex[partNo];
+		}
 	}
 }
