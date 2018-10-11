@@ -369,8 +369,8 @@ namespace LmtbSnmp
 				{
 					foreach (Vb vb in ReqResult.Pdu.VbList)
 					{
-						logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-							, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+						//logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
+						//	, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
  //                       Log.Debug(logMsg);
 						result.Add(vb.Oid.ToString(), vb.Value.ToString());
 					}
@@ -896,6 +896,20 @@ namespace LmtbSnmp
 				Vb vb = new Vb(new Oid(lmtVb.Oid));
 				pdu.VbList.Add(vb);
 }
+		}
+
+		public void PacketQueryPdu(List<string> oidList, out Pdu pdu)
+		{
+			pdu = new Pdu(PduType.GetNext);
+			if (null == oidList)
+			{
+				return;
+			}
+
+			foreach (var oid in oidList)
+			{
+				pdu.VbList.Add(new Vb(oid));
+			}
 		}
 
 		/// <summary>
