@@ -20,7 +20,7 @@ using CommonUtility;
 
 namespace MIBDataParser.JSONDataMgr
 {
-    class ZipOper
+    public class ZipOper
     {
         /// <summary>
         /// 查看文件是否真实存在
