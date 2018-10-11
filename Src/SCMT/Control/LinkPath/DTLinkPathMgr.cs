@@ -18,12 +18,27 @@ namespace LinkPath
 		// 管理侧trap端口
 		public long m_TrapPort { get; set; }
 
+		// SNMP消息处理模块
+		public CDTSnmpMsgDispose m_SnmpMsgDispose;
+
 
 		private DTLinkPathMgr()
 		{
 		}
 
 		#region 公有接口，需要调用GetInstance后使用
+
+		/// <summary>
+		/// 初始化模块信息
+		/// </summary>
+		public void Initialize()
+		{
+			// 实例化SNMP消息处理实例
+			m_SnmpMsgDispose = new CDTSnmpMsgDispose(this);
+			return;
+
+		}
+
 
 		public LmtbSnmpEx GetSnmpByIp(string destIp)
 		{
@@ -41,6 +56,7 @@ namespace LinkPath
 			}
 		}
 
+		// TODO: 因为不能确认是否能够动态设置基站IP，此方法目前废弃不用
 		/// <summary>
 		/// 启动SNMP通信模块，每个基站建立一次连接
 		/// </summary>
@@ -52,11 +68,13 @@ namespace LinkPath
 				// 对应ip的snmp实例不存在才会创建
 				if (!m_mapIpToSnmpObj.ContainsKey(destIpAddr))
 				{
+					// TODO 这个地方要调查一下是否要改成动态设置ip？与旧工具保持一致
 					LmtbSnmpEx lmtbSnmpEx = new LmtbSnmpEx();
 					// 启动SNMP实例
 					int status = lmtbSnmpEx.SnmpLibStartUp(commnuity, destIpAddr);
 					m_mapIpToSnmpObj.Add(destIpAddr, lmtbSnmpEx);
-				}
+
+                }
 			}
 
 			return true;

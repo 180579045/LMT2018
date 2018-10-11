@@ -1,4 +1,5 @@
-﻿using LogManager;
+﻿using CommonUtility;
+using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using System;
@@ -12,7 +13,7 @@ namespace LmtbSnmp
 	/// <summary>
 	/// 提供一些公共功能的函数接口
 	/// </summary>
-	public class CommFuns
+	public class CommSnmpFuns
 	{
 		/// <summary>
 		/// 把Mib的数值翻译成描述，或者是把描述翻译为实际的值
@@ -156,21 +157,137 @@ namespace LmtbSnmp
 		/// <summary>
 		/// 通过OID和对应的值，获得相关的信息（名字、描述、以及单位）
 		/// </summary>
+		/// <param name="strNeIp"></param>
 		/// <param name="oid"></param>
 		/// <param name="strValue"></param>
 		/// <param name="strName"></param>
 		/// <param name="strValueDesc"></param>
 		/// <param name="strUnitName"></param>
-		public static bool GetInfoByOID(string oid, string strValue, out string strName
+		public static bool GetInfoByOID(string strNeIp, string oid, string strValue, out string strName
 			, out string strValueDesc, out string strUnitName)
 		{
 			strName = "";
 			strValueDesc = "";
 			strUnitName = "";
 
-			// TODO: 待实现
+			// Mib前缀
+			string strMibPrefix = SnmpToDatabase.GetMibPrefix();
+
+			string strOidTmp = oid.Replace(strMibPrefix, "");
+
+			// 获取节点信息
+			MibLeaf mibObjInfo = GetParentMibNodeByChildOID(strNeIp, strOidTmp);
+			if (mibObjInfo == null)
+			{
+				Log.Error(string.Format("GetInfoByOID() 中根据OID:{0}获取网元:{1}的MIB节点失败"
+					, strOidTmp, strNeIp));
+				return false;
+			}
+
+			if (strOidTmp.IndexOf(mibObjInfo.childOid) != 0)
+			{
+				// 如果MIB节点OID不是原OID的首个位置，则返回失败。
+				Log.Error(string.Format("MIB节点OID: {0}不是原OID: {1}的首个位置"
+					, mibObjInfo.childOid, strOidTmp));
+
+				return false;
+			}
+
+			// 组字符串
+			string strTempDesc, strMibName;
+			strTempDesc = mibObjInfo.mibDesc;
+			strName = mibObjInfo.childNameMib;
+			strMibName = strName;
+
+			// 描述截取,格式：告警箱版本(字符串长度1~255(字节))(初配值："")
+			int index = strTempDesc.IndexOf('(');
+			if (index > 0)
+			{
+				strTempDesc = strTempDesc.Substring(0, index);
+			}
+			strName = string.Format("{0}({1})", strTempDesc, strName);
+
+			// 值的实际意义,使用TranslateMibValue函数来解析值的描述, 其中包含BITS类型的支持
+			strValueDesc = strValue;
+			// 值的中文描述
+			string strReValue = "";
+            if (false == TranslateMibValue(strNeIp, strMibName, strValueDesc, out strReValue))
+			{
+				Log.Error(string.Format("TranslateMibValue函数返回失败, 参数: {0}, {1}"
+					, strMibName, strValueDesc));
+			}
+			// 获取到的值的中文描述
+			strValueDesc = strReValue;
+
+			// 获取单位
+			strUnitName = CommFuns.ParseMibUnit(mibObjInfo.mibDesc);
+
+			// 获取索引
+			string strIndex = strOidTmp;
+			strIndex = strIndex.Replace(mibObjInfo.childOid, "");
+			if (mibObjInfo.IsTable == true) // 是表显示取索引
+			{
+				strIndex.TrimStart('.');
+
+				strName = string.Format("{0}{1}{2}", strName, CommString.IDS_INSTANCE, strIndex);
+            }
 
 			return true;
+		}
+
+
+		/// <summary>
+		/// 根据Oid获取实例的Mib信息
+		/// </summary>
+		/// <param name="strNeIp"></param>
+		/// <param name="strMibOid"></param>
+		/// <returns></returns>
+		public static MibLeaf GetMibNodeInfoByOID(string strNeIp, string strMibOid)
+		{
+			MibLeaf reData = null;
+
+			string strError;
+			if (false == Database.GetInstance().GetMibDataByOid(strMibOid, out reData, strNeIp, out strError))
+			{
+				reData = null;
+			}
+
+			return reData;
+		}
+
+
+		/// <summary>
+		/// 通过子节点的OID来查找父节点
+		/// </summary>
+		/// <param name="strNeIp"></param>
+		/// <param name="strChildOid"></param>
+		/// <param name="reData"></param>
+		/// <returns></returns>
+		public static MibLeaf GetParentMibNodeByChildOID(string strNeIp, string strChildOid)
+		{
+			MibLeaf reData = null;
+			if (string.IsNullOrEmpty(strChildOid))
+			{
+				return null;
+			}
+
+			string strParentOid = strChildOid;
+            int index = strParentOid.LastIndexOf('.');
+
+			while (index > 0)
+			{
+				strParentOid = strParentOid.Substring(0, index);
+
+				reData = GetMibNodeInfoByOID(strNeIp, strParentOid);
+				if (reData != null)
+				{
+					return reData;
+				}
+
+				index = strParentOid.LastIndexOf('.');
+            }
+
+			return null;
 		}
 
 	}
