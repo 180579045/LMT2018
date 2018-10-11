@@ -43,9 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CfgFileLeafNodeIndexInfoOp.cs" />
+    <Compile Include="CfgFileLeafNodeOp.cs" />
     <Compile Include="CfgFileOp.cs" />
     <Compile Include="CfgFileOpTest.cs" />
-    <Compile Include="CfgFileOpBase.cs" />
+    <Compile Include="CfgFileOpStruct.cs" />
+    <Compile Include="CfgTableOp.cs" />
+    <Compile Include="CfgTableOpTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
