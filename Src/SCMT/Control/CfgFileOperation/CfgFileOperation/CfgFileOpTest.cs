@@ -27,7 +27,7 @@ namespace CfgFileOperation
             CfgFileOp cfgHandle = new CfgFileOp();
             //
             string currentPath = System.Environment.CurrentDirectory;
-            string fileToUnzip = currentPath+ "\\Data\\lmdtz\\lm.dtz";//
+            string fileToUnzip = currentPath+ "\\Data\\lmdtz\\lm.dtz";///
             string fileToDire = currentPath + "\\Data\\lmdtz";
             
             //cfgHandle.CreateCfgFile("", fileToUnzip, fileToDire);
