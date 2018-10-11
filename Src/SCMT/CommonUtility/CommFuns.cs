@@ -28,11 +28,21 @@ namespace CommonUtility
 			}
 
 			// 一般格式为{单位\精度:second}, 再取出":"后的字符
-			strUnit = strMibDesc.Substring(strMibDesc.IndexOf('{')
-				, (strMibDesc.LastIndexOf('}') - strMibDesc.IndexOf('{')));
+			int indexLeft = strMibDesc.IndexOf('{');
+			int indexRight = strMibDesc.LastIndexOf('}');
+			if (indexLeft < 0 || indexRight < 0) // "{"和"}"不同时存在
+			{
+				return "";
+			}
 
-			strUnit = strUnit.Substring(strUnit.IndexOf(':')
-				, (strUnit.Length - strUnit.IndexOf(':')));
+            strUnit = strMibDesc.Substring(indexLeft, indexRight - indexLeft);
+
+			// 截取":"后面部分
+			int indexM = strUnit.IndexOf(':');
+			if (indexM >= 0)
+			{
+				strUnit = strUnit.Substring(indexM);
+			}
 
 			// 小数点需要补上0
 			if (strUnit.StartsWith("."))

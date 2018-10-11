@@ -209,12 +209,15 @@ namespace LmtbSnmp
 
 			// 值的实际意义,使用TranslateMibValue函数来解析值的描述, 其中包含BITS类型的支持
 			strValueDesc = strValue;
+			// 值的中文描述
 			string strReValue = "";
             if (false == TranslateMibValue(strNeIp, strMibName, strValueDesc, out strReValue))
 			{
 				Log.Error(string.Format("TranslateMibValue函数返回失败, 参数: {0}, {1}"
 					, strMibName, strValueDesc));
 			}
+			// 获取到的值的中文描述
+			strValueDesc = strReValue;
 
 			// 获取单位
 			strUnitName = CommFuns.ParseMibUnit(mibObjInfo.mibDesc);

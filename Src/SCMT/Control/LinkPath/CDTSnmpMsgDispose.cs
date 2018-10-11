@@ -35,7 +35,8 @@ namespace LinkPath
 		public CDTSnmpMsgDispose(DTLinkPathMgr linkPathMgr)
 		{
 			// 订阅SNMP模块发来的消息
-			 SubscribeHelper.AddSubscribe("CDTSnmpMsgDispose_OnResponse", CallOnResponse);
+			 SubscribeHelper.AddSubscribe(CommString.MSG_KEY_CDTSnmpMsgDispose_OnResponse
+				 , CallOnResponse);
 
 			this.m_LinkMgr = linkPathMgr;
 
@@ -457,7 +458,7 @@ namespace LinkPath
 			// 显示信息
 			string strShowMsg = "";
 			// 操作结果
-			string strOperResult = "成功";
+			string strOperResult = CommString.IDS_OPERLOG_SUCCESS; // "成功"
 
 			// 遍历vb对，通知上层更新数据
 			int vbCount = lmtPdu.VbCount();
@@ -470,7 +471,8 @@ namespace LinkPath
 				string strDesc = "";
 				string strUnitName = "";
 				if (lmtPdu.m_bIsNeedPrint == true 
-					&& false == CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
+						&& false == CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid
+							, lmtVb.Value, out strName, out strDesc, out strUnitName))
 				{
 					Log.Error(string.Format("GetInfoByOID调用不成功:OID = {0}", lmtVb.Oid));
 					continue;
@@ -492,17 +494,17 @@ namespace LinkPath
 				if (lmtPdu.m_bIsNeedPrint == true)
 				{
 					string strMsg = string.Format("被管对象 {0} ,值为: {1}", strName, strDesc);
-					if (strUnitName != null)
+					if (!string.IsNullOrEmpty(strUnitName))
 					{
 						strMsg = string.Format("{0} (单位/精度: {1})", strMsg, strUnitName);
 					}
 
 					// 时间信息
-					// TODO:还需要吗？
+					// TODO:打印信息中已经有统一的时间了，在这在计算时间没意义吧？暂时去掉
 
-					strShowMsg = strShowMsg + strMsg + ";";
+					strShowMsg = string.Format("{0}{1};\n", strShowMsg, strMsg);
 
-					// 如果是set操作，写日志
+					// 如果是set操作，写操作日志到数据库
 					if (idToTable.pduType == (int)PduType.Set)
 					{
 						// TODO
@@ -515,7 +517,7 @@ namespace LinkPath
 
 			} // end for
 
-			// 数据写入到数据库中
+			// 数据写入到数据库中，把数据库联接和PDU发给数据同步工作线程
 			// CDTDataSyncMgr::GetInstance()->DealResponse(pAdoConn, pLmtbPdu);
 			// TODO
 
@@ -523,7 +525,6 @@ namespace LinkPath
 			{
 				// 往消息输出窗体显示信息
 				ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, infoType);
-				//ShowLogHelper.Show(strShowMsg, "SCMT");
 
 				// TODO
 				//LPARAM lt;

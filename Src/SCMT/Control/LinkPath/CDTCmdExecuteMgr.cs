@@ -35,7 +35,7 @@ namespace LinkPath
 		/// <param name="lmtPdu">传出的PDU。可以用于获取oid对应的值</param>
 		/// <returns></returns>
 		public int CmdGetSync(string cmdName, out long requestId, string strIndex
-							  , string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = false
+							  , string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
 			, bool needCheck = false, long timeOut = 0)
 		{
 			requestId = 0;
@@ -75,7 +75,7 @@ namespace LinkPath
 		/// <param name="lmtPdu"></param>
 		/// <returns></returns>
 		public int CmdGetAsync(string cmdName, out long requestId, string strIndex
-							  , string strIpAddr, bool isPrint = false, bool needCheck = false)
+							  , string strIpAddr, bool isPrint = true, bool needCheck = false)
 		{
 			requestId = 0;
 
@@ -221,7 +221,7 @@ namespace LinkPath
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
 		public static int CmdSetSync(string cmdName, out long requestId, Dictionary<string,string> name2Value
-			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = false
+			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
 			, bool needCheck = false, long timeOut = 0)
 		{
 			requestId = 0;
@@ -262,7 +262,7 @@ namespace LinkPath
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
 		public static int CmdSetAsync(string cmdName, out long requestId, Dictionary<string, string> name2Value
-			, string strIndex, string strIpAddr, bool isPrint = false, bool needCheck = false)
+			, string strIndex, string strIpAddr, bool isPrint = true, bool needCheck = false)
 		{
 			requestId = 0;
 

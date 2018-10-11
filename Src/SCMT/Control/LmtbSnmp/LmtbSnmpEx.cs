@@ -193,7 +193,7 @@ namespace LmtbSnmp
 				// 实例序列化
 				byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 				// 发布消息
-				PublishHelper.PublishMsg("CDTSnmpMsgDispose_OnResponse", bytes);
+				PublishHelper.PublishMsg(CommString.MSG_KEY_CDTSnmpMsgDispose_OnResponse, bytes);
 			//}
 
 			return 0;
@@ -457,6 +457,16 @@ namespace LmtbSnmp
 			}
 
 			rs = SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false);
+
+			// Snmp Set Response处理
+			// TODO
+			//if (IsWindow(m_hWnd))
+			//{
+			// 实例序列化
+			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
+			// 发布消息
+			PublishHelper.PublishMsg(CommString.MSG_KEY_CDTSnmpMsgDispose_OnResponse, bytes);
+			//}
 
 			return 0;
 		}

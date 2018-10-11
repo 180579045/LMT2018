@@ -37,7 +37,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Control\LinkPath\obj\Debug\LinkPath.dll</HintPath>
     </Reference>
-    <Reference Include="LmtbSnmp">
+    <Reference Include="LmtbSnmp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
