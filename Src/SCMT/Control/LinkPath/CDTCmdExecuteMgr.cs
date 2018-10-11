@@ -134,7 +134,8 @@ namespace LinkPath
 				return -1;
 			}
 
-			var cmdInfo = Database.GetInstance().GetCmdDataByName(cmdName, targetIp: strIpAddr);
+			var db = Database.GetInstance();
+			var cmdInfo = db.GetCmdDataByName(cmdName, targetIp: strIpAddr);
 			if (null == cmdInfo)
 			{
 				Log.Error($"未找到命令{cmdName}的信息");
@@ -142,6 +143,18 @@ namespace LinkPath
 			}
 
 			var mibList = cmdInfo.m_leaflist;
+			var parentName = cmdInfo.m_tableName;
+
+			// 根据parentName找到入口Mib信息，确定索引的级数
+			var tbl = db.GetMibDataByTableName(parentName, strIpAddr);
+			if (null == tbl)
+			{
+				throw new CustomException($"未找到命令{cmdName}的父节点{parentName}MIB信息");
+			}
+
+			// 索引级数。如果是0，说明是标量，否则是表量。
+			// 一级索引就从oid中反向截取一个.字符及后面的数字，以此类推
+			var indexGrade = tbl.indexNum;
 
 			// TODO : bNeedCheck
 			if (needCheck)
@@ -171,36 +184,41 @@ namespace LinkPath
 
 				sbOid.Clear();
 				sbOid.AppendFormat("{0}.{1}", strPreFixOid, v);
-				var lmtVb = new CDTLmtbVb {Oid = sbOid.ToString()};
+				var lmtVb = new CDTLmtbVb { Oid = sbOid.ToString() };
 				lmtbVbs.Add(lmtVb);
 			}
 
 			Dictionary<string, string> tmpResult;
+
 			// 根据ip获取当前基站的snmp实例
 			ILmtbSnmp lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
-			while (true)
+			while (lmtbSnmpEx.GetNextRequest(strIpAddr, lmtbVbs, out tmpResult, 0))
 			{
-				if (lmtbSnmpEx.GetNextRequest(strIpAddr, lmtbVbs, out tmpResult, 0))
+				// 清除查询参数
+				lmtbVbs.Clear();
+				var getIndexFlag = false;   // 标志是否从oid中获取过index。用于减少函数调用次数
+
+				foreach (var item in tmpResult)
 				{
-					// 清除查询参数
-					lmtbVbs.Clear();
-					foreach (var item in tmpResult)
+					// 保存结果
+					var fulloid = item.Key;
+
+					// 根据索引级数，反向截取出索引值字符串
+					if (!getIndexFlag && indexGrade > 0)
 					{
-						logMsg = $"ObjectName={item.Key}, Value={item.Value}";
-						//Log.Debug(logMsg);
-
-						// 保存结果
-						results.Add(item.Key, item.Value);
-
-						// 组装新的查询oid
-						var lmtVb = new CDTLmtbVb {Oid = item.Key};
-						lmtbVbs.Add(lmtVb);
+						var index = MibStringHelper.GetIndexValueByGrade(fulloid, indexGrade);
+						if (null != index)
+						{
+							indexList.Add(index);
+							getIndexFlag = true;
+						}
 					}
 
-				}
-				else
-				{
-					break;
+					results.Add(fulloid, item.Value);
+
+					// 组装新的查询oid
+					var lmtVb = new CDTLmtbVb {Oid = fulloid};
+					lmtbVbs.Add(lmtVb);
 				}
 			} //end while
 
