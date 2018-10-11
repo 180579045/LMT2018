@@ -309,6 +309,17 @@ namespace MIBDataParser.JSONDataMgr
 			return true;
 		}
 
+		public MibTable GetMibDataByTableName(string strTblName, string targetIp)
+		{
+			MibTable tbl;
+			string err;
+			if (GetMibDataByTableName(strTblName, out tbl, targetIp, out err))
+			{
+				return tbl;
+			}
+			return null;
+		}
+
 		/// <summary>
 		/// [查询]通过命令英文名字，查询命令信息。同时查询多个
 		/// </summary>
