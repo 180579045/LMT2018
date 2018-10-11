@@ -104,7 +104,7 @@ namespace LinkPath
 		private static bool GetFileTransAvailableId_Sync(string ip, ref long reqId, ref long taskId)
 		{
 			CDTLmtbPdu InOutPdu = new CDTLmtbPdu();
-			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransNextID", out reqId, ".0", ip, ref InOutPdu);
+			var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransNextID", out reqId, ".0", ip, ref InOutPdu, true);
 			if (0 == ret)
 			{
 				string csFileTrandId;
@@ -125,34 +125,6 @@ namespace LinkPath
 		{
 			return (0 == CDTCmdExecuteMgr.GetInstance().CmdGetAsync("GetFileTransNextID", out reqId, ".0", ip));
 		}
-
-		#endregion
-
-		#region 消息订阅
-
-		/// <summary>
-		/// 订阅ResposeDeal()方法
-		/// </summary>
-		public void SubscribeResposeDeal()
-		{
-			// 订阅消息
-			SubscribeHelper.AddSubscribe("ResponseDeal", CallResponseDeal);
-        }
-
-		/// <summary>
-		/// 调用订阅方法
-		/// </summary>
-		/// <param name="msg"></param>
-		private void CallResponseDeal(SubscribeMsg msg)
-		{
-			string msgTpic = msg.Topic;
-			Log.Info("msg.Topic = {0}", msg.Topic);
-
-			// 转换参数类型
-			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
-
-			this.ResponseDeal(lmtPdu);
-        }
 
 		#endregion
 
@@ -263,7 +235,13 @@ namespace LinkPath
 
 
 		#region 私有方法
-		
+
+		private FileTransTaskMgr()
+		{
+			m_mapIp2FlTrsObjQue = new Dictionary<string, List<CDTAbstractFileTrans>>();
+		}
+
+		/*
 		public FileTransTaskMgr(string boardIp)
 		{
 			m_setReqId = new HashSet<long>();
@@ -271,6 +249,7 @@ namespace LinkPath
 
 			_boardIp = boardIp;
 		}
+		*/
 
 		#endregion
 
@@ -278,7 +257,7 @@ namespace LinkPath
 
 		private byte MaxTransTaskCount = 20;
 
-		private HashSet<long> m_setReqId;
+		private HashSet<long> m_setReqId = new HashSet<long>();
 
 		private Dictionary<string, List<CDTAbstractFileTrans>> m_mapIp2FlTrsObjQue;
 

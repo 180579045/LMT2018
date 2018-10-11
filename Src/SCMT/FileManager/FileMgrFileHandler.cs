@@ -646,7 +646,7 @@ namespace FileManager
 				Log.Info($"查询索引为{csIndex}文件传输进度");
 
 				long lrequestId = 0;
-				var nGetCmdRezlt = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransPercent", out lrequestId, csIndex, _boardIp, ref inOutPdu);
+				var nGetCmdRezlt = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransPercent", out lrequestId, csIndex, _boardIp, ref inOutPdu, true);
 				if (0 == nGetCmdRezlt)
 				{
 					var nFileTransTaskId = taskId;

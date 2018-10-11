@@ -95,7 +95,7 @@ namespace MsgDispatcher
 				};
 
 				CDTLmtbPdu pdu = new CDTLmtbPdu {m_bIsNeedPrint = false};
-				pdu.SetSyncFlag(true);
+				pdu.SetSyncId(true);
 				pdu.AddVb(ftpServerAddressVb);
 
 				long timeElapsed = 2000; //等待时间2秒

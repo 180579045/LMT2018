@@ -42,6 +42,12 @@ namespace CommonUtility
 
 		public const string IDS_STR_MSGDISPOSE_FMT1 = "命令{0}响应等待超时";
 
+		public const string IDS_INSTANCE = "实例";
+
+		public const string IDS_OPERLOG_SUCCESS = "成功";
+
+		// 消息订阅
+		public const string MSG_KEY_CDTSnmpMsgDispose_OnResponse = "CDTSnmpMsgDispose_OnResponse";
 
 
 	}
