@@ -57,7 +57,7 @@
   <ItemGroup>
     <Compile Include="CDTObjectRef.cs" />
     <Compile Include="CDTSnmpPdu.cs" />
-    <Compile Include="CommFuns.cs" />
+    <Compile Include="CommSnmpFuns.cs" />
     <Compile Include="IDTObjectRefInterface.cs" />
     <Compile Include="ILmtbSnmp.cs" />
     <Compile Include="LmtbSnmpEx.cs" />

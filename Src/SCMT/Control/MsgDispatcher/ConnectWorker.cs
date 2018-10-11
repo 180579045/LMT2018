@@ -95,7 +95,7 @@ namespace MsgDispatcher
 
 			var pdu = new CDTLmtbPdu() { m_bIsNeedPrint = false };
 			pdu.AddVb(vbList);
-			pdu.SetSyncFlag(true);
+			pdu.SetSyncId(true);
 
 			long requestId;
 			bool bSucceed = false;

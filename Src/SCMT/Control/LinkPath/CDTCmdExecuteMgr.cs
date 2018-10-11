@@ -36,7 +36,7 @@ namespace LinkPath
 		/// <param name="lmtPdu">传出的PDU。可以用于获取oid对应的值</param>
 		/// <returns></returns>
 		public int CmdGetSync(string cmdName, out long requestId, string strIndex
-							  , string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = false
+							  , string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
 			, bool needCheck = false, long timeOut = 0)
 		{
 			requestId = 0;
@@ -52,7 +52,7 @@ namespace LinkPath
 
 			PackGetCmdPdu(cmdName, strIndex, strIpAddr, needCheck, ref lmtPdu);
 			lmtPdu.m_bIsNeedPrint = isPrint;
-			lmtPdu.SetSyncFlag(true);
+			lmtPdu.SetSyncId(true);
 
 			// 根据ip获取当前基站的snmp实例
 			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
@@ -76,7 +76,7 @@ namespace LinkPath
 		/// <param name="lmtPdu"></param>
 		/// <returns></returns>
 		public int CmdGetAsync(string cmdName, out long requestId, string strIndex
-							  , string strIpAddr, bool isPrint = false, bool needCheck = false)
+							  , string strIpAddr, bool isPrint = true, bool needCheck = false)
 		{
 			requestId = 0;
 
@@ -92,7 +92,7 @@ namespace LinkPath
 			PackGetCmdPdu(cmdName, strIndex, strIpAddr, needCheck, ref lmtPdu);
 
 			lmtPdu.m_bIsNeedPrint = isPrint;
-			lmtPdu.SetSyncFlag(false);
+			lmtPdu.SetSyncId(false);
 
 			// 根据ip获取当前基站的snmp实例
 			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
@@ -241,7 +241,7 @@ namespace LinkPath
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
 		public static int CmdSetSync(string cmdName, out long requestId, Dictionary<string,string> name2Value
-			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = false
+			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
 			, bool needCheck = false, long timeOut = 0)
 		{
 			requestId = 0;
@@ -255,7 +255,7 @@ namespace LinkPath
 
 			PackSetCmdPdu(cmdName, strIndex, strIpAddr, needCheck, name2Value, ref lmtPdu);
 			lmtPdu.m_bIsNeedPrint = isPrint;
-			lmtPdu.SetSyncFlag(true);
+			lmtPdu.SetSyncId(true);
 
 			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
 			var rs = lmtbSnmpEx.SnmpSetSync(lmtPdu, out requestId, strIpAddr, timeOut);
@@ -282,7 +282,7 @@ namespace LinkPath
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
 		public static int CmdSetAsync(string cmdName, out long requestId, Dictionary<string, string> name2Value
-			, string strIndex, string strIpAddr, bool isPrint = false, bool needCheck = false)
+			, string strIndex, string strIpAddr, bool isPrint = true, bool needCheck = false)
 		{
 			requestId = 0;
 
@@ -290,7 +290,7 @@ namespace LinkPath
 
 			PackSetCmdPdu(cmdName, strIndex, strIpAddr, needCheck, name2Value, ref lmtPdu);
 			lmtPdu.m_bIsNeedPrint = isPrint;
-			lmtPdu.SetSyncFlag(false);
+			lmtPdu.SetSyncId(false);
 
 			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
 			var rs = lmtbSnmpEx.SnmpSetAsync(lmtPdu, out requestId, strIpAddr);

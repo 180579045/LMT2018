@@ -38,7 +38,7 @@ namespace LmtbSnmp
 
 		public string m_SourceIp { get; set; }
 
-		public void SetSyncFlag(bool bSync)
+		public void SetSyncId(bool bSync)
 		{
 			if (null != m_lmtbPduInfo)
 			{
@@ -295,7 +295,7 @@ namespace LmtbSnmp
 		: this()
 		{
 			SetCmdName(cmd);
-			SetSyncFlag(bIsSync);
+			SetSyncId(bIsSync);
 			m_bIsNeedPrint = bNeedPrint;
 		}
 	}
