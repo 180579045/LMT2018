@@ -37,7 +37,7 @@
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="LogManager">
-      <HintPath>..\MainWindow\bin\x86\Debug\LogManager.dll</HintPath>
+      <HintPath>..\Control\LogManager\obj\Debug\LogManager.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
