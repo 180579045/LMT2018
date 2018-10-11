@@ -391,6 +391,8 @@ namespace CfgFileOperation
                 string strSQLAlarm = ("select  * from AlarmInform_5216");
                 string alarmPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
                 DataSet AlarmdateSet = CfgGetRecordByAccessDb(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
+                //foreach (var col in AlarmdateSet.Tables[0].Columns)
+                //    Console.WriteLine(String.Format("rowName:{0},value:{1}.",col.ToString(), AlarmdateSet.Tables[0].Rows[0][col.ToString()]));
                 SetBuffersInfoForAlarmCause(tableRow, AlarmdateSet, tableOp, leafNum);
             }
             else if (string.Equals("antennaArrayTypeEntry", strTableName))//天线器件库信息-天线阵//2012-06-25 luoxin DTMUC00104224 创建配置文件时器件库表下天线阵类型表不做动态表处理，记录设为空

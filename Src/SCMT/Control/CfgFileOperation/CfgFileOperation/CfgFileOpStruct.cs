@@ -1370,8 +1370,7 @@ namespace CfgFileOpStruct
             }
             return ReturnValue;
         }
-
-
+        
     }
 
     struct RRuTypeTabStru

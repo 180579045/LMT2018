@@ -19,6 +19,7 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
+            new CfgFileOpTest().testForOpReadExcelForCfg();
             new CfgFileOpTest().test4();
 
             string strCfgFileName = "";
@@ -31,6 +32,13 @@ namespace CfgFileOperation
             cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
             cfgOp.SaveFile_eNB("./path.cfg");
             //Console.ReadLine();
+        }
+
+        void testForOpReadExcelForCfg()
+        {
+            CfgFileExcelReadWrite exOp = new CfgFileExcelReadWrite();
+            exOp.test(".\\123\\eNB告警信息表.xls");
+
         }
 
         void test1()
