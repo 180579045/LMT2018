@@ -23,7 +23,8 @@ namespace SCMTMainWindow.View
     {
         private Point? rubberbandSelectionStartPoint = null;
 
-        private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
+        //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
+        private int nRRUMax = 0;
 
         private SelectionService selectionService;
         internal SelectionService SelectionService
@@ -80,7 +81,13 @@ namespace SCMTMainWindow.View
             e.Handled = true;
         }
 
-
+        /// <summary>
+        /// 从xaml文件中获取对应的网元的xaml信息，名称和大小
+        /// </summary>
+        /// <param name="nMaxRRUPath"></param>
+        /// <param name="strXAML"></param>
+        /// <param name="RRUSize"></param>
+        /// <returns></returns>
         private string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
@@ -165,23 +172,25 @@ namespace SCMTMainWindow.View
                         string strXAML1 = strXAML;
                         string strRRUFullName = string.Empty;
 
-                        if(dicRRU.Count == 0)
-                        {
-                            strRRUFullName = string.Format("{0}-{1}", strRRUName, dicRRU.Count);
-                            dicRRU.Add(strRRUFullName, 0);
-                        }
-                        else
-                        {
-                            Dictionary<string, int>.KeyCollection keys = dicRRU.Keys;
-                            string strMaxString = keys.ElementAt(dicRRU.Count-1);
-                            int nIndex = dicRRU[strMaxString] + 1;
-                            strRRUFullName = string.Format("{0}-{1}", strRRUName, nIndex);
-                            dicRRU.Add(strRRUFullName, nIndex);
-                        }
+                        strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
+                        //if(dicRRU.Count == 0)
+                        //{
+                        //    strRRUFullName = string.Format("{0}-{1}", strRRUName, dicRRU.Count);
+                        //    dicRRU.Add(strRRUFullName, 0);
+                        //}
+                        //else
+                        //{
+                        //    Dictionary<string, int>.KeyCollection keys = dicRRU.Keys;
+                        //    string strMaxString = keys.ElementAt(keys.Count-1);
+                        //    int nIndex = dicRRU[strMaxString] + 1;
+                        //    strRRUFullName = string.Format("{0}-{1}", strRRUName, nIndex);
+                        //    dicRRU.Add(strRRUFullName, nIndex);
+                        //}
                         string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
                         strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
                         Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                         newItem.Content = testContent;
+                        newItem.ItemName = strRRUFullName;
 
                         var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
                         globalDic.Add(strRRUFullName, test);
@@ -210,10 +219,10 @@ namespace SCMTMainWindow.View
 
                         if(ucTest != null)
                         {
-                            Grid proGrid = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                            gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
                             CreateGirdForNetInfo(strRRUFullName, test);
-                            proGrid.Children.Clear();
-                            proGrid.Children.Add(g_GridForNet[strRRUFullName]);
+                            gridProperty.Children.Clear();
+                            gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
                         }
                     }
                 }
@@ -270,13 +279,18 @@ namespace SCMTMainWindow.View
             return null;
         }
 
-        /// <summary>
-        /// 设计一个List 存储 Grid，每个Grid 对应一个网元，用来显示属性信息
-        /// </summary>
-        /// <param name="constraint"></param>
-        /// <returns></returns>
+        //全局变量，将网元名称和网元信息结构体对应
         private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
-        private Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+        //全局变量，将网元名称和网元的属性表格对应
+        public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+        //保存界面上的属性表格
+        public Grid gridProperty;
+
+        /// <summary>
+        /// 为网元创建属性表格
+        /// </summary>
+        /// <param name="strName"></param>
+        /// <param name="mibInfo"></param>
         private void CreateGirdForNetInfo(string strName, List<MibLeafNodeInfo> mibInfo)
         {
             Grid grid = new Grid();
@@ -287,9 +301,8 @@ namespace SCMTMainWindow.View
             ColumnDefinition columnSplit = new ColumnDefinition();
             columnSplit.Width = GridLength.Auto;
             columnName.Width = GridLength.Auto;
-            //columnValue.Width = GridLength.Auto;
             grid.ColumnDefinitions.Add(columnName);
-            grid.ColumnDefinitions.Add(columnSplit);                     //
+            grid.ColumnDefinitions.Add(columnSplit);                     //分隔条
             grid.ColumnDefinitions.Add(columnValue);
 
             GridSplitter gridSplit = new GridSplitter();

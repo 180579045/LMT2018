@@ -929,7 +929,15 @@ namespace SCMTMainWindow.View
                 //从全局 list 中删除相关的项
                 Grid grid = item.Content as Grid;
                 TextBlock text = grid.Children[1] as TextBlock;
-                this.dicRRU.Remove(text.Text);
+                
+                //this.dicRRU.Remove(text.Text);
+                //首先判断属性框中是否是当前的属性
+                if ((this.gridProperty.Children.Count != 0) && (this.gridProperty.Children[0] == this.g_GridForNet[text.Text]))
+                {
+                    this.gridProperty.Children.Clear();
+                }
+                this.globalDic.Remove(text.Text);
+                this.g_GridForNet.Remove(text.Text);
             }
 
             SelectionService.ClearSelection();

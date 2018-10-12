@@ -9,11 +9,18 @@ namespace SCMTMainWindow.View
 {
     //These attributes identify the types of the named parts that are used for templating
     [TemplatePart(Name = "PART_DragThumb", Type = typeof(DragThumb))]
-    [TemplatePart(Name = "PART_ResizeDecorator", Type = typeof(Control))]
+    //[TemplatePart(Name = "PART_ResizeDecorator", Type = typeof(Control))]
     [TemplatePart(Name = "PART_ConnectorDecorator", Type = typeof(Control))]
     [TemplatePart(Name = "PART_ContentPresenter", Type = typeof(ContentPresenter))]
     public class DesignerItem : ContentControl, ISelectable, IGroupable
     {
+        private string itemName;
+        public string ItemName
+        {
+            get { return itemName; }
+            set { itemName = value; }
+        }
+
         #region ID
         private Guid id;
         public Guid ID
@@ -145,10 +152,28 @@ namespace SCMTMainWindow.View
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
+                        //选中的时候切换属性的显示
+                        if (designer.g_GridForNet.ContainsKey(this.itemName))
+                        {
+                            if (designer.gridProperty != null)
+                            {
+                                designer.gridProperty.Children.Clear();
+                                designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
+                            }
+                        }
                     }
                 else if (!this.IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
+                    //选中的时候切换属性的显示
+                    if (designer.g_GridForNet.ContainsKey(this.itemName))
+                    {
+                        if(designer.gridProperty != null)
+                        {
+                            designer.gridProperty.Children.Clear();
+                            designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
+                        }
+                    }
                 }
                 Focus();
             }
