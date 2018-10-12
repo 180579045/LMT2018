@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{DFCC660C-1B0A-470A-9AB1-14448A33091C}</ProjectGuid>
+    <ProjectGuid>{95427238-7878-4E53-A9DB-0F3052D91691}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MsgQueue</RootNamespace>
-    <AssemblyName>MsgQueue</AssemblyName>
+    <RootNamespace>DataSync</RootNamespace>
+    <AssemblyName>DataSync</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,51 +31,30 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonUtility">
-      <HintPath>..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
+      <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="LmtbSnmp">
+      <HintPath>..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
+    </Reference>
+    <Reference Include="LogManager">
+      <HintPath>..\LogManager\obj\Debug\LogManager.dll</HintPath>
+    </Reference>
+    <Reference Include="MsgQueue">
+      <HintPath>..\..\MsgQueue\bin\Debug\MsgQueue.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="ZeroMQ">
-      <HintPath>..\packages\Lib\ZeroMQ.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonPort.cs" />
-    <Compile Include="CommonStruct.cs" />
-    <Compile Include="MqInitial.cs" />
-    <Compile Include="PublisherClient.cs" />
-    <Compile Include="PublishHelper.cs" />
-    <Compile Include="PubSubServer.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="DTDataSyncMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReqRspPattern\MajordomoBroker.cs" />
-    <Compile Include="ReqRspPattern\MajordomoClientApi.cs" />
-    <Compile Include="ReqRspPattern\MajordomoCommon.cs" />
-    <Compile Include="ReqRspPattern\MajordomoWorkerApi.cs" />
-    <Compile Include="ShowLogHelper.cs" />
-    <Compile Include="SubscribeClient.cs" />
-    <Compile Include="SubscribeHelper.cs" />
-    <Compile Include="TopicHelper.cs" />
-    <Compile Include="TopicManager.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
-      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
-      <Name>LogManager</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

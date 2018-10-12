@@ -1,5 +1,6 @@
 ﻿using CommonUtility;
 using LogManager;
+using MIBDataParser;
 using MsgQueue;
 using SnmpSharpNet;
 using System;
@@ -193,7 +194,7 @@ namespace LmtbSnmp
 				// 实例序列化
 				byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 				// 发布消息
-				PublishHelper.PublishMsg(CommString.MSG_KEY_CDTSnmpMsgDispose_OnResponse, bytes);
+				PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
 			//}
 
 			return 0;
@@ -465,7 +466,7 @@ namespace LmtbSnmp
 			// 实例序列化
 			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 			// 发布消息
-			PublishHelper.PublishMsg(CommString.MSG_KEY_CDTSnmpMsgDispose_OnResponse, bytes);
+			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
 			//}
 
 			return 0;
@@ -594,31 +595,6 @@ namespace LmtbSnmp
 			return 0;
 		}
 
-		/// <summary>
-		/// Add By Mayi  
-		/// </summary>
-		/// <param name="ipAddr"></param>
-		/// <param name="oid"></param>
-		/// <param name="mibProFix"></param>
-		/// <returns></returns>
-		private string GetNodeTypeByOIDInCache(string oid)
-		{
-			string csMIBPrefix = "1.3.6.1.4.1.5105.100.";
-
-			string strTempOid = oid.Replace(csMIBPrefix, ""); 
-
-			string strNodeType = "";
-
-			if ((strTempOid == "1.3.1.1.1.7.1") || (strTempOid == "1.3.1.1.1.10.1"))
-			{
-				strNodeType = "DateandTime";
-				return strNodeType;
-			}
-			else
-			{
-				return null;
-			}            
-		}
 
 		/// <summary>
 		/// 将LmtPdu转换为snmpPdu
@@ -645,8 +621,7 @@ namespace LmtbSnmp
 
 				Vb vb = new Vb(new Oid(strTmpOid));
 
-				//String strNodeType = GetNodeTypeByOIDInCache(csIpAddr, strOID, strMIBPrefix);
-				string strNodeType = GetNodeTypeByOIDInCache(strTmpOid);
+				string strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, strTmpOid);
 
 				SnmpHelper.SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
 
@@ -804,8 +779,7 @@ namespace LmtbSnmp
 				if (SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS == lmtVb.SnmpSyntax)
 				{
 					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
-					// CString strNodeType = GetNodeTypeByOIDInCache(csIpAddr, strOID, strMIBPrefix);
-					string strNodeType = "";
+					string strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp,lmtVb.Oid);
 					// strNodeType = "DateandTime";
 
 					if (string.Equals("DateandTime", strNodeType, StringComparison.OrdinalIgnoreCase))

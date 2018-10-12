@@ -290,5 +290,29 @@ namespace LmtbSnmp
 			return null;
 		}
 
+		/// <summary>
+		/// Add By Mayi  
+		/// </summary>
+		/// <param name="ipAddr"></param>
+		/// <param name="oid"></param>
+		/// <param name="mibProFix"></param>
+		/// <returns></returns>
+		public static string GetNodeTypeByOIDInCache(string strNeIp, string strOid)
+		{
+			// Mib前缀
+			string strMibPrefix = SnmpToDatabase.GetMibPrefix();
+			// 去掉Oid的Mib前缀
+			string strOidTmp = strOid.Replace(strMibPrefix, "");
+
+			MibLeaf mibLeaf = GetParentMibNodeByChildOID(strNeIp, strOidTmp);
+
+			if (mibLeaf == null)
+			{
+				return null;
+			}
+
+			return mibLeaf.mibSyntax;
+		}
+
 	}
 }

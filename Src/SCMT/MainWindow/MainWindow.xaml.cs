@@ -51,6 +51,7 @@ using dict_d_string = System.Collections.Generic.Dictionary<string, string>;
 using MsgDispatcher;
 using LmtbSnmp;
 using LinkPath;
+using System.Net.Sockets;
 
 namespace SCMTMainWindow
 {
@@ -142,7 +143,21 @@ namespace SCMTMainWindow
 		/// </summary>
 		private void RegisterFunction()
 		{
-			//TrapMessage.SetNodify(this.PrintTrap);                            // 注册Trap监听;
+			try
+			{
+				// 注册Trap监听
+				if (LmtTrapMgr.GetInstance().StartLmtTrap() == false)
+				{
+					Log.Error(string.Format("Trap监听启动错误！"));
+				}
+
+			} 
+			catch(SocketException e)
+			{
+				Log.Error(string.Format("Trap监听启动错误！"));
+				MessageBox.Show("Trap监听启动错误，无法接收Trap消息，请确认162端口是否已被占用！");
+			}
+
 			// 初始化通信管理器
 			DTLinkPathMgr.GetInstance().Initialize();
 
