@@ -925,6 +925,11 @@ namespace SCMTMainWindow.View
                     }
                 }
                 this.Children.Remove(item);
+
+                //从全局 list 中删除相关的项
+                Grid grid = item.Content as Grid;
+                TextBlock text = grid.Children[1] as TextBlock;
+                this.dicRRU.Remove(text.Text);
             }
 
             SelectionService.ClearSelection();

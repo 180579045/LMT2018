@@ -8,6 +8,14 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Xml;
+using NetPlan;
+using SCMTMainWindow.Property;
+using System.Windows.Media;
+using Xceed.Wpf.Toolkit.PropertyGrid;
+using System.Reflection;
+using System.Reflection.Emit;
+
+using CommonUtility;
 
 namespace SCMTMainWindow.View
 {
@@ -148,8 +156,9 @@ namespace SCMTMainWindow.View
                     dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
 
 
+
                     //根据输入的个数，添加多个网元
-                    for(int i = 0; i < nRRUNumber; i++)
+                    for (int i = 0; i < nRRUNumber; i++)
                     {
                         DesignerItem newItem = new DesignerItem();
 
@@ -169,10 +178,15 @@ namespace SCMTMainWindow.View
                             strRRUFullName = string.Format("{0}-{1}", strRRUName, nIndex);
                             dicRRU.Add(strRRUFullName, nIndex);
                         }
-                        strRRUFullName = string.Format("Text=\"{0}\"", strRRUFullName);
-                        strXAML1 = strXAML1.Replace("Text=\"RRU\"", strRRUFullName);
+                        string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                        strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
                         Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                         newItem.Content = testContent;
+
+                        var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
+                        globalDic.Add(strRRUFullName, test);
+
+                        //Type typeTest = DynamicObject.BuildTypeWithCustomAttributesOnMethod("rru", test);
 
                         Point position = e.GetPosition(this);
 
@@ -185,22 +199,169 @@ namespace SCMTMainWindow.View
                             DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
                             DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
                         }
-                        //else
-                        //{
-                        //    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X));
-                        //    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y));
-                        //}
                         Canvas.SetZIndex(newItem, this.Children.Count);
                         this.Children.Add(newItem);
                         SetConnectorDecoratorTemplate(newItem);
                         
                         this.SelectionService.SelectItem(newItem);
                         newItem.Focus();
+
+                        Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                        if(ucTest != null)
+                        {
+                            Grid proGrid = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                            CreateGirdForNetInfo(strRRUFullName, test);
+                            proGrid.Children.Clear();
+                            proGrid.Children.Add(g_GridForNet[strRRUFullName]);
+                        }
                     }
                 }
 
                 e.Handled = true;
             }
+        }
+
+        //尝试获取节点的根元素    根据网上的代码，查询一个元素的父节点的父节点。。。通过递归查找到 Name 为
+        //某个值的元素
+        private T GetRootElement<T>(DependencyObject item, string strName) where T : FrameworkElement
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(item);
+
+            while(parent != null)
+            {
+                if(parent is T && ((T)parent).Name == strName)
+                {
+                    return (T)parent;
+                }
+
+                parent = VisualTreeHelper.GetParent(parent);
+            }
+
+            return null;
+        }
+
+        //尝试获取元素的子节点
+        private T GetChildrenElement<T>(DependencyObject item, string strName) where T : FrameworkElement
+        {
+            DependencyObject child = null;
+            T grandChild = null;
+
+            int n = VisualTreeHelper.GetChildrenCount(item);
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(item); i++)
+            {
+                child = VisualTreeHelper.GetChild(item, i);
+
+                if(child is T && ((T)child).Name == strName)
+                {
+                    return (T)child;
+                }
+                else
+                {
+                    grandChild = GetChildrenElement<T>(child, strName);
+                    if(grandChild != null)
+                    {
+                        return grandChild;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 设计一个List 存储 Grid，每个Grid 对应一个网元，用来显示属性信息
+        /// </summary>
+        /// <param name="constraint"></param>
+        /// <returns></returns>
+        private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
+        private Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+        private void CreateGirdForNetInfo(string strName, List<MibLeafNodeInfo> mibInfo)
+        {
+            Grid grid = new Grid();
+
+            //创建两列，第一列显示属性名称Name，第二列显示属性值Value
+            ColumnDefinition columnName = new ColumnDefinition();
+            ColumnDefinition columnValue = new ColumnDefinition();
+            ColumnDefinition columnSplit = new ColumnDefinition();
+            columnSplit.Width = GridLength.Auto;
+            columnName.Width = GridLength.Auto;
+            //columnValue.Width = GridLength.Auto;
+            grid.ColumnDefinitions.Add(columnName);
+            grid.ColumnDefinitions.Add(columnSplit);                     //
+            grid.ColumnDefinitions.Add(columnValue);
+
+            GridSplitter gridSplit = new GridSplitter();
+            gridSplit.Width = 5;
+            gridSplit.VerticalAlignment = VerticalAlignment.Stretch;
+            gridSplit.ResizeBehavior = GridResizeBehavior.PreviousAndNext;
+            gridSplit.Background = new SolidColorBrush(Colors.LightGray);
+            grid.Children.Add(gridSplit);
+            Grid.SetColumn(gridSplit, 1);
+            Grid.SetRow(gridSplit, 1);
+
+            //创建一个标题行
+            RowDefinition rowTitle = new RowDefinition();
+            grid.RowDefinitions.Add(rowTitle);
+            TextBlock txtTitile = new TextBlock();
+            txtTitile.Text = strName;
+            grid.Children.Add(txtTitile);
+            Grid.SetRow(txtTitile, 0);
+            Grid.SetColumnSpan(txtTitile, 3);
+
+            //根据传过来的值，添加行，每一行代表一个属性，并根据不同的类型添加不同的控件
+            for(int i = 0; i < mibInfo.Count; i++)
+            {
+                RowDefinition row = new RowDefinition();
+                row.Height = new GridLength(27);
+                grid.RowDefinitions.Add(row);
+
+                //添加属性名称的控件
+                TextBlock txtName = new TextBlock();
+                txtName.Margin = new Thickness(1);
+                txtName.Text = mibInfo[i].mibAttri.childNameCh;
+                grid.Children.Add(txtName);
+                Grid.SetColumn(txtName, 0);
+                Grid.SetRow(txtName, i+1);
+
+                //根据不同的类型添加属性值控件
+                switch(mibInfo[i].mibAttri.OMType)
+                {
+                    case "enum":
+                        ComboBox cbValue = new ComboBox();
+                        cbValue.Margin = new Thickness(1);
+                        cbValue.Height = 25;
+
+                        var valueInfo = MibStringHelper.SplitManageValue(mibInfo[i].mibAttri.managerValueRange);
+
+                        for(int j = 0; j < valueInfo.Count; j++)
+                        {
+                            cbValue.Items.Add(valueInfo.ElementAt(j).Value);
+                        }
+
+                        //string[] strValue = mibInfo[i].mibAttri.defaultValue.Split(':');
+                        //string strDefaultInfo = valueInfo[int.Parse(strValue[0])];
+                        //cbValue.SelectedItem = strDefaultInfo;
+
+                        grid.Children.Add(cbValue);
+                        Grid.SetColumn(cbValue, 2);
+                        Grid.SetRow(cbValue, i+1);
+                        break;
+                    default:
+                        TextBox txtValue = new TextBox();
+                        txtName.Margin = new Thickness(1);
+                        txtName.Height = 25;
+                        txtValue.Text = mibInfo[i].mibAttri.defaultValue;
+                        grid.Children.Add(txtValue);
+                        Grid.SetColumn(txtValue, 2);
+                        Grid.SetRow(txtValue, i+1);
+                        break;
+                }
+            }
+
+            Grid.SetRowSpan(gridSplit, mibInfo.Count);
+            g_GridForNet.Add(strName, grid);
         }
 
         protected override Size MeasureOverride(Size constraint)
