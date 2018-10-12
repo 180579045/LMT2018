@@ -44,7 +44,7 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
-            propertyGrid.SelectedObject = p1;
+            //propertyGrid.SelectedObject = p1;
             boardCanvas = new Canvas();
 
             //设置 2 列 4 行 的板卡框架
