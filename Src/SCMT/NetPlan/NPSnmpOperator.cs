@@ -23,7 +23,7 @@ namespace NetPlan
 		#region 公共接口
 
 		/// <summary>
-		/// 设置网规开始开关
+		/// 设置NR网元布配控制开关状态
 		/// </summary>
 		/// <param name="bOpen">true:打开开关，false:关闭开关</param>
 		/// <param name="strIndex">索引</param>
@@ -41,9 +41,9 @@ namespace NetPlan
 			strIndexTemp = $".{strIndexTemp}";
 
 			var name2Value = new DIC_DOUBLE_STR();
-			name2Value["netPlanControlLcConfigSwitch"] = (bOpen ? "1" : "0");
+			name2Value["nrNetLocalCellCtrlConfigSwitch"] = (bOpen ? "1" : "0");
 
-			const string cmd = "SetNetwokPlanControlSwitch";
+			const string cmd = "SetNRNetwokPlanControlSwitch";
 			long reqId;
 			var pdu = new CDTLmtbPdu();
 
@@ -84,8 +84,8 @@ namespace NetPlan
 			return false;
 		}
 
-		// 查询布配的板卡信息
-		public static bool QueryNetBoard(string cmdName, ref List<ONE_DEV_ATTRI_INFO> sameTypeDevInfoList)
+		// 执行网规相关的命令。其实可以用到所有的命令之上
+		public static bool ExecuteNetPlanCmd(string cmdName, ref List<ONE_DEV_ATTRI_INFO> sameTypeDevInfoList)
 		{
 			if (string.IsNullOrEmpty(cmdName))
 			{
@@ -101,7 +101,7 @@ namespace NetPlan
 
 			// TODO 下面的操作有重复计算，需要处理
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
-			var cmdInfo = Database.GetInstance().GetCmdDataByName(cmdName, targetIp);
+			var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(cmdName, targetIp);
 			if (null == cmdInfo)
 			{
 				return false;
@@ -152,6 +152,57 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 初始化网规信息
+		/// 调用时机：连接基站后，第一次进入网规页面
+		/// </summary>
+		/// <returns></returns>
+		public static bool InitNetPlanInfo(out Dictionary<string, List<ONE_DEV_ATTRI_INFO>> allEnbNetPlanInfo)
+		{
+			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB6116");
+			if (null == mibEntryList)
+			{
+				Log.Error($"查询所有的MIB入口及对应命令失败");
+				allEnbNetPlanInfo = null;
+				return false;
+			}
+
+			var enbIp = CSEnbHelper.GetCurEnbAddr();
+
+			allEnbNetPlanInfo = new Dictionary<string, List<ONE_DEV_ATTRI_INFO>>();
+
+			// 调用所有的Get函数，查询所有的信息
+			foreach (var entry in mibEntryList)
+			{
+				var getCmdList = entry.Get;
+				if (getCmdList.Count == 0)
+				{
+					continue;
+				}
+
+				var temp = new List<ONE_DEV_ATTRI_INFO>();
+
+				// 同一个mib入口下可能有多个get命令，这些命令查询的结果要进行合并处理，因为同属于一张表，只不过每次查询了不同的部分
+				foreach (var cmd in getCmdList)
+				{
+					var oneCmdMibInfo = new List<ONE_DEV_ATTRI_INFO>();
+					if (!ExecuteNetPlanCmd(cmd, ref oneCmdMibInfo))
+					{
+						Log.Error($"查询表{entry.MibEntry}信息失败");
+						return false;
+					}
+					MergeSameEntryData(ref temp, oneCmdMibInfo);
+				}
+
+				// 合并完成后，直接保存数据
+				if (temp.Count > 0)
+				{
+					allEnbNetPlanInfo.Add(entry.MibEntry, temp);
+				}
+			}
+
+			return true;
+		}
 		#endregion
 
 		#region 私有接口
@@ -212,6 +263,7 @@ namespace NetPlan
 				var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				if (null != info)
 				{
+					info.m_strIndex = ".0";
 					devAttributes.Add(info);
 				}
 			}
@@ -257,6 +309,7 @@ namespace NetPlan
 					var info = new MibLeafNodeInfo
 					{
 						m_strRealValue = realValue,
+						m_strIndex = strIndex,
 						mibAttri = childLeaf,
 						m_bReadOnly = true          // 索引，只读
 					};
@@ -269,6 +322,7 @@ namespace NetPlan
 					var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 					if (null != info)
 					{
+						info.m_strIndex = strIndex;
 						devAttributes.Add(info);
 					}
 				}
@@ -276,6 +330,60 @@ namespace NetPlan
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 
 			return devAttributes;
+		}
+
+		/// <summary>
+		/// 合并同一张表下面执行不同命令时得到的结果。
+		/// e.g. netRRUEntry表有3个Get命令，在界面上呈现rru的信息时，需要所有的属性
+		/// 需要执行3次get命令，但是这3个get命令属于同一张表，就需要把所有的命令返回的结果合并到一起，最终得到完整的信息
+		/// </summary>
+		/// <param name="existData">上一个命令查询的信息</param>
+		/// <param name="newData">新的命令查询得到的结果</param>
+		/// <param name="indexGrade">索引级数</param>
+		private static void MergeSameEntryData(ref List<ONE_DEV_ATTRI_INFO> existData, List<ONE_DEV_ATTRI_INFO> newData)
+		{
+			if (null == existData || null == newData)
+			{
+				return;
+			}
+
+			// 最开始existData中没有数据，直接把newData中的数据存入
+			if (existData.Count == 0)
+			{
+				existData.AddRange(newData);
+				return;
+			}
+
+			// 归并
+			var mapExist = new Dictionary<string, ONE_DEV_ATTRI_INFO>();
+			foreach (var existDev in existData)
+			{
+				// 根据索引级数得到索引字符串
+				if (existDev.Count == 0)
+				{
+					throw new CustomException("为什么还有属性数量为0的元素");
+				}
+
+				var index = existDev[0].m_strIndex;
+				mapExist.Add(index, existDev);
+			}
+
+			foreach (var nd in newData)
+			{
+				var newIndex = nd[0].m_strIndex;
+				if (mapExist.ContainsKey(newIndex))
+				{
+					var tl = mapExist[newIndex];
+					tl.AddRange(nd);
+					mapExist[newIndex] = tl.Distinct().ToList();	// 去重，然后保存新的列表
+				}
+				else
+				{
+					mapExist[newIndex] = nd;	// 已有的结构中不包含已有的索引，就直接保存数据
+				}
+			}
+
+			existData = mapExist.Values.ToList();
 		}
 		#endregion
 	}

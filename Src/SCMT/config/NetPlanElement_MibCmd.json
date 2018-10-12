@@ -1,38 +1,78 @@
 ﻿{
-	"board" : {
-		"get" : ["GetNetBoard"],
-		"set" : ["SetNetBoard"],
-		"add" : ["AddNetBoard"],
-		"del" : ["DelNetBoard"]	
-	},
-	"rru" : {
-		"get" : ["GetNetRRU", "GetNetRRUPGCInfo", "GetNetRRUJamResistantInfo"],
-		"set" : ["SetNetRRU", "SetNetRRUPGCInfo", "SetNetRRUJamResistantInfo"],
-		"add" : ["AddNetRRU"],
-		"del" : ["DelNetRRU"]
-	},
-	"rhub" : {
-		"get" : ["GetNetRHUB"],
-		"set" : ["SetNetRHUBGsm", "SetNetRHUB"],
-		"add" : ["AddNetRHUB"],
-		"del" : ["DelNetRHUB"]
-	},
-	"ant" : {
-		"get" : ["GetNetAntennaArray", "GetTDSInheritNetAntennaArray"],
-		"set" : ["SetNetAntennaArray", "SetNetAntRAEScan"],
-		"add" : ["AddNetAntennaArray"],
-		"del" : ["DelNetAntennaArray"]
-	},
-	"rru_ant" : {
-		"get" : ["GetNetRRUAntennaSetting"],
-		"set" : ["SetNetRRUAntennaSetting", "SetNetRRUAntennaLcID"],
-		"add" : ["AddNetRRUAntennaSetting"],
-		"del" : ["DelNetRRUAntennaSetting"]
-	},
-	"board_rru" : {
-		"get" : ["GetIROfpPortInfo"],
-		"set" : ["SetIROfpPortInfo"],
-		"add" : ["AddIROfpPortInfo"],
-		"del" : ["DelIROfpPortInfo"]
+	"EMB6116" : {
+		"Description" : "5G基站网络规划MIB入口配置",
+		"NetPlanMibEntrys" : [
+			{
+				"MibEntry" : "netBoardEntry",
+				"Get" : ["GetNetBoard"],
+				"Set" : ["SetNetBoard"],
+				"Add" : ["AddNetBoard"],
+				"Del" : ["DelNetBoard"]	
+			},
+			{
+				"MibEntry" : "netRRUEntry",
+				"Get" : ["GetNetRRU", "GetNetRRUPGCInfo", "GetNetRRUJamResistantInfo"],
+				"Set" : ["SetNetRRU", "SetNetRRUPGCInfo", "SetNetRRUJamResistantInfo"],
+				"Add" : ["AddNetRRU"],
+				"Del" : ["DelNetRRU"]	
+			},
+			{
+				"MibEntry" : "netRHUBEntry",
+				"Get" : ["GetNetRHUB"],
+				"Set" : ["SetNetRHUBGsm", "SetNetRHUB"],
+				"Add" : ["AddNetRHUB"],
+				"Del" : ["DelNetRHUB"]	
+			},
+			{
+				"MibEntry" : "netAntennaArrayEntry",
+				"Get" : ["GetNetAntennaArray", "GetTDSInheritNetAntennaArray"],
+				"Set" : ["SetNetAntennaArray", "SetNetAntRAEScan"],
+				"Add" : ["AddNetAntennaArray"],
+				"Del" : ["DelNetAntennaArray"]	
+			},
+			{
+				"MibEntry" : "netRRUAntennaSettingEntry",
+				"Get" : ["GetNetRRUAntennaSetting"],
+				"Set" : ["SetNetRRUAntennaSetting", "SetNetRRUAntennaLcID"],
+				"Add" : ["AddNetRRUAntennaSetting"],
+				"Del" : ["DelNetRRUAntennaSetting"]	
+			},
+			{
+				"MibEntry" : "netIROptPlanEntry",
+				"Get" : ["GetIROfpPortInfo"],
+				"Set" : ["SetIROfpPortInfo"],
+				"Add" : ["AddIROfpPortInfo"],
+				"Del" : ["DelIROfpPortInfo"]	
+			},
+			{
+				"MibEntry" : "netEthPlanEntry",
+				"Get" : ["GetEthPortInfo"],
+				"Set" : ["SetEthPortInfo"],
+				"Add" : ["AddEthPortInfo"],
+				"Del" : ["DelEthPortInfo"]	
+			},
+			{
+				"MibEntry" : "nrNetLocalCellEntry",
+				"Get" : ["GetLocalNRCellNetworkPlan"],
+				"Set" : ["SetLocalNRCellNetworkPlan"],
+				"Add" : ["AddLocalNRCellNetworkPlan"],
+				"Del" : ["DelLocalNRCellNetworkPlan"]	
+			},	
+			{
+				"MibEntry" : "nrLocalCellEntry",
+				"Get" : ["GetLocalNRCellInfo"],
+				"Set" : ["SetNRLcAddDelTrigge"],
+				"Add" : ["SetNRLcAddDelTrigge"],
+				"Del" : ["SetNRLcAddDelTrigge"]	
+			},
+			{
+				"MibEntry" : "nrCellEntry",
+				"Get" : ["GetNRCellInfo"],
+				"Set" : ["SetNRCellActiveTrigger"],
+				"Add" : [],
+				"Del" : []	
+			}				
+		]
+	
 	}
 }

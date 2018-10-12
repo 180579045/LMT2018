@@ -17,6 +17,8 @@ namespace NetPlan
 		public bool m_bReadOnly { get; set; }                        // 属性栏是否只读
 		public bool m_bVisible { get; set; }						// 该属性是否可见
 
+		public string m_strIndex { get; set; }						// 保存该项的索引值
+
 		public MibLeafNodeInfo()
 		{
 			mibAttri = new MibLeaf();
