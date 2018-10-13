@@ -3,29 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-
-//using NPOI.HSSF.UserModel;
-//using NPOI.SS.UserModel;
-//using NPOI.SS.Util;
-//using NPOI.XSSF.UserModel;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Windows;
 using System.Data.OleDb;
+using System.Threading;
 
 using System.Reflection; // 引用这个才能使用Missing字段 
 using Microsoft.Office.Interop.Excel;
-using System.Reflection;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CfgFileOperation
 {
     class CfgFileExcelReadWrite
     {
+        List<Dictionary<string, string>> alamNo = new List<Dictionary<string, string>>();
+        void AddNewAlamNo(List<Dictionary<string, string>> alamNoNewOne)
+        {
+            alamNo.AddRange(alamNoNewOne);
+        }
+
+        private Excel.Worksheet g_wks = null;
+
+        public void ReadExcelBook(string FilePath)
+        {
+            Excel.Application excel = new Excel.Application();
+            excel.Visible = false;//设置调用引用的 Excel文件是否可见
+            excel.DisplayAlerts = false;
+            Excel.Workbook wb = excel.Workbooks.Open("D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls");
+            g_wks = (Excel.Worksheet)wb.Worksheets[1]; //索引从1开始 
+        }
+
         public DataSet ReadExcelToDS(string FilePath)
         {
             var path = FilePath;
@@ -68,62 +76,149 @@ namespace CfgFileOperation
 
         public void test3(string FilePath)
         {
-            Excel.Application excel = new Excel.Application();
-            Excel.Workbook wb = null;
-            //excel.Visible = false;//设置调用引用的 Excel文件是否可见
-            //excel.DisplayAlerts = false;
-            wb = excel.Workbooks.Open("D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls");
-            //wb = excel.Workbooks.Open("..\\123\\eNB告警信息表.xls");
-            Excel.Worksheet ws = (Excel.Worksheet)wb.Worksheets[1]; //索引从1开始 //(Excel.Worksheet)wb.Worksheets["SheetName"];
-            int rowCount = ws.UsedRange.Rows.Count;//赋值有效行;//有效行，索引从1开始
-            int colCount = ws.UsedRange.Column;
+            Dictionary<string, string> dic = new Dictionary<string, string>(){
+                {"告警编号", "B"},//  [{"AlaNumber"}] 
+                {"厂家告警级别", "J"},//  [{"AlaDegree"}]
+                {"是否需要上报OMCR", "Y"},//  [{"IsReportToOMCR"}]
+                {"告警类型", "I"},//  [{"AlaType"}]
+                {"清除方式", "Q"},//  [{"ClearStyle"}]
+                {"对应北向接口告警标准原因", "X"},//  [{"ItfNProtocolCauseNo"}]
+                {"是否为故障类告警", "D"},//  [{"IsFault"}]
+                {"主告警编号", "G"},//  [{"AlaSubtoPrimaryNumber"}]
+                {"故障类告警清除去抖周期{单位：s}", "AC"},// [{"ClearDeditheringInterval"}]
+                {"告警产生去抖周期{单位：s}", "AF"},// [{"CreateDeditheringInterval"}]
+                {"告警频次去抖间隔（单位：min）", "AD"},// [{"CompressionInterval"}]
+                {"告警频次去抖次数", "AE"},// [{"CompressionRepetitions"}]
+                {"告警值含义描述", "AA"},// [{"ValueStyle"}]
+                {"故障对象名称_EN", "AV"},// [{"FathernameOfObject"}]
+                {"告警不稳定态处理方式", "AW"},// [{"AlaUnstableDispose"}]
+                {"不稳定态告警编号", "AX"},// [{"UnstableAlaNum"}]
+            };
 
-            Dictionary<string, string> dic = new Dictionary<string, string>();
-            dic.Add("告警编号", "B");//  [("AlaNumber")] 
-            dic.Add("厂家告警级别", "J");//  [("AlaDegree")]
-            dic.Add("是否需要上报OMCR", "Y");//  [("IsReportToOMCR")]
-            dic.Add("告警类型", "I");//  [("AlaType")]
-            dic.Add("清除方式", "Q");//  [("ClearStyle")]
-            dic.Add("对应北向接口告警标准原因", "X");//  [("ItfNProtocolCauseNo")]
-            dic.Add("是否为故障类告警", "D");//  [("IsFault")]
-            dic.Add("主告警编号", "G");//  [("AlaSubtoPrimaryNumber")]
-            dic.Add("故障类告警清除去抖周期(单位：s)", "AC");// [("ClearDeditheringInterval")]
-            dic.Add("告警产生去抖周期(单位：s)", "AF");// [("CreateDeditheringInterval")]
-            dic.Add("告警频次去抖间隔（单位：min）", "AD");// [("CompressionInterval")]
-            dic.Add("告警频次去抖次数", "AE");// [("CompressionRepetitions")]
-            dic.Add("告警值含义描述", "AA");// [("ValueStyle")]
-            dic.Add("故障对象名称_EN", "AV");// [("FathernameOfObject")]
-            dic.Add("告警不稳定态处理方式", "AW");// [("AlaUnstableDispose")]
-            dic.Add("不稳定态告警编号", "AX");// [("UnstableAlaNum")]
-            string ordernum = string.Empty;
-            string count = string.Empty;
+            Excel.Application excel = new Excel.Application();
+            excel.Visible = false;//设置调用引用的 Excel文件是否可见
+            excel.DisplayAlerts = false;
+            Excel.Workbook wb = excel.Workbooks.Open("D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls");
+            Excel.Worksheet wks = (Excel.Worksheet)wb.Worksheets[1]; //索引从1开始 
+            int rowCount = wks.UsedRange.Rows.Count;//赋值有效行;//有效行，索引从1开始
+            int colCount = wks.UsedRange.Column;
             //循环行
             List<Dictionary<string, string>> dd = new List<Dictionary<string, string>>();
             for (int i = 2; i <= rowCount; i++)//
             {
-                if (ws.Rows[i] != null)
+                var row = wks.Rows[i];
+                if (wks.Cells[i, dic["告警编号"]].Value2 != null)
                 {
                     Dictionary<string, string> ValueCol = new Dictionary<string, string>();
-                    foreach(var key in dic.Keys)
+                    foreach (var key in dic.Keys)
                     {
-                        var Cellvalue = "";
-                        try
-                        {
-                            Cellvalue = ws.Cells[i, dic[key]].Value2.ToString();
-                        }
-                        catch
-                        {
-                            Cellvalue = "";
-                        }
+                        var ccc = wks.Cells[i, dic[key]].Value2;
+                        var Cellvalue = wks.Cells[i, dic[key]].Value2 == null ? "" : wks.Cells[i, dic[key]].Value2.ToString();
                         ValueCol.Add(key, Cellvalue.ToString());
                     }
-
                     dd.Add(ValueCol);
-                    //ordernum = ws.Cells[i, dic["模块名称"]].Value2.ToString();//取单元格值
-                    //count = ws.Cells[i, dic["告警编号"]].Value2.ToString();//ws.Cells[i, 2].Value2.ToString();
+                    Console.WriteLine(" i={0}", i);
                 }
+                else
+                {
+                    Console.WriteLine("break i={0}", i);
+                    break;
+                }
+            }//2159 af
+        }
+
+        public void test4(string FilePath)
+        {
+            ReadExcelBook( FilePath);
+            //int rowCount = wks.UsedRange.Rows.Count;//赋值有效行;//有效行，索引从1开始
+            //int colCount = wks.UsedRange.Column;
+            //循环行
+            //List<Dictionary<string, string>> dd = new List<Dictionary<string, string>>();
+
+            int rowCount = g_wks.UsedRange.Rows.Count;
+
+            test5(rowCount);
+        }
+
+        void test5(int rowCount)
+        {
+            Dictionary<string, string> ddd = new Dictionary<string, string>();
+            List<int> iStartEnd_1 = new List<int>() { 0, rowCount / 2 };
+            List<int> iStartEnd_2 = new List<int>() { rowCount / 2 +1, rowCount };
+
+            // 继续二叉树分
+            new Thread(doSomething0).Start(iStartEnd_1);
+            new Thread(doSomething0).Start(iStartEnd_2);
+
+        }
+        void doSomething0(object iStartEnd)
+        {
+            int iStart = ((List<int>)iStartEnd)[0];
+            int iEnd = ((List<int>)iStartEnd)[1];
+            if (iEnd - iStart > 200)
+            {
+                List<int> iStartEnd_1 = new List<int>() { iStart, iEnd / 2 };
+                List<int> iStartEnd_2 = new List<int>() { iEnd / 2 + 1, iEnd };
+                doSomething0(iStartEnd_1);
+                doSomething0(iStartEnd_2);
+            }
+            else
+            {
+                new Thread(doSomething).Start(iStartEnd);
             }
         }
+        private void doSomething(object iStartEnd)
+        {
+            Dictionary<string, string> dic = new Dictionary<string, string>(){
+                {"告警编号", "B"},//  [{"AlaNumber"}] 
+                {"厂家告警级别", "J"},//  [{"AlaDegree"}]
+                {"是否需要上报OMCR", "Y"},//  [{"IsReportToOMCR"}]
+                {"告警类型", "I"},//  [{"AlaType"}]
+                {"清除方式", "Q"},//  [{"ClearStyle"}]
+                {"对应北向接口告警标准原因", "X"},//  [{"ItfNProtocolCauseNo"}]
+                {"是否为故障类告警", "D"},//  [{"IsFault"}]
+                {"主告警编号", "G"},//  [{"AlaSubtoPrimaryNumber"}]
+                {"故障类告警清除去抖周期{单位：s}", "AC"},// [{"ClearDeditheringInterval"}]
+                {"告警产生去抖周期{单位：s}", "AF"},// [{"CreateDeditheringInterval"}]
+                {"告警频次去抖间隔（单位：min）", "AD"},// [{"CompressionInterval"}]
+                {"告警频次去抖次数", "AE"},// [{"CompressionRepetitions"}]
+                {"告警值含义描述", "AA"},// [{"ValueStyle"}]
+                {"故障对象名称_EN", "AV"},// [{"FathernameOfObject"}]
+                {"告警不稳定态处理方式", "AW"},// [{"AlaUnstableDispose"}]
+                {"不稳定态告警编号", "AX"},// [{"UnstableAlaNum"}]
+            };
+
+            List<Dictionary<string, string>> dd = new List<Dictionary<string, string>>();
+            //ddd = new Dictionary<string, string>();
+            int iStart = ((List<int>)iStartEnd)[0];
+            int iEnd = ((List<int>)iStartEnd)[1];
+            for (int i = iStart; i <= iEnd; i++)//
+            {
+                var row = g_wks.Rows[i];
+                if (g_wks.Cells[i, dic["告警编号"]].Value2 != null)
+                {
+                    Dictionary<string, string> ValueCol = new Dictionary<string, string>();
+                    foreach (var key in dic.Keys)
+                    {
+                        var ccc = g_wks.Cells[i, dic[key]].Value2;
+                        var Cellvalue = g_wks.Cells[i, dic[key]].Value2 == null ? "" : g_wks.Cells[i, dic[key]].Value2.ToString();
+                        ValueCol.Add(key, Cellvalue.ToString());
+                    }
+                    dd.Add(ValueCol);
+                    Console.WriteLine(" i={0}", i);
+                }
+                else
+                {
+                    Console.WriteLine("break i={0}", i);
+                    break;
+                }
+            }//2159 af
+
+            AddNewAlamNo(dd);
+
+
+        }
+
 
         public void test2(string FilePath)
         {
@@ -153,7 +248,7 @@ namespace CfgFileOperation
 
         public void test(string FilePath)
         {
-            test3(FilePath);
+            test4(FilePath);
             //DataTable dt = ReadExcelToDS(FilePath).Tables[0];
             //int rruTypePortCount = dt.Rows.Count; // 数据库中的行有效数据的个数
         }
