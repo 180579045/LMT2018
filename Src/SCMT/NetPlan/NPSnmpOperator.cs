@@ -157,7 +157,7 @@ namespace NetPlan
 		/// 调用时机：连接基站后，第一次进入网规页面
 		/// </summary>
 		/// <returns></returns>
-		public static bool InitNetPlanInfo(/* out Dictionary<string, List<ONE_DEV_ATTRI_INFO>> allEnbNetPlanInfo */)
+		public static bool InitNetPlanInfo()
 		{
 			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB6116");
 			if (null == mibEntryList)
@@ -166,9 +166,6 @@ namespace NetPlan
 				//allEnbNetPlanInfo = null;
 				return false;
 			}
-
-			//allEnbNetPlanInfo = new Dictionary<string, List<ONE_DEV_ATTRI_INFO>>();
-
 
 			// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 			foreach (var entry in mibEntryList)
@@ -295,6 +292,7 @@ namespace NetPlan
 		/// <param name="strIndex"></param>
 		/// <param name="childList"></param>
 		/// <param name="result"></param>
+		/// <param name="type"></param>
 		/// <returns></returns>
 		private static DevAttributeInfo GetTableMibInfo(string strIndex, List<MibLeaf> childList, DIC_DOUBLE_STR result, EnumDevType type)
 		{
