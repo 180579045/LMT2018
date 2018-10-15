@@ -147,5 +147,48 @@ namespace CommonUtility
 
 			return partIndex[partNo];
 		}
+
+		/// <summary>
+		/// 处理MIB中的默认值
+		/// 比如：2:lined返回2；\"null\"返回空字符；0..95返回0；×返回0；-1.0返回-1
+		/// </summary>
+		/// <param name="strDefaultValue"></param>
+		/// <returns></returns>
+		public static string GetMibDefaultValue(string strDefaultValue)
+		{
+			var ret = "";
+			if (string.IsNullOrEmpty(strDefaultValue))
+			{
+				return ret;
+			}
+
+			if (strDefaultValue.Equals("×"))
+			{
+				ret = "0";
+			}
+
+			if (strDefaultValue.Equals("-1.0"))
+			{
+				ret = "-1";
+			}
+
+			if (strDefaultValue.Equals("\"null\""))
+			{
+				ret = "";
+			}
+
+			if (-1 != strDefaultValue.IndexOf(".."))
+			{
+				ret = "0";
+			}
+
+			if (-1 != strDefaultValue.IndexOf(':'))
+			{
+				var subString = strDefaultValue.Split(':');
+				ret = subString[0];
+			}
+
+			return ret;
+		}
 	}
 }
