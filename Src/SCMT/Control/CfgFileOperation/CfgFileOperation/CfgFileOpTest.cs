@@ -19,7 +19,12 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
+
+            new CfgReadAntennaExcel();
+
             new CfgFileOpTest().testForOpReadExcelForCfg();
+
+
             new CfgFileOpTest().test4();
 
             //string strCfgFileName = "";
