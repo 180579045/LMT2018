@@ -67,18 +67,13 @@
         <KeyBinding Gesture="Ctrl+Alt+S" Command="{StaticResource DeleteElementCommand}" />
     </UserControl.InputBindings>
     <Grid Name="MainGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
+        <Grid.RowDefinitions>            
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Menu Margin="0" HorizontalAlignment="Left" x:Name="menu1" VerticalAlignment="Top">
-            <MenuItem Header="恢复布局" Click="MenuItem_Click"/>
-            <MenuItem Header="断点窗口" Click="MenuItem_Click_1"/>
-            <MenuItem Header="保存布局" Click="MenuItem_Click2"/>
-        </Menu>
-        <avalondock:DockingManager x:Name="dockingmanger" Grid.Row="1">
+
+        <avalondock:DockingManager x:Name="dockingmanger" Grid.Row="0">
             <avalondock:DockingManager.Theme>
-                <avalondock:GenericTheme/>
+                <avalondock:AeroTheme/>
             </avalondock:DockingManager.Theme>
             <avalondock:LayoutRoot>
                 <avalondock:LayoutPanel>
