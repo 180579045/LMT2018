@@ -30,17 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonUtility">
-      <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="LmtbSnmp">
-      <HintPath>..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
-    </Reference>
     <Reference Include="LogManager">
       <HintPath>..\LogManager\obj\Debug\LogManager.dll</HintPath>
-    </Reference>
-    <Reference Include="MsgQueue">
-      <HintPath>..\..\MsgQueue\bin\Debug\MsgQueue.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,6 +46,20 @@
     <Compile Include="Class1.cs" />
     <Compile Include="DTDataSyncMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonUtility\CommonUtility.csproj">
+      <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
+      <Name>CommonUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LmtbSnmp\LmtbSnmp.csproj">
+      <Project>{e036120c-3404-46d2-bc58-b0571ca82069}</Project>
+      <Name>LmtbSnmp</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

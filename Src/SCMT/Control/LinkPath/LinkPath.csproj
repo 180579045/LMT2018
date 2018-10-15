@@ -30,29 +30,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonUtility">
-      <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="DataSync">
-      <HintPath>..\DataSync\obj\Debug\DataSync.dll</HintPath>
-    </Reference>
-    <Reference Include="LmtbSnmp">
-      <HintPath>..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
-    </Reference>
-    <Reference Include="LogManager">
-      <HintPath>..\LogManager\obj\Debug\LogManager.dll</HintPath>
-    </Reference>
-    <Reference Include="MIBDataParser">
-      <HintPath>..\MibParser\MibParser\obj\Debug\MIBDataParser.dll</HintPath>
-    </Reference>
-    <Reference Include="MsgQueue">
-      <HintPath>..\..\MsgQueue\bin\Debug\MsgQueue.dll</HintPath>
-    </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
-    </Reference>
-    <Reference Include="SuperLMT.Utils">
-      <HintPath>..\..\ParseMessage\SuperLMT.Utils\obj\x86\Debug\SuperLMT.Utils.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -73,6 +52,36 @@
     <Compile Include="ICDTLinkPathMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnmpSessionWorker.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonUtility\CommonUtility.csproj">
+      <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
+      <Name>CommonUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ParseMessage\SuperLMT.Utils\SuperLMT.Utils.csproj">
+      <Project>{24d21fc0-59b8-4208-aa1d-1b30d3f3c101}</Project>
+      <Name>SuperLMT.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataSync\DataSync.csproj">
+      <Project>{95427238-7878-4e53-a9db-0f3052d91691}</Project>
+      <Name>DataSync</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LmtbSnmp\LmtbSnmp.csproj">
+      <Project>{e036120c-3404-46d2-bc58-b0571ca82069}</Project>
+      <Name>LmtbSnmp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MibParser\MibParser\MIBDataParser.csproj">
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

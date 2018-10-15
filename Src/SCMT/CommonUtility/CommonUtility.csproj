@@ -36,9 +36,6 @@
     <Reference Include="log4net">
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="LogManager">
-      <HintPath>..\Control\LogManager\obj\Debug\LogManager.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -73,6 +70,12 @@
     <Compile Include="SerializeHelper.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="TimeHelper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -30,18 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonUtility">
-      <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="LogManager">
-      <HintPath>..\LogManager\obj\Debug\LogManager.dll</HintPath>
-    </Reference>
-    <Reference Include="MIBDataParser">
-      <HintPath>..\MibParser\MibParser\obj\Debug\MIBDataParser.dll</HintPath>
-    </Reference>
-    <Reference Include="MsgQueue">
-      <HintPath>..\..\MsgQueue\bin\Debug\MsgQueue.dll</HintPath>
-    </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>
@@ -69,6 +57,24 @@
     <Compile Include="SnmpToDatabase.cs" />
     <Compile Include="TrapHelper.cs" />
     <Compile Include="TrapMessage.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonUtility\CommonUtility.csproj">
+      <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
+      <Name>CommonUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MibParser\MibParser\MIBDataParser.csproj">
+      <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
+      <Name>MIBDataParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
