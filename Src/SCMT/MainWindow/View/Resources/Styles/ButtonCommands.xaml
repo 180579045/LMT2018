@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:SCMTMainWindow.View.Resources.Styles">
+    <RoutedUICommand x:Key="NewCommand" Text="Text" />
+    <RoutedUICommand x:Key="ExportCommand" Text="Text" />
+    <RoutedUICommand x:Key="DownCommand" Text="Text" />
+    <RoutedUICommand x:Key="RefreshCommand" Text="Text" />
+    <RoutedUICommand x:Key="ClearCommand" Text="Text" />
+    <RoutedUICommand x:Key="LineCommand" Text="Text" />
+
+    <RoutedUICommand x:Key="ZoomIncreaseCommand" Text="Text" />
+    <RoutedUICommand x:Key="ZoomDecreaseCommand" Text="Text" />
+    <RoutedUICommand x:Key="FullScreenCommand" Text="Text" />
+    <RoutedUICommand x:Key="HiddenCellCommand" Text="Text" />
+    <RoutedUICommand x:Key="DeleteElementCommand" Text="Text" />
+    
+
+    <Style x:Key="DefaultToolTipStyle" TargetType="{x:Type ToolTip}">
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property = "HorizontalOffset" Value="0"/>
+        <Setter Property = "VerticalOffset" Value="0"/>
+        <Setter Property = "Background" Value="#D2E6FF"/>
+        <Setter Property = "FontSize" Value="12"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+    </Style>
+</ResourceDictionary>
