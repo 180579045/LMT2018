@@ -379,6 +379,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Resources\Styles\ButtonCommands.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\Resources\Styles\Expander.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -431,6 +435,17 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Resources\add.png" />
+    <Resource Include="Resources\delete.png" />
+    <Resource Include="Resources\download.png" />
+    <Resource Include="Resources\file1.png" />
+    <Resource Include="Resources\fullscreen.png" />
+    <Resource Include="Resources\Hidden.png" />
+    <Resource Include="Resources\line.png" />
+    <Resource Include="Resources\refresh.png" />
+    <Resource Include="Resources\trash_can.png" />
+    <Resource Include="Resources\zooma.png" />
+    <Resource Include="Resources\zooms.png" />
     <Resource Include="View\Resources\Stencils\XMLFile1.xml" />
     <Resource Include="Resources\document.png" />
     <EmbeddedResource Include="Component\SCMTControl\FileManager\EnbSoftVer.resx">
