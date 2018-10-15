@@ -67,6 +67,93 @@
       <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
       <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
     </GeometryGroup>
+
+
+
+
+
+
+    <!--*********************************************************************************-->
+    <!--rHUB -->
+    <!--单通道rHUB-->
+    <GeometryGroup x:Key="SingleRHUB">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="16.66,20" EndPoint="16.66,0"></LineGeometry>
+      <LineGeometry StartPoint="23.33,20" EndPoint="23.33,0"></LineGeometry>
+      <LineGeometry StartPoint="29.99,20" EndPoint="29.99,0"></LineGeometry>
+      <LineGeometry StartPoint="36.66,20" EndPoint="36.66,0"></LineGeometry>
+      <LineGeometry StartPoint="43.33,20" EndPoint="43.33,0"></LineGeometry>
+      <LineGeometry StartPoint="49.99,20" EndPoint="49.99,0"></LineGeometry>
+      <LineGeometry StartPoint="56.66,20" EndPoint="56.66,0"></LineGeometry>
+      <LineGeometry StartPoint="63.33,20" EndPoint="63.33,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+    </GeometryGroup>
+
+    <!--双通道rHUBarb-->
+    <GeometryGroup x:Key="TwoPathRHUB">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="16.66,20" EndPoint="16.66,0"></LineGeometry>
+      <LineGeometry StartPoint="23.33,20" EndPoint="23.33,0"></LineGeometry>
+      <LineGeometry StartPoint="29.99,20" EndPoint="29.99,0"></LineGeometry>
+      <LineGeometry StartPoint="36.66,20" EndPoint="36.66,0"></LineGeometry>
+      <LineGeometry StartPoint="43.33,20" EndPoint="43.33,0"></LineGeometry>
+      <LineGeometry StartPoint="49.99,20" EndPoint="49.99,0"></LineGeometry>
+      <LineGeometry StartPoint="56.66,20" EndPoint="56.66,0"></LineGeometry>
+      <LineGeometry StartPoint="63.33,20" EndPoint="63.33,0"></LineGeometry>
+      <LineGeometry StartPoint="0,30" EndPoint="10,30"></LineGeometry>
+      <LineGeometry StartPoint="80,30" EndPoint="70, 30"></LineGeometry>
+      <LineGeometry StartPoint="0,50" EndPoint="10,50"></LineGeometry>
+      <LineGeometry StartPoint="80,50" EndPoint="70, 50"></LineGeometry>
+    </GeometryGroup>
+
+    <!--*******************************************************************-->
+    <!--单通道天线-->
+    <GeometryGroup x:Key="SignalAntenna">
+      <LineGeometry StartPoint="0,0" EndPoint="15,20"></LineGeometry>
+      <LineGeometry StartPoint="30,0" EndPoint="15,20"></LineGeometry>
+      <LineGeometry StartPoint="15,0" EndPoint="15, 40"></LineGeometry>
+    </GeometryGroup>
+
+    <!--双通道天线-->
+    <GeometryGroup x:Key="TwoPathAntenna">
+      <LineGeometry StartPoint="5,0" EndPoint="20,20"></LineGeometry>
+      <LineGeometry StartPoint="35,0" EndPoint="20,20"></LineGeometry>
+      <LineGeometry StartPoint="20,0" EndPoint="20, 35"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 35"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 35"></LineGeometry>
+      <LineGeometry StartPoint="0,35" EndPoint="40, 35"></LineGeometry>
+    </GeometryGroup>
+
+    <!--四通道天线-->
+    <GeometryGroup x:Key="FourPathAntenna">
+      <LineGeometry StartPoint="15,0" EndPoint="30,20"></LineGeometry>
+      <LineGeometry StartPoint="45,0" EndPoint="30,20"></LineGeometry>
+      <LineGeometry StartPoint="30,0" EndPoint="30, 35"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 35"></LineGeometry>
+      <LineGeometry StartPoint="20,40" EndPoint="20, 35"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 35"></LineGeometry>
+      <LineGeometry StartPoint="60,40" EndPoint="60, 35"></LineGeometry>
+      <LineGeometry StartPoint="0,35" EndPoint="60, 35"></LineGeometry>
+    </GeometryGroup>
+
+    <!--八通道天线-->
+    <GeometryGroup x:Key="EightPathAntenna">
+      <LineGeometry StartPoint="55,0" EndPoint="70,20"></LineGeometry>
+      <LineGeometry StartPoint="85,0" EndPoint="70,20"></LineGeometry>
+      <LineGeometry StartPoint="70,0" EndPoint="70,35"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 35"></LineGeometry>
+      <LineGeometry StartPoint="20,40" EndPoint="20, 35"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 35"></LineGeometry>
+      <LineGeometry StartPoint="60,40" EndPoint="60, 35"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="80, 35"></LineGeometry>
+      <LineGeometry StartPoint="100,40" EndPoint="100, 35"></LineGeometry>
+      <LineGeometry StartPoint="120,40" EndPoint="120, 35"></LineGeometry>
+      <LineGeometry StartPoint="140,40" EndPoint="140, 35"></LineGeometry>
+      <LineGeometry StartPoint="0,35" EndPoint="140, 35"></LineGeometry>
+    </GeometryGroup>
+
+
   </StackPanel.Resources>
   
   
@@ -218,5 +305,128 @@
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
+
+  <!--单通道rHUB-->
+  <Grid x:Name="g_SingleRHUB">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource SingleRHUB}"
+              Stretch="Fill"
+              IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock Grid.Row="1" FontSize="10" Text="rHUB" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <!--双通道rHUB-->
+  <Grid x:Name="g_TwoPathRHUB">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource TwoPathRHUB}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock Grid.Row="1" FontSize="10" Text="rHUB" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.357"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.595"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.357"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.595"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <!--单通道 天线阵-->
+  <Grid x:Name="g_SignalAntenna">
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource SignalAntenna}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 10, 0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,1"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+
+  <!--双通道 天线阵-->
+  <Grid x:Name="g_TwoPathAntenna">
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource TwoPathAntenna}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 10, 0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <!--四通道 天线阵-->
+  <Grid x:Name="g_FourPathAntenna">
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource FourPathAntenna}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 10, 0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.667,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <!--八通道 天线阵-->
+  <Grid x:Name="g_EightPathAntenna">
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource EightPathAntenna}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 10, 0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.286,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.429,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.571,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.857,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+  
+
+
 
 </StackPanel>

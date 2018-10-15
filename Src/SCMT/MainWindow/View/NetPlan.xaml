@@ -35,6 +35,7 @@
             <MenuItem Header="恢复布局" Click="MenuItem_Click"/>
             <MenuItem Header="断点窗口" Click="MenuItem_Click_1"/>
             <MenuItem Header="保存布局" Click="MenuItem_Click2"/>
+            <MenuItem Header="展开小区" Click="MenuItem_Click_2" x:Name="ExpanderNrRect"></MenuItem>
         </Menu>
         <avalondock:DockingManager x:Name="dockingmanger" Grid.Row="1">
             <avalondock:DockingManager.Theme>
@@ -52,15 +53,18 @@
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*" >
                             <avalondock:LayoutAnchorable Title="网络规划">
-                               <!-- <local:FirstView  x:Name="firstView"/>-->
-                                <GroupBox Grid.Column="1" Margin="3,0,0,0">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
+                                <Grid x:Name="gridNetPlan">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="auto"></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <Canvas x:Name="nrRectCanvas" Grid.Row="0" Margin="10, 20, 0, 0"></Canvas>
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
                                         <local:DesignerCanvas Focusable="true" x:Name="MyDesigner" SizeChanged="MyDesigner_SizeChanged"
-                            Background="{StaticResource WindowBackgroundBrush}"
-                            Margin="10" FocusVisualStyle="{x:Null}"/>
+                                                              Background="{StaticResource WindowBackgroundBrush}"
+                                                              Margin="10" FocusVisualStyle="{x:Null}"/>
                                     </ScrollViewer>
-                                </GroupBox>
+                                </Grid>
                             </avalondock:LayoutAnchorable>
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePaneGroup Orientation="Vertical">

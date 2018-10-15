@@ -134,6 +134,85 @@ namespace SCMTMainWindow.View
             return strXAML;
         }
 
+        /// <summary>
+        /// 从配置文件获取rHUB
+        /// </summary>
+        /// <param name="nMaxRRUPath"></param>
+        /// <param name="strXAML"></param>
+        /// <param name="RRUSize"></param>
+        /// <returns></returns>
+        private string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        {
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Stream stream = Application.GetResourceStream(strUri).Stream;
+
+            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+
+            string strName = string.Empty;
+            if (nMaxRRUPath == 1)
+            {
+                strName = "g_SingleRHUB";
+                RRUSize = new Size(260, 70);
+            }
+            else if (nMaxRRUPath == 2)
+            {
+                strName = "g_TwoPathRHUB";
+                RRUSize = new Size(260, 70);
+            }
+            else
+            {
+                strName = "g_SingleRHUB";
+                RRUSize = new Size(80, 50);
+            }
+
+            Object content = el.FindName(strName) as Grid;
+
+            strXAML = XamlWriter.Save(content);
+
+            return strXAML;
+        }
+
+        private string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        {
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Stream stream = Application.GetResourceStream(strUri).Stream;
+
+            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+
+            string strName = string.Empty;
+            if (nMaxRRUPath == 1)
+            {
+                strName = "g_SignalAntenna";
+                RRUSize = new Size(30, 40);
+            }
+            else if (nMaxRRUPath == 2)
+            {
+                strName = "g_TwoPathAntenna";
+                RRUSize = new Size(40, 40);
+            }
+            else if (nMaxRRUPath == 4)
+            {
+                strName = "g_FourPathAntenna";
+                RRUSize = new Size(60, 40);
+            }
+            else if (nMaxRRUPath == 8)
+            {
+                strName = "g_EightPathAntenna";
+                RRUSize = new Size(140, 40);
+            }
+            else
+            {
+                strName = "g_SignalAntenna";
+                RRUSize = new Size(40, 40);
+            }
+
+            Object content = el.FindName(strName) as Grid;
+
+            strXAML = XamlWriter.Save(content);
+
+            return strXAML;
+        }
+
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
@@ -141,94 +220,216 @@ namespace SCMTMainWindow.View
 
             if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
             {
-                Object content = XamlReader.Load(XmlReader.Create(new StringReader(dragObject.Xaml)));
-
-                if (content != null)
+                Point position = e.GetPosition(this);
+                if (dragObject.Xaml.Contains("Text=\"RRU\""))
                 {
-                    //弹出RRU属性对话框，选择RRU的相关类型以及要添加的数量
-                    ChooseRRUType dlgChooseRRU = new ChooseRRUType();
-                    dlgChooseRRU.ShowDialog();
-
-                    if (!dlgChooseRRU.bOK)
+                    if(!CreateRRU(dragObject, position))
                     {
-                        return;    //选择取消之后，不进行拖拽
+                        return;
                     }
-                    int nMaxRRUPath = dlgChooseRRU.nMaxRRUPath;         //RRU的最大通道数
-                    int nRRUNumber = dlgChooseRRU.nRRUNumber;           //需要添加的RRU的数量
-                    string strXAML = string.Empty;                                        //解析xml文件
-                    Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
-                    string strRRUName = dlgChooseRRU.strRRUName;
-                    strXAML =  GetElementFromXAML(nMaxRRUPath, strXAML, out newSize);
-
-                    dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
-
-
-
-                    //根据输入的个数，添加多个网元
-                    for (int i = 0; i < nRRUNumber; i++)
-                    {
-                        DesignerItem newItem = new DesignerItem();
-
-                        string strXAML1 = strXAML;
-                        string strRRUFullName = string.Empty;
-
-                        strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
-                        //if(dicRRU.Count == 0)
-                        //{
-                        //    strRRUFullName = string.Format("{0}-{1}", strRRUName, dicRRU.Count);
-                        //    dicRRU.Add(strRRUFullName, 0);
-                        //}
-                        //else
-                        //{
-                        //    Dictionary<string, int>.KeyCollection keys = dicRRU.Keys;
-                        //    string strMaxString = keys.ElementAt(keys.Count-1);
-                        //    int nIndex = dicRRU[strMaxString] + 1;
-                        //    strRRUFullName = string.Format("{0}-{1}", strRRUName, nIndex);
-                        //    dicRRU.Add(strRRUFullName, nIndex);
-                        //}
-                        string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
-                        strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
-                        Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
-                        newItem.Content = testContent;
-                        newItem.ItemName = strRRUFullName;
-
-                        var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
-                        globalDic.Add(strRRUFullName, test);
-
-                        //Type typeTest = DynamicObject.BuildTypeWithCustomAttributesOnMethod("rru", test);
-
-                        Point position = e.GetPosition(this);
-
-                        if (dragObject.DesiredSize.HasValue)
-                        {
-                            Size desiredSize = dragObject.DesiredSize.Value;
-                            newItem.Width = desiredSize.Width;
-                            newItem.Height = desiredSize.Height;
-
-                            DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
-                            DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
-                        }
-                        Canvas.SetZIndex(newItem, this.Children.Count);
-                        this.Children.Add(newItem);
-                        SetConnectorDecoratorTemplate(newItem);
-                        
-                        this.SelectionService.SelectItem(newItem);
-                        newItem.Focus();
-
-                        Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                        if(ucTest != null)
-                        {
-                            gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                            CreateGirdForNetInfo(strRRUFullName, test);
-                            gridProperty.Children.Clear();
-                            gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
-                        }
-                    }
+                }else if(dragObject.Xaml.Contains("Text=\"rHUB\""))
+                {
+                    CreaterHUB(dragObject, position);
+                }
+                else if(dragObject.Xaml.Contains("Text=\"Antenna\""))
+                {
+                    CreateAntenna(dragObject, position);
+                }
+                else
+                {
+                    MessageBox.Show("Nothing");
+                    return;
                 }
 
                 e.Handled = true;
             }
+        }
+
+        /// <summary>
+        /// 构造 RRU 网元
+        /// </summary>
+        /// <param name="dragObject"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool CreateRRU(DragObject dragObject, Point position)
+        {
+            //弹出RRU属性对话框，选择RRU的相关类型以及要添加的数量
+            ChooseRRUType dlgChooseRRU = new ChooseRRUType();
+            dlgChooseRRU.ShowDialog();
+
+            if (!dlgChooseRRU.bOK)
+            {
+                return false;    //选择取消之后，不进行拖拽
+            }
+            int nMaxRRUPath = dlgChooseRRU.nMaxRRUPath;         //RRU的最大通道数
+            int nRRUNumber = dlgChooseRRU.nRRUNumber;           //需要添加的RRU的数量
+            string strXAML = string.Empty;                                        //解析xml文件
+            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
+            string strRRUName = dlgChooseRRU.strRRUName;
+            strXAML = GetElementFromXAML(nMaxRRUPath, strXAML, out newSize);
+
+            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
+
+            //根据输入的个数，添加多个网元
+            for (int i = 0; i < nRRUNumber; i++)
+            {
+                DesignerItem newItem = new DesignerItem();
+
+                string strXAML1 = strXAML;
+                string strRRUFullName = string.Empty;
+
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
+                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                newItem.Content = testContent;
+                newItem.ItemName = strRRUFullName;
+
+                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
+                globalDic.Add(strRRUFullName, test);
+
+                //Type typeTest = DynamicObject.BuildTypeWithCustomAttributesOnMethod("rru", test);
+
+                if (dragObject.DesiredSize.HasValue)
+                {
+                    Size desiredSize = dragObject.DesiredSize.Value;
+                    newItem.Width = desiredSize.Width;
+                    newItem.Height = desiredSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
+                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
+                }
+                Canvas.SetZIndex(newItem, this.Children.Count);
+                this.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                this.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                if (ucTest != null)
+                {
+                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                    CreateGirdForNetInfo(strRRUFullName, test);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 构造 rHUB
+        /// </summary>
+        /// <param name="dragObject"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool CreaterHUB(DragObject dragObject, Point position)
+        {
+            ChooserHUBType dlg = new ChooserHUBType();
+            dlg.ShowDialog();
+
+            int nMaxRRUPath = dlg.nRHUBType;         //RRU的最大通道数
+            int nRRUNumber = 1;           //需要添加的RRU的数量
+            string strXAML = string.Empty;                                        //解析xml文件
+            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
+            string strRRUName = "rHUB";
+            strXAML = GetrHUBFromXML(nMaxRRUPath, strXAML, out newSize);
+
+            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
+
+            //根据输入的个数，添加多个网元
+            for (int i = 0; i < nRRUNumber; i++)
+            {
+                DesignerItem newItem = new DesignerItem();
+
+                string strXAML1 = strXAML;
+                string strRRUFullName = string.Empty;
+
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
+                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                newItem.Content = testContent;
+                newItem.ItemName = strRRUFullName;
+                
+                if (dragObject.DesiredSize.HasValue)
+                {
+                    Size desiredSize = dragObject.DesiredSize.Value;
+                    newItem.Width = desiredSize.Width;
+                    newItem.Height = desiredSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
+                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
+                }
+                Canvas.SetZIndex(newItem, this.Children.Count);
+                this.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                this.SelectionService.SelectItem(newItem);
+                newItem.Focus();                
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 创建天线阵
+        /// </summary>
+        /// <param name="dragObject"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool CreateAntenna(DragObject dragObject, Point position)
+        {
+            ChooseAntennaType dlg = new ChooseAntennaType();
+            dlg.ShowDialog();
+
+
+
+            int nMaxRRUPath = dlg.nAntennaType;         //RRU的最大通道数
+            int nRRUNumber = 1;           //需要添加的RRU的数量
+            string strXAML = string.Empty;                                        //解析xml文件
+            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
+            string strRRUName = "No:";
+            strXAML = GetAntennaromXML(nMaxRRUPath, strXAML, out newSize);
+
+            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
+
+            //根据输入的个数，添加多个网元
+            for (int i = 0; i < nRRUNumber; i++)
+            {
+                DesignerItem newItem = new DesignerItem();
+
+                string strXAML1 = strXAML;
+                string strRRUFullName = string.Empty;
+
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
+                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                strXAML1 = strXAML1.Replace("Text=\"Antenna\"", strInstedName);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                newItem.Content = testContent;
+                newItem.ItemName = strRRUFullName;
+
+                if (dragObject.DesiredSize.HasValue)
+                {
+                    Size desiredSize = dragObject.DesiredSize.Value;
+                    newItem.Width = desiredSize.Width;
+                    newItem.Height = desiredSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
+                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
+                }
+                Canvas.SetZIndex(newItem, this.Children.Count);
+                this.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                this.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+            }
+
+            return true;
         }
 
         //尝试获取节点的根元素    根据网上的代码，查询一个元素的父节点的父节点。。。通过递归查找到 Name 为
@@ -373,7 +574,10 @@ namespace SCMTMainWindow.View
                 }
             }
 
-            Grid.SetRowSpan(gridSplit, mibInfo.Count);
+            if(mibInfo.Count != 0)
+            {
+                Grid.SetRowSpan(gridSplit, mibInfo.Count);
+            }
             g_GridForNet.Add(strName, grid);
         }
 

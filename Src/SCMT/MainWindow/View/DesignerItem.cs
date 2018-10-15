@@ -153,12 +153,15 @@ namespace SCMTMainWindow.View
                     {
                         designer.SelectionService.AddToSelection(this);
                         //选中的时候切换属性的显示
-                        if (designer.g_GridForNet.ContainsKey(this.itemName))
+                        if (this.itemName != null && this.itemName != string.Empty)
                         {
-                            if (designer.gridProperty != null)
+                            if (designer.g_GridForNet.ContainsKey(this.itemName))
                             {
-                                designer.gridProperty.Children.Clear();
-                                designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
+                                if (designer.gridProperty != null)
+                                {
+                                    designer.gridProperty.Children.Clear();
+                                    designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
+                                }
                             }
                         }
                     }
@@ -166,12 +169,15 @@ namespace SCMTMainWindow.View
                 {
                     designer.SelectionService.SelectItem(this);
                     //选中的时候切换属性的显示
-                    if (designer.g_GridForNet.ContainsKey(this.itemName))
+                    if(this.itemName != null && this.itemName != string.Empty)
                     {
-                        if(designer.gridProperty != null)
+                        if (designer.g_GridForNet.ContainsKey(this.itemName))
                         {
-                            designer.gridProperty.Children.Clear();
-                            designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
+                            if (designer.gridProperty != null)
+                            {
+                                designer.gridProperty.Children.Clear();
+                                designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
+                            }
                         }
                     }
                 }

@@ -35,7 +35,7 @@ namespace SCMTMainWindow.View
 
         public DesignerCanvas()
         {
-            this.CommandBindings.Add(new CommandBinding(ApplicationCommands.New, New_Executed));
+            //this.CommandBindings.Add(new CommandBinding(ApplicationCommands.New, New_Executed));
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Open, Open_Executed));
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, Save_Executed));
             this.CommandBindings.Add(new CommandBinding(ApplicationCommands.Print, Print_Executed));
@@ -66,11 +66,11 @@ namespace SCMTMainWindow.View
 
         #region New Command
 
-        private void New_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            this.Children.Clear();
-            this.SelectionService.ClearSelection();
-        }
+        //private void New_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    this.Children.Clear();
+        //    this.SelectionService.ClearSelection();
+        //}
 
         #endregion
 
