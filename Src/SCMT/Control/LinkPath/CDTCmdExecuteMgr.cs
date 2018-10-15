@@ -184,6 +184,8 @@ namespace LinkPath
 
 				sbOid.Clear();
 				sbOid.AppendFormat("{0}.{1}", strPreFixOid, v);
+
+				// TODO 此处创建了vb对象，但是到了下一步操作没有使用vb对象，只是取出了oid作为入参重新构造了Vb对象。可以进行优化。
 				var lmtVb = new CDTLmtbVb { Oid = sbOid.ToString() };
 				lmtbVbs.Add(lmtVb);
 			}
