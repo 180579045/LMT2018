@@ -137,9 +137,8 @@ namespace LmtbSnmp
 
 			foreach (var name in nameList)
 			{
-				MibLeaf temp;
-				var errorMsg = "";
-				if (!Database.GetInstance().getDataByEnglishName(name, out temp, ip, out errorMsg))
+				var temp = GetMibNodeInfoByName(name, ip);
+				if (null == temp)
 				{
 					throw new CustomException($"待查找的节点名{name}不存在，请确认MIB版本后重试");
 				}
@@ -229,14 +228,13 @@ namespace LmtbSnmp
 		/// <returns>null:查询该MIB信息失败</returns>
 		public static Dictionary<int, string> GetValueRangeByMibName(string mibName, string targetIp)
 		{
-			string error;
-			var retData = new Dictionary<string, MibLeaf> { [mibName] = null };
-			if (!Database.GetInstance().getDataByEnglishName(retData, targetIp, out error))
+			var mibLeaf = GetMibNodeInfoByName(mibName, targetIp);
+			if (null == mibLeaf)
 			{
 				return null;
 			}
 
-			string mvr = retData[mibName].managerValueRange;
+			string mvr = mibLeaf.managerValueRange;
 			if (string.IsNullOrWhiteSpace(mvr)) return null;
 
 			return MibStringHelper.SplitManageValue(mvr);
@@ -259,9 +257,8 @@ namespace LmtbSnmp
 				return null;
 			}
 
-			string error;
-			MibLeaf retData;
-			if (!Database.GetInstance().getDataByEnglishName(mibName, out retData, targetIp, out error))
+			MibLeaf retData = GetMibNodeInfoByName(mibName, targetIp);
+			if (null == retData)
 			{
 				return null;
 			}

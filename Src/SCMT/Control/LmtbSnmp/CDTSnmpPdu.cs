@@ -172,17 +172,15 @@ namespace LmtbSnmp
 		{
 			strValue = "";
 
-			string error = "";
 			// 根据ip和mibname从数据库模块找到所需的信息，主要是oid
-			var param = new Dictionary<string, MibLeaf> {[strMibName] = null};
-			if (!Database.GetInstance().getDataByEnglishName(param, strIPAddr, out error))
+			var mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(strMibName, strIPAddr);
+			if (null == mibLeaf)
 			{
 				return false;
 			}
 
-			var temp = param[strMibName];
 			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
-			var oid = temp.childOid.Trim('.');
+			var oid = mibLeaf.childOid.Trim('.');
 
 			var fulloid = $"{prefix}.{oid}";
 			if (lpszIndex != null)

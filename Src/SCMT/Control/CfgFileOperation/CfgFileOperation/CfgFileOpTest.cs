@@ -22,15 +22,15 @@ namespace CfgFileOperation
             new CfgFileOpTest().testForOpReadExcelForCfg();
             new CfgFileOpTest().test4();
 
-            string strCfgFileName = "";
-            string FileToDirectory = "";
-            string strDBPath = "";
-            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
-            byte[] byteArray = System.Text.Encoding.Default.GetBytes("123");
-            Array.Reverse(byteArray);
-            CfgOp cfgOp = new CfgOp();
-            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
-            cfgOp.SaveFile_eNB("./path.cfg");
+            //string strCfgFileName = "";
+            //string FileToDirectory = "";
+            //string strDBPath = "";
+            //string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+            //byte[] byteArray = System.Text.Encoding.Default.GetBytes("123");
+            //Array.Reverse(byteArray);
+            //CfgOp cfgOp = new CfgOp();
+            //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+            //cfgOp.SaveFile_eNB("./path.cfg");
             //Console.ReadLine();
         }
 

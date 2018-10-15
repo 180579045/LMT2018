@@ -46,9 +46,14 @@ namespace CommonUtility
 
 		public const string IDS_OPERLOG_SUCCESS = "成功";
 
-		// 消息订阅
-		public const string MSG_KEY_CDTSnmpMsgDispose_OnResponse = "CDTSnmpMsgDispose_OnResponse";
-
+		public const string IDS_NEID = "网元标识:";
+		public const string IDS_NETYPE = "网元类型:";
+		public const string IDS_SYNCFILETYPE = "需要同步的文件类型:";
+		public const string IDS_ADDITIONALINFO = "附加信息:";
+		public const string IDS_OCCURTIME = "产生时间:";
+		public const string IDS_RECEIVE = "收到";
+		public const string IDS_INFOMSGSTYLE = "被管对象: {0},值为: {1}";
+		public const string IDS_UNITNAME = "单位/精度: ";
 
 	}
 }

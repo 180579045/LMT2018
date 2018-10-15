@@ -29,13 +29,7 @@ namespace LmtbSnmp
 			strReValue = "";
 
 			// 节点信息
-			MibLeaf mibNodeInfo;
-			string strError = "";
-			if (false == Database.GetInstance().getDataByEnglishName(strMibName, out mibNodeInfo, strIpAddr, out strError))
-			{
-				Log.Error(string.Format("获取Mib信息失败，strMibName={0}", strMibName));
-				return false;
-			}
+			var mibNodeInfo = SnmpToDatabase.GetMibNodeInfoByName(strMibName, strIpAddr);
 			if (mibNodeInfo == null)
 			{
 				Log.Error(string.Format("获取到的Mib信息为空，strMibName={0}", strMibName));
@@ -64,7 +58,7 @@ namespace LmtbSnmp
 					string[] keyVal = item.Split(':');
 					if (keyVal.Count() >= 2)
 					{
-						if (bValueToDesc == true) //值翻译为描述
+						if (bValueToDesc) //值翻译为描述
 						{
 							if (string.Equals(strMibValue, keyVal[0], StringComparison.OrdinalIgnoreCase))
 							{
@@ -288,6 +282,30 @@ namespace LmtbSnmp
             }
 
 			return null;
+		}
+
+		/// <summary>
+		/// Add By Mayi  
+		/// </summary>
+		/// <param name="ipAddr"></param>
+		/// <param name="oid"></param>
+		/// <param name="mibProFix"></param>
+		/// <returns></returns>
+		public static string GetNodeTypeByOIDInCache(string strNeIp, string strOid)
+		{
+			// Mib前缀
+			string strMibPrefix = SnmpToDatabase.GetMibPrefix();
+			// 去掉Oid的Mib前缀
+			string strOidTmp = strOid.Replace(strMibPrefix, "");
+
+			MibLeaf mibLeaf = GetParentMibNodeByChildOID(strNeIp, strOidTmp);
+
+			if (mibLeaf == null)
+			{
+				return null;
+			}
+
+			return mibLeaf.mibSyntax;
 		}
 
 	}

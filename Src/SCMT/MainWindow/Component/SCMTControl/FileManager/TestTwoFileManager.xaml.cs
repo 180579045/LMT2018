@@ -759,8 +759,6 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 }
             }
 
-			ShowLogHelper.Show($"远程文件路径：{enbPath}", "SCMT");
-
 			try
 			{
                 _fileHandler.UploadFileToLocal(localDirName, enbPath);

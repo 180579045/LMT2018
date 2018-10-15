@@ -128,6 +128,9 @@ namespace FileManager
 				throw new CustomException("有正在进行传输的文件或正在升级的任务");
 			}
 
+			// 打印消息
+			ShowLogHelper.Show($"远程文件路径：{remoteFilePath}", _boardIp, InfoTypeEnum.OM_EVENT_NOTIFY_INFO);
+
 			var handler = FileHandlerFactory.CreateHandler("gen", _boardIp);
 			var result = handler.DoGetFile(localFilePath, remoteFilePath);
 			if (ExecuteResult.UpgradeFailed == result)

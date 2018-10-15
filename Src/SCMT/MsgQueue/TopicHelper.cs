@@ -41,6 +41,15 @@ namespace MsgQueue
 		public const string ParseDataConFile = "parse_data_con_file";
 		// 通知加载lm.dtz数据到MIBVersionDB中的消息
 		public const string LoadLmdtzToVersionDb = "Load_Lmdtz_to_versiondb";
+		// snmp响应消息
+		public const string SnmpMsgDispose_OnResponse = "SnmpMsgDispose_OnResponse";
+		// Trap消息
+		public const string SnmpMsgDispose_OnTrap = "SnmpMsgDispose_OnTrap";
+		// 配置变更Trap消息
+		public const string SnmpMsgDispose_CfgChgTrap = "SnmpMsgDispose_CfgChgTrap";
+		// Trap消息分发
+		public const string SnmpMsgDispose_AppEventTrap = "SnmpMsgDispose_AppEventTrap";
+
 
 		#endregion
 

@@ -12,6 +12,7 @@
             <ResourceDictionary>
                 <ResourceDictionary.MergedDictionaries>
                     <ResourceDictionary Source="Resources/Styles/Shared.xaml"/>
+                    <ResourceDictionary Source="Resources/Styles/ButtonCommands.xaml"/>
                     <ResourceDictionary Source="Resources/Styles/ToolBar.xaml"/>
                     <ResourceDictionary Source="Resources/Styles/GroupBox.xaml"/>
                     <ResourceDictionary Source="Resources/Styles/Expander.xaml"/>
@@ -26,20 +27,53 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
     </UserControl.Resources>
+    <UserControl.CommandBindings>        
+        <CommandBinding Command="{StaticResource NewCommand}" 
+                    Executed="NewHandler" />
+        <CommandBinding Command="{StaticResource ExportCommand}" 
+                    Executed="ExportHandler" />
+        <CommandBinding Command="{StaticResource DownCommand}" 
+                    Executed="DownHandler" />
+        <CommandBinding Command="{StaticResource RefreshCommand}" 
+                    Executed="RefreshHandler" />
+        <CommandBinding Command="{StaticResource ClearCommand}" 
+                    Executed="ClearHandler" />
+        <CommandBinding Command="{StaticResource LineCommand}" 
+                    Executed="LineHandler" />
+
+        <CommandBinding Command="{StaticResource ZoomIncreaseCommand}" 
+                    Executed="ZoomIncreaseHandler" />
+        <CommandBinding Command="{StaticResource ZoomDecreaseCommand}" 
+                    Executed="ZoomDecreaseHandler" />
+        <CommandBinding Command="{StaticResource FullScreenCommand}" 
+                    Executed="FullScreenHandler" />
+        <CommandBinding Command="{StaticResource HiddenCellCommand}" 
+                    Executed="HiddenCellHandler" />
+        <CommandBinding Command="{StaticResource DeleteElementCommand}" 
+                    Executed=" DeleteElementHandler" />
+    </UserControl.CommandBindings>
+    <UserControl.InputBindings>
+        <KeyBinding Gesture="Ctrl+Alt+N" Command="{StaticResource NewCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+E" Command="{StaticResource ExportCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+D" Command="{StaticResource DownCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+R" Command="{StaticResource RefreshCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+C" Command="{StaticResource ClearCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+L" Command="{StaticResource LineCommand}" />
+
+        <KeyBinding Gesture="Ctrl+Alt+Z" Command="{StaticResource ZoomIncreaseCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+M" Command="{StaticResource ZoomDecreaseCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+F" Command="{StaticResource FullScreenCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+H" Command="{StaticResource HiddenCellCommand}" />
+        <KeyBinding Gesture="Ctrl+Alt+S" Command="{StaticResource DeleteElementCommand}" />
+    </UserControl.InputBindings>
     <Grid Name="MainGrid">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition/>
+        <Grid.RowDefinitions>            
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Menu Margin="0" HorizontalAlignment="Left" x:Name="menu1" VerticalAlignment="Top">
-            <MenuItem Header="恢复布局" Click="MenuItem_Click"/>
-            <MenuItem Header="断点窗口" Click="MenuItem_Click_1"/>
-            <MenuItem Header="保存布局" Click="MenuItem_Click2"/>
-            <MenuItem Header="展开小区" Click="MenuItem_Click_2" x:Name="ExpanderNrRect"></MenuItem>
-        </Menu>
-        <avalondock:DockingManager x:Name="dockingmanger" Grid.Row="1">
+
+        <avalondock:DockingManager x:Name="dockingmanger" Grid.Row="0">
             <avalondock:DockingManager.Theme>
-                <avalondock:GenericTheme/>
+                <avalondock:AeroTheme/>
             </avalondock:DockingManager.Theme>
             <avalondock:LayoutRoot>
                 <avalondock:LayoutPanel>
@@ -53,17 +87,118 @@
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*" >
                             <avalondock:LayoutAnchorable Title="网络规划">
-                                <Grid x:Name="gridNetPlan">
+                                <Grid>
                                     <Grid.RowDefinitions>
-                                        <RowDefinition Height="auto"></RowDefinition>
-                                        <RowDefinition></RowDefinition>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
-                                    <Canvas x:Name="nrRectCanvas" Grid.Row="0" Margin="10, 20, 0, 0"></Canvas>
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                                
+                                    <ToolBar Grid.Row="0" Height="24" Margin="3,0,0,0">
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
+                                                Command="{StaticResource NewCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/add.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="新建配置 Ctrl+Alt+N" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0"
+                                                Command="{StaticResource ExportCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/file1.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="导入网规文件 Ctrl+Alt+E" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
+                                                Command="{StaticResource DownCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/download.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="下发网规 Ctrl+Alt+D" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0"  
+                                                Command="{StaticResource RefreshCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/refresh.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="刷新 Ctrl+Alt+R" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
+                                                Command="{StaticResource ClearCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/delete.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="清除网规 Ctrl+Alt+C" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource LineCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/line.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="连线 Ctrl+Alt+L" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource ZoomIncreaseCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/zooma.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="放大 Ctrl+Alt+Z" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource ZoomDecreaseCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/zooms.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="缩小 Ctrl+Alt+M" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource FullScreenCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/fullscreen.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="全屏 Ctrl+Alt+F" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource HiddenCellCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/Hidden.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="隐藏小区 Ctrl+Alt+H" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource DeleteElementCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/trash_can.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="删除网元 Ctrl+Alt+S" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        
+                                    </ToolBar>
+                                
+                               <!-- <local:FirstView  x:Name="firstView"/>-->
+                                <GroupBox Grid.Column="1"  Grid.Row="1" Margin="3,0,0,0">
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
                                         <local:DesignerCanvas Focusable="true" x:Name="MyDesigner" SizeChanged="MyDesigner_SizeChanged"
                                                               Background="{StaticResource WindowBackgroundBrush}"
                                                               Margin="10" FocusVisualStyle="{x:Null}"/>
                                     </ScrollViewer>
+                                </Grid>
                                 </Grid>
                             </avalondock:LayoutAnchorable>
                         </avalondock:LayoutAnchorablePane>

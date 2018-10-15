@@ -14,67 +14,73 @@ namespace NetPlan
 		#region 公共接口
 
 		// 根据传入的类型获取所有的命令
-		public ObjOperCmd GetAllCmdByType(string type)
+		public NetPlanMibEntry GetAllCmdByType(string type)
 		{
 			if (string.IsNullOrEmpty(type) || string.IsNullOrWhiteSpace(type))
 			{
 				throw new CustomException("传入的设备类型有误");
 			}
 
-			ObjOperCmd retCmd = null;
-			switch (type)
-			{
-				case "board":
-					retCmd = _npeCmd.board;
-					break;
-				case "rru":
-					retCmd = _npeCmd.rru;
-					break;
-				case "rhub":
-					retCmd = _npeCmd.rhub;
-					break;
-				case "ant":
-					retCmd = _npeCmd.ant;
-					break;
-				case "rru_ant":
-					retCmd = _npeCmd.rru_ant;
-					break;
-				case "board_rru":
-					retCmd = _npeCmd.board_rru;
-					break;
-				default:
-					break;
-			}
+			//ObjOperCmd retCmd = null;
+			//switch (type)
+			//{
+			//	case "board":
+			//		retCmd = _npeCmd.board;
+			//		break;
+			//	case "rru":
+			//		retCmd = _npeCmd.rru;
+			//		break;
+			//	case "rhub":
+			//		retCmd = _npeCmd.rhub;
+			//		break;
+			//	case "ant":
+			//		retCmd = _npeCmd.ant;
+			//		break;
+			//	case "rru_ant":
+			//		retCmd = _npeCmd.rru_ant;
+			//		break;
+			//	case "board_rru":
+			//		retCmd = _npeCmd.board_rru;
+			//		break;
+			//	default:
+			//		break;
+			//}
 
-			return retCmd;
+			return null;
 		}
 
 		// 获取指定设备的所有MIB信息，并填入到属性框中
 		public List<MibLeafNodeInfo> GetDevAttributesFromMib(string devType)
 		{
-			var cmdObj = GetAllCmdByType(devType);
-			var getCmdList = cmdObj?.get;
+			//var cmdObj = GetAllCmdByType(devType);
+			//var getCmdList = cmdObj?.get;
 			var devAttributList = new List<MibLeafNodeInfo>();
 
-			var target = CSEnbHelper.GetCurEnbAddr();
-			if (null == target)
-			{
-				throw new CustomException("当前未选中基站");
-			}
+			//var target = CSEnbHelper.GetCurEnbAddr();
+			//if (null == target)
+			//{
+			//	throw new CustomException("当前未选中基站");
+			//}
 
-			foreach (var getCmd in getCmdList)
-			{
-				var cmdInfo = Database.GetInstance().GetCmdDataByName(getCmd, target);
-				if (null == cmdInfo)
-				{
-					continue;
-				}
+			//foreach (var getCmd in getCmdList)
+			//{
+			//	var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(getCmd, target);
+			//	if (null == cmdInfo)
+			//	{
+			//		continue;
+			//	}
 
-				var cmdMibInfoList = SnmpToDatabase.ConvertOidListToMibInfoList(cmdInfo.m_leaflist, target);
-				devAttributList.AddRange(from cmdMibInfo in cmdMibInfoList where null != cmdMibInfo select new MibLeafNodeInfo {mibAttri = cmdMibInfo});
-			}
+			//	var cmdMibInfoList = SnmpToDatabase.ConvertOidListToMibInfoList(cmdInfo.m_leaflist, target);
+			//	devAttributList.AddRange(from cmdMibInfo in cmdMibInfoList where null != cmdMibInfo select new MibLeafNodeInfo {mibAttri = cmdMibInfo});
+			//}
 
 			return devAttributList;
+		}
+
+		// 获取所有的mib信息和命令信息
+		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(string strVersion = "EMB6116")
+		{
+			return _npeCmd.EMB6116.NetPlanMibEntrys;
 		}
 
 		#endregion
@@ -103,7 +109,7 @@ namespace NetPlan
 
 		#region 私有属性
 
-		private NPECmd _npeCmd;
+		private readonly NPECmd _npeCmd;
 
 		#endregion
 
@@ -111,27 +117,29 @@ namespace NetPlan
 
 	public class NPECmd
 	{
-		public ObjOperCmd board;
-		public ObjOperCmd rru;
-		public ObjOperCmd rhub;
-		public ObjOperCmd ant;
-		public ObjOperCmd rru_ant;
-		public ObjOperCmd board_rru;
+		public GridMibCfg EMB6116;
 	}
 
-	public class ObjOperCmd
+	public class GridMibCfg
 	{
-		public List<string> get;
-		public List<string> set;
-		public List<string> add;
-		public List<string> del;
+		public string Description;
+		public List<NetPlanMibEntry> NetPlanMibEntrys;
+	}
 
-		public ObjOperCmd()
+	public class NetPlanMibEntry
+	{
+		public string MibEntry;
+		public List<string> Get;
+		public List<string> Set;
+		public List<string> Add;
+		public List<string> Del;
+
+		public NetPlanMibEntry()
 		{
-			get = new List<string>();
-			set = new List<string>();
-			add = new List<string>();
-			del = new List<string>();
+			Get = new List<string>();
+			Add = new List<string>();
+			Set = new List<string>();
+			Del = new List<string>();
 		}
 	}
 }

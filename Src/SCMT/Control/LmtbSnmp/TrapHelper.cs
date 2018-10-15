@@ -7,6 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using LogManager;
 using SnmpSharpNet;
+using MIBDataParser.JSONDataMgr;
+using MIBDataParser;
+using MsgQueue;
+using CommonUtility;
 
 namespace LmtbSnmp
 {
@@ -204,6 +208,7 @@ namespace LmtbSnmp
 						Log.Error(string.Format("Invalid SNMPv2 packet from {0}", _peerIp.ToString()));
 						pkt = null;
 					}
+
 					if (pkt != null)
 					{
 						Log.Debug(string.Format("*** community: {0}, sysUpTime: {1}, trapObjectID: {2}"
@@ -231,10 +236,19 @@ namespace LmtbSnmp
 							_socket.SendTo(buf, (EndPoint)_peerIp);
 						}
 
-						// TODO: 需要修改调用方法，避免项目相互依赖
 						// Trap消息处理
-						//CDTSnmpMsgDispose cDTSnmpMsgDispose = new CDTSnmpMsgDispose();
-						//cDTSnmpMsgDispose.OnTrap(pkt.Pdu, (IPEndPoint)ep);
+						CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+						// 将Pdu转换为CDTLmtbPdu
+						if (false == this.SnmpPdu2LmtPdu4Trap(pkt.Pdu, (IPEndPoint)ep, ref lmtPdu, 0, true))
+						{
+							Log.Error("SnmpPdu2LmtPdu4Trap()调用错误！");
+						}
+						else
+						{
+							// 发布Trap消息
+							byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
+							PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnTrap, bytes);
+                        }
 					}
 
 				}
@@ -254,6 +268,194 @@ namespace LmtbSnmp
 				_socket = null;
 			}
 		}
+
+
+		/// <summary>
+		/// 将Trap的snmp类型的pdu转换为LmtSnmp的pdu
+		/// </summary>
+		/// <param name="pdu"></param>
+		/// <param name="iPEndPort"></param>
+		/// <param name="lmtPdu"></param>
+		/// <param name="reason"></param>
+		/// <param name="isAsync"></param>
+		private bool SnmpPdu2LmtPdu4Trap(Pdu pdu, IPEndPoint iPEndPort, ref CDTLmtbPdu lmtPdu, int reason, bool isAsync)
+		{
+			string logMsg;
+			if (lmtPdu == null)
+			{
+				Log.Error("参数[lmtPdu]为空");
+				return false;
+			}
+
+			if (pdu.Type != PduType.V2Trap)
+			{
+				Log.Error("接收到的不是Trap消息或不是V2Trap消息！");
+				return false;
+			}
+
+			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo();
+			appendInfo.m_bIsSync = !isAsync;
+
+			logMsg = string.Format("snmpPackage.Pdu.Type = {0}", pdu.Type);
+			//			Log.Debug(logMsg);
+
+			appendInfo.m_bIsNeedPrint = true;
+
+
+			lmtPdu.Clear();
+			lmtPdu.m_LastErrorIndex = pdu.ErrorIndex;
+			lmtPdu.m_LastErrorStatus = pdu.ErrorStatus;
+			lmtPdu.m_requestId = pdu.RequestId;
+			lmtPdu.assignAppendValue(appendInfo);
+
+			// 设置IP和端口信息
+			IPAddress srcIpAddr = iPEndPort.Address;
+			int port = iPEndPort.Port;
+			lmtPdu.m_SourceIp = srcIpAddr.ToString();
+			lmtPdu.m_SourcePort = port;
+
+			lmtPdu.reason = reason;
+			lmtPdu.m_type = (ushort)pdu.Type;
+
+
+			// TODO
+			/*
+			LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(csIpAddr);
+			if (pLmtorInfo != NULL && pLmtorInfo->m_isSimpleConnect && pdu.get_type() == sNMP_PDU_TRAP)
+			{
+				Oid id;
+				pdu.get_notify_id(id);
+				CString strTrapOid = id.get_printable();
+				if (strTrapOid != "1.3.6.1.4.1.5105.100.1.2.2.3.1.1")
+				{
+					//如果是简单连接网元的非文件传输结果事件，就不要往上层抛送了
+					return FALSE;
+				}
+			}
+			*/
+
+			//如果是错误的响应，则直接返回
+			if (lmtPdu.m_LastErrorStatus != 0 || reason == -5)
+			{
+				return true;
+			}
+
+			// 获取MIB前缀
+			string prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
+			if (string.IsNullOrEmpty(prefix))
+			{
+				Log.Error(string.Format("获取MIB前缀失败!"));
+				return false;
+			}
+
+			// 对于Trap消息,我们自己额外构造两个Vb，用来装载时间戳和trap Id 
+			if (pdu.Type == PduType.V2Trap) // Trap
+			{
+				// 构造时间戳Vb
+				CDTLmtbVb lmtVb = new CDTLmtbVb();
+				lmtVb.Oid = "时间戳";
+				// TODO 是这个时间戳吗？？？？
+				lmtVb.Value = pdu.TrapSysUpTime.ToString();
+				lmtVb.SnmpSyntax = SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OID;
+				lmtPdu.AddVb(lmtVb);
+
+				// 构造Trap Id Vb
+				lmtVb = new CDTLmtbVb();
+				lmtVb.Oid = "notifyid";
+				// TODO 对吗？？？
+				lmtVb.Value = pdu.TrapObjectID.ToString();
+				lmtVb.SnmpSyntax = SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OID;
+				lmtPdu.AddVb(lmtVb);
+			}
+
+			foreach (Vb vb in pdu.VbList)
+			{
+				logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
+					, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+				Log.Debug(logMsg);
+
+				CDTLmtbVb lmtVb = new CDTLmtbVb();
+
+				lmtVb.Oid = vb.Oid.ToString();
+
+				// 值是否需要SetVbValue()处理
+				bool isNeedPostDispose = true;
+
+				string strValue = vb.Value.ToString();
+
+				// TODO
+				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type; //vb.GetType();
+
+				// 如果是getbulk响应返回的SNMP_SYNTAX_ENDOFMIBVIEW，则不处理这个vb，继续
+				if (lmtVb.SnmpSyntax == SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW)
+				{
+					lmtPdu.isEndOfMibView = true;
+					continue;
+				}
+
+				if (SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS == lmtVb.SnmpSyntax)
+				{
+					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
+					// 获取Mib节点类型
+					string strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, lmtVb.Oid);
+					// strNodeType = "DateandTime";
+
+					if (string.Equals("DateandTime", strNodeType, StringComparison.OrdinalIgnoreCase))
+					{
+						strValue = SnmpHelper.SnmpDateTime2String((OctetString)vb.Value);
+						isNeedPostDispose = false;
+					}
+					else if (string.Equals("inetaddress", strNodeType, StringComparison.OrdinalIgnoreCase))
+					{
+						IpAddress ipAddr = new IpAddress((OctetString)vb.Value);
+						strValue = ipAddr.ToString();
+						isNeedPostDispose = false;
+					}
+					else if (string.Equals("MacAddress", strNodeType, StringComparison.OrdinalIgnoreCase))
+					{
+						strValue = ((OctetString)vb.Value).ToMACAddressString();
+						isNeedPostDispose = false;
+					}
+					else if (string.Equals("Unsigned32Array", strNodeType, StringComparison.OrdinalIgnoreCase))
+					{
+						strValue = SnmpHelper.OctetStrToU32Array((OctetString)vb.Value);
+						isNeedPostDispose = false;
+					}
+					else if (string.Equals("Integer32Array", strNodeType, StringComparison.OrdinalIgnoreCase)
+						|| "".Equals(strNodeType))
+					{
+						strValue = SnmpHelper.OctetStrToS32Array((OctetString)vb.Value);
+						isNeedPostDispose = false;
+					}
+					else if (string.Equals("MncMccType", strNodeType, StringComparison.OrdinalIgnoreCase))
+					{
+						strValue = SnmpHelper.OctetStr2MncMccTypeStr((OctetString)vb.Value);
+						isNeedPostDispose = false;
+					}
+				}
+
+				if (isNeedPostDispose)// 需要再处理
+				{
+					SnmpHelper.GetVbValue(vb, ref strValue);
+				}
+
+				lmtVb.Value = strValue;
+				lmtPdu.AddVb(lmtVb);
+			} // end foreach
+
+
+			//如果得到的LmtbPdu对象里的vb个数为0，说明是是getbulk响应，并且没有任何实例
+			//为方便后面统一处理，将错误码设为资源不可得
+			if (lmtPdu.VbCount() == 0)
+			{
+				// TODO: SNMP_ERROR_RESOURCE_UNAVAIL
+				lmtPdu.m_LastErrorStatus = 13;
+				lmtPdu.m_LastErrorIndex = 1;
+			}
+
+			return true;
+		}
+
 
 	}
 }

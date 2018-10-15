@@ -37,9 +37,6 @@
     <Reference Include="CommonUtility">
       <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
     </Reference>
-    <Reference Include="LinkPath">
-      <HintPath>..\LinkPath\bin\Debug\LinkPath.dll</HintPath>
-    </Reference>
     <Reference Include="LmtbSnmp">
       <HintPath>..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
     </Reference>
@@ -82,6 +79,12 @@
     <EmbeddedResource Include="CDTSynAlarmDlg.resx">
       <DependentUpon>CDTSynAlarmDlg.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\LinkPath\LinkPath.csproj">
+      <Project>{f3cae40a-a1d7-4a0b-80da-a09dde0b8ef5}</Project>
+      <Name>LinkPath</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

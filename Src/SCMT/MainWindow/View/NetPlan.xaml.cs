@@ -333,9 +333,75 @@ namespace SCMTMainWindow.View
         //    MyDesigner.Measure(constraint);
         //    return base.MeasureOverride(constraint);
         //}
+        /// <summary>
+        /// 点击新建网规配置文件触发方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewHandler(object sender, RoutedEventArgs e)
+        {
+            //handle click event
+            MessageBox.Show("ggggggggggggg");
+        }
+        /// <summary>
+        /// 点击导入网规文件触发方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ExportHandler(object sender, RoutedEventArgs e)
+        {
+            //handle click event
+            MessageBox.Show("ggggggggggggg");
+        }
+        /// <summary>
+        /// 点击下发网规规划触发方法
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DownHandler(object sender, RoutedEventArgs e)
+        {
+            //handle click event
+            MessageBox.Show("ggggggggggggg");
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void RefreshHandler(object sender, RoutedEventArgs e)
+        {
+            //handle click event
+            MessageBox.Show("ggggggggggggg");
+        }
+        private void ClearHandler(object sender, RoutedEventArgs e)
+        {
+            //handle click event
+            MessageBox.Show("ggggggggggggg");
+        }
+        private void LineHandler(object sender, RoutedEventArgs e) {
+            MessageBox.Show("ggggggggggggg");
+        }
+        private void ZoomIncreaseHandler(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ggggggggggggg");
+        }
 
-
-
+        private void ZoomDecreaseHandler(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ggggggggggggg");
+        }
+        private void FullScreenHandler(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ggggggggggggg");
+        }
+        private void HiddenCellHandler(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ggggggggggggg");
+        }
+        private void DeleteElementHandler(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("ggggggggggggg");
+        }
 
     }
 }

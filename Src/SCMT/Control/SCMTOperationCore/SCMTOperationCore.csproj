@@ -80,9 +80,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\Lib\SnmpSharpNet.dll</HintPath>
     </Reference>
-    <Reference Include="SuperLMT.Utils">
-      <HintPath>..\..\ParseMessage\SuperLMT.Utils\obj\x86\Debug\SuperLMT.Utils.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -152,6 +149,10 @@
     <ProjectReference Include="..\..\MsgQueue\MsgQueue.csproj">
       <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
       <Name>MsgQueue</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ParseMessage\SuperLMT.Utils\SuperLMT.Utils.csproj">
+      <Project>{24d21fc0-59b8-4208-aa1d-1b30d3f3c101}</Project>
+      <Name>SuperLMT.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\BaseStationConInfo\BaseStationConInfo.csproj">
       <Project>{8c99c928-f64f-4a49-9018-abddabc73a1a}</Project>

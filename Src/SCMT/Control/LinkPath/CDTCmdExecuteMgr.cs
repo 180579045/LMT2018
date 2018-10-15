@@ -135,7 +135,7 @@ namespace LinkPath
 			}
 
 			var db = Database.GetInstance();
-			var cmdInfo = db.GetCmdDataByName(cmdName, targetIp: strIpAddr);
+			var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(cmdName, strIpAddr);
 			if (null == cmdInfo)
 			{
 				Log.Error($"未找到命令{cmdName}的信息");
@@ -169,7 +169,7 @@ namespace LinkPath
 			// 组装lmtbVb参数
 			foreach (var v in mibList)
 			{
-				var leaf = Database.GetInstance().GetMibDataByOid(v, strIpAddr);
+				var leaf = SnmpToDatabase.GetMibNodeInfoByOid(v, strIpAddr);
 				if (null == leaf)
 				{
 					Log.Error($"根据oid {v} 未找到关联的mib信息");
@@ -184,6 +184,8 @@ namespace LinkPath
 
 				sbOid.Clear();
 				sbOid.AppendFormat("{0}.{1}", strPreFixOid, v);
+
+				// TODO 此处创建了vb对象，但是到了下一步操作没有使用vb对象，只是取出了oid作为入参重新构造了Vb对象。可以进行优化。
 				var lmtVb = new CDTLmtbVb { Oid = sbOid.ToString() };
 				lmtbVbs.Add(lmtVb);
 			}

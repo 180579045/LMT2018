@@ -51,7 +51,7 @@ namespace SCMTMainWindow.Property
                     Type syntax= GetTypeByName(mibList[i].mibAttri.mibSyntax);
                     constuctParmTypes[i] = syntax;
                     
-                    object o1=mibList[0].m_strRealValue;
+                    object o1=mibList[0].m_strOriginValue;
                     //取mib属性名首字母小写作为私有属性
                     string fieldNameprivate = TpLowerFirst(mibList[i].mibAttri.childNameMib);
                     myField = myTypeBuilder.DefineField(fieldNameprivate, syntax, FieldAttributes.Private);
