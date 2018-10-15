@@ -85,7 +85,7 @@ namespace NetPlan
 		}
 
 		// 执行网规相关的命令。其实可以用到所有的命令之上
-		public static bool ExecuteNetPlanCmd(string cmdName, ref List<ONE_DEV_ATTRI_INFO> sameTypeDevInfoList)
+		public static bool ExecuteNetPlanCmd(string cmdName, ref List<DevAttributeInfo> sameTypeDevInfoList, EnumDevType devType)
 		{
 			if (string.IsNullOrEmpty(cmdName))
 			{
@@ -120,15 +120,15 @@ namespace NetPlan
 			// 存储同一类设备的所有信息
 			if (null == sameTypeDevInfoList)
 			{
-				sameTypeDevInfoList = new List<ONE_DEV_ATTRI_INFO>();
+				sameTypeDevInfoList = new List<DevAttributeInfo>();
 			}
 
 			// 区分标量和表量
 			if (indexGrade == 0)	// 索引级数为0，认为是标量表
 			{
 				// 存储一个设备的所有属性信息
-				var oneDevAttributes = GetScalarMibInfo(childList, result);
-				if (oneDevAttributes.Count > 0)
+				var oneDevAttributes = GetScalarMibInfo(childList, result, devType);
+				if (null != oneDevAttributes)
 				{
 					sameTypeDevInfoList.Add(oneDevAttributes);
 				}
@@ -140,10 +140,10 @@ namespace NetPlan
 			// 此处在indexList中循环，一个indexList元素就是一行数据，也就是一个完整的属性。
 			foreach (var index in indexList)
 			{
-				var oneDevAttributes = GetTableMibInfo(index, childList, result);
+				var oneDevAttributes = GetTableMibInfo(index, childList, result, devType);
 
 				// 一个设备的所有信息查询完成，保存数据
-				if (oneDevAttributes.Count > 0)
+				if (null != oneDevAttributes)
 				{
 					sameTypeDevInfoList.Add(oneDevAttributes);
 				}
@@ -157,21 +157,20 @@ namespace NetPlan
 		/// 调用时机：连接基站后，第一次进入网规页面
 		/// </summary>
 		/// <returns></returns>
-		public static bool InitNetPlanInfo(out Dictionary<string, List<ONE_DEV_ATTRI_INFO>> allEnbNetPlanInfo)
+		public static bool InitNetPlanInfo(/* out Dictionary<string, List<ONE_DEV_ATTRI_INFO>> allEnbNetPlanInfo */)
 		{
 			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB6116");
 			if (null == mibEntryList)
 			{
-				Log.Error($"查询所有的MIB入口及对应命令失败");
-				allEnbNetPlanInfo = null;
+				Log.Error("查询所有的MIB入口及对应命令失败");
+				//allEnbNetPlanInfo = null;
 				return false;
 			}
 
-			var enbIp = CSEnbHelper.GetCurEnbAddr();
+			//allEnbNetPlanInfo = new Dictionary<string, List<ONE_DEV_ATTRI_INFO>>();
 
-			allEnbNetPlanInfo = new Dictionary<string, List<ONE_DEV_ATTRI_INFO>>();
 
-			// 调用所有的Get函数，查询所有的信息
+			// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 			foreach (var entry in mibEntryList)
 			{
 				var getCmdList = entry.Get;
@@ -180,16 +179,22 @@ namespace NetPlan
 					continue;
 				}
 
-				var temp = new List<ONE_DEV_ATTRI_INFO>();
+				var temp = new List<DevAttributeInfo>();
+				var devType = DevTypeHelper.GetDevTypeFromEntryName(entry.MibEntry);
+				if (devType == EnumDevType.unknown)
+				{
+					continue;
+				}
 
 				// 同一个mib入口下可能有多个get命令，这些命令查询的结果要进行合并处理，因为同属于一张表，只不过每次查询了不同的部分
 				foreach (var cmd in getCmdList)
 				{
-					var oneCmdMibInfo = new List<ONE_DEV_ATTRI_INFO>();
-					if (!ExecuteNetPlanCmd(cmd, ref oneCmdMibInfo))
+					var oneCmdMibInfo = new List<DevAttributeInfo>();
+					if (!ExecuteNetPlanCmd(cmd, ref oneCmdMibInfo, devType))
 					{
-						Log.Error($"查询表{entry.MibEntry}信息失败");
-						return false;
+						Log.Error($"查询表{entry.MibEntry}信息命令{cmd}执行失败");
+						continue;
+						//return false;
 					}
 					MergeSameEntryData(ref temp, oneCmdMibInfo);
 				}
@@ -197,12 +202,27 @@ namespace NetPlan
 				// 合并完成后，直接保存数据
 				if (temp.Count > 0)
 				{
-					allEnbNetPlanInfo.Add(entry.MibEntry, temp);
+					MibInfoMgr.GetInstance().AddDevMibInfo(devType, temp);
 				}
 			}
 
 			return true;
 		}
+
+		/// <summary>
+		/// 布配网规数据到设备中
+		/// </summary>
+		/// <returns></returns>
+		public static bool DistributeNetPlanData()
+		{
+			throw new NotImplementedException();
+
+			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
+			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
+		}
+
+
+
 		#endregion
 
 		#region 私有接口
@@ -228,7 +248,7 @@ namespace NetPlan
 			// 该表项有值，就处理
 			var info = new MibLeafNodeInfo
 			{
-				m_strRealValue = mapOidAndValue[strOid],
+				m_strOriginValue = mapOidAndValue[strOid],
 				mibAttri = mibLeaf
 			};
 
@@ -239,15 +259,14 @@ namespace NetPlan
 		/// 获取标量MIB信息
 		/// </summary>
 		/// <returns></returns>
-		private static ONE_DEV_ATTRI_INFO GetScalarMibInfo(List<MibLeaf> childList, DIC_DOUBLE_STR result)
+		private static DevAttributeInfo GetScalarMibInfo(List<MibLeaf> childList, DIC_DOUBLE_STR result, EnumDevType type)
 		{
-			var devAttributes = new ONE_DEV_ATTRI_INFO();
-
 			if (null == childList || null == result)
 			{
-				return devAttributes;
+				return null;
 			}
 
+			var dev = new DevAttributeInfo(type, ".0", true);
 			var mibPrefix = SnmpToDatabase.GetMibPrefix().Trim('.');
 
 			// 对于标量的处理，在oid后追加.0
@@ -263,30 +282,28 @@ namespace NetPlan
 				var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				if (null != info)
 				{
-					info.m_strIndex = ".0";
-					devAttributes.Add(info);
+					dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 				}
 			}
 
-			return devAttributes;
+			return dev;
 		}
 
 		/// <summary>
-		/// 获取标量表代表的一行信息
+		/// 获取表量表代表的一行信息
 		/// </summary>
 		/// <param name="strIndex"></param>
 		/// <param name="childList"></param>
 		/// <param name="result"></param>
 		/// <returns></returns>
-		private static ONE_DEV_ATTRI_INFO GetTableMibInfo(string strIndex, List<MibLeaf> childList, DIC_DOUBLE_STR result)
+		private static DevAttributeInfo GetTableMibInfo(string strIndex, List<MibLeaf> childList, DIC_DOUBLE_STR result, EnumDevType type)
 		{
-			var devAttributes = new ONE_DEV_ATTRI_INFO();
-
 			if (string.IsNullOrEmpty(strIndex) || null == childList || null == result)
 			{
-				return devAttributes;
+				return null;
 			}
 
+			var dev = new DevAttributeInfo(type, strIndex);
 			var mibPrefix = SnmpToDatabase.GetMibPrefix().Trim('.');
 			foreach (var childLeaf in childList)
 			{
@@ -296,7 +313,7 @@ namespace NetPlan
 					continue;
 				}
 
-				// 判断是否是索引，如果是索引，就不会出现在result中
+				// 判断是否是索引，如果是索引，就不会出现在result中，但是属性框中要呈现，需要添加到属性列表中
 				if (childLeaf.IsIndex.Equals("True", StringComparison.OrdinalIgnoreCase))
 				{
 					// 根据子节点的顺序截取索引中的一段作为该项的值
@@ -308,13 +325,12 @@ namespace NetPlan
 
 					var info = new MibLeafNodeInfo
 					{
-						m_strRealValue = realValue,
-						m_strIndex = strIndex,
+						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
 						m_bReadOnly = true          // 索引，只读
 					};
 
-					devAttributes.Add(info);
+					dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 				}
 				else
 				{
@@ -322,14 +338,13 @@ namespace NetPlan
 					var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 					if (null != info)
 					{
-						info.m_strIndex = strIndex;
-						devAttributes.Add(info);
+						dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 					}
 				}
 			}
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 
-			return devAttributes;
+			return dev;
 		}
 
 		/// <summary>
@@ -339,8 +354,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="existData">上一个命令查询的信息</param>
 		/// <param name="newData">新的命令查询得到的结果</param>
-		/// <param name="indexGrade">索引级数</param>
-		private static void MergeSameEntryData(ref List<ONE_DEV_ATTRI_INFO> existData, List<ONE_DEV_ATTRI_INFO> newData)
+		private static void MergeSameEntryData(ref List<DevAttributeInfo> existData, List<DevAttributeInfo> newData)
 		{
 			if (null == existData || null == newData)
 			{
@@ -355,27 +369,27 @@ namespace NetPlan
 			}
 
 			// 归并
-			var mapExist = new Dictionary<string, ONE_DEV_ATTRI_INFO>();
+			var mapExist = new Dictionary<string, DevAttributeInfo>();
 			foreach (var existDev in existData)
 			{
 				// 根据索引级数得到索引字符串
-				if (existDev.Count == 0)
+				if (existDev.m_mapAttributes.Count == 0)
 				{
 					throw new CustomException("为什么还有属性数量为0的元素");
 				}
 
-				var index = existDev[0].m_strIndex;
+				var index = existDev.m_strOidIndex;
 				mapExist.Add(index, existDev);
 			}
 
 			foreach (var nd in newData)
 			{
-				var newIndex = nd[0].m_strIndex;
+				var newIndex = nd.m_strOidIndex;
 				if (mapExist.ContainsKey(newIndex))
 				{
 					var tl = mapExist[newIndex];
-					tl.AddRange(nd);
-					mapExist[newIndex] = tl.Distinct().ToList();	// 去重，然后保存新的列表
+					tl.MergeAnotherDev(nd);
+					mapExist[newIndex] = tl;
 				}
 				else
 				{
@@ -385,6 +399,7 @@ namespace NetPlan
 
 			existData = mapExist.Values.ToList();
 		}
+
 		#endregion
 	}
 }

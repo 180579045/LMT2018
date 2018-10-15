@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="DevAttributeInfo.cs" />
     <Compile Include="EnumDevType.cs" />
+    <Compile Include="MibInfoMgr.cs" />
     <Compile Include="MibLeafNodeInfo.cs" />
     <Compile Include="NPEBoardHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />

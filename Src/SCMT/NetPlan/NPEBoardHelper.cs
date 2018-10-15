@@ -75,6 +75,14 @@ namespace NetPlan
 			return listBoardInfo;
 		}
 
+		/// <summary>
+		/// 获取所有的rhub设备信息
+		/// </summary>
+		/// <returns></returns>
+		public List<RHUBEquipment> GetRhubEquipments()
+		{
+			return _netPlanBoardInfo?.rHubEquipment;
+		}
 
 		#endregion
 
@@ -101,7 +109,7 @@ namespace NetPlan
 
 		#region 私有成员
 
-		private NetPlanElement _netPlanBoardInfo;
+		private readonly NetPlanElement _netPlanBoardInfo;
 
 		#endregion
 	}

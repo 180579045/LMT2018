@@ -26,8 +26,8 @@ namespace NetPlan.Tests
 			{
 				if (result)
 				{
-					var boardInfoList = new List<List<MibLeafNodeInfo>>();
-					var ret = NPSnmpOperator.ExecuteNetPlanCmd("GetNetBoard", ref boardInfoList);
+					var boardInfoList = new List<DevAttributeInfo>();
+					var ret = NPSnmpOperator.ExecuteNetPlanCmd("GetNetBoard", ref boardInfoList, EnumDevType.board);
 					Assert.IsTrue(ret);
 					Assert.AreEqual(boardInfoList.Count, 2);
 					stop = true;
@@ -51,10 +51,8 @@ namespace NetPlan.Tests
 			{
 				if (result)
 				{
-					Dictionary<string, List<ONE_DEV_ATTRI_INFO>> allEnbNetPlanInfo;
-					var ret = NPSnmpOperator.InitNetPlanInfo(out allEnbNetPlanInfo);
+					var ret = NPSnmpOperator.InitNetPlanInfo();
 					Assert.IsTrue(ret);
-					Assert.AreEqual(allEnbNetPlanInfo.Count, 1);
 					stop = true;
 				}
 			};
