@@ -14,8 +14,88 @@ namespace CfgFileOperation
         /// 保存每条告警内容的内存
         /// </summary>
         List<Dictionary<string, string>> AntennaIndex = new List<Dictionary<string, string>>();
+        /// <summary>
+        /// 72个列 sheet = "波束扫描原始值"
+        /// </summary>
+        Dictionary<string, string> ColsInfoBS = new Dictionary<string, string>() {//72个
+            {"antIndex", "A"},	     // 天线编号:
+            {"antVendorName", "B"},	 // 天线厂家名称:
+            {"antMode", "C"},      // 天线型号:
+            {"horBeamScanning", "D"}, // 水平方向波束个数:
+            {"horDowntiltAngle", "E"},// 水平方向数字下倾角:(单位o)	
+            {"verBeamScanning", "F"}, // 垂直方向波束个数:
+            {"verDowntiltAngle", "G"},// 垂直方向数字下倾角:(单位o)	
+            {"antLossFlag", "H"},     // 有损无损:（0：无损/1:有损）	
+            {"ANTCPL0", "I"},// 天线1 幅度 V
+            {"ANTCPL1", "J"},//
+            {"ANTCPL2", "K"},//
+            {"ANTCPL3", "L"},//
+            {"ANTCPL4", "M"},//
+            {"ANTCPL5", "N"},//
+            {"ANTCPL6", "O"},//
+            {"ANTCPL7", "P"},//
+            {"ANTCPL8", "Q"},//
+            {"ANTCPL9", "R"},//
+            {"ANTCPL10", "S"},//
+            {"ANTCPL11", "T"},//
+            {"ANTCPL12", "U"},//
+            {"ANTCPL13", "V"},//
+            {"ANTCPL14", "W"},//
+            {"ANTCPL15", "X"},//
+            {"ANTCPL16", "Y"},//
+            {"ANTCPL17", "Z"},//
+            {"ANTCPL18", "AA"},//
+            {"ANTCPL19", "AB"},//
+            {"ANTCPL20", "AC"},//
+            {"ANTCPL21", "AD"},//
+            {"ANTCPL22", "AE"},//
+            {"ANTCPL23", "AF"},//
+            {"ANTCPL24", "AG"},//
+            {"ANTCPL25", "AH"},//
+            {"ANTCPL26", "AI"},//
+            {"ANTCPL27", "AG"},//
+            {"ANTCPL28", "AK"},//
+            {"ANTCPL29", "AL"},//
+            {"ANTCPL30", "AM"},//
+            {"ANTCPL31", "AN"},//
+            {"ANTCPL0",  "AO"},// 天线1 相位 deg
+            {"ANTCPL1",  "AP"},//
+            {"ANTCPL2",  "AQ"},//
+            {"ANTCPL3",  "AR"},//
+            {"ANTCPL4",  "AS"},//
+            {"ANTCPL5",  "AT"},//
+            {"ANTCPL6",  "AU"},//
+            {"ANTCPL7",  "AV"},//
+            {"ANTCPL8",  "AW"},//
+            {"ANTCPL9",  "AX"},//
+            {"ANTCPL10",  "AY"},//
+            {"ANTCPL11",  "AZ"},//
+            {"ANTCPL12",  "BA"},//
+            {"ANTCPL13",  "BB"},//
+            {"ANTCPL14",  "BC"},//
+            {"ANTCPL15",  "BD"},//
+            {"ANTCPL16",  "BE"},//
+            {"ANTCPL17",  "BF"},//
+            {"ANTCPL18",  "BG"},//
+            {"ANTCPL19",  "BH"},//
+            {"ANTCPL20",  "BI"},//
+            {"ANTCPL21",  "BG"},//
+            {"ANTCPL22",  "BK"},//
+            {"ANTCPL23",  "BL"},//
+            {"ANTCPL24",  "BM"},//
+            {"ANTCPL25",  "BN"},//
+            {"ANTCPL26",  "BO"},//
+            {"ANTCPL27",  "BP"},//
+            {"ANTCPL28",  "BQ"},//
+            {"ANTCPL29",  "BR"},//
+            {"ANTCPL30",  "BS"},//
+            {"ANTCPL31",  "BT"},//
+        };
 
-        Dictionary<string, string> ColsInfo = new Dictionary<string, string>()
+        /// <summary>
+        /// sheet = "原始值"
+        /// </summary>
+        Dictionary<string, string> ColsInfoYS = new Dictionary<string, string>()
         {
             { "emAr_antNumber", "A"},                 //天线阵型号编号
             { "emAr_antArrayVendor", "B"},            //天线阵厂家索引
@@ -108,9 +188,9 @@ namespace CfgFileOperation
             string strSheetName3 = "波束扫描原始值";
 
             Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            Excel.Worksheet wks1 = excelOp.ReadExcelSheet(wbook, strSheetName1);
+            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strSheetName3);//使用"波束扫描原始值"填写数据库中表"antennaBfScan"的内容
 
-            ProcessingAntennaExcel(wks1);
+            ProcessingAntennaExcelBS(wks);
         }
 
         enum emEPArrColumn
@@ -197,25 +277,26 @@ namespace CfgFileOperation
         /// 处理 excel sheet 的内容
         /// </summary>
         /// <param name="FilePath"></param>
-        void ProcessingAntennaExcel(Excel.Worksheet wks)
+        void ProcessingAntennaExcelBS(Excel.Worksheet wks)
         {
             if (wks == null)
                 return;
             int rowCount = wks.UsedRange.Rows.Count;                  // 获取行数
 
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
-            foreach (var colName in ColsInfo.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
+            foreach (var colName in ColsInfoBS.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
             {
-                object[,] arry = (object[,])wks.Cells.get_Range(ColsInfo[colName] + "2", ColsInfo[colName] + rowCount).Value2;
+                object[,] arry = (object[,])wks.Cells.get_Range(ColsInfoBS[colName] + "2", ColsInfoBS[colName] + rowCount).Value2;
                 ColVals.Add(colName, arry);
             }
             
+            //
             for (int currentLine=2; currentLine < rowCount ; currentLine++)
             {
-                foreach (var colName in ColsInfo.Keys)
+                foreach (var colName in ColsInfoBS.Keys)
                 {
                     object[,] arry = ColVals[colName];
-                    string cellVal = OriginalGetCellValueToString(arry[currentLine, 1], ColsInfo[colName]);
+                    string cellVal = OriginalGetCellValueToString(arry[currentLine, 1], ColsInfoBS[colName]);
                 }
             }
 
