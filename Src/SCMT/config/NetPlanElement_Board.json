@@ -658,7 +658,7 @@
       "number": 6,
       "boardType": 22,
       "boardTypeName": "hbpod|HBPOD板",
-      "supportEquipType": 6,
+      "supportEquipType": 10,
       "supportConnectElement": [
         {
           "value": 2,
@@ -749,7 +749,7 @@
       "number": 7,
       "boardType": 23,
       "boardTypeName": "hsctd|HSCTD板",
-      "supportEquipType": 6,
+      "supportEquipType": 10,
       "supportConnectElement": [],
       "irOfpNum": 0,
       "irOfpPortInfo": []

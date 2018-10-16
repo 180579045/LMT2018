@@ -29,6 +29,9 @@ namespace NetPlan.Tests
 					Assert.IsNotNull(ant);
 					ant = MibInfoMgr.GetInstance().AddNewAnt(0);
 					Assert.IsNull(ant);
+
+					ant = MibInfoMgr.GetInstance().AddNewAnt(2, EnumDevType.board);
+
 					stop = true;
 				}
 			};

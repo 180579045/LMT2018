@@ -55,4 +55,41 @@ namespace NetPlan
 		}
 
 	}
+
+	/// <summary>
+	/// MibLeafNodeInfo类的比较器
+	/// </summary>
+	public class MLNIComparer : IComparer<MibLeafNodeInfo>
+	{
+		public int Compare(MibLeafNodeInfo left, MibLeafNodeInfo right)
+		{
+			if (null == left && null == right)
+			{
+				return 0;
+			}
+
+			if (null == left)
+			{
+				return -1;
+			}
+
+			if (null == right)
+			{
+				return 1;
+			}
+
+			// 按照mibAttri属性的childNo进行排序
+			if (left.mibAttri.childNo == right.mibAttri.childNo)
+			{
+				return 0;
+			}
+
+			if (left.mibAttri.childNo < right.mibAttri.childNo)
+			{
+				return -1;
+			}
+
+			return 1;
+		}
+	}
 }

@@ -159,7 +159,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool InitNetPlanInfo()
 		{
-			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB6116");
+			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB5116");
 			if (null == mibEntryList)
 			{
 				Log.Error("查询所有的MIB入口及对应命令失败");
