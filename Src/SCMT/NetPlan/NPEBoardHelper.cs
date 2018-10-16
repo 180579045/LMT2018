@@ -76,6 +76,22 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 根据板卡型号获取板卡信息
+		/// </summary>
+		/// <param name="boardType">板卡型号</param>
+		/// <returns></returns>
+		public BoardEquipment GetBoardInfoByType(int boardType)
+		{
+			var boardList = _netPlanBoardInfo.boardEquipment;
+			return boardList.FirstOrDefault(board => board.boardType == boardType);
+		}
+
+		public BoardEquipment GetBoardInfoByType(string strBoardType)
+		{
+			return GetBoardInfoByType(int.Parse(strBoardType));
+		}
+
+		/// <summary>
 		/// 获取所有的rhub设备信息
 		/// </summary>
 		/// <returns></returns>

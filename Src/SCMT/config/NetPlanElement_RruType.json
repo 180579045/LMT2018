@@ -11,7 +11,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -80,7 +80,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -145,7 +145,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -210,7 +210,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -283,7 +283,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -352,7 +352,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -417,7 +417,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -490,7 +490,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -565,7 +565,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -638,7 +638,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -699,7 +699,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -760,7 +760,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -825,7 +825,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -886,7 +886,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -947,7 +947,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1008,7 +1008,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1073,7 +1073,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1138,7 +1138,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1203,7 +1203,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1268,7 +1268,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1333,7 +1333,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1410,7 +1410,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1509,7 +1509,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1608,7 +1608,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1703,7 +1703,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1810,7 +1810,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1905,7 +1905,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -1996,7 +1996,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2091,7 +2091,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2182,7 +2182,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2277,7 +2277,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2372,7 +2372,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2475,7 +2475,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2570,7 +2570,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2665,7 +2665,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2772,7 +2772,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2871,7 +2871,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -2970,7 +2970,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3069,7 +3069,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3168,7 +3168,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3267,7 +3267,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3366,7 +3366,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3465,7 +3465,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3560,7 +3560,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3663,7 +3663,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3766,7 +3766,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3869,7 +3869,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -3960,7 +3960,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4067,7 +4067,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4162,7 +4162,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4235,7 +4235,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4308,7 +4308,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4381,7 +4381,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4454,7 +4454,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4515,7 +4515,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4588,7 +4588,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4661,7 +4661,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4744,7 +4744,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4839,7 +4839,7 @@
       "rruTypeFiberLength": [
         {
           "value": "4",
-          "desc": ":forty|40km"
+          "desc": "forty|40km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -4934,7 +4934,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5029,7 +5029,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5124,7 +5124,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5219,7 +5219,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5310,7 +5310,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5363,7 +5363,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5416,7 +5416,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5469,7 +5469,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
@@ -5522,7 +5522,7 @@
       "rruTypeFiberLength": [
         {
           "value": "2",
-          "desc": ":twenty|20km"
+          "desc": "twenty|20km"
         }
       ],
       "rruTypeIrCompressMode": [
