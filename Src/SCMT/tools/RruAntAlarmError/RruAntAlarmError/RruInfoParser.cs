@@ -97,7 +97,7 @@ namespace RruAntAlarmError
                     result = "";
                     JArray objJArray = new JArray() { };
                     JObject objRec = new JObject{
-                              { "value", tempIndex },
+                              { "value", tempIndex.ToString() },
                               { "desc", temp.Substring(temp.IndexOf(":") + 1)}
                              };
                     objJArray.Add(objRec);

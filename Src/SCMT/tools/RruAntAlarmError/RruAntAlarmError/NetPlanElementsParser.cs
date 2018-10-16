@@ -435,11 +435,12 @@ namespace RruAntAlarmError
             {
                 return fileValueJArray.ToString();
             }
-            foreach (string item in split)
+            foreach (var item in split)
             {
-                //暂时不做校验
+                //TODO 暂时不做校验
                 JObject objRec = new JObject{
-                              { "value", int.Parse(item)},
+                              { "value", item},
+                              { "desc" , "" }
                     };
                 fileValueJArray.Add(objRec);
             }

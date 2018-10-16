@@ -89,7 +89,7 @@ namespace RruAntAlarmError
                     result = "";
                     JArray objJArray = new JArray() { };
                     JObject objRec = new JObject{
-                              { "value", tempIndex},
+                              { "value", tempIndex.ToString()},
                               { "desc", temp.Substring(excelValue.IndexOf(":") + 1)}
                              };
                     objJArray.Add(objRec);
@@ -201,7 +201,7 @@ namespace RruAntAlarmError
                         foreach (string half in antHalfPowerBeamWidthList)
                         {
                             JObject objRec = new JObject{
-                              { "value", half}
+                                { "value", half}, { "desc", ""}
                              };
                             HalfPowerBeamWidthJArray.Add(objRec);
                         }
