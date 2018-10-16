@@ -161,31 +161,30 @@ namespace CommonUtility
 			{
 				return ret;
 			}
-
-			if (strDefaultValue.Equals("×"))
+			else if (strDefaultValue.Equals("×"))
 			{
 				ret = "0";
 			}
-
-			if (strDefaultValue.Equals("-1.0"))
+			else if(strDefaultValue.Equals("-1.0"))
 			{
 				ret = "-1";
 			}
-
-			if (strDefaultValue.Equals("\"null\""))
+			else if (strDefaultValue.Equals("\"null\""))
 			{
-				ret = "";
+				ret = "null";
 			}
-
-			if (-1 != strDefaultValue.IndexOf(".."))
+			else if (-1 != strDefaultValue.IndexOf(".."))
 			{
 				ret = "0";
 			}
-
-			if (-1 != strDefaultValue.IndexOf(':'))
+			else if (-1 != strDefaultValue.IndexOf(':'))
 			{
 				var subString = strDefaultValue.Split(':');
 				ret = subString[0];
+			}
+			else
+			{
+				ret = strDefaultValue;
 			}
 
 			return ret;
