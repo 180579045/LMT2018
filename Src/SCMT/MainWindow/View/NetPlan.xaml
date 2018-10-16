@@ -67,7 +67,7 @@
         <KeyBinding Gesture="Ctrl+Alt+S" Command="{StaticResource DeleteElementCommand}" />
     </UserControl.InputBindings>
     <Grid Name="MainGrid">
-        <Grid.RowDefinitions>            
+        <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
@@ -87,9 +87,10 @@
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*" >
                             <avalondock:LayoutAnchorable Title="网络规划">
-                                <Grid>
+                                <Grid x:Name="gridNetPlan">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="30"/>
+                                        <RowDefinition Height="auto"/>
                                         <RowDefinition Height="*"/>
                                     </Grid.RowDefinitions>
                                 
@@ -171,7 +172,7 @@
                                                 <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="全屏 Ctrl+Alt+F" />
                                             </Button.ToolTip>
                                         </Button>
-                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource HiddenCellCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource HiddenCellCommand}" CommandTarget="{Binding ElementName=MyDesigner}" x:Name="btnHiddenCell">
                                             <Button.Content>
                                                 <Image Source="/SCMTMainWindow;component/Resources/Hidden.png" ></Image>
                                             </Button.Content>
@@ -189,16 +190,14 @@
                                         </Button>
                                         
                                     </ToolBar>
-                                
-                               <!-- <local:FirstView  x:Name="firstView"/>-->
-                                <GroupBox Grid.Column="1"  Grid.Row="1" Margin="3,0,0,0">
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
-                                        <local:DesignerCanvas Focusable="true" x:Name="MyDesigner" SizeChanged="MyDesigner_SizeChanged"
+
+                                    <!-- <local:FirstView  x:Name="firstView"/>-->
+                                    <Canvas x:Name="nrRectCanvas" Grid.Row="1" Margin="10, 20, 0, 0"></Canvas>
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="2">
+                                            <local:DesignerCanvas Focusable="true" x:Name="MyDesigner" SizeChanged="MyDesigner_SizeChanged"
                                                               Background="{StaticResource WindowBackgroundBrush}"
                                                               Margin="10" FocusVisualStyle="{x:Null}"/>
                                     </ScrollViewer>
-                                </Grid>
                                 </Grid>
                             </avalondock:LayoutAnchorable>
                         </avalondock:LayoutAnchorablePane>

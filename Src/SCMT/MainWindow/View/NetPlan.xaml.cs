@@ -309,22 +309,22 @@ namespace SCMTMainWindow.View
 
         }
         
-        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
-        {
-            if(this.gridNetPlan.RowDefinitions[0].Height == GridLength.Auto)
-            {
-                this.gridNetPlan.RowDefinitions[0].Height = new GridLength(180);
-                this.nrRectCanvas.Visibility = Visibility.Visible;
-                this.ExpanderNrRect.Header = "隐藏小区";
-            }
-            else
-            {
-                this.gridNetPlan.RowDefinitions[0].Height = GridLength.Auto;
-                this.nrRectCanvas.Visibility = Visibility.Hidden;
-                this.ExpanderNrRect.Header = "展开小区";
-            }
+        //private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        //{
+        //    if(this.gridNetPlan.RowDefinitions[0].Height == GridLength.Auto)
+        //    {
+        //        this.gridNetPlan.RowDefinitions[0].Height = new GridLength(180);
+        //        this.nrRectCanvas.Visibility = Visibility.Visible;
+        //        //this.ExpanderNrRect.Header = "隐藏小区";
+        //    }
+        //    else
+        //    {
+        //        this.gridNetPlan.RowDefinitions[0].Height = GridLength.Auto;
+        //        this.nrRectCanvas.Visibility = Visibility.Hidden;
+        //        //this.ExpanderNrRect.Header = "展开小区";
+        //    }
 
-        }
+        //}
 
 
         //protected override Size MeasureOverride(Size constraint)
@@ -396,7 +396,24 @@ namespace SCMTMainWindow.View
         }
         private void HiddenCellHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            if (this.gridNetPlan.RowDefinitions[1].Height == GridLength.Auto)
+            {
+                this.gridNetPlan.RowDefinitions[1].Height = new GridLength(180);
+                this.nrRectCanvas.Visibility = Visibility.Visible;
+                //this.ExpanderNrRect.Header = "隐藏小区";
+                ToolTip tip = new System.Windows.Controls.ToolTip();
+                tip.Content = "隐藏小区 Ctrl+Alt+H";
+                this.btnHiddenCell.ToolTip = tip;
+            }
+            else
+            {
+                this.gridNetPlan.RowDefinitions[1].Height = GridLength.Auto;
+                this.nrRectCanvas.Visibility = Visibility.Hidden;
+                //this.ExpanderNrRect.Header = "展开小区";
+                ToolTip tip = new System.Windows.Controls.ToolTip();
+                tip.Content = "展开小区 Ctrl+Alt+H";
+                this.btnHiddenCell.ToolTip = tip;
+            }
         }
         private void DeleteElementHandler(object sender, RoutedEventArgs e)
         {

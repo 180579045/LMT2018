@@ -443,11 +443,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Resource Include="View\Resources\Stencils\XMLFile1.xml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Resources\add.png" />
     <Resource Include="Resources\delete.png" />
     <Resource Include="Resources\download.png" />
@@ -459,7 +454,6 @@
     <Resource Include="Resources\trash_can.png" />
     <Resource Include="Resources\zooma.png" />
     <Resource Include="Resources\zooms.png" />
-    <Resource Include="View\Resources\Stencils\XMLFile1.xml" />
     <Resource Include="Resources\document.png" />
     <EmbeddedResource Include="Component\SCMTControl\FileManager\EnbSoftVer.resx">
       <DependentUpon>EnbSoftVer.cs</DependentUpon>
@@ -514,6 +508,9 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="README.md" />
+    <Resource Include="View\Resources\Stencils\XMLFile1.xml">
+      <SubType>Designer</SubType>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -526,7 +523,9 @@
     <Resource Include="Resources\icon.png" />
     <Resource Include="Resources\iconMove.png" />
     <Resource Include="Resources\tabIcon.png" />
-    <Resource Include="Resources\titleMuenIcon.png" />
+    <Resource Include="Resources\titleMuenIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\NetPlan.png" />
