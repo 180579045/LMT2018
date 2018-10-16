@@ -31,7 +31,7 @@ namespace NetPlan.Tests
 			{
 				if (result)
 				{
-					NPECmdHelper.GetInstance().GetDevAttributesFromMib("board");
+					NPECmdHelper.GetInstance().GetDevAttributesFromMib("ant");
 
 					stop = true;
 				}

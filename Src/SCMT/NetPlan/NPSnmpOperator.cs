@@ -207,6 +207,23 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 查询板卡的实时信息，也就是板卡的最新状态
+		/// 调用时机：查询规划信息结束后；新增规划板卡下发参数后；
+		/// </summary>
+		public static List<DevAttributeInfo> GetRealTimeBoardInfo()
+		{
+			var cmdName = "GetBoardInfo";
+			var boardInfoList = new List<DevAttributeInfo>();
+
+			if (!ExecuteNetPlanCmd(cmdName, ref boardInfoList, EnumDevType.board))
+			{
+				return null;
+			}
+
+			return boardInfoList;
+		}
+
+		/// <summary>
 		/// 布配网规数据到设备中
 		/// </summary>
 		/// <returns></returns>
