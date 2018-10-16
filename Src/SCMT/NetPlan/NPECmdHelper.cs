@@ -47,6 +47,7 @@ namespace NetPlan
 			}
 
 			var devAttributList = mapAttributes.Values.ToList();
+			devAttributList.Sort(new MLNIComparer());
 
 			return devAttributList;
 		}
@@ -115,9 +116,19 @@ namespace NetPlan
 		}
 
 		// 获取所有的mib信息和命令信息
-		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(string strVersion = "EMB6116")
+		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(string strVersion)
 		{
-			return _npeCmd.EMB6116.NetPlanMibEntrys;
+			if (strVersion == "EMB6116")
+			{
+				return _npeCmd.EMB6116.NetPlanMibEntrys;
+			}
+
+			if (strVersion == "EMB5116")
+			{
+				return _npeCmd.EMB5116.NetPlanMibEntrys;
+			}
+
+			return null;
 		}
 
 		#endregion
@@ -155,6 +166,7 @@ namespace NetPlan
 	public class NPECmd
 	{
 		public GridMibCfg EMB6116;
+		public GridMibCfg EMB5116;
 	}
 
 	public class GridMibCfg
@@ -166,6 +178,7 @@ namespace NetPlan
 	public class NetPlanMibEntry
 	{
 		public string MibEntry;
+		public string Alias;
 		public List<string> Get;
 		public List<string> Set;
 		public List<string> Add;

@@ -13,6 +13,11 @@ namespace NetPlan
 	{
 		#region 公共接口
 
+		public MAP_DEVTYPE_DEVATTRI GetAllEnbInfo()
+		{
+			return m_mapAllMibData;
+		}
+
 		/// <summary>
 		/// 保存一类设备的所欲属性
 		/// </summary>
@@ -79,7 +84,7 @@ namespace NetPlan
 			}
 
 			var antIndex = ant.m_strOidIndex;
-			if (HasSameIndexDev(type, antIndex))
+			if (null != HasSameIndexDev(type, antIndex))
 			{
 				return null;
 			}
@@ -112,6 +117,30 @@ namespace NetPlan
 			return ant;
 		}
 
+		/// <summary>
+		/// 删除类型为devType，索引为strIndex的设备
+		/// </summary>
+		/// <param name="strIndex"></param>
+		/// <param name="devType"></param>
+		public bool DelDev(string strIndex, EnumDevType devType)
+		{
+			if (string.IsNullOrEmpty(strIndex) || EnumDevType.unknown == devType)
+			{
+				return false;
+			}
+
+			// 先在所有数据列表中查询
+			var mapHadFound = HasSameIndexDev(devType, strIndex);
+			if (null == mapHadFound)	// 没有找到对应的设备
+			{
+				return false;
+			}
+
+			// 从现在的数据结构中删除，并添加到待删除的设备中
+
+			return true;
+		}
+
 		#endregion
 
 		#region 私有接口
@@ -130,7 +159,7 @@ namespace NetPlan
 		/// <param name="devType"></param>
 		/// <param name="strIndex"></param>
 		/// <returns></returns>
-		private bool HasSameIndexDev(EnumDevType devType, string strIndex)
+		private MAP_DEVTYPE_DEVATTRI HasSameIndexDev(EnumDevType devType, string strIndex)
 		{
 			lock (_syncObj)
 			{
@@ -139,7 +168,7 @@ namespace NetPlan
 					var modDevList = m_mapModifyDev[devType];
 					if (HasSameIndexDev(modDevList, strIndex))
 					{
-						return true;
+						return m_mapModifyDev;
 					}
 				}
 
@@ -148,7 +177,7 @@ namespace NetPlan
 					var devList = m_mapAllMibData[devType];
 					if (HasSameIndexDev(devList, strIndex))
 					{
-						return true;
+						return m_mapAllMibData;
 					}
 				}
 
@@ -157,12 +186,12 @@ namespace NetPlan
 					var devList = m_mapNewAddDev[devType];
 					if (HasSameIndexDev(devList, strIndex))
 					{
-						return true;
+						return m_mapNewAddDev;
 					}
 				}
 			}
 
-			return false;
+			return null;
 		}
 
 		// 判断给定的列表中是否存在与strIndex相同索引的设备
@@ -236,12 +265,15 @@ namespace NetPlan
 		private readonly object _syncObj = new object();
 
 		// 下发网规信息时，这个数据结构中的设备只下发 RowStatus = 6 这一行数据
-		private MAP_DEVTYPE_DEVATTRI m_mapWaitDelDev;	// 待删除的设备列表
+		// 这个字典的数据来源：从enb查回的数据删除掉
+		private MAP_DEVTYPE_DEVATTRI m_mapWaitDelDev;		// 待删除的设备列表
 
 		// 下发网规信息时，这个数据结构中的设备 RowStatus = 4,然后调用 Set 命令进行下发
-		private MAP_DEVTYPE_DEVATTRI m_mapNewAddDev;     // 新增的设备列表
+		// 数据来源：新添加的设备（索引区别与已从enb查询到的数据删除元素，也就是enb-->del-->add(索引相同)-->最后在modify字典中，不在这个字典）
+		private MAP_DEVTYPE_DEVATTRI m_mapNewAddDev;		// 新增的设备列表
 
 		// 下发网规信息时，这个数据结构中的信息只下发 DevAttributeInfo 结构中的 m_listModifyField 列表中的字段
+		// 数据来源：从enb中查询到的数据进行修改
 		private MAP_DEVTYPE_DEVATTRI m_mapModifyDev;		// 已修改属性的设备列表
 
 		#endregion
