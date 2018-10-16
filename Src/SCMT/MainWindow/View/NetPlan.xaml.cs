@@ -41,6 +41,9 @@ namespace SCMTMainWindow.View
         //全局变量  板卡的行数
         private int boardRow;
 
+        //是否初始化网规
+        private bool bInit = false;
+
         public NetPlan()
         {
             InitializeComponent();
@@ -61,7 +64,7 @@ namespace SCMTMainWindow.View
                 {
                     Rectangle rectItem = new Rectangle();
                     rectItem.Stroke = new SolidColorBrush(Colors.DarkBlue);
-                    rectItem.Fill = new SolidColorBrush(Colors.LightGreen);
+                    rectItem.Fill = new SolidColorBrush(Colors.LightGray);
                     rectItem.Width = 240;
                     rectItem.Height = 40;
 
@@ -79,7 +82,131 @@ namespace SCMTMainWindow.View
             boardCanvas.Background = new SolidColorBrush(Colors.Red);
 
             MyDesigner.Children.Add(boardCanvas);
+            Canvas.SetLeft(boardCanvas, (MyDesigner.ActualWidth - boardCanvas.Width) / 2);
+            Canvas.SetTop(boardCanvas, (MyDesigner.ActualHeight - boardCanvas.Height) / 2);
+
+            //在初始化的时候为true ，初始化之后为 false
+            bInit = true;
         }
+
+        private void InitNetPlan()
+        {
+            //初始化是否成功
+            if(NPSnmpOperator.InitNetPlanInfo())
+            {
+                var allNPInfo = MibInfoMgr.GetInstance().GetAllEnbInfo();
+
+                //初始化板卡信息
+                if(allNPInfo.Keys.Contains(EnumDevType.board))
+                {
+                    InitBoardInfo(allNPInfo[EnumDevType.board]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 初始化板卡信息
+        /// </summary>
+        private void InitBoardInfo(List<DevAttributeInfo> listBoardInfo)
+        {
+            if(listBoardInfo != null && listBoardInfo.Count != 0)
+            {
+                foreach(DevAttributeInfo item in listBoardInfo)
+                {
+                    string[] strPorts = item.m_strOidIndex.Split('.');
+                    int nPort = int.Parse(strPorts[strPorts.Count() - 1]);
+
+                    int nType = int.Parse(item.m_mapAttributes["netBoardType"].m_strOriginValue);
+                    BoardEquipment boardInfo = NPEBoardHelper.GetInstance().GetBoardInfoByType(nType);
+
+                    if(boardInfo != null)
+                    {
+                        CreateBoardInfo(nPort, boardInfo.boardTypeName, boardInfo.irOfpNum);
+                    }
+                }
+            }
+
+            var realTimeBoardInfo = NPSnmpOperator.GetRealTimeBoardInfo();
+
+            if(realTimeBoardInfo != null && realTimeBoardInfo.Count != 0)
+            {
+                foreach(var item in realTimeBoardInfo)
+                {
+                    int nPort = int.Parse(item.m_mapAttributes["boardSlotNo"].m_strOriginValue);
+
+                    if((nPort > 0) && (nPort < 7))
+                    {
+                        Rectangle targetItem = (Rectangle)boardCanvas.Children[nPort];
+                        targetItem.StrokeThickness = 5;
+                        targetItem.Stroke = new SolidColorBrush(Colors.LightGreen);
+                    }
+                }
+            }
+        }
+
+        private void CreateBoardInfo(int nPort, string strBoardName, int nIRNumber)
+        {
+            string boardName = strBoardName;
+
+            int soltNum = nPort;
+            Rectangle targetItem = (Rectangle)boardCanvas.Children[nPort];
+
+            //根据 板卡所在 Canvas 的 索引，判断属于第几行，第几列
+            int nColumn = soltNum / boardRow;
+            int nRow = soltNum % boardRow;
+
+            //添加一个板卡信息的描述
+            Ellipse boardNameEllipse = new Ellipse();
+            boardNameEllipse.Fill = new SolidColorBrush(Colors.Blue);
+            boardNameEllipse.Width = 10;
+            boardNameEllipse.Height = 10;
+            boardCanvas.Children.Add(boardNameEllipse);
+
+            Canvas.SetRight(boardNameEllipse, 200 + 240 * (boardColumn - 1 - nColumn));
+            Canvas.SetBottom(boardNameEllipse, 20 + 40 * nRow);
+
+            //添加一个文字的描述
+            Label boardNameLabel = new Label();
+            boardNameLabel.Width = 80;
+            boardNameLabel.Height = 25;
+            boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
+            boardCanvas.Children.Add(boardNameLabel);
+
+            Canvas.SetRight(boardNameLabel, 155 + 240 * (boardColumn - 1 - nColumn));
+            Canvas.SetBottom(boardNameLabel, 0 + 40 * nRow);
+
+            targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
+
+            //填充光口，根据获取到的数量进行添加
+
+            for (int i = 0; i < nIRNumber; i++)
+            {
+                DesignerItem designerItem = new DesignerItem();
+
+                Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+                Stream stream = Application.GetResourceStream(strUri).Stream;
+
+                FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+                Object content = el.FindName("g_IR") as Grid;
+
+                string strXAML = XamlWriter.Save(content);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
+                designerItem.Content = testContent;
+
+                //获取 Canvas 相对于 DesignerCanvas 的位置，方便进行光口的添加
+
+                double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
+                double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
+
+                Canvas.SetLeft(designerItem, CanvasLeft + 200 + 240 * nColumn - i * 20);
+                Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
+
+                MyDesigner.Children.Add(designerItem);
+                SetConnectorDecoratorTemplate(designerItem);
+            }
+        }
+
+
 
         /// <summary>
         /// 绘制小区
@@ -293,9 +420,12 @@ namespace SCMTMainWindow.View
 
                 DesignerCanvas.SetLeft(uiItem, uiLeft);
                 DesignerCanvas.SetTop(uiItem, uiTop);
+            }
 
-                
+            if(bInit)
+            {
 
+                bInit = false;
             }
             
         }
@@ -420,5 +550,15 @@ namespace SCMTMainWindow.View
             MessageBox.Show("ggggggggggggg");
         }
 
+        /// <summary>
+        /// 窗口加载的时候，初始化网规
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            //初始化网规
+            InitNetPlan();
+        }
     }
 }
