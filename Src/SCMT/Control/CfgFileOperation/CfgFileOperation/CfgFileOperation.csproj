@@ -49,9 +49,11 @@
     <Compile Include="CfgFileOp.cs" />
     <Compile Include="CfgFileOpTest.cs" />
     <Compile Include="CfgFileOpStruct.cs" />
+    <Compile Include="CfgReadAntennaExcel.cs" />
     <Compile Include="CfgTableOp.cs" />
     <Compile Include="CfgTableOpTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="CfgReadAlarmExecl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

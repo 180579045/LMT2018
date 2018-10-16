@@ -106,12 +106,6 @@
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
     </Reference>
-    <Reference Include="LinkPath">
-      <HintPath>..\Control\LinkPath\bin\Debug\LinkPath.dll</HintPath>
-    </Reference>
-    <Reference Include="LmtbSnmp">
-      <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -122,15 +116,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
     </Reference>
-    <Reference Include="MsgDispatcher">
-      <HintPath>..\Control\MsgDispatcher\obj\Debug\MsgDispatcher.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="SCMTOperationCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Control\SCMTOperationCore\obj\Debug\SCMTOperationCore.dll</HintPath>
     </Reference>
     <Reference Include="SnmpSharpNet">
       <HintPath>..\packages\Lib\SnmpSharpNet.dll</HintPath>
@@ -243,6 +230,15 @@
     <Compile Include="View\AddBoardWindow.xaml.cs">
       <DependentUpon>AddBoardWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ChooseAntennaType.xaml.cs">
+      <DependentUpon>ChooseAntennaType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ChooseBoardType.xaml.cs">
+      <DependentUpon>ChooseBoardType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ChooserHUBType.xaml.cs">
+      <DependentUpon>ChooserHUBType.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ChooseRRUType.xaml.cs">
       <DependentUpon>ChooseRRUType.xaml</DependentUpon>
     </Compile>
@@ -351,6 +347,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\ChooseAntennaType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ChooseBoardType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ChooserHUBType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\ChooseRRUType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -435,6 +443,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="View\Resources\Stencils\XMLFile1.xml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\add.png" />
     <Resource Include="Resources\delete.png" />
     <Resource Include="Resources\download.png" />
@@ -566,6 +579,14 @@
       <Project>{8c99c928-f64f-4a49-9018-abddabc73a1a}</Project>
       <Name>BaseStationConInfo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\LinkPath\LinkPath.csproj">
+      <Project>{f3cae40a-a1d7-4a0b-80da-a09dde0b8ef5}</Project>
+      <Name>LinkPath</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\LmtbSnmp\LmtbSnmp.csproj">
+      <Project>{e036120c-3404-46d2-bc58-b0571ca82069}</Project>
+      <Name>LmtbSnmp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
       <Name>LogManager</Name>
@@ -573,6 +594,14 @@
     <ProjectReference Include="..\Control\MibParser\MibParser\MIBDataParser.csproj">
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\MsgDispatcher\MsgDispatcher.csproj">
+      <Project>{1c8c15a3-4bd4-488f-b392-cab3d7fddaf7}</Project>
+      <Name>MsgDispatcher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
+      <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
+      <Name>SCMTOperationCore</Name>
     </ProjectReference>
     <ProjectReference Include="..\FileManager\FileManager.csproj">
       <Project>{07daacce-62bf-4681-9014-d36515c67882}</Project>

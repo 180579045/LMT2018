@@ -22,6 +22,7 @@ using SCMTMainWindow.View.Document;
 using System.Windows.Markup;
 using System.Xml;
 using Xceed.Wpf.Toolkit.PropertyGrid;
+using NetPlan;
 
 namespace SCMTMainWindow.View
 {
@@ -43,6 +44,9 @@ namespace SCMTMainWindow.View
         public NetPlan()
         {
             InitializeComponent();
+
+            //画小区
+            DrawNrRect();
 
             //propertyGrid.SelectedObject = p1;
             boardCanvas = new Canvas();
@@ -75,6 +79,31 @@ namespace SCMTMainWindow.View
             boardCanvas.Background = new SolidColorBrush(Colors.Red);
 
             MyDesigner.Children.Add(boardCanvas);
+        }
+
+        /// <summary>
+        /// 绘制小区
+        /// </summary>
+        private void DrawNrRect()
+        {
+            //绘制3 * 12 的小区网络
+
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 12; j++)
+                {
+                    Rectangle newRect = new Rectangle();
+                    newRect.Width = 40;
+                    newRect.Height = 40;
+                    newRect.Fill = new SolidColorBrush(Colors.Red);
+                    newRect.Stroke = new SolidColorBrush(Colors.Black);
+
+                    this.nrRectCanvas.Children.Add(newRect);
+                    Canvas.SetTop(newRect, 40 * i);
+                    Canvas.SetLeft(newRect, 40 * j);
+                }
+            }
+            this.nrRectCanvas.Visibility = Visibility.Hidden;
         }
 
         private string BroadName(BroadType bt)
@@ -121,22 +150,36 @@ namespace SCMTMainWindow.View
             //双击显示
             if (e.ClickCount == 2)
             {
-                BoradDetailData bd = new BoradDetailData();
-                //初始化弹框默认数据
-                bd.setDefaultDate(soltNum);
-                //实例化弹窗
-                AddBoardWindow broadDetailWindos = new AddBoardWindow();
-                //初始化弹窗
-                broadDetailWindos.SetOperationData(bd);
-                //展示弹窗
-                broadDetailWindos.ShowDialog();
+                //从后台获取板卡信息
+                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum);
 
-                if (!broadDetailWindos.isOk)
+                ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
+                dlg.ShowDialog();
+
+                //BoradDetailData bd = new BoradDetailData();
+                ////初始化弹框默认数据
+                //bd.setDefaultDate(soltNum);
+                ////实例化弹窗
+                //AddBoardWindow broadDetailWindos = new AddBoardWindow();
+                ////初始化弹窗
+                //broadDetailWindos.SetOperationData(bd);
+                ////展示弹窗
+                //broadDetailWindos.ShowDialog();
+
+                //if (!broadDetailWindos.isOk)
+                //{
+                //    return;
+                //}
+
+                //获取弹窗中设置的板卡名称
+                //string boardName = BroadName(broadDetailWindos.detaiData.Bt);
+
+                if (!dlg.bOK)
                 {
                     return;
                 }
-                //获取弹窗中设置的板卡名称
-                string broadName = BroadName(broadDetailWindos.detaiData.Bt);
+
+                string boardName = dlg.strBoardName;
 
                 //添加一个板卡信息的描述
                 Ellipse boardNameEllipse = new Ellipse();
@@ -150,43 +193,52 @@ namespace SCMTMainWindow.View
 
                 //添加一个文字的描述
                 Label boardNameLabel = new Label();
-                boardNameLabel.Width = 45;
+                boardNameLabel.Width = 80;
                 boardNameLabel.Height = 25;
-                boardNameLabel.Content = broadName;
+                boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|')+1);
                 boardCanvas.Children.Add(boardNameLabel);
 
-                Canvas.SetRight(boardNameLabel, 185 + 240 * (boardColumn - 1 - nColumn));
+                Canvas.SetRight(boardNameLabel, 155 + 240 * (boardColumn - 1 - nColumn));
                 Canvas.SetBottom(boardNameLabel, 0 + 40 * nRow);
 
                 targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
 
-                DesignerItem designerItem = new DesignerItem();
-                //Rectangle rect = new Rectangle();
-                //rect.Fill = new SolidColorBrush(Colors.Red);
-                //rect.Width = 15;
-                //rect.Height = 10;
+                //填充光口，根据获取到的数量进行添加
+                BoardEquipment itemBoard = new BoardEquipment();
+                foreach(BoardEquipment item in listBoardInfo)
+                {
+                    if(item.boardTypeName == boardName)
+                    {
+                        itemBoard = item;
+                    }
+                }
 
+                for(int i = 0; i < itemBoard.irOfpNum; i++)
+                {
+                    DesignerItem designerItem = new DesignerItem();
 
-                Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
-                Stream stream = Application.GetResourceStream(strUri).Stream;
+                    Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+                    Stream stream = Application.GetResourceStream(strUri).Stream;
 
-                FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
-                Object content = el.FindName("g_IR") as Grid;
+                    FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+                    Object content = el.FindName("g_IR") as Grid;
 
-                string strXAML = XamlWriter.Save(content);
-                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
-                designerItem.Content = testContent;
+                    string strXAML = XamlWriter.Save(content);
+                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
+                    designerItem.Content = testContent;
 
-                //获取 Canvas 相对于 DesignerCanvas 的位置，方便进行光口的添加
+                    //获取 Canvas 相对于 DesignerCanvas 的位置，方便进行光口的添加
 
-                double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
-                double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
+                    double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
+                    double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
 
-                Canvas.SetLeft(designerItem, CanvasLeft + 160 + 240 * nColumn);
-                Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
+                    Canvas.SetLeft(designerItem, CanvasLeft + 200 + 240 * nColumn - i*20);
+                    Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
 
-                MyDesigner.Children.Add(designerItem);
-                SetConnectorDecoratorTemplate(designerItem);
+                    MyDesigner.Children.Add(designerItem);
+                    SetConnectorDecoratorTemplate(designerItem);
+                }
+
             }
         }
         private void MenuItem_Click(object sender, RoutedEventArgs e)
@@ -254,6 +306,23 @@ namespace SCMTMainWindow.View
            var property= e.OriginalSource as PropertyItem;
             string a = property.PropertyName;
             object o = e.NewValue;
+
+        }
+        
+        private void MenuItem_Click_2(object sender, RoutedEventArgs e)
+        {
+            if(this.gridNetPlan.RowDefinitions[0].Height == GridLength.Auto)
+            {
+                this.gridNetPlan.RowDefinitions[0].Height = new GridLength(180);
+                this.nrRectCanvas.Visibility = Visibility.Visible;
+                this.ExpanderNrRect.Header = "隐藏小区";
+            }
+            else
+            {
+                this.gridNetPlan.RowDefinitions[0].Height = GridLength.Auto;
+                this.nrRectCanvas.Visibility = Visibility.Hidden;
+                this.ExpanderNrRect.Header = "展开小区";
+            }
 
         }
 

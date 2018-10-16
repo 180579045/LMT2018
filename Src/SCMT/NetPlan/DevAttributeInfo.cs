@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtility;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan
 {
@@ -11,7 +14,7 @@ namespace NetPlan
 	{
 		#region 公有属性
 
-		public string m_strOidIndex { get; }			// 索引
+		public string m_strOidIndex { get; private set; }			// 索引
 
 		public Dictionary<string, MibLeafNodeInfo> m_mapAttributes;		// 所有的属性。key:field en name
 
@@ -36,8 +39,10 @@ namespace NetPlan
 			m_bIsScalar = bIsScalar;
 			m_enumDevType = mEnumDevType;
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
-			m_strOidIndex = m_bIsScalar ? ".0" : GerenalDevOidIndex(devIndex);	// 如果是标量，索引就直接设置为.0
+			//m_strOidIndex = m_bIsScalar ? ".0" : GerenalDevOidIndex(devIndex);	// 如果是标量，索引就直接设置为.0
 			m_listModifyField = new List<string>();
+
+			InitDevInfo(mEnumDevType, devIndex);
 		}
 
 		/// <summary>
@@ -136,13 +141,28 @@ namespace NetPlan
 		#region 私有成员
 
 		/// <summary>
-		/// 生成设备oid索引
+		/// 生成设备oid索引。
+		/// 由于当前MIB的特性，板卡、RRU、天线阵等设备特性，只需要一个设备序号即可生成索引
 		/// </summary>
 		/// <param name="devIndex"></param>
 		/// <returns></returns>
-		private string GerenalDevOidIndex(int devIndex)
+		private string GerenalDevOidIndex(int indexGrade, int devIndex)
 		{
-			throw new NotImplementedException();
+			// TODO 暂时先简单处理板卡，RRU，天线阵等设备的索引
+			if (m_bIsScalar)
+			{
+				return ".0";
+			}
+
+			var sb = new StringBuilder();
+			for (int i = 1; i < indexGrade; i++)
+			{
+				sb.Append(".0");
+			}
+
+			sb.Append($".{devIndex}");
+
+			return sb.ToString();
 		}
 
 		/// <summary>
@@ -163,6 +183,63 @@ namespace NetPlan
 			{
 				m_listModifyField.Remove(strField);
 			}
+		}
+
+		/// <summary>
+		/// 添加新设备，初始化设备信息
+		/// </summary>
+		/// <param name="type"></param>
+		private void InitDevInfo(EnumDevType type, int devIndex)
+		{
+			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
+			var strEntryName = DevTypeHelper.GetEntryNameFromDevType(type);
+			if (null == strEntryName)
+			{
+				return;
+			}
+
+			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, CSEnbHelper.GetCurEnbAddr());
+			if (null == tbl)
+			{
+				return;
+			}
+
+			var indexGrade = tbl.indexNum;
+			m_strOidIndex = GerenalDevOidIndex(indexGrade, devIndex);
+			var attributes = NPECmdHelper.GetInstance().GetDevAttributesByEntryName(strEntryName);
+			if (null == attributes)
+			{
+				return;
+			}
+
+			m_mapAttributes = attributes;
+
+			// 还需要加上索引列
+			AddIndexColumnToAttributes(tbl.childList, indexGrade);
+		}
+
+		/// <summary>
+		/// 属性中添加索引列
+		/// </summary>
+		/// <param name="childList"></param>
+		/// <param name="indexGrade"></param>
+		/// <returns></returns>
+		private bool AddIndexColumnToAttributes(List<MibLeaf> childList, int indexGrade)
+		{
+			for (var i = 1; i <= indexGrade; i++)
+			{
+				var indexColumn = childList.FirstOrDefault(childLeaf => i == childLeaf.childNo);
+				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
+				var info = new MibLeafNodeInfo
+				{
+					m_strOriginValue = indexVale,
+					m_bReadOnly = true,
+					m_bVisible = true,
+					mibAttri = indexColumn
+				};
+				m_mapAttributes.Add(indexColumn.childNameMib, info);
+			}
+			return true;
 		}
 
 		#endregion

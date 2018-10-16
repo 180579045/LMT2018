@@ -20,7 +20,7 @@ namespace NetPlan
 		#region 公共方法
 
 		// 根据槽位号，查询支持的板卡类型。返回板卡名列表
-		public List<string> GetSlotSupportBoardNames(int slot, SHELFTYPE shelfType = SHELFTYPE.EMB5116)
+		public List<string> GetSlotSupportBoardNames(int slot, SHELFTYPE shelfType = SHELFTYPE.EMB6116)
 		{
 			var listBoardType = new List<string>();
 
@@ -48,7 +48,7 @@ namespace NetPlan
 		}
 
 		// 根据槽位号，查询支持的板卡类型。返回板卡信息列表
-		public List<BoardEquipment> GetSlotSupportBoardInfo(int slot, SHELFTYPE shelfType = SHELFTYPE.EMB5116)
+		public List<BoardEquipment> GetSlotSupportBoardInfo(int slot, SHELFTYPE shelfType = SHELFTYPE.EMB6116)
 		{
 			var listBoardInfo = new List<BoardEquipment>();
 

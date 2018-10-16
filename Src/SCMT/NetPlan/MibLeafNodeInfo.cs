@@ -19,7 +19,7 @@ namespace NetPlan
 
 		public bool m_bReadOnly { get; set; }						// 属性栏是否只读
 
-		public bool m_bVisible { get; }							// 该属性是否可见
+		public bool m_bVisible { get; set; }							// 该属性是否可见
 
 		//public string m_strIndex { get; set; }						// 保存该项的索引值
 
@@ -46,6 +46,11 @@ namespace NetPlan
 		/// <returns></returns>
 		public bool IsModified()
 		{
+			if (null == m_strLatestValue)
+			{
+				return false;
+			}
+
 			return !m_strOriginValue.Equals(m_strLatestValue, StringComparison.OrdinalIgnoreCase);  // 忽略大小写
 		}
 

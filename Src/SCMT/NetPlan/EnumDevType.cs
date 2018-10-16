@@ -25,6 +25,7 @@ namespace NetPlan
 	// 设备类型助手类
 	public class DevTypeHelper
 	{
+
 		public static string GetDevDescString(EnumDevType type)
 		{
 			string desc = null;
@@ -63,41 +64,41 @@ namespace NetPlan
 				return devType;
 			}
 
-			switch (strEntryName)
+			if (mapDevTypes.ContainsKey(strEntryName))
 			{
-				case "netBoardEntry":
-					devType = EnumDevType.board;
-					break;
-				case "netRRUEntry":
-					devType = EnumDevType.rru;
-					break;
-				case "netRHUBEntry":
-					devType = EnumDevType.rhub;
-					break;
-				case "netAntennaArrayEntry":
-					devType = EnumDevType.ant;
-					break;
-				case "netRRUAntennaSettingEntry":
-					devType = EnumDevType.rru_ant;
-					break;
-				case "netIROptPlanEntry":
-					devType = EnumDevType.board_rru;
-					break;
-				case "netEthPlanEntry":
-					devType = EnumDevType.rhub_ant;
-					break;
-				case "nrNetLocalCellEntry":
-					devType = EnumDevType.nrNetLc;
-					break;
-				case "nrLocalCellEntry":
-					devType = EnumDevType.nrLc;
-					break;
-				case "nrCellEntry":
-					devType = EnumDevType.nrCell;
-					break;
+				return mapDevTypes[strEntryName];
 			}
 
 			return devType;
 		}
+
+		public static string GetEntryNameFromDevType(EnumDevType type)
+		{
+			if (EnumDevType.unknown == type)
+			{
+				return null;
+			}
+
+			if (mapDevTypes.ContainsValue(type))
+			{
+				return mapDevTypes.FirstOrDefault(kv => kv.Value == type).Key;
+			}
+
+			return null;
+		}
+
+		private static readonly Dictionary<string, EnumDevType> mapDevTypes = new Dictionary<string, EnumDevType>()
+		{
+			["netBoardEntry"] = EnumDevType.board,
+			["netRRUEntry"] = EnumDevType.rru,
+			["netRHUBEntry"] = EnumDevType.rhub,
+			["netAntennaArrayEntry"] = EnumDevType.ant,
+			["netRRUAntennaSettingEntry"] = EnumDevType.rru_ant,
+			["netIROptPlanEntry"] = EnumDevType.board_rru,
+			["netEthPlanEntry"] = EnumDevType.rhub_ant,
+			["nrNetLocalCellEntry"] = EnumDevType.nrNetLc,
+			["nrLocalCellEntry"] = EnumDevType.nrLc,
+			["nrCellEntry"] = EnumDevType.nrCell
+		};
 	}
 }

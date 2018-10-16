@@ -195,10 +195,10 @@
                                     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
                                         <local:DesignerCanvas Focusable="true" x:Name="MyDesigner" SizeChanged="MyDesigner_SizeChanged"
-                            Background="{StaticResource WindowBackgroundBrush}"
-                            Margin="10" FocusVisualStyle="{x:Null}"/>
+                                                              Background="{StaticResource WindowBackgroundBrush}"
+                                                              Margin="10" FocusVisualStyle="{x:Null}"/>
                                     </ScrollViewer>
-                                </GroupBox>
+                                </Grid>
                                 </Grid>
                             </avalondock:LayoutAnchorable>
                         </avalondock:LayoutAnchorablePane>

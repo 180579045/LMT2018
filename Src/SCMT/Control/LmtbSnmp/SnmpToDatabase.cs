@@ -257,7 +257,7 @@ namespace LmtbSnmp
 				return null;
 			}
 
-			MibLeaf retData = GetMibNodeInfoByName(mibName, targetIp);
+			var retData = GetMibNodeInfoByName(mibName, targetIp);
 			if (null == retData)
 			{
 				return null;
@@ -269,21 +269,25 @@ namespace LmtbSnmp
 			}
 
 			// TODO 莫忘记取值范围校验
-			var omType = retData.OMType;
-			var asnType = retData.ASNType;
-			//var uiType = retData.UIType;
+			return ConvertValueToString(retData, strValue);
+		}
+
+		public static dynamic ConvertValueToString(MibLeaf mibLeaf, string strValue)
+		{
+			var omType = mibLeaf.OMType;
+			var asnType = mibLeaf.ASNType;
 
 			if (omType.Equals("u32") || omType.Equals("s32"))
 			{
 				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
 				{
 					// BITS类型的，需要转换
-					return ConvertBitsToString(retData.managerValueRange, strValue);
+					return ConvertBitsToString(mibLeaf.managerValueRange, strValue);
 				}
 			}
 			else if (omType.Equals("u32[]"))
 			{
-				
+
 			}
 			else if (omType.Equals("s32[]"))
 			{
@@ -291,13 +295,13 @@ namespace LmtbSnmp
 				if (asnType.Equals("notification-type", StringComparison.OrdinalIgnoreCase) ||
 					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase))
 				{
-					
+
 				}
 			}
 			else if (omType.Equals("enum"))
 			{
 				// 1.取出该节点的取值范围
-				var mvr = retData.managerValueRange;
+				var mvr = mibLeaf.managerValueRange;
 
 				// 2.分解取值范围
 				var mapKv = MibStringHelper.SplitManageValue(mvr);
@@ -337,7 +341,6 @@ namespace LmtbSnmp
 			//{
 			//	return strValue;
 			//}
-
 			return strValue;
 		}
 
