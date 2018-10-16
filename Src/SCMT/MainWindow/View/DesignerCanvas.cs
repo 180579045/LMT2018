@@ -24,7 +24,9 @@ namespace SCMTMainWindow.View
         private Point? rubberbandSelectionStartPoint = null;
 
         //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
-        private int nRRUMax = 0;
+        private int nRRUNo = 0;
+        private int nrHUBNo = 0;
+        private int nAntennaNo = 0;
 
         private SelectionService selectionService;
         internal SelectionService SelectionService
@@ -149,12 +151,12 @@ namespace SCMTMainWindow.View
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
 
             string strName = string.Empty;
-            if (nMaxRRUPath == 1)
+            if (nMaxRRUPath == 2)
             {
                 strName = "g_SingleRHUB";
                 RRUSize = new Size(260, 70);
             }
-            else if (nMaxRRUPath == 2)
+            else if (nMaxRRUPath == 4)
             {
                 strName = "g_TwoPathRHUB";
                 RRUSize = new Size(260, 70);
@@ -162,7 +164,7 @@ namespace SCMTMainWindow.View
             else
             {
                 strName = "g_SingleRHUB";
-                RRUSize = new Size(80, 50);
+                RRUSize = new Size(260, 70);
             }
 
             Object content = el.FindName(strName) as Grid;
@@ -278,7 +280,7 @@ namespace SCMTMainWindow.View
                 string strXAML1 = strXAML;
                 string strRRUFullName = string.Empty;
 
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUNo++);
                 string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
                 strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
@@ -331,30 +333,33 @@ namespace SCMTMainWindow.View
             ChooserHUBType dlg = new ChooserHUBType();
             dlg.ShowDialog();
 
-            int nMaxRRUPath = dlg.nRHUBType;         //RRU的最大通道数
-            int nRRUNumber = 1;           //需要添加的RRU的数量
+            int nMaxrHUBPath = dlg.nRHUBType;         //rHUB 的最大通道数
+            int nrHUBNumber = dlg.nRHUBNo;           //需要添加的 rHUB 的数量
             string strXAML = string.Empty;                                        //解析xml文件
-            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
+            Size newSize;                                                                  //根据不同的通道数，确定不同的 rHUB 的大小
             string strRRUName = "rHUB";
-            strXAML = GetrHUBFromXML(nMaxRRUPath, strXAML, out newSize);
+            strXAML = GetrHUBFromXML(nMaxrHUBPath, strXAML, out newSize);
 
-            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
+            dragObject.DesiredSize = newSize;          
 
             //根据输入的个数，添加多个网元
-            for (int i = 0; i < nRRUNumber; i++)
+            for (int i = 0; i < nrHUBNumber; i++)
             {
                 DesignerItem newItem = new DesignerItem();
 
                 string strXAML1 = strXAML;
-                string strRRUFullName = string.Empty;
+                string strrHUBFullName = string.Empty;
 
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
-                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                strrHUBFullName = string.Format("{0}-{1}", strRRUName, nrHUBNo++);
+                string strInstedName = string.Format("Text=\"{0}\"", strrHUBFullName);
                 strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
-                newItem.ItemName = strRRUFullName;
-                
+                newItem.ItemName = strrHUBFullName;
+
+                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rHUB");
+                globalDic.Add(strrHUBFullName, test);
+
                 if (dragObject.DesiredSize.HasValue)
                 {
                     Size desiredSize = dragObject.DesiredSize.Value;
@@ -369,7 +374,17 @@ namespace SCMTMainWindow.View
                 SetConnectorDecoratorTemplate(newItem);
 
                 this.SelectionService.SelectItem(newItem);
-                newItem.Focus();                
+                newItem.Focus();
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                if (ucTest != null)
+                {
+                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                    CreateGirdForNetInfo(strrHUBFullName, test);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
+                }
             }
 
             return true;
@@ -405,12 +420,15 @@ namespace SCMTMainWindow.View
                 string strXAML1 = strXAML;
                 string strRRUFullName = string.Empty;
 
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUMax++);
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, nAntennaNo++);
                 string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
                 strXAML1 = strXAML1.Replace("Text=\"Antenna\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
                 newItem.ItemName = strRRUFullName;
+
+                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("ant");
+                globalDic.Add(strRRUFullName, test);
 
                 if (dragObject.DesiredSize.HasValue)
                 {
@@ -427,6 +445,16 @@ namespace SCMTMainWindow.View
 
                 this.SelectionService.SelectItem(newItem);
                 newItem.Focus();
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                if (ucTest != null)
+                {
+                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                    CreateGirdForNetInfo(strRRUFullName, test);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
+                }
             }
 
             return true;
@@ -501,7 +529,7 @@ namespace SCMTMainWindow.View
             ColumnDefinition columnValue = new ColumnDefinition();
             ColumnDefinition columnSplit = new ColumnDefinition();
             columnSplit.Width = GridLength.Auto;
-            columnName.Width = GridLength.Auto;
+            columnName.Width = new GridLength(80);
             grid.ColumnDefinitions.Add(columnName);
             grid.ColumnDefinitions.Add(columnSplit);                     //分隔条
             grid.ColumnDefinitions.Add(columnValue);
@@ -517,6 +545,7 @@ namespace SCMTMainWindow.View
 
             //创建一个标题行
             RowDefinition rowTitle = new RowDefinition();
+            rowTitle.Height = new GridLength(27);
             grid.RowDefinitions.Add(rowTitle);
             TextBlock txtTitile = new TextBlock();
             txtTitile.Text = strName;
@@ -524,12 +553,25 @@ namespace SCMTMainWindow.View
             Grid.SetRow(txtTitile, 0);
             Grid.SetColumnSpan(txtTitile, 3);
 
+            if(mibInfo == null)
+            {
+                g_GridForNet.Add(strName, grid);
+                return;
+            }
+
             //根据传过来的值，添加行，每一行代表一个属性，并根据不同的类型添加不同的控件
+            int nRow = 0;
             for(int i = 0; i < mibInfo.Count; i++)
             {
+                //不可见的属性
+                if (!mibInfo[i].m_bVisible)
+                {
+                    continue;
+                }
                 RowDefinition row = new RowDefinition();
                 row.Height = new GridLength(27);
                 grid.RowDefinitions.Add(row);
+
 
                 //添加属性名称的控件
                 TextBlock txtName = new TextBlock();
@@ -537,7 +579,7 @@ namespace SCMTMainWindow.View
                 txtName.Text = mibInfo[i].mibAttri.childNameCh;
                 grid.Children.Add(txtName);
                 Grid.SetColumn(txtName, 0);
-                Grid.SetRow(txtName, i+1);
+                Grid.SetRow(txtName, nRow + 1);
 
                 //根据不同的类型添加属性值控件
                 switch(mibInfo[i].mibAttri.OMType)
@@ -560,18 +602,33 @@ namespace SCMTMainWindow.View
 
                         grid.Children.Add(cbValue);
                         Grid.SetColumn(cbValue, 2);
-                        Grid.SetRow(cbValue, i+1);
+                        Grid.SetRow(cbValue, nRow + 1);
+
+                        if(cbValue.Items.Contains(mibInfo[i].m_strOriginValue))
+                        {
+                            cbValue.SelectedIndex = cbValue.Items.IndexOf(mibInfo[i].m_strOriginValue);
+                        }
+                        if(mibInfo[i].m_bReadOnly)
+                        {
+                            cbValue.IsReadOnly = true;
+                            cbValue.IsEnabled = false;
+                        }
                         break;
                     default:
                         TextBox txtValue = new TextBox();
                         txtName.Margin = new Thickness(1);
                         txtName.Height = 25;
-                        txtValue.Text = mibInfo[i].mibAttri.defaultValue;
+                        txtValue.Text = mibInfo[i].m_strOriginValue;
                         grid.Children.Add(txtValue);
                         Grid.SetColumn(txtValue, 2);
-                        Grid.SetRow(txtValue, i+1);
+                        Grid.SetRow(txtValue, nRow + 1);
+                        if (mibInfo[i].m_bReadOnly)
+                        {
+                            txtValue.IsReadOnly = true;
+                        }
                         break;
                 }
+                nRow++;
             }
 
             if(mibInfo.Count != 0)
