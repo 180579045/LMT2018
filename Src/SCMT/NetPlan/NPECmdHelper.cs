@@ -28,27 +28,25 @@ namespace NetPlan
 		// 获取指定设备的所有MIB信息，并填入到属性框中
 		public List<MibLeafNodeInfo> GetDevAttributesFromMib(string devType)
 		{
-			//var cmdObj = GetAllCmdByType(devType);
-			//var getCmdList = cmdObj?.get;
-			var devAttributList = new List<MibLeafNodeInfo>();
+			var enumType = DevTypeHelper.GetEnumDevType(devType);
+			if (EnumDevType.unknown == enumType)
+			{
+				return null;
+			}
 
-			//var target = CSEnbHelper.GetCurEnbAddr();
-			//if (null == target)
-			//{
-			//	throw new CustomException("当前未选中基站");
-			//}
+			var entryName = DevTypeHelper.GetEntryNameFromDevType(enumType);
+			if (string.IsNullOrEmpty(entryName))
+			{
+				return null;
+			}
 
-			//foreach (var getCmd in getCmdList)
-			//{
-			//	var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(getCmd, target);
-			//	if (null == cmdInfo)
-			//	{
-			//		continue;
-			//	}
+			var mapAttributes = GetDevAttributesByEntryName(entryName);
+			if (null == mapAttributes || 0 == mapAttributes.Count)
+			{
+				return null;
+			}
 
-			//	var cmdMibInfoList = SnmpToDatabase.ConvertOidListToMibInfoList(cmdInfo.m_leaflist, target);
-			//	devAttributList.AddRange(from cmdMibInfo in cmdMibInfoList where null != cmdMibInfo select new MibLeafNodeInfo {mibAttri = cmdMibInfo});
-			//}
+			var devAttributList = mapAttributes.Values.ToList();
 
 			return devAttributList;
 		}

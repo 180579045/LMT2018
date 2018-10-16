@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using CommonUtility;
 using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan.Tests
@@ -21,8 +23,24 @@ namespace NetPlan.Tests
 		[TestMethod()]
 		public void GetDevAttributesFromMibTest()
 		{
-			Database.GetInstance().initDatabase("172.27.245.92");
-			NPECmdHelper.GetInstance().GetDevAttributesFromMib("board");
+			bool stop = false;
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			db.initDatabase("172.27.245.92");
+			db.resultInitData = result =>
+			{
+				if (result)
+				{
+					NPECmdHelper.GetInstance().GetDevAttributesFromMib("board");
+
+					stop = true;
+				}
+			};
+
+			while (!stop)
+			{
+				Thread.Sleep(1000);
+			}
 		}
 	}
 }
