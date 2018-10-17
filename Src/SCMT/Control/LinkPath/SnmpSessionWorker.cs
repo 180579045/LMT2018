@@ -1,15 +1,28 @@
-﻿using LmtbSnmp;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ SnmpSessionWorker $
+* 机器名称：       $ machinename $
+* 命名空间：       $ LinkPath $
+* 文 件 名：       $ SnmpSessionWorker.cs $
+* 创建时间：       $ 2018.09.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     提供Snmp通信功能（提供无须向上层抛送消息的查询和设置操作）。
+* 修改时间     修 改 人         修改内容：
+* 2018.09.xx  XXXX            XXXXX
+*************************************************************************************/
+using LmtbSnmp;
 using LogManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-/// <summary>
-/// 提供Snmp通信功能（提供无须向上层抛送消息的查询和设置操作）
-/// </summary>
 namespace LinkPath
 {
+	/// <summary>
+	/// 提供Snmp通信功能（提供无须向上层抛送消息的查询和设置操作）
+	/// </summary>
 	public class SnmpSessionWorker
 	{
 

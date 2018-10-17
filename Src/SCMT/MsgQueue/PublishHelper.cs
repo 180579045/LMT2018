@@ -63,7 +63,8 @@ namespace MsgQueue
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {msg}");
+//			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {msg}");
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}");
 			GetInstance().Publish(topic, msg);
 		}
 
@@ -72,7 +73,8 @@ namespace MsgQueue
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}");
+//			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}");
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}");
 			GetInstance().Publish(topic, msgBytes);
 		}
 
@@ -84,7 +86,8 @@ namespace MsgQueue
 		{
 			var msg = new SubscribeMsg(msgBytes, option);
 
-			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}, option: {option}");
+//			Log.Debug($"{memeberName} call this func, msg topic: {topic}, body: {BitConverter.ToString(msgBytes)}, option: {option}");
+			Log.Debug($"{memeberName} call this func, msg topic: {topic}");
 			GetInstance().Publish(topic, JsonHelper.SerializeObjectToString(msg));
 		}
 		#endregion

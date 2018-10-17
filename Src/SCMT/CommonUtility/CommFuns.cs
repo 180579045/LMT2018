@@ -1,4 +1,18 @@
-﻿using LogManager;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ CommFuns $
+* 机器名称：       $ machinename $
+* 命名空间：       $ CommonUtility $
+* 文 件 名：       $ CommFuns.cs $
+* 创建时间：       $ 2018.09.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     提供一些公共功能的函数接口。
+* 修改时间     修 改 人         修改内容：
+* 2018.09.xx  XXXX            XXXXX
+*************************************************************************************/
+
+using LogManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,5 +66,6 @@ namespace CommonUtility
 
 			return strUnit;
 		}
+
     }
 }

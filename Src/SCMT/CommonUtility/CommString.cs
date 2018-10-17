@@ -1,4 +1,17 @@
-﻿using System;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ CommString $
+* 机器名称：       $ machinename $
+* 命名空间：       $ DataBaseUtil $
+* 文 件 名：       $ CommString.cs $
+* 创建时间：       $ 2018.10.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     公共字符串变量定义。
+* 修改时间     修 改 人         修改内容：
+* 2018.xx.xx  XXXX            XXXXX
+*************************************************************************************/
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
