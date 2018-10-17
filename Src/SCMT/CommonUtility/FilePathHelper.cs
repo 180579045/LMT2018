@@ -32,12 +32,6 @@ namespace CommonUtility
 			return GetAppPath() + "Config/";
 		}
 
-		// 获取程序的DataTables目录，最后带有/
-		public static string GetDataTablesPath()
-		{
-			return GetDataPath() + "DataTables/";
-		}
-
 		/// 获取tempfiles路径，后面追加调用时的时间。最后带有/
 		public static string GetTempFilesPath()
 		{

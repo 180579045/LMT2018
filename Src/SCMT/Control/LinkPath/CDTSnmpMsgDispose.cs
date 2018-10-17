@@ -422,7 +422,7 @@ namespace LinkPath
 			string strStyle = "";
 			string strTmp = "";
 
-			if (strName != null)
+			if (!string.IsNullOrEmpty(strName))
 			{
 				// 变量 %s %s
 				strTmp = string.Format("变量 {0} {1}", strName, strFailedReason);
@@ -432,13 +432,17 @@ namespace LinkPath
 				strTmp = strFailedReason;
 			}
 
+			// 操作类型
+			InfoTypeEnum optType = InfoTypeEnum.ENB_OTHER_INFO_IMPORT;
 			if (idToTable.pduType == (int)PduType.Set)
 			{
 				strStyle = CommString.IDS_SETPDU_ERROR; //SET命令响应错误
+				optType = InfoTypeEnum.ENB_SETOP_ERR_INFO;
 			}
 			else if (idToTable.pduType == (int)PduType.Get) //GET命令响应错误
 			{
 				strStyle = CommString.IDS_GETPDU_ERROR;
+				optType = InfoTypeEnum.ENB_GETOP_ERR_INFO;
 			}
 			else
 			{
@@ -448,7 +452,7 @@ namespace LinkPath
 			strShowMsg = string.Format("{0}:{1}", strStyle, strTmp);
 
 
-			ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, InfoTypeEnum.ENB_INFO);
+			ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, optType);
 
 			// TODO
 			//wangyun1 For CmdLine 2011-8-11----------------------------->

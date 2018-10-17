@@ -85,7 +85,7 @@ namespace DataBaseUtil
 			SnmpErrDesc snmpErrDesc = null;
 
 			// 文件全路径
-			string strFullPath = FilePathHelper.GetDataTablesPath() + "ErrorCodeInfo.json";
+			string strFullPath = FilePathHelper.GetConfigPath() + "ErrorCodeInfo.json";
 			// 读取文件内容
 			string strJson = FileRdWrHelper.GetFileContent(strFullPath, Encoding.Default);
 
