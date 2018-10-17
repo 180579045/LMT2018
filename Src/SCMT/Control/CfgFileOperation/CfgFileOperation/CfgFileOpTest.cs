@@ -19,6 +19,10 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
+
+
+            new CfgFileOpTest().testForReadExcelRruType();
+
             new CfgFileOpTest().testForReadExcelAnnt();
             
 
@@ -37,6 +41,15 @@ namespace CfgFileOperation
             //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
             //cfgOp.SaveFile_eNB("./path.cfg");
             //Console.ReadLine();
+        }
+
+        void testForReadExcelRruType()
+        {
+            CfgReadRruExcel rru = new CfgReadRruExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表_ty.xls";
+            string sheetName = "RRU基本信息表";
+            rru.ProcessingExcel(excelPath, sheetName);
+            List<RRuTypeTabStru> rruList = rru.GetRruTypeInfoData();
         }
 
         void testForReadExcelAnnt()

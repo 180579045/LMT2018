@@ -171,7 +171,7 @@ namespace CfgFileOperation
             foreach (var colNameEn in ColsInfoBS.Keys)
             {
                 object[,] arry = ColVals[colNameEn];
-                string cellVal = GetCellValueToStringBeamScan(arry[currentLine, 1], ColsInfoBS[colNameEn], null);
+                string cellVal = GetCellValueToStringBeamScan(arry[currentLine, 1], ColsInfoBS[colNameEn], "");
                 PreInfo.Add(colNameEn, cellVal);
             }
             AntennaIndexBS.Add(PreInfo);

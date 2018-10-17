@@ -50,6 +50,7 @@
     <Compile Include="CfgFileOpTest.cs" />
     <Compile Include="CfgFileOpStruct.cs" />
     <Compile Include="CfgReadAntennaExcel.cs" />
+    <Compile Include="CfgReadRruExcel.cs" />
     <Compile Include="CfgTableOp.cs" />
     <Compile Include="CfgTableOpTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

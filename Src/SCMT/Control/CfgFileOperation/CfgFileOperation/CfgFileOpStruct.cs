@@ -1391,6 +1391,11 @@ namespace CfgFileOpStruct
             //2016-08-29 guoyingjie add  rruTypeFamilyName
             strRruTypeFamilyName = "0";
         }
+        /// <summary>
+        /// 处理mdb数据的数据
+        /// </summary>
+        /// <param name="Row"></param>
+        /// <param name="rruTypedateSet"></param>
         public RRuTypeTabStru(DataRow Row, DataSet rruTypedateSet)
         {
             //RRU生产厂家索引
@@ -1420,6 +1425,44 @@ namespace CfgFileOpStruct
             else
                 strRruTypeFamilyName = "";
         }
+
+        public RRuTypeTabStru( Dictionary<string, string> RRuInfo)
+        {
+            //RRU生产厂家索引
+            rruTypeManufacturerIndex = RRuInfo["rruTypeManufacturerIndex"].ToString();
+            //RRU设备类型索引
+            rruTypeIndex = RRuInfo[("rruTypeIndex")].ToString();
+            //RRU类型名称
+            rruTypeName = RRuInfo[("rruTypeName")].ToString();
+            //RRU支持的天线数
+            rruTypeMaxAntPathNum = RRuInfo[("rruTypeMaxAntPathNum")].ToString();
+            //RRU通道最大发射功率
+            rruTypeMaxTxPower = RRuInfo[("rruTypeMaxTxPower")].ToString();
+            //RRU支持的频带宽度
+            rruTypeBandWidth = RRuInfo[("rruTypeBandWidth")].ToString();
+            //RRU支持的小区工作模式
+            rruTypeSupportCellWorkMode = RRuInfo[("rruTypeSupportCellWorkMode")].ToString();
+            //行状态
+            rruTypeRowStatus = "4";
+
+            //2014-2-27 luoxin RRUType新增节点
+            strRruTypeFiberLength = new RRuTypeTabStru().GetExcelRruInfoRruTypeFiberLength(RRuInfo[("rruTypeZoomProperty")].ToString());
+            strRruTypeIrCompressMode = RRuInfo[("rruTypeCompressionProperty")].ToString();//rruTypeCompressionProperty
+
+            //2016-08-29 guoyingjie add  rruTypeFamilyName
+            strRruTypeFamilyName = RRuInfo[("rruTypeFamilyName")].ToString();
+        }
+        string GetExcelRruInfoRruTypeFiberLength(string rruTypeZoomProperty)
+        {
+            if (string.Equals("", rruTypeZoomProperty))
+                return rruTypeZoomProperty;
+            int indexPos = rruTypeZoomProperty.IndexOf("公里");
+            if (-1 == indexPos)
+                return rruTypeZoomProperty;
+            else
+                return rruTypeZoomProperty.Remove(indexPos) + "km";
+        }
+
         string rruTypeManufacturerIndex;
         string rruTypeIndex;
         string rruTypeRowStatus;
