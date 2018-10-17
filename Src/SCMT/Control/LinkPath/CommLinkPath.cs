@@ -1,4 +1,17 @@
-﻿using LmtbSnmp;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ CommLinkPath $
+* 机器名称：       $ machinename $
+* 命名空间：       $ LinkPath $
+* 文 件 名：       $ CommLinkPath.cs $
+* 创建时间：       $ 2018.09.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     LinkPath项目的公共服务类。
+* 修改时间     修 改 人         修改内容：
+* 2018.09.xx  XXXX            XXXXX
+*************************************************************************************/
+using LmtbSnmp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +22,7 @@ using MAP_STRING = System.Collections.Generic.Dictionary<string, string>;
 namespace LinkPath
 {
 	/// <summary>
-	/// LinkPath项目的通用文件
+	/// LinkPath项目的公共服务类
 	/// </summary>
 	public class CommLinkPath
 	{

@@ -1,4 +1,17 @@
-﻿using LogManager;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ CDTCmdExecuteMgr $
+* 机器名称：       $ machinename $
+* 命名空间：       $ LinkPath $
+* 文 件 名：       $ CDTCmdExecuteMgr.cs $
+* 创建时间：       $ 2018.10.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     以命令名称方式发送Snmp消息。
+* 修改时间     修 改 人         修改内容：
+* 2018.10.xx  XXXX            XXXXX
+*************************************************************************************/
+using LogManager;
 using SnmpSharpNet;
 using System;
 using System.Collections.Generic;
