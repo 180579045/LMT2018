@@ -92,6 +92,22 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 根据板卡名，查询板卡的信息
+		/// </summary>
+		/// <param name="strBoardName"></param>
+		/// <returns></returns>
+		public BoardEquipment GetBoardInfoByName(string strBoardName)
+		{
+			if (string.IsNullOrEmpty(strBoardName))
+			{
+				return null;
+			}
+
+			var beList = _netPlanBoardInfo.boardEquipment;
+			return beList.FirstOrDefault(board => board.boardTypeName.IndexOf(strBoardName, StringComparison.OrdinalIgnoreCase) >= 0);
+		}
+
+		/// <summary>
 		/// 获取所有的rhub设备信息
 		/// </summary>
 		/// <returns></returns>
