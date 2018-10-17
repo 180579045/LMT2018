@@ -19,8 +19,8 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
-
-            new CfgReadAntennaExcel();
+            new CfgFileOpTest().testForReadExcelAnnt();
+            
 
             new CfgFileOpTest().testForOpReadExcelForCfg();
 
@@ -37,6 +37,15 @@ namespace CfgFileOperation
             //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
             //cfgOp.SaveFile_eNB("./path.cfg");
             //Console.ReadLine();
+        }
+
+        void testForReadExcelAnnt()
+        {
+            CfgReadAntennaExcel dd = new CfgReadAntennaExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
+            string sheetName = "波束扫描原始值";
+            dd.ProcessingAntennaExcel(excelPath, sheetName);
+            List<Dictionary<string, string>> data = dd.GetBeamScanData();
         }
 
         void testForOpReadExcelForCfg()
