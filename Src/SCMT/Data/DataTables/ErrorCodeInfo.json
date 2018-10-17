@@ -1,0 +1,3844 @@
+{
+  "errorCodeInfo": [
+    {
+      "errorID": 21,
+      "errorChDesc": "系统错误",
+      "errorEnDesc": "System error"
+    },
+    {
+      "errorID": 22,
+      "errorChDesc": "设置值与当前值相同",
+      "errorEnDesc": "The set value is same with current value"
+    },
+    {
+      "errorID": 23,
+      "errorChDesc": "响应消息结果指示失败",
+      "errorEnDesc": "The response result is fail"
+    },
+    {
+      "errorID": 24,
+      "errorChDesc": "不支持IPV6",
+      "errorEnDesc": "Not support IPV6"
+    },
+    {
+      "errorID": 51,
+      "errorChDesc": "本地小区已建立",
+      "errorEnDesc": "Localcell exists"
+    },
+    {
+      "errorID": 52,
+      "errorChDesc": "没有RRU规划在本地小区上",
+      "errorEnDesc": "Cant find planned rru of localcell in netplan"
+    },
+    {
+      "errorID": 53,
+      "errorChDesc": "仍有RRU规划在本地小区上",
+      "errorEnDesc": "Localcell is not planned, but some rru still planned on it"
+    },
+    {
+      "errorID": 54,
+      "errorChDesc": "本地小区规划的工作带宽大于RRU射频通道的带宽",
+      "errorEnDesc": "The bandwidth planned in localcell is more than that rru support"
+    },
+    {
+      "errorID": 55,
+      "errorChDesc": "本地小区规划的工作频段与RRU射频通道支持的频段不一致",
+      "errorEnDesc": "The frequency band planned in localCell(%d) is inconsistent with that rru support"
+    },
+    {
+      "errorID": 56,
+      "errorChDesc": "合并模式下规划的RRU少于2个",
+      "errorEnDesc": "Localcell planned is antenna combination mode, but only have one RRU in netplan"
+    },
+    {
+      "errorID": 57,
+      "errorChDesc": "合并模式下应该布配非智能天线",
+      "errorEnDesc": "Localcell planned is antenna combination mode, but antenna array mode isn't nonsmart"
+    },
+    {
+      "errorID": 58,
+      "errorChDesc": "室内应用场景应该布配非智能天线",
+      "errorEnDesc": "Localcell's apply scene is indoor planned, but antenna array mode isn't nonsmart"
+    },
+    {
+      "errorID": 59,
+      "errorChDesc": "RRU接口板不一致",
+      "errorEnDesc": "Access board of RRU planed to localcell must be the same"
+    },
+    {
+      "errorID": 60,
+      "errorChDesc": "RRU类型不一致",
+      "errorEnDesc": "Rru type of localcell must be the same"
+    },
+    {
+      "errorID": 61,
+      "errorChDesc": "天线阵类型不一致",
+      "errorEnDesc": "Antenna array type of localcell must be the same"
+    },
+    {
+      "errorID": 62,
+      "errorChDesc": "智能天线收发没有全部打开",
+      "errorEnDesc": "If localcell planned is smart antenna array mode, all transmit and receive path of RRU must be opened"
+    },
+    {
+      "errorID": 63,
+      "errorChDesc": "智能天线阵根数小于4",
+      "errorEnDesc": "If localcell planned is smart antenna array mode, ant count of antenna array shouldn't be less than 4"
+    },
+    {
+      "errorID": 64,
+      "errorChDesc": "智能天线阵中有天线未被使用",
+      "errorEnDesc": "If localcell planned is smart antenna array mode, all ants of smart antarray should be planed to the localcell"
+    },
+    {
+      "errorID": 65,
+      "errorChDesc": "布配开关未打开",
+      "errorEnDesc": "Localcell is not allowed to be planned"
+    },
+    {
+      "errorID": 66,
+      "errorChDesc": "时钟资源不可用",
+      "errorEnDesc": "Clock resource is not available, so cannt setup localcell"
+    },
+    {
+      "errorID": 67,
+      "errorChDesc": "传输资源不可用",
+      "errorEnDesc": "Trans resource is not available, so cannt setup localcell"
+    },
+    {
+      "errorID": 68,
+      "errorChDesc": "本地小区尚未规划",
+      "errorEnDesc": "For not planned, cannt setup this localcell"
+    },
+    {
+      "errorID": 69,
+      "errorChDesc": "本地小区布配中",
+      "errorEnDesc": "In the stage of plan, cannt setup this localcell"
+    },
+    {
+      "errorID": 70,
+      "errorChDesc": "射频资源不可用",
+      "errorEnDesc": "Radio resource of localcell is not ready, so cannt setup this localcell"
+    },
+    {
+      "errorID": 71,
+      "errorChDesc": "基带资源不可用",
+      "errorEnDesc": "Baseband resource of localcell is not ready, so cannt setup this localcell"
+    },
+    {
+      "errorID": 72,
+      "errorChDesc": "本地小区已存在",
+      "errorEnDesc": "For localCell already setuped, so cannt setup again"
+    },
+    {
+      "errorID": 73,
+      "errorChDesc": "本地小区已不存在",
+      "errorEnDesc": "The localcell has already been deleted"
+    },
+    {
+      "errorID": 74,
+      "errorChDesc": "本地小区删除中",
+      "errorEnDesc": "The localcell is being in delete"
+    },
+    {
+      "errorID": 75,
+      "errorChDesc": "小区仍存在",
+      "errorEnDesc": "The Cell has still been actived"
+    },
+    {
+      "errorID": 76,
+      "errorChDesc": "计数器组已在其他性能任务中创建",
+      "errorEnDesc": "The counter group has already exist in Task"
+    },
+    {
+      "errorID": 77,
+      "errorChDesc": "对象实例不存在",
+      "errorEnDesc": "This cell does not exist"
+    },
+    {
+      "errorID": 78,
+      "errorChDesc": "PCI冲突或混淆",
+      "errorEnDesc": "PCI collision or confusion"
+    },
+    {
+      "errorID": 79,
+      "errorChDesc": "PCI不在PCI列表中",
+      "errorEnDesc": "PCI is not in PCI list"
+    },
+    {
+      "errorID": 80,
+      "errorChDesc": "PCI列表无效",
+      "errorEnDesc": "PCI list is invalid"
+    },
+    {
+      "errorID": 81,
+      "errorChDesc": "中心频点与操作频段取值不匹配",
+      "errorEnDesc": "Center frequency is not match with operational band. "
+    },
+    {
+      "errorID": 82,
+      "errorChDesc": "小区的带宽不等于本地小区带宽",
+      "errorEnDesc": "Cell's bandwidth is not equal to localcell's."
+    },
+    {
+      "errorID": 83,
+      "errorChDesc": "中心频点与带宽超过了RRU的频段范围",
+      "errorEnDesc": "Center frequency and bandwidth are out the range of RRU's capability."
+    },
+    {
+      "errorID": 84,
+      "errorChDesc": "本地小区不存在",
+      "errorEnDesc": "Localcell does not exist."
+    },
+    {
+      "errorID": 85,
+      "errorChDesc": "小区已激活",
+      "errorEnDesc": "Cell has existed already."
+    },
+    {
+      "errorID": 86,
+      "errorChDesc": "小区未激活",
+      "errorEnDesc": "Cell does not exist."
+    },
+    {
+      "errorID": 87,
+      "errorChDesc": "小区最大发射功率大于本地小区最大下行功率",
+      "errorEnDesc": "Cell's max power is larger than localcell's."
+    },
+    {
+      "errorID": 88,
+      "errorChDesc": "中心频点与带宽超过了频段的范围",
+      "errorEnDesc": "Center frequency and bandwidth are out the range of frequency band."
+    },
+    {
+      "errorID": 89,
+      "errorChDesc": "异频载波中心频点与小区中心频点相同",
+      "errorEnDesc": "Inter-frequency is equal to cell's."
+    },
+    {
+      "errorID": 90,
+      "errorChDesc": "存在该异频频点的邻小区",
+      "errorEnDesc": "Adjcent cell is using the inter-frequency."
+    },
+    {
+      "errorID": 91,
+      "errorChDesc": "邻小区已存在",
+      "errorEnDesc": "Adjcent cell has existed already."
+    },
+    {
+      "errorID": 92,
+      "errorChDesc": "本基站内的小区不允许作为邻基站小区",
+      "errorEnDesc": "The adjcent cell is one cell of the local eNB."
+    },
+    {
+      "errorID": 93,
+      "errorChDesc": "邻小区与本基站存在邻区关系",
+      "errorEnDesc": "The adjcent relation exists between the adjcent cell and the local eNB."
+    },
+    {
+      "errorID": 94,
+      "errorChDesc": "邻区关系已存在",
+      "errorEnDesc": "The adjcent relation has existed already."
+    },
+    {
+      "errorID": 95,
+      "errorChDesc": "邻小区不存在",
+      "errorEnDesc": "The adjcent cell does not exist."
+    },
+    {
+      "errorID": 96,
+      "errorChDesc": "小区将其自己加为邻小区",
+      "errorEnDesc": "The adjcent cell is itself."
+    },
+    {
+      "errorID": 97,
+      "errorChDesc": "发送端RLC配置ID无效",
+      "errorEnDesc": "Send-RLC ID is invalid."
+    },
+    {
+      "errorID": 98,
+      "errorChDesc": "接收端RLC配置ID无效",
+      "errorEnDesc": "Received-RLC ID is invalid."
+    },
+    {
+      "errorID": 99,
+      "errorChDesc": "PDCP配置ID无效",
+      "errorEnDesc": "PDCP ID is invalid."
+    },
+    {
+      "errorID": 100,
+      "errorChDesc": "小区配置存在",
+      "errorEnDesc": "Configured cell data existes."
+    },
+    {
+      "errorID": 101,
+      "errorChDesc": "小区最小发射功率大于最大发射功率",
+      "errorEnDesc": "Cell's min transmission power is larger than the max transmission power."
+    },
+    {
+      "errorID": 102,
+      "errorChDesc": "默认MME与现有MME不匹配",
+      "errorEnDesc": "The default MME information does not valid."
+    },
+    {
+      "errorID": 103,
+      "errorChDesc": "下行传输模式与天线端口号数目不匹配(TM1-PORT1)",
+      "errorEnDesc": "Transmission mode does not match with port number."
+    },
+    {
+      "errorID": 104,
+      "errorChDesc": "本地小区没有规划",
+      "errorEnDesc": "Localcell configured data doesn't exist."
+    },
+    {
+      "errorID": 105,
+      "errorChDesc": "PHICH extended不允许此CFI配置",
+      "errorEnDesc": "PHICH extended doesn't allow this CFI value."
+    },
+    {
+      "errorID": 106,
+      "errorChDesc": "下发报文中绑定变量个数不应大于60个",
+      "errorEnDesc": "Variable bindings number of SNMP Request PDU is more than 60"
+    },
+    {
+      "errorID": 107,
+      "errorChDesc": "下发报文中绑定变量OID长度过短",
+      "errorEnDesc": "Variable bindings OID of SNMP request PDU is too short"
+    },
+    {
+      "errorID": 108,
+      "errorChDesc": "下发报文中绑定变量OID不正确",
+      "errorEnDesc": "Variable bindings OID of SNMP request PDU is error"
+    },
+    {
+      "errorID": 109,
+      "errorChDesc": "PDU操作类型不能识别",
+      "errorEnDesc": "SNMP request PDU Type is unknown"
+    },
+    {
+      "errorID": 110,
+      "errorChDesc": "当前管理站未授权此操作",
+      "errorEnDesc": "The manager operation is denied"
+    },
+    {
+      "errorID": 111,
+      "errorChDesc": "记录已经存在",
+      "errorEnDesc": "Set request Data is exist in NodeB DB record"
+    },
+    {
+      "errorID": 112,
+      "errorChDesc": "操作数据库失败",
+      "errorEnDesc": "Access NodeB DB is Failed"
+    },
+    {
+      "errorID": 113,
+      "errorChDesc": "该命令不允许事务操作",
+      "errorEnDesc": "The Set Request is denied in transaction procedure"
+    },
+    {
+      "errorID": 114,
+      "errorChDesc": "没有找到注册命令",
+      "errorEnDesc": "Corresponding operation function of SNMP Request PDU isn't found"
+    },
+    {
+      "errorID": 115,
+      "errorChDesc": "数据记录校验失败",
+      "errorEnDesc": "Rowstatus check error"
+    },
+    {
+      "errorID": 116,
+      "errorChDesc": "数据取值校验失败",
+      "errorEnDesc": "Data check result error"
+    },
+    {
+      "errorID": 117,
+      "errorChDesc": "事务过程中不允许操作",
+      "errorEnDesc": "Set request of manager which is not in transcation is denied  "
+    },
+    {
+      "errorID": 118,
+      "errorChDesc": "下发了错误的事务状态",
+      "errorEnDesc": "Set transaction procedure status error"
+    },
+    {
+      "errorID": 119,
+      "errorChDesc": "ETH端口逻辑带宽小于当前物理端口上所有PATH最大发送带宽总和",
+      "errorEnDesc": "ETH port logic bandwidth is less than the sum of IP PATH max TX bandwidth"
+    },
+    {
+      "errorID": 120,
+      "errorChDesc": "MAC地址不是大唐设备的MAC地址（前三位为00-1E-A8）",
+      "errorEnDesc": "MAC address is not DaTang equipmnet's MAC address(front is 00-1E-A8)"
+    },
+    {
+      "errorID": 121,
+      "errorChDesc": "阻塞开关状态没有变化",
+      "errorEnDesc": "Block switch stratus is not change"
+    },
+    {
+      "errorID": 122,
+      "errorChDesc": "ETH端口未配置",
+      "errorEnDesc": "ETH port is not created"
+    },
+    {
+      "errorID": 123,
+      "errorChDesc": "ETH端口被阻塞",
+      "errorEnDesc": "ETH port is blocked"
+    },
+    {
+      "errorID": 124,
+      "errorChDesc": "IP地址非法",
+      "errorEnDesc": "IP address is invalid"
+    },
+    {
+      "errorID": 125,
+      "errorChDesc": "本地IP地址类型和对端IP地址类型不同",
+      "errorEnDesc": "Local IP address type is different than peer ip address type"
+    },
+    {
+      "errorID": 126,
+      "errorChDesc": "本地IP地址已存在",
+      "errorEnDesc": "Local IP address is already exist"
+    },
+    {
+      "errorID": 127,
+      "errorChDesc": "当前的IP地址上有IP PATH存在",
+      "errorEnDesc": "There have IP PATH on current IP address"
+    },
+    {
+      "errorID": 128,
+      "errorChDesc": "当前IP PATH所在的物理端口上所有PATH最大发送带宽总和大于物理端口上ETH端口的逻辑带宽",
+      "errorEnDesc": "The sum of IP PATH max TX bandwidth is larger than ETH port logic bandwidth, which current IP PATH on"
+    },
+    {
+      "errorID": 129,
+      "errorChDesc": "当前IP PATH上存在SCTP",
+      "errorEnDesc": "There have SCTP on current IP PATH"
+    },
+    {
+      "errorID": 130,
+      "errorChDesc": "IP地址未配置",
+      "errorEnDesc": "IP address is not created"
+    },
+    {
+      "errorID": 131,
+      "errorChDesc": "IP地址上没有控制面的IP PATH",
+      "errorEnDesc": "There have no control plane IP PATH on IP address"
+    },
+    {
+      "errorID": 132,
+      "errorChDesc": "本地IP ADDR索引重复配置",
+      "errorEnDesc": "Local IP address index is duplicate"
+    },
+    {
+      "errorID": 133,
+      "errorChDesc": "对端IP地址重复配置",
+      "errorEnDesc": "Peer IP address is duplicate"
+    },
+    {
+      "errorID": 134,
+      "errorChDesc": "本地IP地址不在同一块传输板卡上",
+      "errorEnDesc": "Local IP address is not on the same board"
+    },
+    {
+      "errorID": 135,
+      "errorChDesc": "S1链路超过了基站最大可管理的数量",
+      "errorEnDesc": "The sum of S1 link is out of the eNB's control"
+    },
+    {
+      "errorID": 136,
+      "errorChDesc": "X2链路超过了基站最大可管理的数量",
+      "errorEnDesc": "The sum of X2 link is out of the eNB's control"
+    },
+    {
+      "errorID": 137,
+      "errorChDesc": "至少需要配置一个本地IP地址",
+      "errorEnDesc": "Configed one local IP address at least"
+    },
+    {
+      "errorID": 138,
+      "errorChDesc": "至少需要配置一个对端IP地址",
+      "errorEnDesc": "Configed one peer IP address at least"
+    },
+    {
+      "errorID": 139,
+      "errorChDesc": "只有S1链路能被阻塞或解阻塞",
+      "errorEnDesc": "Only S1 link can be block or unblock"
+    },
+    {
+      "errorID": 140,
+      "errorChDesc": "SCTP链路状态还没与对端连接成功",
+      "errorEnDesc": "SCTP link status si not OK"
+    },
+    {
+      "errorID": 141,
+      "errorChDesc": "SCTP链路未配置",
+      "errorEnDesc": "SCTP link is not created"
+    },
+    {
+      "errorID": 142,
+      "errorChDesc": "信令的QCI必须为无效",
+      "errorEnDesc": "Signal' QCI must be invalid"
+    },
+    {
+      "errorID": 143,
+      "errorChDesc": "QCI值和其它记录重复",
+      "errorEnDesc": "QCI is duplicate with other"
+    },
+    {
+      "errorID": 144,
+      "errorChDesc": "每种VLAN类型只能配置一个VLAN ID",
+      "errorEnDesc": "Every VLAN type only can be one VLAN ID"
+    },
+    {
+      "errorID": 145,
+      "errorChDesc": "上次操作未完成",
+      "errorEnDesc": "Last operation unfinished"
+    },
+    {
+      "errorID": 146,
+      "errorChDesc": "环境监控设备类型冲突",
+      "errorEnDesc": "Enviornment monitor type complicted"
+    },
+    {
+      "errorID": 147,
+      "errorChDesc": "传感器的告警上限值应该高于下限值",
+      "errorEnDesc": "Upper limit of sensor should be higher than the lower limit"
+    },
+    {
+      "errorID": 148,
+      "errorChDesc": "制冷点与制冷灵敏度之和应低于高温告警门限3摄氏度以上",
+      "errorEnDesc": "The \"Over temperature limit\" should higher 300 than the sum of \"Cooling stop temperature\" and \"Cooling sensitivity\" at least"
+    },
+    {
+      "errorID": 149,
+      "errorChDesc": "加热开始温度要高于低温告警门限3摄氏度以上",
+      "errorEnDesc": "The \"Warming start temperature\" should be higher 300 than the \"Under temperature limit\" at least"
+    },
+    {
+      "errorID": 150,
+      "errorChDesc": "调速点与调速灵敏度之和应低于高温告警门限3摄氏度以上",
+      "errorEnDesc": "The \"Outer fan over temperature limit\" should higher 300 than the sum of \"Outer fan speed adjust temperature\" and \"Outer fan speed adjust temperature offset\" at least"
+    },
+    {
+      "errorID": 151,
+      "errorChDesc": "外设不可用",
+      "errorEnDesc": "Periphery device unusable"
+    },
+    {
+      "errorID": 152,
+      "errorChDesc": "该文件传输类型不支持上传",
+      "errorEnDesc": "Upload the file type is not supported"
+    },
+    {
+      "errorID": 153,
+      "errorChDesc": "该文件传输类型不支持下载",
+      "errorEnDesc": "Download the file type is not supported"
+    },
+    {
+      "errorID": 154,
+      "errorChDesc": "该文件不支持下载",
+      "errorEnDesc": "Forbidden download the file "
+    },
+    {
+      "errorID": 155,
+      "errorChDesc": "下载路径非法",
+      "errorEnDesc": "Directory of download invalid"
+    },
+    {
+      "errorID": 156,
+      "errorChDesc": "只有发起文件传输的管理站才有权限将其停止",
+      "errorEnDesc": "File transfer initiated by the manager have only authority to stop"
+    },
+    {
+      "errorID": 157,
+      "errorChDesc": "不允许终止正在传输的文件",
+      "errorEnDesc": "Forbidden to stop the file transfering"
+    },
+    {
+      "errorID": 158,
+      "errorChDesc": "指定的处理器并不存在",
+      "errorEnDesc": "Appointed processor is out of position"
+    },
+    {
+      "errorID": 159,
+      "errorChDesc": "该处理器无用户日志",
+      "errorEnDesc": "The processor has no userlog"
+    },
+    {
+      "errorID": 160,
+      "errorChDesc": "跟踪协议层和跟踪类型不匹配",
+      "errorEnDesc": "TraceProtocolLayer mismatch with TraceType"
+    },
+    {
+      "errorID": 161,
+      "errorChDesc": "该管理站已设置过相同的任务",
+      "errorEnDesc": "Same TraceTask already exist"
+    },
+    {
+      "errorID": 162,
+      "errorChDesc": "设置的接口跟踪任务数量超过该类型任务的上限",
+      "errorEnDesc": "Too many ITF TraceTasks"
+    },
+    {
+      "errorID": 164,
+      "errorChDesc": "设置的CELL跟踪任务数量超过该类型任务的上限",
+      "errorEnDesc": "Too many CELL TraceTasks"
+    },
+    {
+      "errorID": 165,
+      "errorChDesc": "设置的UE跟踪任务数量超过该类型任务的上限",
+      "errorEnDesc": "Too many UE TraceTasks"
+    },
+    {
+      "errorID": 166,
+      "errorChDesc": "该告警不支持手动清除",
+      "errorEnDesc": "Active alarm clear is forbidden"
+    },
+    {
+      "errorID": 167,
+      "errorChDesc": "RRU类型名称冲突",
+      "errorEnDesc": "RRU type name is conflict"
+    },
+    {
+      "errorID": 168,
+      "errorChDesc": "该型号的RRU正在被使用",
+      "errorEnDesc": "This RRU type is used now"
+    },
+    {
+      "errorID": 169,
+      "errorChDesc": "RRU器件类型不存在",
+      "errorEnDesc": "This RRU type is not create"
+    },
+    {
+      "errorID": 170,
+      "errorChDesc": "天线端口编号大于RRU的天线根数",
+      "errorEnDesc": "The RRU path no is overflow the rru supportted max path number"
+    },
+    {
+      "errorID": 171,
+      "errorChDesc": "该型号的RRU射频通道信息正在被使用",
+      "errorEnDesc": "This RRU port type is used now"
+    },
+    {
+      "errorID": 172,
+      "errorChDesc": "天线阵类型名称冲突",
+      "errorEnDesc": "Ant array type name is conflict"
+    },
+    {
+      "errorID": 173,
+      "errorChDesc": "该型号的天线阵正在被使用",
+      "errorEnDesc": "This Ant array type is used now"
+    },
+    {
+      "errorID": 174,
+      "errorChDesc": "此槽位不支持该板卡类型",
+      "errorEnDesc": "This slot doesn't support the board type"
+    },
+    {
+      "errorID": 175,
+      "errorChDesc": "0槽位不支持布配",
+      "errorEnDesc": "0 slot planning is denied "
+    },
+    {
+      "errorID": 176,
+      "errorChDesc": "该板卡已经布配RRU",
+      "errorEnDesc": "This board has been planned RRU"
+    },
+    {
+      "errorID": 177,
+      "errorChDesc": "该板卡已经建立本地小区",
+      "errorEnDesc": "This board has been built local cell"
+    },
+    {
+      "errorID": 178,
+      "errorChDesc": "RRU接入板卡未布配",
+      "errorEnDesc": "The board of RRU accessing is not planned"
+    },
+    {
+      "errorID": 179,
+      "errorChDesc": "RRU接入板卡类型与接入板卡布配不一致",
+      "errorEnDesc": "The board of RRU accessing is not consistent with the plannning"
+    },
+    {
+      "errorID": 180,
+      "errorChDesc": "RRU接入位置已经被使用",
+      "errorEnDesc": "The position of RRU accessing is being used"
+    },
+    {
+      "errorID": 181,
+      "errorChDesc": "光口配置错误",
+      "errorEnDesc": "Ofp planning is error"
+    },
+    {
+      "errorID": 182,
+      "errorChDesc": "该RRU已经布配本地小区",
+      "errorEnDesc": "This RRU has been built with local cell"
+    },
+    {
+      "errorID": 183,
+      "errorChDesc": "存在下一级RRU",
+      "errorEnDesc": "This RRU has been planned next RRU accessing"
+    },
+    {
+      "errorID": 184,
+      "errorChDesc": "该天线阵器件类型不存在",
+      "errorEnDesc": "This ant array type is not create"
+    },
+    {
+      "errorID": 185,
+      "errorChDesc": "该天线阵已经布配本地小区",
+      "errorEnDesc": "This ant array has been planned with local cell"
+    },
+    {
+      "errorID": 186,
+      "errorChDesc": "该天线阵与RRU的连接关系已经建立",
+      "errorEnDesc": "The connection between ant array and RRU has been planned"
+    },
+    {
+      "errorID": 187,
+      "errorChDesc": "该电调单元编号与RRU的连接关系已经建立",
+      "errorEnDesc": "The connection between RCU and RRU has been planned"
+    },
+    {
+      "errorID": 188,
+      "errorChDesc": "RRU射频通道隶属的RRU未布配",
+      "errorEnDesc": "RRU is not planned"
+    },
+    {
+      "errorID": 189,
+      "errorChDesc": "RRU射频通道器件类型不存在",
+      "errorEnDesc": "This RRU port type is not create"
+    },
+    {
+      "errorID": 190,
+      "errorChDesc": "RRU射频通道连接的天线阵未布配",
+      "errorEnDesc": "The ant array which is connected with rru is not planned"
+    },
+    {
+      "errorID": 191,
+      "errorChDesc": "天线阵端口编号大于天线阵支持的最大天线根数",
+      "errorEnDesc": "The ant path no is overflow the ant array type supportted max path number"
+    },
+    {
+      "errorID": 192,
+      "errorChDesc": "天线阵的天线端口已被占用",
+      "errorEnDesc": "The ant path no is being used"
+    },
+    {
+      "errorID": 193,
+      "errorChDesc": "天线端口的数量大于该类型天线阵支持的最大天线根数",
+      "errorEnDesc": "The planned ant path number is overflow the ant array type supportted max path number"
+    },
+    {
+      "errorID": 194,
+      "errorChDesc": "该射频通道支持电调的单元编号不存在",
+      "errorEnDesc": "The RCU no is not create"
+    },
+    {
+      "errorID": 195,
+      "errorChDesc": "该射频通道已经布配本地小区",
+      "errorEnDesc": "The RRU port has been planned with local cell"
+    },
+    {
+      "errorID": 196,
+      "errorChDesc": "该RRU射频通道已经布配",
+      "errorEnDesc": "The RRU port has been planned"
+    },
+    {
+      "errorID": 197,
+      "errorChDesc": "该板卡类型不支持环回",
+      "errorEnDesc": "The board type doesn't support loop back"
+    },
+    {
+      "errorID": 198,
+      "errorChDesc": "环回的RRU未接入",
+      "errorEnDesc": "The loop RRU is not accessing"
+    },
+    {
+      "errorID": 199,
+      "errorChDesc": "获取RRU软件/固件版本失败",
+      "errorEnDesc": "Getting RRU software or hardware version failed"
+    },
+    {
+      "errorID": 200,
+      "errorChDesc": "RRU未接入",
+      "errorEnDesc": "The RRU is not accessing"
+    },
+    {
+      "errorID": 201,
+      "errorChDesc": "该RRU未布配本地小区",
+      "errorEnDesc": "The RRU is not planned with local cell"
+    },
+    {
+      "errorID": 202,
+      "errorChDesc": "该RRU隶属的本地小区未建立",
+      "errorEnDesc": "The local cell is not built"
+    },
+    {
+      "errorID": 203,
+      "errorChDesc": "该RRU隶属的本地小区操作状态不可用",
+      "errorEnDesc": "The local cell's operation status is disable"
+    },
+    {
+      "errorID": 204,
+      "errorChDesc": "只有当前正在运行的补丁包允许去激活",
+      "errorEnDesc": "Only running patch can be deactivated"
+    },
+    {
+      "errorID": 205,
+      "errorChDesc": "只有补丁包允许（去）激活",
+      "errorEnDesc": "Packet's type must be patch"
+    },
+    {
+      "errorID": 206,
+      "errorChDesc": "快照文件名不符合规范",
+      "errorEnDesc": "Snap file name is error"
+    },
+    {
+      "errorID": 207,
+      "errorChDesc": "当前快照文件生成任务忙",
+      "errorEnDesc": "Task is busy"
+    },
+    {
+      "errorID": 208,
+      "errorChDesc": "小区处于解阻塞状态才允许此操作",
+      "errorEnDesc": "Cell's status is not unblocked."
+    },
+    {
+      "errorID": 209,
+      "errorChDesc": "小区处于shuttingDown过程中",
+      "errorEnDesc": "Cell's status is in shuttingdown."
+    },
+    {
+      "errorID": 210,
+      "errorChDesc": "只有小区处于阻塞状态才允许下发解阻塞",
+      "errorEnDesc": "Cell's status is not blocked."
+    },
+    {
+      "errorID": 211,
+      "errorChDesc": "只有小区处于解阻塞或者阻塞状态才允许修改PCI",
+      "errorEnDesc": "Cell's status is in blocking."
+    },
+    {
+      "errorID": 212,
+      "errorChDesc": "无参数可以回退",
+      "errorEnDesc": "No parameters need roll-back."
+    },
+    {
+      "errorID": 213,
+      "errorChDesc": "存在X2链路，不允许修改或删除",
+      "errorEnDesc": "X2 link has beed setted up."
+    },
+    {
+      "errorID": 214,
+      "errorChDesc": "显性释放空包门限要小于隐形释放空包门限",
+      "errorEnDesc": "Explicit release package threshold should lower than implicit release package threshold."
+    },
+    {
+      "errorID": 215,
+      "errorChDesc": "只有设备类型软件允许强制激活",
+      "errorEnDesc": "Only equip software permit force active."
+    },
+    {
+      "errorID": 216,
+      "errorChDesc": "传输模式为TM7或TM8时，对应小区的天线模式必须为智能天线",
+      "errorEnDesc": "When the transmission mode is TM7 or TM8,the antenna mode of the parallelism cell must be intellective antenna. "
+    },
+    {
+      "errorID": 217,
+      "errorChDesc": "高速算法和IRC算法不能同时打开",
+      "errorEnDesc": "The high speed algorithm and IRC algorithm can't open up at the same time"
+    },
+    {
+      "errorID": 218,
+      "errorChDesc": "CDL文件尚未生成",
+      "errorEnDesc": "The CDL file doesn't exist"
+    },
+    {
+      "errorID": 219,
+      "errorChDesc": "当前配置文件激活任务忙",
+      "errorEnDesc": "Task is busy"
+    },
+    {
+      "errorID": 220,
+      "errorChDesc": "本地配置文件不存在",
+      "errorEnDesc": "Local config file does not exist"
+    },
+    {
+      "errorID": 221,
+      "errorChDesc": "本地配置文件不在指定目录",
+      "errorEnDesc": "Config file location is error"
+    },
+    {
+      "errorID": 222,
+      "errorChDesc": "非智能小区不能设置校准周期",
+      "errorEnDesc": "Calibration period can not be setted with non-smart cell"
+    },
+    {
+      "errorID": 223,
+      "errorChDesc": "RRU辅光纤时延信息查询，只支持负荷分担和主备模式   ",
+      "errorEnDesc": "Only support shared and backup mode"
+    },
+    {
+      "errorID": 224,
+      "errorChDesc": "RRU接入级数不是第一级                             ",
+      "errorEnDesc": "RRU access position not first "
+    },
+    {
+      "errorID": 225,
+      "errorChDesc": "RRU不匹配网规                                     ",
+      "errorEnDesc": "RRU not match with netplan"
+    },
+    {
+      "errorID": 226,
+      "errorChDesc": "RRU光口功率低                                     ",
+      "errorEnDesc": "RRU ofp port power low"
+    },
+    {
+      "errorID": 227,
+      "errorChDesc": "查询rru时延测量失败                               ",
+      "errorEnDesc": "Get RRU timedelay fail"
+    },
+    {
+      "errorID": 228,
+      "errorChDesc": "RRU网规中辅光口号为无效值                         ",
+      "errorEnDesc": "Slave ofp port is invalid in RRU netplan "
+    },
+    {
+      "errorID": 229,
+      "errorChDesc": "RRU未进行时延测量，无法获取时延信息               ",
+      "errorEnDesc": "RRU not timedealy measure"
+    },
+    {
+      "errorID": 230,
+      "errorChDesc": "该光口上布配的RRU已经接入，不支持进行光口配置     ",
+      "errorEnDesc": "The Ofp port has accessed RRU"
+    },
+    {
+      "errorID": 231,
+      "errorChDesc": "小区尚未规划",
+      "errorEnDesc": "For not planned, cannt setup this cell"
+    },
+    {
+      "errorID": 232,
+      "errorChDesc": "本地配置文件已存在",
+      "errorEnDesc": "Local config file already exist"
+    },
+    {
+      "errorID": 233,
+      "errorChDesc": "本地小区已建立，不允许修改上下行子帧配置和小区优先级",
+      "errorEnDesc": "LocalCell has been setuped。Don't allow to modify cellSubSfnAssign and cellPriority."
+    },
+    {
+      "errorID": 234,
+      "errorChDesc": "小区的上下行子帧配置必须一致",
+      "errorEnDesc": "cellSubSfnAssign Must be the same!"
+    },
+    {
+      "errorID": 235,
+      "errorChDesc": "拥塞控制算法开关为关，查询无效",
+      "errorEnDesc": "lccAlgorithmTag is off! Do not allow you do the action!"
+    },
+    {
+      "errorID": 236,
+      "errorChDesc": "与TDS板卡规划冲突",
+      "errorEnDesc": "conflict with TDS net board plan"
+    },
+    {
+      "errorID": 237,
+      "errorChDesc": "设置FPGA帧结构类型错误",
+      "errorEnDesc": "Set FPGA Frame structure type error"
+    },
+    {
+      "errorID": 238,
+      "errorChDesc": "存在反向维护链路",
+      "errorEnDesc": "ReverseOperation Link exit"
+    },
+    {
+      "errorID": 239,
+      "errorChDesc": "天线端口数与传输模式不匹配",
+      "errorEnDesc": "Transmission mode does not match with port number."
+    },
+    {
+      "errorID": 240,
+      "errorChDesc": "当前软件包类型不支持冷补丁",
+      "errorEnDesc": "The pack type do not support cold patch"
+    },
+    {
+      "errorID": 241,
+      "errorChDesc": "基站内不存在冷补丁依赖版本",
+      "errorEnDesc": "Can't find rely version "
+    },
+    {
+      "errorID": 242,
+      "errorChDesc": "下行增强频选不允许此SRS测量配置",
+      "errorEnDesc": "PHyCfgSrsCqiMeasType must be DlfreqSel"
+    },
+    {
+      "errorID": 243,
+      "errorChDesc": "请先修改CQI周期上报格式为子带CQI",
+      "errorEnDesc": "cqiFormatIndicatorPeriodic must be Subband"
+    },
+    {
+      "errorID": 244,
+      "errorChDesc": "配置的参数存在重复",
+      "errorEnDesc": "OM_CELL_PARA_REPEATED"
+    },
+    {
+      "errorID": 245,
+      "errorChDesc": "上行(下行)拥塞门限应大于上行等于（下行）业务资源门限的5%",
+      "errorEnDesc": "Upstream(Downstream) jam threshold should be higher than or equal to 5% of upstream(downstream) business resource threshold"
+    },
+    {
+      "errorID": 246,
+      "errorChDesc": "上行（下行）拥塞恢复门限应小于等于上行（下行）拥塞门限的5%",
+      "errorEnDesc": "Upstream(Downstream) jam recover threshold should be lower than or equal to 5% of upstream(downstream) jam threshold"
+    },
+    {
+      "errorID": 247,
+      "errorChDesc": "拥塞检测周期大于负荷均衡调整周期",
+      "errorEnDesc": "period of jam detect is higher than period of load balancing adjust"
+    },
+    {
+      "errorID": 248,
+      "errorChDesc": "上行PRB高负荷门限必须小于等于上行拥塞门限 5%~10%",
+      "errorEnDesc": "Upstream PRB high load threshold should be lower than or equal to 5%-10% of upstream jam threshold"
+    },
+    {
+      "errorID": 249,
+      "errorChDesc": "下行PRB高负荷门限必须小于等于下行拥塞门限 5%~10%",
+      "errorEnDesc": "Downstream PRB high load threshold should be lower than or equal to 5%-10% of downstream jam threshold"
+    },
+    {
+      "errorID": 250,
+      "errorChDesc": "天线端口数与本地小区规划的端口数不一致",
+      "errorEnDesc": "Ant port number does not match with the one in netLocalCellEntry"
+    },
+    {
+      "errorID": 251,
+      "errorChDesc": "RRU软件包解压缩过程中不允许设置包裁剪开关",
+      "errorEnDesc": "Can't set pack optimization switch when the pack is unzipping"
+    },
+    {
+      "errorID": 252,
+      "errorChDesc": "存在已激活的TDL小区",
+      "errorEnDesc": "Cell exists，can't modify！"
+    },
+    {
+      "errorID": 253,
+      "errorChDesc": "邻基站记录重复添加",
+      "errorEnDesc": "adjeNB has exist!"
+    },
+    {
+      "errorID": 254,
+      "errorChDesc": "邻基站全球ID不能与本基站ID相同",
+      "errorEnDesc": "The eNBGlobalId is same as the globalId of this eNB"
+    },
+    {
+      "errorID": 255,
+      "errorChDesc": "SctpIndex不是无效值，不允许修改",
+      "errorEnDesc": "SctpIndex is not invalid"
+    },
+    {
+      "errorID": 256,
+      "errorChDesc": "参数对应的标志位为不存在，故不允许修改该标志位涉及的参数",
+      "errorEnDesc": "Flag bit is not active, so corresponding parameters are not allowed to modify"
+    },
+    {
+      "errorID": 257,
+      "errorChDesc": "负载均衡算法开关为关，不允许修改",
+      "errorEnDesc": "Load balancing algorithm switch is off, modification is not allowed"
+    },
+    {
+      "errorID": 258,
+      "errorChDesc": "本区启动负载上报资源门限要大于本区恢复资源门限",
+      "errorEnDesc": "Current cell load report resource threshold should be higher than current cell recover resource threshold"
+    },
+    {
+      "errorID": 259,
+      "errorChDesc": "本区负载迁移资源门限需大于本区启动负载上报资源门限",
+      "errorEnDesc": "Current cell load shift resource threshold should be higher than current load report resource threshold"
+    },
+    {
+      "errorID": 260,
+      "errorChDesc": "邻区恢复资源门限大于邻区均衡资源门限",
+      "errorEnDesc": "Adjacent cell recover resource threshold is higher than adjacent cell balancing resource threshold"
+    },
+    {
+      "errorID": 261,
+      "errorChDesc": "当前小区ID已被使用，请使用其他CellID",
+      "errorEnDesc": "Cell ID is already used, use another ID"
+    },
+    {
+      "errorID": 262,
+      "errorChDesc": "小区RRU不是指定类型时，不允许修改为非0值",
+      "errorEnDesc": "Should not change to non-zero value when RRU type is not specified type"
+    },
+    {
+      "errorID": 263,
+      "errorChDesc": "LTE HL板卡不可用",
+      "errorEnDesc": "BBU of HL board is disable!"
+    },
+    {
+      "errorID": 264,
+      "errorChDesc": "竞争前导码数量小于A组包含的前导码数",
+      "errorEnDesc": "raPreamblesNum is less than raMessageSizeGroupA!"
+    },
+    {
+      "errorID": 265,
+      "errorChDesc": "不允许重复升级操作",
+      "errorEnDesc": "Not allow to upgrade operate repeated"
+    },
+    {
+      "errorID": 266,
+      "errorChDesc": "MCC值不符合规范",
+      "errorEnDesc": "MCC value does not conform specifications"
+    },
+    {
+      "errorID": 267,
+      "errorChDesc": "MNC值不符合规范",
+      "errorEnDesc": "MNC value does not conform specifications"
+    },
+    {
+      "errorID": 268,
+      "errorChDesc": "ANR算法关闭，不允许设置",
+      "errorEnDesc": "ANR algorithm is turned off, settings are not allowed"
+    },
+    {
+      "errorID": 269,
+      "errorChDesc": "该板卡不支持此操作",
+      "errorEnDesc": "Board not support operation"
+    },
+    {
+      "errorID": 270,
+      "errorChDesc": "本地小区组退服",
+      "errorEnDesc": "Local cell group is out of service"
+    },
+    {
+      "errorID": 271,
+      "errorChDesc": "RRU射频通道数不正确",
+      "errorEnDesc": "The number of RRU path is wrong when planning RRU."
+    },
+    {
+      "errorID": 272,
+      "errorChDesc": "RRU射频通道连接的天线阵个数不正确",
+      "errorEnDesc": "The number of antenna array connected to RRU path is wrong."
+    },
+    {
+      "errorID": 273,
+      "errorChDesc": "RRU相同频段的射频通道隶属于不同接入板",
+      "errorEnDesc": "RRU paths that are in same band are connected to different board."
+    },
+    {
+      "errorID": 274,
+      "errorChDesc": "\"CSG ID有效指示\"为关，故不允许修改\"CSG ID\"",
+      "errorEnDesc": "\"CsgIdentityFlag\" is off, so cannot modify \"CsgIdentity\""
+    },
+    {
+      "errorID": 275,
+      "errorChDesc": "\"最小信道要求偏移有效\"为关，故不允许修改\"最小信道要求偏移\"",
+      "errorEnDesc": "\"QRxlevMinOffsetFlag\" is off, so cannot modify \"QRxlevMinOffset\""
+    },
+    {
+      "errorID": 276,
+      "errorChDesc": "\"UE最大功率有效指示\"为关，故不允许修改\"UE最大功率\"",
+      "errorEnDesc": "\"PmaxFlag\" is off, so cannot modify \"Pmax\""
+    },
+    {
+      "errorID": 277,
+      "errorChDesc": "\"接入限制存在指示\"为关，故不允许修改\"紧急呼叫限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForEmergcyCalls\""
+    },
+    {
+      "errorID": 278,
+      "errorChDesc": "\"接入限制存在指示\"为关，故不允许修改\"数据接入限制存在指示\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForMocFlag\""
+    },
+    {
+      "errorID": 279,
+      "errorChDesc": "\"接入限制存在指示\"为关，故不允许修改\"信令接入限制存在指示\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForSingalFlag\""
+    },
+    {
+      "errorID": 280,
+      "errorChDesc": "\"接入限制存在指示\"为关，故不允许修改\"AC11数据接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForMocList1\""
+    },
+    {
+      "errorID": 281,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC11信令接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForSignalList1\""
+    },
+    {
+      "errorID": 282,
+      "errorChDesc": "\"接入限制存在指示\"为关，故不允许修改\"AC12数据接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForMocList2\""
+    },
+    {
+      "errorID": 283,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC12信令接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForSignalList2\""
+    },
+    {
+      "errorID": 284,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC13数据接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForMocList3\""
+    },
+    {
+      "errorID": 285,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC13信令接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForSignalList3\""
+    },
+    {
+      "errorID": 286,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC14数据接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForMocList4\""
+    },
+    {
+      "errorID": 287,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC14信令接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForSignalList4\""
+    },
+    {
+      "errorID": 288,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"数据接入限制时间\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarTimeForMoc\""
+    },
+    {
+      "errorID": 289,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"信令接入限制时间\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarTimeForSignal\""
+    },
+    {
+      "errorID": 290,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"数据接入概率因子\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarProbFactorForMoc\""
+    },
+    {
+      "errorID": 291,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"信令接入概率因子\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcProbFactorForSignal\""
+    },
+    {
+      "errorID": 292,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC15数据接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForMocList5\""
+    },
+    {
+      "errorID": 293,
+      "errorChDesc": "\"接入限制存在指示\"为关,故不允许修改\"AC15信令接入限制\"",
+      "errorEnDesc": "\"AcBarFlag\" is off, so cannot modify \"AcBarForSignalList5\""
+    },
+    {
+      "errorID": 294,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"信令接入概率因子\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcProbFactorForSignal\""
+    },
+    {
+      "errorID": 295,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"信令接入限制时间\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcBarTimeForSignal\""
+    },
+    {
+      "errorID": 296,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"AC11信令接入限制\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcBarForSignalList1\""
+    },
+    {
+      "errorID": 297,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"AC12信令接入限制\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcBarForSignalList2\""
+    },
+    {
+      "errorID": 298,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"AC13信令接入限制\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcBarForSignalList3\""
+    },
+    {
+      "errorID": 299,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"AC14信令接入限制\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcBarForSignalList4\""
+    },
+    {
+      "errorID": 300,
+      "errorChDesc": "\"信令接入限制存在指示\"为关，故不允许修改\"AC15信令接入限制\"",
+      "errorEnDesc": "\"AcBarForSingalFlag\" is off, so cannot modify \"AcBarForSignalList5\""
+    },
+    {
+      "errorID": 301,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"数据接入概率因子\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarProbFactorForMoc\""
+    },
+    {
+      "errorID": 302,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"数据接入限制时间\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarTimeForMoc\""
+    },
+    {
+      "errorID": 303,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"AC11数据接入限制\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarForMocList1\""
+    },
+    {
+      "errorID": 304,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"AC12数据接入限制\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarForMocList2\""
+    },
+    {
+      "errorID": 305,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"AC13数据接入限制\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarForMocList3\""
+    },
+    {
+      "errorID": 306,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"AC14数据接入限制\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarForMocList4\""
+    },
+    {
+      "errorID": 307,
+      "errorChDesc": "\"数据接入限制存在指示\"为关，故不允许修改\"AC15数据接入限制\"",
+      "errorEnDesc": "\"AcBarForMocFlag\" is off, so cannot modify \"AcBarForMocList5\""
+    },
+    {
+      "errorID": 308,
+      "errorChDesc": "\"A组配置存在指示\"为关，故不允许修改\"A组包含的前导码数\"",
+      "errorEnDesc": "\"PreamblesGroupAConfigFlag\" is off, so cannot modify \"SizeofRAPreamblesGroupA\""
+    },
+    {
+      "errorID": 309,
+      "errorChDesc": "\"A组配置存在指示\"为关，故不允许修改\"B组前导码功率偏移\"",
+      "errorEnDesc": "\"PreamblesGroupAConfigFlag\" is off, so cannot modify \"MessagePowerOffsetGroupB\""
+    },
+    {
+      "errorID": 310,
+      "errorChDesc": "速度重选参数存在指示为关，故不允许修改\"进入中高速判决时长\"",
+      "errorEnDesc": "\"SpeedReselFlag\" is off, so cannot modify \"TCRmax\""
+    },
+    {
+      "errorID": 311,
+      "errorChDesc": "速度重选参数存在指示为关，故不允许修改“进入常速附加判决时长”",
+      "errorEnDesc": "\"SpeedReselFlag\" is off, so cannot modify \"TCRmaxHyst\""
+    },
+    {
+      "errorID": 312,
+      "errorChDesc": "速度重选参数存在指示为关，故不允许修改“进入中速重选次数门限”",
+      "errorEnDesc": "\"SpeedReselFlag\" is off, so cannot modify \"NCRM\""
+    },
+    {
+      "errorID": 313,
+      "errorChDesc": "速度重选参数存在指示为关，故不允许修改“进入高速重选次数门限”",
+      "errorEnDesc": "\"SpeedReselFlag\" is off, so cannot modify \"NCRH\""
+    },
+    {
+      "errorID": 314,
+      "errorChDesc": "速度重选参数存在指示为关，故不允许修改“迟滞量中速缩放因子”",
+      "errorEnDesc": "\"SpeedReselFlag\" is off, so cannot modify \"ScalFactorMediMoblity\""
+    },
+    {
+      "errorID": 315,
+      "errorChDesc": "速度重选参数存在指示为关，故不允许修改“迟滞量高速缩放因子”",
+      "errorEnDesc": "\"SpeedReselFlag\" is off, so cannot modify \"ScalFactorHiMoblity\""
+    },
+    {
+      "errorID": 316,
+      "errorChDesc": "“非同频测量门限有效”为关，故不允许修改“非同频测量门限”",
+      "errorEnDesc": "\"SNonIntraSearchFlag\" is off, so cannot modify \"SNonIntraSearch\""
+    },
+    {
+      "errorID": 317,
+      "errorChDesc": "“UE最大发射功率有效”为关，故不允许修改“UE最大发射功率”",
+      "errorEnDesc": "\"PmaxFlag\" is off, so cannot modify \"Pmax\""
+    },
+    {
+      "errorID": 319,
+      "errorChDesc": "“定时器缩放因子有效”为关，故不允许修改“定时器中速缩放因子”",
+      "errorEnDesc": "\"SpeedStateScaleFactorsFlag\" is off, so cannot modify \"SpeedStateScaleFactorsMedium\""
+    },
+    {
+      "errorID": 320,
+      "errorChDesc": "“定时器缩放因子有效”为关，故不允许修改“定时器高速缩放因子”",
+      "errorEnDesc": "\"SpeedStateScaleFactorsFlag\" is off, so cannot modify \"SpeedStateScaleFactorsHigh\""
+    },
+    {
+      "errorID": 321,
+      "errorChDesc": "“服务小区门限存在指示”为关，故不允许修改“服务小区门限”",
+      "errorEnDesc": "\"SIntraSearchFlag\" is off, so cannot modify \"SIntraSearch\""
+    },
+    {
+      "errorID": 322,
+      "errorChDesc": "“测量带宽是否存在指示”为关，故不允许修改“测量带宽”",
+      "errorEnDesc": "\"MeasBandWidthFlag\" is off, so cannot modify \"MeasBandWidth\""
+    },
+    {
+      "errorID": 323,
+      "errorChDesc": "“UE最大功率有效指示”为关，故不允许修改“UE最大发射功率”",
+      "errorEnDesc": "\"PmaxFlag\" is off, so cannot modify \"Pmax\""
+    },
+    {
+      "errorID": 324,
+      "errorChDesc": "“定时器缩放因子有效”为关，故不允许修改“定时器中速缩放因子”",
+      "errorEnDesc": "\"SpeedStateScaleFactorsFlag\" is off, so cannot modify \"SpeedStateScaleFactorsMedium\""
+    },
+    {
+      "errorID": 325,
+      "errorChDesc": "“定时器缩放因子有效”为关，故不允许修改“定时器高速缩放因子”",
+      "errorEnDesc": "\"SpeedStateScaleFactorsFlag\" is off, so cannot modify \"SpeedStateScaleFactorsHigh\""
+    },
+    {
+      "errorID": 326,
+      "errorChDesc": "“重选优先级存在指示”为关，故不允许修改“小区重选频点优先级”",
+      "errorEnDesc": "\"CellReselPriorityFlag\" is off, so cannot modify \"CellReselPriority\""
+    },
+    {
+      "errorID": 327,
+      "errorChDesc": "“定时器缩放因子有效”为关，故不允许修改“定时器高速缩放因子”",
+      "errorEnDesc": "\"SpeedStateScaleFactorsFlag\" is off, so cannot modify \"SpeedStateScaleFactorsMedium\""
+    },
+    {
+      "errorID": 328,
+      "errorChDesc": "“定时器缩放因子有效”为关，故不允许修改“定时器中速缩放因子”",
+      "errorEnDesc": "\"SpeedStateScaleFactorsFlag\" is off, so cannot modify \"SpeedStateScaleFactorsHigh\""
+    },
+    {
+      "errorID": 329,
+      "errorChDesc": "“Geran定时器缩放因子有效”为关，故不允许修改“Geran定时器缩放因子有效”",
+      "errorEnDesc": "\"Geran TreselectionSfFlag\" is off, so cannot modify \"Geran SpeedStateSfHigh\""
+    },
+    {
+      "errorID": 330,
+      "errorChDesc": "“Geran定时器缩放因子有效”为关，故不允许修改“Geran定时器高速缩放因子”",
+      "errorEnDesc": "\"Geran TreselectionSfFlag\" is off, so cannot modify \"Geran SpeedStateSfMedium\""
+    },
+    {
+      "errorID": 331,
+      "errorChDesc": "“(Utra)重选优先级存在指示”为关，故不允许修改“(Utra)小区重选频点优先级”",
+      "errorEnDesc": "\"(Utra)CellReselPriorityFlag\" is off, so cannot modify \"(Utra)CellReselPriority\""
+    },
+    {
+      "errorID": 332,
+      "errorChDesc": "“(Geran)重选优先级存在指示”为关，故不允许修改“(Geran)小区重选频点优先级”",
+      "errorEnDesc": "\"(Geran)CellReselPriorityFlag\" is off, so cannot modify \"(Geran)CellReselPriority\""
+    },
+    {
+      "errorID": 333,
+      "errorChDesc": "“(Geran)UE最大发射功率有效”为关，故不允许修改“(Geran)UE最大发射功率”",
+      "errorEnDesc": "\"(Geran)PmaxFlag\" is off, so cannot modify \"(Geran)Pmax\""
+    },
+    {
+      "errorID": 334,
+      "errorChDesc": "使用小区参考信号功率计算结果大于小区最大发射功率",
+      "errorEnDesc": "The calculation result by reference signal power is larger than cell max power "
+    },
+    {
+      "errorID": 335,
+      "errorChDesc": "小区CRSboosting开关状态需要和PDCCH功率保护开关保持一致",
+      "errorEnDesc": "CRSboosting swtich should be same with PDCCH power protection switch"
+    },
+    {
+      "errorID": 336,
+      "errorChDesc": "已存在该频点的异频记录",
+      "errorEnDesc": "Different frequency record of this frequency point already exists"
+    },
+    {
+      "errorID": 337,
+      "errorChDesc": "下行静态算法边缘用户调度开关只有在ICIC算法类型为静态算法1时才允许修改",
+      "errorEnDesc": "icicEdgeUeDlPrbSchedTag is allowed to modify only when ICIC algorithm is static algorithm 1"
+    },
+    {
+      "errorID": 338,
+      "errorChDesc": "从NRT表中删除指示为不允许，故不允许删除邻小区关系",
+      "errorEnDesc": "\"NoRemoveFlag\" is off, so cannot modify Adjacent Cell Relation"
+    },
+    {
+      "errorID": 339,
+      "errorChDesc": "存在相同算法类型的记录",
+      "errorEnDesc": "Record of the same algorithm exists"
+    },
+    {
+      "errorID": 340,
+      "errorChDesc": "当前板卡不支持从boot升级功能",
+      "errorEnDesc": "Not support slave boot update"
+    },
+    {
+      "errorID": 341,
+      "errorChDesc": "当前阶段不可以进行从boot升级",
+      "errorEnDesc": "Stage error"
+    },
+    {
+      "errorID": 342,
+      "errorChDesc": "查询的实例不存在",
+      "errorEnDesc": "The query instance does not exist."
+    },
+    {
+      "errorID": 343,
+      "errorChDesc": "重复添加已存在的实例",
+      "errorEnDesc": "The instance added has already existed."
+    },
+    {
+      "errorID": 344,
+      "errorChDesc": "删除的实例不存在",
+      "errorEnDesc": "The instance deleted does not exist."
+    },
+    {
+      "errorID": 345,
+      "errorChDesc": "修改的实例不存在",
+      "errorEnDesc": "The instance modified does not exist."
+    },
+    {
+      "errorID": 346,
+      "errorChDesc": "信令软采无Liscense权限",
+      "errorEnDesc": "Ssc No Authorization"
+    },
+    {
+      "errorID": 347,
+      "errorChDesc": "信令软采时间段重叠",
+      "errorEnDesc": "Ssc Time Overlap"
+    },
+    {
+      "errorID": 348,
+      "errorChDesc": "上行(下行)拥塞门限必须大于等于上行(下行)拥塞恢复门限的5%",
+      "errorEnDesc": "Upstream(Downstream) jam threshold should be higher than or equal to 5% of upstream(downstream) jam recover threshold"
+    },
+    {
+      "errorID": 349,
+      "errorChDesc": "上行(下行)拥塞门限必须大于等于上行(下行)PRB高负荷门限的5%",
+      "errorEnDesc": "Upstream(Downstream) jam threshold should be higher than or equal to 5% of upstream(downstream) PRB high load threshold"
+    },
+    {
+      "errorID": 350,
+      "errorChDesc": "上行(下行)PRB高负荷门限必须大于本区上行(下行)预警资源门限",
+      "errorEnDesc": "Upstream(Downstream) PRB high load threshold should be higher than upstream(downstream) warning resource threshold"
+    },
+    {
+      "errorID": 351,
+      "errorChDesc": "本区上行(下行)预警资源门限必须大于本区恢复上行(下行)资源门限",
+      "errorEnDesc": "Upstream(Downstream) warning resource threshold should be higher than upstream(downstream) recover resource threshold"
+    },
+    {
+      "errorID": 352,
+      "errorChDesc": "小区最大发射功率小于小区参考信号功率",
+      "errorEnDesc": "Cell max power Is lower than reference signal power"
+    },
+    {
+      "errorID": 353,
+      "errorChDesc": "账号校验失败",
+      "errorEnDesc": "The user authentication failed."
+    },
+    {
+      "errorID": 354,
+      "errorChDesc": "UTRA双工模式为TDD，不允许修改q-QualMin参数",
+      "errorEnDesc": "Not allow to modify q-QualMin In TDD"
+    },
+    {
+      "errorID": 355,
+      "errorChDesc": "切换用户选择策略不匹配",
+      "errorEnDesc": "lbc40FcHoUeChoseStrategy error"
+    },
+    {
+      "errorID": 356,
+      "errorChDesc": "基站内同覆盖邻区个数超出限制",
+      "errorEnDesc": "CellAdjRelation Intra Enb Over Limit"
+    },
+    {
+      "errorID": 357,
+      "errorChDesc": "基站间同覆盖邻区个数超出限制",
+      "errorEnDesc": "CellAdjRelation Inner Enb Over Limit"
+    },
+    {
+      "errorID": 358,
+      "errorChDesc": "通道关断低门限要小于通道关断高门限",
+      "errorEnDesc": "Path low-threshold higher than high-threshold"
+    },
+    {
+      "errorID": 359,
+      "errorChDesc": "小区关断低门限要小于小区关断高门限",
+      "errorEnDesc": "Cell low-threshold higher than high-threshold"
+    },
+    {
+      "errorID": 360,
+      "errorChDesc": "通道关断低门限要大于小区关断低门限",
+      "errorEnDesc": "Path low-threshold lower than cell low-threshold"
+    },
+    {
+      "errorID": 361,
+      "errorChDesc": "通道关断高门限要小于小区关断高门限",
+      "errorEnDesc": "Path high-threshold higher than cell high-threshold"
+    },
+    {
+      "errorID": 362,
+      "errorChDesc": "异频载波表中无此异频信息",
+      "errorEnDesc": "No record in cellInterFreqTable"
+    },
+    {
+      "errorID": 363,
+      "errorChDesc": "该槽位不支持此查询",
+      "errorEnDesc": "Not support this slot"
+    },
+    {
+      "errorID": 364,
+      "errorChDesc": "不支持此类查询",
+      "errorEnDesc": "Not support this SCTP type"
+    },
+    {
+      "errorID": 365,
+      "errorChDesc": "打开开关前请配置干扰检测服务器信息",
+      "errorEnDesc": "Please config server before open the switch"
+    },
+    {
+      "errorID": 366,
+      "errorChDesc": "重复启动当前小区的干扰测量",
+      "errorEnDesc": "Duplicate measure"
+    },
+    {
+      "errorID": 367,
+      "errorChDesc": "该测量尚未开启",
+      "errorEnDesc": "No measure need stop"
+    },
+    {
+      "errorID": 368,
+      "errorChDesc": "测量小区不可用",
+      "errorEnDesc": "Cell not enable"
+    },
+    {
+      "errorID": 369,
+      "errorChDesc": "低门限值应小于高门限值",
+      "errorEnDesc": "Low threshold should be smaller than high threshold"
+    },
+    {
+      "errorID": 370,
+      "errorChDesc": "测量期间不允许更新相关参数",
+      "errorEnDesc": "Can not change parameter during measure process "
+    },
+    {
+      "errorID": 371,
+      "errorChDesc": "校准子周期重复长度与重复周期不匹配",
+      "errorEnDesc": "Cell calibration repeatLength not match with repeatPeriod"
+    },
+    {
+      "errorID": 372,
+      "errorChDesc": "DwPTS数据传输配置与特殊子帧配置不匹配",
+      "errorEnDesc": "Dwpts value not match with specialsubsfn"
+    },
+    {
+      "errorID": 373,
+      "errorChDesc": "同一个小区下不同子帧的检测周期必须相同",
+      "errorEnDesc": "Periods of different IOT tasks in the same cell must be the same"
+    },
+    {
+      "errorID": 374,
+      "errorChDesc": "CDMA2000系统时间指示为“不出现”时，不允许修改CDMA2000系统时间同步指示",
+      "errorEnDesc": "Can not modify cellCdma2000ParaSystemTimeSynChr when cellCdma2000ParaSystemTimeInfoFlag is false"
+    },
+    {
+      "errorID": 375,
+      "errorChDesc": "CDMA2000HRPD参数指示为“不出现”时，不允许修改CDMA2000预注册码1",
+      "errorEnDesc": "Can not modify cellCdma2000ParaPreRegZoneId1 when cellCdma2000ParaHRPDFlag is false"
+    },
+    {
+      "errorID": 376,
+      "errorChDesc": "CDMA2000HRPD参数指示为“不出现”时，不允许修改CDMA2000次要的预注册码指示",
+      "errorEnDesc": "Can not modify cellCdma2000ParaSecondPreRegZoneIdFlag when cellCdma2000ParaHRPDFlag is false"
+    },
+    {
+      "errorID": 377,
+      "errorChDesc": "CDMA2000HRPD参数指示为“不出现”时，不允许修改CMDA2000预注册码2",
+      "errorEnDesc": "Can not modify cellCdma2000ParaPreRegZoneId2 when cellCdma2000ParaHRPDFlag is false"
+    },
+    {
+      "errorID": 378,
+      "errorChDesc": "CDMA2000HRPD参数指示为“不出现”时，不允许修改CDMA2000预注册码3",
+      "errorEnDesc": "Can not modify cellCdma2000ParaPreRegZoneId3 when cellCdma2000ParaHRPDFlagg is false"
+    },
+    {
+      "errorID": 379,
+      "errorChDesc": "CDMA2000次要的预注册码指示为“不出现”时，不允许修改CDMA2000预注册码2",
+      "errorEnDesc": "Can not modify cellCdma2000ParaPreRegZoneId2 when cellCdma2000ParaSecondPreRegZoneIdFlag is false"
+    },
+    {
+      "errorID": 380,
+      "errorChDesc": "CDMA2000次要的预注册码指示为“不出现”时，不允许修改CDMA2000预注册码3",
+      "errorEnDesc": "Can not modify cellCdma2000ParaPreRegZoneId3 when cellCdma2000ParaSecondPreRegZoneIdFlag is false"
+    },
+    {
+      "errorID": 381,
+      "errorChDesc": "重选优先级有效指示为“不出现”时，不允许修改CDMA2000频带优先级",
+      "errorEnDesc": "Can not modify cellCdmaBandClassInfoPriority when cellCdmaBandClassInfoPriorityFlag is false"
+    },
+    {
+      "errorID": 382,
+      "errorChDesc": "需要先删除相邻CDMA2000小区频率信息中的相同记录",
+      "errorEnDesc": "Same cellAdjCdma2000CellEntry record should delete first"
+    },
+    {
+      "errorID": 383,
+      "errorChDesc": "不能添加重复的相邻CDMA2000小区频率记录",
+      "errorEnDesc": "CellAdjCdma2000CellEntry record is exist"
+    },
+    {
+      "errorID": 384,
+      "errorChDesc": "互为CA邻区的两个小区SRS上报周期必须相等",
+      "errorEnDesc": "SRS period not equal"
+    },
+    {
+      "errorID": 385,
+      "errorChDesc": "互为CA邻区的两个小区的频点间隔必须是300K的整数倍且不小于19.8M",
+      "errorEnDesc": "Frequency interval error"
+    },
+    {
+      "errorID": 386,
+      "errorChDesc": "互为CA邻区的两个小区所配的CRS必须相同",
+      "errorEnDesc": "CRS not equal"
+    },
+    {
+      "errorID": 387,
+      "errorChDesc": "互为CA邻区的两个小区所配的子帧格式和特殊子帧配置必须相同",
+      "errorEnDesc": "SUBSFN not equal"
+    },
+    {
+      "errorID": 388,
+      "errorChDesc": "不可以重复添加同一辅小区",
+      "errorEnDesc": "Cell ID is same "
+    },
+    {
+      "errorID": 389,
+      "errorChDesc": "不允许删除CA关系存在的小区配置信息",
+      "errorEnDesc": "Deny delete cell cfg entry with CA relation"
+    },
+    {
+      "errorID": 390,
+      "errorChDesc": "小区上下行子帧配置与TTI捆绑开启开关状态不匹配",
+      "errorEnDesc": "CellSubSfnAssign doesn't match puschTtiBundling"
+    },
+    {
+      "errorID": 391,
+      "errorChDesc": "BBU尚未处于同步完成阶段",
+      "errorEnDesc": "BBU syn not complete"
+    },
+    {
+      "errorID": 392,
+      "errorChDesc": "RRU尚未处于同步完成阶段",
+      "errorEnDesc": "RRU syn not complete"
+    },
+    {
+      "errorID": 393,
+      "errorChDesc": "暂不支持热补丁功能",
+      "errorEnDesc": "Not support hot patch"
+    },
+    {
+      "errorID": 394,
+      "errorChDesc": "冷补丁只支持立即下载",
+      "errorEnDesc": "Only support instant download for cold patch"
+    },
+    {
+      "errorID": 395,
+      "errorChDesc": "上行BO开关为预调度时，上行BO大小不允许大于15",
+      "errorEnDesc": "UlBoSize is larger than 15 when UlBoSwitch is presche"
+    },
+    {
+      "errorID": 396,
+      "errorChDesc": "单个无线帧配置有误",
+      "errorEnDesc": "MbmsSubFrmAllcOneFrame cfg err"
+    },
+    {
+      "errorID": 397,
+      "errorChDesc": "MBSFN关断低门限要小于MBSFN关断高门限",
+      "errorEnDesc": "MBSFN low-threshold higher than high-threshold"
+    },
+    {
+      "errorID": 398,
+      "errorChDesc": "该小区基带板上已激活TDL小区时隙配置不一致",
+      "errorEnDesc": "Timeslot offset is different compare with active cell in baseband board"
+    },
+    {
+      "errorID": 399,
+      "errorChDesc": "该小区接口板上已激活TDL小区时隙配置不一致",
+      "errorEnDesc": "Timeslot offset is different compare with active cell in accsess board"
+    },
+    {
+      "errorID": 400,
+      "errorChDesc": "该小区与基带板上已规划TDL小区时隙配置不一致",
+      "errorEnDesc": "Timeslot offset is different compare with net cell in baseband board"
+    },
+    {
+      "errorID": 401,
+      "errorChDesc": "该小区与接口板上已规划TDL小区时隙配置不一致",
+      "errorEnDesc": "Timeslot offset is different compare with net cell in accsess board"
+    },
+    {
+      "errorID": 402,
+      "errorChDesc": "同一RRU上TDL小区时隙配置不一致",
+      "errorEnDesc": "Timeslot offset is different in the RRU"
+    },
+    {
+      "errorID": 403,
+      "errorChDesc": "存在已激活的单模TDL小区",
+      "errorEnDesc": "TDL cell exists，can't modify！"
+    },
+    {
+      "errorID": 404,
+      "errorChDesc": "该槽位上已存在OM链路配置",
+      "errorEnDesc": "OM link slot numer already exist"
+    },
+    {
+      "errorID": 405,
+      "errorChDesc": "该模式OM链路已存在",
+      "errorEnDesc": "OM link mode already exist"
+    },
+    {
+      "errorID": 406,
+      "errorChDesc": "双模模式只允许存在一条OM链路",
+      "errorEnDesc": "Only permit one dual-mode om link"
+    },
+    {
+      "errorID": 407,
+      "errorChDesc": "TDS模式只允许配置在0槽位",
+      "errorEnDesc": "TDS mode om link must on slot 0"
+    },
+    {
+      "errorID": 408,
+      "errorChDesc": "TDL模式只允许配置在1槽位",
+      "errorEnDesc": "TDL mode om link must on slot 1"
+    },
+    {
+      "errorID": 409,
+      "errorChDesc": "IPPATH只有用户面允许配置MTU1600",
+      "errorEnDesc": "Only user plane IPPATH can use MTU1600 parameter"
+    },
+    {
+      "errorID": 410,
+      "errorChDesc": "CA关系存在的小区配置信息，不允许修改中心频点",
+      "errorEnDesc": "Can not modify center freq when CA relation exist"
+    },
+    {
+      "errorID": 411,
+      "errorChDesc": "CA关系存在的小区配置信息，不允许修改上下行子帧配置",
+      "errorEnDesc": "Can not modify subsfn assign when CA relation exist"
+    },
+    {
+      "errorID": 412,
+      "errorChDesc": "CA关系存在的小区配置信息，不允许修改特殊子帧配置",
+      "errorEnDesc": "Can not modify subsfn pattern when CA relation exist"
+    },
+    {
+      "errorID": 413,
+      "errorChDesc": "CA关系存在的小区配置信息，不允许修改SRS上报周期",
+      "errorEnDesc": "Can not modify SRS period when CA relation exist"
+    },
+    {
+      "errorID": 414,
+      "errorChDesc": "符号关断低门限要小于符号关断高门限",
+      "errorEnDesc": "Symbol low-threshold higher than high-threshold"
+    },
+    {
+      "errorID": 415,
+      "errorChDesc": "符号节能开关和MBSFN开关至多打开一个",
+      "errorEnDesc": "Open no more than one Switch"
+    },
+    {
+      "errorID": 416,
+      "errorChDesc": "节能期间不允许修改PRB利用率计算方法",
+      "errorEnDesc": "Can not modify eNBPRBRadioType when energy switch "
+    },
+    {
+      "errorID": 417,
+      "errorChDesc": "通道节能开关打开时不允许修改8通道关断方法、Pa重配开关和接收方向开关",
+      "errorEnDesc": "Can not modify eNBEightPathShutdownType and eNBPaReconfigSwitch and eNBPathShutdownReceiveSwitch when Path energy open"
+    },
+    {
+      "errorID": 418,
+      "errorChDesc": "符号节能开关打开时修改后的符号关断子帧个数应比原来的值大",
+      "errorEnDesc": "Can not modify eNBSymbolShutdownSubsfnNum when Symbol energy switch open"
+    },
+    {
+      "errorID": 419,
+      "errorChDesc": "MLB参数调整上限要大于下限",
+      "errorEnDesc": "McMlbOcnAdjustUpperLimit should be larger than LmcMlbOcnAdjustLowerLimit"
+    },
+    {
+      "errorID": 420,
+      "errorChDesc": "MLB算法开关与lcc拥塞控制算法开关、40M分层组网负荷均衡算法开关不能同时打开",
+      "errorEnDesc": "lmclccAlgorithmTag and lmclbc40FcAlgorithmTag is not match with lmcMlbAlgorithmTag"
+    },
+    {
+      "errorID": 421,
+      "errorChDesc": "禁止被均衡的qci取值只可配置1-9",
+      "errorEnDesc": "Lbc40FcFobiddenQciValue must be within the scope os 1-9"
+    },
+    {
+      "errorID": 422,
+      "errorChDesc": "禁止被均衡的qci取值不可重复",
+      "errorEnDesc": "Lbc40FcFobiddenQciValue is reduplicate"
+    },
+    {
+      "errorID": 423,
+      "errorChDesc": "四个无线帧配置有误",
+      "errorEnDesc": "MbmsSubFrmAllcFourFrame cfg err"
+    },
+    {
+      "errorID": 424,
+      "errorChDesc": "集合2的SRS上报周期要小于SRS上报周期",
+      "errorEnDesc": "HlTestSwitcSrsShortPeriodicity should be smaller than hlTestSwitchSrsPeriodicity"
+    },
+    {
+      "errorID": 425,
+      "errorChDesc": "上行全部用户都做COMP时协作小区数只能为2",
+      "errorEnDesc": "CompAssemble should be 2 when ulCompConfigSwitch is 1"
+    },
+    {
+      "errorID": 426,
+      "errorChDesc": "上行根据A3事件选择CoMP协作用户集时协作小区数不能小于2",
+      "errorEnDesc": "CompAssemble cant be smaller than 2 when ulCompConfigSwitch is 2"
+    },
+    {
+      "errorID": 427,
+      "errorChDesc": "上行CoMP协作集内有小区未配置",
+      "errorEnDesc": "Some cell of compAssemble is not planed"
+    },
+    {
+      "errorID": 428,
+      "errorChDesc": "上行CoMP协作集内小区ID无效",
+      "errorEnDesc": "Cell id of compAssemble is invalid"
+    },
+    {
+      "errorID": 429,
+      "errorChDesc": "上行CoMP协作集内小区ID重复",
+      "errorEnDesc": "Cell id of compAssemble is repeat"
+    },
+    {
+      "errorID": 430,
+      "errorChDesc": "上行CoMP开关打开时各小区上行CoMP小区集需一致",
+      "errorEnDesc": "CompAssemble Should be same when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 431,
+      "errorChDesc": "上行CoMP开关打开时各小区上行CoMP模式需一致",
+      "errorEnDesc": "UlCompMode Should be same when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 432,
+      "errorChDesc": "上行CoMP开关打开时各小区上行协作带宽PRB起始位置需一致",
+      "errorEnDesc": "UlCompCoBandPrbStart Should be same when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 433,
+      "errorChDesc": "上行CoMP开关打开时各小区上行COMP协作资源大小需一致",
+      "errorEnDesc": "UlCompCoBandPrbNum Should be same when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 434,
+      "errorChDesc": "上行CoMP协作集内有小区PUSCH无效",
+      "errorEnDesc": "The puschentry of compAssemble is not invalid"
+    },
+    {
+      "errorID": 435,
+      "errorChDesc": "上行服务小区和协作小区的PCI%3不相等",
+      "errorEnDesc": "Pci%3 is not equal of compAsseble"
+    },
+    {
+      "errorID": 436,
+      "errorChDesc": "上行CoMP功能开关为打开时，配置开关须打开",
+      "errorEnDesc": "UlCompConfigSwitch can't off when ulCompFuncSwitch is on"
+    },
+    {
+      "errorID": 437,
+      "errorChDesc": "上行CoMP资源配置要小于小区带宽",
+      "errorEnDesc": "UlCompNonCoBandPrbStart and ulCompNonCoBandPrbNum config error"
+    },
+    {
+      "errorID": 438,
+      "errorChDesc": "上行CoMP协作集内小区（配置开关打开）已存在",
+      "errorEnDesc": "Cell of compAssemble is exist"
+    },
+    {
+      "errorID": 439,
+      "errorChDesc": "上行CoMP协作集在配置开关打开时不允许修改",
+      "errorEnDesc": "Cell of compAssemble can't modify when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 440,
+      "errorChDesc": "上行CoMP模式在配置开关打开时不允许修改",
+      "errorEnDesc": "UlCompMode can't modify when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 441,
+      "errorChDesc": "上行CoMP协作资源配置在配置开关打开时不允许修改",
+      "errorEnDesc": "Cell of compAssemble can't modify when ulCompConfigSwitch is not 0"
+    },
+    {
+      "errorID": 442,
+      "errorChDesc": "多频段指示开启时，多频段信息1与EUTRA工作频段不能相同",
+      "errorEnDesc": "cellFreqBand and multiBandInfo1 must different"
+    },
+    {
+      "errorID": 443,
+      "errorChDesc": "多频段指示开启时，小区中心频点取值有误",
+      "errorEnDesc": "cellcenterfreq and celldlsysbandwidth's value is wrong"
+    },
+    {
+      "errorID": 444,
+      "errorChDesc": "本区负荷检测周期必须大于本区拥塞检测周期",
+      "errorEnDesc": "lmcScLoadDetectPrd must be greater than lmcLccLoadDetectPrd"
+    },
+    {
+      "errorID": 445,
+      "errorChDesc": "重定向多频段指示信息与重定向工作频段不能相同",
+      "errorEnDesc": "LbcRedirectionMultiBandInfo and lbcRedirectionFreqBand must different"
+    },
+    {
+      "errorID": 446,
+      "errorChDesc": "重定向多频段指示信息有效指示有效时，重定向目标频点取值有误",
+      "errorEnDesc": "LbcRedirectionCenterFreq's Value is Wrong"
+    },
+    {
+      "errorID": 447,
+      "errorChDesc": "EUTRA工作频段与异频多频段指示信息不能相同",
+      "errorEnDesc": "CellInterFreqBand  and CellInterFreqInterMultiBandInfo must different"
+    },
+    {
+      "errorID": 448,
+      "errorChDesc": "异频多频段指示信息有效指示为有效时，异频频点取值有误",
+      "errorEnDesc": "cellInterFreq's value is wrong"
+    },
+    {
+      "errorID": 449,
+      "errorChDesc": "小区制式与本地小区制式不一致",
+      "errorEnDesc": "Cell mode not match local cell mode"
+    },
+    {
+      "errorID": 450,
+      "errorChDesc": "存在该CDMA2000频段指示与网络类型的异频记录",
+      "errorEnDesc": "Band is used in cdma2000Freq record"
+    },
+    {
+      "errorID": 451,
+      "errorChDesc": "需要先在CDMA2000频率表中添加频率信息 ",
+      "errorEnDesc": "It should be add cdma2000freq info first"
+    },
+    {
+      "errorID": 452,
+      "errorChDesc": "CDMA2000频段指示与网络类型在CDMA2000BandClass信息中不存在",
+      "errorEnDesc": "Band is not exist in cdmabandclass table"
+    },
+    {
+      "errorID": 453,
+      "errorChDesc": "存在该频点的CDMA2000小区邻小区 ",
+      "errorEnDesc": "Cdma2000cell is exist"
+    },
+    {
+      "errorID": 454,
+      "errorChDesc": "存在相同的Geran异频频点",
+      "errorEnDesc": "The frequency can not be same in geranfreq record"
+    },
+    {
+      "errorID": 455,
+      "errorChDesc": "当icic开关打开时，下行功率开关不允许关闭",
+      "errorEnDesc": "PadynschuSwitch can't close when icictag is open"
+    },
+    {
+      "errorID": 456,
+      "errorChDesc": "多频段指示开启时，多频段信息1与EUTRA工作频段不匹配",
+      "errorEnDesc": "CellFreqBand and multiBandInfo1 not match"
+    },
+    {
+      "errorID": 457,
+      "errorChDesc": "重定向多频段指示信息与重定向工作频段不匹配",
+      "errorEnDesc": "LbcRedirectionMultiBandInfo and lbcRedirectionFreqBand not match"
+    },
+    {
+      "errorID": 458,
+      "errorChDesc": "EUTRA工作频段与异频多频段指示信息不匹配",
+      "errorEnDesc": "CellInterFreqBand  and cellInterFreqInterMultiBandInfo not match"
+    },
+    {
+      "errorID": 459,
+      "errorChDesc": "竞争前导码数量过大",
+      "errorEnDesc": "RaPreamblesNum is too large"
+    },
+    {
+      "errorID": 460,
+      "errorChDesc": "零相关区间配置不允许设置为7-15",
+      "errorEnDesc": "The value of raZeroCorrelatZoneCfg should not be 7-15"
+    },
+    {
+      "errorID": 461,
+      "errorChDesc": "Format4时，高速开关不能打开",
+      "errorEnDesc": "RaHiSpeedFlag can't be true when raPrachCfgIndex is larger than 47"
+    },
+    {
+      "errorID": 462,
+      "errorChDesc": "前导码最大传输次数应大于TA Type2的统计测量次数",
+      "errorEnDesc": "RaPreambleTrMax should be larger than cacPositionTA2MeasNum"
+    },
+    {
+      "errorID": 463,
+      "errorChDesc": "智能巡检用户不可打开告警上报开关",
+      "errorEnDesc": "Patrol user can't report alarm."
+    },
+    {
+      "errorID": 464,
+      "errorChDesc": "添加帐号名与现有的重复",
+      "errorEnDesc": "The user name is same as the existing."
+    },
+    {
+      "errorID": 465,
+      "errorChDesc": "非管理员用户不可进行此操作",
+      "errorEnDesc": "Only admin user can do it."
+    },
+    {
+      "errorID": 466,
+      "errorChDesc": "管理员帐号已添加",
+      "errorEnDesc": "The admin user has already existed."
+    },
+    {
+      "errorID": 467,
+      "errorChDesc": "帐号密码校验失败",
+      "errorEnDesc": "The user password validation failed."
+    },
+    {
+      "errorID": 468,
+      "errorChDesc": "帐号密码长度有误",
+      "errorEnDesc": "The user password length is wrong."
+    },
+    {
+      "errorID": 469,
+      "errorChDesc": "帐号密码不可与帐号名称有重叠",
+      "errorEnDesc": "The user password can not overlap with the name."
+    },
+    {
+      "errorID": 470,
+      "errorChDesc": "帐号密码太过简单",
+      "errorEnDesc": "The user password is too simple."
+    },
+    {
+      "errorID": 471,
+      "errorChDesc": "帐号密码重复",
+      "errorEnDesc": "The user password repeat."
+    },
+    {
+      "errorID": 472,
+      "errorChDesc": "基于用户位置的接入控制开关打开时竞争前导码数量应小于64",
+      "errorEnDesc": "RaPreamblesNum should be smaller than 64 when cacPositionSwitch is open"
+    },
+    {
+      "errorID": 473,
+      "errorChDesc": "节能期间不许修改各节能开关、各节能优先级和小区节能属性",
+      "errorEnDesc": "Can not modify energy switch and priority and cellTypeFlag when BBU is in energy conversation"
+    },
+    {
+      "errorID": 474,
+      "errorChDesc": "载波关断高门限要高于低门限",
+      "errorEnDesc": "Path low-threshold higher than high-threshold"
+    },
+    {
+      "errorID": 475,
+      "errorChDesc": "各节能特性的优先级不能相同",
+      "errorEnDesc": "All energy priority can't be same"
+    },
+    {
+      "errorID": 476,
+      "errorChDesc": "PGC开关与自适应抗阻塞开关不能同时打开",
+      "errorEnDesc": "PGC Switch and JamResistant Switch can't be on at the same time"
+    },
+    {
+      "errorID": 477,
+      "errorChDesc": "上行非协作带宽PRB结束索引位置需一致",
+      "errorEnDesc": "UlCompNonCoBandPrbEnd should be same "
+    },
+    {
+      "errorID": 478,
+      "errorChDesc": "小区建立后不可修改上行CoMP配置开关",
+      "errorEnDesc": "UlCompConfigSwitch can't be modified when cell is already exist"
+    },
+    {
+      "errorID": 479,
+      "errorChDesc": "上行CoMP模式在上行CoMP配置开关为打开不能修改",
+      "errorEnDesc": "UlCompMode can't be modified when UlCompConfigSwitch is on"
+    },
+    {
+      "errorID": 480,
+      "errorChDesc": "上行非协作带宽PRB结束索引位置需不大于小区带宽",
+      "errorEnDesc": "UlCompNonCoBandPrbEnd should be not larger than DlSysBandWidth"
+    },
+    {
+      "errorID": 481,
+      "errorChDesc": "小区不存在此通道信息 ",
+      "errorEnDesc": "The cell do not support this path"
+    },
+    {
+      "errorID": 482,
+      "errorChDesc": "一级门限不能低于二级门限",
+      "errorEnDesc": "1st VSWR Threshold should not higher than 2nd Threshold"
+    },
+    {
+      "errorID": 483,
+      "errorChDesc": "互为CA邻区的两个小区所配的子帧格式必须相同",
+      "errorEnDesc": "SUBSFN not same"
+    },
+    {
+      "errorID": 484,
+      "errorChDesc": "站内其他小区与该小区存在邻小区关系",
+      "errorEnDesc": "Other cell has adj-relation with this cell"
+    },
+    {
+      "errorID": 485,
+      "errorChDesc": "该小区与基带板上已激活TDL小区时隙配置不一致，建议修改单模RRU帧头偏移值",
+      "errorEnDesc": "Timeslot offset is different compare with active cell in baseband board，suggest to modify nodeBRRUTimeslotOffset"
+    },
+    {
+      "errorID": 486,
+      "errorChDesc": "该小区与基带板上已激活TDL小区时隙配置不一致，建议修改上下行子帧配置",
+      "errorEnDesc": "Timeslot offset is different compare with active cell in baseband board，suggest to modify cellSubSfnAssign"
+    },
+    {
+      "errorID": 487,
+      "errorChDesc": "该小区与接口板上已激活TDL小区时隙配置不一致，建议修改单模RRU帧头偏移值",
+      "errorEnDesc": "Timeslot offset is different compare with active cell in accsess board，suggest to modify nodeBRRUTimeslotOffset"
+    },
+    {
+      "errorID": 488,
+      "errorChDesc": "该小区与接口板上已激活TDL小区时隙配置不一致，建议修改上下行子帧配置",
+      "errorEnDesc": "Timeslot offset is different compare with active cell in accsess board，suggest to modify cellSubSfnAssign"
+    },
+    {
+      "errorID": 489,
+      "errorChDesc": "该小区与基带板上已规划TDL小区时隙配置不一致，建议修改单模RRU帧头偏移值",
+      "errorEnDesc": "Timeslot offset is different compare with net cell in baseband board，suggest to modify nodeBRRUTimeslotOffset"
+    },
+    {
+      "errorID": 490,
+      "errorChDesc": "该小区与基带板上已规划TDL小区时隙配置不一致，建议修改上下行子帧配置",
+      "errorEnDesc": "Timeslot offset is different compare with net cell in baseband board，suggest to modify cellSubSfnAssign"
+    },
+    {
+      "errorID": 491,
+      "errorChDesc": "该小区与接口板上已规划TDL小区时隙配置不一致，建议修改单模RRU帧头偏移值",
+      "errorEnDesc": "Timeslot offset is different compare with net cell in accsess board，suggest to modify nodeBRRUTimeslotOffset"
+    },
+    {
+      "errorID": 492,
+      "errorChDesc": "该小区与接口板上已规划TDL小区时隙配置不一致，建议修改上下行子帧配置",
+      "errorEnDesc": "Timeslot offset is different compare with net cell in accsess board，suggest to modify cellSubSfnAssign"
+    },
+    {
+      "errorID": 493,
+      "errorChDesc": "DRX参数集A的长DRX周期需大于或等于DRX参数集A的短DRX周期且为DRX参数集A的短DRX周期的整数倍",
+      "errorEnDesc": "DrxQciLongCycle should be integral multiple of drxQciShortCycle"
+    },
+    {
+      "errorID": 494,
+      "errorChDesc": "DRX参数集A的激活定时器时长需小于DRX参数集A的长DRX周期和DRX参数集A的短DRX周期",
+      "errorEnDesc": "DrxQciOnDurationTimer should be smaller than drxQciLongCycle"
+    },
+    {
+      "errorID": 495,
+      "errorChDesc": "DRX参数集B的激活定时器时长需小于DRX参数集B的长DRX周期",
+      "errorEnDesc": "DrxQciOnDurationTimerB should be smaller than drxQciLongCycleB"
+    },
+    {
+      "errorID": 496,
+      "errorChDesc": "只允许添加1个完全同覆盖邻区",
+      "errorEnDesc": "WholeLayerOver should not be more than 1"
+    },
+    {
+      "errorID": 497,
+      "errorChDesc": "只允许添加2个部分同覆盖邻区",
+      "errorEnDesc": "PartLayerOver should not be more than 2"
+    },
+    {
+      "errorID": 498,
+      "errorChDesc": "禁止被均衡的qci取值只可配置0-5",
+      "errorEnDesc": "Lbc40FcFobiddenQciValue must be within the scope os 0-5"
+    },
+    {
+      "errorID": 499,
+      "errorChDesc": "集合2的SRS上报周期要小于SRS上报周期",
+      "errorEnDesc": "HlTestSwitchSrsShortPeriodicity should be smaller than hlTestSwitchSrsPeriodicity"
+    },
+    {
+      "errorID": 500,
+      "errorChDesc": "开启Tm9基于码本非码本自适应时，pmirireport有效标志只能配置为开",
+      "errorEnDesc": "Csirstm9PmiRiReportFlag should be 1 while hlTestSwitchTm9PrecodingSrsSwitch is 1"
+    },
+    {
+      "errorID": 501,
+      "errorChDesc": "pmirireport有效标志为关时，TM9波束赋形类型只能配置为基于波束赋形系数",
+      "errorEnDesc": "PhyCfgTm9BfType should be 1 while csirstm9PmiRiReportFlag is 0"
+    },
+    {
+      "errorID": 502,
+      "errorChDesc": "信令跟踪开关未打开",
+      "errorEnDesc": "Trace Switch is not open"
+    },
+    {
+      "errorID": 503,
+      "errorChDesc": "信令跟踪任务已存在",
+      "errorEnDesc": "Trace Task is already created"
+    },
+    {
+      "errorID": 504,
+      "errorChDesc": "该管理站已设置过相同的任务",
+      "errorEnDesc": "Trace Task is iterance"
+    },
+    {
+      "errorID": 505,
+      "errorChDesc": "任何节能开关打开时，不允许修改节能策略负荷查询周期",
+      "errorEnDesc": "Can not modify eNBEnergyConservLoadPeriod when some of swtich is open"
+    },
+    {
+      "errorID": 506,
+      "errorChDesc": "小区只允许有一个同覆盖TDS邻区",
+      "errorEnDesc": "Can not add another tds adjacent cell."
+    },
+    {
+      "errorID": 507,
+      "errorChDesc": "迟滞时间不能小于开启测量时间段",
+      "errorEnDesc": "The eNBEnergyConservDelayTime is smaller "
+    },
+    {
+      "errorID": 509,
+      "errorChDesc": "禁止被均衡的qci取值只可配置0~9",
+      "errorEnDesc": "Lbc40FcFobiddenQciValue must be within the scope os 0~9"
+    },
+    {
+      "errorID": 510,
+      "errorChDesc": "当数据业务互操作开关打开且数据业务互操作方式为切换时，\nPS域目标网络不能是GERAN",
+      "errorEnDesc": "The interRatPsHandleNetwork can not be GERAN when interRatPsHandleSwitch is on and interRatPsHandlePattern is ho"
+    },
+    {
+      "errorID": 511,
+      "errorChDesc": "任意节能开关打开时，不允许修改节能策略参数",
+      "errorEnDesc": "The energy conservation strategy para can not modify when any switch is on"
+    },
+    {
+      "errorID": 512,
+      "errorChDesc": "小区大速率用户插队概率配置开关已关闭，不允许设置小区大速率用户插队概率",
+      "errorEnDesc": "Cell Capacity config Flag is Close,Can not Modify Cell Capacity"
+    },
+    {
+      "errorID": 513,
+      "errorChDesc": "公共测量串接上报开关已关闭，不允许修改最大串接包个数",
+      "errorEnDesc": "Max of JointCmrNum Flag is Close,Can not Modify Max of JointCmrNum"
+    },
+    {
+      "errorID": 514,
+      "errorChDesc": "上行CA开关为打开时，下行CA开关必须打开",
+      "errorEnDesc": "CaDownlinkSwitch should be on when CaUplinkSwitch is on"
+    },
+    {
+      "errorID": 515,
+      "errorChDesc": "1U3D情况下上行CA业务速率激活绝对门限应不超过9M",
+      "errorEnDesc": "caScellActiveThroughputThrforUl should be not higher than 9M when SubSfnAssign is sa2"
+    },
+    {
+      "errorID": 516,
+      "errorChDesc": "2U2D情况下上行CA业务速率激活绝对门限应不超过18M",
+      "errorEnDesc": "caScellActiveThroughputThrforUl should be not higher than 18M when SubSfnAssign is sa1"
+    },
+    {
+      "errorID": 517,
+      "errorChDesc": "上行CA业务速率去激活绝对门限应低于上行CA业务速率激活绝对门限",
+      "errorEnDesc": "caScellActiveThroughputThrforUl should be higher caScellDeActiveThroughputThrforUl"
+    },
+    {
+      "errorID": 518,
+      "errorChDesc": "互为CA邻区的两个小区的频点间隔必须是300K的整数倍",
+      "errorEnDesc": "Frequency interval should be integral multiple of 300KHz"
+    },
+    {
+      "errorID": 519,
+      "errorChDesc": "当前版本不允许在1槽位板卡上升级",
+      "errorEnDesc": "Current version can not upgrade at slot 1"
+    },
+    {
+      "errorID": 520,
+      "errorChDesc": "指定的起始时间晚于终止时间",
+      "errorEnDesc": "Start time later than end time"
+    },
+    {
+      "errorID": 521,
+      "errorChDesc": "本地IP地址与网关IP地址不能相同",
+      "errorEnDesc": "Local ip address is same with gateway ip address  "
+    },
+    {
+      "errorID": 522,
+      "errorChDesc": "时隙偏移值必须一致，建议修改单模RRU帧头偏移值",
+      "errorEnDesc": "Timeoffset is not same, advise to modify nodeBRRUTimslotOffset"
+    },
+    {
+      "errorID": 523,
+      "errorChDesc": "时隙偏移值必须一致，建议修改小区的上下行子帧配置",
+      "errorEnDesc": "Timeoffset is not same, advise to modify cellSubSfnAssign"
+    },
+    {
+      "errorID": 524,
+      "errorChDesc": "查询数据失败",
+      "errorEnDesc": "Fail to get MIB data"
+    },
+    {
+      "errorID": 525,
+      "errorChDesc": "直连接口用户不可锁定自己",
+      "errorEnDesc": "Mml user can't lock self."
+    },
+    {
+      "errorID": 526,
+      "errorChDesc": "该邻小区网络类型不支持此查询",
+      "errorEnDesc": "Not support this CellAdjCellNetworkType"
+    },
+    {
+      "errorID": 527,
+      "errorChDesc": "智能天线模式下的异常低门限需小于智能天线模式下的异常高门限",
+      "errorEnDesc": "phyCfgIotScSmartAlarmThresholdL should be smaller than phyCfgIotScSmartAlarmThresholdH"
+    },
+    {
+      "errorID": 528,
+      "errorChDesc": "非智能天线模式下的异常低门限需小于非智能天线模式下的异常高门限",
+      "errorEnDesc": "phyCfgIotScNotSmartAlarmThresholdL should be smaller than phyCfgIotScNotSmartAlarmThresholdH"
+    },
+    {
+      "errorID": 529,
+      "errorChDesc": "不能增加自己为载波聚合邻小区",
+      "errorEnDesc": "cellCACellLocalId should not be same as cellCACell"
+    },
+    {
+      "errorID": 530,
+      "errorChDesc": "源小区切换准备定时器需小于目标小区切换定时器",
+      "errorEnDesc": "timerHcPrepare should be smaller than timerHcTarHandover"
+    },
+    {
+      "errorID": 531,
+      "errorChDesc": "高速开关打开且format0时，零相关区间配置要小于15",
+      "errorEnDesc": "The value of raZeroCorrelatZoneCfg should not be smaller than 15 when format0 and raHiSpeedFlag is true"
+    },
+    {
+      "errorID": 532,
+      "errorChDesc": "format4时，特殊子帧配置不能为3:10:1/9:4:1/10:3:1/11:2:1/12:1:1",
+      "errorEnDesc": "The cellSpecialSubSfnPatterns should not be smaller than 5 when format4"
+    },
+    {
+      "errorID": 533,
+      "errorChDesc": "管理MDT开关未打开，不能进行操作",
+      "errorEnDesc": "MDT Management Enable Switch is off"
+    },
+    {
+      "errorID": 534,
+      "errorChDesc": "MDT任务存在时不能修改",
+      "errorEnDesc": "Can not modify the Parameters when MDT Task is exist"
+    },
+    {
+      "errorID": 535,
+      "errorChDesc": "该类型MDT任务已存在",
+      "errorEnDesc": "The Same Type of MDT Task is already created"
+    },
+    {
+      "errorID": 536,
+      "errorChDesc": "Immediate MDT类型任务已存在",
+      "errorEnDesc": "Immediate MDT Task is already created"
+    },
+    {
+      "errorID": 537,
+      "errorChDesc": "Logged MDT类型任务已存在",
+      "errorEnDesc": "Logged MDT Task is already created"
+    },
+    {
+      "errorID": 538,
+      "errorChDesc": "表loggedMdtCellEntry和表loggedMdtTaEntry都无行有效的记录",
+      "errorEnDesc": "loggedMdtCellEntry and loggedMdtTaEntry both has invalid record"
+    },
+    {
+      "errorID": 539,
+      "errorChDesc": "存在某个小区的检测任务进行时，不能修改时隙统计周期、上报周期、调整开关和邻频开关",
+      "errorEnDesc": "When cell rip can not change rip period"
+    },
+    {
+      "errorID": 540,
+      "errorChDesc": "时隙干扰检测结果上报周期不小于时隙干扰检测统计周期",
+      "errorEnDesc": "pl rip report time no less than statistic time"
+    },
+    {
+      "errorID": 541,
+      "errorChDesc": "邻区关系表记录的允许删除指示为FALSE",
+      "errorEnDesc": "cellAdjCellRemoveFlag is False in cellAdjRelationEntry"
+    },
+    {
+      "errorID": 542,
+      "errorChDesc": "只有智能小区才允许打开下行comp配置开关",
+      "errorEnDesc": "The dlcompcfgswitch cant open while the cell is not smart cell"
+    },
+    {
+      "errorID": 543,
+      "errorChDesc": "SPS开关打开时，语音延迟调度开关必须为关闭",
+      "errorEnDesc": "The spsOptmzQci1NoSpsFlag must be off while spsSwitchFlag is on"
+    },
+    {
+      "errorID": 544,
+      "errorChDesc": "小区存在时，不允许修改语音延迟调度开关",
+      "errorEnDesc": "The spsOptmzQci1NoSpsFlag can not modify while cell is exist"
+    },
+    {
+      "errorID": 545,
+      "errorChDesc": "协议栈抓包开关和镜像抓包开关不能同时打开",
+      "errorEnDesc": "The ProtocolStackCapPacketSwitch and the MirrorSwitch cant be open at the same time"
+    },
+    {
+      "errorID": 546,
+      "errorChDesc": "CCLR功能开关与CFI自适应功能（控制区域符号调整开关为关闭则认为CFI自适应功能打开）不能同时打开",
+      "errorEnDesc": "CclrSwitch and CFI self-adaption(PcfichSwitch is off means CFI self-adaption is on) can not switch on at the same time"
+    },
+    {
+      "errorID": 547,
+      "errorChDesc": "若下行CoMP配置开关为打开且下行CoMP模式为SU-JT或MU-JT，控制区域符号调整开关不能为关闭",
+      "errorEnDesc": "If dlCompConfigSwitch is on and dlCompMode is sujt or mujt, PcfichSwitch can not be off"
+    },
+    {
+      "errorID": 548,
+      "errorChDesc": "下行CoMP配置开关为打开时，用于CoMP的A3测量开关必须为打开",
+      "errorEnDesc": "If dlCompConfigSwitch is on, a3MeasPurpose must be coMP."
+    },
+    {
+      "errorID": 549,
+      "errorChDesc": "小区建立后不可修改下行CoMP配置开关",
+      "errorEnDesc": "dlCompConfigSwitch can not be reconfig when cell has already actived"
+    },
+    {
+      "errorID": 550,
+      "errorChDesc": "下行CoMP开关打开时各小区下行CoMP模式需一致",
+      "errorEnDesc": "All dlCompMode must be same"
+    },
+    {
+      "errorID": 551,
+      "errorChDesc": "下行CoMP功能开关打开时，配置开关需打开",
+      "errorEnDesc": "dlCompConfigSwitch must be on if dlCompFuncSwitch is on"
+    },
+    {
+      "errorID": 552,
+      "errorChDesc": "下行协作PRB个数修改时，需保证小于小区带宽",
+      "errorEnDesc": "dlCompCoBandPrbNum can not larger than bandwidth"
+    },
+    {
+      "errorID": 553,
+      "errorChDesc": "CA跨载波调度与CFI自适应功能（控制区域符号调整开关为关闭则认为CFI自适应功能打开）不能同时打开",
+      "errorEnDesc": "CrossCarrierSchedulingSwitch and CFI self-adaption(PcfichSwitch is off means CFI self-adaption is on) can not switch on at the same time"
+    },
+    {
+      "errorID": 554,
+      "errorChDesc": "上行(下行)PRB高负荷门限必须大于本区恢复上行(下行)资源门限",
+      "errorEnDesc": "lmcUlPrbHighLoadTh must be larger than lmcUlPrbRestoreTh"
+    },
+    {
+      "errorID": 555,
+      "errorChDesc": "本区恢复上行(下行)资源门限必须大于本区上行(下行)预警资源门限",
+      "errorEnDesc": "lmcUlPrbRestoreTh must be larger than lmcUlPrbPreAlarmTh"
+    },
+    {
+      "errorID": 556,
+      "errorChDesc": "RRU功率校验失败",
+      "errorEnDesc": "The power check failed of RRU cell para"
+    },
+    {
+      "errorID": 557,
+      "errorChDesc": "RRU频点校验失败",
+      "errorEnDesc": "The freq check failed of RRU cell para"
+    },
+    {
+      "errorID": 558,
+      "errorChDesc": "RRU时隙校验失败",
+      "errorEnDesc": "The subSfnAssign check failed of RRU cell para"
+    },
+    {
+      "errorID": 559,
+      "errorChDesc": "RRU特殊子帧校验失败",
+      "errorEnDesc": "The specialSubSfnPatterns check failed of RRU cell para"
+    },
+    {
+      "errorID": 560,
+      "errorChDesc": "RRU小区参数校验响应超时",
+      "errorEnDesc": "Check time out of RRU cell para"
+    },
+    {
+      "errorID": 561,
+      "errorChDesc": "RRU小区参数校验失败",
+      "errorEnDesc": "Check failed cause other reason of RRU cell para"
+    },
+    {
+      "errorID": 562,
+      "errorChDesc": "多个两通道RRU功率单独调整，须保证小区已网规且增强型小区开关打开",
+      "errorEnDesc": "Check failed cause on opening netLcCellCombineEnhancedSwitch and planning this cell"
+    },
+    {
+      "errorID": 563,
+      "errorChDesc": "该小区需要布配成增强型小区",
+      "errorEnDesc": "Type of the cell must be combined and enhanced        "
+    },
+    {
+      "errorID": 564,
+      "errorChDesc": "该小区为增强型小区，需要打开增强型小区合并软件许可开关",
+      "errorEnDesc": "The cellSoftLicenseCombineEnhancedCell must be open beacause the cell is CombineEnhanced"
+    },
+    {
+      "errorID": 565,
+      "errorChDesc": "关闭该开关前，需要将小区属性改为非增强型小区",
+      "errorEnDesc": "Modifying the type of cell before closing the switch "
+    },
+    {
+      "errorID": 566,
+      "errorChDesc": "高速开关打开时，增强型小区合并下行RRU全发开关只能为打开",
+      "errorEnDesc": "MacTestSwitchInfoComEnhancedAllTxSwitch should be on when phyCfgHighSpeedSwitch is on"
+    },
+    {
+      "errorID": 567,
+      "errorChDesc": "高速开关打开时，小区合并下行通道选择的开关只能为不选择",
+      "errorEnDesc": "MacSwitchInfoCellCombinedDlSwitch should be off when phyCfgHighSpeedSwitch is on"
+    },
+    {
+      "errorID": 568,
+      "errorChDesc": "A2事件表信息测量目的不允许重复",
+      "errorEnDesc": "A2MeasPurpose should not be same with others"
+    },
+    {
+      "errorID": 569,
+      "errorChDesc": "A2 RSRP门限过大",
+      "errorEnDesc": "A2RptThresholdRsrp is too large"
+    },
+    {
+      "errorID": 570,
+      "errorChDesc": "A2 RSRQ门限过大",
+      "errorEnDesc": "A2RptThresholdRsrq is too large"
+    },
+    {
+      "errorID": 571,
+      "errorChDesc": "A2 RSRP门限过小",
+      "errorEnDesc": "A2RptThresholdRsrp is too small"
+    },
+    {
+      "errorID": 572,
+      "errorChDesc": "A2 RSRQ门限过小",
+      "errorEnDesc": "A2RptThresholdRsrq is too small"
+    },
+    {
+      "errorID": 573,
+      "errorChDesc": "切换用户选择策略的优先级、用户列表考虑用户prb利用率策略的优先级、禁止被均衡的qci策略的优先级不能相等",
+      "errorEnDesc": "Lbc40FcHoUeChoseStrategyPriority and lbc40FcUeListWithPrbUsageStrategyPriority and lbc40FcFobiddenQciStrategyPriority should not be same"
+    },
+    {
+      "errorID": 574,
+      "errorChDesc": "SPS开关与语音延迟调度开关不能同时打开",
+      "errorEnDesc": "SpsOptmzQci1NoSpsFlag and spsSwitchFlag can no open together"
+    },
+    {
+      "errorID": 575,
+      "errorChDesc": "小区建立后不允许修改语音延迟调度开关",
+      "errorEnDesc": "SpsOptmzQci1NoSpsFlag can not modify"
+    },
+    {
+      "errorID": 576,
+      "errorChDesc": "一副8天线发送和仅TM7/TM8单流采用一副8天线发送时，超远覆盖发送分集时延只能配置为0",
+      "errorEnDesc": "SdcTransDelay can be 0 only when sdcDlTransMode is not double8ante "
+    },
+    {
+      "errorID": 577,
+      "errorChDesc": "当40M分层组网负荷均衡算法开关打开时，系统间负荷均衡算法开关才能打开",
+      "errorEnDesc": "LmcInterRatLoadBalanceTag can be on when lmclbc40FcAlgorithmTag is on"
+    },
+    {
+      "errorID": 578,
+      "errorChDesc": "当系统间负荷均衡算法开关打开时，系统间负荷均衡语音业务开关才能打开",
+      "errorEnDesc": "lmcInterRatLoadBalanceVoiceTag can be on when lmcInterRatLoadBalanceTag is on"
+    },
+    {
+      "errorID": 579,
+      "errorChDesc": "Wifi模块的SSID和密码必须包含数字、大写字母和小写字母这三种元素中两种以上的组合且必须大于8个字符，有其他字符视为非法",
+      "errorEnDesc": "Wifi moudle's SSID and password must be contain number,uppercase and lowercase letter above two parameter and above 8 character.Other character is illegal\n"
+    },
+    {
+      "errorID": 580,
+      "errorChDesc": "ata2/VER/WIFI目录下不存在管理站指定的文件",
+      "errorEnDesc": "Path ata2/VER/WIFI not exist the file"
+    },
+    {
+      "errorID": 581,
+      "errorChDesc": "A1事件表信息测量目的不允许重复",
+      "errorEnDesc": "A1MeasPurpose should not be same with others"
+    },
+    {
+      "errorID": 582,
+      "errorChDesc": "A1 RSRP门限过大",
+      "errorEnDesc": "A1RptThresholdRsrp is too large"
+    },
+    {
+      "errorID": 583,
+      "errorChDesc": "A1 RSRQ门限过大",
+      "errorEnDesc": "A1RptThresholdRsrq is too large"
+    },
+    {
+      "errorID": 584,
+      "errorChDesc": "A1 RSRP门限过小",
+      "errorEnDesc": "A1RptThresholdRsrp is too small"
+    },
+    {
+      "errorID": 585,
+      "errorChDesc": "A1 RSRQ门限过小",
+      "errorEnDesc": "A1RptThresholdRsrq is too small"
+    },
+    {
+      "errorID": 586,
+      "errorChDesc": "A1RSRP门限小于A2RSRP门限",
+      "errorEnDesc": "A1RptThresholdRsrp is smaller than A2RptThresholdRsrp "
+    },
+    {
+      "errorID": 587,
+      "errorChDesc": "A1RSRQ门限小于A2RSRQ门限",
+      "errorEnDesc": "A1RptThresholdRsrq is smaller than A2RptThresholdRsrq "
+    },
+    {
+      "errorID": 588,
+      "errorChDesc": "频点间隔错误",
+      "errorEnDesc": "Frequency interval is wrong"
+    },
+    {
+      "errorID": 589,
+      "errorChDesc": "上/下行预警门限大于上/下行恢复门限",
+      "errorEnDesc": "lmcPrbPreAlarmTh is bigger than lmcPrbRestoreTh"
+    },
+    {
+      "errorID": 590,
+      "errorChDesc": "上/下行恢复门限大于上/下行高负荷门限",
+      "errorEnDesc": "lmcPrbRestoreTh is bigger than lmcPrbHighLoadTh"
+    },
+    {
+      "errorID": 591,
+      "errorChDesc": "上行(下行)拥塞门限值必须比上行(下行)拥塞恢复门限值大于或等于5",
+      "errorEnDesc": "lmcCongestionTh is must bigger than lmcCongestRestoreTh add 5"
+    },
+    {
+      "errorID": 592,
+      "errorChDesc": "上行(下行)拥塞恢复门限值必须比上行(下行)PRB高负荷门限值大于或等于5",
+      "errorEnDesc": "lmcCongestRestoreTh is must bigger than lmcPrbHighLoadTh add 5"
+    },
+    {
+      "errorID": 593,
+      "errorChDesc": "“小区重选最小质量要求有效指示”为关，故不允许修改“小区重选最小质量要求”",
+      "errorEnDesc": "cellInterFreqQualMinFlag control cellInterFreqQualMin"
+    },
+    {
+      "errorID": 594,
+      "errorChDesc": "“小区重选异频门限有效指示”为关，故不允许修改“高优先级频点r9重选门限”",
+      "errorEnDesc": "cellInterFreqThreshXQFlag control cellInterFreqThreshXHighQ"
+    },
+    {
+      "errorID": 595,
+      "errorChDesc": "“小区重选异频门限有效指示”为关，故不允许修改“低优先级频点r9重选门限”",
+      "errorEnDesc": "cellInterFreqThreshXQFlag control cellInterFreqThreshXLowQ"
+    },
+    {
+      "errorID": 596,
+      "errorChDesc": "“非同频测量r9门限有效指示”为关，故不允许修改“非同频测量r9信号门限”",
+      "errorEnDesc": "cellReselComSNonIntraSearchR9Flag control cellReselComSNonIntraSearchP"
+    },
+    {
+      "errorID": 597,
+      "errorChDesc": "“非同频测量r9门限有效指示”为关，故不允许修改“非同频测量r9质量门限”",
+      "errorEnDesc": "cellReselComSNonIntraSearchR9Flag control cellReselComSNonIntraSearchQ"
+    },
+    {
+      "errorID": 598,
+      "errorChDesc": "“服务频点质量门限有效指示”为关，故不允许修改“服务频点质量门限”",
+      "errorEnDesc": "cellReselComThreshServLowQFlag control cellReselComThreshServLowQ"
+    },
+    {
+      "errorID": 599,
+      "errorChDesc": "“服务小区r9门限存在指示”为关，故不允许修改“服务小区r9信号门限”",
+      "errorEnDesc": "cellReselIntraFreqIntraSearchR9Flag control cellReselIntraFreqIntraSearchP"
+    },
+    {
+      "errorID": 600,
+      "errorChDesc": "“服务小区r9门限存在指示”为关，故不允许修改“服务小区r9质量门限”",
+      "errorEnDesc": "cellReselIntraFreqIntraSearchR9Flag control cellReselIntraFreqIntraSearchQ"
+    },
+    {
+      "errorID": 601,
+      "errorChDesc": "“小区重选最小质量要求存在指示”为关，故不允许修改“小区重选最小质量要求”",
+      "errorEnDesc": "cellReselIntraFreqQualMinFlag control cellReselIntraFreqQualMin"
+    },
+    {
+      "errorID": 602,
+      "errorChDesc": "小区没有可用的S1链路",
+      "errorEnDesc": "No Enable S1"
+    },
+    {
+      "errorID": 603,
+      "errorChDesc": "网络规划S1接口表已使用该链路，不允许删除",
+      "errorEnDesc": "Unable to delete SCTP in use"
+    },
+    {
+      "errorID": 604,
+      "errorChDesc": "未找到可用核心网，请修改配置参数，或打开RAN Sharing功能",
+      "errorEnDesc": "Trans resource is not available, reconfig or switch on RanSharing please"
+    },
+    {
+      "errorID": 605,
+      "errorChDesc": "不能同时打开增强型小区合并和RAN共享功能",
+      "errorEnDesc": "Can not enable CombineEnhancedCell and RanSharing at the same time"
+    },
+    {
+      "errorID": 606,
+      "errorChDesc": "小区共享网络规划表已规划，不允许删除",
+      "errorEnDesc": "CellShareNet is already using, not allow switch off RanSharing "
+    },
+    {
+      "errorID": 607,
+      "errorChDesc": "SCTP链路索引对应的sctp链路应存在且对端网元类型应为MME",
+      "errorEnDesc": "netS1IfSctpIndex sctpRowStatus must be createAndGo and sctpPeerType must be MME"
+    },
+    {
+      "errorID": 608,
+      "errorChDesc": "网规S1接口对应SCTP链路索引不能重复",
+      "errorEnDesc": "SctpIndex is repeat between netS1Interface"
+    },
+    {
+      "errorID": 609,
+      "errorChDesc": "RAN Sharing功能未打开",
+      "errorEnDesc": "cellSoftLicenseRanSharing is not on"
+    },
+    {
+      "errorID": 610,
+      "errorChDesc": "共享运营商信息不能重复",
+      "errorEnDesc": "PLMN is repeat"
+    },
+    {
+      "errorID": 611,
+      "errorChDesc": "MR 任务开启时间不能晚于结束时间",
+      "errorEnDesc": "MR Start time later than end time"
+    },
+    {
+      "errorID": 612,
+      "errorChDesc": "MR 2个测量时间段不能重合",
+      "errorEnDesc": "MR Two Times can't cover "
+    },
+    {
+      "errorID": 613,
+      "errorChDesc": "MR 2个时间段的开始时间与结束时间不能相等",
+      "errorEnDesc": "MR Two Times Starttime can't equal Endtime"
+    },
+    {
+      "errorID": 614,
+      "errorChDesc": "MR任务开关开启时MRO测量采样周期不允许修改",
+      "errorEnDesc": "MR when task switch open mrosamplingPeriod can't change"
+    },
+    {
+      "errorID": 615,
+      "errorChDesc": "MR任务开关开启时MRO每小区用户配置比例不允许修改",
+      "errorEnDesc": "MR when task switch open mrUEcfgRadio can't change"
+    },
+    {
+      "errorID": 616,
+      "errorChDesc": "MR任务开关开启时MR上报周期不允许修改",
+      "errorEnDesc": "MR when task switch open mrPeriod can't change"
+    },
+    {
+      "errorID": 617,
+      "errorChDesc": "MR任务开关开启时prb rip开关不允许修改",
+      "errorEnDesc": "MR when task switch open prbrip can't change"
+    },
+    {
+      "errorID": 618,
+      "errorChDesc": "MR一维测量项中prbrip与其他测量项互斥",
+      "errorEnDesc": "MR In Dim1 prbrip can't open with the other"
+    },
+    {
+      "errorID": 619,
+      "errorChDesc": "MR周期测量geran、utra、Eutra、cdma2000开关中任何一个开启时强制启动异频异系统才可以开启",
+      "errorEnDesc": "MR Meas Ctrl geran、utra、eutra、cdma2000switch open diffreqsys switch can open"
+    },
+    {
+      "errorID": 620,
+      "errorChDesc": "CA激活数据量判决门限小于CA去激活数据量判决门限",
+      "errorEnDesc": "CaActiveDataThr is smaller than CaDeActiveDataThr "
+    },
+    {
+      "errorID": 621,
+      "errorChDesc": "用户数恢复门限必须小于用户数控制门限",
+      "errorEnDesc": "eNBUeContrlLowThresh must smaller than eNBUeContrlHighThresh"
+    },
+    {
+      "errorID": 622,
+      "errorChDesc": "同一小区只能配置不超过16个同一制式的UTRA频率信息",
+      "errorEnDesc": "No more than 16 same cellUtraFreqDuplexType for a cell"
+    },
+    {
+      "errorID": 623,
+      "errorChDesc": "如果测量目的为用于自动邻区建立时，则周期上报次数需要为1",
+      "errorEnDesc": "IF euePeriodRptPurpose is anr，euePeriodRptRptAmount must be 1."
+    },
+    {
+      "errorID": 624,
+      "errorChDesc": "如果与测量相关的算法为自动邻区建立时，则周期上报次数需要为1",
+      "errorEnDesc": "IF euePeriodRptAlgoType is anr，euePeriodRptRptAmount must be 1."
+    },
+    {
+      "errorID": 625,
+      "errorChDesc": "如果周期上报类型为小区全局ID时，则周期上报次数需要为1",
+      "errorEnDesc": "IF euePeriodRptType is reportCGI，euePeriodRptRptAmount must be 1."
+    },
+    {
+      "errorID": 626,
+      "errorChDesc": "待添加邻区的PLMN不在源小区的PLMN集中",
+      "errorEnDesc": "AdjCell's PLMN isn't blong to Lc's PLMN"
+    },
+    {
+      "errorID": 627,
+      "errorChDesc": "基于用户数的负荷均衡开关在40M分层组网负荷均衡算法开关打开时才能打开",
+      "errorEnDesc": "If lbcUserNumTag is open,lmclbcAlgorithmTag must open."
+    },
+    {
+      "errorID": 628,
+      "errorChDesc": "小区已建立不可修改下行CoMP配置开关从关到开",
+      "errorEnDesc": "If cell exist, dlCompConfigSwitch can not be from close to open."
+    },
+    {
+      "errorID": 629,
+      "errorChDesc": "非智能小区在下行CoMP为开时，下行CoMP模式只能为CS模式",
+      "errorEnDesc": "If cell is not smart,when dlCompConfigSwitch opening,dlCompMode can only be CS."
+    },
+    {
+      "errorID": 630,
+      "errorChDesc": "跟踪任务个数已达上限，请删除不需要的任务",
+      "errorEnDesc": "Too many eNBTrace task, delete unecessary task please"
+    },
+    {
+      "errorID": 631,
+      "errorChDesc": "用户索引错误",
+      "errorEnDesc": "Wrong UE Index"
+    },
+    {
+      "errorID": 632,
+      "errorChDesc": "小区最大发射功率值小于或等于配置的主辅RRU的TD-LTE最大发射功率值之和",
+      "errorEnDesc": "Cell's max power is larger than max power's sum of all  TDL."
+    },
+    {
+      "errorID": 633,
+      "errorChDesc": "小区最大发射功率值小于或等于配置的主DSP相关联RRU的TD-LTE最大发射功率值",
+      "errorEnDesc": "Cell's max power is larger than max power's of Main DSP TDL."
+    },
+    {
+      "errorID": 634,
+      "errorChDesc": "主辅RRU的TD-LTE最大发射功率不能同时为0",
+      "errorEnDesc": "RRU1 and RRU2 max power can not be 0 in the same time"
+    },
+    {
+      "errorID": 635,
+      "errorChDesc": "一副8天线发送时，RRU1对应的功率值不能为0",
+      "errorEnDesc": "RRU1 max power can not be 0 when single ant sended"
+    },
+    {
+      "errorID": 636,
+      "errorChDesc": "PCI不允许配置为65535(无效值）",
+      "errorEnDesc": "PhyId can be 65535!"
+    },
+    {
+      "errorID": 637,
+      "errorChDesc": "本地小区规划了318FA,DwPTS截短长度只能等于6",
+      "errorEnDesc": "When localcell planning 318FA,DwptsTruncateLength must be equal to 6."
+    },
+    {
+      "errorID": 638,
+      "errorChDesc": "请先修改S1/IUB SCTP链路为允许删除",
+      "errorEnDesc": "Need modify sctp link delete Flag to on,Fristly!"
+    },
+    {
+      "errorID": 639,
+      "errorChDesc": "时隙干扰开关开启并且小区存在时不允许修改时隙干扰检测上报标志位",
+      "errorEnDesc": "When cell is able and slot rip switch is on slotripflag can't change"
+    },
+    {
+      "errorID": 640,
+      "errorChDesc": "CSI-RS天线端口数为8，且csirs表有效标志为打开时，才能打开PMI平滑算法开关",
+      "errorEnDesc": "CSIRSportnum must be 8 and crirs valid flag must be on, when macTestPmiWeightMean is ON"
+    },
+    {
+      "errorID": 641,
+      "errorChDesc": "只有普通智能小区才能打开PMI平滑算法开关（增强型小区，超远覆盖小区不支持该特性）",
+      "errorEnDesc": "macTestPmiWeightMean ON support normal smartAnt cell only"
+    },
+    {
+      "errorID": 643,
+      "errorChDesc": "连续载波聚合频点间隔不能大于标称频点间隔(19.8MHz)",
+      "errorEnDesc": "Frequency interval can not be larger than standard frequency interval(19.8MHz) in continuous carrier polymerization"
+    },
+    {
+      "errorID": 644,
+      "errorChDesc": "连续载波聚合频点间隔不能大于标称频点间隔(14.4MHz)",
+      "errorEnDesc": "Frequency interval can not be larger than standard frequency interval(14.4MHz) in continuous carrier polymerization"
+    },
+    {
+      "errorID": 645,
+      "errorChDesc": "连续载波聚合频点间隔不能大于标称频点间隔(17.1MHz)",
+      "errorEnDesc": "Frequency interval can not be larger than standard frequency interval(17.1MHz) in continuous carrier polymerization"
+    },
+    {
+      "errorID": 646,
+      "errorChDesc": "连续载波聚合频点间隔不能大于标称频点间隔(15.0MHz)",
+      "errorEnDesc": "Frequency interval can not be larger than standard frequency interval(15.0MHz) in continuous carrier polymerization"
+    },
+    {
+      "errorID": 647,
+      "errorChDesc": "MLB开关与40M负荷均衡开关不能同时打开",
+      "errorEnDesc": "MLB and 40Fc can't open up at the same time"
+    },
+    {
+      "errorID": 648,
+      "errorChDesc": "上/下行恢复门限不能大于回退保护门限",
+      "errorEnDesc": "lmcMlbLoadRestoreThUl is bigger than lmcMlbBackoffProtectTh"
+    },
+    {
+      "errorID": 649,
+      "errorChDesc": "回退保护门限不能大于上/下行高负荷门限",
+      "errorEnDesc": "lmcMlbBackoffProtectTh is bigger than lmcMlbHighLoadThUl"
+    },
+    {
+      "errorID": 650,
+      "errorChDesc": "板卡间的时隙偏移不同",
+      "errorEnDesc": "band time offset not equal to other band time offset"
+    },
+    {
+      "errorID": 651,
+      "errorChDesc": "PRB不全为100%",
+      "errorEnDesc": "PRB not all 100 percent"
+    },
+    {
+      "errorID": 652,
+      "errorChDesc": "小区预留状态非reserved",
+      "errorEnDesc": "Cell reserved status not reserved"
+    },
+    {
+      "errorID": 653,
+      "errorChDesc": "先设置小区预留状态为reserved",
+      "errorEnDesc": "Set cell reserved status reserved first"
+    },
+    {
+      "errorID": 654,
+      "errorChDesc": "上下行PRB都为100%，须设置小区预留状态为reserved",
+      "errorEnDesc": "All up and down PRB is 100%,Set cell reserved status reserved first"
+    },
+    {
+      "errorID": 655,
+      "errorChDesc": "Denb只允许存在一条REPC IP地址",
+      "errorEnDesc": "Only permit one repc ip info"
+    },
+    {
+      "errorID": 656,
+      "errorChDesc": "网关地址非法",
+      "errorEnDesc": "Gate way IP address is invalid"
+    },
+    {
+      "errorID": 657,
+      "errorChDesc": "语音用户数均衡门限需要大于语音用户数均衡恢复门限",
+      "errorEnDesc": "LmcVoiceNumThreshold must biger than lmcVoiceNumRestoreTh"
+    },
+    {
+      "errorID": 658,
+      "errorChDesc": "下行CoMP模式在下行CoMP配置开关为打开时不能修改",
+      "errorEnDesc": "Can not switch dlCompMode when dlCompConfigSwitch is on"
+    },
+    {
+      "errorID": 659,
+      "errorChDesc": "Relay IP地址已存在",
+      "errorEnDesc": "Relay IP address is already exist"
+    },
+    {
+      "errorID": 660,
+      "errorChDesc": "找不到足够的高层资源",
+      "errorEnDesc": "Can not find enough HL Resource"
+    },
+    {
+      "errorID": 661,
+      "errorChDesc": "射频单元端口编号自适应开关打开，不允许修改",
+      "errorEnDesc": "Net plan self adaptive ctrl switch is open,can not config RruPort Manual Config PortNo."
+    },
+    {
+      "errorID": 662,
+      "errorChDesc": "定制化配置端口编号设置与端口数不匹配",
+      "errorEnDesc": "Rru Port Manual Config PortNo is not match with PortNum. "
+    },
+    {
+      "errorID": 663,
+      "errorChDesc": "高速算法开关和与ACK同时上报指示不可同时打开",
+      "errorEnDesc": "PubAlgorithmParaHSpdSwitch and cqiSimultaneousAckNackAndCqi can not all open."
+    },
+    {
+      "errorID": 664,
+      "errorChDesc": "TDDPRACH配置索引大于等于48和高速小区指示不能同时开启",
+      "errorEnDesc": "It is err that raPrachCfgIndex do not small than 48, and raHiSpeedFlag is open."
+    },
+    {
+      "errorID": 665,
+      "errorChDesc": "接入控制开关开启且TA测量类型type2时，竞争前导码数量需小于前导码总数量",
+      "errorEnDesc": "CacPositionSwitch_open and cacPositionTAMeasType_type2,raPreamblesNum must smaller than raPreamTotalNum."
+    },
+    {
+      "errorID": 666,
+      "errorChDesc": "不满足接入控制开关开启且TA测量类型type2时，竞争前导码数量需小于等于前导码总数量",
+      "errorEnDesc": "If cacPositionSwitch no open or cacPositionTAMeasType no type2,raPreamblesNum must smaller than raPreamTotalNum."
+    },
+    {
+      "errorID": 667,
+      "errorChDesc": "高速小区状态指示为高速小区时，基于速率的切换算法开关才可以设置低速用户迁出",
+      "errorEnDesc": "If pubHSpdCellStatus is on, HcTagBasedSpeed can be lowspeedout."
+    },
+    {
+      "errorID": 668,
+      "errorChDesc": "高速小区状态指示为低速小区时，基于速率的切换算法开关才可以设置高速用户迁出",
+      "errorEnDesc": "If pubHSpdCellStatus is off, HcTagBasedSpeed can be highspeedout."
+    },
+    {
+      "errorID": 669,
+      "errorChDesc": "前导码总数量过大",
+      "errorEnDesc": "RaPreamTotalNum is too large"
+    },
+    {
+      "errorID": 670,
+      "errorChDesc": "日志记录序号重复",
+      "errorEnDesc": "LogIndex is repeat"
+    },
+    {
+      "errorID": 671,
+      "errorChDesc": "与基带板上已建立的小区时隙偏移不同",
+      "errorEnDesc": "band time offset not equal to exsit cell time offset"
+    },
+    {
+      "errorID": 672,
+      "errorChDesc": "与接口板上已建立的小区时隙偏移不同",
+      "errorEnDesc": "interface band time offset not equal to exsit cell time offset"
+    },
+    {
+      "errorID": 673,
+      "errorChDesc": "下行差异化调度功能开关与基于IP的ATU 保障功能开关不能同时为开",
+      "errorEnDesc": "AtuDlSwitch and atuByIpFlag can not both open."
+    },
+    {
+      "errorID": 674,
+      "errorChDesc": "上行差异化调度功能开关与基于IP的ATU 保障功能开关不能同时为开",
+      "errorEnDesc": "AtuUlFlag and atuByIpFlag can not both open."
+    },
+    {
+      "errorID": 675,
+      "errorChDesc": "强制千兆不能配置到0槽以太口",
+      "errorEnDesc": "Gigabit cant config to 0 slot eth port"
+    },
+    {
+      "errorID": 676,
+      "errorChDesc": "不能重复设置主备备份开关",
+      "errorEnDesc": "Can not Reapt Set backupswitch "
+    },
+    {
+      "errorID": 677,
+      "errorChDesc": "通道节能开关打开时不允许修改节能策略通道恢复迟滞时间",
+      "errorEnDesc": "Not allow to modify path save delay time when switch open"
+    },
+    {
+      "errorID": 678,
+      "errorChDesc": "基于用户数的负荷均衡开关打开时才能打开站间用户数均衡开关",
+      "errorEnDesc": "LbcUserNumTag is open, nodebswitch can open."
+    },
+    {
+      "errorID": 679,
+      "errorChDesc": "动态表已满",
+      "errorEnDesc": "Dynamic table is full."
+    },
+    {
+      "errorID": 680,
+      "errorChDesc": "SR自适应到大周期用户数门限必须大于SR自适应到小周期用户数门限",
+      "errorEnDesc": "SrLargePeriodicityTh must bigger than srShortPeriodicityTh."
+    },
+    {
+      "errorID": 681,
+      "errorChDesc": "SR自适应小周期必须小于DSR上报周期",
+      "errorEnDesc": "SrShortPeriodicityTh must smaller than srPeriodicity."
+    },
+    {
+      "errorID": 682,
+      "errorChDesc": "电调天线不支持此项查询",
+      "errorEnDesc": "Not supportted get "
+    },
+    {
+      "errorID": 683,
+      "errorChDesc": "辅载波去激活定时器为不配置时，不能打开辅载波隐式去激活算法开关",
+      "errorEnDesc": "Can not switch on caCrossCarrierSchedulingSwitch when caSCellDeactivationTimer is rf0"
+    },
+    {
+      "errorID": 684,
+      "errorChDesc": "BBU软件包解压缩过程中不允许设置包裁剪开关",
+      "errorEnDesc": "Can't set pack optimization switch when the pack is unzipping"
+    },
+    {
+      "errorID": 685,
+      "errorChDesc": "DSCP值非法",
+      "errorEnDesc": "Dscp value invalid"
+    },
+    {
+      "errorID": 686,
+      "errorChDesc": "PRB上行(下行)拥塞门限值必须大于或等于PRB上行(下行)拥塞恢复门限值",
+      "errorEnDesc": "PRB congest threshold can not smaller than recover"
+    },
+    {
+      "errorID": 687,
+      "errorChDesc": "CPU过载门限必须大于高负荷门限大于中负荷门限",
+      "errorEnDesc": "CPU overload threshold must bigger than high bigger than middle"
+    },
+    {
+      "errorID": 688,
+      "errorChDesc": "重配置CHAC参数必须chacActiveUeUltraLoadTh > chacActiveUeSuperHighLoadTh > chacActiveUeHighLoadTh",
+      "errorEnDesc": "chacActiveUeUltraLoadTh must bigger than chacActiveUeSuperHighLoadTh bigger than chacActiveUeHighLoadTh"
+    },
+    {
+      "errorID": 689,
+      "errorChDesc": "时隙干扰检测开关不能在1、2、3、4之间相互变化",
+      "errorEnDesc": "plRipCellUpIotSwitch can't change between 1、2、3 and 4"
+    },
+    {
+      "errorID": 690,
+      "errorChDesc": "时隙干扰检测开关打开时干扰上报粒度和协同静默周期不允许改变",
+      "errorEnDesc": "Granularity and SchedSilentPeriod can't change when plRipCellUpIotSwitch is not off"
+    },
+    {
+      "errorID": 691,
+      "errorChDesc": "同一基站的小区不能开启不同类型的干扰检测",
+      "errorEnDesc": "Cell can't open different rip in the same ENB"
+    },
+    {
+      "errorID": 692,
+      "errorChDesc": "UE任务类型的跟踪任务个数已达上限，创建任务失败",
+      "errorEnDesc": "Start task failed when UE task num bigger than limit"
+    },
+    {
+      "errorID": 693,
+      "errorChDesc": "VoLTE分析CDL记录开关和业务面定位记录开关不能同时打开",
+      "errorEnDesc": "cellCdlTcpSwitch and cellCdlVoLTESwitch can not both open."
+    },
+    {
+      "errorID": 694,
+      "errorChDesc": "保证SRS信噪比的下限值<= SRS信噪比的目标值<= SRS信噪比的上限值",
+      "errorEnDesc": "MacUpAlgorithmSrsPowerSinrThLower smaller macUpAlgorithmSrsPowerSinrThTarget smaller macUpAlgorithmSrsPowerSinrThUpper."
+    },
+    {
+      "errorID": 695,
+      "errorChDesc": "下行差异化调度功能开关与基于用户识别的ATU保障功能开关不能同时为开",
+      "errorEnDesc": "AtuDlSwitch and atuUeIMSISwitch can not be open at the same time."
+    },
+    {
+      "errorID": 696,
+      "errorChDesc": "上行差异化调度功能开关与基于用户识别的ATU保障功能开关不能同时为开",
+      "errorEnDesc": "AtuUlFlag and atuUeIMSISwitch can not be open at the same time."
+    },
+    {
+      "errorID": 697,
+      "errorChDesc": "基于IP的ATU的保证功能开关与基于用户识别的ATU保障功能开关不能同时为开",
+      "errorEnDesc": "atuByIpFlag and atuUeIMSISwitch can not be open at the same time."
+    },
+    {
+      "errorID": 698,
+      "errorChDesc": "光口接入的级数错误",
+      "errorEnDesc": "RHUB PLAN OFP ACCESS LINE ERROR"
+    },
+    {
+      "errorID": 699,
+      "errorChDesc": "光口接入板的光口号错误",
+      "errorEnDesc": "RHUB PLAN OFP ACCESS PORT ERROR"
+    },
+    {
+      "errorID": 700,
+      "errorChDesc": "RHUB工作模式不能为空",
+      "errorEnDesc": "RHUB WORKMODE IS NULL"
+    },
+    {
+      "errorID": 701,
+      "errorChDesc": "完全同覆盖只能配置站内完全同覆盖邻区",
+      "errorEnDesc": "WholeLayerOver only add in same cellAdjCellEnbGlobalId."
+    },
+    {
+      "errorID": 702,
+      "errorChDesc": "nbiot小区只有一个主载波",
+      "errorEnDesc": "nbiot cell has only one master carry"
+    },
+    {
+      "errorID": 703,
+      "errorChDesc": "nbiot小区载波数不能超过最大载波数",
+      "errorEnDesc": "nbiot cell's carry no more than MaxCarryNum"
+    },
+    {
+      "errorID": 704,
+      "errorChDesc": "添加小区载波表时小区配置表需已存在",
+      "errorEnDesc": "Add nbiot carry need cell cfg already exsit"
+    },
+    {
+      "errorID": 705,
+      "errorChDesc": "本地小区存在时，不能删除或修改主载波",
+      "errorEnDesc": "local cell already exsit can not del or set master carry"
+    },
+    {
+      "errorID": 706,
+      "errorChDesc": "小区存在时，不能修改小区载波信息",
+      "errorEnDesc": "cell exist,can not chg carry"
+    },
+    {
+      "errorID": 707,
+      "errorChDesc": "主载波上下行频点需是有效值",
+      "errorEnDesc": "master carry ul and dl freq should valid"
+    },
+    {
+      "errorID": 708,
+      "errorChDesc": "辅载波上下行频点至少有一个是有效值",
+      "errorEnDesc": "slave carry ul or dl freq should valid"
+    },
+    {
+      "errorID": 709,
+      "errorChDesc": "nbiot本地小区建立时必须有且只有一个主载波",
+      "errorEnDesc": "setup nbiot local cell has only one master carry"
+    },
+    {
+      "errorID": 710,
+      "errorChDesc": "添加载波信息时小区制式必须是NBIOT",
+      "errorEnDesc": "cell frame type must is nbiot when add nbiotcarry"
+    },
+    {
+      "errorID": 711,
+      "errorChDesc": "小区网络规划和小区共享网络表中TAC相同的小区制式也必须相同",
+      "errorEnDesc": "cell in net and sharing net has same TAC frame type must same"
+    },
+    {
+      "errorID": 712,
+      "errorChDesc": "不允许设置热补丁回退开关",
+      "errorEnDesc": "can not set hotpack Rollback switch"
+    },
+    {
+      "errorID": 713,
+      "errorChDesc": "小区网络规划和小区共享网络表中同一小区TAC相同",
+      "errorEnDesc": "same cell has same TAC in net and sharing net table"
+    },
+    {
+      "errorID": 714,
+      "errorChDesc": "NBIOT小区的天线端口数目不能为4",
+      "errorEnDesc": "nbiot cell ant port num can't be 4"
+    },
+    {
+      "errorID": 715,
+      "errorChDesc": "搜索空间间隔Rmax*G必须大于4",
+      "errorEnDesc": "Rmax multiplied by G should be larger than 4"
+    },
+    {
+      "errorID": 716,
+      "errorChDesc": "只有FDD小区才能修改上行频点配置开关",
+      "errorEnDesc": "only fdd cell can modify ul freq cfg switch"
+    },
+    {
+      "errorID": 717,
+      "errorChDesc": "Ue频段匹配列表修改值需要再1到44之间",
+      "errorEnDesc": "uebandlist value shoule be withn 1~44"
+    },
+    {
+      "errorID": 718,
+      "errorChDesc": "不允许下载补丁版本",
+      "errorEnDesc": "can not download patch version"
+    },
+    {
+      "errorID": 719,
+      "errorChDesc": "CRSBoosting开启时,控制区域符号调整开关必须开启",
+      "errorEnDesc": "macTestSwitchInfoPcfichSwitch should be on when cellCRSBoostingSwitch is on!"
+    },
+    {
+      "errorID": 720,
+      "errorChDesc": "CRSBoosting开启时,下行发PDCCH时控制区域符号数必须大于等于2",
+      "errorEnDesc": "macTestSwitchInfoDlCchCfiNum should not be smaller than 2 when cellCRSBoostingSwitch is on!"
+    },
+    {
+      "errorID": 721,
+      "errorChDesc": "Ue频段匹配列表修改值不可重复添加",
+      "errorEnDesc": "uebandlist value should be unique"
+    },
+    {
+      "errorID": 722,
+      "errorChDesc": "语音指定频率的中心频点需要在指定的语音指定频段中",
+      "errorEnDesc": "hlTestSwitchVolteCarrierFreq not in hlTestSwitchVolteAppointBand"
+    },
+    {
+      "errorID": 723,
+      "errorChDesc": "异频表中异频点测量带宽应不在对应频段边界内",
+      "errorEnDesc": "CellInterFreq and bandWidth is not in InterFreqBand."
+    },
+    {
+      "errorID": 724,
+      "errorChDesc": "如果与测量相关的算法为4：邻区降功率算法时，则测量目的取值要为0",
+      "errorEnDesc": "IF euePeriodRptAlgoType is ReducePower，euePeriodRptPurpse must be 0."
+    },
+    {
+      "errorID": 725,
+      "errorChDesc": "TAC变更起始值不能大于终值",
+      "errorEnDesc": "CellNetTacChangeBegin can not be larger than cellNetTacChangeEnd"
+    },
+    {
+      "errorID": 726,
+      "errorChDesc": "TAC变更开关没有打开",
+      "errorEnDesc": "cellNetTacChangeSwitch is not open"
+    },
+    {
+      "errorID": 727,
+      "errorChDesc": "TAC起始值不能都为0",
+      "errorEnDesc": "CellNetTacChangeBegin and CellNetTacChangeEnd can not both be zero"
+    },
+    {
+      "errorID": 728,
+      "errorChDesc": "不支持查询/设置功TRIG长度能",
+      "errorEnDesc": "do not support to get/set trig length"
+    },
+    {
+      "errorID": 729,
+      "errorChDesc": "当小区制式为非FDD时，非法打开EMTC开关",
+      "errorEnDesc": "when cell is not FDD,EMTC should be off"
+    },
+    {
+      "errorID": 730,
+      "errorChDesc": "前导码索引值，取值错误",
+      "errorEnDesc": "raFirstPreambleCeLevel0 is equal or lower than raLastPreambleCeLevel0；raFirstPreambleCeLevel1is equal or lower than raLastPreambleCeLevel1"
+    },
+    {
+      "errorID": 731,
+      "errorChDesc": "若本地小区已建，不允许修改PBCH信道参数",
+      "errorEnDesc": "PBCHpara should not be changed when Local Cell is createAndGo"
+    },
+    {
+      "errorID": 732,
+      "errorChDesc": "EMTC小区A1事件中，测量上报量和上报判决测量量的值错误",
+      "errorEnDesc": "a1TrigQuantity and a1RptQuantity is invalid when a1MeasPurpose is 0 "
+    },
+    {
+      "errorID": 733,
+      "errorChDesc": "EMTC小区A2事件中，测量上报量和上报判决测量量的值错误",
+      "errorEnDesc": "a2TrigQuantity and a2RptQuantity is invalid when a2MeasPurpose is 0  "
+    },
+    {
+      "errorID": 734,
+      "errorChDesc": "NBIOT参数校验，msg3起始子载波范围取值错误",
+      "errorEnDesc": "nbiotraNprachSubMSG3RangeStartPRX(X=0/1/2) is invalid when OM_SetnbiotraRecfgInfoCheck"
+    },
+    {
+      "errorID": 735,
+      "errorChDesc": "弱覆盖起呼时拒绝QCI1建立开关与弱场起呼延迟切换开关不可同时打开",
+      "errorEnDesc": "can not open hlTestBadCoverageRejectQci1Setup and hlTestBadCoverageHoDelaySwitch at the same time"
+    },
+    {
+      "errorID": 736,
+      "errorChDesc": "IMSI跟踪黑名单IMSI应该在0-9范围内",
+      "errorEnDesc": "imsiTraceBlackImsi must be between 0 and 9"
+    },
+    {
+      "errorID": 737,
+      "errorChDesc": "IMSI不能为空",
+      "errorEnDesc": "imsiTraceBlackImsi can not be empty"
+    },
+    {
+      "errorID": 738,
+      "errorChDesc": "定位用户的IMSI应该在0-9范围内",
+      "errorEnDesc": "simuNbLocationUeImsi must be between 0 and 9"
+    },
+    {
+      "errorID": 739,
+      "errorChDesc": "定位用户的IMSI不能为空",
+      "errorEnDesc": "simuNbLocationUeImsi can not be empty"
+    },
+    {
+      "errorID": 740,
+      "errorChDesc": "DSP上的小区时隙偏移值不一致",
+      "errorEnDesc": "Frame shift offset value not same in the dsp"
+    },
+    {
+      "errorID": 741,
+      "errorChDesc": "IMSI跟踪开关为开不允许修改小区列表以外的其他参数",
+      "errorEnDesc": "can not modify paramter except imsiTraceCellList when the imsiTraceTaskSwitch is on"
+    },
+    {
+      "errorID": 742,
+      "errorChDesc": "协议栈抓包过滤方式为命令行时，命令行不能为空，非命令行方式，命令行必须为空",
+      "errorEnDesc": "The ProtocolStackCapPacket pcapFilterRule is command,command string can't null,otherwise,command string must null."
+    },
+    {
+      "errorID": 743,
+      "errorChDesc": "为inband小区时，参数设置无效",
+      "errorEnDesc": "para is invalid when cell is inband cell"
+    },
+    {
+      "errorID": 744,
+      "errorChDesc": "不是inband小区，不可以修改参数",
+      "errorEnDesc": "para should not be modified when cell is not inband cell "
+    },
+    {
+      "errorID": 745,
+      "errorChDesc": "预留给vip用户的pucch3资源个数太大",
+      "errorEnDesc": "The number of pucch3 resources reserved for VIP users is too large"
+    },
+    {
+      "errorID": 746,
+      "errorChDesc": "预留给vip用户的pucch1bcs资源对个数太大",
+      "errorEnDesc": "The number of pucch1bcs resources reserved for VIP users is too large"
+    },
+    {
+      "errorID": 747,
+      "errorChDesc": "macMtcTestSwitchInfo表中，macMtcTestSwitchInfoMPdcchSetAggrelevSwitch与macMtcTestSwitchInfoMPdcchSetRepetitionSwitch必须同时为0或者同时不为0",
+      "errorEnDesc": "macMtcTestSwitchInfoMPdcchSetRepetitionSwitch and macMtcTestSwitchInfoMPdcchSetAggrelevSwitch should be 0 or not 0 at the same time "
+    },
+    {
+      "errorID": 748,
+      "errorChDesc": "小区存在时不允许修改特定节点",
+      "errorEnDesc": "para should not be modified when cell exist"
+    },
+    {
+      "errorID": 749,
+      "errorChDesc": "当emtcswitch打开时，pdsch表中的节点不能小于mactestswitchinfo中两个节点中的最大值",
+      "errorEnDesc": "para of pdschentry should not be smaller then the maxest between two nodes in mactestswitchinfoentry when emtcswitch is on   "
+    },
+    {
+      "errorID": 750,
+      "errorChDesc": "控制区域符号调整开关必须打开当小区eMTC功能开关打开时",
+      "errorEnDesc": "cell(%d)s macTestSwitchInfoPcfichSwitch must be ON when cellEmtcSwitch is ON"
+    },
+    {
+      "errorID": 751,
+      "errorChDesc": "添加TWAMP表校验失败，必须ip地址有效",
+      "errorEnDesc": "Add TWAMP check fail,ip address must be valid"
+    },
+    {
+      "errorID": 752,
+      "errorChDesc": "删除ip地址失败，如果此地址被TWAMP使用",
+      "errorEnDesc": "If the ip address is using by twamp,delete ip address fail."
+    },
+    {
+      "errorID": 753,
+      "errorChDesc": "添加twamp收消息响应错误",
+      "errorEnDesc": "Adding twamp receive message response error."
+    },
+    {
+      "errorID": 754,
+      "errorChDesc": "删除twamp收消息响应错误",
+      "errorEnDesc": "Deleting twamp receive message response error."
+    },
+    {
+      "errorID": 755,
+      "errorChDesc": "校验SRS信噪比失败",
+      "errorEnDesc": "Check SRS Signal to Noise Ratio fail."
+    },
+    {
+      "errorID": 756,
+      "errorChDesc": "MPDCCH的跳频开关开启时，若小区为FDD小区/TDD小区时，FDD下行跳频时的窄带计算参数ModeB/TDD下行跳频时的窄带计算参数ModeB 为无效时，盖增强等级个数不大于2",
+      "errorEnDesc": "cellCeLevelNum should not be lager than 2 when mpdcchIntervalDlHopCfgModeB responsible for TDD or FDD is invalid and mpdcchPdschHoppingConfig is off"
+    },
+    {
+      "errorID": 757,
+      "errorChDesc": "小区为非FDD小区时，EMTC开关必须关闭",
+      "errorEnDesc": "EMTCswitch should be off when cell is not FDD cell"
+    },
+    {
+      "errorID": 758,
+      "errorChDesc": "节点“覆盖增强小区选择最小质量要求有效”为无效时，不允许修改节点“覆盖增强小区选择最小质量要求”",
+      "errorEnDesc": "cellSelectQQualMinCE should not be modified when cellSelectQQualMinFlagCE is invalid"
+    },
+    {
+      "errorID": 759,
+      "errorChDesc": "寻呼窄带资源个数必须与小区不同的下行系统带宽相对应",
+      "errorEnDesc": "pagingNarrowBandNum should be responsible for the cellDlSysBandWidth "
+    },
+    {
+      "errorID": 760,
+      "errorChDesc": "当EMTC开关打开时，缺省寻呼周期的最小取值受“寻呼周期内寻呼子帧数R13”取值的影响",
+      "errorEnDesc": "the minimal value of pagingEnbDeftCycle is influenced by pagingNBR13 and EMTCswitch  "
+    },
+    {
+      "errorID": 761,
+      "errorChDesc": "修改\"缺省寻呼周期\"后，若覆盖增强修改周期系数R13为无效值，需要校验pagingEnbInfo->pagingEnbDeftCycle * cellSchedulingTable->CellShedRrModifyPeriodCoeffCE mod 5120 = 0,否则校验pagingEnbInfo->pagingEnbDeftCycle*cellSchedulingTable->CellShedRrModifyPeriodCoeffCER13 mod 5120 = 0",
+      "errorEnDesc": "if cellShedRrModifyPeriodCoeffCER13 is invalid,it check pagingEnbDeftCycle*CellShedRrModifyPeriodCoeffCE mod 5120=0;if cellShedRrModifyPeriodCoeffCER13 is invalid,it check pagingEnbDeftCycle*CellShedRrModifyPeriodCoeffCER13 mod 5120=0"
+    },
+    {
+      "errorID": 762,
+      "errorChDesc": "\"覆盖增强SI调度的窄带\"的取值范围必须与小区的下行系统带宽相对应",
+      "errorEnDesc": "the value of cellShedSiNarrowbandR13 should be responsible for cellDlSysBandWidth "
+    },
+    {
+      "errorID": 763,
+      "errorChDesc": "若\"覆盖增强修改周期系数R13\"为无效，需要校验pagingEnbInfo->pagingEnbDeftCycle*cellSchedulingTable->CellShedRrModifyPeriodCoeffCE mod 5120 = 0,否则校验pagingEnbInfo-> pagingEnbDeftCycle*cellSchedulingTable->CellShedRrModifyPeriodCoeffCER13 mod 5120 = 0",
+      "errorEnDesc": "if cellShedRrModifyPeriodCoeffCER13 is invalid,it should check pagingEnbDeftCycle*CellShedRrModifyPeriodCoeffCE mod 5120=0;if cellShedRrModifyPeriodCoeffCER13 is not invalid,it should check pagingEnbDeftCycle*CellShedRrMo"
+    },
+    {
+      "errorID": 764,
+      "errorChDesc": "\"MPDCCH的跳频开关\"开启时，若小区配置表中的“覆盖增强等级个数”大于等于3，则“TDD下行跳频时的窄带计算参数ModeB”以及“FDD下行跳频时的窄带计算参数ModeB”必须取有效值",
+      "errorEnDesc": "when mpdcchPdschHoppingOffset if ON and cellCeLevelNum is not smaller than 3,mpdcchIntervalDlHopCfgModeBFDD or mpdcchIntervalDlHopCfgModeBTDD should not be invalid"
+    },
+    {
+      "errorID": 765,
+      "errorChDesc": "停止EUTRA同频测量CE对应的A1的RSRP要大于启动同频测量CE对应的A2的RSRP",
+      "errorEnDesc": "when a1MeasPurpose is OM_a1MeasPurpose_stopIntraFreqMeasCE and a2MeasPurpose is OM_a2MeasPurpose_startIntraFreqMeasCE,a1RptThresholdRsrp of A1 should be lager than a2RptThresholdRsrp of A2"
+    },
+    {
+      "errorID": 766,
+      "errorChDesc": "AP延迟发送切换通知定时器校验失败\n",
+      "errorEnDesc": "timerApDelaySendHoNotify is checked failed"
+    },
+    {
+      "errorID": 767,
+      "errorChDesc": "用户级NPDCCH最大重复次数固定值与USS NPDCCH的起始子帧配置取值错误",
+      "errorEnDesc": "The relationship between nbiotNpdcchUEMaxRepetitionsCeLever and nbiotNpdcchStartSFUSSr13CeLever is error"
+    },
+    {
+      "errorID": 768,
+      "errorChDesc": "建立inband小区时需要存在其LTE小区存在",
+      "errorEnDesc": "The LTE cell Inband Nbiot cell belonging to should exist"
+    },
+    {
+      "errorID": 769,
+      "errorChDesc": "本区用户数均衡接纳门限需要小于对应的本区用户数均衡触发门限",
+      "errorEnDesc": "Cells balanced admit userthreshold should be smaller than balanced trggered userthreshold"
+    },
+    {
+      "errorID": 770,
+      "errorChDesc": "本区下行Prb均衡接纳门限需要小于下行PRB高负荷门限",
+      "errorEnDesc": "Cells Dlprbthreshold should be smaller than lmcDlPrbHighLoadTh"
+    },
+    {
+      "errorID": 771,
+      "errorChDesc": "本区上行Prb均衡接纳门限需要小于上行PRB高负荷门限",
+      "errorEnDesc": "Cells Ulprbthreshold should be smaller than lmcUlPrbHighLoadTh"
+    },
+    {
+      "errorID": 772,
+      "errorChDesc": "本区下行调度Pdcch Cce均衡接纳门限需要小于本区下行调度Pdcch Cce均衡触发门限",
+      "errorEnDesc": "Cells balanced admit DlCcethreshold should be smaller than balanced trggered DlCcethreshold"
+    },
+    {
+      "errorID": 773,
+      "errorChDesc": "本区上行调度Pdcch Cce均衡接纳门限需要小于本区上行调度Pdcch Cce均衡触发门限",
+      "errorEnDesc": "Cells balanced admit UlCcethreshold should be smaller than balanced trggered UlCcethreshold"
+    },
+    {
+      "errorID": 774,
+      "errorChDesc": "请先修改上行BO开关为0或2",
+      "errorEnDesc": "Please modify macSwitchTestInfoUlBoSwitch to 0 or 2"
+    },
+    {
+      "errorID": 775,
+      "errorChDesc": "请先修改上行BO值小于等于15",
+      "errorEnDesc": "Please modify macSwitchTestInfoUlBoSize not bigger than 15"
+    },
+    {
+      "errorID": 776,
+      "errorChDesc": "INBAND小区不允许手动修改中心频点",
+      "errorEnDesc": "cell centreFreq should not be modified when cell is INBAND cell"
+    },
+    {
+      "errorID": 777,
+      "errorChDesc": "PRB索引值与母小区带宽不匹配",
+      "errorEnDesc": "PRBIndex of INBAND cell does not match with FreqBand of LTE cell"
+    },
+    {
+      "errorID": 778,
+      "errorChDesc": "NBIOT小区cellCfgOperationModeInfo取值与cellDlSubframePatternSel取值不匹配",
+      "errorEnDesc": "cellCfgOperationModeInfo of NBIOT cell does not match with cellDlSubframePatternSel"
+    },
+    {
+      "errorID": 779,
+      "errorChDesc": "远端干扰规避特性功能开关打开不允许修改RIA配置参数",
+      "errorEnDesc": "RIA global params cannot be modified when any RIA cell function switch is on."
+    },
+    {
+      "errorID": 780,
+      "errorChDesc": "本小区不支持此操作",
+      "errorEnDesc": "cell not support opertion"
+    },
+    {
+      "errorID": 781,
+      "errorChDesc": "RRU上本地小区测试场景不一致",
+      "errorEnDesc": "the test scenes of all local cell in RRU not same"
+    },
+    {
+      "errorID": 782,
+      "errorChDesc": "本地小区测试模式配置错误",
+      "errorEnDesc": "the test scenes of local cell is error"
+    },
+    {
+      "errorID": 783,
+      "errorChDesc": "本区用户数均衡接纳门限不能大于本区用户数均衡触发门限",
+      "errorEnDesc": "lmcCacUserthreshold is bigger than lmcUserthreshold"
+    },
+    {
+      "errorID": 784,
+      "errorChDesc": "本区下行Prb均衡接纳门限不能大于下行PRB高负荷门限",
+      "errorEnDesc": "lmcCacDlprbthreshold is bigger than lmcDlPrbHighLoadTh"
+    },
+    {
+      "errorID": 785,
+      "errorChDesc": "本区上行Prb均衡接纳门限不能大于上行PRB高负荷门限",
+      "errorEnDesc": "lmcCacUlprbthreshold is bigger than lmcUlPrbHighLoadTh"
+    },
+    {
+      "errorID": 786,
+      "errorChDesc": "本区下行调度Pdcch Cce均衡接纳门限不能大于本区下行调度Pdcch Cce均衡触发门限",
+      "errorEnDesc": "lmcCacDlCcethreshold is bigger than lmcDlCcethreshold"
+    },
+    {
+      "errorID": 787,
+      "errorChDesc": "本区上行调度Pdcch Cce均衡接纳门限不能大于本区上行调度Pdcch Cce均衡触发门限",
+      "errorEnDesc": "lmcCacUlCcethreshold is bigger than lmcUlCcethreshold"
+    },
+    {
+      "errorID": 788,
+      "errorChDesc": "当前基站仅支持TDD制式",
+      "errorEnDesc": "if sscSwitch on,eNB can olny TDD"
+    },
+    {
+      "errorID": 789,
+      "errorChDesc": "限于CA关系不可建立本地小区",
+      "errorEnDesc": "CA Relation can not support setup localcell"
+    },
+    {
+      "errorID": 790,
+      "errorChDesc": "测量带宽与中心频点和频段带宽不匹配",
+      "errorEnDesc": "measure is not match with centerfreq and freqband"
+    },
+    {
+      "errorID": 791,
+      "errorChDesc": "“语音业务切换参数单独配置”和“MRO功能”互斥开启问题",
+      "errorEnDesc": "hcCSHoCfgSwitch is conflict with mroSwitch"
+    },
+    {
+      "errorID": 792,
+      "errorChDesc": "差异化Pa与CRS的制约：修改小区功率偏移值",
+      "errorEnDesc": "SetCellConfigPowerOffset"
+    },
+    {
+      "errorID": 793,
+      "errorChDesc": "差异化Pa与CRS的制约：修改小区重配置参数",
+      "errorEnDesc": "SetCellReConfigInfo"
+    },
+    {
+      "errorID": 794,
+      "errorChDesc": "差异化Pa与CRS的制约：修改HL日志类型",
+      "errorEnDesc": "SetHLTestSwitchLogType"
+    },
+    {
+      "errorID": 795,
+      "errorChDesc": "差异化Pa与CRS的制约：重配置HL测试开关信息",
+      "errorEnDesc": "SetHlTestSwitchInfoReconfig"
+    },
+    {
+      "errorID": 796,
+      "errorChDesc": "下行256QAM 旧表转新表单流CQI门限配置小于新表转旧表",
+      "errorEnDesc": "down 256QAM old table to new table single stream CQI threshold configuration value less than new table to old table"
+    },
+    {
+      "errorID": 797,
+      "errorChDesc": "下行256QAM 旧表转新表双流CQI门限配置值小于新表转旧表",
+      "errorEnDesc": "down 256QAM old table to new table double  CQI threshold configuration value  less than new table to old table"
+    },
+    {
+      "errorID": 798,
+      "errorChDesc": "规划链路不允许修改",
+      "errorEnDesc": "netplan link can not to modify"
+    },
+    {
+      "errorID": 799,
+      "errorChDesc": "规划Cu-C 数量超过最大限制",
+      "errorEnDesc": "netplan Cu-C is over limit"
+    },
+    {
+      "errorID": 800,
+      "errorChDesc": "规划Du 数量超过最大限制",
+      "errorEnDesc": "netplan Du is over limit"
+    },
+    {
+      "errorID": 801,
+      "errorChDesc": "规划Cu-U 数量超过最大限制",
+      "errorEnDesc": "netplan Cu-U is over limit"
+    },
+    {
+      "errorID": 802,
+      "errorChDesc": "规划SCTP索引不能相同",
+      "errorEnDesc": "netplan Sctp Index is can not to same"
+    },
+    {
+      "errorID": 803,
+      "errorChDesc": "相同类型机框号不能相同",
+      "errorEnDesc": "same peertype is can not to same frame"
+    },
+    {
+      "errorID": 804,
+      "errorChDesc": "规划SCTP 索引超过最大限制",
+      "errorEnDesc": "sctpIndex is over limit"
+    },
+    {
+      "errorID": 805,
+      "errorChDesc": "存在已规划的CUU",
+      "errorEnDesc": "exist netplan cuu"
+    },
+    {
+      "errorID": 806,
+      "errorChDesc": "存在相同的SCTP 索引",
+      "errorEnDesc": "exist same sctp index"
+    },
+    {
+      "errorID": 807,
+      "errorChDesc": "没有找到针对该SCTP规划的服务器",
+      "errorEnDesc": "no find this sctp netplan serverNo"
+    },
+    {
+      "errorID": 808,
+      "errorChDesc": "数据信道子载波间隔与下行系统带宽不匹配",
+      "errorEnDesc": "ScsData is not match with DlSysBandWidth"
+    },
+    {
+      "errorID": 809,
+      "errorChDesc": "资源频域位置值非法",
+      "errorEnDesc": "FreqDomainAlloc value invalid"
+    },
+    {
+      "errorID": 810,
+      "errorChDesc": "OFDM符号位置值非法",
+      "errorEnDesc": "OFDM Symbol value invalid"
+    },
+    {
+      "errorID": 811,
+      "errorChDesc": "起始CRB值非法",
+      "errorEnDesc": "StartingRB value invalid"
+    },
+    {
+      "errorID": 812,
+      "errorChDesc": "该小区为增强型小区，需要打开增强型小区合并软件许可开关",
+      "errorEnDesc": "Enhanced Cell needs to turn on merge Software license switch"
+    },
+    {
+      "errorID": 813,
+      "errorChDesc": "本地小区制式与带宽不匹配",
+      "errorEnDesc": "Cell Work Mode is not match with frequence bandwidth of localCell "
+    },
+    {
+      "errorID": 814,
+      "errorChDesc": "当前FPGA版本不支持该光口查询",
+      "errorEnDesc": "This version of FPGA do not support this type of OFP info query"
+    },
+    {
+      "errorID": 815,
+      "errorChDesc": "nr小区配置一个组内小区发送的SSB配置数量与天线阵波束扫描天线权值参数表不匹配",
+      "errorEnDesc": "nrCellCfgTable's SSB value is not equal to antArrayBfScanAntWeight"
+    },
+    {
+      "errorID": 816,
+      "errorChDesc": "GNB全球ID超过最大限制",
+      "errorEnDesc": "equipGnbNEID is over limit"
+    },
+    {
+      "errorID": 817,
+      "errorChDesc": "小区ID超过最大限制",
+      "errorEnDesc": "nrCellCfgCellID is over limit"
+    },
+    {
+      "errorID": 818,
+      "errorChDesc": "CSI-RS周期内偏移量超过最大限制",
+      "errorEnDesc": "CSI-RS periodicity offset is over limit"
+    }
+  ]
+}

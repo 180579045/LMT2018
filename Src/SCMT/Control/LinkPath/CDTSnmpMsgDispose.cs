@@ -1,4 +1,19 @@
-﻿using CommonUtility;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ SnmpErrDescHelper $
+* 机器名称：       $ machinename $
+* 命名空间：       $ LinkPath $
+* 文 件 名：       $ SnmpErrDescHelper.cs $
+* 创建时间：       $ 2018.10.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     Snmp报文处理类。
+* 修改时间     修 改 人         修改内容：
+* 2018.10.xx  XXXX            XXXXX
+*************************************************************************************/
+
+using CommonUtility;
+using DataBaseUtil;
 using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
@@ -11,7 +26,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace LinkPath
 {
@@ -243,7 +257,7 @@ namespace LinkPath
 				{
 					DealFailResponsePDU(idToTb, lmtPdu);
 				}
-            }
+			}
 			else if (lmtPdu.m_bIsNeedPrint == true)
 			{
 				string strTimeoutMsg = string.Format(CommString.IDS_STR_MSGDISPOSE_FMT1, lmtPdu.get_CmdName());
@@ -341,7 +355,7 @@ namespace LinkPath
 					break;
 				case SnmpConstants.ErrInconsistentName:
 					strFailedReason = CommString.IDS_ERROR_INCONSIS_NAME;//不存在,且在当前环境下不能生成
-					// TODO 新工具还要一下操作吗？
+					// TODO 新工具还要这个操作吗？
 					// CDTDataSyncMgr::GetInstance()->RemoveCMDData(pAdoConn, pLmtbPdu);
 					break;
 				case CommNums.SNMP_ERROR_LOGIN:
@@ -363,17 +377,17 @@ namespace LinkPath
 					strFailedReason = CommString.IDS_ERROR_OVERTIME;//OM出现超时错误
 					break;
 				default:
-					// TODO:未实现
-					/*CDTErrInfo errInfo;
-					if (!GetErrDesc(pLmtbPdu->get_LastErrorStatus(), strIpAddr, errInfo))
+					// 获取Snmp错误信息
+					SnmpErrDesc snmpErrDesc = SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus.ToString());
+					if (snmpErrDesc != null)
 					{
-						//如果获取错误码描述失败，则将错误码赋值给描述
-						CString strError;
-						strError.Format("%d", pLmtbPdu->get_LastErrorStatus());
-						errInfo.errDesc = strError;
+						strFailedReason = snmpErrDesc.errorChDesc;
 					}
-					*/
-					strFailedReason = "XXXXXXXX";
+					else
+					{
+						// 如果获取错误码描述失败，则将错误码赋值给描述
+						strFailedReason = lmtPdu.m_LastErrorStatus.ToString();
+					}
 					break;
 			}
 
@@ -412,7 +426,7 @@ namespace LinkPath
 			{
 				// 变量 %s %s
 				strTmp = string.Format("变量 {0} {1}", strName, strFailedReason);
-            }
+			}
 			else
 			{
 				strTmp = strFailedReason;
@@ -425,7 +439,7 @@ namespace LinkPath
 			else if (idToTable.pduType == (int)PduType.Get) //GET命令响应错误
 			{
 				strStyle = CommString.IDS_GETPDU_ERROR;
-            }
+			}
 			else
 			{
 				strStyle = CommString.IDS_PDU_ERROR;  //命令响应错误
@@ -454,7 +468,7 @@ namespace LinkPath
 		{
 			// 保活命令下发的信息不需要打印
 			if (idToTable.strCmdName.Equals(CommStructs.EPC_KEEPALIVE_SNMPFUNCNAME)) 
-            {
+			{
 				return;
 			}
 
@@ -463,7 +477,7 @@ namespace LinkPath
 			{
 				// GET命令响应
 				infoType = InfoTypeEnum.ENB_GETOP_INFO;
-            }
+			}
 			else if (idToTable.pduType == (int)PduType.Set)
 			{
 				// SET命令响应
@@ -531,7 +545,7 @@ namespace LinkPath
 					}
 
 
-                } // end if
+				} // end if
 
 
 
@@ -616,7 +630,7 @@ namespace LinkPath
 			// 将lmtPdu转换为string以便传递
 			string strLmtPdu = JsonHelper.SerializeObjectToString(lmtPdu);
 			string strPars = $"{{'TrapType' : {intTrapType}, 'LmtPdu' : {strLmtPdu} }}";
-            PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_AppEventTrap, strPars);
+			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_AppEventTrap, strPars);
 
 			// fileTransNotiResult
 			if (true == lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiResult", out strValue))
@@ -781,7 +795,6 @@ namespace LinkPath
 			long requestId = 0;
 			//收到初配上报事件, 发起一致性文件上传
 			string strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
-			// TODO 先保证编译通过
 			var transFileObj = FileTransTaskMgr.FormatTransInfo(
 															strDataConsisFolderPath
 															,""
@@ -796,7 +809,7 @@ namespace LinkPath
 			}
 			else
 			{
-				Log.Error("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strNodeIp);
+				Log.Info("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strNodeIp);
 			}
 
 			// TODO
@@ -1036,7 +1049,7 @@ namespace LinkPath
 					break;
 				case 26: // 数据同步事件Trap绑定变量
 					ProcessSyncFileEvent(lmtPdu, out strDesc);
-                    break;
+					break;
 				case 200: // 处理ANR专用事情
 						  // TODO : 用到时需实现
 					break;
@@ -1081,7 +1094,7 @@ namespace LinkPath
 			{
 				CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationNEID", strValue, out strReValue);
 				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_NEID, strReValue);
-            }
+			}
 
 			// 网元ID
 			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationNEType", out strValue);
@@ -1092,11 +1105,11 @@ namespace LinkPath
 
 			// 需要同步的文件类型
 			string strFileType;
-            lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationType", out strFileType);
+			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationType", out strFileType);
 			if (!string.IsNullOrEmpty(strFileType))
 			{
 				strValue = strFileType;
-                CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationType", strValue, out strReValue);
+				CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationType", strValue, out strReValue);
 				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_SYNCFILETYPE, strReValue);
 			}
 
@@ -1137,12 +1150,12 @@ namespace LinkPath
 					if (fileType == (int)Transfiletype5216.TRANSFILE_dataConsistency)
 					{
 						strFilePath = FilePathHelper.GetConsistencyFilePath();
-                    }
+					}
 
 					// 下发文件同步任务
 					long taskId = 0;
 					long reqId = 0;
-                    CDTCommonFileTrans cft = FileTransTaskMgr.FormatTransInfo(strFilePath
+					CDTCommonFileTrans cft = FileTransTaskMgr.FormatTransInfo(strFilePath
 						, "", (Transfiletype5216)fileType, TRANSDIRECTION.TRANS_UPLOAD);
 					if (SENDFILETASKRES.TRANSFILE_TASK_SUCCEED != 
 						FileTransTaskMgr.SendTransFileTask(strNeIp, cft, ref taskId, ref reqId))
@@ -1248,22 +1261,23 @@ namespace LinkPath
 
 				//收到初配上报事件, 发起一致性文件上传
 				string strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
-				
-				//TODO 暂时注销，先保证编译通过
-				//var transFileObj = FileTransTaskMgr.FormatTransInfo(
-				//	strDataConsisFolderPath
-				//	, ""
-				//	, Transfiletype5216.TRANSFILE_dataConsistency
-				//	, TRANSDIRECTION.TRANS_UPLOAD);
-				//if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(strIpAddr, transFileObj, ref taskId, ref requestId))
-				//{
-				//	Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}", strDataConsisFolderPath, strIpAddr));
+				var transFileObj = FileTransTaskMgr.FormatTransInfo(
+																strDataConsisFolderPath
+																, ""
+																, Transfiletype5216.TRANSFILE_dataConsistency
+																, TRANSDIRECTION.TRANS_UPLOAD);
+				if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(
+					strIpAddr, transFileObj, ref taskId, ref requestId))
+				{
+					Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}"
+						, strDataConsisFolderPath, strIpAddr));
 
-				//}
-				//else
-				//{
-				//	Log.Error("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strIpAddr);
-				//}
+				}
+				else
+				{
+					Log.Info("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strIpAddr);
+				}
+
 			}
 
 			return true;
