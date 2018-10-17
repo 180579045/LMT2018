@@ -136,6 +136,55 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 设置字段的原始值
+		/// </summary>
+		/// <param name="strFieldName"></param>
+		/// <param name="strOriginValue"></param>
+		/// <param name="bConvertToEnum">枚举值是否转为原值</param>
+		/// <returns></returns>
+		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strOriginValue))
+			{
+				return false;
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				return false;
+			}
+
+			var field = m_mapAttributes[strFieldName];
+			if (null == field)
+			{
+				return false;
+			}
+
+			var strValue = strOriginValue;
+			if (bConvertToEnum)
+			{
+				var managerRange = field.mibAttri.managerValueRange;
+				var mapEnums = MibStringHelper.SplitManageValue(managerRange);
+				if (null == mapEnums)
+				{
+					return false;
+				}
+
+				foreach (var kv in mapEnums)
+				{
+					if (kv.Value == strOriginValue)
+					{
+						strValue = kv.Key.ToString();
+						break;
+					}
+				}
+			}
+
+			return field.SetOriginValue(strValue);
+		}
+
+
 		#endregion
 
 		#region 私有成员

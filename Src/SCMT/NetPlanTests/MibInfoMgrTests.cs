@@ -30,7 +30,85 @@ namespace NetPlan.Tests
 					ant = MibInfoMgr.GetInstance().AddNewAnt(0);
 					Assert.IsNull(ant);
 
-					ant = MibInfoMgr.GetInstance().AddNewAnt(2, EnumDevType.board);
+					stop = true;
+				}
+			};
+
+			while (!stop)
+			{
+				Thread.Sleep(1000);
+			}
+		}
+
+		[TestMethod()]
+		public void AddNewBoardTest()
+		{
+			bool stop = false;
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			db.initDatabase("172.27.245.92");
+			db.resultInitData = result =>
+			{
+				if (result)
+				{
+					var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTE", "LTE FDD", "CPRI");
+					Assert.IsNotNull(dev);
+					var delResult = MibInfoMgr.GetInstance().DelDev(dev.m_strOidIndex, EnumDevType.board);
+					Assert.IsTrue(delResult);
+
+					stop = true;
+				}
+			};
+
+			while (!stop)
+			{
+				Thread.Sleep(1000);
+			}
+		}
+
+		[TestMethod()]
+		public void SetDevAttributeValueTest()
+		{
+			bool stop = false;
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			db.initDatabase("172.27.245.92");
+			db.resultInitData = result =>
+			{
+				if (result)
+				{
+					if (NPSnmpOperator.InitNetPlanInfo())
+					{
+						var strIndex = ".0.0.1";
+						MibInfoMgr.GetInstance().SetDevAttributeValue(strIndex, "netBoardIrFrameType", "CPRI-HDLC", EnumDevType.board);
+					}
+
+					stop = true;
+				}
+			};
+
+			while (!stop)
+			{
+				Thread.Sleep(1000);
+			}
+		}
+
+		[TestMethod()]
+		public void DistributeBoardInfoToEnbTest()
+		{
+			bool stop = false;
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			db.initDatabase("172.27.245.92");
+			db.resultInitData = result =>
+			{
+				if (result)
+				{
+					var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTF板", "LTE FDD", "CPRI");
+					Assert.IsNotNull(dev);
+
+					var ret = MibInfoMgr.GetInstance().DistributeBoardInfoToEnb();
+					Assert.IsTrue(ret);
 
 					stop = true;
 				}

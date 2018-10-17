@@ -16,6 +16,7 @@ namespace SCMTOperationCore.Elements
 		public Database db { get; set; }                 // 用来全局保存数据库;
 		public IPAddress m_IPAddress;
 
+		// TODO 基站类型：EMB5116，EMB6116
 
 		public NodeB(string neIp, string friendName, ushort nePort = 5000)
 		: base(friendName, IPAddress.Parse(neIp), nePort)

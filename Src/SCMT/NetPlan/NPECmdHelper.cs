@@ -7,23 +7,13 @@ using System.Threading.Tasks;
 using CommonUtility;
 using MIBDataParser.JSONDataMgr;
 using LmtbSnmp;
+using MIBDataParser;
 
 namespace NetPlan
 {
 	public class NPECmdHelper : Singleton<NPECmdHelper>
 	{
 		#region 公共接口
-
-		// 根据传入的类型获取所有的命令
-		public NetPlanMibEntry GetAllCmdByType(string type)
-		{
-			if (string.IsNullOrEmpty(type) || string.IsNullOrWhiteSpace(type))
-			{
-				throw new CustomException("传入的设备类型有误");
-			}
-
-			return null;
-		}
 
 		// 获取指定设备的所有MIB信息，并填入到属性框中
 		public List<MibLeafNodeInfo> GetDevAttributesFromMib(string devType)
@@ -131,6 +121,91 @@ namespace NetPlan
 			return null;
 		}
 
+		/// <summary>
+		/// 根据version和设备类型，获取对应的Set命令列表
+		/// </summary>
+		/// <param name="strVersion"></param>
+		/// <param name="devType"></param>
+		/// <param name="cmdType"></param>
+		/// <returns></returns>
+		public List<string> GetCmdList(EnumDevType devType, EnumSnmpCmdType cmdType, string strVersion = "EMB5116")
+		{
+			if (string.IsNullOrEmpty(strVersion) || EnumDevType.unknown == devType)
+			{
+				return null;
+			}
+
+			var mibEntrys = GetAllMibEntryAndCmds(strVersion);
+			if (null == mibEntrys)
+			{
+				return null;
+			}
+
+			var entryName = DevTypeHelper.GetEntryNameFromDevType(devType);
+			if (string.IsNullOrEmpty(entryName))
+			{
+				return null;
+			}
+
+			List<string> cmds = null;
+			switch (cmdType)
+			{
+				case EnumSnmpCmdType.Get:
+					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Get).FirstOrDefault();
+					break;
+				case EnumSnmpCmdType.Set:
+					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Set).FirstOrDefault();
+					break;
+				case EnumSnmpCmdType.Add:
+					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Add).FirstOrDefault();
+					break;
+				case EnumSnmpCmdType.Del:
+					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Del).FirstOrDefault();
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(cmdType), cmdType, null);
+			}
+
+			return cmds;
+		}
+
+		/// <summary>
+		/// 转换同类命令为MibLeaf
+		/// </summary>
+		/// <param name="cmdLists"></param>
+		/// <returns></returns>
+		public Dictionary<string, List<MibLeaf>> GetSameTypeCmdMibLeaf(IEnumerable<string> cmdLists)
+		{
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (string.IsNullOrEmpty(targetIp))
+			{
+				throw new CustomException("尚未选中基站"); // TODO 选中基站后再操作其他功能，可能存在bug
+			}
+
+			// key:命令名， value：该命令对应的leaf oid转换为mibleafnodeInfo list
+			var mapCmdNameToMibLeafInfoList = new Dictionary<string, List<MibLeaf>>();
+			foreach (var cmdName in cmdLists)
+			{
+				var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(cmdName, targetIp);
+				if (null == cmdInfo)
+				{
+					return null;
+				}
+
+				var oidList = cmdInfo.m_leaflist;
+				var mibLeafInfoList = SnmpToDatabase.ConvertOidListToMibInfoList(oidList, targetIp);
+				var leafInfoList = mibLeafInfoList as IList<MibLeaf> ?? mibLeafInfoList.ToList();
+				if (!leafInfoList.Any())
+				{
+					continue;
+				}
+
+				mapCmdNameToMibLeafInfoList.Add(cmdName, leafInfoList.ToList());
+			}
+
+			return mapCmdNameToMibLeafInfoList;
+		}
+
 		#endregion
 
 		#region 私有方法
@@ -191,5 +266,13 @@ namespace NetPlan
 			Set = new List<string>();
 			Del = new List<string>();
 		}
+	}
+
+	public enum EnumSnmpCmdType
+	{
+		Get = 0,
+		Set,
+		Add,
+		Del
 	}
 }

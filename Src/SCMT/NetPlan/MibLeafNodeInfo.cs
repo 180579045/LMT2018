@@ -31,13 +31,20 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 设置字段的值，需要判断范围什么的是否合法
+		/// 设置字段的值，TODO 需要判断范围什么的是否合法
 		/// </summary>
 		/// <param name="strLatestValue"></param>
 		/// <returns>true:设置成功,其他情况返回false</returns>
 		public bool SetValue(string strLatestValue)
 		{
-			throw new NotImplementedException();
+			m_strLatestValue = strLatestValue;
+			return true;
+		}
+
+		public bool SetOriginValue(string strOriginValue)
+		{
+			m_strOriginValue = strOriginValue;
+			return true;
 		}
 
 		/// <summary>
