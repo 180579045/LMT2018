@@ -242,11 +242,67 @@ namespace CfgFileOperation
                 return null;
             List<RRuTypePortTabStru> RruTypePort = new List<RRuTypePortTabStru>();
 
+            foreach (var rru in RruInfo)
+            {
+                RRuTypePortTabStru rruType = new RRuTypePortTabStru();
+                rruType.excelRead = new GetRruTypePortByNodeNameEn(GetRruTypePortString);
+                rruType.RRuTypePortTabStruInit(rru);
+                RruTypePort.Add(rruType);
+            }
+
             return RruTypePort;
         }
+        string GetRruTypePortString(Dictionary<string, string> RRuInfo, string nodeNameEn)
+        {
+            string reStr = "";
+            if (RRuInfo == null)
+                return reStr;
+            //RRU生产厂家索引
+            else if (String.Equals("rruTypeManufacturerIndex", nodeNameEn))
+                reStr = RRuInfo["rruTypeManufacturerIndex"];//;
+            //RRU设备类型索引
+            else if (String.Equals("rruTypeIndex", nodeNameEn))
+                reStr = RRuInfo["rruTypeIndex"];
+            //远端射频单元上端口编号
+            else if (String.Equals("rruTypePortNo", nodeNameEn))
+                reStr = RRuInfo["rruTypePortNo"];
+            //天线通道支持频段
+            else if (String.Equals("rruTypePortSupportFreqBand", nodeNameEn))
+                reStr = RRuInfo["rruTypePortSupportFreqBand"];
+            //天线通道支持频段宽度 
+            else if (String.Equals("rruTypePortSupportFreqBandWidth", nodeNameEn))
+                reStr = RRuInfo["rruTypePortSupportFreqBandWidth"];
+            //通道天线编号
+            else if (String.Equals("rruTypePortPathNo", nodeNameEn))
+                reStr = RRuInfo["rruTypePortPathNo"]; 
+            //行状态
+            else if (String.Equals("rruTypePortRowStatus", nodeNameEn))
+                reStr = "4";
+
+            //2013-04-10 luoxin DTMUC00153813
+            else if (String.Equals("rruTypePortCalAIqRxNom", nodeNameEn))
+                reStr = RRuInfo["rruTypePortCalAIqRxNom"];
+            else if (String.Equals("rruTypePortCalAIqTxNom", nodeNameEn))
+                reStr = RRuInfo["rruTypePortCalAIqTxNom"];
+            else if (String.Equals("rruTypePortCalPinRxNom", nodeNameEn))
+                reStr = RRuInfo["rruTypePortCalPinRxNom"];
+            else if (String.Equals("rruTypePortCalPoutTxNom", nodeNameEn))
+                reStr = RRuInfo["rruTypePortCalPoutTxNom"];
+            else if (String.Equals("rruTypePortAntMaxPower", nodeNameEn))
+                reStr = RRuInfo["rruTypePortAntMaxPower"];
+            //根据频段获取载波数（目前只支持A频段和F频段）
+            else if (String.Equals("rruTypePortSupportAbandTdsCarrierNum", nodeNameEn))
+                reStr = "";
+            else if (String.Equals("rruTypePortSupportFBandTdsCarrierNum", nodeNameEn))
+                reStr = "";
+
+            return reStr;
+        }
+
+
 
         /// <summary>
-        /// 处理"波束扫描原始值"中 cell 的内容;
+        /// 处理 cell 的内容;
         /// </summary>
         /// <param name="array"></param>
         /// <returns></returns>

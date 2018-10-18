@@ -50,6 +50,8 @@ namespace CfgFileOperation
             string sheetName = "RRU基本信息表";
             rru.ProcessingExcel(excelPath, sheetName);
             List<RRuTypeTabStru> rruList = rru.GetRruTypeInfoData();
+
+            List<RRuTypePortTabStru> rruPortL = rru.GetRruTypePortInfoData();
         }
 
         void testForReadExcelAnnt()
