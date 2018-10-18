@@ -393,7 +393,7 @@ namespace NetPlan
 				}
 
 				// 下发待删除的板卡信息
-				if (m_mapWaitDelDev.ContainsKey(devType) && m_mapNewAddDev[devType].Count > 0)
+				if (m_mapWaitDelDev.ContainsKey(devType) && m_mapWaitDelDev[devType].Count > 0)
 				{
 					return DistributeSnmpData(devType, EnumSnmpCmdType.Del, targetIp);
 					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Del);
