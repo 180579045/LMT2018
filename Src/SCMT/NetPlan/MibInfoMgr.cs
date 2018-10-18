@@ -15,6 +15,8 @@ namespace NetPlan
 	// MIB信息管理类，单例
 	public class MibInfoMgr : Singleton<MibInfoMgr>
 	{
+		public delegate string GetMibValue(string strOriginValue, string strLatestValue);
+
 		#region 公共接口
 
 		/// <summary>
@@ -344,16 +346,20 @@ namespace NetPlan
 		/// TODO 基站类型需要获取
 		/// </summary>
 		/// <returns></returns>
-		public bool DistributeBoardInfoToEnb()
+		public bool DistributeBoardInfoToEnb(EnumDevType devType)
 		{
-			//下发新增板卡的信息
-			var devType = EnumDevType.board;
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (null == targetIp)
+			{
+				throw new CustomException("下发网规参数失败，尚未选中基站");
+			}
+
 			lock (_syncObj)
 			{
 				// 有新增的板卡才下发Add命令
 				if (m_mapNewAddDev.ContainsKey(devType) && m_mapNewAddDev[devType].Count > 0)
 				{
+					return DistributeSnmpData(devType, EnumSnmpCmdType.Add, targetIp);
 					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Add);
 					if (null == cmdList || 0 == cmdList.Count)
 					{
@@ -367,14 +373,84 @@ namespace NetPlan
 					}
 
 					// 板卡只有一个Add命令：AddNetBoard，但是RRU有3个Add命令，每个命令下发一部分数据。
+					var daiList = m_mapNewAddDev[devType];
+
 					foreach (var kv in cmdToMibLeafMap)
 					{
 						var cmdName = kv.Key;
 						var mibLeafList = kv.Value;
-						var daiList = m_mapNewAddDev[devType];
 						foreach (var dai in daiList)
 						{
-							var name2Value = GeneralName2ValueMap(dai, mibLeafList, "4");
+							var name2Value = GeneralName2ValueMap(dai, mibLeafList, GetLatestValue);
+							var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
+							if (0 != ret)
+							{
+								Log.Error($"下发命令{cmdName}失败");
+								return false;
+							}
+						}
+					}
+				}
+
+				// 下发待删除的板卡信息
+				if (m_mapWaitDelDev.ContainsKey(devType) && m_mapNewAddDev[devType].Count > 0)
+				{
+					return DistributeSnmpData(devType, EnumSnmpCmdType.Del, targetIp);
+					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Del);
+					if (null == cmdList || 0 == cmdList.Count)
+					{
+						throw new CustomException($"未找到类型为{devType.ToString()}的Del相关命令");
+					}
+
+					var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
+					if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
+					{
+						throw new CustomException($"未找到类型为{devType.ToString()}的Del相关命令详细信息");
+					}
+
+					// 板卡只有一个Add命令：AddNetBoard，但是RRU有3个Add命令，每个命令下发一部分数据。
+					foreach (var kv in cmdToMibLeafMap)
+					{
+						var cmdName = kv.Key;
+						var mibLeafList = kv.Value;
+						var daiList = m_mapWaitDelDev[devType];
+						foreach (var dai in daiList)
+						{
+							var name2Value = GeneralName2ValueMap(dai, mibLeafList, GetLatestValue, "6");
+							var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
+							if (0 != ret)
+							{
+								Log.Error($"下发命令{cmdName}失败");
+								return false;
+							}
+						}
+					}
+				}
+
+				// 下发修改参数的板卡信息
+				if (m_mapModifyDev.ContainsKey(devType) && m_mapModifyDev[devType].Count > 0)
+				{
+					return DistributeSnmpData(devType, EnumSnmpCmdType.Set, targetIp);
+					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Set);
+					if (null == cmdList || 0 == cmdList.Count)
+					{
+						throw new CustomException($"未找到类型为{devType.ToString()}的Set相关命令");
+					}
+
+					var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
+					if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
+					{
+						throw new CustomException($"未找到类型为{devType.ToString()}的Set相关命令详细信息");
+					}
+
+					foreach (var kv in cmdToMibLeafMap)
+					{
+						var cmdName = kv.Key;
+						var mibLeafList = kv.Value;
+						var daiList = m_mapWaitDelDev[devType];
+						foreach (var dai in daiList)
+						{
+							var name2Value = GeneralName2ValueMap(dai, mibLeafList, GetNeedUpdateValue);
 							var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
 							if (0 != ret)
 							{
@@ -532,7 +608,10 @@ namespace NetPlan
 					if (dev.m_strOidIndex != devIndex) continue;
 
 					devList.Remove(dev);
-					AddDevToMap(m_mapModifyDev, type, newDev);		// TODO 此处有一个bug:modify队列下发时，判断哪些字段被修改
+
+					// 需要比对dev和newDev，把dev的值和newDev的信息合并到一起再加入到修改队列
+					newDev.AdjustOtherDevOriginValueToMyOrigin(dev);
+					AddDevToMap(m_mapModifyDev, type, newDev);
 					return true;
 				}
 
@@ -624,7 +703,7 @@ namespace NetPlan
 		/// <param name="listColumns"></param>
 		/// <param name="strRs">行状态的值：4，6</param>
 		/// <returns></returns>
-		private Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, string strRs)
+		private Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
 		{
 			if (null == devInfo || null == listColumns)
 			{
@@ -651,11 +730,10 @@ namespace NetPlan
 					}
 
 					var mi = absMap[leafName];
-					var value = mi.m_strOriginValue;
-					// 判断最新值是否为null，如果为null，就填入origin value；
-					if (null != mi.m_strLatestValue)
+					var value = gmv?.Invoke(mi.m_strOriginValue, mi.m_strLatestValue);
+					if (null == value)
 					{
-						value = mi.m_strLatestValue;
+						continue;
 					}
 
 					// value 有可能是枚举值等描述信息，需要翻转为snmp类型
@@ -665,6 +743,105 @@ namespace NetPlan
 			}
 
 			return n2v;
+		}
+
+		/// <summary>
+		/// 获取最新值
+		/// </summary>
+		/// <param name="strOriginValue"></param>
+		/// <param name="strLatestValue"></param>
+		/// <returns></returns>
+		private string GetLatestValue(string strOriginValue, string strLatestValue)
+		{
+			if (string.IsNullOrEmpty(strOriginValue))
+			{
+				return null;
+			}
+
+			var value = strOriginValue;
+
+			if (null != strLatestValue)
+			{
+				value = strLatestValue;
+			}
+			return value;
+		}
+
+		/// <summary>
+		/// 获取需要更新的值
+		/// </summary>
+		/// <param name="strOriginValue"></param>
+		/// <param name="strLatestValue"></param>
+		/// <returns></returns>
+		private string GetNeedUpdateValue(string strOriginValue, string strLatestValue)
+		{
+			if (string.IsNullOrEmpty(strOriginValue))
+			{
+				return null;
+			}
+
+			if (null == strLatestValue || strLatestValue == strOriginValue)
+			{
+				return null;
+			}
+
+			return strLatestValue;
+		}
+
+		private bool DistributeSnmpData(EnumDevType devType, EnumSnmpCmdType cmdType, string targetIp)
+		{
+			var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Add);
+			if (null == cmdList || 0 == cmdList.Count)
+			{
+				throw new CustomException($"未找到类型为{devType.ToString()}的Add相关命令");
+			}
+
+			var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
+			if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
+			{
+				throw new CustomException($"未找到类型为{devType.ToString()}的Add相关命令详细信息");
+			}
+
+			var strRs = "4";
+			MAP_DEVTYPE_DEVATTRI mapSource = null;
+			GetMibValue gmv = GetLatestValue;
+			switch (cmdType)
+			{
+				case EnumSnmpCmdType.Set:
+					mapSource = m_mapModifyDev;
+					gmv = GetNeedUpdateValue;
+					break;
+				case EnumSnmpCmdType.Add:
+					mapSource = m_mapNewAddDev;
+					break;
+				case EnumSnmpCmdType.Del:
+					strRs = "6";
+					mapSource = m_mapWaitDelDev;
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(cmdType), cmdType, null);
+			}
+
+			// 板卡只有一个Add命令：AddNetBoard，但是RRU有3个Add命令，每个命令下发一部分数据。
+			var daiList = mapSource[devType];
+
+			foreach (var kv in cmdToMibLeafMap)
+			{
+				var cmdName = kv.Key;
+				var mibLeafList = kv.Value;
+				foreach (var dai in daiList)
+				{
+					var name2Value = GeneralName2ValueMap(dai, mibLeafList, gmv, strRs);
+					var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
+					if (0 != ret)
+					{
+						Log.Error($"下发命令{cmdName}失败");
+						return false;
+					}
+				}
+			}
+
+			return true;
 		}
 
 		#endregion

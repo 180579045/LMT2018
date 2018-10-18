@@ -25,7 +25,7 @@ namespace NetPlan
 	}
 
 	// 设备类型助手类
-	public class DevTypeHelper
+	public static class DevTypeHelper
 	{
 
 		public static string GetDevDescString(EnumDevType type)

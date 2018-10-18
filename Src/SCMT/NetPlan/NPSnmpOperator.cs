@@ -229,15 +229,10 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool DistributeNetPlanData()
 		{
-			throw new NotImplementedException();
-
 			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
 			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
-			
+			return MibInfoMgr.GetInstance().DistributeBoardInfoToEnb(EnumDevType.board);
 		}
-
-
-		
 
 		#endregion
 
