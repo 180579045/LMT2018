@@ -360,105 +360,18 @@ namespace NetPlan
 				if (m_mapNewAddDev.ContainsKey(devType) && m_mapNewAddDev[devType].Count > 0)
 				{
 					return DistributeSnmpData(devType, EnumSnmpCmdType.Add, targetIp);
-					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Add);
-					if (null == cmdList || 0 == cmdList.Count)
-					{
-						throw new CustomException($"未找到类型为{devType.ToString()}的Add相关命令");
-					}
-
-					var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
-					if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
-					{
-						throw new CustomException($"未找到类型为{devType.ToString()}的Add相关命令详细信息");
-					}
-
-					// 板卡只有一个Add命令：AddNetBoard，但是RRU有3个Add命令，每个命令下发一部分数据。
-					var daiList = m_mapNewAddDev[devType];
-
-					foreach (var kv in cmdToMibLeafMap)
-					{
-						var cmdName = kv.Key;
-						var mibLeafList = kv.Value;
-						foreach (var dai in daiList)
-						{
-							var name2Value = GeneralName2ValueMap(dai, mibLeafList, GetLatestValue);
-							var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
-							if (0 != ret)
-							{
-								Log.Error($"下发命令{cmdName}失败");
-								return false;
-							}
-						}
-					}
 				}
 
 				// 下发待删除的板卡信息
 				if (m_mapWaitDelDev.ContainsKey(devType) && m_mapWaitDelDev[devType].Count > 0)
 				{
 					return DistributeSnmpData(devType, EnumSnmpCmdType.Del, targetIp);
-					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Del);
-					if (null == cmdList || 0 == cmdList.Count)
-					{
-						throw new CustomException($"未找到类型为{devType.ToString()}的Del相关命令");
-					}
-
-					var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
-					if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
-					{
-						throw new CustomException($"未找到类型为{devType.ToString()}的Del相关命令详细信息");
-					}
-
-					// 板卡只有一个Add命令：AddNetBoard，但是RRU有3个Add命令，每个命令下发一部分数据。
-					foreach (var kv in cmdToMibLeafMap)
-					{
-						var cmdName = kv.Key;
-						var mibLeafList = kv.Value;
-						var daiList = m_mapWaitDelDev[devType];
-						foreach (var dai in daiList)
-						{
-							var name2Value = GeneralName2ValueMap(dai, mibLeafList, GetLatestValue, "6");
-							var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
-							if (0 != ret)
-							{
-								Log.Error($"下发命令{cmdName}失败");
-								return false;
-							}
-						}
-					}
 				}
 
 				// 下发修改参数的板卡信息
 				if (m_mapModifyDev.ContainsKey(devType) && m_mapModifyDev[devType].Count > 0)
 				{
 					return DistributeSnmpData(devType, EnumSnmpCmdType.Set, targetIp);
-					var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Set);
-					if (null == cmdList || 0 == cmdList.Count)
-					{
-						throw new CustomException($"未找到类型为{devType.ToString()}的Set相关命令");
-					}
-
-					var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
-					if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
-					{
-						throw new CustomException($"未找到类型为{devType.ToString()}的Set相关命令详细信息");
-					}
-
-					foreach (var kv in cmdToMibLeafMap)
-					{
-						var cmdName = kv.Key;
-						var mibLeafList = kv.Value;
-						var daiList = m_mapWaitDelDev[devType];
-						foreach (var dai in daiList)
-						{
-							var name2Value = GeneralName2ValueMap(dai, mibLeafList, GetNeedUpdateValue);
-							var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
-							if (0 != ret)
-							{
-								Log.Error($"下发命令{cmdName}失败");
-								return false;
-							}
-						}
-					}
 				}
 			}
 
@@ -556,6 +469,21 @@ namespace NetPlan
 				mapData[devType] = devList;
 				break;
 			}
+		}
+
+		private void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai)
+		{
+			if (null == mapData || null == dai)
+			{
+				return;
+			}
+
+			if (!mapData.ContainsKey(devType))
+			{
+				return;
+			}
+
+			mapData[devType].Remove(dai);
 		}
 
 		/// <summary>
@@ -790,16 +718,16 @@ namespace NetPlan
 
 		private bool DistributeSnmpData(EnumDevType devType, EnumSnmpCmdType cmdType, string targetIp)
 		{
-			var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, EnumSnmpCmdType.Add);
+			var cmdList = NPECmdHelper.GetInstance().GetCmdList(devType, cmdType);
 			if (null == cmdList || 0 == cmdList.Count)
 			{
-				throw new CustomException($"未找到类型为{devType.ToString()}的Add相关命令");
+				throw new CustomException($"未找到类型为{devType.ToString()}的{cmdType.ToString()}相关命令");
 			}
 
 			var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
 			if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
 			{
-				throw new CustomException($"未找到类型为{devType.ToString()}的Add相关命令详细信息");
+				throw new CustomException($"未找到类型为{devType.ToString()}的{cmdType.ToString()}相关命令详细信息");
 			}
 
 			var strRs = "4";
@@ -822,22 +750,25 @@ namespace NetPlan
 					throw new ArgumentOutOfRangeException(nameof(cmdType), cmdType, null);
 			}
 
-			// 板卡只有一个Add命令：AddNetBoard，但是RRU有3个Add命令，每个命令下发一部分数据。
 			var daiList = mapSource[devType];
-
 			foreach (var kv in cmdToMibLeafMap)
 			{
 				var cmdName = kv.Key;
 				var mibLeafList = kv.Value;
-				foreach (var dai in daiList)
+
+				for (var i = daiList.Count - 1; i >= 0; i--)
 				{
+					var dai = daiList[i];
 					var name2Value = GeneralName2ValueMap(dai, mibLeafList, gmv, strRs);
 					var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dai.m_strOidIndex, targetIp);
 					if (0 != ret)
 					{
 						Log.Error($"下发命令{cmdName}失败");
-						return false;
+						return false;       // TODO 一个设备信息下发失败是要结束整个过程吗？
 					}
+
+					AddDevToMap(m_mapAllMibData, devType, dai);     // 下发成功的参数都放到mapAll中
+					DelDevFromMap(mapSource, devType, dai);
 				}
 			}
 
