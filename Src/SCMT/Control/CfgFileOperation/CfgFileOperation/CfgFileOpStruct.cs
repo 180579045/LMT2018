@@ -1373,6 +1373,8 @@ namespace CfgFileOpStruct
         
     }
 
+
+    public delegate string GetRruTypeByNodeNameEn(Dictionary<string, string> RRuInfo, string nodeNameEn);
     struct RRuTypeTabStru
     {
         public RRuTypeTabStru(string s)
@@ -1390,6 +1392,7 @@ namespace CfgFileOpStruct
             strRruTypeIrCompressMode = "0";
             //2016-08-29 guoyingjie add  rruTypeFamilyName
             strRruTypeFamilyName = "0";
+            excelRead = null;
         }
         /// <summary>
         /// 处理mdb数据的数据
@@ -1398,6 +1401,7 @@ namespace CfgFileOpStruct
         /// <param name="rruTypedateSet"></param>
         public RRuTypeTabStru(DataRow Row, DataSet rruTypedateSet)
         {
+            excelRead = null;
             //RRU生产厂家索引
             rruTypeManufacturerIndex = Row["rruTypeManufacturerIndex"].ToString();
             //RRU设备类型索引
@@ -1426,43 +1430,33 @@ namespace CfgFileOpStruct
                 strRruTypeFamilyName = "";
         }
 
-        public RRuTypeTabStru( Dictionary<string, string> RRuInfo)
+        public void RRuTypeTabStruInit(Dictionary<string, string> RRuInfo)
         {
+            //excelRead = GetNodeInfoByNameEn;
             //RRU生产厂家索引
-            rruTypeManufacturerIndex = RRuInfo["rruTypeManufacturerIndex"].ToString();
+            rruTypeManufacturerIndex = excelRead(RRuInfo, "rruTypeManufacturerIndex");
             //RRU设备类型索引
-            rruTypeIndex = RRuInfo[("rruTypeIndex")].ToString();
-            //RRU类型名称
-            rruTypeName = RRuInfo[("rruTypeName")].ToString();
+            rruTypeIndex = excelRead(RRuInfo, "rruTypeIndex");
+            rruTypeName = excelRead(RRuInfo, "rruTypeName");
             //RRU支持的天线数
-            rruTypeMaxAntPathNum = RRuInfo[("rruTypeMaxAntPathNum")].ToString();
+            rruTypeMaxAntPathNum = excelRead(RRuInfo, "rruTypeMaxAntPathNum");
             //RRU通道最大发射功率
-            rruTypeMaxTxPower = RRuInfo[("rruTypeMaxTxPower")].ToString();
+            rruTypeMaxTxPower = excelRead(RRuInfo, "rruTypeMaxTxPower");
             //RRU支持的频带宽度
-            rruTypeBandWidth = RRuInfo[("rruTypeBandWidth")].ToString();
+            rruTypeBandWidth = excelRead(RRuInfo, "rruTypeBandWidth");
             //RRU支持的小区工作模式
-            rruTypeSupportCellWorkMode = RRuInfo[("rruTypeSupportCellWorkMode")].ToString();
+            rruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
             //行状态
             rruTypeRowStatus = "4";
-
             //2014-2-27 luoxin RRUType新增节点
-            strRruTypeFiberLength = new RRuTypeTabStru().GetExcelRruInfoRruTypeFiberLength(RRuInfo[("rruTypeZoomProperty")].ToString());
-            strRruTypeIrCompressMode = RRuInfo[("rruTypeCompressionProperty")].ToString();//rruTypeCompressionProperty
+            strRruTypeFiberLength = excelRead(RRuInfo, "rruTypeFiberLength");// new RRuTypeTabStru().GetExcelRruInfoRruTypeFiberLength(excelRead(RRuInfo, "rruTypeZoomProperty"));
+            strRruTypeIrCompressMode = excelRead(RRuInfo, "rruTypeCompressionProperty");//rruTypeCompressionProperty
 
             //2016-08-29 guoyingjie add  rruTypeFamilyName
-            strRruTypeFamilyName = RRuInfo[("rruTypeFamilyName")].ToString();
+            strRruTypeFamilyName = excelRead(RRuInfo, "rruTypeFamilyName");
         }
-        string GetExcelRruInfoRruTypeFiberLength(string rruTypeZoomProperty)
-        {
-            if (string.Equals("", rruTypeZoomProperty))
-                return rruTypeZoomProperty;
-            int indexPos = rruTypeZoomProperty.IndexOf("公里");
-            if (-1 == indexPos)
-                return rruTypeZoomProperty;
-            else
-                return rruTypeZoomProperty.Remove(indexPos) + "km";
-        }
-
+        
+        public GetRruTypeByNodeNameEn excelRead;
         string rruTypeManufacturerIndex;
         string rruTypeIndex;
         string rruTypeRowStatus;
@@ -1529,6 +1523,8 @@ namespace CfgFileOpStruct
         }
     }
 
+
+    public delegate string GetRruTypePortByNodeNameEn(Dictionary<string, string> RRuInfo, string nodeNameEn);
     struct RRuTypePortTabStru
     {
         string rruTypePortManufacturerIndex;
