@@ -1373,8 +1373,16 @@ namespace CfgFileOpStruct
         
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="RRuInfo"></param>
+    /// <param name="nodeNameEn"></param>
+    /// <returns></returns>
     public delegate string GetRruTypeByNodeNameEn(Dictionary<string, string> RRuInfo, string nodeNameEn);
+    /// <summary>
+    /// 
+    /// </summary>
     struct RRuTypeTabStru
     {
         public RRuTypeTabStru(string s)
@@ -1523,8 +1531,16 @@ namespace CfgFileOpStruct
         }
     }
 
-
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="RRuInfo"></param>
+    /// <param name="nodeNameEn"></param>
+    /// <returns></returns>
     public delegate string GetRruTypePortByNodeNameEn(Dictionary<string, string> RRuInfo, string nodeNameEn);
+    /// <summary>
+    /// 
+    /// </summary>
     struct RRuTypePortTabStru
     {
         string rruTypePortManufacturerIndex;
@@ -1546,9 +1562,12 @@ namespace CfgFileOpStruct
 
         //2014-3-5 luoxin RRU通道类型表增加新节点
         string strRruTypePortAntMaxPower;
-        
+
+        public GetRruTypePortByNodeNameEn excelRead;
+
         public RRuTypePortTabStru(DataRow Row)
         {
+            excelRead = null;
             //RRU生产厂家索引
             rruTypePortManufacturerIndex = Row["rruTypeManufacturerIndex"].ToString(); 
             //RRU设备类型索引
@@ -1573,6 +1592,7 @@ namespace CfgFileOpStruct
             //根据频段获取载波数（目前只支持A频段和F频段）
             rruTypePortSupportAbandTdsCarrierNum = "";
             rruTypePortSupportFBandTdsCarrierNum = "";
+            // tds 相关内容不在支持
             GetCarrierNumByFreqBand(Row);// 填写 rruTypePortSupportAbandTdsCarrierNum 、 rruTypePortSupportFBandTdsCarrierNum
             //vectRRuTypePort.push_back(pRRuTypePort);
         }
@@ -1699,6 +1719,39 @@ namespace CfgFileOpStruct
             }
 
             return ReturnValue;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="RRuInfo"></param>
+        public void RRuTypePortTabStruInit(Dictionary<string, string> RRuInfo)
+        //public RRuTypePortTabStru(Dictionary<string, string> RRuInfo)
+        {
+            //RRU生产厂家索引
+            rruTypePortManufacturerIndex = excelRead(RRuInfo, "rruTypeManufacturerIndex");
+            //RRU设备类型索引
+            rruTypePortIndex = excelRead(RRuInfo, "rruTypeIndex");
+            //远端射频单元上端口编号
+            rruTypePortNo = excelRead(RRuInfo, "rruTypePortNo");
+            //天线通道支持频段
+            rruTypePortSupportFreqBand = excelRead(RRuInfo, "rruTypePortSupportFreqBand");
+            //天线通道支持频段宽度 
+            rruTypePortSupportFreqBandWidth = excelRead(RRuInfo, "rruTypePortSupportFreqBandWidth");
+            //通道天线编号
+            rruTypePortPathNo = excelRead(RRuInfo, "rruTypePortPathNo"); ;
+            //行状态
+            rruTypePortRowStatus = "4";
+
+            //2013-04-10 luoxin DTMUC00153813
+            rruTypePortCalAIqRxNom = excelRead(RRuInfo, "rruTypePortCalAIqRxNom");
+            rruTypePortCalAIqTxNom = excelRead(RRuInfo, "rruTypePortCalAIqTxNom");
+            rruTypePortCalPinRxNom = excelRead(RRuInfo, "rruTypePortCalPinRxNom");
+            rruTypePortCalPoutTxNom = excelRead(RRuInfo, "rruTypePortCalPoutTxNom");
+            strRruTypePortAntMaxPower = excelRead(RRuInfo, "rruTypePortAntMaxPower");
+            //Tds不在支持  根据频段获取载波数（目前只支持A频段和F频段）
+            rruTypePortSupportAbandTdsCarrierNum = "";
+            rruTypePortSupportFBandTdsCarrierNum = "";
         }
     }
 }
