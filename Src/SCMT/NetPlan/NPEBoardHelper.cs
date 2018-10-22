@@ -5,30 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
 using LmtbSnmp;
+using SCMTOperationCore.Elements;
 
 namespace NetPlan
 {
-	// 基站型号定义
-	public enum SHELFTYPE
-	{
-		EMB5116 = 5,		// 4G时代基站
-		EMB6116 = 10		// 5G时代基站
-	}
-
 	// NetPlanElement缩写为NPE
 	public class NPEBoardHelper : Singleton<NPEBoardHelper>
 	{
 		#region 公共方法
 
 		// 根据槽位号，查询支持的板卡类型。返回板卡名列表
-		public List<string> GetSlotSupportBoardNames(int slot, SHELFTYPE shelfType = SHELFTYPE.EMB6116)
+		public List<string> GetSlotSupportBoardNames(int slot, EnbTypeEnum shelfType)
 		{
 			var listBoardType = new List<string>();
 
 			if (null == _netPlanBoardInfo) return listBoardType;
 
 			var planShelf = from shelf in _netPlanBoardInfo.shelfEquipment
-							where (SHELFTYPE)shelf.equipNEType == shelfType
+							where (EnbTypeEnum)shelf.equipNEType == shelfType
 							select shelf;
 
 			var listBoard = from shelf in planShelf
@@ -49,14 +43,14 @@ namespace NetPlan
 		}
 
 		// 根据槽位号，查询支持的板卡类型。返回板卡信息列表
-		public List<BoardEquipment> GetSlotSupportBoardInfo(int slot, SHELFTYPE shelfType = SHELFTYPE.EMB6116)
+		public List<BoardEquipment> GetSlotSupportBoardInfo(int slot, EnbTypeEnum shelfType)
 		{
 			var listBoardInfo = new List<BoardEquipment>();
 
 			if (null == _netPlanBoardInfo) return listBoardInfo;
 
 			var planShelf = from shelf in _netPlanBoardInfo.shelfEquipment
-							where (SHELFTYPE)shelf.equipNEType == shelfType
+							where (EnbTypeEnum)shelf.equipNEType == shelfType
 							select shelf;
 
 			var listBoard = from shelf in planShelf

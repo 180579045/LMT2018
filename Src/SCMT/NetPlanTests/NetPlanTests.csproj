@@ -68,6 +68,10 @@
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
+      <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
+      <Name>SCMTOperationCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NetPlan\NetPlan.csproj">
       <Project>{9E4E635C-D97A-42A9-AD58-2923C1803CA3}</Project>
       <Name>NetPlan</Name>

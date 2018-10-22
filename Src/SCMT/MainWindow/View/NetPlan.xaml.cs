@@ -21,8 +21,10 @@ using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using SCMTMainWindow.View.Document;
 using System.Windows.Markup;
 using System.Xml;
+using CommonUtility;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using NetPlan;
+using SCMTOperationCore.Control;
 
 namespace SCMTMainWindow.View
 {
@@ -499,8 +501,17 @@ namespace SCMTMainWindow.View
             //双击显示
             if (e.ClickCount == 2)
             {
+	            var curEnbIp = CSEnbHelper.GetCurEnbAddr();
+	            if (null == curEnbIp)
+	            {
+		            MessageBox.Show("尚未选择基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+					return;
+	            }
+
+	            var enbType = NodeBControl.GetInstance().GetNodebGridByIp(curEnbIp);
+
                 //从后台获取板卡信息
-                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum);
+                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum, enbType);
 
                 ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
                 dlg.ShowDialog();
