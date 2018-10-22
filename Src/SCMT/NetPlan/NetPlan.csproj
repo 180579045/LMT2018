@@ -47,6 +47,7 @@
     <Compile Include="EnumDevType.cs" />
     <Compile Include="MibInfoMgr.cs" />
     <Compile Include="MibLeafNodeInfo.cs" />
+    <Compile Include="NPEAntHelper.cs" />
     <Compile Include="NPEBoardHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />
     <Compile Include="NPERruHelper.cs" />
