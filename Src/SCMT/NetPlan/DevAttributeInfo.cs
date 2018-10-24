@@ -22,8 +22,6 @@ namespace NetPlan
 
 		public readonly bool m_bIsScalar;					// 设备是否是标量表
 
-		public List<string> m_listModifyField;				// 被修改的字段名列表
-
 		#endregion
 
 
@@ -40,7 +38,6 @@ namespace NetPlan
 			m_enumDevType = mEnumDevType;
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
 			//m_strOidIndex = m_bIsScalar ? ".0" : GerenalDevOidIndex(devIndex);	// 如果是标量，索引就直接设置为.0
-			m_listModifyField = new List<string>();
 
 			InitDevInfo(mEnumDevType, devIndex);
 		}
@@ -57,7 +54,6 @@ namespace NetPlan
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
-			m_listModifyField = new List<string>();
 		}
 
 		/// <summary>
@@ -130,11 +126,85 @@ namespace NetPlan
 				return false;
 			}
 
-			// 判断字段最新的值和原始值是否相同，如果相同，就从m_listModifyField中删除，如果不同，就加入
-			AddOrDelFieldFromList(strFieldName, field.IsModified());
+			return true;
+		}
+
+		/// <summary>
+		/// 设置字段的原始值
+		/// </summary>
+		/// <param name="strFieldName"></param>
+		/// <param name="strOriginValue"></param>
+		/// <param name="bConvertToEnum">枚举值是否转为原值</param>
+		/// <returns></returns>
+		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strOriginValue))
+			{
+				return false;
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				return false;
+			}
+
+			var field = m_mapAttributes[strFieldName];
+			if (null == field)
+			{
+				return false;
+			}
+
+			var strValue = strOriginValue;
+			if (bConvertToEnum)
+			{
+				var managerRange = field.mibAttri.managerValueRange;
+				var mapEnums = MibStringHelper.SplitManageValue(managerRange);
+				if (null == mapEnums)
+				{
+					return false;
+				}
+
+				foreach (var kv in mapEnums)
+				{
+					if (kv.Value == strOriginValue)
+					{
+						strValue = kv.Key.ToString();
+						break;
+					}
+				}
+			}
+
+			return field.SetOriginValue(strValue);
+		}
+
+		/// <summary>
+		/// 把另一个相同对象的originValue调整为自己的originValue，自己的originValue作为latestValue
+		/// </summary>
+		/// <param name="oldDev"></param>
+		/// <returns></returns>
+		public bool AdjustOtherDevOriginValueToMyOrigin(DevAttributeInfo oldDev)
+		{
+			// 如果index不同不做调整
+			if (null == oldDev || !m_strOidIndex.Equals(oldDev.m_strOidIndex))
+			{
+				return false;
+			}
+
+			var oldAttriMap = oldDev.m_mapAttributes;
+			foreach (var attribute in m_mapAttributes)
+			{
+				var mibName = attribute.Key;
+				var mli = attribute.Value;
+				if (oldAttriMap.ContainsKey(mibName))
+				{
+					mli.m_strOriginValue = mli.m_strLatestValue;
+					mli.m_strOriginValue = oldAttriMap[mibName].m_strOriginValue;
+				}
+			}
 
 			return true;
 		}
+
 
 		#endregion
 
@@ -163,26 +233,6 @@ namespace NetPlan
 			sb.Append($".{devIndex}");
 
 			return sb.ToString();
-		}
-
-		/// <summary>
-		/// 添加或者删除修改的字段列表
-		/// </summary>
-		/// <param name="strField"></param>
-		/// <param name="bAdd"></param>
-		private void AddOrDelFieldFromList(string strField, bool bAdd)
-		{
-			// 如果字段被修改且列表中不包含，就添加
-			if (bAdd && !m_listModifyField.Contains(strField))
-			{
-				m_listModifyField.Add(strField);
-			}
-
-			// 如果字段未修改，且列表中已经包含，就删除
-			if (!bAdd && m_listModifyField.Contains(strField))
-			{
-				m_listModifyField.Remove(strField);
-			}
 		}
 
 		/// <summary>

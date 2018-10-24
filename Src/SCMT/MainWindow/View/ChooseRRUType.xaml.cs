@@ -29,6 +29,8 @@ namespace SCMTMainWindow.View
         private int nMaxRRUNumber;                 //配置文件中获取的最大支持的网元数量
         public int nRRUNumber;                        //输入的当前要拖拽的网元的数量
         public string strRRUName;                     //获取RRU的类型名称
+        public int nRRUTypeIndex;                     //获取 RRU 类型索引
+        public string strWorkModel;                  //获取 RRU 的工作模式
 
         //全局变量，保存RRU的属性
         private Dictionary<string, InitialRruInfo> dirRRU;
@@ -66,6 +68,13 @@ namespace SCMTMainWindow.View
             {
                 strRRUName = this.cbRRUtype.SelectedItem.ToString();
                 nMaxRRUPath = dirRRU[strRRUName].rruTypeMaxAntPathNum;
+
+                nRRUNumber = dirRRU[strRRUName].rruTypeIndex;
+
+                if (this.cbRRUWorkModel.SelectedItem != null)
+                {
+                    strWorkModel = this.cbRRUWorkModel.SelectedItem.ToString();
+                }
 
                 try
                 {

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LmtbSnmp;
 
 namespace NetPlan
 {
@@ -76,6 +77,57 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 根据板卡型号获取板卡信息
+		/// </summary>
+		/// <param name="boardType">板卡型号</param>
+		/// <returns></returns>
+		public BoardEquipment GetBoardInfoByType(int boardType)
+		{
+			var boardList = _netPlanBoardInfo.boardEquipment;
+			return boardList.FirstOrDefault(board => board.boardType == boardType);
+		}
+
+		public BoardEquipment GetBoardInfoByType(string strBoardType)
+		{
+			return GetBoardInfoByType(int.Parse(strBoardType));
+		}
+
+		/// <summary>
+		/// 根据板卡名，查询板卡的信息
+		/// </summary>
+		/// <param name="strBoardName"></param>
+		/// <returns></returns>
+		public BoardEquipment GetBoardInfoByName(string strBoardName)
+		{
+			if (string.IsNullOrEmpty(strBoardName))
+			{
+				return null;
+			}
+
+			var beList = _netPlanBoardInfo.boardEquipment;
+			return beList.FirstOrDefault(board => board.boardTypeName.IndexOf(strBoardName, StringComparison.OrdinalIgnoreCase) >= 0);
+		}
+
+		/// <summary>
+		/// 获取板卡工作模式描述列表
+		/// TODO 这样不太好
+		/// </summary>
+		/// <returns></returns>
+		public static List<string> GetBoardWorkMode()
+		{
+			return GetMibValueRangeList("netBoardWorkMode");
+		}
+
+		/// <summary>
+		/// 获取板卡帧结构类型描述信息列表
+		/// </summary>
+		/// <returns></returns>
+		public static List<string> GetBoardIrFrameType()
+		{
+			return GetMibValueRangeList("netBoardIrFrameType");
+		}
+
+		/// <summary>
 		/// 获取所有的rhub设备信息
 		/// </summary>
 		/// <returns></returns>
@@ -103,6 +155,28 @@ namespace NetPlan
 				Console.WriteLine(e);
 				throw;
 			}
+		}
+
+		private static List<string> GetMibValueRangeList(string strMibName)
+		{
+			var wmList = new List<string>();
+
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (null == targetIp)
+			{
+				return wmList;
+			}
+
+			var mibInfo = SnmpToDatabase.GetMibNodeInfoByName(strMibName, targetIp);
+			if (null == mibInfo)
+			{
+				return wmList;
+			}
+
+			var mvr = mibInfo.managerValueRange;
+			var mapMv = MibStringHelper.SplitManageValue(mvr);
+			wmList.AddRange(mapMv.Select(kv => kv.Value));
+			return wmList;
 		}
 
 		#endregion

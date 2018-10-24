@@ -20,7 +20,11 @@ namespace CfgFileOperation
         static void Main(string[] args)
         {
 
-            new CfgReadAntennaExcel();
+
+            new CfgFileOpTest().testForReadExcelRruType();
+
+            new CfgFileOpTest().testForReadExcelAnnt();
+            
 
             new CfgFileOpTest().testForOpReadExcelForCfg();
 
@@ -37,6 +41,26 @@ namespace CfgFileOperation
             //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
             //cfgOp.SaveFile_eNB("./path.cfg");
             //Console.ReadLine();
+        }
+
+        void testForReadExcelRruType()
+        {
+            CfgReadRruExcel rru = new CfgReadRruExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表_ty.xls";
+            string sheetName = "RRU基本信息表";
+            rru.ProcessingExcel(excelPath, sheetName);
+            List<RRuTypeTabStru> rruList = rru.GetRruTypeInfoData();
+
+            List<RRuTypePortTabStru> rruPortL = rru.GetRruTypePortInfoData();
+        }
+
+        void testForReadExcelAnnt()
+        {
+            CfgReadAntennaExcel dd = new CfgReadAntennaExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
+            string sheetName = "波束扫描原始值";
+            dd.ProcessingAntennaExcel(excelPath, sheetName);
+            List<Dictionary<string, string>> data = dd.GetBeamScanData();
         }
 
         void testForOpReadExcelForCfg()

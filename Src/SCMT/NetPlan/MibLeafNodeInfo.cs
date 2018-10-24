@@ -31,13 +31,20 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 设置字段的值，需要判断范围什么的是否合法
+		/// 设置字段的值，TODO 需要判断范围什么的是否合法
 		/// </summary>
 		/// <param name="strLatestValue"></param>
 		/// <returns>true:设置成功,其他情况返回false</returns>
 		public bool SetValue(string strLatestValue)
 		{
-			throw new NotImplementedException();
+			m_strLatestValue = strLatestValue;
+			return true;
+		}
+
+		public bool SetOriginValue(string strOriginValue)
+		{
+			m_strOriginValue = strOriginValue;
+			return true;
 		}
 
 		/// <summary>
@@ -54,5 +61,42 @@ namespace NetPlan
 			return !m_strOriginValue.Equals(m_strLatestValue, StringComparison.OrdinalIgnoreCase);  // 忽略大小写
 		}
 
+	}
+
+	/// <summary>
+	/// MibLeafNodeInfo类的比较器
+	/// </summary>
+	public class MLNIComparer : IComparer<MibLeafNodeInfo>
+	{
+		public int Compare(MibLeafNodeInfo left, MibLeafNodeInfo right)
+		{
+			if (null == left && null == right)
+			{
+				return 0;
+			}
+
+			if (null == left)
+			{
+				return -1;
+			}
+
+			if (null == right)
+			{
+				return 1;
+			}
+
+			// 按照mibAttri属性的childNo进行排序
+			if (left.mibAttri.childNo == right.mibAttri.childNo)
+			{
+				return 0;
+			}
+
+			if (left.mibAttri.childNo < right.mibAttri.childNo)
+			{
+				return -1;
+			}
+
+			return 1;
+		}
 	}
 }

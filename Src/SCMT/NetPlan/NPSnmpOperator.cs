@@ -159,7 +159,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool InitNetPlanInfo()
 		{
-			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB6116");
+			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB5116");
 			if (null == mibEntryList)
 			{
 				Log.Error("查询所有的MIB入口及对应命令失败");
@@ -207,18 +207,32 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 查询板卡的实时信息，也就是板卡的最新状态
+		/// 调用时机：查询规划信息结束后；新增规划板卡下发参数后；
+		/// </summary>
+		public static List<DevAttributeInfo> GetRealTimeBoardInfo()
+		{
+			var cmdName = "GetBoardInfo";
+			var boardInfoList = new List<DevAttributeInfo>();
+
+			if (!ExecuteNetPlanCmd(cmdName, ref boardInfoList, EnumDevType.board))
+			{
+				return null;
+			}
+
+			return boardInfoList;
+		}
+
+		/// <summary>
 		/// 布配网规数据到设备中
 		/// </summary>
 		/// <returns></returns>
 		public static bool DistributeNetPlanData()
 		{
-			throw new NotImplementedException();
-
 			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
 			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
+			return MibInfoMgr.GetInstance().DistributeBoardInfoToEnb(EnumDevType.board);
 		}
-
-
 
 		#endregion
 
@@ -245,7 +259,7 @@ namespace NetPlan
 			// 该表项有值，就处理
 			var info = new MibLeafNodeInfo
 			{
-				m_strOriginValue = mapOidAndValue[strOid],
+				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
 				mibAttri = mibLeaf
 			};
 

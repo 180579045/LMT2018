@@ -16,14 +16,16 @@ namespace NetPlan
 		ant,
 		board_rru,
 		rru_ant,
-		rhub_ant,
+		rhub_prru,
 		nrNetLc,
 		nrLc,
-		nrCell
+		nrCell,
+		netLc,
+		lc,
 	}
 
 	// 设备类型助手类
-	public class DevTypeHelper
+	public static class DevTypeHelper
 	{
 
 		public static string GetDevDescString(EnumDevType type)
@@ -52,7 +54,7 @@ namespace NetPlan
 
 		public static EnumDevType GetEnumDevType(string type)
 		{
-			EnumDevType devType = (EnumDevType) Enum.Parse(typeof(EnumDevType), type, true);
+			var devType = (EnumDevType) Enum.Parse(typeof(EnumDevType), type, true);
 			return devType;
 		}
 
@@ -95,10 +97,12 @@ namespace NetPlan
 			["netAntennaArrayEntry"] = EnumDevType.ant,
 			["netRRUAntennaSettingEntry"] = EnumDevType.rru_ant,
 			["netIROptPlanEntry"] = EnumDevType.board_rru,
-			["netEthPlanEntry"] = EnumDevType.rhub_ant,
+			["netEthPlanEntry"] = EnumDevType.rhub_prru,
 			["nrNetLocalCellEntry"] = EnumDevType.nrNetLc,
 			["nrLocalCellEntry"] = EnumDevType.nrLc,
-			["nrCellEntry"] = EnumDevType.nrCell
+			["nrCellEntry"] = EnumDevType.nrCell,
+			["netLocalCellEntry"] = EnumDevType.netLc,
+			["localCellEntry"] = EnumDevType.lc
 		};
 	}
 }

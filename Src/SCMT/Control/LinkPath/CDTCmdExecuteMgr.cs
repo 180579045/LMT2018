@@ -1,4 +1,17 @@
-﻿using LogManager;
+﻿/*************************************************************************************
+* CLR版本：        $$
+* 类 名 称：       $ CDTCmdExecuteMgr $
+* 机器名称：       $ machinename $
+* 命名空间：       $ LinkPath $
+* 文 件 名：       $ CDTCmdExecuteMgr.cs $
+* 创建时间：       $ 2018.10.XX $
+* 作    者：       $ fengyanfeng $
+* 说   明 ：
+*     以命令名称方式发送Snmp消息。
+* 修改时间     修 改 人         修改内容：
+* 2018.10.xx  XXXX            XXXXX
+*************************************************************************************/
+using LogManager;
 using SnmpSharpNet;
 using System;
 using System.Collections.Generic;
@@ -269,6 +282,13 @@ namespace LinkPath
 			return rs;
 		}
 
+		public static int CmdSetSync(string cmdName, Dictionary<string, string> name2Value, string strIndex, string targetIp)
+		{
+			long reqId;
+			var pdu = new CDTLmtbPdu();
+			return CmdSetSync(cmdName, out reqId, name2Value, strIndex, targetIp, ref pdu);
+		}
+
 
 		/// <summary>
 		/// 执行一条类型为Set的异步操作命令
@@ -453,7 +473,7 @@ namespace LinkPath
 			}
 
 			// 把name转为vblist，已经把数据值传入到vb中
-			var vbList = SnmpToDatabase.ConvertNameToVbList(cmdInfo.m_leaflist, ip, index, bNeedCheck, name2Value);
+			var vbList = SnmpToDatabase.ConvertOidListToVbList(cmdInfo.m_leaflist, ip, index, bNeedCheck, name2Value);
 
 			if (null == pdu)
 			{

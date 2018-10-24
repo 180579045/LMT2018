@@ -67,7 +67,7 @@ namespace MIBDataParser.JSONDataMgr
                 FileStream fs = new FileStream(filepath, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件
                 //清空文件
                 fs.SetLength(0);
-                StreamWriter sw = new StreamWriter(fs, Encoding.Default);
+                StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
                 sw.Write(content);
                 sw.Flush();
                 sw.Close();
