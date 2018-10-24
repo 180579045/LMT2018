@@ -7,6 +7,8 @@ using CommonUtility;
 using LogManager;
 using LinkPath;
 using LmtbSnmp;
+using System.Net.Sockets;
+using System.Net;
 
 // ftp server助手
 
@@ -121,10 +123,40 @@ namespace MsgDispatcher
 			Log.Error($"在网元{targetIp}的ftpServerTable表中没有查询到与本地地址相匹配的记录");
 			return "";
 		}
-
+        /// <summary>
+        /// 获取本地管理站的地址后进行比对
+        /// </summary>
+        /// <param name="targetIp"></param>
+        /// <param name="addr"></param>
+        /// <returns></returns>
 		private static bool IsLocalAddress(string targetIp, string addr)
 		{
-			return true;	// TODO 这个实现不正确，应该是获取本地管理站的地址后进行比对
+            string conaddr = SnmpToDatabase.ConvertInetToString(addr);
+            string HostName = Dns.GetHostName();
+            IPHostEntry ipEntry = Dns.GetHostEntry(HostName);
+            string localsddr = string.Empty; ;
+
+            for (int i = 0; i < ipEntry.AddressList.Length; i++)
+            {
+                //IPV4类型 IP地址
+                if(ipEntry.AddressList[i].AddressFamily  == AddressFamily.InterNetwork)
+                {
+                    localsddr = ipEntry.AddressList[i].ToString();
+
+                    if (conaddr.CompareTo(localsddr) == 0)
+                        return true;
+                }
+
+                //IP6类型 IP地址
+                if (ipEntry.AddressList[i].AddressFamily == AddressFamily.InterNetworkV6)
+                {
+                    localsddr = ipEntry.AddressList[i].ToString();
+                    if (conaddr.CompareTo(localsddr) == 0)
+                        return true;
+                }
+            }
+
+			return false;
 		}
 
 		#endregion

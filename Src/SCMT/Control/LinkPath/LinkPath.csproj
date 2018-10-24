@@ -49,6 +49,7 @@
     <Compile Include="DTLinkPathMgr.cs" />
     <Compile Include="FileTransMacro.cs" />
     <Compile Include="FileTransTaskMgr.cs" />
+    <Compile Include="FileTransWorker.cs" />
     <Compile Include="ICDTLinkPathMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnmpSessionWorker.cs" />
