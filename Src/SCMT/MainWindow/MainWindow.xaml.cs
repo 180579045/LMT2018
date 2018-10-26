@@ -662,7 +662,12 @@ namespace SCMTMainWindow
 			if (null != target)
 			{
 				node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-				CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
+
+				// 只有已经连接的基站进行点击切换时，才修改当前基站的IP
+				if (node.HasConnected())
+				{
+					CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
+				}
 
 				//改变被点击的 node，还原之前的 node
 				var Children = ExistedNodebList.Children;
