@@ -102,8 +102,10 @@ namespace SCMTMainWindow
 			InitView();                                                       // 初始化界面;
 			RegisterFunction();                                               // 注册功能;
 
-			// 启动线程，后台处理一些初始化功能
-			Task.Factory.StartNew(new Action(() =>
+            TabControlEnable(false);
+
+            // 启动线程，后台处理一些初始化功能
+            Task.Factory.StartNew(new Action(() =>
 			{
 
 				deleteTempFile();
@@ -234,15 +236,20 @@ namespace SCMTMainWindow
 			{
 				if (ret == false)
 				{
-					ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
-				}
+                    ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+                    ExpanderBaseInfo.IsExpanded = false;
+                    TabControlEnable(false);
+                }
 				else
 				{
 					Dispatcher.Invoke(() =>
 					{
 						var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
 						RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
-					});
+
+                        TabControlEnable(true);
+                        ExpanderBaseInfo.IsExpanded = true;
+                    });
 				}
 			};
 		}
@@ -808,8 +815,8 @@ namespace SCMTMainWindow
 					return;
 				}
 
-				// 发送消息，开始数据同步
-				long taskId = 0;
+                // 发送消息，开始数据同步
+                long taskId = 0;
 				long reqId = 0;
 				var dstPath = FilePathHelper.GetConsistencyFilePath();
 				FilePathHelper.CreateFolder(dstPath);
@@ -817,7 +824,8 @@ namespace SCMTMainWindow
 					TRANSDIRECTION.TRANS_UPLOAD);
 				fto.IpAddr = targetIp;
 				FileTransTaskMgr.SendTransFileTask(targetIp, fto, ref taskId, ref reqId);
-			}
+
+            }
 		}
 
 		private void EnableMenu(ContextMenu menuRoot, string header, bool bEnable = true)
@@ -1827,7 +1835,8 @@ namespace SCMTMainWindow
 			SubscribeHelper.AddSubscribe(TopicHelper.SHOW_LOG, OnShowLog);
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbConnectedMsg, OnConnect);
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbOfflineMsg, OnDisconnect);
-		}
+            SubscribeHelper.AddSubscribe(TopicHelper.LoadLmdtzToVersionDb, OnLoadLmdtzToVersionDb);
+        }
 
 		// 打印日志
 		private void OnShowLog(SubscribeMsg msg)
@@ -1962,6 +1971,31 @@ namespace SCMTMainWindow
 			//sub.PropertyChanged += content.WindowProperty_Changed;
 			//sub.Closed += content.Sub_Closed;
 		}
-	}
+
+        //解析lm.dtz文件
+        private void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
+        {
+            var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
+            var ip = netAddr.TargetIp;
+
+            var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+            
+            InitDataBase();
+
+            ShowLogHelper.Show($"解析lm.dtz数据文件成功：{fname}-{ip}", $"{ip}");
+        }
+
+        /// <summary>
+        /// 用于设置tab页面是否可用
+        /// </summary>
+        /// <param name="isEnable"></param>
+        private void TabControlEnable(bool isEnable)
+        {
+            ItemCollection collection = MainHorizenTab.Items;
+            for(int i = 0; i < collection.Count; i++)
+                (collection[i] as TabItem).IsEnabled = isEnable;
+
+        }
+    }
 
 }
