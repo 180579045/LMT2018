@@ -20,7 +20,9 @@ namespace CfgFileOperation
         static void Main(string[] args)
         {
 
-            new Test().testForReadRecList();
+            //new Test().testForReadRecList();
+
+            new Test().testLoadMibTreeIntoMem();
 
             new Test().testForReadExcelRruType();
 
@@ -51,6 +53,14 @@ namespace CfgFileOperation
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
             reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType);
+        }
+
+        void testLoadMibTreeIntoMem()
+        {
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            CfgReadDBMibTreeToMemory mibTree = new CfgReadDBMibTreeToMemory();
+            mibTree.ReadMibTreeToMemory(strFileToDirectory);
+            int a = 1;
         }
 
         void testForReadExcelRruType()

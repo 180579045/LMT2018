@@ -47,6 +47,8 @@
     <Compile Include="CfgFileLeafNodeIndexInfoOp.cs" />
     <Compile Include="CfgFileLeafNodeOp.cs" />
     <Compile Include="CfgFileOp.cs" />
+    <Compile Include="CfgReadDBMibTreeToMemory.cs" />
+    <Compile Include="CfgReadDBStructMibNode.cs" />
     <Compile Include="CfgReadReclistExcel.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="CfgFileOpStruct.cs" />

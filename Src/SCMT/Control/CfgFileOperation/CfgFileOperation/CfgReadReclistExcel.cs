@@ -209,7 +209,7 @@ namespace CfgFileOperation
         void ProcessingMdbData(string strFileToDirectory)
         {
             string strSQL = "select * from MibTree order by ExcelLine";// ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
-            DataSet MibdateSet = RecordByAccessDb(strFileToDirectory, strSQL);
+            //DataSet MibdateSet = RecordByAccessDb(strFileToDirectory, strSQL);
 
             
             StruMibNode  pTempNode = new StruMibNode();
@@ -240,21 +240,6 @@ namespace CfgFileOperation
 
 
 
-        private DataSet RecordByAccessDb(string fileName, string sqlContent)
-        {
-            DataSet dateSet = new DataSet();
-            AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
-            try
-            {
-                mdbData.Open();
-                dateSet = mdbData.GetDataSet(sqlContent);
-                mdbData.Close();
-            }
-            finally
-            {
-                mdbData = null;
-            }
-            return dateSet;
-        }
+        
     }
 }
