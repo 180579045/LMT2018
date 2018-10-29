@@ -508,7 +508,7 @@ namespace SCMTMainWindow.View
 					return;
 	            }
 
-	            var enbType = NodeBControl.GetInstance().GetNodebGridByIp(curEnbIp);
+	            var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIp);
 
                 //从后台获取板卡信息
                 List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum, enbType);
