@@ -150,7 +150,7 @@
                 </LinearGradientBrush>
             </GridSplitter.Background>
         </GridSplitter>
-        <Expander Name="ExpanderBaseInfo" Grid.Column="2" ExpandDirection="Right" IsExpanded="False">
+        <Expander Name="ExpanderBaseInfo" Grid.Column="2" ExpandDirection="Right" IsExpanded="False" IsEnabled="False">
             <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
             <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
                 <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >

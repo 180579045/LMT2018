@@ -188,14 +188,14 @@ namespace MIBDataParser.JSONDataMgr
         /// </summary>
         /// <param name="err"></param>
         /// <returns></returns>
-        public bool UnZipFile(out string err)
+        public bool UnZipFile(string connectIp, out string err)
         {
             err = "";
             string errNew = "";
 
             //1. 获取ini配置文件中的相关信息
             Dictionary<string, string> readFile;
-            if (!UzipReadIni(out readFile, out errNew))
+            if (!UzipReadIni(connectIp, out readFile, out errNew))
             {
                 err += errNew;
                 return false;
@@ -223,8 +223,12 @@ namespace MIBDataParser.JSONDataMgr
         /// <param name="readFile"></param>
         /// <param name="err"></param>
         /// <returns></returns>
-        public bool UzipReadIni( out Dictionary<string,string> readFile, out string err)
+        public bool UzipReadIni(string connectIp, out Dictionary<string,string> readFile, out string err)
         {
+            string path = connectIp;
+            if (connectIp.Contains(":"))
+                path = connectIp.Replace(":", "-");
+
             err = "";
             readFile = null;
 
@@ -243,11 +247,18 @@ namespace MIBDataParser.JSONDataMgr
             {
                 var appPath = FilePathHelper.GetAppPath();
                 readFile = new Dictionary<string, string>() {
-                    { "zipFile",
-                        ( appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") + 
+                    //注释部分为从基站获取的lm.dtz文件地址，由于解压失败，现在还是使用本地lm.dtz
+                    /*{ "zipFile",
+                        ( appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") + path + "\\" +
                             ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName")) },
                     { "extractPath",
-                        appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath") } };
+                        appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath") + path + "\\"},*/
+
+                    { "zipFile",
+                        ( appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipfilePath") +
+                            ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "zipName")) },
+                    { "extractPath",
+                        appPath + ReadIniFile.IniReadValue(iniFilePath, "ZipFileInfo", "extractPath")}};
             }
             catch (Exception ex)
             {
@@ -282,7 +293,9 @@ namespace MIBDataParser.JSONDataMgr
         bool UzipExtractToDirectoryDeal(string sourceArchiveFileName, string destinationDirectoryName, out string err)
         {
             if (!decompressedFile(sourceArchiveFileName, destinationDirectoryName, out err))
+            {
                 return false;
+            }             
             else
                 return true;
         }
