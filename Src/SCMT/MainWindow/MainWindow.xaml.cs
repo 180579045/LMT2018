@@ -1581,43 +1581,31 @@ namespace SCMTMainWindow
 		{
 			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, 
 				string, int>(UpdateMibDataGridCallback);
+
 			MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
 		}
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <param name="oid_cn">OID与其中文友好名的对照字典</param>
+        /// <param name="oid_en">OID与其英文友好名，即字段名称的对应字典</param>
+        /// <param name="contentlist">包含了所有要显示内容的集合</param>
+        /// <param name="ParentOID"></param>
+        /// <param name="IndexCount">真实的索引个数</param>
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
-			int RealIndexCount = IndexCount; // 真实的索引个数
-											 // 将信息回填到DataGrid当中;
+			int RealIndexCount = IndexCount;                          // 真实的索引个数
+			MibDataGrid.Columns.Clear();                              // 清除上一次的结果;
 
-			MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
-
-			if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
+			if (IndexCount == 0)                                      // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
 
 			var AlreadyRead = new List<string>();
 
-			// TODO 调试打印,正式版本记得删除;
-			//foreach (var iter in ar)
-			//{
-			//	string[] temp = iter.Key.Split('.');
-			//	string NowIndex = "";
-			//	string NowNodeOID = "";
-
-			//	for (int i = temp.Length - IndexCount; i < temp.Length; i++)
-			//	{
-			//		NowIndex += "." + temp[i];
-			//	}
-			//	for (int i = 0; i < temp.Length - IndexCount; i++)
-			//	{
-			//		NowNodeOID += "." + temp[i];
-			//	}
-
-			//	Console.WriteLine("NextIndex " + iter.Key + " and Value is " + iter.Value + " OID Index is " + NowIndex +
-			//		" Node OID is " + NowNodeOID.Substring(1, NowNodeOID.Length - NowIndex.Length + 1));
-			//}
-
-			// 遍历GetNext结果后，将结果填入到DataGrid控件当中;
+			// ar是遍历GetNext的结果，遍历后，将其转化为DataGrid能够显示的类型;
 			foreach (var iter in ar)
 			{
 				var fulloid = iter.Key;
@@ -1636,10 +1624,10 @@ namespace SCMTMainWindow
 				if (!fulloid.Contains(NowIndex) || AlreadyRead.Contains(NowIndex))
 					continue;
 
-
+                // 创建一个能够填充到DataGrid控件的动态类型，这个类型的所有属性来自于读取的所有MIB节点;
 				dynamic model = new DyDataGrid_MIBModel();
-				//尝试填写表量表填写实例描述
 
+                // 当读取的列数大于0的时候，即有显示内容需要在DataGrid中填充的时候;
 				if (RealIndexCount > 0)
 				{
 					var IndexOIDPre = "";
@@ -1656,7 +1644,10 @@ namespace SCMTMainWindow
 						IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
 					}
 
-					//如下DataGrid_Cell_MIB中的 oid暂时填写成这样
+					// 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
+                    // 参数一：属性名称;
+                    // 参数二：单元格实例;
+                    // 参数三：单元格列中文名称;
 					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
 					{
 						m_Content = IndexContent,
@@ -1679,7 +1670,7 @@ namespace SCMTMainWindow
 						TempIndex += "." + temp[i];
 					}
 
-					//以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun
+					// 以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun;
 					if (TempIndex == NowIndex)
 					{
 						// 将GetNext整表的OID数值取出到temp_compare;
@@ -1704,6 +1695,9 @@ namespace SCMTMainWindow
 								MibName_EN = oid_en[temp_compare]
 							};
 
+                            // 第一个参数：属性的名称——节点英文名称;
+                            // 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
+                            // 第三个参数：列要显示的中文名——节点的中文友好名;
 							model.AddProperty(oid_en[temp_compare], dgm, oid_cn[temp_compare]);
 
 							// 已经查询过该索引,后续不再参与查询;
@@ -1723,7 +1717,7 @@ namespace SCMTMainWindow
 				}
 
 			}
-			//增加表量表索引的列名
+			// 增加表量表索引的列名;
 			if (RealIndexCount > 0)
 			{
 				var column = new DataGridTextColumn
@@ -1734,15 +1728,17 @@ namespace SCMTMainWindow
 				MibDataGrid.Columns.Add(column);
 			}
 
+            // 所有需要显示的列名都确认好了，在DataGrid中添加列;
 			foreach (var iter3 in oid_en)
 			{
 				string[] temp = iter3.Key.Split('.');
 				if ((RealIndexCount > 0) && (int.Parse(temp[temp.Length - 1]) <= RealIndexCount))
 				{
-					//索引不对应列名
+					// 索引不对应列名;
 					continue;
 				}
 
+                // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
 				var column = new DataGridTextColumn
 				{
 					Header = oid_cn[iter3.Key],

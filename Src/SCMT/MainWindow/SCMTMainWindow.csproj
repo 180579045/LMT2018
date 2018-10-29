@@ -106,15 +106,16 @@
     <Reference Include="Common.Logging.Log4Net">
       <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="LogManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
@@ -198,6 +199,7 @@
     <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
       <DependentUpon>OutputWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DataGrid_CellFactory.cs" />
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
     <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
