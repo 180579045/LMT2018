@@ -224,17 +224,23 @@ namespace SCMTMainWindow
 		private void InitDataBase()
 		{
 			node.db = Database.GetInstance();
+            CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
 
-			// TODO 需要同步等待数据库初始化完成后才能进行其他操作
-			node.db.initDatabase(node.NeAddress.ToString());
+            // TODO 需要同步等待数据库初始化完成后才能进行其他操作
+            node.db.initDatabase(node.NeAddress.ToString());
 
 			node.db.resultInitData = (bool ret) =>
 			{
 				if (ret == false)
 				{
                     ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
-                    ExpanderBaseInfo.IsExpanded = false;
-                    TabControlEnable(false);
+
+                    Dispatcher.Invoke(() =>
+                    {
+                        ExpanderBaseInfo.IsEnabled = false;
+                        ExpanderBaseInfo.IsExpanded = false;
+                        TabControlEnable(false);
+                    });
                 }
 				else
 				{
@@ -244,7 +250,8 @@ namespace SCMTMainWindow
 						RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
 
                         TabControlEnable(true);
-                        ExpanderBaseInfo.IsExpanded = true;
+                        ExpanderBaseInfo.IsEnabled = true;
+                        ExpanderBaseInfo.IsExpanded = true;                       
                     });
 				}
 			};
@@ -1883,7 +1890,15 @@ namespace SCMTMainWindow
 			// 文件管理按钮禁用，文件管理窗口关闭
 			CloseFileMgrDlg(fname);
 
-			Dispatcher.Invoke(() => Obj_Root.Children?.Clear());
+            Dispatcher.Invoke(() =>
+            {
+                ExpanderBaseInfo.IsEnabled = false;
+                ExpanderBaseInfo.IsExpanded = false;
+                TabControlEnable(false);
+                Obj_Root.Children?.Clear();
+                MibDataGrid.Columns.Clear();
+                MainHorizenTab.SelectedIndex = 0;
+            });
 		}
 
 		#endregion
