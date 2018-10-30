@@ -362,10 +362,18 @@ namespace LmtbSnmp
 				return false;
 			}
 
+			SnmpHelper snmp = m_SnmpSync;
+			if (null == snmp)
+			{
+				logMsg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				Log.Error(logMsg);
+				return false;
+			}
+
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
 
-			SnmpV2Packet ReqResult = (SnmpV2Packet)m_SnmpSync.GetNextRequest(pdu);
+			SnmpV2Packet ReqResult = (SnmpV2Packet)snmp.GetNextRequest(pdu);
 
 			if (null != ReqResult)
 			{

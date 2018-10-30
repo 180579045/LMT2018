@@ -49,7 +49,7 @@ namespace CommonUtility
 				return "";
 			}
 
-            strUnit = strMibDesc.Substring(indexLeft, indexRight - indexLeft);
+			strUnit = strMibDesc.Substring(indexLeft, indexRight - indexLeft);
 
 			// 截取":"后面部分
 			int indexM = strUnit.IndexOf(':');
@@ -67,5 +67,47 @@ namespace CommonUtility
 			return strUnit;
 		}
 
-    }
+		/// <summary>
+		/// 生成邻区索引
+		/// </summary>
+		/// <param name="strNetWorkType"></param>
+		/// <param name="strAdjCellId"></param>
+		/// <returns></returns>
+		public static string GenerateAdjCellIdInfo(string strNetWorkType, string strAdjCellId)
+		{
+			// 返回值
+			string reValue = "";
+
+			if (string.IsNullOrEmpty(strAdjCellId))
+			{
+				return strAdjCellId;
+			}
+
+			string strAdjCellIdTmp = strAdjCellId.TrimStart('{');
+			strAdjCellIdTmp = strAdjCellIdTmp.TrimEnd('}');
+			string[] idList = strAdjCellIdTmp.Split(',');
+			reValue = strAdjCellIdTmp;
+
+			if (idList.Length != 3)
+			{
+				return reValue;
+			}
+			
+			if ("0".Equals(strNetWorkType))
+			{
+				reValue = string.Format("{{eNBId: {0},AdjCellId: {1}}}", idList[0], idList[1]);
+			}
+			else if ("1".Equals(strNetWorkType) || "2".Equals(strNetWorkType))
+			{
+				reValue = string.Format("{{LACId: {0},RNCId: {1},AdjCellId: {2}}}", idList[0], idList[1], idList[2]);
+			}
+			else if ("3".Equals(strNetWorkType))
+			{
+				reValue = string.Format("{{LACId: {0},AdjCellId: {1}}}", idList[0], idList[1]);
+			}
+
+			return reValue;
+		}
+
+	}
 }
