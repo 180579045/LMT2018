@@ -18,9 +18,20 @@ namespace CfgFileOperation
     class CfgOp
     {
         /// <summary>
-        Dictionary<string, CfgTableOp> m_mapTableInfo; // 存每个表的内容
+        /// key:tableName; value : ClassCfgTableOp>
+        /// </summary>
+        public Dictionary<string, CfgTableOp> m_mapTableInfo; // 存每个表的内容
+        /// <summary>
+        /// 
+        /// </summary>
         StruCfgFileHeader m_cfgFile_Header;            // Cfg文件头结构
+        /// <summary>
+        /// 
+        /// </summary>
         StruDataHead m_dataHeadInfo;                   // 数据块的头 ，为将来堆叠准备
+        /// <summary>
+        /// 
+        /// </summary>
         bool m_bEmptyCfg ;                             // 是否是空cfg
         /// 
         /// </summary>
@@ -813,7 +824,7 @@ namespace CfgFileOperation
                 WriteToBuffer(pBuff, defaultVal, bytePosL, strIndexOMType, 0, strValList, strAsnType);
             }
         }
-        private void WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
+        public void WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
         {
             if (null == byteArray)
                 return;
@@ -972,6 +983,8 @@ namespace CfgFileOperation
                 SetValueToByteArray(byteArray, bytePosL, omValue);
             }
         }
+
+        
         private void SetValueToByteArray(List<byte[]> byteAL, List<int> bytePosL, object objParm)
         {
             if (objParm is byte)
