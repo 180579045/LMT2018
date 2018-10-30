@@ -23,12 +23,14 @@ namespace SCMTMainWindow.View
     public partial class ChooseBoardType : Window
     {
         public string strBoardName;
+        public string strWorkModel;
+        public string strFSM;
         public bool bOK = false;
         public ChooseBoardType(List<BoardEquipment> boardInfo)
         {
             InitializeComponent();
 
-            if(boardInfo != null)
+            if(boardInfo != null && boardInfo.Count > 0)
             {
                 foreach(BoardEquipment item in boardInfo)
                 {
@@ -37,11 +39,28 @@ namespace SCMTMainWindow.View
             }
 
             this.BoardType.SelectedIndex = 0;
+
+
+            List<string> listStringWorkModel = NPEBoardHelper.GetBoardWorkMode();
+            foreach(string item in listStringWorkModel)
+            {
+                this.workMode.Items.Add(item);
+            }
+            this.workMode.SelectedIndex = 0;
+
+            List<string> listStringFSM = NPEBoardHelper.GetBoardIrFrameType();
+            foreach (string item in listStringFSM)
+            {
+                this.fsm.Items.Add(item);
+            }
+            this.fsm.SelectedIndex = 0;
         }
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
             strBoardName = this.BoardType.SelectedItem.ToString();
+            strWorkModel = this.workMode.SelectedItem.ToString();
+            strFSM = this.fsm.SelectedItem.ToString();
             bOK = true;
             this.Close();
         }

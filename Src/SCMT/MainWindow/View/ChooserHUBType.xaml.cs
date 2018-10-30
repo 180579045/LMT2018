@@ -86,7 +86,7 @@ namespace SCMTMainWindow.View
                 {
                     if(item.friendlyUIName == strRHUBType)
                     {
-                        nRHUBType = item.ethPortRNum;
+                        nRHUBType = item.irOfpNum;
                     }
                 }
 

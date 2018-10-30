@@ -8,6 +8,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CfgFileOperation
 {
+    /// <summary>
+    /// 解析天线《LTE_基站天线广播波束权值参数配置表_5G.xls》 ：antennaArrayTypeEntry
+    /// </summary>
     class CfgReadAntennaExcel
     {
         /// <summary>
@@ -112,7 +115,7 @@ namespace CfgFileOperation
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strSheet))
                 return;
-            CfgFileExcelReadWrite excelOp = new CfgFileExcelReadWrite();
+            CfgExcelOp excelOp = new CfgExcelOp();
             if (excelOp == null)
                 return;
 
@@ -171,7 +174,7 @@ namespace CfgFileOperation
             foreach (var colNameEn in ColsInfoBS.Keys)
             {
                 object[,] arry = ColVals[colNameEn];
-                string cellVal = GetCellValueToStringBeamScan(arry[currentLine, 1], ColsInfoBS[colNameEn], null);
+                string cellVal = GetCellValueToStringBeamScan(arry[currentLine, 1], ColsInfoBS[colNameEn], "");
                 PreInfo.Add(colNameEn, cellVal);
             }
             AntennaIndexBS.Add(PreInfo);

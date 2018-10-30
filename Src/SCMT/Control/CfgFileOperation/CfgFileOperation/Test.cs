@@ -15,17 +15,24 @@ namespace CfgFileOperation
     /// <summary>
     /// .cfg 文件相关操作的测试代码
     /// </summary>
-    class CfgFileOpTest
+    class Test
     {
         static void Main(string[] args)
         {
-            new CfgFileOpTest().testForReadExcelAnnt();
+
+            //new Test().testForReadRecList();
+
+            new Test().testLoadMibTreeIntoMem();
+
+            new Test().testForReadExcelRruType();
+
+            new Test().testForReadExcelAnnt();
             
 
-            new CfgFileOpTest().testForOpReadExcelForCfg();
+            new Test().testForOpReadExcelForCfg();
 
 
-            new CfgFileOpTest().test4();
+            new Test().test4();
 
             //string strCfgFileName = "";
             //string FileToDirectory = "";
@@ -39,6 +46,34 @@ namespace CfgFileOperation
             //Console.ReadLine();
         }
 
+        void testForReadRecList()
+        {
+            CfgReadReclistExcel reclist = new CfgReadReclistExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            string UeType = "0:默认";
+            reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType);
+        }
+
+        void testLoadMibTreeIntoMem()
+        {
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            CfgReadDBMibTreeToMemory mibTree = new CfgReadDBMibTreeToMemory();
+            mibTree.ReadMibTreeToMemory(strFileToDirectory);
+            int a = 1;
+        }
+
+        void testForReadExcelRruType()
+        {
+            CfgReadRruExcel rru = new CfgReadRruExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表_ty.xls";
+            string sheetName = "RRU基本信息表";
+            rru.ProcessingExcel(excelPath, sheetName);
+            List<RRuTypeTabStru> rruList = rru.GetRruTypeInfoData();
+
+            List<RRuTypePortTabStru> rruPortL = rru.GetRruTypePortInfoData();
+        }
+
         void testForReadExcelAnnt()
         {
             CfgReadAntennaExcel dd = new CfgReadAntennaExcel();
@@ -50,15 +85,15 @@ namespace CfgFileOperation
 
         void testForOpReadExcelForCfg()
         {
-            CfgFileExcelReadWrite exOp = new CfgFileExcelReadWrite();
+            CfgExcelOp exOp = new CfgExcelOp();
             exOp.test(".\\123\\eNB告警信息表.xls");
 
         }
 
         void test1()
         {
-            uint dreamduip = new CfgFileOpTest().getIPAddr("192.168.3.144");
-            bool re = new CfgFileOpTest().TestForCfgFileOpStructMain();
+            uint dreamduip = new Test().getIPAddr("192.168.3.144");
+            bool re = new Test().TestForCfgFileOpStructMain();
         }
         public void test2()
         {

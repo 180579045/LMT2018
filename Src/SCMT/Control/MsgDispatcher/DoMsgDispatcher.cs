@@ -90,8 +90,7 @@ namespace MsgDispatcher
 		// enb阶段消息
 		private void AnalyseSIPhaseMsg(byte[] msgBytes, string targetIp)
 		{
-			if (string.IsNullOrWhiteSpace(targetIp) ||
-				string.IsNullOrEmpty(targetIp))
+			if (string.IsNullOrWhiteSpace(targetIp) || string.IsNullOrEmpty(targetIp))
 			{
 				Log.Error("解析出targetIp为null");
 				return;

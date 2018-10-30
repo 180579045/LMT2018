@@ -47,9 +47,12 @@
     <Compile Include="EnumDevType.cs" />
     <Compile Include="MibInfoMgr.cs" />
     <Compile Include="MibLeafNodeInfo.cs" />
+    <Compile Include="NPCellOperator.cs" />
+    <Compile Include="NPEAntHelper.cs" />
     <Compile Include="NPEBoardHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />
     <Compile Include="NPERruHelper.cs" />
+    <Compile Include="NPRruToCellInfo.cs" />
     <Compile Include="NPSnmpOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

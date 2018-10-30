@@ -18,7 +18,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 处理 excel 告警表
     /// </summary>
-    class CfgFileExcelReadWrite
+    class CfgExcelOp
     {
         /// <summary>
         /// 

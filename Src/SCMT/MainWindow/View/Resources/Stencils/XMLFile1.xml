@@ -320,6 +320,14 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
           <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
         </c:RelativePositionPanel>
@@ -341,6 +349,14 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.357"/>
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.595"/>
           <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.357"/>

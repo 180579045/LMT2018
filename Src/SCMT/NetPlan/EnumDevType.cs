@@ -22,12 +22,14 @@ namespace NetPlan
 		nrCell,
 		netLc,
 		lc,
+		cell,
+		nrNetLcCtr,
+		netLcCtr,
 	}
 
 	// 设备类型助手类
-	public class DevTypeHelper
+	public static class DevTypeHelper
 	{
-
 		public static string GetDevDescString(EnumDevType type)
 		{
 			string desc = null;
@@ -102,7 +104,10 @@ namespace NetPlan
 			["nrLocalCellEntry"] = EnumDevType.nrLc,
 			["nrCellEntry"] = EnumDevType.nrCell,
 			["netLocalCellEntry"] = EnumDevType.netLc,
-			["localCellEntry"] = EnumDevType.lc
+			["localCellEntry"] = EnumDevType.lc,
+			["cellEntry"] = EnumDevType.cell,
+			["nrNetLocalCellCtrlEntry"] = EnumDevType.nrNetLcCtr,
+			["netLocalCellCtrlEntry"] = EnumDevType.netLcCtr,
 		};
 	}
 }

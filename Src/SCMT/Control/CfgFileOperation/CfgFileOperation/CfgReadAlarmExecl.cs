@@ -9,6 +9,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CfgFileOperation
 {
+    /// <summary>
+    /// 解析告警《eNB告警信息表.xls》 alarmCauseEntry
+    /// </summary>
     class CfgReadAlarmExecl
     {
         /// <summary>
@@ -19,7 +22,7 @@ namespace CfgFileOperation
 
         public CfgReadAlarmExecl()
         {
-            CfgFileExcelReadWrite excelOp = new CfgFileExcelReadWrite();
+            CfgExcelOp excelOp = new CfgExcelOp();
             string strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls";
             string strSheetName = "eNB告警信息表";
             Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);

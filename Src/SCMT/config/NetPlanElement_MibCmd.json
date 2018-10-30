@@ -70,9 +70,9 @@
 				"MibEntry" : "nrLocalCellEntry",
 				"Alias" : "nrLc",
 				"Get" : ["GetLocalNRCellInfo"],
-				"Set" : ["SetNRLcAddDelTrigge"],
-				"Add" : ["SetNRLcAddDelTrigge"],
-				"Del" : ["SetNRLcAddDelTrigge"]	
+				"Set" : ["SetNRLcAddDelTrigger"],
+				"Add" : ["SetNRLcAddDelTrigger"],
+				"Del" : ["SetNRLcAddDelTrigger"]	
 			},
 			{
 				"MibEntry" : "nrCellEntry",
@@ -80,7 +80,7 @@
 				"Get" : ["GetNRCellInfo"],
 				"Set" : ["SetNRCellActiveTrigger"],
 				"Add" : [],
-				"Del" : []	
+				"Del" : []
 			}				
 		]
 	
@@ -156,10 +156,18 @@
 				"MibEntry" : "localCellEntry",
 				"Alias" : "lc",
 				"Get" : ["GetLocalCellInfo"],
-				"Set" : ["SetLcAddDelTrigge"],
-				"Add" : ["SetLcAddDelTrigge"],
-				"Del" : ["SetLcAddDelTrigge"]	
-			}			
+				"Set" : ["SetLcAddDelTrigger"],
+				"Add" : ["SetLcAddDelTrigger"],
+				"Del" : ["SetLcAddDelTrigger"]	
+			},
+			{
+				"MibEntry" : "cellEntry",
+				"Alias" : "cell",
+				"Get" : ["GetCellInfo"],
+				"Set" : ["SetCellActiveTrigger"],
+				"Add" : [""],
+				"Del" : [""]
+			}
 		]
 	
 	}

@@ -43,13 +43,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CfgFileExcelReadWrite.cs" />
+    <Compile Include="CfgExcelOp.cs" />
     <Compile Include="CfgFileLeafNodeIndexInfoOp.cs" />
     <Compile Include="CfgFileLeafNodeOp.cs" />
     <Compile Include="CfgFileOp.cs" />
-    <Compile Include="CfgFileOpTest.cs" />
+    <Compile Include="CfgReadDBMibTreeToMemory.cs" />
+    <Compile Include="CfgReadDBStructMibNode.cs" />
+    <Compile Include="CfgReadReclistExcel.cs" />
+    <Compile Include="Test.cs" />
     <Compile Include="CfgFileOpStruct.cs" />
     <Compile Include="CfgReadAntennaExcel.cs" />
+    <Compile Include="CfgReadRruExcel.cs" />
     <Compile Include="CfgTableOp.cs" />
     <Compile Include="CfgTableOpTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

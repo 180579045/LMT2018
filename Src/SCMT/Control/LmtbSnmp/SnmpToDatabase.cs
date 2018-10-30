@@ -98,14 +98,14 @@ namespace LmtbSnmp
 		}
 
 		// 把节点名列表转换为节点名对应的MIB列表
-		public static IEnumerable<MibLeaf> ConvertOidListToMibInfoList(List<string> leafNameList, string ip)
+		public static IEnumerable<MibLeaf> ConvertOidListToMibInfoList(List<string> leafOidList, string ip)
 		{
-			if (null == leafNameList || string.IsNullOrEmpty(ip))
+			if (null == leafOidList || string.IsNullOrEmpty(ip))
 			{
 				throw new CustomException("传入参数错误");
 			}
 
-			return leafNameList.Select(name => GetMibNodeInfoByOid(name, ip)).Where(mibnode => null != mibnode).ToList();
+			return leafOidList.Select(oid => GetMibNodeInfoByOid(oid, ip)).Where(mibnode => null != mibnode).ToList();
 		}
 
 		// 根据oid获取MIB信息
@@ -152,7 +152,7 @@ namespace LmtbSnmp
 		// 转换节点名列表为vb列表，针对每一个oid都有一个value值
 		// nameList每个元素是oid，且不带前缀，name2value的key是节点名，不是oid
 		// 需要把节点名转换为oid再进行转换
-		public static List<CDTLmtbVb> ConvertNameToVbList(List<string> nameList, string ip, string index,
+		public static List<CDTLmtbVb> ConvertOidListToVbList(List<string> nameList, string ip, string index,
 			bool bCheck, Dictionary<string, string> name2value)
 		{
 			if (null == nameList || string.IsNullOrEmpty(ip))
@@ -343,6 +343,84 @@ namespace LmtbSnmp
 			//}
 			return strValue;
 		}
+
+		public static dynamic ConvertStringToMibValue(MibLeaf mibLeaf, string strValue)
+		{
+			var omType = mibLeaf.OMType;
+			var asnType = mibLeaf.ASNType;
+
+			if (omType.Equals("u32") || omType.Equals("s32"))
+			{
+				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
+				{
+					// BITS类型的，需要转换
+					//return ConvertBitsToString(mibLeaf.managerValueRange, strValue);
+					// TODO 反转StringToBits。与CommSnmpFuncs文件中的相关函数合并
+				}
+			}
+			else if (omType.Equals("u32[]"))
+			{
+
+			}
+			else if (omType.Equals("s32[]"))
+			{
+				// oid类型
+				if (asnType.Equals("notification-type", StringComparison.OrdinalIgnoreCase) ||
+					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase))
+				{
+
+				}
+			}
+			else if (omType.Equals("enum"))
+			{
+				// 1.取出该节点的取值范围
+				var mvr = mibLeaf.managerValueRange;
+
+				// 2.分解取值范围
+				var mapKv = MibStringHelper.SplitManageValue(mvr);
+
+				foreach (var kv in mapKv)
+				{
+					if (kv.Value == strValue)
+					{
+						return kv.Key.ToString();
+					}
+				}
+			}
+			//else if (omType.Equals("s8[]"))
+			//{
+
+			//}
+			else if (omType.Equals("u8[]"))
+			{
+				if (asnType.Equals("DateAndTime"))
+				{
+					
+				}
+				else if (asnType.Equals("InetAddress"))
+				{
+					
+				}
+				else if (asnType.Equals("MacAddress"))
+				{
+					
+				}
+				else if (asnType.Equals("MncMccType"))
+				{
+
+				}
+			}
+			//else if (omType.Equals("u16") || omType.Equals("s16"))
+			//{
+			//	return strValue;
+			//}
+			//else
+			//{
+			//	return strValue;
+			//}
+			return strValue;
+		}
+
 
 		/// <summary>
 		/// 转换BITS类型的数据为描述信息

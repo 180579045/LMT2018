@@ -14,11 +14,6 @@ namespace NetPlan.Tests
 	[TestClass()]
 	public class NPECmdHelperTests
 	{
-		[TestMethod()]
-		public void GetAllCmdByTypeTest()
-		{
-			NPECmdHelper.GetInstance().GetAllCmdByType("board");
-		}
 
 		[TestMethod()]
 		public void GetDevAttributesFromMibTest()

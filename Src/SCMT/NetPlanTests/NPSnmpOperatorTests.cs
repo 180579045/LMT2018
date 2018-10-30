@@ -62,5 +62,28 @@ namespace NetPlan.Tests
 				Thread.Sleep(1000);
 			}
 		}
+
+		[TestMethod()]
+		public void GetRealTimeBoardInfoTest()
+		{
+			bool stop = false;
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			db.initDatabase("172.27.245.92");
+			db.resultInitData = result =>
+			{
+				if (result)
+				{
+					var ret = NPSnmpOperator.GetRealTimeBoardInfo();
+					Assert.IsNotNull(ret);
+					stop = true;
+				}
+			};
+
+			while (!stop)
+			{
+				Thread.Sleep(1000);
+			}
+		}
 	}
 }

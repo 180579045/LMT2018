@@ -287,9 +287,19 @@ namespace SCMTMainWindow.View
                 newItem.Content = testContent;
                 newItem.ItemName = strRRUFullName;
 
-                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
-                globalDic.Add(strRRUFullName, test);
+                //添加 RRU 的时候需要给基站下发，然后获取设备信息
+                List<int> listIndex = new List<int>();
+                listIndex.Add(nRRUNo);
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(listIndex, dlgChooseRRU.nRRUTypeIndex, dlgChooseRRU.strWorkModel);
 
+                if(devRRUInfo == null || devRRUInfo.Count == 0)
+                {
+                    return false;
+                }
+                g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+
+                //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
+                //globalDic.Add(strRRUFullName, test);
                 //Type typeTest = DynamicObject.BuildTypeWithCustomAttributesOnMethod("rru", test);
 
                 if (dragObject.DesiredSize.HasValue)
@@ -313,7 +323,7 @@ namespace SCMTMainWindow.View
                 if (ucTest != null)
                 {
                     gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strRRUFullName, test);
+                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
                 }
@@ -381,7 +391,7 @@ namespace SCMTMainWindow.View
                 if (ucTest != null)
                 {
                     gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strrHUBFullName, test);
+                    //CreateGirdForNetInfo(strrHUBFullName, test);
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
                 }
@@ -451,7 +461,7 @@ namespace SCMTMainWindow.View
                 if (ucTest != null)
                 {
                     gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strRRUFullName, test);
+                    //CreateGirdForNetInfo(strRRUFullName, test);
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
                 }
@@ -512,6 +522,10 @@ namespace SCMTMainWindow.View
         private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
         //全局变量，将网元名称和网元的属性表格对应
         public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+
+        //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
+        public Dictionary<string, string> g_AllDevInfo = new Dictionary<string, string>();
+
         //保存界面上的属性表格
         public Grid gridProperty;
 
@@ -520,7 +534,7 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="strName"></param>
         /// <param name="mibInfo"></param>
-        private void CreateGirdForNetInfo(string strName, List<MibLeafNodeInfo> mibInfo)
+        private void CreateGirdForNetInfo(string strName, DevAttributeInfo mibInfo)
         {
             Grid grid = new Grid();
 
@@ -553,7 +567,7 @@ namespace SCMTMainWindow.View
             Grid.SetRow(txtTitile, 0);
             Grid.SetColumnSpan(txtTitile, 3);
 
-            if(mibInfo == null)
+            if (mibInfo == null)
             {
                 g_GridForNet.Add(strName, grid);
                 return;
@@ -561,10 +575,11 @@ namespace SCMTMainWindow.View
 
             //根据传过来的值，添加行，每一行代表一个属性，并根据不同的类型添加不同的控件
             int nRow = 0;
-            for(int i = 0; i < mibInfo.Count; i++)
+            
+            foreach(var item in mibInfo.m_mapAttributes)
             {
                 //不可见的属性
-                if (!mibInfo[i].m_bVisible)
+                if (!item.Value.m_bVisible)
                 {
                     continue;
                 }
@@ -576,22 +591,22 @@ namespace SCMTMainWindow.View
                 //添加属性名称的控件
                 TextBlock txtName = new TextBlock();
                 txtName.Margin = new Thickness(1);
-                txtName.Text = mibInfo[i].mibAttri.childNameCh;
+                txtName.Text = item.Value.mibAttri.childNameCh;
                 grid.Children.Add(txtName);
                 Grid.SetColumn(txtName, 0);
                 Grid.SetRow(txtName, nRow + 1);
 
                 //根据不同的类型添加属性值控件
-                switch(mibInfo[i].mibAttri.OMType)
+                switch (item.Value.mibAttri.OMType)
                 {
                     case "enum":
                         ComboBox cbValue = new ComboBox();
                         cbValue.Margin = new Thickness(1);
                         cbValue.Height = 25;
 
-                        var valueInfo = MibStringHelper.SplitManageValue(mibInfo[i].mibAttri.managerValueRange);
+                        var valueInfo = MibStringHelper.SplitManageValue(item.Value.mibAttri.managerValueRange);
 
-                        for(int j = 0; j < valueInfo.Count; j++)
+                        for (int j = 0; j < valueInfo.Count; j++)
                         {
                             cbValue.Items.Add(valueInfo.ElementAt(j).Value);
                         }
@@ -604,11 +619,11 @@ namespace SCMTMainWindow.View
                         Grid.SetColumn(cbValue, 2);
                         Grid.SetRow(cbValue, nRow + 1);
 
-                        if(cbValue.Items.Contains(mibInfo[i].m_strOriginValue))
+                        if (cbValue.Items.Contains(item.Value.m_strOriginValue))
                         {
-                            cbValue.SelectedIndex = cbValue.Items.IndexOf(mibInfo[i].m_strOriginValue);
+                            cbValue.SelectedIndex = cbValue.Items.IndexOf(item.Value.m_strOriginValue);
                         }
-                        if(mibInfo[i].m_bReadOnly)
+                        if (item.Value.m_bReadOnly)
                         {
                             cbValue.IsReadOnly = true;
                             cbValue.IsEnabled = false;
@@ -618,11 +633,11 @@ namespace SCMTMainWindow.View
                         TextBox txtValue = new TextBox();
                         txtName.Margin = new Thickness(1);
                         txtName.Height = 25;
-                        txtValue.Text = mibInfo[i].m_strOriginValue;
+                        txtValue.Text = item.Value.m_strOriginValue;
                         grid.Children.Add(txtValue);
                         Grid.SetColumn(txtValue, 2);
                         Grid.SetRow(txtValue, nRow + 1);
-                        if (mibInfo[i].m_bReadOnly)
+                        if (item.Value.m_bReadOnly)
                         {
                             txtValue.IsReadOnly = true;
                         }
@@ -631,9 +646,9 @@ namespace SCMTMainWindow.View
                 nRow++;
             }
 
-            if(mibInfo.Count != 0)
+            if (mibInfo.m_mapAttributes.Count != 0)
             {
-                Grid.SetRowSpan(gridSplit, mibInfo.Count);
+                Grid.SetRowSpan(gridSplit, mibInfo.m_mapAttributes.Count);
             }
             g_GridForNet.Add(strName, grid);
         }
