@@ -76,8 +76,18 @@ namespace CfgFileOperation
 
                 CfgReadDBStructMibNode pTempNode = new CfgReadDBStructMibNode(row, pMapMibNodeByName, pMapMibNodeByOID);//StruMibNode pTempNode = new StruMibNode();
 
-                pMapMibNodeByOID.Add(row["OID"].ToString(), pTempNode);
-                pMapMibNodeByName.Add(row["MIBName"].ToString(), pTempNode);
+                if (!pMapMibNodeByOID.ContainsKey(row["OID"].ToString()))
+                    pMapMibNodeByOID.Add(row["OID"].ToString(), pTempNode);
+                else
+                {
+                    Console.WriteLine(String.Format("Oid=({0} had same key, mibName=({1}).)", row["OID"].ToString(), row["MIBName"].ToString()));
+                }
+                if (!pMapMibNodeByName.ContainsKey(row["MIBName"].ToString()))
+                    pMapMibNodeByName.Add(row["MIBName"].ToString(), pTempNode);
+                else
+                {
+                    Console.WriteLine(String.Format(" mibName=({0}),had same key.)", row["MIBName"].ToString()));
+                }
             }
 
 

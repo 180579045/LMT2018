@@ -261,12 +261,40 @@ namespace CfgFileOperation
         }
         int GetBasicDataTypeLen(DataRow row)
         {
+            // 去 空格 ' ', /, [后面的，
+
             string csBasicDataType = row["OMType"].ToString();
-            csBasicDataType = csBasicDataType.Substring(0, 3);// csBasicDataType.Left(3);
-            csBasicDataType = csBasicDataType.Trim("[: ".ToCharArray());// csBasicDataType.Trim("[: ");
-            csBasicDataType = csBasicDataType.Substring(1);// csBasicDataType.Mid(1);
-            int nBasicDataTypeLen = int.Parse(csBasicDataType);//pTempNode->nBasicDataTypeLen = atoi(csBasicDataType);
-            return nBasicDataTypeLen;
+            string dataType = csBasicDataType;
+            if (dataType.Trim(' ') == string.Empty)
+                return 0;
+            else if (dataType.Trim('/') == string.Empty)
+                return 0;
+            else if (-1 != dataType.IndexOfAny("enum".ToArray()))
+            {
+                return 0;
+            }
+            else
+            {
+                int pos = dataType.IndexOf("[");
+                if (-1 != pos)
+                {
+                    dataType = dataType.Substring(0, pos);
+                }
+                else
+                {
+
+                }
+
+                dataType = dataType.Substring(1);
+                return int.Parse(dataType);
+            }
+
+
+            //csBasicDataType = csBasicDataType.Substring(0, 3);// csBasicDataType.Left(3);
+            //csBasicDataType = csBasicDataType.Trim("[: ".ToCharArray());// csBasicDataType.Trim("[: ");
+            //csBasicDataType = csBasicDataType.Substring(1);// csBasicDataType.Mid(1);
+            //int nBasicDataTypeLen = int.Parse(csBasicDataType);//pTempNode->nBasicDataTypeLen = atoi(csBasicDataType);
+            //return nBasicDataTypeLen;
         }
         string GetMMLName(DataRow row)
         {
