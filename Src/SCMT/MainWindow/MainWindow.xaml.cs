@@ -1695,6 +1695,7 @@ namespace SCMTMainWindow
 						{
 							Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
 
+                            // 在这里就要区分DataGrid要显示的数据类型了;
 							var dgm = new DataGrid_Cell_MIB()
 							{
 								m_Content = SnmpToDatabase.ConvertSnmpValueToString(oid_en[temp_compare], iter3.Value, "172.27.245.92") as string,  // TODO 需要确定真正的板卡地址

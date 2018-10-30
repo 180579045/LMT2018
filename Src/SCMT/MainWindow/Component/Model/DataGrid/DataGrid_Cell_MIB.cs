@@ -7,6 +7,9 @@ using SCMTMainWindow.Component.ViewModel;
 
 namespace SCMTMainWindow
 {
+    /// <summary>
+    /// 单元格内可显示的所有数据类型;
+    /// </summary>
     public enum DataGrid_CellDataType
     {
         enumType = 0,                                  // MIB中的枚举类型;
@@ -14,19 +17,14 @@ namespace SCMTMainWindow
         DateTime = 2,                                  // MIB中的时间类型;
         RegularType = 3                                // MIB中的字符串、INT等类型;
     }
-
-
+    
+    /// <summary>
+    /// 显示常规字符串内容的单元格类型;
+    /// </summary>
     public class DataGrid_Cell_MIB : GridCell
     {
-        public string oid;                             // 该单元格内对象的oid;
-        public string MibName_EN;                      // 该单元格内对象的MIB英文名称;
-        public string MibName_CN;                      // 该单元格内对象的MIB中文名称;
         public string m_Content { get; set; }          // 该单元格内要显示的内容;
-        public DataGrid_CellDataType cellDataType;     // 该单元格内显示内容的数据类型;
-        //____________________________________以下是否使用待定;
-        public bool TableType { get; set; }            // 该单元格内保存数据的表类型,True表示带有索引的表，False表示不带索引的表;
-        public string Indexs { get; set; }             // 该单元格的索引;
-
+        
         // 单元格中的对象被拖拽到另一个对象上;
         public override void CellDragawayCallback()
         {
@@ -40,9 +38,27 @@ namespace SCMTMainWindow
         }
     }
 
-    public class DataGrid_Cell_MIB_ENUM : DataGrid_Cell_MIB
+    /// <summary>
+    /// 显示枚举类型的单元格类型;
+    /// </summary>
+    public class DataGrid_Cell_MIB_ENUM : GridCell
     {
+        public List<string> m_AllContent { get; set; }
 
+        public DataGrid_Cell_MIB_ENUM()
+        {
+            m_AllContent = new List<string>();
+        }
+
+        public override void CellDragawayCallback()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void EditingCallback()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class DataGridCell_MIB_MouseEventArgs
