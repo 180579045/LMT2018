@@ -74,7 +74,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnmpErrDescHelper.cs" />
     <Compile Include="SQLiteHelper.cs" />
-    <Compile Include="SQLiteTmp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
