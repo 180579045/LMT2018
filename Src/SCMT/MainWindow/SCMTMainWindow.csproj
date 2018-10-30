@@ -151,7 +151,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Component\Model\DataGrid\DataGrid_Cell_MIB.cs" />
+    <Compile Include="Component\Model\DataGrid\DataGrid_Cell_Model.cs" />
     <Compile Include="Component\SCMTControl\BarChart.xaml.cs">
       <DependentUpon>BarChart.xaml</DependentUpon>
     </Compile>
@@ -199,7 +199,8 @@
     <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
       <DependentUpon>OutputWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DataGrid_CellFactory.cs" />
+    <Compile Include="Controls\DataGrid_CellColumnFactory.cs" />
+    <Compile Include="Controls\DataGridCellFactory.cs" />
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
     <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />

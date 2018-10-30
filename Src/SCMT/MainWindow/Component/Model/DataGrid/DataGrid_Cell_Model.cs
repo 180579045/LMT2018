@@ -7,16 +7,6 @@ using SCMTMainWindow.Component.ViewModel;
 
 namespace SCMTMainWindow
 {
-    /// <summary>
-    /// 单元格内可显示的所有数据类型;
-    /// </summary>
-    public enum DataGrid_CellDataType
-    {
-        enumType = 0,                                  // MIB中的枚举类型;
-        bitType = 1,                                   // MIB中的BIT类型;
-        DateTime = 2,                                  // MIB中的时间类型;
-        RegularType = 3                                // MIB中的字符串、INT等类型;
-    }
     
     /// <summary>
     /// 显示常规字符串内容的单元格类型;
@@ -43,20 +33,28 @@ namespace SCMTMainWindow
     /// </summary>
     public class DataGrid_Cell_MIB_ENUM : GridCell
     {
-        public List<string> m_AllContent { get; set; }
+        public Dictionary<int, string> m_AllContent { get; set; }     // 要显示的数据集合;
+        public string m_ShowContent { get; set; }                     // 当前要显示的内容;
 
         public DataGrid_Cell_MIB_ENUM()
         {
-            m_AllContent = new List<string>();
+            m_AllContent = new Dictionary<int, string>();
         }
 
+        /// <summary>
+        /// 单元格被拖拽后的事件触发;
+        /// </summary>
         public override void CellDragawayCallback()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// 枚举类型单元格被编辑时的事件触发;
+        /// </summary>
         public override void EditingCallback()
         {
+            // 需要留意必须在鼠标双击之后，才会回调该函数;
             throw new NotImplementedException();
         }
     }
