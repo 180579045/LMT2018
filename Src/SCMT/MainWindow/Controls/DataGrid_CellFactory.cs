@@ -17,6 +17,7 @@ namespace SCMTMainWindow.Controls
         {
             switch(cell.cellDataType)
             {
+                // 常规显示字符的单元格;
                 case DataGrid_CellDataType.RegularType:
                     DataGridTextColumn textColumn = new DataGridTextColumn();
 

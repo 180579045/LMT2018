@@ -246,7 +246,7 @@ namespace LmtbSnmp
 		/// 2.如果是枚举值，就返回strValue对应的取值
 		/// 3.
 		/// </summary>
-		/// <param name="mibName"></param>
+		/// <param name="mibName">MIB节点名</param>
 		/// <param name="strValue"></param>
 		/// <param name="targetIp"></param>
 		/// <returns></returns>
@@ -258,6 +258,7 @@ namespace LmtbSnmp
 			}
 
 			var retData = GetMibNodeInfoByName(mibName, targetIp);
+
 			if (null == retData)
 			{
 				return null;
