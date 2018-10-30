@@ -253,7 +253,7 @@ namespace SCMTOperationCore.Control
 		/// 获取基站是4G还是5G站
 		/// </summary>
 		/// <param name="targetIp"></param>
-		public EnbTypeEnum GetNodebGridByIp(string targetIp)
+		public EnbTypeEnum GetEnbTypeByIp(string targetIp)
 		{
 			var el = GetNodeByIp(targetIp) as NodeB;
 			return el?.NodeType ?? EnbTypeEnum.ENB_NULL;

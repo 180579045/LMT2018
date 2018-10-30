@@ -9,18 +9,29 @@ using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan
 {
+	public enum RecordDataType
+	{
+		Original,		// 从enb中查到的原始值
+		NewAdd,			// 新增的信息
+		Modified,		// enb中查到的数据被修改
+		WaitDel			// enb中查到的数据被删除
+	}
+
 	// 设备的属性
 	public class DevAttributeInfo
 	{
 		#region 公有属性
 
-		public string m_strOidIndex { get; private set; }			// 索引
+		public string m_strOidIndex { get; private set; }      // 该条记录的索引，例如板卡索引：.0.0.2
 
-		public Dictionary<string, MibLeafNodeInfo> m_mapAttributes;		// 所有的属性。key:field en name
+		// 所有的属性。key:field en name
+		public Dictionary<string, MibLeafNodeInfo> m_mapAttributes;
 
 		public EnumDevType m_enumDevType;					// 设备类型枚举值
 
 		public readonly bool m_bIsScalar;					// 设备是否是标量表
+
+		public RecordDataType m_recordType { get; set; }					// 记录类型
 
 		#endregion
 
@@ -54,6 +65,7 @@ namespace NetPlan
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
+			InitDevInfo(mEnumDevType, strIndex);
 		}
 
 		/// <summary>
@@ -265,7 +277,41 @@ namespace NetPlan
 			m_mapAttributes = attributes;
 
 			// 还需要加上索引列
-			AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			if (!m_bIsScalar)
+			{
+				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
+		}
+
+		private void InitDevInfo(EnumDevType type, string strIndex)
+		{
+			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
+			var strEntryName = DevTypeHelper.GetEntryNameFromDevType(type);
+			if (null == strEntryName)
+			{
+				return;
+			}
+
+			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, CSEnbHelper.GetCurEnbAddr());
+			if (null == tbl)
+			{
+				return;
+			}
+
+			var indexGrade = tbl.indexNum;
+			var attributes = NPECmdHelper.GetInstance().GetDevAttributesByEntryName(strEntryName);
+			if (null == attributes)
+			{
+				return;
+			}
+
+			m_mapAttributes = attributes;
+
+			// 还需要加上索引列
+			if (!m_bIsScalar)
+			{
+				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
 		}
 
 		/// <summary>
