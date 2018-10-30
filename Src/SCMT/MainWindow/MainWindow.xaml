@@ -195,7 +195,8 @@
                                     <xcad:LayoutAnchorablePane x:Name="Pane">
                                         <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False">
                                             <!-- 显示MIB内容的DataGrid -->
-                                            <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" SelectionMode="Single" HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC" IsReadOnly="True"/>
+                                            <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell"
+                                                      SelectionMode="Single" HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC" IsReadOnly="True"/>
                                         </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>

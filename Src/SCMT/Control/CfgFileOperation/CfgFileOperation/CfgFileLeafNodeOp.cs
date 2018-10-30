@@ -437,7 +437,7 @@ namespace CfgFileOperation
     /// 
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    struct StruMibNode
+    public struct StruMibNode
     {
         ///////////////////////////////////////////////
         public string strMibName;//MibTree的MibName

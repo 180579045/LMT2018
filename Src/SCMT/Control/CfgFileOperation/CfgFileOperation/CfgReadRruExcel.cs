@@ -8,6 +8,9 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CfgFileOperation
 {
+    /// <summary>
+    /// 解析《RRU基本信息表.xls》 rruTypeEntry、rruTypePortEntry
+    /// </summary>
     class CfgReadRruExcel
     {
         private List<Dictionary<string, string>> RruInfo = null;//总的东西
@@ -78,7 +81,7 @@ namespace CfgFileOperation
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strSheet))
                 return;
-            CfgFileExcelReadWrite excelOp = new CfgFileExcelReadWrite();
+            CfgExcelOp excelOp = new CfgExcelOp();
             if (excelOp == null)
                 return;
 
