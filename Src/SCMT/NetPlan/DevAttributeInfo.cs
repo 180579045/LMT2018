@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 
@@ -217,6 +218,61 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 获取指定字段的值
+		/// </summary>
+		/// <param name="strFieldName">字段名</param>
+		/// <param name="bConvertToNum">枚举值是否需要转换为数字</param>
+		/// <returns>null:字段不存在</returns>
+		public string GetFieldOriginValue(string strFieldName, bool bConvertToNum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException("传入字段名无效");
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"该设备属性中不包含字段{strFieldName}");
+				return null;
+			}
+
+			var originValue = m_mapAttributes[strFieldName].m_strOriginValue;
+			if (bConvertToNum)
+			{
+				// todo 转换函数
+			}
+
+			return originValue;
+		}
+
+		/// <summary>
+		/// 获取字段的最新值
+		/// </summary>
+		/// <param name="strFieldName">字段名</param>
+		/// <param name="bConvertToNum">是否需要转换</param>
+		/// <returns></returns>
+		public string GetFieldLatestValue(string strFieldName, bool bConvertToNum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException("传入字段名无效");
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"该设备属性中不包含字段{strFieldName}");
+				return null;
+			}
+
+			var latestValue = m_mapAttributes[strFieldName].m_strLatestValue;
+			if (null != latestValue && bConvertToNum)
+			{
+				// todo 转换函数
+			}
+
+			return latestValue;
+		}
 
 		#endregion
 
@@ -342,9 +398,32 @@ namespace NetPlan
 
 	}
 
-	// 连接的属性
-	public class LinkAttributeInfo
+	/// <summary>
+	/// rhub设备，需要区分版本
+	/// </summary>
+	public class RHubDevAttri : DevAttributeInfo
 	{
-		
+		public RHubDevAttri(int devIndex, string strDevVersion)
+			: base(EnumDevType.rhub, devIndex)
+		{
+			m_strDevVersion = strDevVersion;
+		}
+
+		public RHubDevAttri(string strIndex, string strDevVersion)
+			: base(EnumDevType.rhub, strIndex)
+		{
+			m_strDevVersion = strDevVersion;
+		}
+
+		public string m_strDevVersion { get; }
+	}
+
+	// 连接的源端或者目的端
+	public struct LinkEndpoint
+	{
+		public EnumDevType devType;		// 设备类型
+		public string strDevIndex;		// 设备索引
+		public EnumPortType portType;	// 端口类型
+		public int nPortNo;				// 端口号
 	}
 }
