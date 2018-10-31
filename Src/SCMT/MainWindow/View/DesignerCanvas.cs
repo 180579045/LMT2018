@@ -188,7 +188,7 @@ namespace SCMTMainWindow.View
                 {
                     //return false;
                 }
-                g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                //g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
 
                 //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
                 //globalDic.Add(strRRUFullName, test);

@@ -325,6 +325,12 @@ namespace SCMTMainWindow.View
             Rectangle targetItem = targetCanvas.Children[0] as Rectangle;
             int soltNum = boardCanvas.Children.IndexOf(targetCanvas);
 
+            //4号槽位不允许进行设置
+            if(soltNum == 4 || soltNum == 5)
+            {
+                return;
+            }
+
             //根据 板卡所在 Canvas 的 索引，判断属于第几行，第几列
             int nColumn = soltNum / boardRow;
             int nRow = soltNum % boardRow;
@@ -367,6 +373,7 @@ namespace SCMTMainWindow.View
                 Label boardNameLabel = new Label();
                 boardNameLabel.Width = 80;
                 boardNameLabel.Height = 25;
+                boardNameLabel.FontSize = 8;
                 boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
                 //为每个光口构造一个名称，根据板卡插槽号和 boardName，也是板卡的名称
                 string strIRName = string.Format("{0}-{1}", boardNameLabel.Content.ToString(), soltNum);
@@ -375,6 +382,7 @@ namespace SCMTMainWindow.View
                 var newBoardInfo = MibInfoMgr.GetInstance().AddNewBoard(soltNum, dlg.strBoardName, dlg.strWorkModel, dlg.strFSM);
                 if (newBoardInfo == null)
                 {
+                    MessageBox.Show("从基站获取数据失败");
                     return;
                 }
 
@@ -465,26 +473,55 @@ namespace SCMTMainWindow.View
         {
             Canvas targetCanvas = sender as Canvas;
 
-            if(targetCanvas.Children != null && targetCanvas.Children.Count > 0)
+            ContextMenu deleteMenu = new ContextMenu();
+
+            MenuItem deleteBoard = new MenuItem();
+            deleteBoard.Header = "删除";
+            deleteBoard.Click += DeleteBoard_Click;
+
+            deleteMenu.Items.Add(deleteBoard);
+
+            targetCanvas.ContextMenu = deleteMenu;
+        }
+
+        /// <summary>
+        /// 右键删除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteBoard_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem targetItem = sender as MenuItem;
+            ContextMenu targetMenu = targetItem.Parent as ContextMenu;
+            Canvas targetCanvas = ContextMenuService.GetPlacementTarget(targetMenu) as Canvas;
+
+            MessageBoxResult result = MessageBox.Show("确定删除吗？", "提示", MessageBoxButton.YesNo);
+
+            if(result == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            if (targetCanvas.Children != null && targetCanvas.Children.Count > 0)
             {
                 //删除之后， Canvas 只有一个 rect 元素，不可以再次删除
-                if(targetCanvas.Children.Count < 2)
+                if (targetCanvas.Children.Count < 2)
                 {
                     return;
                 }
 
                 //首先根据插槽号和板卡名称移除光口信息
                 int nPort = boardCanvas.Children.IndexOf(targetCanvas);
-                Label lbName = targetCanvas.Children[2] as Label;
+                Label lbName = targetCanvas.Children[1] as Label;
                 string strIRName = string.Format("{0}-{1}", lbName.Content.ToString(), nPort);
 
                 //首先从基站删除
-                if(!MyDesigner.g_AllDevInfo.Keys.Contains(strIRName))
+                if (!MyDesigner.g_AllDevInfo.Keys.Contains(strIRName))
                 {
                     MessageBox.Show("没有从设备字典中查找到该设备，请注意");
                     return;
                 }
-                if(!MibInfoMgr.GetInstance().DelDev(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board))
+                if (!MibInfoMgr.GetInstance().DelDev(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board))
                 {
                     MessageBox.Show("从基站侧删除设备失败，请注意");
                     return;
@@ -492,7 +529,7 @@ namespace SCMTMainWindow.View
 
                 for (int i = 1; i < MyDesigner.Children.Count; i++)
                 {
-                    if(MyDesigner.Children[i].GetType().Name == "DesignerItem")
+                    if (MyDesigner.Children[i].GetType().Name == "DesignerItem")
                     {
                         DesignerItem item = MyDesigner.Children[i] as DesignerItem;
                         if ((item.ItemName ?? "") == strIRName)
@@ -682,6 +719,17 @@ namespace SCMTMainWindow.View
             int nColumn = soltNum / boardRow;
             int nRow = soltNum % boardRow;
 
+            //添加一个文字的描述
+            Label boardNameLabel = new Label();
+            boardNameLabel.Width = 80;
+            boardNameLabel.Height = 25;
+            boardNameLabel.FontSize = 8;
+            boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
+            targetCanvas.Children.Add(boardNameLabel);
+
+            Canvas.SetRight(boardNameLabel, 155);
+            Canvas.SetBottom(boardNameLabel, 0);
+
             //添加一个板卡信息的描述
             Ellipse boardNameEllipse = new Ellipse();
             boardNameEllipse.Fill = new SolidColorBrush(Colors.Blue);
@@ -691,16 +739,6 @@ namespace SCMTMainWindow.View
 
             Canvas.SetRight(boardNameEllipse, 210);
             Canvas.SetBottom(boardNameEllipse, 25);
-
-            //添加一个文字的描述
-            Label boardNameLabel = new Label();
-            boardNameLabel.Width = 80;
-            boardNameLabel.Height = 25;
-            boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
-            targetCanvas.Children.Add(boardNameLabel);
-
-            Canvas.SetRight(boardNameLabel, 155);
-            Canvas.SetBottom(boardNameLabel, 0);
 
             targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
 

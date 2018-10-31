@@ -5,16 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SCMTMainWindow.View"
              mc:Ignorable="d" Title="板卡类型"
-             Width="300" Height="330" WindowStartupLocation="CenterScreen">
+             Width="300" Height="300" WindowStartupLocation="CenterScreen">
     <Grid Background="LightGray"  >
         <StackPanel>
             <StackPanel>
                 <GroupBox Header="板卡属性">
                     <Grid >
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
-                            <RowDefinition Height="25"/>
                             <RowDefinition Height="25"/>
                             <RowDefinition Height="50"/>
                             <RowDefinition Height="50"/>
@@ -23,23 +20,15 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="3*"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="机架号：" VerticalAlignment="Center" HorizontalAlignment="Center"  ></TextBlock>
-                        <TextBox x:Name="textBox" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="120" />
                         
-                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="1"  Text="机框号：" VerticalAlignment="Center" />
-                        <TextBox x:Name="textBox1" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="Center" Width="120" />
+                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="0"  Text="板卡类型：" VerticalAlignment="Center" />
+                        <ComboBox x:Name="BoardType" Grid.Row="0" Grid.Column="1" Width="120" Height="21"/>
                         
-                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="2"  Text="插槽号：" VerticalAlignment="Center" />
-                        <TextBox x:Name="textBox2" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="120" />
+                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="1" VerticalAlignment="Center" Height="32" Margin="0,0,0,0" ><Run Text="板卡工"/><LineBreak/><Run Text="作模式："/></TextBlock>
+                        <ComboBox x:Name="workMode" Grid.Row="1" Grid.Column="1" Width="120" Height="21" />
                         
-                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="3"  Text="板卡类型：" VerticalAlignment="Center" />
-                        <ComboBox x:Name="BoardType" Grid.Row="3" Grid.Column="1" Width="120" Height="21"/>
-                        
-                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="4" VerticalAlignment="Center" Height="32" Margin="0,0,0,0" ><Run Text="板卡工"/><LineBreak/><Run Text="作模式："/></TextBlock>
-                        <ComboBox x:Name="workMode" Grid.Row="4" Grid.Column="1" Width="120" Height="21" />
-                        
-                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="5" VerticalAlignment="Center" Height="32" Margin="0,0,0,0" ><Run Text="板卡"/><Run Text="IR"/><LineBreak/><Run Text="帧结构："/></TextBlock>
-                        <ComboBox x:Name="fsm" Grid.Row="5" Grid.Column="1" Width="120" Height="21"/>
+                        <TextBlock  HorizontalAlignment="Center"  Grid.Row="2" VerticalAlignment="Center" Height="32" Margin="0,0,0,0" ><Run Text="板卡"/><Run Text="IR"/><LineBreak/><Run Text="帧结构："/></TextBlock>
+                        <ComboBox x:Name="fsm" Grid.Row="2" Grid.Column="1" Width="120" Height="21"/>
                     </Grid>
                 </GroupBox>
             </StackPanel>
