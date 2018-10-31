@@ -251,9 +251,17 @@ namespace SCMTMainWindow.View
         {
             boardCanvas = new Canvas();
 
+            var boardInfo = NPEBoardHelper.GetInstance().GetShelfByEnbType(SCMTOperationCore.Elements.EnbTypeEnum.ENB_EMB6116);
+
+            if(boardInfo == null)
+            {
+                MessageBox.Show("读取配置文件失败");
+                return;
+            }
+
             //设置 2 列 4 行 的板卡框架
-            boardColumn = 2;
-            boardRow = 4;
+            boardColumn = boardInfo.columnsUI;
+            boardRow = boardInfo.supportPlanSlotNum / boardColumn;
 
             for (int i = 0; i < boardColumn; i++)
             {
@@ -583,43 +591,14 @@ namespace SCMTMainWindow.View
                     boardCanvas.Children.Add(rect);
                 }
 
-                if(pt.X > 0 && pt.X < 240 && pt.Y > 0 && pt.Y < 40)
+                //鼠标的点击位置在板卡范围内
+                if(pt.X > 0 && pt.X < boardColumn * 240 && pt.Y > 0 && pt.Y < boardRow * 40)
                 {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 0);
-                }else if(pt.X > 0 && pt.X < 240 && pt.Y > 40 && pt.Y < 80)
-                {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 40);
-                }
-                else if (pt.X > 0 && pt.X < 240 && pt.Y > 80 && pt.Y < 120)
-                {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 80);
-                }
-                else if (pt.X > 0 && pt.X < 240 && pt.Y > 120 && pt.Y < 160)
-                {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 120);
-                }else if (pt.X > 240 && pt.X < 480 && pt.Y > 0 && pt.Y < 40)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 0);
-                }
-                else if (pt.X > 240 && pt.X < 480 && pt.Y > 40 && pt.Y < 80)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 40);
-                }
-                else if (pt.X > 240 && pt.X < 480 && pt.Y > 80 && pt.Y < 120)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 80);
-                }
-                else if (pt.X > 240 && pt.X < 480 && pt.Y > 120 && pt.Y < 160)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 120);
+                    int nRectLeft = (int)pt.X / 240;
+                    int nRectTop = (int)pt.Y / 40;
+
+                    Canvas.SetLeft(rect, nRectLeft * 240);
+                    Canvas.SetTop(rect, nRectTop * 40);
                 }
                 else
                 {
