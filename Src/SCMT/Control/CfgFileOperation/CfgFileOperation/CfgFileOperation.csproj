@@ -50,6 +50,7 @@
     <Compile Include="CfgReadDBMibTreeToMemory.cs" />
     <Compile Include="CfgReadDBStructMibNode.cs" />
     <Compile Include="CfgReadReclistExcel.cs" />
+    <Compile Include="CfgTableInstanceInfos.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="CfgFileOpStruct.cs" />
     <Compile Include="CfgReadAntennaExcel.cs" />

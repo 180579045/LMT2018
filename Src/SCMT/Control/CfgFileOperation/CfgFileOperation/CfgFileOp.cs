@@ -132,8 +132,8 @@ namespace CfgFileOperation
             for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
                 TableOffset = CreatCfgFile_tabInfo(MibdateSet.Tables[0].Rows[loop], null, strFileToDirectory, TableOffset);
-                if (m_mapTableInfo.Count == 70) // 为了与参考patch_ex.cfg一致，好对比
-                    break;
+                //if (m_mapTableInfo.Count == 70) // 为了与参考patch_ex.cfg一致，好对比
+                //    break;
             }
 
             uint m_tableNum = (uint)m_mapTableInfo.Count;
@@ -279,7 +279,7 @@ namespace CfgFileOperation
                 }
                 CfgFileLeafNodeOp leafNodeOp = new CfgFileLeafNodeOp(leafRow, buflen);
                 tableOp.m_LeafNodes.Add(leafNodeOp);
-                buflen += leafNodeOp.m_struFieldInfo.u16FieldLen;
+                buflen += leafNodeOp.m_struFieldInfo.u16FieldLen;// 如果将来要改实例中某个节点的值，直接用这个字段
             }
             tableOp.m_tabDimen = tableIndexNum;
             return ;

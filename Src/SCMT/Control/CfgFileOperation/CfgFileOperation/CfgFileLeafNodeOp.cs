@@ -38,6 +38,9 @@ namespace CfgFileOperation
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)]
         byte[] u8FieldName;                    /* [48] 字段名 */
+        /// <summary>
+        /// 字段相对记录头偏移量(表实例的内存中的偏移位置 m_cfgInsts)
+        /// </summary>
         public ushort u16FieldOffset;          /* 字段相对记录头偏移量*/
         public ushort u16FieldLen;             /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
         public byte u8FieldType;               /* 字段类型 */
