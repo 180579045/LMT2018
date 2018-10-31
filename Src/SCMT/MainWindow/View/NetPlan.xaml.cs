@@ -21,8 +21,10 @@ using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using SCMTMainWindow.View.Document;
 using System.Windows.Markup;
 using System.Xml;
+using CommonUtility;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using NetPlan;
+using SCMTOperationCore.Control;
 
 namespace SCMTMainWindow.View
 {
@@ -633,7 +635,9 @@ namespace SCMTMainWindow.View
         private void InitNetPlan()
         {
             //初始化是否成功
-            if(NPSnmpOperator.InitNetPlanInfo())
+            MibInfoMgr.GetInstance().GetAllEnbInfo().Clear();            
+
+            if (NPSnmpOperator.InitNetPlanInfo())
             {
                 var allNPInfo = MibInfoMgr.GetInstance().GetAllEnbInfo();
 
@@ -722,7 +726,9 @@ namespace SCMTMainWindow.View
 
             //为每个光口构造一个名称，根据板卡插槽号和 boardName
             string strIRName = string.Format("{0}-{1}", boardNameLabel.Content.ToString(), soltNum);
-            MyDesigner.g_AllDevInfo.Add(strIRName, strDevIndex);
+
+            if(!MyDesigner.g_AllDevInfo.ContainsKey(strIRName))
+                MyDesigner.g_AllDevInfo.Add(strIRName, strDevIndex);
 
             //填充光口，根据获取到的数量进行添加
 

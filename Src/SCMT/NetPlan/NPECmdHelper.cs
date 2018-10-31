@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 using CommonUtility;
 using MIBDataParser.JSONDataMgr;
 using LmtbSnmp;
+using LogManager;
 using MIBDataParser;
+using SCMTOperationCore.Control;
+using SCMTOperationCore.Elements;
 
 namespace NetPlan
 {
@@ -46,16 +49,7 @@ namespace NetPlan
 		{
 			if (string.IsNullOrEmpty(strEntryName))
 			{
-				return null;
-			}
-
-			var npMibEntryList = _npeCmd.EMB6116.NetPlanMibEntrys;
-
-			// 根据MIB入口名得到Get命令
-			var getCmdsList = (from entryObj in npMibEntryList where entryObj.MibEntry.Equals(strEntryName) select entryObj.Get).FirstOrDefault();
-
-			if (null == getCmdsList)
-			{
+				Log.Error("传入MIB表入口名错误");
 				return null;
 			}
 
@@ -63,6 +57,18 @@ namespace NetPlan
 			if (null == target)
 			{
 				throw new CustomException("当前未选中基站");
+			}
+
+			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(target);
+			var npMibEntryList = GetAllMibEntryAndCmds(enbType);
+
+			// 根据MIB入口名得到Get命令
+			var getCmdsList = (from entryObj in npMibEntryList where entryObj.MibEntry.Equals(strEntryName) select entryObj.Get).FirstOrDefault();
+
+			if (null == getCmdsList)
+			{
+				Log.Error("未能获取到Get命令");
+				return null;
 			}
 
 			var ret = new Dictionary<string, MibLeafNodeInfo>();
@@ -106,19 +112,14 @@ namespace NetPlan
 		}
 
 		// 获取所有的mib信息和命令信息
-		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(string strVersion)
+		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(EnbTypeEnum enbType)
 		{
-			if (strVersion == "EMB6116")
+			if (EnbTypeEnum.ENB_EMB6116 == enbType)
 			{
 				return _npeCmd.EMB6116.NetPlanMibEntrys;
 			}
 
-			if (strVersion == "EMB5116")
-			{
-				return _npeCmd.EMB5116.NetPlanMibEntrys;
-			}
-
-			return null;
+			return _npeCmd.EMB5116.NetPlanMibEntrys;
 		}
 
 		/// <summary>
@@ -128,14 +129,14 @@ namespace NetPlan
 		/// <param name="devType"></param>
 		/// <param name="cmdType"></param>
 		/// <returns></returns>
-		public List<string> GetCmdList(EnumDevType devType, EnumSnmpCmdType cmdType, string strVersion = "EMB5116")
+		public List<string> GetCmdList(EnumDevType devType, EnumSnmpCmdType cmdType, EnbTypeEnum enbType)
 		{
-			if (string.IsNullOrEmpty(strVersion) || EnumDevType.unknown == devType)
+			if (EnumDevType.unknown == devType)
 			{
 				return null;
 			}
 
-			var mibEntrys = GetAllMibEntryAndCmds(strVersion);
+			var mibEntrys = GetAllMibEntryAndCmds(enbType);
 			if (null == mibEntrys)
 			{
 				return null;
@@ -270,7 +271,8 @@ namespace NetPlan
 
 	public enum EnumSnmpCmdType
 	{
-		Get = 0,
+		Invalid = -1,
+		Get,
 		Set,
 		Add,
 		Del

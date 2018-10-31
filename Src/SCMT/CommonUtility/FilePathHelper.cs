@@ -244,5 +244,16 @@ namespace CommonUtility
 			var dir = fullPath.Substring(0, pos + 1);
 			return dir;
 		}
-	}
+
+        // 获取lm.dtz文件路径,最后带有/。基站IP为Ipv6时,由于带有冒号：,不能作为文件夹名称使用。需要重新设置。
+        public static string GetIPV6OrIPV4LMDtzFilePath(string targetIp)
+        {
+            string path = targetIp;
+            if(targetIp.Contains(":"))
+            {
+                path = targetIp.Replace(":", "-");
+            }
+            return $"{GetDataPath()}lmdtz/{path}/";
+        }
+    }
 }

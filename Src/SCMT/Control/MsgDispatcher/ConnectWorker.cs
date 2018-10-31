@@ -67,17 +67,19 @@ namespace MsgDispatcher
 				ShowLogHelper.Show("设置FTP服务器信息到网元失败!", ip);
 			}
 
-			//Step 4.匹配MIB版本
-			//MibSyncHelper.MatchMib(ip, mibVersionNo);
+            //Step 4.匹配MIB版本
+            //MibSyncHelper.MatchMib(ip, mibVersionNo);
+            //加载lm.dtz文件
+            //FileTransWorker.UploadMibFile(ip);
 
-			//Step 5.加载Mib到内存中
-			//LoadMibInfotoMemory(ip);
+            //Step 5.加载Mib到内存中
+            //LoadMibInfotoMemory(ip);
 
-			//Step 6.发起数据一致性文件上传
-			//UploadDataConsistencyFile(ip);
+            //Step 6.发起数据一致性文件上传
+            //UploadDataConsistencyFile(ip);
 
-			//Step 7.发起告警日志文件上传
-			FileTransHelper.UploadAlarmLogFile(ip);
+            //Step 7.发起告警日志文件上传
+            FileTransHelper.UploadAlarmLogFile(ip);
 
 			//Setp 8.接入成功后处理
 			HandleConnected(ip);

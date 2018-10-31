@@ -5,6 +5,9 @@ using System.Dynamic;
 
 namespace SCMTMainWindow.Component.ViewModel
 {
+    /// <summary>
+    /// 一个动态MIB表模型,在主界面生成DataGrid的时候,通过该类型生成对应的模型;
+    /// </summary>
     public class DyDataGrid_MIBModel : DynamicObject
     {
         // 用来保存这个动态类型的所有属性;

@@ -125,13 +125,6 @@ namespace LmtbSnmp
 		public abstract SnmpPacket GetNextRequest(Pdu pdu);
 
 		/// <summary>
-		/// GetRequest的对外接口;
-		/// </summary>
-		/// <param name="callback">获得结果后的异步回调</param>
-		/// <param name="PduList">最开始的入参</param>
-		public abstract void GetNextRequest(AsyncCallback callback, List<string> PduList);
-
-		/// <summary>
 		/// 连接代理;
 		/// </summary>
 		/// <param name="Community"></param>
@@ -149,40 +142,7 @@ namespace LmtbSnmp
 
 			return m_target;
 		}
-
-		/// <summary>
-		/// GetNext;
-		/// </summary>
-		protected Dictionary<string, string> GetNext(ref List<string> oid)
-		{
-			SimpleSnmp SnmpMsg = new SimpleSnmp(this.m_DestIPAddr, this.m_Community);
-			Dictionary<string, string> Res = new Dictionary<string, string>();
-			List<string> NextOids = new List<string>();
-			Dictionary<Oid, AsnType> TempRes = new Dictionary<Oid, AsnType>();
-			string[] oidargs;
-
-			if(oid.Count != 0)
-			{
-				oidargs = oid.ToArray();
-				TempRes = SnmpMsg.GetNext(this.m_Version, oidargs);
-				if (TempRes != null)
-				{
-					oid.Clear();
-					foreach (KeyValuePair<Oid, AsnType> entry in TempRes)
-					{
-						Res.Add(entry.Key.ToString(), entry.Value.ToString());
-						oid.Add(entry.Key.ToString());                                // 将Next信息回填;
-					}
-				}
-				else
-				{
-					oid.Clear();
-				}
-			}
-			
-			return Res;
-		}
-
+		
 		/// <summary>
 		/// 将SNMP的DateTime类型转换为字符串
 		/// </summary>
@@ -1349,44 +1309,6 @@ namespace LmtbSnmp
 		{
 			throw new NotImplementedException();
 		}
-		
-		/// <summary>
-		/// GetNext的对外接口
-		/// 该函数会在第一次收到客户端请求后;
-		/// 在每次收到基站的GetResponse之后，都会调用客户端注册的回调函数
-		/// </summary>
-		/// <param name="callback"></param>
-		/// <param name="PduList"></param>
-		public override void GetNextRequest(AsyncCallback callback, List<string> PduList)
-		{
-			SnmpHelperResult res = new SnmpHelperResult();
-			if ((PduList.Count == 0) && (PduList == null))      // 如果PduList内容为空，则不进行处理;
-			{
-				return;
-			}
-			Task tsk = Task.Factory.StartNew(() =>
-			{
-				Dictionary<string, string> NextRest = new Dictionary<string, string>();
-				List<List<string>> AllList = new List<List<string>>();
-				bool GetNextorNot = true;
-
-				AllList.Add(PduList);
-				while(GetNextorNot)
-				{
-
-					NextRest = this.GetNext(ref PduList);           // 得到返回结果;
-					if (PduList.Count == 0)
-					{
-						GetNextorNot = false;
-					}
-					res.SetSNMPReslut(NextRest);
-					callback(res);
-				}
-				return;
-			});
-		}
-
-
 		
 
 	}

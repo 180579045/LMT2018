@@ -53,6 +53,16 @@ namespace CfgFileOperation
         List<CTabInstInfo> m_cfgInsts; //表中每个实例的
         public void m_cfgInsts_add(string strInstantNumVal, byte[] InstMemVal){ m_cfgInsts.Add(new CTabInstInfo( strInstantNumVal,  InstMemVal));}
         public uint get_m_cfgInsts_num() { return (uint)m_cfgInsts.LongCount(); }
+        public List<string> GetCfgInstsInstantNum()
+        {
+            List<string> strIndexL = new List<string>();
+            foreach (var info in m_cfgInsts)
+            {
+                strIndexL.Add(info.GetInstantNum());
+            }
+            return strIndexL;
+
+        }
         /// <summary>
         /// 表信息
         /// </summary>
@@ -61,6 +71,68 @@ namespace CfgFileOperation
         //CDTMapTableInstInfo        m_mapInstInfo;   //索引和实例信息的映射
         //CDTCfgInsts m_cfgInsts;        //表实例
         //CDTIndexMibNodes m_MibNodes;        //读取数据库的信息
+
+        /*********************        reclist 解析后存在的变量                         ***************************/
+        /// <summary>
+        /// reclist 解析后存在的变量 用于记录补丁文件
+        /// </summary>
+        public Dictionary <string, List<string>> m_InstIndex2LeafName = new Dictionary<string, List<string>>();//用于记录补丁文件 key :".0"
+        string m_TableRowStatusName = "";
+        //设置RowStatusName
+        public void SetRowStatusName(string strLeafName)
+        {
+		    m_TableRowStatusName = strLeafName;
+	    }
+        public string GetRowStatusName()
+        {
+            foreach (var leafOp in m_LeafNodes)
+            {
+                if (0 == String.Compare(leafOp.m_struMibNode.strMibSyntax, "RowStatus", true))
+                    return leafOp.m_struMibNode.strMibName;
+            }
+            return "";
+        }
+
+        public bool ReclistWriteValueToBuffer(string strMibNodeName, string strIndex, out CfgFileLeafNodeOp leafNodeOp)
+        {
+            //写实例信息
+            bool bFind = false;
+            CTabInstInfo pInstInfo = null;
+            leafNodeOp = null;
+            //
+            if (m_cfgInsts.FindIndex(e => e.GetInstantNum() == strIndex) != -1)
+            {
+                bFind = true;
+                pInstInfo = m_cfgInsts.Find(e => e.GetInstantNum() == strIndex);
+            }
+            else
+            { return false; }
+
+            byte[] pBuff = pInstInfo.GetInstMem();
+            if (pBuff == null)
+                return false;
+            
+            int Nodeindex = m_LeafNodes.FindIndex(e => String.Compare(e.m_struMibNode.strMibName, strMibNodeName, true) == 0);
+            
+            if (-1 == Nodeindex)
+                return false;
+            else
+            {
+                leafNodeOp = m_LeafNodes[Nodeindex];
+                return true;
+                //m_struFieldInfo = m_LeafNodes[Nodeindex].m_struFieldInfo;
+                //m_struMibNode = m_LeafNodes[Nodeindex].m_struMibNode;
+                //u16FieldLen = m_struFieldInfo.u16FieldLen;
+                //u16FieldOffset = m_struFieldInfo.u16FieldOffset;
+            }
+
+
+            //WriteToBuffer(pBuff, strValue, u16FieldOffset, m_struFieldInfo.u8FieldType, u16FieldLen, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax);
+
+            
+        }
+        /*********************        reclist 解析后存在的变量                         ***************************/
+
 
         /*********************        功能函数(公有)               **************************/
         public CfgTableOp()

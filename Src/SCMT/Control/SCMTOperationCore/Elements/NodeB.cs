@@ -16,8 +16,6 @@ namespace SCMTOperationCore.Elements
 		public Database db { get; set; }                 // 用来全局保存数据库;
 		public IPAddress m_IPAddress;
 
-		// TODO 基站类型：EMB5116，EMB6116
-
 		public NodeB(string neIp, string friendName, ushort nePort = 5000)
 		: base(friendName, IPAddress.Parse(neIp), nePort)
 		{
@@ -25,11 +23,10 @@ namespace SCMTOperationCore.Elements
 			{
 				this.m_IPAddress = IPAddress.Parse(neIp);
 				this.m_ObjTreeDataPath = ConfigFileHelper.ObjTreeReferenceJson;
-
 			}
 			catch(Exception e)
 			{
-				MessageBox.Show("加载对象树文件失败;" + e.ToString());
+				MessageBox.Show("加载对象树文件失败;" + e);
 			}
 
 
@@ -52,6 +49,11 @@ namespace SCMTOperationCore.Elements
 			}
 		}
 
+		public void SetType(EnbTypeEnum type)
+		{
+			NodeType = type;
+		}
+
 		#region 公共属性
 
 		public EnbTypeEnum NodeType { get; protected set; }
@@ -65,6 +67,7 @@ namespace SCMTOperationCore.Elements
 		ENB_TLB60A = 2,
 		ENB_EMB5216 = 3,
 		EMB5132_DTLTE = 4,
-		ENB_EMB5116 = 5
+		ENB_EMB5116 = 5,
+		ENB_EMB6116 = 10
 	};
 }

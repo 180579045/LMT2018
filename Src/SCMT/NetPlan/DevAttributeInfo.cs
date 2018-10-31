@@ -4,23 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan
 {
+	public enum RecordDataType
+	{
+		Original,		// 从enb中查到的原始值
+		NewAdd,			// 新增的信息
+		Modified,		// enb中查到的数据被修改
+		WaitDel			// enb中查到的数据被删除
+	}
+
 	// 设备的属性
 	public class DevAttributeInfo
 	{
 		#region 公有属性
 
-		public string m_strOidIndex { get; private set; }			// 索引
+		public string m_strOidIndex { get; private set; }      // 该条记录的索引，例如板卡索引：.0.0.2
 
-		public Dictionary<string, MibLeafNodeInfo> m_mapAttributes;		// 所有的属性。key:field en name
+		// 所有的属性。key:field en name
+		public Dictionary<string, MibLeafNodeInfo> m_mapAttributes;
 
 		public EnumDevType m_enumDevType;					// 设备类型枚举值
 
 		public readonly bool m_bIsScalar;					// 设备是否是标量表
+
+		public RecordDataType m_recordType { get; set; }					// 记录类型
 
 		#endregion
 
@@ -54,6 +66,7 @@ namespace NetPlan
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
+			InitDevInfo(mEnumDevType, strIndex);
 		}
 
 		/// <summary>
@@ -205,6 +218,61 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 获取指定字段的值
+		/// </summary>
+		/// <param name="strFieldName">字段名</param>
+		/// <param name="bConvertToNum">枚举值是否需要转换为数字</param>
+		/// <returns>null:字段不存在</returns>
+		public string GetFieldOriginValue(string strFieldName, bool bConvertToNum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException("传入字段名无效");
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"该设备属性中不包含字段{strFieldName}");
+				return null;
+			}
+
+			var originValue = m_mapAttributes[strFieldName].m_strOriginValue;
+			if (bConvertToNum)
+			{
+				// todo 转换函数
+			}
+
+			return originValue;
+		}
+
+		/// <summary>
+		/// 获取字段的最新值
+		/// </summary>
+		/// <param name="strFieldName">字段名</param>
+		/// <param name="bConvertToNum">是否需要转换</param>
+		/// <returns></returns>
+		public string GetFieldLatestValue(string strFieldName, bool bConvertToNum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException("传入字段名无效");
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"该设备属性中不包含字段{strFieldName}");
+				return null;
+			}
+
+			var latestValue = m_mapAttributes[strFieldName].m_strLatestValue;
+			if (null != latestValue && bConvertToNum)
+			{
+				// todo 转换函数
+			}
+
+			return latestValue;
+		}
 
 		#endregion
 
@@ -265,7 +333,41 @@ namespace NetPlan
 			m_mapAttributes = attributes;
 
 			// 还需要加上索引列
-			AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			if (!m_bIsScalar)
+			{
+				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
+		}
+
+		private void InitDevInfo(EnumDevType type, string strIndex)
+		{
+			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
+			var strEntryName = DevTypeHelper.GetEntryNameFromDevType(type);
+			if (null == strEntryName)
+			{
+				return;
+			}
+
+			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, CSEnbHelper.GetCurEnbAddr());
+			if (null == tbl)
+			{
+				return;
+			}
+
+			var indexGrade = tbl.indexNum;
+			var attributes = NPECmdHelper.GetInstance().GetDevAttributesByEntryName(strEntryName);
+			if (null == attributes)
+			{
+				return;
+			}
+
+			m_mapAttributes = attributes;
+
+			// 还需要加上索引列
+			if (!m_bIsScalar)
+			{
+				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
 		}
 
 		/// <summary>
@@ -296,9 +398,32 @@ namespace NetPlan
 
 	}
 
-	// 连接的属性
-	public class LinkAttributeInfo
+	/// <summary>
+	/// rhub设备，需要区分版本
+	/// </summary>
+	public class RHubDevAttri : DevAttributeInfo
 	{
-		
+		public RHubDevAttri(int devIndex, string strDevVersion)
+			: base(EnumDevType.rhub, devIndex)
+		{
+			m_strDevVersion = strDevVersion;
+		}
+
+		public RHubDevAttri(string strIndex, string strDevVersion)
+			: base(EnumDevType.rhub, strIndex)
+		{
+			m_strDevVersion = strDevVersion;
+		}
+
+		public string m_strDevVersion { get; }
+	}
+
+	// 连接的源端或者目的端
+	public struct LinkEndpoint
+	{
+		public EnumDevType devType;		// 设备类型
+		public string strDevIndex;		// 设备索引
+		public EnumPortType portType;	// 端口类型
+		public int nPortNo;				// 端口号
 	}
 }

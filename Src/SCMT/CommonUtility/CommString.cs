@@ -67,6 +67,19 @@ namespace CommonUtility
 		public const string IDS_RECEIVE = "收到";
 		public const string IDS_INFOMSGSTYLE = "被管对象: {0},值为: {1}";
 		public const string IDS_UNITNAME = "单位/精度: ";
+		public const string IDS_ANR_EVENT_TYPE = "ANR事件类型: ";
+		public const string IDS_ANR_NOTILCIDX = "本小区索引: ";
+		public const string IDS_ANR_NOTI_ADJ_RELATION_IDX = "邻区关系索引: ";
+		public const string IDS_ANR_NOTI_ADJ_CELL_NET_TYPE = "邻区网络类型: ";
+		public const string IDS_ANR_NOTI_ADJ_CELL_PLMN_MCC = "邻区移动国家码: ";
+		public const string IDS_ANR_NOTI_ADJ_CELL_PLMN_MNC = "邻区移动网络码: ";
+		public const string IDS_ANR_NOTI_ADJ_CELL_ID = "邻区索引: ";
+		public const string DIS_EVNET_RESULT = "事件结果: ";
+		public const string DIS_EVENT_FAIL_RSULT = "事件失败原因: ";
+		public const string DIS_EVENT_TIME = "事件产生时间: ";
+		public const string DIS_MRO_EVENT_TYPE = "MRO事件类型: ";
+		public const string DIS_MRO_NOTI_CELL_ID = "小区索引: ";
+		public const string DIS_FC_EVENT_TYPE = "FC事件类型: ";
 
 	}
 }

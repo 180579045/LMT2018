@@ -33,6 +33,8 @@ namespace SCMTOperationCore.Control
 
 		#endregion
 
+		#region 公共接口
+
 		/// <summary>
 		/// 初始化已存在的节点信息
 		/// </summary>
@@ -246,6 +248,25 @@ namespace SCMTOperationCore.Control
 
 			return null;
 		}
+
+		/// <summary>
+		/// 获取基站是4G还是5G站
+		/// </summary>
+		/// <param name="targetIp"></param>
+		public EnbTypeEnum GetEnbTypeByIp(string targetIp)
+		{
+			var el = GetNodeByIp(targetIp) as NodeB;
+			return el?.NodeType ?? EnbTypeEnum.ENB_NULL;
+		}
+
+
+		public void SetNodebGridByIp(string targetIp, EnbTypeEnum st)
+		{
+			var el = GetNodeByIp(targetIp) as NodeB;
+			el?.SetType(st);
+		}
+
+		#endregion
 
 		#region 私有函数区
 

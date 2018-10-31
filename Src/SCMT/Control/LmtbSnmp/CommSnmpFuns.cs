@@ -88,6 +88,57 @@ namespace LmtbSnmp
 		}
 
 		/// <summary>
+		/// 根据取值列表把Mib的数值翻译成实际的意义，或把实际意义翻译成数值
+		/// </summary>
+		/// <param name="strMibValueList"></param>
+		/// <param name="strMibValue"></param>
+		/// <param name="strReValue"></param>
+		/// <param name="isValueToDesc"></param>
+		/// <returns></returns>
+		public static bool TranslateMibValue(string strMibValueList, string strMibValue
+												, out string strReValue, bool isValueToDesc = true)
+		{
+			strReValue = "";
+
+			// 根据mib值获取描述或根据描述获取mib值
+			if (!string.IsNullOrEmpty(strMibValueList))
+			{
+				string[] keyValList = strMibValueList.Split('/');
+				foreach (string item in keyValList)
+				{
+					string[] keyVal = item.Split(':');
+					if (keyVal.Count() >= 2)
+					{
+						if (isValueToDesc) //值翻译为描述
+						{
+							if (string.Equals(strMibValue, keyVal[0], StringComparison.OrdinalIgnoreCase))
+							{
+								strReValue = keyVal[1];
+								break;
+							}
+						}
+						else // 描述翻译为值
+						{
+							if (string.Equals(strMibValue, keyVal[1], StringComparison.OrdinalIgnoreCase))
+							{
+								strReValue = keyVal[0];
+								break;
+							}
+						}
+					}
+
+				}
+			}
+
+			// 如果没有获取到，将mib值返回
+			if (string.IsNullOrEmpty(strReValue))
+			{
+				strReValue = strMibValue;
+			}
+			return true;
+		}
+
+		/// <summary>
 		/// 将Bits类型的数值翻译成具体的位描述意义
 		/// </summary>
 		/// <param name="strBitsTypeValue"></param>

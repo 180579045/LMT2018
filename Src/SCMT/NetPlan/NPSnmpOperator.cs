@@ -10,47 +10,20 @@ using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
+using SCMTOperationCore.Control;
+using SCMTOperationCore.Elements;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
-using ONE_DEV_ATTRI_INFO = System.Collections.Generic.List<NetPlan.MibLeafNodeInfo>;
 
 namespace NetPlan
 {
+
+
 	/// <summary>
 	/// 网规snmp相关的操作
 	/// </summary>
 	public class NPSnmpOperator
 	{
 		#region 公共接口
-
-		/// <summary>
-		/// 设置NR网元布配控制开关状态
-		/// </summary>
-		/// <param name="bOpen">true:打开开关，false:关闭开关</param>
-		/// <param name="strIndex">索引</param>
-		/// <param name="targetIp">目标基站地址</param>
-		/// <returns>true:设置成功,false:设置失败</returns>
-		public static bool SetNetPlanSwitch(bool bOpen, string strIndex, string targetIp)
-		{
-			if (string.IsNullOrEmpty(strIndex) || string.IsNullOrEmpty(targetIp))
-			{
-				Log.Error("设置网规开关功能传入参数错误");
-				return false;
-			}
-
-			var strIndexTemp = strIndex.Trim('.');      // 去掉索引字符串前后的.
-			strIndexTemp = $".{strIndexTemp}";
-
-			var name2Value = new DIC_DOUBLE_STR();
-			name2Value["nrNetLocalCellCtrlConfigSwitch"] = (bOpen ? "1" : "0");
-
-			const string cmd = "SetNRNetwokPlanControlSwitch";
-			long reqId;
-			var pdu = new CDTLmtbPdu();
-
-			var ret = CDTCmdExecuteMgr.CmdSetSync(cmd, out reqId, name2Value, strIndexTemp, targetIp, ref pdu);
-
-			return (0 == ret);
-		}
 
 		/// <summary>
 		/// 传入命令名查询网规信息
@@ -159,7 +132,15 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool InitNetPlanInfo()
 		{
-			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds("EMB5116");
+			var curEnbIP = CSEnbHelper.GetCurEnbAddr();
+			if (null == curEnbIP)
+			{
+				Log.Error("尚未选择连接的基站");
+				return false;
+			}
+
+			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIP);
+			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(enbType);
 			if (null == mibEntryList)
 			{
 				Log.Error("查询所有的MIB入口及对应命令失败");

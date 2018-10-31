@@ -5,6 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
+/// <summary>
+/// 在SCMT中负责前端Echarts显示的C#端模型;
+/// </summary>
 namespace SCMTMainWindow
 {
     public class EChartJS
