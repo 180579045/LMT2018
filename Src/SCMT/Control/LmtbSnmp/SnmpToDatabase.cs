@@ -528,7 +528,7 @@ namespace LmtbSnmp
         /// </summary>
         /// <param name="mibName">Mib节点名称</param>
         /// <param name="targetIp">目标IP</param>
-        /// <returns></returns>
+        /// <returns>对应Mib节点在LMT显示上的数据类型</returns>
         public static DataGrid_CellDataType GetMibNodeDataType(string mibName, string targetIp)
         {
             if (string.IsNullOrEmpty(mibName) || string.IsNullOrEmpty(targetIp))
