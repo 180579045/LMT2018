@@ -25,6 +25,7 @@ using CommonUtility;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using NetPlan;
 using SCMTOperationCore.Control;
+using SCMTOperationCore;
 
 namespace SCMTMainWindow.View
 {
@@ -324,7 +325,7 @@ namespace SCMTMainWindow.View
             if (e.ClickCount == 2)
             {
                 //从后台获取板卡信息
-                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum);
+                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum, SCMTOperationCore.Elements.EnbTypeEnum.ENB_EMB6116);
 
                 ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
                 dlg.ShowDialog();
