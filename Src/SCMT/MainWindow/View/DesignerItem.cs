@@ -14,11 +14,21 @@ namespace SCMTMainWindow.View
     [TemplatePart(Name = "PART_ContentPresenter", Type = typeof(ContentPresenter))]
     public class DesignerItem : ContentControl, ISelectable, IGroupable
     {
+        //新加的 具体某个网元的名称，也就是 ID
         private string itemName;
         public string ItemName
         {
             get { return itemName; }
             set { itemName = value; }
+        }
+
+        //新加一个通道数 属性，保存当前网元的通道数，区别大于16通道的一些网元
+        private int nPathNumber;
+        public int NPathNumber
+        {
+            get { return nPathNumber; }
+            set { nPathNumber = value; }
+
         }
 
         #region ID

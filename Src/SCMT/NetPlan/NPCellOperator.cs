@@ -19,7 +19,8 @@ namespace NetPlan
 		/// <summary>
 		/// 设置网元布配控制开关状态
 		/// 布配开关的特殊性：在最后点击下发网规参数时才关闭，所以此处立即下发到基站
-		/// 最后下发网规信息时，可以直接下发本地小区相关的参数
+		/// 最后下发网规信息时，可以直接下发本地小区相关的参数，不需要先打开布配开关，再下发参数
+		/// 调用时机：1.右键菜单：进行小区规划 点击事件；2.下发小区参数后调用，关闭布配开关
 		/// </summary>
 		/// <param name="bOpen">true:打开开关，false:关闭开关</param>
 		/// <param name="strIndex">索引</param>
@@ -335,7 +336,7 @@ namespace NetPlan
 				return false;
 			}
 
-			// 统一处理方式，enb中的信息也不立即下发
+			// 统一处理方式，从enb中的查到的信息也不立即下发
 			// 删除本地小区网规信息
 			if (!MibInfoMgr.GetInstance().DelDev($".{nLocalCellId}", EnumDevType.nrNetLc))
 			{

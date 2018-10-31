@@ -206,7 +206,7 @@
   <Grid x:Name="g_FourPathRRU">
     <Grid.RowDefinitions>
       <RowDefinition Height="50"></RowDefinition>
-      <RowDefinition Height="30"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
     </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource FourPathRRU}"

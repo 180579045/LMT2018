@@ -2,11 +2,6 @@
 using LmtbSnmp;
 using LogManager;
 using MsgQueue;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataSync
 {
@@ -39,7 +34,7 @@ namespace DataSync
 			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_CfgChgTrap, bytes);
 
-            return true;
+			return true;
 		}
 	}
 }
