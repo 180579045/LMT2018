@@ -85,8 +85,8 @@
                                 <Expander Header="Shapes" Content="{StaticResource ShapeStencils}" IsExpanded="True"/>
                             </avalondock:LayoutAnchorable>
                         </avalondock:LayoutAnchorablePane>
-                        <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*" >
-                            <avalondock:LayoutAnchorable Title="网络规划">
+                        <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*">
+                            <avalondock:LayoutAnchorable Title="网络规划" Closed="LayoutAnchorable_Closed" CanClose="True">
                                 <Grid x:Name="gridNetPlan">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="30"/>

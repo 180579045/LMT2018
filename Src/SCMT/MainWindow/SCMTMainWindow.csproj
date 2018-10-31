@@ -263,6 +263,9 @@
       <DependentUpon>NetPlan.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PathFinder.cs" />
+    <Compile Include="View\RRUpoint2Cell.xaml.cs">
+      <DependentUpon>RRUpoint2Cell.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RubberbandAdorner.cs" />
     <Compile Include="View\SelectionService.cs" />
     <Compile Include="View\Toolbox.cs" />
@@ -418,6 +421,10 @@
     <Page Include="View\Resources\ToolboxItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RRUpoint2Cell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
