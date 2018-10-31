@@ -603,7 +603,7 @@ namespace NetPlan
 					}
 				}
 
-				// todo 要反向设置吗到map中吗？ 记录的record type尚未设置
+				// todo 要反向设置吗到map中吗？不需要。 记录的record type尚未设置
 
 				lock (_syncObj)
 				{
@@ -1129,8 +1129,9 @@ namespace NetPlan
 			}
 
 			var devIndex = dev.m_strOidIndex;
-			if (null != HasSameIndexDev(type, devIndex))
+			if (HasSameIndexDev(type, devIndex))
 			{
+				Log.Error($"存在相同类型{type.ToString()}相同索引{devIndex}的设备");
 				return null;
 			}
 			dev.m_recordType = RecordDataType.NewAdd;
