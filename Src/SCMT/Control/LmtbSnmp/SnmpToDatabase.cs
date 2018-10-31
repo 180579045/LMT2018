@@ -576,8 +576,7 @@ namespace LmtbSnmp
 			{
 				return DataGrid_CellDataType.DateTime;
 			}
-
-			
+            
 //             else if (omType.Equals("u8[]"))
 //             {
 //                 if (asnType.Equals("DateAndTime"))
