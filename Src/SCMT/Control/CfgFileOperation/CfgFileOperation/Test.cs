@@ -20,9 +20,9 @@ namespace CfgFileOperation
         static void Main(string[] args)
         {
 
-            new Test().testForReadRecList();
+            new Test().testForReadRecList();//
 
-            new Test().testLoadMibTreeIntoMem();
+            new Test().testLoadMibTreeIntoMem();//
 
             new Test().testForReadExcelRruType();
 
@@ -47,6 +47,7 @@ namespace CfgFileOperation
 
         void testForReadRecList()
         {
+            // 加载lm.mdb到内存
             CfgOp cfgOp = new CfgOp();
             string strCfgFileName = "";
             string FileToDirectory = "";
@@ -54,6 +55,7 @@ namespace CfgFileOperation
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
             cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
 
+            // reclist
             CfgReadReclistExcel reclist = new CfgReadReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
