@@ -47,7 +47,16 @@ namespace NetPlan
 			var ret = CDTCmdExecuteMgr.CmdSetSync(cmd, out reqId, name2Value, strIndexTemp, targetIp, ref pdu);
 			if (0 != ret)
 			{
-				Log.Error($"下发本地小区布配开关命令{cmd}失败");
+				if (2 == ret)
+				{
+					var desc = SnmErrorCodeHelper.GetInstance().GetLastErrorDesc();
+					Log.Error($"下发本地小区布配开关命令{cmd}失败，原因：{desc}");
+				}
+				else
+				{
+					Log.Error($"下发本地小区布配开关命令{cmd}失败");
+				}
+
 				return false;
 			}
 
@@ -139,7 +148,8 @@ namespace NetPlan
 
 			var strIndexTemp = $".{nCellId}";
 
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
+			var enbType = EnbTypeEnum.ENB_EMB6116;
 			var cmdName = "SetCellActiveTrigger";
 			var name2Value = new DIC_DOUBLE_STR();
 			if (EnbTypeEnum.ENB_EMB6116 == enbType)
@@ -237,7 +247,8 @@ namespace NetPlan
 			}
 
 			// 当布配开关关闭时，需要实时查询本地小区和小区信息。涉及到行状态，且删除小区和本地小区时都下发到基站，内存中没有对应的数据
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
+			var enbType = EnbTypeEnum.ENB_EMB6116;
 			if (EnbTypeEnum.ENB_EMB6116 == enbType)
 			{
 				var cellOperaStatus = CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetNRCellInfo", "nrCellOperationalState", targetIp);

@@ -193,10 +193,17 @@ namespace NetPlan
 		/// <returns></returns>
 		public DevAttributeInfo AddNewBoard(int slot, string strBoardType, string strWorkMode, string strIrFrameType)
 		{
+			if (string.IsNullOrEmpty(strBoardType) || string.IsNullOrEmpty(strWorkMode) ||
+				string.IsNullOrEmpty(strIrFrameType))
+			{
+				throw new ArgumentNullException();
+			}
+
 			const EnumDevType type = EnumDevType.board;
 			var dev = GerenalNewDev(type, slot);
 			if (null == dev)
 			{
+				Log.Error($"生成新设备属性失败，可能已经存在相同索引相同类型的设备");
 				return null;
 			}
 
@@ -204,6 +211,7 @@ namespace NetPlan
 			    !dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode, false) ||
 			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType, false))
 			{
+				Log.Error("设置新板卡属性失败");
 				return null;
 			}
 
@@ -699,40 +707,53 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				if (m_mapAllMibData.ContainsKey(devType) && m_mapAllMibData[devType].Count > 0)
+				if (!m_mapAllMibData.ContainsKey(devType) || m_mapAllMibData[devType].Count <= 0) return true;
+
+				var mibList = m_mapAllMibData[devType];
+				var waitRmList = new List<DevAttributeInfo>();
+
+				foreach (var item in mibList)
 				{
-					var mibList = m_mapAllMibData[devType];
-					foreach (var item in mibList)
+					if (RecordDataType.Original == item.m_recordType)
 					{
-						if (RecordDataType.Original == item.m_recordType)
-						{
-							continue;
-						}
-
-						var cmdType = EnumSnmpCmdType.Invalid;
-						if (RecordDataType.NewAdd == item.m_recordType)
-						{
-							cmdType = EnumSnmpCmdType.Add;
-						}
-						else if (RecordDataType.Modified == item.m_recordType)
-						{
-							cmdType = EnumSnmpCmdType.Set;
-						}
-						else if (RecordDataType.WaitDel == item.m_recordType)
-						{
-							cmdType = EnumSnmpCmdType.Del;
-						}
-
-						if (!DistributeSnmpData(item, cmdType, targetIp))
-						{
-							Log.Error($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败");
-						}
-						else
-						{
-							item.m_recordType = RecordDataType.Original;	// 下发成功的都设置为原始数据
-							Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
-						}
+						continue;
 					}
+
+					var cmdType = EnumSnmpCmdType.Invalid;
+					if (RecordDataType.NewAdd == item.m_recordType)
+					{
+						cmdType = EnumSnmpCmdType.Add;
+					}
+					else if (RecordDataType.Modified == item.m_recordType)
+					{
+						cmdType = EnumSnmpCmdType.Set;
+					}
+					else if (RecordDataType.WaitDel == item.m_recordType)
+					{
+						cmdType = EnumSnmpCmdType.Del;
+					}
+
+					if (!DistributeSnmpData(item, cmdType, targetIp))
+					{
+						Log.Error($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败");
+						return false;
+					}
+
+					if (EnumSnmpCmdType.Del == cmdType)
+					{
+						waitRmList.Add(item);
+					}
+					else
+					{
+						item.m_recordType = RecordDataType.Original;    // 下发成功的都设置为原始数据
+					}
+
+					Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
+				}
+
+				foreach (var wrmDev in waitRmList)
+				{
+					mibList.Remove(wrmDev);
 				}
 			}
 
@@ -1101,14 +1122,17 @@ namespace NetPlan
 					{
 						devList.Remove(dev);
 
-						// 需要比对dev和newDev，把dev的值和newDev的信息合并到一起再加入到修改队列
+						// 需要比对dev和newDev，把dev的值和newDev的信息合并到一起，并修改设备record类型为modify
 						newDev.AdjustOtherDevOriginValueToMyOrigin(dev);
+						newDev.m_recordType = RecordDataType.Modified;
 						AddDevToMap(m_mapAllMibData, type, newDev);
-						break;
 					}
 
 					return true;
 				}
+
+				// 流程走到这里，肯定是在devList中没有找到索引相同的设备
+				AddDevToMap(m_mapAllMibData, type, newDev);
 			}
 
 			return true;
@@ -1125,15 +1149,31 @@ namespace NetPlan
 			var dev = new DevAttributeInfo(type, lastIndexValue);
 			if (dev.m_mapAttributes.Count == 0)
 			{
+				Log.Error($"创建类型为{type.ToString()}最后一个索引值为{lastIndexValue}的新dev失败");
 				return null;
 			}
 
 			var devIndex = dev.m_strOidIndex;
-			if (HasSameIndexDev(type, devIndex))
+
+			List<DevAttributeInfo> devList = null;
+			lock (_syncObj)
 			{
-				Log.Error($"存在相同类型{type.ToString()}相同索引{devIndex}的设备");
-				return null;
+				if (m_mapAllMibData.ContainsKey(type))
+				{
+					devList = m_mapAllMibData[type];
+				}
 			}
+
+			if (null != devList)
+			{
+				var oldDev = GetSameIndexDev(devList, devIndex);
+				if (null != oldDev && RecordDataType.WaitDel != oldDev.m_recordType)
+				{
+					Log.Error($"存在相同类型{type.ToString()}相同索引{devIndex}的设备");
+					return null;
+				}
+			}
+
 			dev.m_recordType = RecordDataType.NewAdd;
 
 			return dev;
@@ -1250,7 +1290,8 @@ namespace NetPlan
 				throw new CustomException("下发网规信息功能传入SNMP命令类型错误");
 			}
 
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
+			var enbType = EnbTypeEnum.ENB_EMB6116;
 			var cmdList = NPECmdHelper.GetInstance().GetCmdList(devAttribute.m_enumDevType, cmdType, enbType);
 			if (null == cmdList || 0 == cmdList.Count)
 			{
@@ -1288,7 +1329,16 @@ namespace NetPlan
 				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, devAttribute.m_strOidIndex, targetIp);
 				if (0 != ret)
 				{
-					Log.Error($"下发命令{cmdName}失败");
+					if (2 == ret)
+					{
+						var desc = SnmErrorCodeHelper.GetInstance().GetLastErrorDesc();
+						Log.Error($"下发命令{cmdName}失败，原因：{desc}");
+					}
+					else
+					{
+						Log.Error($"下发命令{cmdName}失败");
+					}
+
 					return false;       // TODO 一个设备信息下发失败是要结束整个过程吗？
 				}
 			}

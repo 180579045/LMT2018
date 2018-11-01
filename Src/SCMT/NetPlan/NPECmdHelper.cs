@@ -59,7 +59,8 @@ namespace NetPlan
 				throw new CustomException("当前未选中基站");
 			}
 
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(target);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(target);
+			var enbType = EnbTypeEnum.ENB_EMB6116;
 			var npMibEntryList = GetAllMibEntryAndCmds(enbType);
 
 			// 根据MIB入口名得到Get命令

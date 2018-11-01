@@ -8,6 +8,7 @@ using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Control;
+using SCMTOperationCore.Elements;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NetPlan
@@ -135,8 +136,8 @@ namespace NetPlan
 				return false;
 			}
 
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIP);
-			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(enbType);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIP);
+			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(EnbTypeEnum.ENB_EMB6116);
 			if (null == mibEntryList)
 			{
 				Log.Error("查询所有的MIB入口及对应命令失败");
