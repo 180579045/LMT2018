@@ -33,10 +33,6 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="LinkPath, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Control\LinkPath\obj\Debug\LinkPath.dll</HintPath>
-    </Reference>
     <Reference Include="LmtbSnmp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Control\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
@@ -97,6 +93,10 @@
     <ProjectReference Include="..\CommonUtility\CommonUtility.csproj">
       <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
       <Name>CommonUtility</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\LinkPath\LinkPath.csproj">
+      <Project>{f3cae40a-a1d7-4a0b-80da-a09dde0b8ef5}</Project>
+      <Name>LinkPath</Name>
     </ProjectReference>
     <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
