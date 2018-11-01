@@ -527,7 +527,7 @@ namespace CfgFileOperation
         /// 把
         /// </summary>
         /// <param name="strTabName"></param>
-        void InsertPdgTab(string strTabName)
+        public void InsertPdgTab(string strTabName)
         {
             if (m_vectPDGTabName.FindIndex(e => e.Equals(strTabName)) != -1) //不存在：返回-1，存在：返回位置。
                 m_vectPDGTabName.Add(strTabName);

@@ -57,6 +57,7 @@ namespace CfgFileOperation
                 Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strCondition);//
                 if (wks == null)
                     return;
+
             }
         }
 
@@ -93,7 +94,72 @@ namespace CfgFileOperation
 
         void ExportSelfExcelForPatch(Excel.Worksheet wks, CfgOp cfgOp)
         {
+            int rowCount = GetEndLineNum(wks);                                        // 获取行数
+            Dictionary<string, object[,]> ColVals = GetSheetColInfos(wks, rowCount);  // 获取所有sheet 每col的数据
+            string strCurTableName = "";                                              // 保存当前表名
+            string strCurIndex = "";                                                  // 保存当前索引
+            for (int currentLine = 2; currentLine < rowCount + 1; currentLine++)      // 逐行分析
+            {
+                if (!IsExistTableName(cfgOp, ColVals, currentLine))                   //判断 : 查看是否有这个表
+                    break;//
 
+                string TableName = GetCellValue(ColVals, currentLine, "TableName");   //表名
+                string Index = GetCellValue(ColVals, currentLine, "Index");           //索引
+                string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     //叶子名
+                string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   //叶子值
+                strCurTableName = SetCurTableName(TableName, strCurTableName);      //更新表名
+                strCurIndex = SetCurIndex(Index, strCurIndex);                      //更新索引
+
+                //
+                if (0 == String.Compare("-1", Index, true))
+                {
+                    ////做补丁文件
+                    //pCfgOp->InsertPdgTab(strCurTableName);
+                    cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);
+
+                    //CDTCfgInsts vectInstInfo = pCurTabOp->GetInstInfo();
+                    //CDTCfgInsts::iterator itFind = vectInstInfo.begin();
+                    //for (; itFind != vectInstInfo.end(); itFind++)
+                    //{
+                    //    CTabInstInfo* pInstInfo = *itFind;
+                    //    CString strInstIndex = pInstInfo->strInstantNum;
+
+                    //    //找到每个实例下的所有叶子
+                    //    CDTIndexMibNodes vect_MibNode = pCurTabOp->GetMIBNode();
+                    //    if (vect_MibNode.size() != 0)
+                    //    {
+                    //        for (int i = 0; i < vect_MibNode.size(); i++)
+                    //        {
+                    //            CString strNodeName = "";
+                    //            Stru_MibNode* pMibNode = vect_MibNode[i];
+                    //            if (pMibNode != NULL)
+                    //            {
+                    //                //节点名字
+                    //                strNodeName = pMibNode->strMibName;
+                    //            }
+                    //            //做补丁文件
+                    //            pCurTabOp->InsertInstOrLeaf(strInstIndex, strNodeName);
+                    //        }
+                    //    }
+                    //}
+                    continue;
+                }
+                else if (0 != String.Compare("", Index, true))
+                {
+                    ////做补丁文件
+                    //pCfgOp->InsertPdgTab(strCurTableName);
+
+                    //if (0 < strIndex.Find('_'))
+                    //{
+                    //    strIndex.Replace("_", ".");
+                    //    strCurIndex = "." + strIndex;
+                    //}
+                    //else
+                    //{
+                    //    strCurIndex = "." + strIndex;
+                    //}
+                }
+            }
         }
 
         /// <summary>

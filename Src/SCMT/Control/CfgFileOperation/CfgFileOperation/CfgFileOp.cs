@@ -17,6 +17,14 @@ namespace CfgFileOperation
     /// </summary>
     class CfgOp
     {
+        public CfgParseDBMibTreeToMemory mibTreeLineMen = null;
+
+        public CfgParseAlarmExecl m_alarmExcel = null;
+        public CfgParseAntennaExcel m_antennaExcel = null;
+        public CfgParseReclistExcel m_reclistExcel = null;
+        public CfgParseRruExcel m_rruExcel = null;
+        public CfgParseSelfExcel m_selfExcel = null;
+        
         /// <summary>
         /// key:tableName; value : ClassCfgTableOp>
         /// </summary>
@@ -982,9 +990,7 @@ namespace CfgFileOperation
                     omValue = (uint)int.Parse(value);
                 SetValueToByteArray(byteArray, bytePosL, omValue);
             }
-        }
-
-        
+        }       
         private void SetValueToByteArray(List<byte[]> byteAL, List<int> bytePosL, object objParm)
         {
             if (objParm is byte)
