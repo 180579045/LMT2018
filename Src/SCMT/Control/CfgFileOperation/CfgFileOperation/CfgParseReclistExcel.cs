@@ -14,9 +14,9 @@ namespace CfgFileOperation
     /// 5G ： 解析 《参数标定手册》 文件
     /// 格式和逻辑相近
     /// </summary>
-    class CfgReadReclistExcel
+    class CfgParseReclistExcel
     {
-        CfgReadDBMibTreeToMemory mibTreeMem = null;// 操作读取数据库 lm.mdb 把mibTree 安行顺序读入内存
+        CfgParseDBMibTreeToMemory mibTreeMem = null;// 操作读取数据库 lm.mdb 把mibTree 安行顺序读入内存
 
         List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
 
@@ -37,7 +37,7 @@ namespace CfgFileOperation
         Dictionary<string, string> SheetCellColUe0;
         Dictionary<string, string> SheetGNBColUe0;
 
-        public CfgReadReclistExcel()
+        public CfgParseReclistExcel()
         {
             // sheet Cell参数表
             string[] UeType = new string[] { "0:默认", "1:展讯", "2:e500", "3:华为" };
@@ -681,7 +681,7 @@ namespace CfgFileOperation
         void ProcessingMdbData(string strFileToDirectory)
         {
             //string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
-            mibTreeMem = new CfgReadDBMibTreeToMemory();
+            mibTreeMem = new CfgParseDBMibTreeToMemory();
             mibTreeMem.ReadMibTreeToMemory(strFileToDirectory);
 
         }

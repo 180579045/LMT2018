@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace CfgFileOperation
 {
+    /// <summary>
+    /// 自定义_初配数据文件
+    /// </summary>
     class CfgParseSelfExcel
     {
+
     }
 }
