@@ -30,15 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonUtility">
-      <HintPath>..\..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="DataBaseUtil">
-      <HintPath>..\DataBaseUtil\bin\Debug\DataBaseUtil.dll</HintPath>
-    </Reference>
-    <Reference Include="DataSync">
-      <HintPath>..\DataSync\obj\Debug\DataSync.dll</HintPath>
-    </Reference>
     <Reference Include="LmtbSnmp">
       <HintPath>..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
     </Reference>
@@ -88,6 +79,14 @@
       <Project>{24d21fc0-59b8-4208-aa1d-1b30d3f3c101}</Project>
       <Name>SuperLMT.Utils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DataBaseUtil\DataBaseUtil.csproj">
+      <Project>{45fbffcf-17f9-4649-bffd-8894acd01aff}</Project>
+      <Name>DataBaseUtil</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataSync\DataSync.csproj">
+      <Project>{95427238-7878-4e53-a9db-0f3052d91691}</Project>
+      <Name>DataSync</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DataSync\DataSync.csproj">
       <Project>{95427238-7878-4e53-a9db-0f3052d91691}</Project>
       <Name>DataSync</Name>
@@ -104,6 +103,9 @@
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
