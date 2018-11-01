@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LogManager;
 
 namespace NetPlan
 {
@@ -22,6 +23,8 @@ namespace NetPlan
 		public Dictionary<string, InitialRruInfo> GetRruInfoMap()
 		{
 			var retInfo = new Dictionary<string, InitialRruInfo>();
+
+			if (_npeRru?.rruTypeInfo == null) return retInfo;
 
 			foreach (var rruInfo in _npeRru?.rruTypeInfo)
 			{
@@ -43,6 +46,22 @@ namespace NetPlan
 			}
 
 			return retInfo;
+		}
+
+		/// <summary>
+		/// 根据RRU类型获取RRU信息。RRU type是数字
+		/// </summary>
+		/// <param name="nRruType"></param>
+		/// <returns></returns>
+		public RruInfo GetRruInfoByType(int nRruType)
+		{
+			if (null == _npeRru)
+			{
+				Log.Error("从RRU器件库中读取的信息为空");
+				return null;
+			}
+
+			return _npeRru.rruTypeInfo.FirstOrDefault(rru => rru.rruTypeIndex == nRruType);
 		}
 
 		#endregion
