@@ -13,8 +13,8 @@ namespace CfgFileOperation
     /// </summary>
     class CfgParseDBMibTreeToMemory
     {
-        public Dictionary<string, CfgReadDBStructMibNode> pMapMibNodeByName = null;// MIBName ,CfgReadDBStructMibNode
-        public Dictionary<string, CfgReadDBStructMibNode> pMapMibNodeByOID = null;// OID ,CfgReadDBStructMibNode
+        public Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByName = null;// MIBName ,CfgReadDBStructMibNode
+        public Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByOID = null;// OID ,CfgReadDBStructMibNode
 
         //private Dictionary<string, ENUM_MIBVALUETYPE> m_mapSynTax2Type = null;
         public CfgParseDBMibTreeToMemory()
@@ -65,16 +65,17 @@ namespace CfgFileOperation
         private void ParseProcessing(DataSet MibdateSet)
         {
             // MIBName ,CfgReadDBStructMibNode
-            pMapMibNodeByName = new Dictionary<string, CfgReadDBStructMibNode>();
+            pMapMibNodeByName = new Dictionary<string, CfgParseDBMibTreeStrLineMib>();
             // OID ,CfgReadDBStructMibNode
-            pMapMibNodeByOID = new Dictionary<string, CfgReadDBStructMibNode>();
+            pMapMibNodeByOID = new Dictionary<string, CfgParseDBMibTreeStrLineMib>();
 
             //--end by cuidairui 2009-08-04
             for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
                 DataRow row = MibdateSet.Tables[0].Rows[loop];
 
-                CfgReadDBStructMibNode pTempNode = new CfgReadDBStructMibNode(row, pMapMibNodeByName, pMapMibNodeByOID);//StruMibNode pTempNode = new StruMibNode();
+                // 处理每行的MIB数据
+                CfgParseDBMibTreeStrLineMib pTempNode = new CfgParseDBMibTreeStrLineMib(row, pMapMibNodeByName, pMapMibNodeByOID);//StruMibNode pTempNode = new StruMibNode();
 
                 if (!pMapMibNodeByOID.ContainsKey(row["OID"].ToString()))
                     pMapMibNodeByOID.Add(row["OID"].ToString(), pTempNode);

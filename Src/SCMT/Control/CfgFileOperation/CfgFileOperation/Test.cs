@@ -56,7 +56,7 @@ namespace CfgFileOperation
             cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
 
             // reclist
-            CfgReadReclistExcel reclist = new CfgReadReclistExcel();
+            CfgParseReclistExcel reclist = new CfgParseReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
@@ -66,14 +66,14 @@ namespace CfgFileOperation
         void testLoadMibTreeIntoMem()
         {
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
-            CfgReadDBMibTreeToMemory mibTree = new CfgReadDBMibTreeToMemory();
+            CfgParseDBMibTreeToMemory mibTree = new CfgParseDBMibTreeToMemory();
             mibTree.ReadMibTreeToMemory(strFileToDirectory);
             int a = 1;
         }
 
         void testForReadExcelRruType()
         {
-            CfgReadRruExcel rru = new CfgReadRruExcel();
+            CfgParseRruExcel rru = new CfgParseRruExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表_ty.xls";
             string sheetName = "RRU基本信息表";
             rru.ProcessingExcel(excelPath, sheetName);
@@ -84,7 +84,7 @@ namespace CfgFileOperation
 
         void testForReadExcelAnnt()
         {
-            CfgReadAntennaExcel dd = new CfgReadAntennaExcel();
+            CfgParseAntennaExcel dd = new CfgParseAntennaExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
             string sheetName = "波束扫描原始值";
             dd.ProcessingAntennaExcel(excelPath, sheetName);

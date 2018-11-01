@@ -12,7 +12,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 解析告警《eNB告警信息表.xls》 alarmCauseEntry
     /// </summary>
-    class CfgReadAlarmExecl
+    class CfgParseAlarmExecl
     {
         /// <summary>
         /// 保存每条告警内容的内存
@@ -20,7 +20,7 @@ namespace CfgFileOperation
         List<Dictionary<string, string>> alamNo = new List<Dictionary<string, string>>();
 
 
-        public CfgReadAlarmExecl()
+        public CfgParseAlarmExecl()
         {
             CfgExcelOp excelOp = new CfgExcelOp();
             string strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls";

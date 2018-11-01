@@ -11,7 +11,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 解析《RRU基本信息表.xls》 rruTypeEntry、rruTypePortEntry
     /// </summary>
-    class CfgReadRruExcel
+    class CfgParseRruExcel
     {
         private List<Dictionary<string, string>> RruInfo = null;//总的东西
 
@@ -37,7 +37,7 @@ namespace CfgFileOperation
         /// </summary>
         private List<string> ColsNameRruTypePort = null;
 
-        public CfgReadRruExcel()
+        public CfgParseRruExcel()
         {
             RruInfo = new List<Dictionary<string, string>>();
             ColsInfoRru = new Dictionary<string, string>() {

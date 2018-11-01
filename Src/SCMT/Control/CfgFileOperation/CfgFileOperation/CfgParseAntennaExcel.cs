@@ -11,7 +11,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 解析天线《LTE_基站天线广播波束权值参数配置表_5G.xls》 ：antennaArrayTypeEntry
     /// </summary>
-    class CfgReadAntennaExcel
+    class CfgParseAntennaExcel
     {
         /// <summary>
         /// 保存每条告警内容的内存
@@ -24,7 +24,7 @@ namespace CfgFileOperation
         /// <summary>
         /// 初始化
         /// </summary>
-        public CfgReadAntennaExcel()
+        public CfgParseAntennaExcel()
         {
             //
             AntennaIndexBS = new List<Dictionary<string, string>>();

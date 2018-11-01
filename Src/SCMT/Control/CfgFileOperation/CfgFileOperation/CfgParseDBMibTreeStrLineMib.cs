@@ -7,7 +7,11 @@ using System.Data;
 
 namespace CfgFileOperation
 {
-    class CfgReadDBStructMibNode
+    ///把 lm.mdb中mibtree 数据读入内存时的用的结构
+    /// <summary>
+    /// 把 lm.mdb中mibtree 数据读入内存时用每行的MIB的数据结构
+    /// </summary>
+    class CfgParseDBMibTreeStrLineMib
     {
         public StruMibNode pTempNode = new StruMibNode();
         public string strTableName = "";
@@ -98,7 +102,7 @@ namespace CfgFileOperation
         };
         }
 
-        public CfgReadDBStructMibNode(DataRow row, Dictionary<string, CfgReadDBStructMibNode> pMapMibNodeByName, Dictionary<string, CfgReadDBStructMibNode> pMapMibNodeByOID)
+        public CfgParseDBMibTreeStrLineMib(DataRow row, Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByName, Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByOID)
         {
             //DataRow row = MibdateSet.Tables[0].Rows[loop];
 
@@ -200,7 +204,7 @@ namespace CfgFileOperation
         /// <param name="pMapMibNodeByOID"></param>
         /// <param name="findOid"></param>
         /// <returns></returns>
-        string GetMibNamebyOidFromCache(Dictionary<string, CfgReadDBStructMibNode> pMapMibNodeByOID, string findOid)
+        string GetMibNamebyOidFromCache(Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByOID, string findOid)
         {
             if (null == pMapMibNodeByOID)
             {
@@ -421,6 +425,9 @@ namespace CfgFileOperation
         }
 
     }
+    /// <summary>
+    /// 
+    /// </summary>
     enum ENUM_MIBVALUETYPE
     {
         MIBVALUETYPE_UNKNOWN = -1,
