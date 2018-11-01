@@ -192,7 +192,7 @@ namespace CfgFileOperation
                 ///如果表名在数据库中存在，看看reclist excel lineNo 的节点是否同一个表，防止多次处理同一张表
                 if (0 != String.Compare(strCurTableName, strTableName, true))// 不区分大小，不相等时
                 {
-                    ///再次查看是否有这个表
+                    //再次查看是否有这个表
                     if (!cfgOp.m_mapTableInfo.ContainsKey(strTableName))
                         continue;
 
@@ -375,7 +375,7 @@ namespace CfgFileOperation
                 //每条实例只增加一次行状态
                 if (0 != String.Compare(strTabAndIndex, m_strCurTabAndIndex, true))
                 {
-                    if (!ReclistWriteValueToBuffer(curtable, strIndex, strRowStatusName, "4"))//设置行有效
+                    if (!WriteValueToBuffer(curtable, strIndex, strRowStatusName, "4"))//设置行有效
                         return false;
                     m_strCurTabAndIndex = strTabAndIndex;//记录当前的索引
                 }
@@ -396,7 +396,7 @@ namespace CfgFileOperation
             }
 
             //更新节点值
-            if (!ReclistWriteValueToBuffer(curtable, strIndex, strNodeName, strNodeValue))
+            if (!WriteValueToBuffer(curtable, strIndex, strNodeName, strNodeValue))
                 return false;
 
             return true;
@@ -436,7 +436,7 @@ namespace CfgFileOperation
                 }
 
                 //更新节点值
-                if (!ReclistWriteValueToBuffer(cfgOp.m_mapTableInfo[strCurTableName], strIndex, strNodeName, strNodeValue))
+                if (!WriteValueToBuffer(cfgOp.m_mapTableInfo[strCurTableName], strIndex, strNodeName, strNodeValue))
                     continue;
             }
             return true;
@@ -444,35 +444,35 @@ namespace CfgFileOperation
 
         /// <summary>
         /// 修改某(strIndex)实例中某(strNodeName)节点在内存中的值(value)数据
+        /// 与 CfgParseSelfExcel 中的同名函数，功能相同
         /// </summary>
         /// <param name="curtable">表实例</param>
         /// <param name="strIndex">修改的实例的索引值</param>
         /// <param name="strNodeName">修改的节点的英文名</param>
         /// <param name="value">修改节点的值</param>
         /// <returns></returns>
-        bool ReclistWriteValueToBuffer(CfgTableOp curtable, string strIndex, string strNodeName,  string value)
+        bool WriteValueToBuffer(CfgTableOp curtable, string strCurIndex, string strNodeName,  string strNodeValue)
         {
-            //获得表的某个(strIndex)实例信息
-            CfgTableInstanceInfos pInstInfo = null;
-            int InstsPos = 0;
-            if (!curtable.GetCfgInstsByIndex(strIndex, out pInstInfo, out InstsPos))
+            CfgTableInstanceInfos pInstInfo = null;  //实例信息
+            CfgFileLeafNodeOp leafNodeOp = null;     //节点属性
+            int InstsPos = 0;                        //实例位置
+
+            // 获得表的某个(strIndex)实例信息
+            if (!curtable.GetCfgInstsByIndex(strCurIndex, out pInstInfo, out InstsPos))//是否存在这个索引值的实例
                 return false;
-            //获得表的某个节点(strNodeName)信息
-            CfgFileLeafNodeOp leafNodeOp = null;
+
+            // 获得表的某个节点(strNodeName)信息
             if (!curtable.GetLeafNodesByNodeName(strNodeName, out leafNodeOp))
                 return false;
 
-            //1.这个表实例的内容的内存
-            byte[] InstMem = pInstInfo.GetInstMem(); //实例化后依次排列的内容
-            //2.这个节点字段的长度
-            ushort u16FieldLen = leafNodeOp.m_struFieldInfo.u16FieldLen;//
-            //3.这个节点在实例内存中相对的位置
-            ushort u16FieldOffset = leafNodeOp.m_struFieldInfo.u16FieldOffset;          /* 字段相对记录头偏移量*/
-            //
+            // 组合节点的信息
+            byte[] InstMem = pInstInfo.GetInstMem();                           //1.这个表实例的内容的内存;实例化后表中节点依次排列的内容
+            ushort u16FieldLen = leafNodeOp.m_struFieldInfo.u16FieldLen;       //2.这个节点字段的长度
+            ushort u16FieldOffset = leafNodeOp.m_struFieldInfo.u16FieldOffset; //3.这个节点在实例内存中相对的位置 ;字段相对记录头偏移量
             string strOMType = leafNodeOp.m_struMibNode.strOMType;
-            string asnType = leafNodeOp.m_struMibNode.strMibSyntax;//asnType
-            string strDefaultValue = value;// 写死为4
-            
+            string asnType = leafNodeOp.m_struMibNode.strMibSyntax;            //asnType
+            string strDefaultValue = strNodeValue;                             // 修改点, 在InstMem中把strNodeName的值修改为strNodeValue
+
             // 修改内存数据
             List<byte[]> byteArray = new List<byte[]>() { InstMem };
             List<int> bytePosL = new List<int>() { u16FieldOffset };
@@ -484,7 +484,6 @@ namespace CfgFileOperation
             return true;
         }
         
-
         //2016-06-27 luoxin 把实例加入到补丁文件之前先判断该实例在配置文件中是否存在
         bool InstanceIsExist(CfgOp cfgOp, string strInstIndex, string strCurTableName)
         {
@@ -533,8 +532,6 @@ namespace CfgFileOperation
             if (m_vectPDGTabName.FindIndex(e => e.Equals(strTabName)) != -1) //不存在：返回-1，存在：返回位置。
                 m_vectPDGTabName.Add(strTabName);
         }
-
-
         /// <summary>
         /// 判断是否结束行
         /// </summary>
