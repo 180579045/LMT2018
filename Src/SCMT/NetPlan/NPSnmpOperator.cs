@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using CommonUtility;
 using LinkPath;
 using LmtbSnmp;
@@ -11,7 +8,6 @@ using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Control;
-using SCMTOperationCore.Elements;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NetPlan
@@ -274,7 +270,7 @@ namespace NetPlan
 				var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				if (null != info)
 				{
-					dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
+					dev.m_mapAttributes[childLeaf.childNameMib] = info;
 				}
 			}
 
@@ -306,6 +302,7 @@ namespace NetPlan
 					continue;
 				}
 
+				MibLeafNodeInfo info = null;
 				// 判断是否是索引，如果是索引，就不会出现在result中，但是属性框中要呈现，需要添加到属性列表中
 				if (childLeaf.IsIndex.Equals("True", StringComparison.OrdinalIgnoreCase))
 				{
@@ -316,24 +313,25 @@ namespace NetPlan
 						continue;
 					}
 
-					var info = new MibLeafNodeInfo
+					info = new MibLeafNodeInfo
 					{
 						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
 						m_bReadOnly = true          // 索引，只读
 					};
-
-					dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 				}
 				else
 				{
 					var childFullOid = $"{mibPrefix}.{childLeaf.childOid.Trim('.')}.{strIndex.Trim('.')}";
-					var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
-					if (null != info)
-					{
-						dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
-					}
+					info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				}
+
+				if (null == info)
+				{
+					continue;
+				}
+
+				dev.m_mapAttributes[childLeaf.childNameMib] = info;
 			}
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 

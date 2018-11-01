@@ -247,8 +247,8 @@ namespace LmtbSnmp
 		/// 3.
 		/// </summary>
 		/// <param name="mibName">MIB节点名</param>
-		/// <param name="strValue"></param>
-		/// <param name="targetIp"></param>
+		/// <param name="strValue">从Snmp协议中获取的具体数值</param>
+		/// <param name="targetIp">目标IP</param>
 		/// <returns></returns>
 		public static dynamic ConvertSnmpValueToString(string mibName, string strValue, string targetIp)
 		{
@@ -273,6 +273,34 @@ namespace LmtbSnmp
 			return ConvertValueToString(retData, strValue);
 		}
 
+		/// <summary>
+		/// 将Snmp协议获取的数值转为枚举类型模型;
+		/// </summary>
+		/// <param name="mibName">MIB节点名</param>
+		/// <param name="strValue">从Snmp协议中获取的具体数值</param>
+		/// <param name="targetIp">目标IP</param>
+		/// <returns></returns>
+		public static Dictionary<int, string> ConvertSnmpValueToEnumContent(string mibName, string targetIp)
+		{
+			if (string.IsNullOrEmpty(mibName) || string.IsNullOrEmpty(targetIp))
+			{
+				return null;
+			}
+
+			var retData = GetMibNodeInfoByName(mibName, targetIp);
+			
+			var mvr = retData.managerValueRange;                    // 1.取出该节点的取值范围;
+			var mapKv = MibStringHelper.SplitManageValue(mvr);      // 2.分解取值范围;
+			
+			return mapKv;
+		}
+
+		/// <summary>
+		/// 将从SNMP协议读取到的数值转换为string类型;
+		/// </summary>
+		/// <param name="mibLeaf">Mib节点</param>
+		/// <param name="strValue">Snmp返回的具体数值</param>
+		/// <returns></returns>
 		public static dynamic ConvertValueToString(MibLeaf mibLeaf, string strValue)
 		{
 			var omType = mibLeaf.OMType;
@@ -494,6 +522,84 @@ namespace LmtbSnmp
 			return strMac.Replace(" ", ":").ToUpper();
 		}
 
+		/// <summary>
+		/// 获取Mib节点的数据类型，以便在前端区分显示;
+		/// 一共分为四种类型，分别是：字符类型、enum枚举类型、Bit类型、时间类型;
+		/// </summary>
+		/// <param name="mibName">Mib节点名称</param>
+		/// <param name="targetIp">目标IP</param>
+		/// <returns></returns>
+		public static DataGrid_CellDataType GetMibNodeDataType(string mibName, string targetIp)
+		{
+			if (string.IsNullOrEmpty(mibName) || string.IsNullOrEmpty(targetIp))
+			{
+				return DataGrid_CellDataType.RegularType;
+			}
+
+			var retData = GetMibNodeInfoByName(mibName, targetIp);
+			if (null == retData)
+			{
+				Log.Error($"查询基站{targetIp}的{mibName}信息失败");
+				return DataGrid_CellDataType.invalidType;
+			}
+
+			if (retData.IsTable)
+			{
+				return DataGrid_CellDataType.RegularType;
+			}
+
+			var omType = retData.OMType;
+			var asnType = retData.ASNType;
+
+			// 字符类型;
+			if(asnType.Equals("DisplayString"))
+			{
+				return DataGrid_CellDataType.RegularType;
+			}
+			// 比特类型;
+			else if (omType.Equals("u32") && asnType.Equals("BITS"))
+			{
+				return DataGrid_CellDataType.bitType;
+			}
+			// 对数字有取值范围的枚举类型;
+			else if (omType.Equals("u32[]") || omType.Equals("s32[]"))
+			{
+				return DataGrid_CellDataType.enumType;
+			}
+			// 枚举类型;
+			else if (omType.Equals("enum"))
+			{
+				return DataGrid_CellDataType.enumType;
+			}
+			// 时间类型;
+			else if(asnType.Equals("DateAndTime"))
+			{
+				return DataGrid_CellDataType.DateTime;
+			}
+            
+//             else if (omType.Equals("u8[]"))
+//             {
+//                 if (asnType.Equals("DateAndTime"))
+//                 {
+// 
+//                 }
+//                 else if (asnType.Equals("InetAddress"))
+//                 {
+// 
+//                 }
+//                 else if (asnType.Equals("MacAddress"))
+//                 {
+// 
+//                 }
+//                 else if (asnType.Equals("MncMccType"))
+//                 {
+// 
+//                 }
+//             }
+
+			return DataGrid_CellDataType.RegularType;
+		}
+
 		// 根据mib名称获取节点信息
 		public static MibLeaf GetMibNodeInfoByName(string mibName, string targetIp)
 		{
@@ -603,7 +709,19 @@ namespace LmtbSnmp
 
 		private static uint DATEANDTIMELENV2TC = 11;    /*SNMPV2 TC中定义的时间长度*/
 		private static uint DATEANDTIMEDTCUSTOM = 19;   /*公司自定义的时间长度*/
-
+		
 		#endregion
+	}
+
+	/// <summary>
+	/// 单元格内可显示的所有数据类型;
+	/// </summary>
+	public enum DataGrid_CellDataType
+	{
+		invalidType = -1,
+		enumType = 0,                                  // MIB中的枚举类型;
+		bitType = 1,                                   // MIB中的BIT类型;
+		DateTime = 2,                                  // MIB中的时间类型;
+		RegularType = 3                                // MIB中的字符串、INT等类型;
 	}
 }

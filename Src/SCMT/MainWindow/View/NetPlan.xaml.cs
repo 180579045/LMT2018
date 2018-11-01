@@ -25,6 +25,7 @@ using CommonUtility;
 using Xceed.Wpf.Toolkit.PropertyGrid;
 using NetPlan;
 using SCMTOperationCore.Control;
+using SCMTOperationCore;
 
 namespace SCMTMainWindow.View
 {
@@ -59,6 +60,190 @@ namespace SCMTMainWindow.View
             CreateMainBoard();           
         }
 
+
+        #region 绘制小区以及添加功能
+
+        /// <summary>
+        /// 绘制小区
+        /// </summary>
+        private void DrawNrRect()
+        {
+            //绘制3 * 12 的小区网络
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 12; j++)
+                {
+                    //需要给小区添加 id ，所以需要将 rect 和 text 放到一个grid 中
+                    Grid newGrid = new Grid();
+                    newGrid.Width = 40;
+                    newGrid.Height = 40;
+
+                    Rectangle newRect = new Rectangle();
+                    newRect.Width = 40;
+                    newRect.Height = 40;
+                    newRect.Fill = new SolidColorBrush(Colors.Red);
+                    newRect.Stroke = new SolidColorBrush(Colors.Black);
+
+                    newGrid.Children.Add(newRect);
+
+                    TextBlock newText = new TextBlock();
+                    int nId = i * 12 + j;
+                    newText.Text = nId.ToString();
+                    newText.HorizontalAlignment = HorizontalAlignment.Center;
+                    newText.VerticalAlignment = VerticalAlignment.Center;
+                    newGrid.Children.Add(newText);
+
+                    this.nrRectCanvas.Children.Add(newGrid);
+                    Canvas.SetTop(newGrid, 40 * i);
+                    Canvas.SetLeft(newGrid, 40 * j);
+
+                    newGrid.MouseRightButtonDown += NewGrid_MouseRightButtonDown;
+                }
+            }
+            this.nrRectCanvas.Visibility = Visibility.Hidden;
+        }
+
+        /// <summary>
+        /// 小区右键点击时，弹出菜单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Grid targetRect = sender as Grid;
+            ContextMenu cellRightMenu = new ContextMenu();
+
+            MenuItem doCellPlan = new MenuItem();
+            doCellPlan.Header = "进行小区规划";
+            doCellPlan.Name = "doCellPlan";
+            doCellPlan.Click += DoCellPlan_Click;
+            cellRightMenu.Items.Add(doCellPlan);
+
+            MenuItem deleteCellPlan = new MenuItem();
+            deleteCellPlan.Header = "删除小区规划";
+            deleteCellPlan.Name = "deleteCellPlan";
+            deleteCellPlan.Click += DeleteCellPlan_Click;
+            cellRightMenu.Items.Add(deleteCellPlan);
+
+            MenuItem cancel = new MenuItem();
+            cancel.Header = "取消";
+            cancel.Name = "cancel";
+            cancel.Click += Cancel_Click;
+            cellRightMenu.Items.Add(cancel);
+
+            MenuItem modifyRRU = new MenuItem();
+            modifyRRU.Header = "RRU功率调整";
+            modifyRRU.Name = "modifyRRU";
+            modifyRRU.Click += ModifyRRU_Click;
+            cellRightMenu.Items.Add(modifyRRU);
+
+            MenuItem activeCell = new MenuItem();
+            activeCell.Header = "去激活小区";
+            activeCell.Name = "activeCell";
+            activeCell.Click += ActiveCell_Click;
+            cellRightMenu.Items.Add(activeCell);
+
+            MenuItem deleteLocalCell = new MenuItem();
+            deleteLocalCell.Header = "删除本地小区";
+            deleteLocalCell.Name = "deleteLocalCell";
+            deleteLocalCell.Click += DeleteLocalCell_Click;
+            cellRightMenu.Items.Add(deleteLocalCell);
+
+            targetRect.ContextMenu = cellRightMenu;
+        }
+
+        /// <summary>
+        /// 删除本地小区
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteLocalCell_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = sender as MenuItem;
+            ContextMenu test = obj.Parent as ContextMenu;
+            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+        }
+
+        /// <summary>
+        /// 激活小区
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ActiveCell_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = sender as MenuItem;
+            ContextMenu test = obj.Parent as ContextMenu;
+            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+        }
+
+        /// <summary>
+        /// RRU 功率修改
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ModifyRRU_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = sender as MenuItem;
+            ContextMenu test = obj.Parent as ContextMenu;
+            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+            MessageBox.Show("修改RRU。。。");
+        }
+
+        /// <summary>
+        /// 取消
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = sender as MenuItem;
+            ContextMenu test = obj.Parent as ContextMenu;
+            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+        }
+
+        /// <summary>
+        /// 删除本地小区
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteCellPlan_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = sender as MenuItem;
+            ContextMenu test = obj.Parent as ContextMenu;
+            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+            Rectangle rect = targetRect.Children[0] as Rectangle;
+            rect.Fill = new SolidColorBrush(Colors.Red);
+
+            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
+            this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+        }
+
+        /// <summary>
+        /// 右键菜单，进行小区规划
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DoCellPlan_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem obj = sender as MenuItem;
+            ContextMenu test = obj.Parent as ContextMenu;
+            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+            Rectangle rect = targetRect.Children[0] as Rectangle;
+            rect.Fill = new SolidColorBrush(Colors.LightGreen);
+
+            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
+
+            if (!this.MyDesigner.g_cellPlaning.Contains(nCellNumber))
+            {
+                this.MyDesigner.g_cellPlaning.Add(nCellNumber);
+            }
+        }
+
+        #endregion
+
+        #region 绘制板卡以及添加功能
+
         /// <summary>
         /// 构造板卡画板信息
         /// </summary>
@@ -66,9 +251,17 @@ namespace SCMTMainWindow.View
         {
             boardCanvas = new Canvas();
 
+            var boardInfo = NPEBoardHelper.GetInstance().GetShelfByEnbType(SCMTOperationCore.Elements.EnbTypeEnum.ENB_EMB6116);
+
+            if(boardInfo == null)
+            {
+                MessageBox.Show("读取配置文件失败");
+                return;
+            }
+
             //设置 2 列 4 行 的板卡框架
-            boardColumn = 2;
-            boardRow = 4;
+            boardColumn = boardInfo.columnsUI;
+            boardRow = boardInfo.supportPlanSlotNum / boardColumn;
 
             for (int i = 0; i < boardColumn; i++)
             {
@@ -90,8 +283,11 @@ namespace SCMTMainWindow.View
 
                     Canvas.SetLeft(boardCanv, 240 * i);
                     Canvas.SetBottom(boardCanv, 40 * j);
+                    
+                    //板卡左键按下，需要判断双击还是单击，双击的时候，进行板卡的添加，单击的时候切换属性和选择
+                    boardCanv.MouseLeftButtonDown += BoardCanv_MouseLeftButtonDown;
 
-                    rectItem.MouseLeftButtonDown += RectItem_MouseLeftButtonDown;
+                    //板卡的右键删除
                     boardCanv.MouseRightButtonDown += BoardCanv_MouseRightButtonDown;
 
                     boardCanvas.Children.Add(boardCanv);
@@ -106,6 +302,7 @@ namespace SCMTMainWindow.View
             Canvas.SetLeft(boardCanvas, (MyDesigner.ActualWidth - boardCanvas.Width) / 2);
             Canvas.SetTop(boardCanvas, (MyDesigner.ActualHeight - boardCanvas.Height) / 2);
 
+            //板卡界面点击左键的时候，需要根据不同的选择，用红色的框，框选中被选择的板卡
             boardCanvas.MouseLeftButtonDown += BoardCanvas_MouseLeftButtonDown;
 
             //初始化选择框
@@ -118,6 +315,156 @@ namespace SCMTMainWindow.View
         }
 
         /// <summary>
+        /// 板卡左键按下，需要判断双击还是单击，双击的时候，进行板卡的添加，单击的时候切换属性和选择
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BoardCanv_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Canvas targetCanvas = (Canvas)sender as Canvas;
+            Rectangle targetItem = targetCanvas.Children[0] as Rectangle;
+            int soltNum = boardCanvas.Children.IndexOf(targetCanvas);
+
+            //4号槽位不允许进行设置
+            if(soltNum == 4 || soltNum == 5)
+            {
+                return;
+            }
+
+            //根据 板卡所在 Canvas 的 索引，判断属于第几行，第几列
+            int nColumn = soltNum / boardRow;
+            int nRow = soltNum % boardRow;
+
+            //双击显示
+            if (e.ClickCount == 2)
+            {
+                //从后台获取板卡信息
+                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum, SCMTOperationCore.Elements.EnbTypeEnum.ENB_EMB6116);
+
+                ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
+                dlg.ShowDialog();
+
+                //BoradDetailData bd = new BoradDetailData();
+                ////初始化弹框默认数据
+                //bd.setDefaultDate(soltNum);
+                ////实例化弹窗
+                //AddBoardWindow broadDetailWindos = new AddBoardWindow();
+                ////初始化弹窗
+                //broadDetailWindos.SetOperationData(bd);
+                ////展示弹窗
+                //broadDetailWindos.ShowDialog();
+
+                //if (!broadDetailWindos.isOk)
+                //{
+                //    return;
+                //}
+
+                //获取弹窗中设置的板卡名称
+                //string boardName = BroadName(broadDetailWindos.detaiData.Bt);
+
+                if (!dlg.bOK)
+                {
+                    return;
+                }
+
+                string boardName = dlg.strBoardName;
+
+                //添加一个文字的描述
+                Label boardNameLabel = new Label();
+                boardNameLabel.Width = 80;
+                boardNameLabel.Height = 25;
+                boardNameLabel.FontSize = 8;
+                boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
+                //为每个光口构造一个名称，根据板卡插槽号和 boardName，也是板卡的名称
+                string strIRName = string.Format("{0}-{1}", boardNameLabel.Content.ToString(), soltNum);
+
+                //下发给基站，添加一个索引
+                var newBoardInfo = MibInfoMgr.GetInstance().AddNewBoard(soltNum, dlg.strBoardName, dlg.strWorkModel, dlg.strFSM);
+                if (newBoardInfo == null)
+                {
+                    MessageBox.Show("从基站获取数据失败");
+                    return;
+                }
+
+                MyDesigner.g_AllDevInfo.Add(strIRName, newBoardInfo.m_strOidIndex);
+                targetCanvas.Children.Add(boardNameLabel);
+
+                Canvas.SetRight(boardNameLabel, 155);
+                Canvas.SetBottom(boardNameLabel, 0);
+
+                targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
+
+
+                //添加一个板卡信息的描述
+                Ellipse boardNameEllipse = new Ellipse();
+                boardNameEllipse.Fill = new SolidColorBrush(Colors.Blue);
+                boardNameEllipse.Width = 10;
+                boardNameEllipse.Height = 10;
+                targetCanvas.Children.Add(boardNameEllipse);
+
+                Canvas.SetRight(boardNameEllipse, 210);
+                Canvas.SetBottom(boardNameEllipse, 25);
+
+
+                //填充光口，根据获取到的数量进行添加
+                BoardEquipment itemBoard = new BoardEquipment();
+                foreach (BoardEquipment item in listBoardInfo)
+                {
+                    if (item.boardTypeName == boardName)
+                    {
+                        itemBoard = item;
+                    }
+                }
+
+                for (int i = 0; i < itemBoard.irOfpNum; i++)
+                {
+                    DesignerItem designerItem = new DesignerItem();
+                    designerItem.ItemName = strIRName;
+
+                    Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+                    Stream stream = Application.GetResourceStream(strUri).Stream;
+
+                    FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+                    Object content = el.FindName("g_IR") as Grid;
+
+                    string strXAML = XamlWriter.Save(content);
+                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
+                    designerItem.Content = testContent;
+
+                    //获取 Canvas 相对于 DesignerCanvas 的位置，方便进行光口的添加
+
+                    double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
+                    double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
+
+                    Canvas.SetLeft(designerItem, CanvasLeft + 200 + 240 * nColumn - i * 20);
+                    Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
+
+                    MyDesigner.Children.Add(designerItem);
+                    SetConnectorDecoratorTemplate(designerItem);
+                }
+            }
+            else if (e.ClickCount == 1)                   //单击显示属性，每次切换的时候重新获取
+            {
+                if (targetCanvas.Children.Count < 2)               //当前板卡信息未被填充
+                {
+                    return;
+                }
+
+                var labelTarget = targetCanvas.Children[2] as Label;
+                //为每个光口构造一个名称，根据板卡插槽号和 boardName，也是板卡的名称
+                string strIRName = string.Format("{0}-{1}", labelTarget.Content.ToString(), soltNum);
+
+                var boardAttribute = MibInfoMgr.GetInstance().GetDevAttributeInfo(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board);
+                if (boardAttribute != null)
+                {
+                    MyDesigner.CreateGirdForNetInfo(strIRName, boardAttribute);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(MyDesigner.g_GridForNet[strIRName]);
+                }
+            }
+        }
+
+        /// <summary>
         /// 右键删除板卡信息
         /// </summary>
         /// <param name="sender"></param>
@@ -126,26 +473,55 @@ namespace SCMTMainWindow.View
         {
             Canvas targetCanvas = sender as Canvas;
 
-            if(targetCanvas.Children != null && targetCanvas.Children.Count > 0)
+            ContextMenu deleteMenu = new ContextMenu();
+
+            MenuItem deleteBoard = new MenuItem();
+            deleteBoard.Header = "删除";
+            deleteBoard.Click += DeleteBoard_Click;
+
+            deleteMenu.Items.Add(deleteBoard);
+
+            targetCanvas.ContextMenu = deleteMenu;
+        }
+
+        /// <summary>
+        /// 右键删除
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DeleteBoard_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem targetItem = sender as MenuItem;
+            ContextMenu targetMenu = targetItem.Parent as ContextMenu;
+            Canvas targetCanvas = ContextMenuService.GetPlacementTarget(targetMenu) as Canvas;
+
+            MessageBoxResult result = MessageBox.Show("确定删除吗？", "提示", MessageBoxButton.YesNo);
+
+            if(result == MessageBoxResult.No)
+            {
+                return;
+            }
+
+            if (targetCanvas.Children != null && targetCanvas.Children.Count > 0)
             {
                 //删除之后， Canvas 只有一个 rect 元素，不可以再次删除
-                if(targetCanvas.Children.Count < 2)
+                if (targetCanvas.Children.Count < 2)
                 {
                     return;
                 }
 
                 //首先根据插槽号和板卡名称移除光口信息
                 int nPort = boardCanvas.Children.IndexOf(targetCanvas);
-                Label lbName = targetCanvas.Children[2] as Label;
+                Label lbName = targetCanvas.Children[1] as Label;
                 string strIRName = string.Format("{0}-{1}", lbName.Content.ToString(), nPort);
 
                 //首先从基站删除
-                if(!MyDesigner.g_AllDevInfo.Keys.Contains(strIRName))
+                if (!MyDesigner.g_AllDevInfo.Keys.Contains(strIRName))
                 {
                     MessageBox.Show("没有从设备字典中查找到该设备，请注意");
                     return;
                 }
-                if(!MibInfoMgr.GetInstance().DelDev(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board))
+                if (!MibInfoMgr.GetInstance().DelDev(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board))
                 {
                     MessageBox.Show("从基站侧删除设备失败，请注意");
                     return;
@@ -153,7 +529,7 @@ namespace SCMTMainWindow.View
 
                 for (int i = 1; i < MyDesigner.Children.Count; i++)
                 {
-                    if(MyDesigner.Children[i].GetType().Name == "DesignerItem")
+                    if (MyDesigner.Children[i].GetType().Name == "DesignerItem")
                     {
                         DesignerItem item = MyDesigner.Children[i] as DesignerItem;
                         if ((item.ItemName ?? "") == strIRName)
@@ -252,43 +628,14 @@ namespace SCMTMainWindow.View
                     boardCanvas.Children.Add(rect);
                 }
 
-                if(pt.X > 0 && pt.X < 240 && pt.Y > 0 && pt.Y < 40)
+                //鼠标的点击位置在板卡范围内
+                if(pt.X > 0 && pt.X < boardColumn * 240 && pt.Y > 0 && pt.Y < boardRow * 40)
                 {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 0);
-                }else if(pt.X > 0 && pt.X < 240 && pt.Y > 40 && pt.Y < 80)
-                {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 40);
-                }
-                else if (pt.X > 0 && pt.X < 240 && pt.Y > 80 && pt.Y < 120)
-                {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 80);
-                }
-                else if (pt.X > 0 && pt.X < 240 && pt.Y > 120 && pt.Y < 160)
-                {
-                    Canvas.SetLeft(rect, 0);
-                    Canvas.SetTop(rect, 120);
-                }else if (pt.X > 240 && pt.X < 480 && pt.Y > 0 && pt.Y < 40)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 0);
-                }
-                else if (pt.X > 240 && pt.X < 480 && pt.Y > 40 && pt.Y < 80)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 40);
-                }
-                else if (pt.X > 240 && pt.X < 480 && pt.Y > 80 && pt.Y < 120)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 80);
-                }
-                else if (pt.X > 240 && pt.X < 480 && pt.Y > 120 && pt.Y < 160)
-                {
-                    Canvas.SetLeft(rect, 240);
-                    Canvas.SetTop(rect, 120);
+                    int nRectLeft = (int)pt.X / 240;
+                    int nRectTop = (int)pt.Y / 40;
+
+                    Canvas.SetLeft(rect, nRectLeft * 240);
+                    Canvas.SetTop(rect, nRectTop * 40);
                 }
                 else
                 {
@@ -296,6 +643,8 @@ namespace SCMTMainWindow.View
                 }
             }
         }
+
+        #endregion
 
         /// <summary>
         /// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
@@ -370,6 +719,17 @@ namespace SCMTMainWindow.View
             int nColumn = soltNum / boardRow;
             int nRow = soltNum % boardRow;
 
+            //添加一个文字的描述
+            Label boardNameLabel = new Label();
+            boardNameLabel.Width = 80;
+            boardNameLabel.Height = 25;
+            boardNameLabel.FontSize = 8;
+            boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
+            targetCanvas.Children.Add(boardNameLabel);
+
+            Canvas.SetRight(boardNameLabel, 155);
+            Canvas.SetBottom(boardNameLabel, 0);
+
             //添加一个板卡信息的描述
             Ellipse boardNameEllipse = new Ellipse();
             boardNameEllipse.Fill = new SolidColorBrush(Colors.Blue);
@@ -379,16 +739,6 @@ namespace SCMTMainWindow.View
 
             Canvas.SetRight(boardNameEllipse, 210);
             Canvas.SetBottom(boardNameEllipse, 25);
-
-            //添加一个文字的描述
-            Label boardNameLabel = new Label();
-            boardNameLabel.Width = 80;
-            boardNameLabel.Height = 25;
-            boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
-            targetCanvas.Children.Add(boardNameLabel);
-
-            Canvas.SetRight(boardNameLabel, 155);
-            Canvas.SetBottom(boardNameLabel, 0);
 
             targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
 
@@ -430,31 +780,6 @@ namespace SCMTMainWindow.View
 
 
 
-        /// <summary>
-        /// 绘制小区
-        /// </summary>
-        private void DrawNrRect()
-        {
-            //绘制3 * 12 的小区网络
-
-            for(int i = 0; i < 3; i++)
-            {
-                for(int j = 0; j < 12; j++)
-                {
-                    Rectangle newRect = new Rectangle();
-                    newRect.Width = 40;
-                    newRect.Height = 40;
-                    newRect.Fill = new SolidColorBrush(Colors.Red);
-                    newRect.Stroke = new SolidColorBrush(Colors.Black);
-
-                    this.nrRectCanvas.Children.Add(newRect);
-                    Canvas.SetTop(newRect, 40 * i);
-                    Canvas.SetLeft(newRect, 40 * j);
-                }
-            }
-            this.nrRectCanvas.Visibility = Visibility.Hidden;
-        }
-
         private string BroadName(BroadType bt)
         {
             switch (bt)
@@ -487,137 +812,7 @@ namespace SCMTMainWindow.View
             }
         }
 
-        /// <summary>
-        /// 双击添加板卡信息
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void RectItem_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Rectangle targetItem = (Rectangle)sender as Rectangle;
-            Canvas targetCanvas = targetItem.Parent as Canvas;
-            int soltNum = boardCanvas.Children.IndexOf(targetCanvas);
 
-            //根据 板卡所在 Canvas 的 索引，判断属于第几行，第几列
-            int nColumn = soltNum / boardRow;
-            int nRow = soltNum % boardRow;
-
-            //双击显示
-            if (e.ClickCount == 2)
-            {
-	            var curEnbIp = CSEnbHelper.GetCurEnbAddr();
-	            if (null == curEnbIp)
-	            {
-		            MessageBox.Show("尚未选择基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
-					return;
-	            }
-
-	            var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIp);
-
-                //从后台获取板卡信息
-                List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum, enbType);
-
-                ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
-                dlg.ShowDialog();
-
-                //BoradDetailData bd = new BoradDetailData();
-                ////初始化弹框默认数据
-                //bd.setDefaultDate(soltNum);
-                ////实例化弹窗
-                //AddBoardWindow broadDetailWindos = new AddBoardWindow();
-                ////初始化弹窗
-                //broadDetailWindos.SetOperationData(bd);
-                ////展示弹窗
-                //broadDetailWindos.ShowDialog();
-
-                //if (!broadDetailWindos.isOk)
-                //{
-                //    return;
-                //}
-
-                //获取弹窗中设置的板卡名称
-                //string boardName = BroadName(broadDetailWindos.detaiData.Bt);
-
-                if (!dlg.bOK)
-                {
-                    return;
-                }
-
-                string boardName = dlg.strBoardName;
-
-                //添加一个文字的描述
-                Label boardNameLabel = new Label();
-                boardNameLabel.Width = 80;
-                boardNameLabel.Height = 25;
-                boardNameLabel.Content = boardName.Substring(boardName.IndexOf('|') + 1);
-                targetCanvas.Children.Add(boardNameLabel);
-
-                Canvas.SetRight(boardNameLabel, 155);
-                Canvas.SetBottom(boardNameLabel, 0);
-
-                targetItem.Fill = new SolidColorBrush(Colors.LightYellow);
-
-                //为每个光口构造一个名称，根据板卡插槽号和 boardName，也是板卡的名称
-                string strIRName = string.Format("{0}-{1}", boardNameLabel.Content.ToString(), soltNum);
-
-                //下发给基站，添加一个索引
-                var newBoardInfo = MibInfoMgr.GetInstance().AddNewBoard(soltNum, dlg.strBoardName, dlg.strWorkModel, dlg.strFSM);
-                if(newBoardInfo == null)
-                {
-                    return;
-                }
-
-                MyDesigner.g_AllDevInfo.Add(strIRName, newBoardInfo.m_strOidIndex);
-
-                //添加一个板卡信息的描述
-                Ellipse boardNameEllipse = new Ellipse();
-                boardNameEllipse.Fill = new SolidColorBrush(Colors.Blue);
-                boardNameEllipse.Width = 10;
-                boardNameEllipse.Height = 10;
-                targetCanvas.Children.Add(boardNameEllipse);
-
-                Canvas.SetRight(boardNameEllipse, 210);
-                Canvas.SetBottom(boardNameEllipse, 25);
-
-
-                //填充光口，根据获取到的数量进行添加
-                BoardEquipment itemBoard = new BoardEquipment();
-                foreach(BoardEquipment item in listBoardInfo)
-                {
-                    if(item.boardTypeName == boardName)
-                    {
-                        itemBoard = item;
-                    }
-                }
-
-                for(int i = 0; i < itemBoard.irOfpNum; i++)
-                {
-                    DesignerItem designerItem = new DesignerItem();
-                    designerItem.ItemName = strIRName;
-
-                    Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
-                    Stream stream = Application.GetResourceStream(strUri).Stream;
-
-                    FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
-                    Object content = el.FindName("g_IR") as Grid;
-
-                    string strXAML = XamlWriter.Save(content);
-                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
-                    designerItem.Content = testContent;
-
-                    //获取 Canvas 相对于 DesignerCanvas 的位置，方便进行光口的添加
-
-                    double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
-                    double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
-
-                    Canvas.SetLeft(designerItem, CanvasLeft + 200 + 240 * nColumn - i*20);
-                    Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
-
-                    MyDesigner.Children.Add(designerItem);
-                    SetConnectorDecoratorTemplate(designerItem);
-                }
-            }
-        }
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             var serializer = new XmlLayoutSerializer(dockingmanger);
@@ -783,6 +978,19 @@ namespace SCMTMainWindow.View
         {
             //初始化网规
             InitNetPlan();
+        }
+
+        /// <summary>
+        /// 关闭网络规划按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LayoutAnchorable_Closed(object sender, EventArgs e)
+        {
+            MyDesigner.g_AllDevInfo.Clear();
+            MyDesigner.g_GridForNet.Clear();
+
+            MyDesigner.Children.Clear();
         }
     }
 }

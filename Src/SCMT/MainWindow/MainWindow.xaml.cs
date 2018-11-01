@@ -1695,14 +1695,8 @@ namespace SCMTMainWindow
 						{
 							Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
 
-                            // 在这里就要区分DataGrid要显示的数据类型了;
-							var dgm = new DataGrid_Cell_MIB()
-							{
-								m_Content = SnmpToDatabase.ConvertSnmpValueToString(oid_en[temp_compare], iter3.Value, "172.27.245.92") as string,  // TODO 需要确定真正的板卡地址
-								oid = iter3.Key,
-								MibName_CN = oid_cn[temp_compare],
-								MibName_EN = oid_en[temp_compare]
-							};
+                            // 在这里要区分DataGrid要显示的数据类型;
+                            var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare], iter3.Value, iter3.Key, "172.27.245.92");
 
                             // 第一个参数：属性的名称——节点英文名称;
                             // 第二个参数：属性的实例——DataGrid_Cell_MIB实例;

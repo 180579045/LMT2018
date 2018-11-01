@@ -151,7 +151,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Component\Model\DataGrid\DataGrid_Cell_MIB.cs" />
+    <Compile Include="Component\Model\DataGrid\DataGrid_Cell_Model.cs" />
     <Compile Include="Component\SCMTControl\BarChart.xaml.cs">
       <DependentUpon>BarChart.xaml</DependentUpon>
     </Compile>
@@ -199,7 +199,8 @@
     <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
       <DependentUpon>OutputWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DataGrid_CellFactory.cs" />
+    <Compile Include="Controls\DataGrid_CellColumnFactory.cs" />
+    <Compile Include="Controls\DataGridCellFactory.cs" />
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
     <Compile Include="Component\ViewModel\DyDataGrid_MIBModel.cs" />
@@ -265,6 +266,9 @@
       <DependentUpon>NetPlan.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PathFinder.cs" />
+    <Compile Include="View\RRUpoint2Cell.xaml.cs">
+      <DependentUpon>RRUpoint2Cell.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RubberbandAdorner.cs" />
     <Compile Include="View\SelectionService.cs" />
     <Compile Include="View\Toolbox.cs" />
@@ -420,6 +424,10 @@
     <Page Include="View\Resources\ToolboxItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RRUpoint2Cell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

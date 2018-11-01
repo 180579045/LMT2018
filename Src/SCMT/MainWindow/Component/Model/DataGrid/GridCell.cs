@@ -13,9 +13,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LmtbSnmp;
 
 namespace SCMTMainWindow
 {
+    
     /// <summary>
     /// 单元格内要显示内容类型;
     /// </summary>

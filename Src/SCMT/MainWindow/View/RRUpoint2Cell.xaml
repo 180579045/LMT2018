@@ -1,0 +1,44 @@
+﻿<Window x:Class="SCMTMainWindow.View.RRUpoint2Cell"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SCMTMainWindow.View"
+             mc:Ignorable="d" Title="RRU端口归属小区"
+             Height="500" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="30"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Width="60" HorizontalAlignment="Left">LTE小区</Label>
+        <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="90 0 0 0">快速配置</Button>
+        <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="180 0 0 0">重置</Button>
+        <Border BorderBrush="Gray" BorderThickness="1" Grid.Row="1">
+            <ScrollViewer >
+            <Grid Name="MainGrid" ShowGridLines="False" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"></ColumnDefinition>
+                    <ColumnDefinition Width="1.25*"></ColumnDefinition>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="6*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <Label Grid.Column="0" HorizontalAlignment="Center">端口号</Label>
+                <Label Grid.Column="1" HorizontalAlignment="Center">LTE小区ID</Label>
+                <Label Grid.Column="2" HorizontalAlignment="Center">射频通道方向</Label>
+                <Label Grid.Column="3" HorizontalAlignment="Center">支持的频段</Label>
+                <Border BorderBrush="Gray" BorderThickness="2" Grid.ColumnSpan="5"></Border>
+                </Grid>
+        </ScrollViewer>
+        </Border>
+
+        <Button Width="60" Height="25" HorizontalAlignment="Center" Grid.Row="2" Margin="0 0 80 0" Click="Button_Click">确定</Button>
+        <Button Width="60" Height="25" HorizontalAlignment="Center" Grid.Row="2" Margin="80 0 0 0" Click="Button_Click_1">取消</Button>
+    </Grid>
+</Window>

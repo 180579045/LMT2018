@@ -23,10 +23,24 @@ namespace SCMTMainWindow.View
     {
         private Point? rubberbandSelectionStartPoint = null;
 
+        //规划中的小区
+        public List<int> g_cellPlaning = new List<int>();
+
         //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
         private int nRRUNo = 0;
         private int nrHUBNo = 0;
         private int nAntennaNo = 0;
+
+        //全局变量，将网元名称和网元信息结构体对应
+        private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
+        //全局变量，将网元名称和网元的属性表格对应
+        public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+
+        //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
+        public Dictionary<string, string> g_AllDevInfo = new Dictionary<string, string>();
+
+        //保存界面上的属性表格
+        public Grid gridProperty;
 
         private SelectionService selectionService;
         internal SelectionService SelectionService
@@ -84,137 +98,9 @@ namespace SCMTMainWindow.View
         }
 
         /// <summary>
-        /// 从xaml文件中获取对应的网元的xaml信息，名称和大小
+        /// 拖拽事件，处理各种被拖拽过来的器件信息
         /// </summary>
-        /// <param name="nMaxRRUPath"></param>
-        /// <param name="strXAML"></param>
-        /// <param name="RRUSize"></param>
-        /// <returns></returns>
-        private string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
-        {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
-            Stream stream = Application.GetResourceStream(strUri).Stream;
-
-            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
-
-            string strName = string.Empty;
-            if(nMaxRRUPath == 1)
-            {
-                strName = "g_OnePathRRU";
-                RRUSize = new Size(80, 70);
-            }
-            else if(nMaxRRUPath == 2)
-            {
-                strName = "g_TwoPathRRU";
-                RRUSize = new Size(130, 70);
-            }
-            else if (nMaxRRUPath == 4)
-            {
-                strName = "g_FourPathRRU";
-                RRUSize = new Size(160, 70);
-            }
-            else if(nMaxRRUPath == 8)
-            {
-                strName = "g_EightPathRRU";
-                RRUSize = new Size(260, 70);
-            }
-            else if (nMaxRRUPath == 16)
-            {
-                strName = "g_SixteenPathRRU";
-                RRUSize = new Size(480, 70);
-            }
-            else
-            {
-                strName = "g_OnePathRRU";
-                RRUSize = new Size(80, 50);
-            }
-
-            Object content = el.FindName(strName) as Grid;
-
-            strXAML = XamlWriter.Save(content);
-
-            return strXAML;
-        }
-
-        /// <summary>
-        /// 从配置文件获取rHUB
-        /// </summary>
-        /// <param name="nMaxRRUPath"></param>
-        /// <param name="strXAML"></param>
-        /// <param name="RRUSize"></param>
-        /// <returns></returns>
-        private string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
-        {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
-            Stream stream = Application.GetResourceStream(strUri).Stream;
-
-            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
-
-            string strName = string.Empty;
-            if (nMaxRRUPath == 2)
-            {
-                strName = "g_SingleRHUB";
-                RRUSize = new Size(260, 70);
-            }
-            else if (nMaxRRUPath == 4)
-            {
-                strName = "g_TwoPathRHUB";
-                RRUSize = new Size(260, 70);
-            }
-            else
-            {
-                strName = "g_SingleRHUB";
-                RRUSize = new Size(260, 70);
-            }
-
-            Object content = el.FindName(strName) as Grid;
-
-            strXAML = XamlWriter.Save(content);
-
-            return strXAML;
-        }
-
-        private string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
-        {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
-            Stream stream = Application.GetResourceStream(strUri).Stream;
-
-            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
-
-            string strName = string.Empty;
-            if (nMaxRRUPath == 1)
-            {
-                strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 40);
-            }
-            else if (nMaxRRUPath == 2)
-            {
-                strName = "g_TwoPathAntenna";
-                RRUSize = new Size(40, 40);
-            }
-            else if (nMaxRRUPath == 4)
-            {
-                strName = "g_FourPathAntenna";
-                RRUSize = new Size(60, 40);
-            }
-            else if (nMaxRRUPath == 8)
-            {
-                strName = "g_EightPathAntenna";
-                RRUSize = new Size(140, 40);
-            }
-            else
-            {
-                strName = "g_SignalAntenna";
-                RRUSize = new Size(40, 40);
-            }
-
-            Object content = el.FindName(strName) as Grid;
-
-            strXAML = XamlWriter.Save(content);
-
-            return strXAML;
-        }
-
+        /// <param name="e"></param>
         protected override void OnDrop(DragEventArgs e)
         {
             base.OnDrop(e);
@@ -246,6 +132,8 @@ namespace SCMTMainWindow.View
                 e.Handled = true;
             }
         }
+
+        #region 创建RRU
 
         /// <summary>
         /// 构造 RRU 网元
@@ -286,6 +174,10 @@ namespace SCMTMainWindow.View
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
                 newItem.ItemName = strRRUFullName;
+                newItem.NPathNumber = nMaxRRUPath;
+
+                //双击 RRU 绑定小区
+                newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
 
                 //添加 RRU 的时候需要给基站下发，然后获取设备信息
                 List<int> listIndex = new List<int>();
@@ -294,9 +186,9 @@ namespace SCMTMainWindow.View
 
                 if(devRRUInfo == null || devRRUInfo.Count == 0)
                 {
-                    return false;
+                    //return false;
                 }
-                g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                //g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
 
                 //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
                 //globalDic.Add(strRRUFullName, test);
@@ -332,6 +224,103 @@ namespace SCMTMainWindow.View
             return true;
         }
 
+        /// <summary>
+        /// 从xaml文件中获取对应的 RRU 的xaml信息，名称和大小
+        /// </summary>
+        /// <param name="nMaxRRUPath"></param>
+        /// <param name="strXAML"></param>
+        /// <param name="RRUSize"></param>
+        /// <returns></returns>
+        private string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        {
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Stream stream = Application.GetResourceStream(strUri).Stream;
+
+            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+
+            string strName = string.Empty;
+            if (nMaxRRUPath == 1)
+            {
+                strName = "g_OnePathRRU";
+                RRUSize = new Size(80, 70);
+            }
+            else if (nMaxRRUPath == 2)
+            {
+                strName = "g_TwoPathRRU";
+                RRUSize = new Size(130, 70);
+            }
+            else if (nMaxRRUPath == 4)
+            {
+                strName = "g_FourPathRRU";
+                RRUSize = new Size(160, 70);
+            }
+            else if (nMaxRRUPath == 8)
+            {
+                strName = "g_EightPathRRU";
+                RRUSize = new Size(260, 70);
+            }
+            else if (nMaxRRUPath == 16)
+            {
+                strName = "g_SixteenPathRRU";
+                RRUSize = new Size(480, 70);
+            }
+            else
+            {
+                strName = "g_OnePathRRU";
+                RRUSize = new Size(80, 70);
+            }
+
+            Object content = el.FindName(strName) as Grid;
+
+            strXAML = XamlWriter.Save(content);
+
+            return strXAML;
+        }
+        
+        /// <summary>
+        /// 双击 RRU 进行小区的设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DesignerItem targetItem = sender as DesignerItem;
+
+            //Grid targetGrid = targetItem.Content as Grid;
+
+            //string strName = targetGrid.Name;
+            //int nRRUPoint = 1;
+
+            //switch(strName)
+            //{
+            //    case "g_OnePathRRU":
+            //        nRRUPoint = 1;
+            //        break;
+            //    case "g_TwoPathRRU":
+            //        nRRUPoint = 2;
+            //        break;
+            //    case "g_FourPathRRU":
+            //        nRRUPoint = 4;
+            //        break;
+            //    case "g_EightPathRRU":
+            //        nRRUPoint = 8;
+            //        break;
+            //    case "g_SixteenPathRRU":
+            //        nRRUPoint = 16;
+            //        break;
+            //    default:
+            //        nRRUPoint = 1;
+            //        break;
+                        
+            //}
+            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning);
+            dlg.ShowDialog();
+        }
+
+        #endregion
+
+        #region 构建rHUB
+        
         /// <summary>
         /// 构造 rHUB
         /// </summary>
@@ -399,6 +388,48 @@ namespace SCMTMainWindow.View
 
             return true;
         }
+
+        /// <summary>
+        /// 从配置文件获取rHUB
+        /// </summary>
+        /// <param name="nMaxRRUPath"></param>
+        /// <param name="strXAML"></param>
+        /// <param name="RRUSize"></param>
+        /// <returns></returns>
+        private string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        {
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Stream stream = Application.GetResourceStream(strUri).Stream;
+
+            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+
+            string strName = string.Empty;
+            if (nMaxRRUPath == 2)
+            {
+                strName = "g_SingleRHUB";
+                RRUSize = new Size(260, 70);
+            }
+            else if (nMaxRRUPath == 4)
+            {
+                strName = "g_TwoPathRHUB";
+                RRUSize = new Size(260, 70);
+            }
+            else
+            {
+                strName = "g_SingleRHUB";
+                RRUSize = new Size(260, 70);
+            }
+
+            Object content = el.FindName(strName) as Grid;
+
+            strXAML = XamlWriter.Save(content);
+
+            return strXAML;
+        }
+
+        #endregion
+
+        #region 构建Antenna
 
         /// <summary>
         /// 创建天线阵
@@ -469,6 +500,48 @@ namespace SCMTMainWindow.View
 
             return true;
         }
+        private string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        {
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Stream stream = Application.GetResourceStream(strUri).Stream;
+
+            FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
+
+            string strName = string.Empty;
+            if (nMaxRRUPath == 1)
+            {
+                strName = "g_SignalAntenna";
+                RRUSize = new Size(30, 40);
+            }
+            else if (nMaxRRUPath == 2)
+            {
+                strName = "g_TwoPathAntenna";
+                RRUSize = new Size(40, 40);
+            }
+            else if (nMaxRRUPath == 4)
+            {
+                strName = "g_FourPathAntenna";
+                RRUSize = new Size(60, 40);
+            }
+            else if (nMaxRRUPath == 8)
+            {
+                strName = "g_EightPathAntenna";
+                RRUSize = new Size(140, 40);
+            }
+            else
+            {
+                strName = "g_SignalAntenna";
+                RRUSize = new Size(40, 40);
+            }
+
+            Object content = el.FindName(strName) as Grid;
+
+            strXAML = XamlWriter.Save(content);
+
+            return strXAML;
+        }
+
+        #endregion
 
         //尝试获取节点的根元素    根据网上的代码，查询一个元素的父节点的父节点。。。通过递归查找到 Name 为
         //某个值的元素
@@ -518,24 +591,19 @@ namespace SCMTMainWindow.View
             return null;
         }
 
-        //全局变量，将网元名称和网元信息结构体对应
-        private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
-        //全局变量，将网元名称和网元的属性表格对应
-        public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
-
-        //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
-        public Dictionary<string, string> g_AllDevInfo = new Dictionary<string, string>();
-
-        //保存界面上的属性表格
-        public Grid gridProperty;
 
         /// <summary>
         /// 为网元创建属性表格
         /// </summary>
         /// <param name="strName"></param>
         /// <param name="mibInfo"></param>
-        private void CreateGirdForNetInfo(string strName, DevAttributeInfo mibInfo)
+        public void CreateGirdForNetInfo(string strName, DevAttributeInfo mibInfo)
         {
+            if(g_GridForNet.Keys.Contains(strName))
+            {
+                return;
+            }
+
             Grid grid = new Grid();
 
             //创建两列，第一列显示属性名称Name，第二列显示属性值Value
@@ -628,6 +696,11 @@ namespace SCMTMainWindow.View
                             cbValue.IsReadOnly = true;
                             cbValue.IsEnabled = false;
                         }
+                        else
+                        {
+                            //属性是可以修改的，则创建选择改变事件
+                            cbValue.SelectionChanged += CbValue_SelectionChanged;
+                        }
                         break;
                     default:
                         TextBox txtValue = new TextBox();
@@ -651,6 +724,31 @@ namespace SCMTMainWindow.View
                 Grid.SetRowSpan(gridSplit, mibInfo.m_mapAttributes.Count);
             }
             g_GridForNet.Add(strName, grid);
+        }
+
+        /// <summary>
+        /// 下拉框选择改变事件，改变之后需要修改相关属性
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CbValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox targetItem = sender as ComboBox;
+            Grid grid = targetItem.Parent as Grid;
+            TextBlock targetText;
+
+            for(int i = 0; i < grid.Children.Count; i++)
+            {
+                if(grid.Children[i] == targetItem)
+                {
+                    targetText = grid.Children[i - 1] as TextBlock;
+                    if (targetText != null)
+                    {
+                        MessageBox.Show(targetText.Text.ToString());
+                    }
+                }
+            }
+
         }
 
         protected override Size MeasureOverride(Size constraint)

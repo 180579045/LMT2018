@@ -20,15 +20,14 @@ namespace CfgFileOperation
         static void Main(string[] args)
         {
 
-            //new Test().testForReadRecList();
+            new Test().testForReadRecList();//
 
-            new Test().testLoadMibTreeIntoMem();
+            new Test().testLoadMibTreeIntoMem();//
 
             new Test().testForReadExcelRruType();
 
             new Test().testForReadExcelAnnt();
             
-
             new Test().testForOpReadExcelForCfg();
 
 
@@ -48,11 +47,20 @@ namespace CfgFileOperation
 
         void testForReadRecList()
         {
+            // 加载lm.mdb到内存
+            CfgOp cfgOp = new CfgOp();
+            string strCfgFileName = "";
+            string FileToDirectory = "";
+            string strDBPath = "";
+            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+
+            // reclist
             CfgReadReclistExcel reclist = new CfgReadReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
-            reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType);
+            reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
         }
 
         void testLoadMibTreeIntoMem()
@@ -88,6 +96,18 @@ namespace CfgFileOperation
             CfgExcelOp exOp = new CfgExcelOp();
             exOp.test(".\\123\\eNB告警信息表.xls");
 
+        }
+
+        void testForCfgFileOp()
+        {
+            string strCfgFileName = "";
+            string FileToDirectory = "";
+            string strDBPath = "";
+            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+
+            CfgOp cfgOp = new CfgOp();
+            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+            cfgOp.SaveFile_eNB("./path.cfg");
         }
 
         void test1()
