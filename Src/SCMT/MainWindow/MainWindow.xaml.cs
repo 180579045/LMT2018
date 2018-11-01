@@ -1929,7 +1929,13 @@ namespace SCMTMainWindow
 			if (0 != ret)
 			{
 				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-				return 8;
+				return 4;
+			}
+
+			if (null == indexList || 0 == indexList.Count())
+			{
+				Log.Error("查询基站电源信息失败，默认设置为5G基站");
+				return 4;
 			}
 
 			var strSlot = MibStringHelper.GetRealValueFromIndex(indexList.First(), 3);
