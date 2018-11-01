@@ -337,6 +337,16 @@ namespace NetPlan
 			{
 				AddIndexColumnToAttributes(tbl.childList, indexGrade);
 			}
+
+			var attriList = m_mapAttributes.Values.ToList();
+			attriList.Sort(new MLNIComparer());
+
+			// 排序后需要重新设置属性
+			m_mapAttributes.Clear();
+			foreach (var item in attriList)
+			{
+				m_mapAttributes[item.mibAttri.childNameMib] = item;
+			}
 		}
 
 		private void InitDevInfo(EnumDevType type, string strIndex)
@@ -345,12 +355,15 @@ namespace NetPlan
 			var strEntryName = DevTypeHelper.GetEntryNameFromDevType(type);
 			if (null == strEntryName)
 			{
+				Log.Error($"根据{type.ToString()}未找到对应的表名");
 				return;
 			}
 
-			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, CSEnbHelper.GetCurEnbAddr());
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, targetIp);
 			if (null == tbl)
 			{
+				Log.Error($"根据表名{strEntryName}未找到基站{targetIp}的表信息");
 				return;
 			}
 
@@ -358,6 +371,7 @@ namespace NetPlan
 			var attributes = NPECmdHelper.GetInstance().GetDevAttributesByEntryName(strEntryName);
 			if (null == attributes)
 			{
+				Log.Error($"根据表名{strEntryName}未找到对应的属性信息");
 				return;
 			}
 
@@ -367,6 +381,16 @@ namespace NetPlan
 			if (!m_bIsScalar)
 			{
 				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
+
+			var attriList = m_mapAttributes.Values.ToList();
+			attriList.Sort(new MLNIComparer());
+
+			// 排序后需要重新设置属性
+			m_mapAttributes.Clear();
+			foreach (var item in attriList)
+			{
+				m_mapAttributes[item.mibAttri.childNameMib] = item;
 			}
 		}
 
@@ -389,7 +413,8 @@ namespace NetPlan
 					m_bVisible = true,
 					mibAttri = indexColumn
 				};
-				m_mapAttributes.Add(indexColumn.childNameMib, info);
+				if (indexColumn != null)
+					m_mapAttributes.Add(indexColumn.childNameMib, info);
 			}
 			return true;
 		}

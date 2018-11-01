@@ -45,6 +45,11 @@ namespace NetPlan
 			return devAttributList;
 		}
 
+		/// <summary>
+		/// 根据表名查询该表下所有的叶子节点
+		/// </summary>
+		/// <param name="strEntryName"></param>
+		/// <returns></returns>
 		public Dictionary<string, MibLeafNodeInfo> GetDevAttributesByEntryName(string strEntryName)
 		{
 			if (string.IsNullOrEmpty(strEntryName))

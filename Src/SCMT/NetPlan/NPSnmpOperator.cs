@@ -238,7 +238,9 @@ namespace NetPlan
 			var info = new MibLeafNodeInfo
 			{
 				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
-				mibAttri = mibLeaf
+				mibAttri = mibLeaf,
+				m_bReadOnly = (mibLeaf.IsIndex == "True"),      // 索引只读
+				m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
 			};
 
 			return info;
@@ -318,7 +320,8 @@ namespace NetPlan
 					{
 						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
-						m_bReadOnly = true          // 索引，只读
+						m_bReadOnly = (childLeaf.IsIndex == "True"),      // 索引只读
+						m_bVisible = (childLeaf.ASNType != "RowStatus")   // 行状态不显示
 					};
 				}
 				else
