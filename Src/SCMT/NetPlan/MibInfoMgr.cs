@@ -18,7 +18,7 @@ namespace NetPlan
 	// MIB信息管理类，单例
 	public class MibInfoMgr : Singleton<MibInfoMgr>
 	{
-		public delegate string GetMibValue(string strOriginValue, string strLatestValue);
+		private delegate string GetMibValue(string strOriginValue, string strLatestValue);
 
 		#region 公共接口
 
@@ -29,7 +29,10 @@ namespace NetPlan
 		/// <returns></returns>
 		public MAP_DEVTYPE_DEVATTRI GetAllEnbInfo()
 		{
-			return m_mapAllMibData;
+			lock (_syncObj)
+			{
+				return m_mapAllMibData;
+			}
 		}
 
 		/// <summary>
@@ -108,6 +111,24 @@ namespace NetPlan
 
 			var strAttriValue = GetEnumStringByMibName(dev.m_mapAttributes, strAttriName);
 			return strAttriValue;
+		}
+
+		/// <summary>
+		/// 解析连接
+		/// </summary>
+		/// <returns></returns>
+		public bool ParseLinks()
+		{
+			lock (_syncObj)
+			{
+				return m_linkMgr.ParseLinksFromMibInfo(m_mapAllMibData);
+			}
+		}
+
+		/// 获取所有的连接信息
+		public Dictionary<EnumDevType, List<WholeLink>> GetLinks()
+		{
+			return m_linkMgr.GetAllLink();
 		}
 
 		/// <summary>
@@ -992,6 +1013,7 @@ namespace NetPlan
 		private MibInfoMgr()
 		{
 			m_mapAllMibData = new MAP_DEVTYPE_DEVATTRI();
+			m_linkMgr = new NetPlanLinkMgr();
 		}
 
 		/// <summary>
@@ -1634,6 +1656,8 @@ namespace NetPlan
 		// 保存所有的网规MIB数据。开始保存的是从设备中查询回来的信息，如果对这些信息进行了修改、删除，就从这个数据结构中移动到对应的结构中
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
 		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
+
+		private NetPlanLinkMgr m_linkMgr;
 
 		private readonly object _syncObj = new object();
 

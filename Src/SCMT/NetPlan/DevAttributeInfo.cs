@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
@@ -240,7 +241,7 @@ namespace NetPlan
 			var originValue = m_mapAttributes[strFieldName].m_strOriginValue;
 			if (bConvertToNum)
 			{
-				// todo 转换函数
+				return SnmpToDatabase.ConvertStringToMibValue(m_mapAttributes[strFieldName].mibAttri, originValue);
 			}
 
 			return originValue;
@@ -268,7 +269,7 @@ namespace NetPlan
 			var latestValue = m_mapAttributes[strFieldName].m_strLatestValue;
 			if (null != latestValue && bConvertToNum)
 			{
-				// todo 转换函数
+				return SnmpToDatabase.ConvertStringToMibValue(m_mapAttributes[strFieldName].mibAttri, latestValue);
 			}
 
 			return latestValue;
@@ -450,5 +451,12 @@ namespace NetPlan
 		public string strDevIndex;		// 设备索引
 		public EnumPortType portType;	// 端口类型
 		public int nPortNo;				// 端口号
+	}
+
+	public struct WholeLink
+	{
+		public LinkEndpoint m_srcEndPoint;
+		public LinkEndpoint m_dstEndPoint;
+		public EnumDevType m_linkType;
 	}
 }

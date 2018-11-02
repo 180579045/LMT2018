@@ -180,6 +180,8 @@ namespace NetPlan
 					MibInfoMgr.GetInstance().AddDevMibInfo(devType, temp);
 				}
 			}
+			// 所有设备信息保存完成后，解析连接信息
+			MibInfoMgr.GetInstance().ParseLinks();
 
 			return true;
 		}
