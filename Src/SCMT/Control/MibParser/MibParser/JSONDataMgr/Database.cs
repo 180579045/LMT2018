@@ -61,15 +61,20 @@ namespace MIBDataParser.JSONDataMgr
 		/// 初始化 线程: 调用 DBInitDateBaseByIpConnect 。
 		/// </summary>
 		/// <param name="connectIp">基站连接的ip，标记数据库的归属，是哪个基站的数据</param>
-		public void initDatabase(string connectIp)
+		public async Task<bool> initDatabase(string connectIp)
 		{
 			try
 			{
-				new Thread(DBInitDateBaseByIpConnect).Start(connectIp);
+				//new Thread(DBInitDateBaseByIpConnect).Start(connectIp);
+
+				var task = Task<bool>.Factory.StartNew(() => DBInitDateBaseByIpConnect(connectIp));
+				Task.WaitAll(task);
+				return task.Result;
 			}
 			catch
 			{
-				resultInitData(false);
+				//resultInitData(false);
+				return false;
 			}
 		}
 
@@ -438,24 +443,25 @@ namespace MIBDataParser.JSONDataMgr
 		/// 真实执行初始化内容的函数。
 		/// </summary>
 		/// <param name="connectIp"> 标识数据的归属，查询要用 </param>
-		private void DBInitDateBaseByIpConnect(object connectIp)
+		private bool DBInitDateBaseByIpConnect(object connectIp)
 		{
 			Console.WriteLine("Db init : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			// 1. 解压lm.dtz
 			if (!DBInitZip(connectIp.ToString()))
 			{
 				Console.WriteLine("Db init : zip err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-				resultInitData(false);
-				return;
+				//resultInitData(false);
+				return false;
 			}
 			//Console.WriteLine("Db init zip ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
 			// 2. 解析lm.dtz => 写json文件(增加，叶子节点的读写属性) 解析.mdb文件
-			if (!DBInitParseMdbToWriteJson())
+			var bSucceed = DBInitParseMdbToWriteJson();
+			if (!bSucceed.Result)
 			{
 				Console.WriteLine("Db init : writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-				resultInitData(false);
-				return;
+				//resultInitData(false);
+				return false;
 			}
 			//Console.WriteLine("Db init parse mdb ok ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
@@ -463,35 +469,36 @@ namespace MIBDataParser.JSONDataMgr
 			if (!DBInitParseJsonToMemory(connectIp.ToString()))
 			{
 				Console.WriteLine("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-				resultInitData(false);
-				return;
+				//resultInitData(false);
+				return false;
 			}
 			//Console.WriteLine("Db init : mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
 			// 4. 结果
 			Console.WriteLine("Db init : Ok..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			resultInitData(true);
+			//resultInitData(true);
+			return true;
 		}
 
 		/// 1. 解压lm.dtz
-        private bool DBInitZip(string connectIp)
-        {
-            string err = "";
-            UnzippedLmDtz unZip = new UnzippedLmDtz();
-            if (!unZip.UnZipFile(connectIp, out err))
-            {
-                resultInitData(false);
-                Console.WriteLine("Err : DBInitZip fail, {0}", err);
-                return false;
-            }
-            return true;
-        }
-        /// 2. 解析lm.mdb,写json文件; 解析lm.dtz => json文件(增加，叶子节点的读写属性) 解析.mdb文件
-        private bool DBInitParseMdbToWriteJson()
+		private bool DBInitZip(string connectIp)
 		{
-			// TODO 5.10.11是什么？
-			JsonDataManager jdm = new JsonDataManager("5.10.11");
-			return jdm.ConvertAccessDbToJsonForThread();
+			string err = "";
+			UnzippedLmDtz unZip = new UnzippedLmDtz();
+			if (!unZip.UnZipFile(connectIp, out err))
+			{
+				resultInitData(false);
+				Console.WriteLine("Err : DBInitZip fail, {0}", err);
+				return false;
+			}
+			return true;
+		}
+		/// 2. 解析lm.mdb,写json文件; 解析lm.dtz => json文件(增加，叶子节点的读写属性) 解析.mdb文件
+		private async Task<bool> DBInitParseMdbToWriteJson()
+		{
+			var jdm = new JsonDataManager("5.10.11");
+			var retTask = await jdm.ConvertAccessDbToJsonForThread().ConfigureAwait(false);
+			return retTask;
 		}
 		/// 3. 解析json文件到内存中
 		private bool DBInitParseJsonToMemory(string connectIp)
