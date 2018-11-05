@@ -19,19 +19,22 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
+            Test test = new Test();
 
-            new Test().testForReadRecList();//
+            test.testForReadSelfExcel();
 
-            new Test().testLoadMibTreeIntoMem();//
+            test.testForReadRecList();//
 
-            new Test().testForReadExcelRruType();
+            test.testLoadMibTreeIntoMem();//
 
-            new Test().testForReadExcelAnnt();
+            test.testForReadExcelRruType();
+
+            test.testForReadExcelAnnt();
             
-            new Test().testForOpReadExcelForCfg();
+            test.testForOpReadExcelForCfg();
 
 
-            new Test().test4();
+            test.test4();
 
             //string strCfgFileName = "";
             //string FileToDirectory = "";
@@ -45,6 +48,34 @@ namespace CfgFileOperation
             //Console.ReadLine();
         }
 
+        void testForReadSelfExcel()
+        {
+            // 加载lm.mdb到内存
+            CfgOp cfgOp = new CfgOp();
+            string strCfgFileName = "";
+            string FileToDirectory = "";
+            string strDBPath = "";
+            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+
+            // reclist
+            cfgOp.m_reclistExcel = new CfgParseReclistExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            string UeType = "0:默认";
+            //reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+            cfgOp.m_reclistExcel.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+
+            // 自定义文件
+            excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
+            //CfgParseSelfExcel selfEx = new CfgParseSelfExcel();
+            //selfEx.ProcessingExcel(excelPath, strFileToDirectory, "init", cfgOp);
+            //selfEx.ProcessingExcel(excelPath, strFileToDirectory, "patch", cfgOp);
+            cfgOp.m_selfExcel = new CfgParseSelfExcel();
+            cfgOp.m_selfExcel.ProcessingExcel(excelPath, strFileToDirectory, "init", cfgOp);
+            cfgOp.m_selfExcel.ProcessingExcel(excelPath, strFileToDirectory, "patch", cfgOp);
+        }
+
         void testForReadRecList()
         {
             // 加载lm.mdb到内存
@@ -56,11 +87,11 @@ namespace CfgFileOperation
             cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
 
             // reclist
-            CfgParseReclistExcel reclist = new CfgParseReclistExcel();
+            //CfgParseReclistExcel reclist = new CfgParseReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
-            reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+            cfgOp.m_reclistExcel.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
         }
 
         void testLoadMibTreeIntoMem()

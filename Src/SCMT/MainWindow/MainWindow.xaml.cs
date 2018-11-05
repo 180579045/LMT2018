@@ -225,40 +225,62 @@ namespace SCMTMainWindow
 		/// 调用时机：单机调试；连接基站成功；
 		/// </summary>
 		/// TODO 连接多个基站时，这个方案需要改
-		private void InitDataBase()
+		private async Task<bool> InitDataBase()
 		{
 			node.db = Database.GetInstance();
             CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
 
 			// TODO 需要同步等待数据库初始化完成后才能进行其他操作
-			node.db.initDatabase(node.NeAddress.ToString());
+			var result = await node.db.initDatabase(node.NeAddress.ToString());
 
-			node.db.resultInitData = (bool ret) =>
+			if (result)
 			{
-				if (ret == false)
+				Dispatcher.Invoke(() =>
 				{
-                    ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+					var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
+					RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
 
-                    Dispatcher.Invoke(() =>
-                    {
-                        ExpanderBaseInfo.IsEnabled = false;
-                    ExpanderBaseInfo.IsExpanded = false;
-                    TabControlEnable(false);
-                    });
-                }
-				else
-				{
-					Dispatcher.Invoke(() =>
-					{
-						var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
-						RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
+					TabControlEnable(true);
+					ExpanderBaseInfo.IsEnabled = true;
+					ExpanderBaseInfo.IsExpanded = true;
+				});
 
-                        TabControlEnable(true);
-                        ExpanderBaseInfo.IsEnabled = true;
-                        ExpanderBaseInfo.IsExpanded = true;
-                    });
-				}
-			};
+				return true;
+			}
+
+			ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+
+			ExpanderBaseInfo.IsEnabled = false;
+			ExpanderBaseInfo.IsExpanded = false;
+			TabControlEnable(false);
+			return false;
+
+			//	node.db.resultInitData = (bool ret) =>
+		//	{
+		//		if (ret == false)
+		//		{
+  //                  ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+
+  //                  Dispatcher.Invoke(() =>
+  //                  {
+  //                      ExpanderBaseInfo.IsEnabled = false;
+  //                  ExpanderBaseInfo.IsExpanded = false;
+  //                  TabControlEnable(false);
+  //                  });
+  //              }
+		//		else
+		//		{
+		//			Dispatcher.Invoke(() =>
+		//			{
+		//				var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
+		//				RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
+
+  //                      TabControlEnable(true);
+  //                      ExpanderBaseInfo.IsEnabled = true;
+  //                      ExpanderBaseInfo.IsExpanded = true;
+  //                  });
+		//		}
+		//	};
 		}
 
 		/// <summary>
@@ -1576,7 +1598,7 @@ namespace SCMTMainWindow
 							Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
 
                             // 在这里要区分DataGrid要显示的数据类型;
-                            var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare], iter3.Value, iter3.Key, "172.27.245.92");
+                            var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare], iter3.Value, iter3.Key, CSEnbHelper.GetCurEnbAddr());
 
                             // 第一个参数：属性的名称——节点英文名称;
                             // 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
@@ -1740,18 +1762,25 @@ namespace SCMTMainWindow
 		}
 
 		// 连接成功
-		private void OnConnect(SubscribeMsg msg)
+		private async void OnConnect(SubscribeMsg msg)
 		{
 			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 			var ip = netAddr.TargetIp;
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-			InitDataBase();
+			var result = await InitDataBase();
+
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
 			EnableMenu(ip, "数据同步");
+
+			if (!result)
+			{
+				Log.Error($"数据库初始化失败，不再查询基站的电源信息");
+				return;
+			}
 
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
@@ -1865,16 +1894,23 @@ namespace SCMTMainWindow
 		}
 
         //解析lm.dtz文件
-        private void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
+        private async void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
         {
             var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
             var ip = netAddr.TargetIp;
 
             var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
-            
-            InitDataBase();
 
-            ShowLogHelper.Show($"解析lm.dtz数据文件成功：{fname}-{ip}", $"{ip}");
+            var result = await InitDataBase();
+
+	        if (result)
+	        {
+				ShowLogHelper.Show($"解析lm.dtz数据文件成功：{fname}-{ip}", $"{ip}");
+			}
+	        else
+	        {
+				ShowLogHelper.Show($"解析lm.dtz数据文件失败：{fname}-{ip}", $"{ip}");
+			}
         }
 
         /// <summary>

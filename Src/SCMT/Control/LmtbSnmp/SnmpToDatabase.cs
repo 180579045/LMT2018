@@ -288,7 +288,11 @@ namespace LmtbSnmp
 			}
 
 			var retData = GetMibNodeInfoByName(mibName, targetIp);
-			
+			if (null == retData)
+			{
+				return null;
+			}
+
 			var mvr = retData.managerValueRange;                    // 1.取出该节点的取值范围;
 			var mapKv = MibStringHelper.SplitManageValue(mvr);      // 2.分解取值范围;
 			
