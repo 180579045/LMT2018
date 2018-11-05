@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using MIBDataParser.JSONDataMgr;
 
 namespace MIBDataParser
@@ -55,7 +57,9 @@ namespace MIBDataParser
 		public string mibSyntax;
 		public string mibDesc;
 		public bool IsTable = false;
+		public string managerWriteAble;
 
+		#region 构造函数
 		public MibLeaf()
 		{
 			IsTable = false;
@@ -71,6 +75,28 @@ namespace MIBDataParser
 			mibDesc = mt.mibDesc;
 			IsTable = true;
 		}
+
+		#endregion
+
+		#region 公共接口
+
+		/// <summary>
+		/// 是否被授权可修改该属性
+		/// </summary>
+		/// <returns></returns>
+		public bool IsEmpoweredModify()
+		{
+			// 管理站可写属性中，如果有w，则认为可以修改
+			if (managerWriteAble.IndexOf("w", StringComparison.Ordinal) >= 0)
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		#endregion
+
 	}
 
 	#endregion
@@ -96,7 +122,7 @@ namespace MIBDataParser
 		/// 初始化的线程 : 初始化(1.解压lm.dtz;2.解析.mdb;3.解析json;)
 		/// </summary>
 		/// <param name=connectIp>信息归属的标识</param>
-		void initDatabase(string connectIp);
+		Task<bool> initDatabase(string connectIp);
 
 		/// <summary>
 		/// 删除断链的ip的数据库
