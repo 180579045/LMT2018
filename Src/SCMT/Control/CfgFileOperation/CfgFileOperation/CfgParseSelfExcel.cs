@@ -57,7 +57,7 @@ namespace CfgFileOperation
                 Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strCondition);//
                 if (wks == null)
                     return;
-
+                ExportSelfExcelForPatch(wks, cfgOp);
             }
         }
 
@@ -91,7 +91,11 @@ namespace CfgFileOperation
             }
         }
 
-
+        /// <summary>
+        /// patch页的处理，用于制作nb_patch.cfg
+        /// </summary>
+        /// <param name="wks"></param>
+        /// <param name="cfgOp"></param>
         void ExportSelfExcelForPatch(Excel.Worksheet wks, CfgOp cfgOp)
         {
             int rowCount = GetEndLineNum(wks);                                        // 获取行数
@@ -100,64 +104,54 @@ namespace CfgFileOperation
             string strCurIndex = "";                                                  // 保存当前索引
             for (int currentLine = 2; currentLine < rowCount + 1; currentLine++)      // 逐行分析
             {
-                if (!IsExistTableName(cfgOp, ColVals, currentLine))                   //判断 : 查看是否有这个表
+                if (!IsExistTableName(cfgOp, ColVals, currentLine))                   // 判断 : 查看是否有这个表
                     break;//
 
-                string TableName = GetCellValue(ColVals, currentLine, "TableName");   //表名
-                string Index = GetCellValue(ColVals, currentLine, "Index");           //索引
-                string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     //叶子名
-                string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   //叶子值
-                strCurTableName = SetCurTableName(TableName, strCurTableName);      //更新表名
-                strCurIndex = SetCurIndex(Index, strCurIndex);                      //更新索引
-
-                //
-                if (0 == String.Compare("-1", Index, true))
+                string TableName = GetCellValue(ColVals, currentLine, "TableName");   // 表名
+                string Index = GetCellValue(ColVals, currentLine, "Index");           // 索引
+                string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     // 叶子名
+                string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   // 叶子值
+                strCurTableName = SetCurTableName(TableName, strCurTableName);        // 更新表名
+                
+                // 标记 表名和实例信息
+                if (0 != String.Compare("", Index, true))
                 {
-                    ////做补丁文件
-                    //pCfgOp->InsertPdgTab(strCurTableName);
-                    cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);
-
-                    //CDTCfgInsts vectInstInfo = pCurTabOp->GetInstInfo();
-                    //CDTCfgInsts::iterator itFind = vectInstInfo.begin();
-                    //for (; itFind != vectInstInfo.end(); itFind++)
-                    //{
-                    //    CTabInstInfo* pInstInfo = *itFind;
-                    //    CString strInstIndex = pInstInfo->strInstantNum;
-
-                    //    //找到每个实例下的所有叶子
-                    //    CDTIndexMibNodes vect_MibNode = pCurTabOp->GetMIBNode();
-                    //    if (vect_MibNode.size() != 0)
-                    //    {
-                    //        for (int i = 0; i < vect_MibNode.size(); i++)
-                    //        {
-                    //            CString strNodeName = "";
-                    //            Stru_MibNode* pMibNode = vect_MibNode[i];
-                    //            if (pMibNode != NULL)
-                    //            {
-                    //                //节点名字
-                    //                strNodeName = pMibNode->strMibName;
-                    //            }
-                    //            //做补丁文件
-                    //            pCurTabOp->InsertInstOrLeaf(strInstIndex, strNodeName);
-                    //        }
-                    //    }
-                    //}
-                    continue;
+                    cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               // 增加要写Patch的表名
+                    if (0 == String.Compare("-1", Index, true))                       // 索引 == -1 相关的处理
+                    {
+                        PatchNeedWritePatchTable(cfgOp, strCurTableName);             // 需要做补丁文件的表名和表下面的节点     
+                        continue;
+                    }
+                    else                                                              // 索引 剩下的不为空 相关处理
+                        strCurIndex = SetCurIndex(Index, strCurIndex);                // 更新索引
                 }
-                else if (0 != String.Compare("", Index, true))
-                {
-                    ////做补丁文件
-                    //pCfgOp->InsertPdgTab(strCurTableName);
+                
+                if (!WriteValueToBuffer(cfgOp.m_mapTableInfo[strCurTableName],        // 更新节点值
+                    strCurIndex, NodeName, NodeValue))
+                    continue;
+            }
+        }
 
-                    //if (0 < strIndex.Find('_'))
-                    //{
-                    //    strIndex.Replace("_", ".");
-                    //    strCurIndex = "." + strIndex;
-                    //}
-                    //else
-                    //{
-                    //    strCurIndex = "." + strIndex;
-                    //}
+        /// <summary>
+        /// //需要做补丁文件的表和它的实例节点
+        /// </summary>
+        /// <param name="cfgOp"></param>
+        /// <param name="strCurTableName"></param>
+        void PatchNeedWritePatchTable(CfgOp cfgOp, string strCurTableName)
+        {
+            //需要做补丁文件的表名
+            //cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               //增加要写Patch的表名
+
+            //需要做补丁文件的表下面的节点
+            List<CfgTableInstanceInfos> m_cfgInsts = cfgOp.m_mapTableInfo[strCurTableName].m_cfgInsts;//实例
+            List<CfgFileLeafNodeOp> m_LeafNodes = cfgOp.m_mapTableInfo[strCurTableName].m_LeafNodes;  //节点;
+            foreach (var cfgInst in m_cfgInsts)
+            {
+                string strInstIndex = cfgInst.GetInstantNum();//==string.Empty ? "" : cfgInst.GetInstantNum();
+                foreach (var leafNode in m_LeafNodes)
+                {
+                    string strMibName = leafNode.m_struMibNode.strMibName;
+                    cfgOp.m_mapTableInfo[strCurTableName].InsertInstOrLeaf(strInstIndex, strMibName);
                 }
             }
         }
@@ -211,7 +205,7 @@ namespace CfgFileOperation
             string strTableName = GetCellValue(ColVals, currentLine, "TableName"); //表名
             if (0 != String.Compare(strTableName, "", true))
             {
-                strTableName.Replace("Table", "Entry");
+                strTableName = strTableName.Replace("Table", "Entry");
                 if (!cfgOp.m_mapTableInfo.ContainsKey(strTableName))//再次查看是否有这个表
                     return false;//pCurTabOp->InitialMibTableInfo(pAdoconnection, strCurTableName);
             }

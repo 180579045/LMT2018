@@ -49,6 +49,13 @@ namespace CfgFileOperation
             m_dataHeadInfo = new StruDataHead("init");
             m_bEmptyCfg = true;// 初始化为空cfg
         }
+        public void OnCreatePatchAndInitCfg()
+        {
+            string strCfgFileName = "";
+            string FileToDirectory = "";
+            string strDBPath = "";
+            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+        }
         /// <param name="strCfgFileName">创建cfg的文件名字</param>
         /// <param name="FileToUnzip">要解压的文件</param>
         /// <param name="FileToDirectory">解压释放的地方</param>
