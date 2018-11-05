@@ -107,7 +107,7 @@ namespace NetPlan.Tests
 					var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTF板", "LTE FDD", "CPRI");
 					Assert.IsNotNull(dev);
 
-					var ret = MibInfoMgr.GetInstance().DistributeBoardInfoToEnb(EnumDevType.board);
+					var ret = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board);
 					Assert.IsTrue(ret);
 
 					stop = true;

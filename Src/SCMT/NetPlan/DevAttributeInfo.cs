@@ -67,7 +67,7 @@ namespace NetPlan
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
-			InitDevInfo(mEnumDevType, strIndex);
+			InitDevInfo(mEnumDevType);
 		}
 
 		/// <summary>
@@ -283,6 +283,7 @@ namespace NetPlan
 		/// 生成设备oid索引。
 		/// 由于当前MIB的特性，板卡、RRU、天线阵等设备特性，只需要一个设备序号即可生成索引
 		/// </summary>
+		/// <param name="indexGrade"></param>
 		/// <param name="devIndex"></param>
 		/// <returns></returns>
 		private string GerenalDevOidIndex(int indexGrade, int devIndex)
@@ -308,6 +309,7 @@ namespace NetPlan
 		/// 添加新设备，初始化设备信息
 		/// </summary>
 		/// <param name="type"></param>
+		/// <param name="devIndex"></param>
 		private void InitDevInfo(EnumDevType type, int devIndex)
 		{
 			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
@@ -350,7 +352,7 @@ namespace NetPlan
 			}
 		}
 
-		private void InitDevInfo(EnumDevType type, string strIndex)
+		private void InitDevInfo(EnumDevType type)
 		{
 			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
 			var strEntryName = DevTypeHelper.GetEntryNameFromDevType(type);
@@ -408,7 +410,7 @@ namespace NetPlan
 				var indexColumn = childList.FirstOrDefault(childLeaf => i == childLeaf.childNo);
 				if (null == indexColumn)
 				{
-					Log.Error($"查找信息失败");
+					Log.Error("查找信息失败");
 					return false;
 				}
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
