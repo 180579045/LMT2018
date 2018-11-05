@@ -406,16 +406,21 @@ namespace NetPlan
 			for (var i = 1; i <= indexGrade; i++)
 			{
 				var indexColumn = childList.FirstOrDefault(childLeaf => i == childLeaf.childNo);
+				if (null == indexColumn)
+				{
+					Log.Error($"查找信息失败");
+					return false;
+				}
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
 				var info = new MibLeafNodeInfo
 				{
 					m_strOriginValue = indexVale,
-					m_bReadOnly = true,
+					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
 					m_bVisible = true,
 					mibAttri = indexColumn
 				};
-				if (indexColumn != null)
-					m_mapAttributes.Add(indexColumn.childNameMib, info);
+
+				m_mapAttributes.Add(indexColumn.childNameMib, info);
 			}
 			return true;
 		}
