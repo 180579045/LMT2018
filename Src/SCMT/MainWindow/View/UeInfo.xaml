@@ -1,0 +1,80 @@
+﻿<UserControl x:Class="SCMTMainWindow.View.UeInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SCMTMainWindow.View"
+             xmlns:local2="clr-namespace:SCMTMainWindow.UeInfo" Background="LightBlue"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <TabControl >
+            <TabItem Header="UE信息查询"  Cursor="Hand" Height="40">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*"/>
+                        <RowDefinition Height="7*"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <DataGrid Grid.Column="0"></DataGrid>
+
+                        <DataGrid Grid.Column="1"></DataGrid>
+                        <GroupBox  Header="功能区" Grid.Column="2">
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="1*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="查询" Width="50" Height="30" Grid.Column="0" HorizontalAlignment="Right"></Button>
+                                <Button Content="导出" Width="50" Height="30" Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Center"></Button>
+                            </Grid>
+
+                        </GroupBox>
+                    </Grid>
+                    <GridSplitter Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
+                    <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Grid.Row="1" ItemsSource="{Binding UeInfos}" Margin="0,0,0,0" VerticalAlignment="Top"  AutoGenerateColumns="False" >
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="编辑列" Click="MenuItem_Click"></MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Num" Binding="{Binding Path=Num}"/>
+                            <DataGridTextColumn Header="Info1" Binding="{Binding Path=Info1}"/>
+                            <DataGridTextColumn Header="Info2" Binding="{Binding Path=Info2}" />
+                            <DataGridTextColumn Header="Info3" Binding="{Binding Path=Info3}" />
+                            <DataGridTemplateColumn Header="Info4" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander >
+                                            <TreeView  ItemsSource="{Binding Path=Info4}">
+                                                <TreeView.ItemTemplate>
+                                                    <HierarchicalDataTemplate DataType="{x:Type local2:ChildrenUeInfo}" ItemsSource="{Binding Path=Children}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"></TextBlock>
+                                                        </StackPanel>
+                                                    </HierarchicalDataTemplate>
+                                                </TreeView.ItemTemplate>
+                                            </TreeView>
+                                        </Expander>
+                                        <!--<DataGrid  ItemsSource="{Binding Path=Info4}"  AutoGenerateColumns="False"></DataGrid>-->
+
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+            <TabItem Header="UE业务面查询" Cursor="Hand" Height="40"></TabItem>
+            <TabItem Header="UE测量配置查询" Cursor="Hand" Height="40"></TabItem>
+        </TabControl>
+    </Grid>
+</UserControl>

@@ -37,8 +37,7 @@ namespace SCMTMainWindow.View
         public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
 
         //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
-        public Dictionary<string, string> g_AllDevInfo = new Dictionary<string, string>();
-
+        public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
         //保存界面上的属性表格
         public Grid gridProperty;
 
@@ -231,7 +230,7 @@ namespace SCMTMainWindow.View
         /// <param name="strXAML"></param>
         /// <param name="RRUSize"></param>
         /// <returns></returns>
-        private string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        public string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -500,7 +499,7 @@ namespace SCMTMainWindow.View
 
             return true;
         }
-        private string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        public string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;

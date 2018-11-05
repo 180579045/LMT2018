@@ -152,9 +152,13 @@ namespace CfgFileOperation
         public void InsertInstOrLeaf(string RecordIndex, string strLeafName)
         {
             if (m_InstIndex2LeafName.ContainsKey(RecordIndex))
-                m_InstIndex2LeafName[RecordIndex].Add(strLeafName);
+            {
+                var listLeafName = m_InstIndex2LeafName[RecordIndex];
+                if(-1 == listLeafName.FindIndex(e => String.Compare(e, strLeafName, true) == 0))
+                    m_InstIndex2LeafName[RecordIndex].Add(strLeafName);
+            }
             else
-               m_InstIndex2LeafName.Add(RecordIndex, new List<string>() { strLeafName });
+                m_InstIndex2LeafName.Add(RecordIndex, new List<string>() { strLeafName });
         }
         /*********************        reclist 解析后存在的变量                         ***************************/
 

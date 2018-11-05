@@ -320,8 +320,8 @@ namespace CfgFileOperation
 
                 List<string> InstINumList = cfgOp.m_mapTableInfo[strCurTableName].GetCfgInstsInstantNum();
                 foreach (var strIndex in InstINumList)
-                    foreach (var mib in cfgOp.m_mapTableInfo[strCurTableName].m_LeafNodes)//找到每个实例下的所有叶子
-                        cfgOp.m_mapTableInfo[strCurTableName].InsertInstOrLeaf(strIndex, strNodeName);//做补丁文件
+                    //foreach (var mib in cfgOp.m_mapTableInfo[strCurTableName].m_LeafNodes)//找到每个实例下的所有叶子
+                    cfgOp.m_mapTableInfo[strCurTableName].InsertInstOrLeaf(strIndex, strNodeName);//做补丁文件
             }
             return true;
         }
@@ -529,7 +529,7 @@ namespace CfgFileOperation
         /// <param name="strTabName"></param>
         public void InsertPdgTab(string strTabName)
         {
-            if (m_vectPDGTabName.FindIndex(e => e.Equals(strTabName)) != -1) //不存在：返回-1，存在：返回位置。
+            if (m_vectPDGTabName.FindIndex(e => e.Equals(strTabName)) == -1) //不存在：返回-1，存在：返回位置。
                 m_vectPDGTabName.Add(strTabName);
         }
         /// <summary>
