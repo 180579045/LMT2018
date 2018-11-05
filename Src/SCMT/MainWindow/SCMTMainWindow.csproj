@@ -226,7 +226,10 @@
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
+    <Compile Include="UeInfo\ChildrenUeInfo.cs" />
+    <Compile Include="UeInfo\UeInfo.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
+    <Compile Include="ViewModel\UeInfoModel.cs" />
     <Compile Include="View\AddBoardWindow.xaml.cs">
       <DependentUpon>AddBoardWindow.xaml</DependentUpon>
     </Compile>
@@ -241,6 +244,12 @@
     </Compile>
     <Compile Include="View\ChooseRRUType.xaml.cs">
       <DependentUpon>ChooseRRUType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EditColumns.xaml.cs">
+      <DependentUpon>EditColumns.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UeInfo.xaml.cs">
+      <DependentUpon>UeInfo.xaml</DependentUpon>
     </Compile>
     <None Include="Component\Configration\RRUPropertyConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -366,6 +375,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\EditColumns.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\NetPlan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -423,6 +436,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\RRUpoint2Cell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UeInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

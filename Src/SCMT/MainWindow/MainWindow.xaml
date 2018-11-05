@@ -31,6 +31,9 @@
             <DataTemplate DataType="{x:Type ViewModel:NetPlanModel}">
                 <View:NetPlan></View:NetPlan>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:UeInfoModel}">
+                <View:UeInfo></View:UeInfo>
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -247,6 +250,16 @@
                         </Grid.RowDefinitions>
                         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled">
                             <ViewModel:NetPlanModel/>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="UE查询" Style="{StaticResource TabItemStyle}">
+                    <Grid Margin="0,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled">
+                            <ViewModel:UeInfoModel/>
                         </ScrollViewer>
                     </Grid>
                 </TabItem>
