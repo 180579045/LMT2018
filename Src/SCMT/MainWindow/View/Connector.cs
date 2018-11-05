@@ -16,6 +16,8 @@ namespace SCMTMainWindow.View
 
         public ConnectorOrientation Orientation { get; set; }
 
+        public string ID { get; set; }
+
         // center position of this Connector relative to the DesignerCanvas
         private Point position;
         public Point Position
