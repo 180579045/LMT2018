@@ -377,7 +377,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             {
                 if(element is System.Windows.Controls.ScrollViewer)
                 {
-                    lvLocalFileInfo.SelectedItems.Clear();
+                    lvLocalFileInfo.SelectedItem = null;
                     return;
                 }
             }
@@ -612,7 +612,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             {
                 if (element is System.Windows.Controls.ScrollViewer)
                 {
-                    lvENBFileInfo.SelectedItems.Clear();
+                    lvENBFileInfo.SelectedItem = null;
                     return;
                 }
             }
