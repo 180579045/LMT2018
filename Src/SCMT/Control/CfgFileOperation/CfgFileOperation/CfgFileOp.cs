@@ -9,6 +9,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Data;
 using CfgFileOpStruct;
+using System.Runtime.Serialization;
 
 namespace CfgFileOperation
 {
@@ -24,7 +25,9 @@ namespace CfgFileOperation
         public CfgParseReclistExcel m_reclistExcel = null;
         public CfgParseRruExcel m_rruExcel = null;
         public CfgParseSelfExcel m_selfExcel = null;
-        
+        //mibTreeMem = new CfgParseDBMibTreeToMemory();
+        public CfgParseDBMibTreeToMemory m_mibTreeMem = null;
+
         /// <summary>
         /// key:tableName; value : ClassCfgTableOp>
         /// </summary>
@@ -32,11 +35,13 @@ namespace CfgFileOperation
         /// <summary>
         /// 
         /// </summary>
-        StruCfgFileHeader m_cfgFile_Header;            // Cfg文件头结构
+        StruCfgFileHeader m_cfgFile_Header;            // init Cfg文件头结构
+        StruCfgFileHeader m_eNB_pdgFile_Header;        // path Cfg文件头结构
         /// <summary>
         /// 
         /// </summary>
-        StruDataHead m_dataHeadInfo;                   // 数据块的头 ，为将来堆叠准备
+        StruDataHead m_dataHeadInfo;                   // init 数据块的头 ，为将来堆叠准备
+        StruDataHead m_dataheadInfo_PDG;               // path 
         /// <summary>
         /// 
         /// </summary>
@@ -46,35 +51,90 @@ namespace CfgFileOperation
         public CfgOp()
         {
             m_mapTableInfo = new Dictionary<string, CfgTableOp>();
-            m_dataHeadInfo = new StruDataHead("init");
+            //m_dataHeadInfo = new StruDataHead("init");
             m_bEmptyCfg = true;// 初始化为空cfg
         }
+        /// <summary>
+        /// 创建 init.cfg path_ex.cfg
+        /// </summary>
         public void OnCreatePatchAndInitCfg()
         {
             string strCfgFileName = "";
             string FileToDirectory = "";
             string strDBPath = "";
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123";
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+
+            //1. lm.mdb 更新加载数据，整理成表和表实例的结构
+            CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+
+            //2. lm.mdb 以每行为单位加载, reclist使用 
+            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
+            m_mibTreeMem.ReadMibTreeToMemory(strFileToDirectory);
+            if (true)
+            {
+                //3. RRU信息
+                string excelName = excelPath + "\\RRU基本信息表_ty.xls";
+                m_rruExcel = new CfgParseRruExcel();
+                m_rruExcel.ProcessingExcel(excelName, "RRU基本信息表");
+                //List<RRuTypeTabStru> rruList = m_rruExcel.GetRruTypeInfoData();
+                //List<RRuTypePortTabStru> rruPortL = m_rruExcel.GetRruTypePortInfoData();
+
+                //4. 天线信息
+                excelName = excelPath + "\\LTE_基站天线广播波束权值参数配置表_5G.xls";
+                m_antennaExcel = new CfgParseAntennaExcel();
+                m_antennaExcel.ProcessingAntennaExcel(excelName, "波束扫描原始值");
+                //List<Dictionary<string, string>> data = m_antennaExcel.GetBeamScanData();
+
+                //5. 告警信息
+                //在CreateCfgFile中就解析了
+
+
+                //5. reclist 
+                excelName = excelPath + "\\RecList_V6.00.50.05.40.07.01.xls";
+                m_reclistExcel = new CfgParseReclistExcel();
+                m_reclistExcel.ProcessingExcel(excelName, strFileToDirectory, "0:默认", this);
+
+                //6. 自定义 (init, patch)
+                excelName = excelPath + "\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
+                m_selfExcel = new CfgParseSelfExcel();
+                m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "init", this);
+                m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "patch", this);
+
+                //7. 开始生成 init.cfg, patch_ex.cfg
+                // 创建init.cfg
+                SaveFile_eNB("init.cfg");
+            }
+            //创建patch_ex.cfg
+            int abc = 1;
+            CreateFilePdg_eNB("patch_ex.cfg", strFileToDirectory);
+
+
         }
+        /// <summary>
+        /// lm.mdb 更新加载数据，整理成表和表实例的结构
+        /// </summary>
         /// <param name="strCfgFileName">创建cfg的文件名字</param>
-        /// <param name="FileToUnzip">要解压的文件</param>
         /// <param name="FileToDirectory">解压释放的地方</param>
-        /// <returns></returns>
-        /// <param name="strDBName">数据库的名字</param>
+        /// <param name="strDBPath"></param>
+        /// <param name="strDBName"></param>
         public void CreateCfgFile(string strCfgFileName, string FileToDirectory, string strDBPath, string strDBName)
         {
             // string FileToUnzip = currentPath + "\\Data\\lmdtz\\lm.dtz";//
             // string FileToDirectory = currentPath + "\\Data\\lmdtz";
-            string err = "";
             string strFileToDirectory = strDBName.Substring(0, strDBName.Length - strDBName.IndexOf("lm")+1);
 
             WriteHeaderVersionInfo(strFileToDirectory + "\\lm.mdb");
             CreateCfgFileBody(strFileToDirectory);
-            // 获取原始数据
-            /// 1. 解压 lm.dtz -> lm.mdb
         }
-        public bool SaveFile_eNB(string newFilePath)//CString newFilePath, CString oldFilePath, BOOL NewCfgFile)
-            {
+        /// <summary>
+        /// 创建init.cfg
+        /// </summary>
+        /// <param name="newFilePath"></param>
+        /// <returns></returns>
+        public bool SaveFile_eNB(string newFilePath)
+        {
             List<byte> allBuff = new List<byte>();
             if (String.Empty == newFilePath)
                 return false;
@@ -96,24 +156,28 @@ namespace CfgFileOperation
             TestWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
         }
-        private DataSet GetRecordByAccessDb(string fileName, string sqlContent)
+        /// <summary>
+        /// 函 数 名: CreateFilePdg_eNB
+        /// 功能描述: 创建 patch_ex.cfg 文件
+        /// 输入参数: mapInst2LeafName:保存了生成Pdg文件的表，叶子，以及记录信息
+        /// </summary>
+        /// <param name="newFilePath"></param>
+        /// <returns></returns>
+        public bool CreateFilePdg_eNB(string newFilePath, string strDBPath)
         {
-            {
-                DataSet dateSet = new DataSet();
-                AccessDBManager mdbData = new AccessDBManager(fileName);
-                try
-                {
-                    mdbData.Open();
-                    dateSet = mdbData.GetDataSet(sqlContent);
-                    mdbData.Close();
-                }
-                finally
-                {
-                    mdbData = null;
-                }
-                return dateSet;
-            }
+            //OM_STRU_CfgFile_Header_V1 m_eNB_pdgFile_Header;   
+            WriteHeaderVersionInfoPDG(strDBPath);//Pdg文件头结构
+
+            int uintTableNum = m_reclistExcel.GetVectPDGTabNameNum();
+            WriteDataHeadInfoPDG((uint)uintTableNum);//Pdg数据块头结构
+
+
+            return true;
         }
+        /// <summary>
+        /// 文件头
+        /// </summary>
+        /// <param name="strDBName"></param>
         private void WriteHeaderVersionInfo(string strDBName)//CAdoConnection* pAdoCon,const CString &strFileDesc)
         {
             string strSQL = "select * from SystemParameter where SysParameter = 'MibPublicVersion'";
@@ -138,6 +202,38 @@ namespace CfgFileOperation
             m_bEmptyCfg = false;
             return;
         }
+        /// <summary>
+        /// 文件头, patch
+        /// </summary>
+        /// <param name="strDBName"></param>
+        private void WriteHeaderVersionInfoPDG(string strDBName)//CAdoConnection* pAdoCon,const CString &strFileDesc)
+        {
+            string strSQL = "select * from SystemParameter where SysParameter = 'MibPublicVersion'";
+            DataSet MibdateSet = CfgGetRecordByAccessDb(strDBName, strSQL);
+            DataRow row = MibdateSet.Tables[0].Rows[0];
+            string strMibVersion = row.ItemArray[1].ToString();//row["MibPublicVersion"].ToString();
+            m_eNB_pdgFile_Header = new StruCfgFileHeader("init");
+            m_eNB_pdgFile_Header.Setu8VerifyStr("ICF");
+            m_eNB_pdgFile_Header.Setu8HiDeviceType(new MacroDefinition().NB_DEVICE);// 暂时
+            m_eNB_pdgFile_Header.Setu8MiDeviceType(new MacroDefinition().LTE_DEVICE);// = LTE_DEVICE;
+            m_eNB_pdgFile_Header.Setu16LoDevType();
+            m_eNB_pdgFile_Header.Setu32IcFileVer("cfg_Version_2");
+            m_eNB_pdgFile_Header.FillVerInfo(strMibVersion);//4 "5_65_3_6"
+            m_eNB_pdgFile_Header.u32DataBlk_Location = (uint)Marshal.SizeOf(new StruCfgFileHeader());//956
+            m_eNB_pdgFile_Header.Setu8LastMotifyDate(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+            m_eNB_pdgFile_Header.u32IcFile_HeaderVer = new MacroDefinition().LTE_ICF_HEADER;
+            m_eNB_pdgFile_Header.u32IcFile_HeaderLength = (uint)System.Runtime.InteropServices.Marshal.SizeOf(new StruCfgFileHeader());// new StruCfgFileHeader());
+            m_eNB_pdgFile_Header.Setu8IcFileDesc("初配文件");
+            m_eNB_pdgFile_Header.u16NeType = new MacroDefinition().NETTYPE;
+            m_eNB_pdgFile_Header.Sets8DataFmtVer("ICF");
+            m_eNB_pdgFile_Header.u8FileType = new MacroDefinition().OM_ENB_PDG_FILE;
+            //m_bEmptyCfg = false;
+            return;
+        }
+        /// <summary>
+        /// 文件体
+        /// </summary>
+        /// <param name="strFileToDirectory"></param>
         private void CreateCfgFileBody(string strFileToDirectory)//string strDBName)
         {
             /// sql 获取所有的 table 和 entry 
@@ -162,6 +258,13 @@ namespace CfgFileOperation
             }
             WriteDataHeadInfo((uint)m_tableNum);
         }
+        /// <summary>
+        /// 解压
+        /// </summary>
+        /// <param name="strFileToUnzip"></param>
+        /// <param name="strFileToDirectory"></param>
+        /// <param name="err"></param>
+        /// <returns></returns>
         private bool CfgUnzipDtz(string strFileToUnzip, string strFileToDirectory, out string err)
         {
             err = "";
@@ -190,6 +293,12 @@ namespace CfgFileOperation
             }
             return true;
         }
+        /// <summary>
+        /// 根据 sql 获取数据库信息
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <param name="sqlContent"></param>
+        /// <returns></returns>
         private DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
         {
             DataSet dateSet = new DataSet();
@@ -206,14 +315,36 @@ namespace CfgFileOperation
             }
             return dateSet;
         }
+        /// <summary>
+        /// 数据块的头
+        /// </summary>
+        /// <param name="uintTableNum"></param>
         private void WriteDataHeadInfo(uint uintTableNum)
         {
+            m_dataHeadInfo = new StruDataHead("init");
             m_dataHeadInfo.u32DatType = 1;
             m_dataHeadInfo.u32DatVer = 1;
             m_dataHeadInfo.Setu8VerifyStr("BEG\0");
             m_dataHeadInfo.u32TableCnt = uintTableNum;
             return;
         }
+        private void WriteDataHeadInfoPDG(uint uintTableNum)
+        {
+            m_dataheadInfo_PDG = new StruDataHead("init");
+            m_dataheadInfo_PDG.u32DatType = 1;
+            m_dataheadInfo_PDG.u32DatVer = 1;
+            m_dataheadInfo_PDG.Setu8VerifyStr("BEG\0");
+            m_dataheadInfo_PDG.u32TableCnt = uintTableNum;
+            return;
+        }
+        /// <summary>
+        /// 以表为单位解析
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="strFileToDirectory"></param>
+        /// <param name="TableOffset"></param>
+        /// <returns></returns>
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, string strFileToDirectory, uint TableOffset)//DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
@@ -249,6 +380,13 @@ namespace CfgFileOperation
             }
             return TableOffset;
         }
+        /// <summary>
+        /// 计算表的偏移量
+        /// </summary>
+        /// <param name="tableOp"></param>
+        /// <param name="isDyTable"></param>
+        /// <param name="TableOffset"></param>
+        /// <returns></returns>
         uint SetTableOffset( CfgTableOp tableOp, bool isDyTable, uint TableOffset)
         {
             uint TotalRecorNum = 1;
@@ -276,6 +414,11 @@ namespace CfgFileOperation
             TableOffset += (uint)((uint)Marshal.SizeOf(new StruCfgFileFieldInfo()) * (uint)tableOp.m_LeafNodes.Count);
             return TableOffset;
         }
+        /// <summary>
+        /// 以表下面的叶子节点为单位解析
+        /// </summary>
+        /// <param name="MibLeafsDateSet"></param>
+        /// <param name="tableOp"></param>
         void CreatCfgFile_leafsInfo(DataSet MibLeafsDateSet, CfgTableOp tableOp)//CDtCfgTableOp* pCfgTableOp, CAdoRecordSet* recordset, struIndexInfoCFG* pIndexInfo,OM_STRU_VALUE* pLeafValue, int leafNum, int &tableIndexNum, int &buflen)
         {
             if (MibLeafsDateSet == null || tableOp == null)// || pIndexInfo == NULL)
@@ -299,6 +442,14 @@ namespace CfgFileOperation
             tableOp.m_tabDimen = tableIndexNum;
             return ;
         }
+        /// <summary>
+        /// 解析节点的属性
+        /// </summary>
+        /// <param name="OmType"></param>
+        /// <param name="valList"></param>
+        /// <param name="strMibSyntax"></param>
+        /// <param name="LeaftypeSizeL"></param>
+        /// <param name="recordTypeL"></param>
         void GetTypeLen(string OmType, string valList,string strMibSyntax, List<int> LeaftypeSizeL, List<byte> recordTypeL)
         {
             Dictionary<string, byte> Recordtype = new Dictionary<string, byte>(){
@@ -390,12 +541,22 @@ namespace CfgFileOperation
             else
                 return 0;
         }
+        /// <summary>
+        /// lm.mdb 属性"TableContent" 判断是否为动态表
+        /// </summary>
+        /// <param name="strTableContent"></param>
+        /// <returns></returns>
         private bool isDynamicTable(string strTableContent)
         {
             if (String.Equals("0", strTableContent) || String.Empty == strTableContent)
                 return false;
             return true;
         }
+        /// <summary>
+        /// 是否为 "alarmCauseEntry","antennaArrayTypeEntry","rruTypeEntry" ,"rruTypePortEntry"
+        /// </summary>
+        /// <param name="strTableName"></param>
+        /// <returns></returns>
         private bool isAlarmTable(string strTableName)
         {
             List<string> SpecialTableArr = new List<string>() {
@@ -404,6 +565,13 @@ namespace CfgFileOperation
                 return true;
             return false;
         }
+        /// <summary>
+        /// 解析"alarmCauseEntry","antennaArrayTypeEntry","rruTypeEntry" ,"rruTypePortEntry"
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="MibdateSet"></param>
+        /// <param name="strFileToDirectory"></param>
         private void CreateSpecialTalbe(DataRow tableRow, CfgTableOp tableOp, DataSet MibdateSet, string strFileToDirectory)
         {
             int leafNum = MibdateSet.Tables[0].Rows.Count;
@@ -440,6 +608,13 @@ namespace CfgFileOperation
                 SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
             }
         }
+        /// <summary>
+        /// rruTypePort 的实例处理
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="rruTypePortdateSet"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="leafNum"></param>
         private void SetBuffersInfoForRruTypePort(DataRow tableRow, DataSet rruTypePortdateSet, CfgTableOp tableOp, int leafNum)
         {
             string strTableContent = tableRow["TableContent"].ToString();//表容量
@@ -521,6 +696,13 @@ namespace CfgFileOperation
             }
             //}
         }
+        /// <summary>
+        /// "alarmCauseEntry" 的实例处理
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="AlarmdateSet"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="leafNum"></param>
         private void SetBuffersInfoForAlarmCause(DataRow tableRow, DataSet AlarmdateSet, CfgTableOp tableOp, int leafNum)
         {
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
@@ -570,6 +752,13 @@ namespace CfgFileOperation
             }
             Console.WriteLine(tableOp.get_m_cfgInsts_num());
         }
+        /// <summary>
+        /// rruTypeEntry 的实例处理
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="rruTypedateSet"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="leafNum"></param>
         private void SetBuffersInfoForRruType(DataRow tableRow, DataSet rruTypedateSet, CfgTableOp tableOp, int leafNum)
         {
             int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
@@ -643,6 +832,13 @@ namespace CfgFileOperation
                 }
             }
         }
+        /// <summary>
+        /// "alarmCauseEntry" 的实例处理 —— 特殊处理
+        /// </summary>
+        /// <param name="BuffArrL"></param>
+        /// <param name="pStrutAlarmInfo"></param>
+        /// <param name="leafNum"></param>
+        /// <param name="tableOp"></param>
         private void WriteAlarmDataToCfg(List<byte[]> BuffArrL, StruAlarmInfo pStrutAlarmInfo, int leafNum, CfgTableOp tableOp)// OM_STRU_VALUE pLeafValue)
         {
             int pos = 0;
@@ -657,6 +853,17 @@ namespace CfgFileOperation
             }
             return;
         }
+        /// <summary>
+        /// 多维索引的实例处理 —— 具体处理
+        /// </summary>
+        /// <param name="TableDimen"></param>
+        /// <param name="bufLens"></param>
+        /// <param name="isDyTable"></param>
+        /// <param name="indexValue"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="strTableContent"></param>
+        /// <param name="nTableRecord"></param>
+        /// <returns></returns>
         private bool RecordInstanceSetCfgInst(int TableDimen, ushort bufLens, bool isDyTable, int[] indexValue, CfgTableOp tableOp, string strTableContent, int nTableRecord)
         {
             if (isDyTable == true && nTableRecord == int.Parse(strTableContent))//动态表的处理
@@ -704,6 +911,18 @@ namespace CfgFileOperation
             tableOp.m_cfgInsts_add(strInstantNum, BuffArrL[0]);//真正存 buffs
             return true;
         }
+        /// <summary>
+        /// 多维实例处理 —— 递归逻辑
+        /// </summary>
+        /// <param name="indexNo"></param>
+        /// <param name="indexValue"></param>
+        /// <param name="TableDimen"></param>
+        /// <param name="isDyTable"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="bufLens"></param>
+        /// <param name="strTableContent"></param>
+        /// <param name="nTableRecord"></param>
+        /// <returns></returns>
         private int RecordInstanceRecursive(int indexNo, int[] indexValue, int TableDimen, bool isDyTable, CfgTableOp tableOp, ushort bufLens,string strTableContent, int nTableRecord)
         {
             CfgFileLeafNodeIndexInfoOp m_leaf_list = tableOp.m_struIndex;
@@ -723,6 +942,12 @@ namespace CfgFileOperation
             }
             return nTableRecord;
         }
+        /// <summary>
+        /// "antennaArrayTypeEntry" 和 多维实例处理
+        /// </summary>
+        /// <param name="tableOp"></param>
+        /// <param name="isDyTable"></param>
+        /// <param name="strTableContent"></param>
         private void RecordInstanceMain(CfgTableOp tableOp, bool isDyTable, string strTableContent)
         {
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
@@ -839,6 +1064,16 @@ namespace CfgFileOperation
                 WriteToBuffer(pBuff, defaultVal, bytePosL, strIndexOMType, 0, strValList, strAsnType);
             }
         }
+        /// <summary>
+        /// 重要的数据填写函数
+        /// </summary>
+        /// <param name="byteArray"></param>
+        /// <param name="value"></param>
+        /// <param name="bytePosL"></param>
+        /// <param name="OMType"></param>
+        /// <param name="strLen"></param>
+        /// <param name="strValList"></param>
+        /// <param name="strAsnType"></param>
         public void WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
         {
             if (null == byteArray)
@@ -997,7 +1232,13 @@ namespace CfgFileOperation
                     omValue = (uint)int.Parse(value);
                 SetValueToByteArray(byteArray, bytePosL, omValue);
             }
-        }       
+        }
+        /// <summary>
+        /// 类型转换为byte[]
+        /// </summary>
+        /// <param name="byteAL"></param>
+        /// <param name="bytePosL"></param>
+        /// <param name="objParm"></param>
         private void SetValueToByteArray(List<byte[]> byteAL, List<int> bytePosL, object objParm)
         {
             if (objParm is byte)
@@ -1364,5 +1605,21 @@ namespace CfgFileOperation
             a.u32IcFileVer = 12;
             Console.WriteLine(System.Runtime.InteropServices.Marshal.SizeOf(a));
         }
+
+        public static T DeepCopy<T>(T obj)
+        {
+            object retval;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                DataContractSerializer ser = new DataContractSerializer(typeof(T));
+                ser.WriteObject(ms, obj);
+                ms.Seek(0, SeekOrigin.Begin);
+                retval = ser.ReadObject(ms);
+                ms.Close();
+            }
+            return (T)retval;
+        }
+
+
     }
 }

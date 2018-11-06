@@ -53,6 +53,9 @@ namespace CfgFileOperation
 
         public string[] strIndexOID = new string[6];//[MacroDefinition.MAX_INDEXCOUNT];
 
+        /// <summary>
+        /// 当前表索引个数
+        /// </summary>
         public int nIndexNum = 0;//2014-2-12 luoxin 当前表索引个数
 
         public USERPRIVILEGE m_enumMibVisibleLevel = USERPRIVILEGE.USERPRIVILEGE_UNKNOWN;//该Mib节点的权限，对应MibTree的ICFWritAble字段
