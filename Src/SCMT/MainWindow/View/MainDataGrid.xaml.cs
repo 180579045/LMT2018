@@ -1,6 +1,7 @@
 ﻿using SCMTMainWindow.Component.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,7 +41,7 @@ namespace SCMTMainWindow.View
                 // 获取所有列信息，并将列信息填充到DataGrid当中;
                 foreach (var iter in m_ColumnModel.PropertyList)
                 {
-                    // 显示列表类型的数据结构;
+                    // 显示字符类型的数据结构;
                     if (iter.Item3 is DataGrid_Cell_MIB)
                     {
                         // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
@@ -52,7 +53,7 @@ namespace SCMTMainWindow.View
                         
                         this.DynamicDataGrid.Columns.Add(column);
                     }
-                    // 如果单元格内类型是ComboBox类型;
+                    // 显示枚举类型的数据结构，在单元格内呈现一个ComboBox下拉框;
                     else if (iter.Item3 is DataGrid_Cell_MIB_ENUM)
                     {
                         DataGridTemplateColumn column = new DataGridTemplateColumn();
@@ -82,10 +83,6 @@ namespace SCMTMainWindow.View
                         column.Width = 230;                                              // 设置显示宽度;
 
                         this.DynamicDataGrid.Columns.Add(column);
-                    }
-                    else if (iter.Item3 is String)
-                    {
-
                     }
                     else if (iter.Item3 is System.Collections.Generic.List<string>)
                     {
@@ -123,9 +120,10 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
+            this.DynamicDataGrid.MouseMove += DynamicDataGrid_MouseMove;
             this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
-            this.DynamicDataGrid.LostFocus += DynamicDataGrid_LostFocus;                          // 当表格失去焦点的时候;
             this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;
+            this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;
         }
 
         /// <summary>
@@ -147,16 +145,6 @@ namespace SCMTMainWindow.View
             }
             
         }
-
-        /// <summary>
-        /// 单元格失去焦点之后;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DynamicDataGrid_LostFocus(object sender, RoutedEventArgs e)
-        {
-        }
-
 
         private void DynamicDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -185,6 +173,86 @@ namespace SCMTMainWindow.View
 
             }
 
+        }
+
+        /// <summary>
+        /// 鼠标移动事件;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynamicDataGrid_MouseMove(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if (e.OriginalSource is DataGridCell)
+                {
+                    Debug.WriteLine("MouseMove;函数参数e反馈的实体是单元格内数据内容:" +
+                        ((e.OriginalSource as DataGridCell).Column).Header);
+
+                    DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
+
+                    foreach (var iter in (e.Source as DataGrid).SelectedCells)
+                    {
+                        Console.WriteLine("User Selected:" + iter.Item.GetType());
+                        SelectedIter = iter.Item as DyDataGrid_MIBModel;
+                    }
+
+                    DataGridCell item = e.OriginalSource as DataGridCell;
+
+                    // 在MouseMove事件当中可以添加鼠标拖拽事件;
+                    if (e.MiddleButton == MouseButtonState.Pressed)
+                    {
+                        DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
+                        {
+                            HeaderName = (e.OriginalSource as DataGridCell).Column.Header.ToString(),
+                            SelectedCell = SelectedIter
+                        }, DragDropEffects.Copy);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("MouseMove Exception" + ex);
+            }
+        }
+
+        /// <summary>
+        /// 捕获鼠标时;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynamicDataGrid_GotMouseCapture(object sender, MouseEventArgs e)
+        {
+            try
+            {
+                if ((e.OriginalSource as DataGrid).Items.CurrentItem is DyDataGrid_MIBModel)
+                {
+                    DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
+
+                    foreach (var iter in (e.OriginalSource as DataGrid).SelectedCells)
+                    {
+                        Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header);
+                        SelectedIter = iter.Item as DyDataGrid_MIBModel;
+
+                        DataGrid item = e.OriginalSource as DataGrid;
+
+                        // 在MouseMove事件当中可以添加鼠标拖拽事件;
+                        if (e.LeftButton == MouseButtonState.Pressed)
+                        {
+                            DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
+                            {
+                                HeaderName = iter.Column.Header.ToString(),
+                                SelectedCell = SelectedIter
+                            }, DragDropEffects.Copy);
+                        }
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
     }
 }
