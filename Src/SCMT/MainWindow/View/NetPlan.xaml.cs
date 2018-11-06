@@ -686,6 +686,10 @@ namespace SCMTMainWindow.View
                 {
                     InitAntennaInfo(allNPInfo[EnumDevType.ant]);
                 }
+                if(allNPInfo.ContainsKey(EnumDevType.rhub))
+                {
+                    InitRHUBInfo(allNPInfo[EnumDevType.rhub]);
+                }
 
                 return true;
 
@@ -851,6 +855,7 @@ namespace SCMTMainWindow.View
                 try
                 {
                     nRRUid = int.Parse(strIndex);
+                    MyDesigner.nRRUNo = nRRUid;
                 }
                 catch
                 {
@@ -1029,6 +1034,7 @@ namespace SCMTMainWindow.View
                 try
                 {
                     nAntID = int.Parse(strIndex);
+                    MyDesigner.nAntennaNo = nAntID;
                 }
                 catch
                 {
@@ -1213,6 +1219,19 @@ namespace SCMTMainWindow.View
 
                 MyDesigner.gridProperty = this.gridProperty;
             }
+        }
+
+        #endregion
+
+        #region    初始化rHUB
+
+        /// <summary>
+        /// 初始化 rhub 设备信息
+        /// </summary>
+        /// <param name="listrHUBInfo"></param>
+        private void InitRHUBInfo(List<DevAttributeInfo> listrHUBInfo)
+        {
+
         }
 
         #endregion

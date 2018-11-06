@@ -327,7 +327,7 @@ namespace NetPlan
 				}
 
 				var devIndex = dev.m_strOidIndex;
-				if (!HasSameIndexDev(type, devIndex))
+				if (HasSameIndexDev(type, devIndex))
 				{
 					Log.Error($"已经存在编号为{seqIndex}的rhub设备，添加失败");
 					return null;
