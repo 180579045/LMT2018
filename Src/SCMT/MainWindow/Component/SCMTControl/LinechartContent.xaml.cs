@@ -17,6 +17,7 @@ using CefSharp.Wpf;
 using Xceed.Wpf.AvalonDock.Layout;
 using System.Threading;
 using LmtbSnmp;
+using CommonUtility;
 
 namespace SCMTMainWindow.Component.SCMTControl
 {
@@ -36,8 +37,6 @@ namespace SCMTMainWindow.Component.SCMTControl
             this.address.Address = System.Environment.CurrentDirectory + @"\LineChart_JS\LineChart.html";
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
             
-            //string[] data = { "16:49:01", "16:49:02", "16:49:03", "16:49:04", "16:49:05", "16:49:06" };
-            //double[] da_Num = CallbackObjectForJs.randomArr(36);       // 构造option，以显示在js中，作为初始默认显示;
             m_CbForJs.canvas_height = "300";
             m_CbForJs.canvas_width = "800";
 
@@ -48,17 +47,6 @@ namespace SCMTMainWindow.Component.SCMTControl
             // 创建  CefSharp  的  drop  事件，用来接收鼠标拖拽的对象;
             this.address.AllowDrop = true;
             this.address.Drop += Address_Drop;
-
-            //series mySeries = new series("testDefault", "line", false, "circle", "", da_Num);       // 向与前端交互的JsObj添加series,包含所有的折线数据;
-            //legend myLegend = new legend(m_CbForJs.listForLegend);                                  // 向与前端交互的JsObj添加legend;
-            //xAxis xaxis = new xAxis(data);                                                          // 向与前端交互的JsObj添加xAxis;
-
-            //m_CbForJs.listForLegend.Add("testDefault");
-            //m_CbForJs.listForSeries.Add(mySeries);
-
-            //Option myOption = new Option(myLegend, m_CbForJs.listForSeries, xaxis);
-            //m_CbForJs.Option = Option.ObjectToJson(myOption);                                       // 将数据转换为Json格式，让前端读取;
-            
         }
 
         /// <summary>
@@ -127,7 +115,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                             {
                                 // ！！！后续需要扩展功能，保存日志文件;
                                 SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-                                Ret = snmpmsg1.GetRequest(inputoid, "public", "172.27.245.92"); // TODO 需要确定真正的板卡地址
+                                Ret = snmpmsg1.GetRequest(inputoid, "public", CSEnbHelper.GetCurEnbAddr()); // TODO 需要确定真正的板卡地址
 
 								double temp = 0;
 

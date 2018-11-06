@@ -12,7 +12,7 @@
             <RowDefinition Height="10"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Content="调试" Click="Button_Click" Grid.Row="0"></Button>
+        <Button Content="调试" Click="Button_Click" Grid.Row="0" Visibility="Hidden"></Button>
         <cefSharp:ChromiumWebBrowser Grid.Row="1" x:Name="address" />
     </Grid>
 </UserControl>
