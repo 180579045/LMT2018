@@ -1253,9 +1253,17 @@ namespace SCMTMainWindow.View
             }
             if(allLink.ContainsKey(EnumDevType.rru_ant))
             {
-                foreach(var item in allLink[EnumDevType.rru_ant])
-                {
-                    InitRRUToAnt(item);
+                for(int i = 0; i < allLink[EnumDevType.rru_ant].Count; i++)
+                { 
+                    if(i < allLink[EnumDevType.rru_ant].Count-1)
+                    {
+                        if (allLink[EnumDevType.rru_ant][i].m_dstEndPoint.strDevIndex.Equals(allLink[EnumDevType.rru_ant][i + 1].m_dstEndPoint.strDevIndex))
+                        {
+                            continue;
+                        }
+                    }
+
+                    InitRRUToAnt(allLink[EnumDevType.rru_ant][i]);
                 }
             }
         }
