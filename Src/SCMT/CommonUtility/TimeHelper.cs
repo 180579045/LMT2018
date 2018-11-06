@@ -58,6 +58,8 @@ namespace CommonUtility
 			var min = timeBytes[offset++];
 			var sec = timeBytes[offset++];
 
+			year = year > 9999 ? 2009 : year;
+
 			var dt = new DateTime(year, month, day, hour, min, sec, DateTimeKind.Utc);
 			return dt;
 		}
