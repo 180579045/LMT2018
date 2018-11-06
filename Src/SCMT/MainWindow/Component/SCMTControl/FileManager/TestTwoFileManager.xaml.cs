@@ -158,7 +158,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
             {
                 if(element is System.Windows.Controls.ScrollViewer)
                 {
-                    lvMainListView.SelectedItems.Clear();
+                    lvMainListView.SelectedItem = null;
                     return;
                 }
             }
