@@ -933,9 +933,27 @@ namespace SCMTMainWindow.View
                     newItem.Content = testContent;
                     newItem.ItemName = strrHUBFullName;
 
-                    var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rHUB");
-                    if (!globalDic.Keys.Contains(strrHUBFullName))
-                        globalDic.Add(strrHUBFullName, test);
+                    //添加 rHUB 的时候需要给基站下发，然后获取设备信息
+                    List<int> listIndex = new List<int>();
+                    listIndex.Add(nrHUBNo);
+                    var devrHUBInfo = MibInfoMgr.GetInstance().AddNewRhub(listIndex, rHub.friendlyUIName, "");
+
+                    if (devrHUBInfo == null || devrHUBInfo.Count == 0)
+                    {
+                        MessageBox.Show("MibInfoMgr.GetInstance().AddNewRhub 返回为空");
+                        return;
+                    }
+
+                    if (g_AllDevInfo.ContainsKey(EnumDevType.rhub))
+                    {
+                        g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                    }
+                    else
+                    {
+                        g_AllDevInfo.Add(EnumDevType.rhub, new Dictionary<string, string>());
+                        g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                    }
+
 
                     newItem.Width = newSize.Width;
                     newItem.Height = newSize.Height;
@@ -955,9 +973,9 @@ namespace SCMTMainWindow.View
                     if (ucTest != null)
                     {
                         gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                        //CreateGirdForNetInfo(strrHUBFullName, test);
+                        CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
                         gridProperty.Children.Clear();
-                        //gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
+                        gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
                     }
                 }
             }
