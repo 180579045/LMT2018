@@ -51,6 +51,7 @@
     <Compile Include="LmtbSnmpEx.cs" />
     <Compile Include="LmtTrapMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SnmErrorCodeHelper.cs" />
     <Compile Include="SnmpControl.cs" />
     <Compile Include="SnmpHelper.cs" />
     <Compile Include="SnmpMessage.cs" />

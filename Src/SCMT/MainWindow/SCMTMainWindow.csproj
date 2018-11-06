@@ -109,10 +109,6 @@
     <Reference Include="log4net">
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="LogManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\x86\Debug\LogManager.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1000\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -199,7 +195,6 @@
     <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
       <DependentUpon>OutputWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DataGrid_CellColumnFactory.cs" />
     <Compile Include="Controls\DataGridCellFactory.cs" />
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
@@ -209,6 +204,7 @@
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\HotKeyManager.cs" />
+    <Compile Include="MainWindowPartial.cs" />
     <Compile Include="Pages\HotKeySet.xaml.cs">
       <DependentUpon>HotKeySet.xaml</DependentUpon>
     </Compile>
@@ -229,7 +225,10 @@
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
     <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
+    <Compile Include="UeInfo\ChildrenUeInfo.cs" />
+    <Compile Include="UeInfo\UeInfo.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
+    <Compile Include="ViewModel\UeInfoModel.cs" />
     <Compile Include="View\AddBoardWindow.xaml.cs">
       <DependentUpon>AddBoardWindow.xaml</DependentUpon>
     </Compile>
@@ -244,6 +243,15 @@
     </Compile>
     <Compile Include="View\ChooseRRUType.xaml.cs">
       <DependentUpon>ChooseRRUType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\EditColumns.xaml.cs">
+      <DependentUpon>EditColumns.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainDataGrid.xaml.cs">
+      <DependentUpon>MainDataGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\UeInfo.xaml.cs">
+      <DependentUpon>UeInfo.xaml</DependentUpon>
     </Compile>
     <None Include="Component\Configration\RRUPropertyConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -266,6 +274,9 @@
       <DependentUpon>NetPlan.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PathFinder.cs" />
+    <Compile Include="View\RRUpoint2Cell.xaml.cs">
+      <DependentUpon>RRUpoint2Cell.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\RubberbandAdorner.cs" />
     <Compile Include="View\SelectionService.cs" />
     <Compile Include="View\Toolbox.cs" />
@@ -366,6 +377,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\EditColumns.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\NetPlan.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -421,6 +440,14 @@
     <Page Include="View\Resources\ToolboxItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RRUpoint2Cell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\UeInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -588,6 +615,10 @@
     <ProjectReference Include="..\Control\LmtbSnmp\LmtbSnmp.csproj">
       <Project>{e036120c-3404-46d2-bc58-b0571ca82069}</Project>
       <Name>LmtbSnmp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
+      <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
+      <Name>LogManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>

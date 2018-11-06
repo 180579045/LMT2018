@@ -19,19 +19,24 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
+            Test test = new Test();
 
-            new Test().testForReadRecList();
+            test.testForCreatePatchAndInit();
 
-            new Test().testLoadMibTreeIntoMem();
+            test.testForReadSelfExcel();
 
-            new Test().testForReadExcelRruType();
+            test.testForReadRecList();//
 
-            new Test().testForReadExcelAnnt();
+            test.testLoadMibTreeIntoMem();//
+
+            test.testForReadExcelRruType();
+
+            test.testForReadExcelAnnt();
             
-            new Test().testForOpReadExcelForCfg();
+            test.testForOpReadExcelForCfg();
 
 
-            new Test().test4();
+            test.test4();
 
             //string strCfgFileName = "";
             //string FileToDirectory = "";
@@ -45,8 +50,15 @@ namespace CfgFileOperation
             //Console.ReadLine();
         }
 
-        void testForReadRecList()
+        void testForCreatePatchAndInit()
         {
+            CfgOp cfgOp = new CfgOp();
+            cfgOp.OnCreatePatchAndInitCfg();
+        }
+
+        void testForReadSelfExcel()
+        {
+            // 加载lm.mdb到内存
             CfgOp cfgOp = new CfgOp();
             string strCfgFileName = "";
             string FileToDirectory = "";
@@ -54,24 +66,53 @@ namespace CfgFileOperation
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
             cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
 
-            CfgReadReclistExcel reclist = new CfgReadReclistExcel();
+            // reclist
+            cfgOp.m_reclistExcel = new CfgParseReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
-            reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+            //reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+            cfgOp.m_reclistExcel.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+
+            // 自定义文件
+            excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
+            //CfgParseSelfExcel selfEx = new CfgParseSelfExcel();
+            //selfEx.ProcessingExcel(excelPath, strFileToDirectory, "init", cfgOp);
+            //selfEx.ProcessingExcel(excelPath, strFileToDirectory, "patch", cfgOp);
+            cfgOp.m_selfExcel = new CfgParseSelfExcel();
+            cfgOp.m_selfExcel.ProcessingExcel(excelPath, strFileToDirectory, "init", cfgOp);
+            cfgOp.m_selfExcel.ProcessingExcel(excelPath, strFileToDirectory, "patch", cfgOp);
+        }
+
+        void testForReadRecList()
+        {
+            // 加载lm.mdb到内存
+            CfgOp cfgOp = new CfgOp();
+            string strCfgFileName = "";
+            string FileToDirectory = "";
+            string strDBPath = "";
+            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
+            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+
+            // reclist
+            //CfgParseReclistExcel reclist = new CfgParseReclistExcel();
+            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            string UeType = "0:默认";
+            cfgOp.m_reclistExcel.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
         }
 
         void testLoadMibTreeIntoMem()
         {
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
-            CfgReadDBMibTreeToMemory mibTree = new CfgReadDBMibTreeToMemory();
+            CfgParseDBMibTreeToMemory mibTree = new CfgParseDBMibTreeToMemory();
             mibTree.ReadMibTreeToMemory(strFileToDirectory);
             int a = 1;
         }
 
         void testForReadExcelRruType()
         {
-            CfgReadRruExcel rru = new CfgReadRruExcel();
+            CfgParseRruExcel rru = new CfgParseRruExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表_ty.xls";
             string sheetName = "RRU基本信息表";
             rru.ProcessingExcel(excelPath, sheetName);
@@ -82,7 +123,7 @@ namespace CfgFileOperation
 
         void testForReadExcelAnnt()
         {
-            CfgReadAntennaExcel dd = new CfgReadAntennaExcel();
+            CfgParseAntennaExcel dd = new CfgParseAntennaExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
             string sheetName = "波束扫描原始值";
             dd.ProcessingAntennaExcel(excelPath, sheetName);

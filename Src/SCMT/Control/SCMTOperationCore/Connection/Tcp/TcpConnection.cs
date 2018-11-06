@@ -78,7 +78,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		}
 
 		/// <inheritdoc />
-		public override void Connect(byte[] bytes = null, int timeout = 200)
+		public override bool Connect(byte[] bytes = null, int timeout = 200)
 		{
 			lock(socketLock)
 			{
@@ -100,11 +100,13 @@ namespace SCMTOperationCore.Connection.Tcp
 					{
 						//throw new HazelException($"Could not connect as an exception occured.\r\n");
 						Console.WriteLine($"Could not connect as an exception occured.\r\n");
+						return false;
 					}
 				}
 				catch (Exception e)
 				{
 					Console.WriteLine($"Could not connect as an exception occured.\r\n{e.Message}");
+					return false;
 				}
 
 				//Start receiving data
@@ -116,7 +118,8 @@ namespace SCMTOperationCore.Connection.Tcp
 				}
 				catch (Exception e)
 				{
-					throw new HazelException("An exception occured while initiating the first receive operation.", e);
+					Console.WriteLine("An exception occured while initiating the first receive operation.", e);
+					return false;
 				}
 
 				//Send handshake
@@ -127,6 +130,7 @@ namespace SCMTOperationCore.Connection.Tcp
 					SendBytes(bytes);
 				}
 			}
+			return true;
 		}
 
 		/// <inheritdoc/>

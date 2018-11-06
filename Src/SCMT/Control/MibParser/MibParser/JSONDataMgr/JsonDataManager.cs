@@ -12,10 +12,12 @@
 * 2018.04.xx   唐 芸       创建文件并实现类  JsonDataManager
 *************************************************************************************/
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Data;
 using CommonUtility;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -73,7 +75,7 @@ namespace MIBDataParser.JSONDataMgr
 
 			Console.WriteLine("end to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒"));
 		}
-		public bool ConvertAccessDbToJsonForThread()//string fileName,string mibJsonPath, string ojbJsonPath)
+		public async Task<bool> ConvertAccessDbToJsonForThread()//string fileName,string mibJsonPath, string ojbJsonPath)
 		{
 			isMibJsonOK = false;
 			isObjJsonOK = false;
@@ -81,7 +83,7 @@ namespace MIBDataParser.JSONDataMgr
 			isCmdJsonOK = false;
 			isJsonProtect = false;
 
-			//Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+			Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			Thread[] threads = {
 				 new Thread(ConvertAccessDbToJsonMibTree),// "MibTree"
 				 //new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree)),// "ObjTree"
@@ -90,6 +92,23 @@ namespace MIBDataParser.JSONDataMgr
 				 new Thread(ConvertAccessDbToJsonProtect),//线程保护机制
 			};
 
+			//var taskLists = new List<Task>
+			//{
+			//	new Task(ConvertAccessDbToJsonMibTree),
+			//	new Task(ConvertAccessDbToJsonCmdTree),
+			//	new Task(ConvertAccessDbToJsonTreeReference)
+			//};
+
+			//try
+			//{
+			//	await Task.WhenAll(taskLists);
+			//}
+			//catch (Exception e)
+			//{
+			//	Console.WriteLine(e);
+			//	return false;
+			//}
+			//return true;
 			foreach (var t in threads)
 			{
 				t.Start();
@@ -97,8 +116,8 @@ namespace MIBDataParser.JSONDataMgr
 
 			while (true)
 			{
-				if (isJsonProtect)
-				{
+				//if (isJsonProtect)
+				//{
 					foreach (var t in threads)
 					{
 						if (t.IsAlive)
@@ -113,27 +132,11 @@ namespace MIBDataParser.JSONDataMgr
 							}
 						}
 					}
-					return true;
-				}
-
-				//if (isMibJsonOK && isObjJson2OK && isCmdJsonOK)
-				//{
-				//	if (threads[3].IsAlive)
-				//	{
-				//		try
-				//		{
-				//			threads[3].Join();
-				//		}
-				//		catch (ThreadStateException e)
-				//		{
-				//			Console.WriteLine(e);
-				//		}
-				//	}
-				//	return true;
+				return true;
 				//}
 			}
-			//Console.WriteLine("end   to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-			//Console.Read();
+
+			return true;
 		}
 
 		private void JsonFileWrite(string fileName, string content)

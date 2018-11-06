@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Text;
-using System.Threading.Tasks;
 using CommonUtility;
 using LinkPath;
 using LmtbSnmp;
@@ -139,8 +136,8 @@ namespace NetPlan
 				return false;
 			}
 
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIP);
-			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(enbType);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIP);
+			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(EnbTypeEnum.ENB_EMB6116);
 			if (null == mibEntryList)
 			{
 				Log.Error("查询所有的MIB入口及对应命令失败");
@@ -183,6 +180,8 @@ namespace NetPlan
 					MibInfoMgr.GetInstance().AddDevMibInfo(devType, temp);
 				}
 			}
+			// 所有设备信息保存完成后，解析连接信息
+			MibInfoMgr.GetInstance().ParseLinks();
 
 			return true;
 		}
@@ -212,7 +211,63 @@ namespace NetPlan
 		{
 			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
 			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
-			return MibInfoMgr.GetInstance().DistributeBoardInfoToEnb(EnumDevType.board);
+			var result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.ant);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board_rru);	// IR口规划信息
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub_prru);	// 以太口规划信息
+			if (!result)
+			{
+				return false;
+			}
+
+			// todo 天线权值
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
+			if (!result)
+			{
+				return false;
+			}
+
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru_ant);	// 天线安装
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.nrNetLc);	// 本地小区布配
+			if (!result)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		#endregion
@@ -241,7 +296,9 @@ namespace NetPlan
 			var info = new MibLeafNodeInfo
 			{
 				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
-				mibAttri = mibLeaf
+				mibAttri = mibLeaf,
+				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),      // 索引只读
+				m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
 			};
 
 			return info;
@@ -274,7 +331,7 @@ namespace NetPlan
 				var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				if (null != info)
 				{
-					dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
+					dev.m_mapAttributes[childLeaf.childNameMib] = info;
 				}
 			}
 
@@ -306,6 +363,7 @@ namespace NetPlan
 					continue;
 				}
 
+				MibLeafNodeInfo info = null;
 				// 判断是否是索引，如果是索引，就不会出现在result中，但是属性框中要呈现，需要添加到属性列表中
 				if (childLeaf.IsIndex.Equals("True", StringComparison.OrdinalIgnoreCase))
 				{
@@ -316,26 +374,27 @@ namespace NetPlan
 						continue;
 					}
 
-					var info = new MibLeafNodeInfo
+					info = new MibLeafNodeInfo
 					{
 						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
-						m_bReadOnly = true          // 索引，只读
+						m_bReadOnly = !childLeaf.IsEmpoweredModify(),      // 索引只读
+						m_bVisible = (childLeaf.ASNType != "RowStatus")   // 行状态不显示
 					};
-
-                    if(!dev.m_mapAttributes.ContainsKey(childLeaf.childNameMib))
-					   dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 				}
 				else
 				{
 					var childFullOid = $"{mibPrefix}.{childLeaf.childOid.Trim('.')}.{strIndex.Trim('.')}";
-					var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
-					if (null != info)
-					{
-                        if (!dev.m_mapAttributes.ContainsKey(childLeaf.childNameMib))
-                            dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
-					}
+
+					info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				}
+
+				if (null == info)
+				{
+					continue;
+				}
+
+				dev.m_mapAttributes[childLeaf.childNameMib] = info;
 			}
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 

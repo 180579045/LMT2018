@@ -58,9 +58,23 @@ namespace SCMTMainWindow.View
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
+            if(this.BoardType.SelectedItem == null)
+            {
+                bOK = false;
+                this.Close();
+                return;
+            }
             strBoardName = this.BoardType.SelectedItem.ToString();
-            strWorkModel = this.workMode.SelectedItem.ToString();
-            strFSM = this.fsm.SelectedItem.ToString();
+
+            if(this.workMode.SelectedItem != null)
+            {
+                strWorkModel = this.workMode.SelectedItem.ToString();
+            }
+
+            if(this.fsm.SelectedItem != null)
+            {
+                strFSM = this.fsm.SelectedItem.ToString();
+            }
             bOK = true;
             this.Close();
         }

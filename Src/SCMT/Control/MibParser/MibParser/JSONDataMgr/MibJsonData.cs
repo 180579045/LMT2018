@@ -327,6 +327,7 @@ namespace MIBDataParser.JSONDataMgr
 				{ "IsIndex", rowRec["IsIndex"].ToString()},
 				{ "mibSyntax", rowRec["MIB_Syntax"].ToString()},
 				{ "mibDesc", rowRec["MIBDesc"].ToString()},
+				{ "managerWriteAble", rowRec["ManagerWriteAble"].ToString() },
 			};
 			childJArray.Add(childJObject);
 			return true;

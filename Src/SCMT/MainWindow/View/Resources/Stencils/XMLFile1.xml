@@ -171,9 +171,9 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" ID="rru_to_ant-1"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -193,10 +193,10 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-1"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-2"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -206,7 +206,7 @@
   <Grid x:Name="g_FourPathRRU">
     <Grid.RowDefinitions>
       <RowDefinition Height="50"></RowDefinition>
-      <RowDefinition Height="30"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
     </Grid.RowDefinitions>
     <Path Fill="Red" Stroke="Black"
               Data="{StaticResource FourPathRRU}"
@@ -216,12 +216,12 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.313,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.313,0" ID="rru_to_ant-1"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-3"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0" ID="rru_to_ant-4"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -241,16 +241,16 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" ID="rru_to_ant-1"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" ID="rru_to_ant-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" ID="rru_to_ant-3"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" ID="rru_to_ant-4"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" ID="rru_to_ant-5"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" ID="rru_to_ant-6"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" ID="rru_to_ant-7"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" ID="rru_to_ant-8"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -270,24 +270,24 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.169,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.213,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.257,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.301,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.345,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.389,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.477,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.433,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.521,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.565,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.609,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.653,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.697,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.741,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.785,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.829,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.169,0" ID="rru_to_ant-1"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.213,0" ID="rru_to_ant-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.257,0" ID="rru_to_ant-3"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.301,0" ID="rru_to_ant-4"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.345,0" ID="rru_to_ant-5"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.389,0" ID="rru_to_ant-6"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.477,0" ID="rru_to_ant-7"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.433,0" ID="rru_to_ant-8"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.521,0" ID="rru_to_ant-9"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.565,0" ID="rru_to_ant-10"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.609,0" ID="rru_to_ant-11"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.653,0" ID="rru_to_ant-12"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.697,0" ID="rru_to_ant-13"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.741,0" ID="rru_to_ant-14"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.785,0" ID="rru_to_ant-15"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.829,0" ID="rru_to_ant-16"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -295,12 +295,16 @@
   
   <!--光口的实现-->
   <Grid x:Name="g_IR">
-    <Rectangle Width="15" Height="10" Fill="Red" >
-    </Rectangle>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="10"></RowDefinition>
+      <RowDefinition Height="12"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Rectangle Width="15" Height="10" Fill="Red" Grid.Row="0"></Rectangle>
+    <TextBlock Grid.Row="1" FontSize="10" Text="IR" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="0, 1, 0, 0">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,0"></s:Connector>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0"></s:Connector>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -376,7 +380,7 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,1" ID="ant_to_rru-1"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -393,8 +397,8 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-2"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -410,10 +414,10 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.667,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1" ID="ant_to_rru-2"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.667,1" ID="ant_to_rru-3"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-4"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -429,14 +433,14 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.286,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.429,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.571,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.857,1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1" ID="ant_to_rru-2"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.286,1" ID="ant_to_rru-3"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.429,1" ID="ant_to_rru-4"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.571,1" ID="ant_to_rru-5"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1" ID="ant_to_rru-6"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.857,1" ID="ant_to_rru-7"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-8"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>

@@ -45,6 +45,11 @@ namespace NetPlan
 			return devAttributList;
 		}
 
+		/// <summary>
+		/// 根据表名查询该表下所有的叶子节点
+		/// </summary>
+		/// <param name="strEntryName"></param>
+		/// <returns></returns>
 		public Dictionary<string, MibLeafNodeInfo> GetDevAttributesByEntryName(string strEntryName)
 		{
 			if (string.IsNullOrEmpty(strEntryName))
@@ -59,7 +64,8 @@ namespace NetPlan
 				throw new CustomException("当前未选中基站");
 			}
 
-			var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(target);
+			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(target);
+			var enbType = EnbTypeEnum.ENB_EMB6116;
 			var npMibEntryList = GetAllMibEntryAndCmds(enbType);
 
 			// 根据MIB入口名得到Get命令
@@ -93,7 +99,7 @@ namespace NetPlan
 					{
 						mibAttri = mibLeaf,
 						m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, defaultValue), // 原始值设置为默认值
-						m_bReadOnly = (mibLeaf.IsIndex == "True"),		// 索引只读
+						m_bReadOnly = !mibLeaf.IsEmpoweredModify(),
 						m_bVisible = (mibLeaf.ASNType != "RowStatus")	// 行状态不显示
 					};
 

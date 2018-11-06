@@ -225,40 +225,62 @@ namespace SCMTMainWindow
 		/// 调用时机：单机调试；连接基站成功；
 		/// </summary>
 		/// TODO 连接多个基站时，这个方案需要改
-		private void InitDataBase()
+		private async Task<bool> InitDataBase()
 		{
 			node.db = Database.GetInstance();
             CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
 
 			// TODO 需要同步等待数据库初始化完成后才能进行其他操作
-			node.db.initDatabase(node.NeAddress.ToString());
+			var result = await node.db.initDatabase(node.NeAddress.ToString());
 
-			node.db.resultInitData = (bool ret) =>
+			if (result)
 			{
-				if (ret == false)
+				Dispatcher.Invoke(() =>
 				{
-                    ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+					var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
+					RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
 
-                    Dispatcher.Invoke(() =>
-                    {
-                        ExpanderBaseInfo.IsEnabled = false;
-                    ExpanderBaseInfo.IsExpanded = false;
-                    TabControlEnable(false);
-                    });
-                }
-				else
-				{
-					Dispatcher.Invoke(() =>
-					{
-						var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
-						RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
+					TabControlEnable(true);
+					ExpanderBaseInfo.IsEnabled = true;
+					ExpanderBaseInfo.IsExpanded = true;
+				});
 
-                        TabControlEnable(true);
-                        ExpanderBaseInfo.IsEnabled = true;
-                        ExpanderBaseInfo.IsExpanded = true;
-                    });
-				}
-			};
+				return true;
+			}
+
+			ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+
+			ExpanderBaseInfo.IsEnabled = false;
+			ExpanderBaseInfo.IsExpanded = false;
+			TabControlEnable(false);
+			return false;
+
+			//	node.db.resultInitData = (bool ret) =>
+		//	{
+		//		if (ret == false)
+		//		{
+  //                  ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
+
+  //                  Dispatcher.Invoke(() =>
+  //                  {
+  //                      ExpanderBaseInfo.IsEnabled = false;
+  //                  ExpanderBaseInfo.IsExpanded = false;
+  //                  TabControlEnable(false);
+  //                  });
+  //              }
+		//		else
+		//		{
+		//			Dispatcher.Invoke(() =>
+		//			{
+		//				var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
+		//				RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
+
+  //                      TabControlEnable(true);
+  //                      ExpanderBaseInfo.IsEnabled = true;
+  //                      ExpanderBaseInfo.IsExpanded = true;
+  //                  });
+		//		}
+		//	};
 		}
 
 		/// <summary>
@@ -645,7 +667,25 @@ namespace SCMTMainWindow
 		{
 			// 右键菜单的添加
 			var menu = new MetroContextMenu();
-			var menuItem = new MetroMenuItem { Header = "连接基站" };
+
+			var menuItem = new MetroMenuItem { Header = "修改友好名" };
+			menuItem.Click += ModifyFriendlyName_Click;
+			menuItem.IsEnabled = true;
+			menu.Items.Add(menuItem);
+
+			menuItem = new MetroMenuItem { Header = "修改IP地址" };
+			menuItem.Click += ModifyEnbAddr_Click;
+			menuItem.IsEnabled = true;
+			menu.Items.Add(menuItem);
+
+			menuItem = new MetroMenuItem { Header = "删除" };
+			menuItem.Click += DeleteStationMenu_Click;
+			menuItem.IsEnabled = true;
+			menu.Items.Add(menuItem);
+
+			menu.Items.Add(new Separator());
+
+			menuItem = new MetroMenuItem { Header = "连接基站" };
 			menuItem.Click += ConnectStationMenu_Click;
 			menu.Items.Add(menuItem);
 
@@ -654,14 +694,11 @@ namespace SCMTMainWindow
 			menuItem.IsEnabled = false;
 			menu.Items.Add(menuItem);
 
+			menu.Items.Add(new Separator());
+
 			menuItem = new MetroMenuItem {Header = "数据同步" };
 			menuItem.Click += DataSync_Click;
 			menuItem.IsEnabled = false;
-			menu.Items.Add(menuItem);
-
-			menuItem = new MetroMenuItem { Header = "删除" };
-			menuItem.Click += DeleteStationMenu_Click;
-			menuItem.IsEnabled = true;
 			menu.Items.Add(menuItem);
 
 			return menu;
@@ -698,141 +735,6 @@ namespace SCMTMainWindow
 					InitDataBase();
 				}
 			}
-		}
-
-		private void ConnectStationMenu_Click(object sender, RoutedEventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var parent = (ContextMenu)mui.Parent;
-				if (null == parent)
-				{
-					return;
-				}
-
-				var target = parent.PlacementTarget as MetroExpander;
-				if (target != null)
-				{
-					node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-					var menuItem = GetMenuItemByIp(node.NeAddress.ToString(), "连接基站");
-					if (null != menuItem)
-					{
-					//NodeBControl.GetInstance().ConnectNodeb(target.Header);
-					ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress}", "SCMT");
-					node.Connect();
-					ObjNode.main = this;
-						ChangeMenuHeader(node.NeAddress.ToString(), "连接基站", "取消连接");
-					}
-					else
-					{
-						node.DisConnect();
-						ChangeMenuHeader(node.NeAddress.ToString(), "取消连接", "连接基站");
-					}
-				}
-			}
-		}
-
-		private void DisconStationMenu_Click(object sender, RoutedEventArgs e)
-		{
-			var tip = $"基站将断开连接，并且该基站打开的功能窗口也将关闭。是否继续操作？";
-
-			var mui = sender as MenuItem;
-			if (null == mui) return;
-
-				var parent = (ContextMenu)mui.Parent;
-			var target = parent?.PlacementTarget as MetroExpander;
-			if (target == null)
-				{
-					return;
-				}
-
-
-				// 如果MessageBox放在上一句的前面，parent.PlacementTarget将会变成null，拿不到信息
-				var dr = MessageBox.Show(tip, "断开连接", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
-			if (MessageBoxResult.Yes == dr)
-				{
-
-				NodeBControl.GetInstance().DisConnectNodeb(target.Header);
-			}
-		}
-
-		// 基站节点右键菜单：删除，响应函数
-		private void DeleteStationMenu_Click(object sender, RoutedEventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var parent = (ContextMenu) mui.Parent;
-				if (null == parent)
-				{
-					return;
-				}
-
-				var target = parent.PlacementTarget as MetroExpander;
-				if (null == target)
-				{
-					return;
-				}
-
-				var tip = $"确定要删除该网元及其所有子网元？这将关闭该网元对应的所有窗口。";
-				var dr = MessageBox.Show(tip, "删除网元", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
-				if (MessageBoxResult.Yes != dr)
-				{
-					return;
-				}
-
-				var nodeName = target.Header;
-				NodeBControl.GetInstance().DisConnectNodeb(nodeName);
-				NodeBControl.GetInstance().DelElementByFriendlyName(nodeName);
-
-				ExistedNodebList.Children.Remove(target);
-			}
-		}
-
-		// 发起数据同步菜单响应函数
-		private void DataSync_Click(object sender, RoutedEventArgs e)
-		{
-			var mui = sender as MenuItem;
-			if (null != mui)
-			{
-				var parent = (ContextMenu)mui.Parent;
-				if (null == parent)
-				{
-					return;
-				}
-
-				var target = parent.PlacementTarget as MetroExpander;
-				if (null == target)
-				{
-					return;
-				}
-
-				var nodeName = target.Header;
-				var targetIp = NodeBControl.GetInstance().GetNodeIpByFriendlyName(nodeName);
-				if (null == targetIp)
-				{
-					return;
-				}
-
-				var tip = $"即将发起与设备的数据同步过程，耗时较长，请确认是否继续？";
-				var dr = MessageBox.Show(tip, "数据同步", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
-				if (MessageBoxResult.Yes != dr)
-				{
-					return;
-				}
-
-                // 发送消息，开始数据同步
-                long taskId = 0;
-				long reqId = 0;
-				var dstPath = FilePathHelper.GetConsistencyFilePath();
-				FilePathHelper.CreateFolder(dstPath);
-				var fto = FileTransTaskMgr.FormatTransInfo(dstPath, "", Transfiletype5216.TRANSFILE_dataConsistency,
-					TRANSDIRECTION.TRANS_UPLOAD);
-				fto.IpAddr = targetIp;
-				FileTransTaskMgr.SendTransFileTask(targetIp, fto, ref taskId, ref reqId);
-
-            }
 		}
 
 		private void EnableMenu(ContextMenu menuRoot, string header, bool bEnable = true)
@@ -1605,16 +1507,17 @@ namespace SCMTMainWindow
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
-			int RealIndexCount = IndexCount; // 真实的索引个数
+			int RealIndexCount = IndexCount;                         // 真实的索引纬度;
 			MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
 
-			if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
+			if (IndexCount == 0)                                     // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
 
 			var AlreadyRead = new List<string>();
+            var itemCount = 0;
 
-			// ar是遍历GetNext的结果，遍历后，将其转化为DataGrid能够显示的类型;
-			foreach (var iter in ar)
+            // ar是遍历GetNext的结果，遍历后，将其转化为DataGrid能够显示的类型;
+            foreach (var iter in ar)
 			{
 				var fulloid = iter.Key;
 
@@ -1635,7 +1538,7 @@ namespace SCMTMainWindow
                 // 创建一个能够填充到DataGrid控件的动态类型，这个类型的所有属性来自于读取的所有MIB节点;
 				dynamic model = new DyDataGrid_MIBModel();
 
-                // 当读取的列数大于0的时候，即有显示内容需要在DataGrid中填充的时候;
+                // 当多因维度大于0，即该表为矢量表的时候为该列添加表头;
 				if (RealIndexCount > 0)
 				{
 					var IndexOIDPre = "";
@@ -1658,12 +1561,12 @@ namespace SCMTMainWindow
                     // 参数三：单元格列中文名称;
 					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
 					{
-						m_Content = IndexContent,
-						oid = IndexOIDPre + ".",
-						MibName_CN = "实例描述",
-						MibName_EN = "indexlist"
-					}, "实例描述");
-				}
+                        m_Content = IndexContent,
+                        oid = IndexOIDPre + ".",
+                        MibName_CN = "实例描述",
+                        MibName_EN = "indexlist"
+                    }, "实例描述");
+                }
 
 				// 将ar当中所有匹配的结果取出,最后会取出了一行数据;
 				foreach (var iter3 in ar)
@@ -1671,13 +1574,13 @@ namespace SCMTMainWindow
 					// 将所有相同索引取出;
 					temp = iter3.Key.Split('.');
 					string TempIndex = "";
-
-					// TODO 这里和上面有什么区别？
+                    
 					for (int i = temp.Length - IndexCount; i < temp.Length; i++)
 					{
 						TempIndex += "." + temp[i];
 					}
 
+                    // 该步骤为抽取同样索引的内容，组成一行数据，然后添加至model中;
 					// 以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun;
 					if (TempIndex == NowIndex)
 					{
@@ -1696,7 +1599,7 @@ namespace SCMTMainWindow
 							Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
 
                             // 在这里要区分DataGrid要显示的数据类型;
-                            var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare], iter3.Value, iter3.Key);
+                            var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare], iter3.Value, iter3.Key, CSEnbHelper.GetCurEnbAddr());
 
                             // 第一个参数：属性的名称——节点英文名称;
                             // 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
@@ -1717,9 +1620,17 @@ namespace SCMTMainWindow
 				{
 					// 向单元格内添加内容;
 					contentlist.Add(model);
-				}
+                    itemCount++;
+                }
 
-			}
+                // 最终全部收集完成后，为控件赋值;
+                if(itemCount == contentlist.Count)
+                {
+                    this.Main_Dynamic_DataGrid.ColumnModel = model;
+                    this.Main_Dynamic_DataGrid.DataContext = contentlist;
+                }
+
+            }
 			// 增加表量表索引的列名;
 			if (RealIndexCount > 0)
 			{
@@ -1752,6 +1663,7 @@ namespace SCMTMainWindow
 			}
 
 			MibDataGrid.DataContext = contentlist;
+            
 		}
 
 		#endregion
@@ -1860,18 +1772,25 @@ namespace SCMTMainWindow
 		}
 
 		// 连接成功
-		private void OnConnect(SubscribeMsg msg)
+		private async void OnConnect(SubscribeMsg msg)
 		{
 			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 			var ip = netAddr.TargetIp;
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-			InitDataBase();
+			var result = await InitDataBase();
+
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
 			EnableMenu(ip, "数据同步");
+
+			if (!result)
+			{
+				Log.Error($"数据库初始化失败，不再查询基站的电源信息");
+				return;
+			}
 
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
@@ -1929,7 +1848,13 @@ namespace SCMTMainWindow
 			if (0 != ret)
 			{
 				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-				return 8;
+				return 4;
+			}
+
+			if (null == indexList || 0 == indexList.Count())
+			{
+				Log.Error("查询基站电源信息失败，默认设置为5G基站");
+				return 4;
 			}
 
 			var strSlot = MibStringHelper.GetRealValueFromIndex(indexList.First(), 3);
@@ -1979,16 +1904,23 @@ namespace SCMTMainWindow
 		}
 
         //解析lm.dtz文件
-        private void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
+        private async void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
         {
             var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
             var ip = netAddr.TargetIp;
 
             var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
-            
-            InitDataBase();
 
-            ShowLogHelper.Show($"解析lm.dtz数据文件成功：{fname}-{ip}", $"{ip}");
+            var result = await InitDataBase();
+
+	        if (result)
+	        {
+				ShowLogHelper.Show($"解析lm.dtz数据文件成功：{fname}-{ip}", $"{ip}");
+			}
+	        else
+	        {
+				ShowLogHelper.Show($"解析lm.dtz数据文件失败：{fname}-{ip}", $"{ip}");
+			}
         }
 
         /// <summary>

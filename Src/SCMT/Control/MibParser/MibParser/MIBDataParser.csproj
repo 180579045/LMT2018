@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DisableEditMibHelper.cs" />
     <Compile Include="JSONDataMgr\AccessDBManager.cs" />
     <Compile Include="IDatabase.cs" />
     <Compile Include="JSONDataMgr\CmdInfoList.cs" />

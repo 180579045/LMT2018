@@ -23,10 +23,23 @@ namespace SCMTMainWindow.View
     {
         private Point? rubberbandSelectionStartPoint = null;
 
+        //规划中的小区
+        public List<int> g_cellPlaning = new List<int>();
+
         //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
-        private int nRRUNo = 0;
-        private int nrHUBNo = 0;
-        private int nAntennaNo = 0;
+        public int nRRUNo = 0;
+        public int nrHUBNo = 199;
+        public int nAntennaNo = 0;
+
+        //全局变量，将网元名称和网元信息结构体对应
+        private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
+        //全局变量，将网元名称和网元的属性表格对应
+        public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+
+        //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
+        public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
+        //保存界面上的属性表格
+        public Grid gridProperty;
 
         private SelectionService selectionService;
         internal SelectionService SelectionService
@@ -84,13 +97,150 @@ namespace SCMTMainWindow.View
         }
 
         /// <summary>
-        /// 从xaml文件中获取对应的网元的xaml信息，名称和大小
+        /// 拖拽事件，处理各种被拖拽过来的器件信息
+        /// </summary>
+        /// <param name="e"></param>
+        protected override void OnDrop(DragEventArgs e)
+        {
+            base.OnDrop(e);
+            DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
+
+            if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
+            {
+                Point position = e.GetPosition(this);
+                if (dragObject.Xaml.Contains("Text=\"RRU\""))
+                {
+                    if(!CreateRRU(dragObject, position))
+                    {
+                        return;
+                    }
+                }else if(dragObject.Xaml.Contains("Text=\"rHUB\""))
+                {
+                    CreaterHUB(dragObject, position);
+                }
+                else if(dragObject.Xaml.Contains("Text=\"Antenna\""))
+                {
+                    CreateAntenna(dragObject, position);
+                }
+                else
+                {
+                    MessageBox.Show("Nothing");
+                    return;
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        #region 创建RRU
+
+        /// <summary>
+        /// 构造 RRU 网元
+        /// </summary>
+        /// <param name="dragObject"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool CreateRRU(DragObject dragObject, Point position)
+        {
+            //弹出RRU属性对话框，选择RRU的相关类型以及要添加的数量
+            ChooseRRUType dlgChooseRRU = new ChooseRRUType();
+            dlgChooseRRU.ShowDialog();
+
+            if (!dlgChooseRRU.bOK)
+            {
+                return false;    //选择取消之后，不进行拖拽
+            }
+            int nMaxRRUPath = dlgChooseRRU.nMaxRRUPath;         //RRU的最大通道数
+            int nRRUNumber = dlgChooseRRU.nRRUNumber;           //需要添加的RRU的数量
+            string strXAML = string.Empty;                                        //解析xml文件
+            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
+            string strRRUName = dlgChooseRRU.strRRUName;
+            strXAML = GetElementFromXAML(nMaxRRUPath, strXAML, out newSize);
+
+            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
+
+            //根据输入的个数，添加多个网元
+            for (int i = 0; i < nRRUNumber; i++)
+            {
+                DesignerItem newItem = new DesignerItem();
+
+                string strXAML1 = strXAML;
+                string strRRUFullName = string.Empty;
+
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, ++nRRUNo);
+                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                newItem.Content = testContent;
+                newItem.ItemName = strRRUFullName;
+                newItem.NPathNumber = nMaxRRUPath;
+
+                //双击 RRU 绑定小区
+                newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
+
+                //添加 RRU 的时候需要给基站下发，然后获取设备信息
+                List<int> listIndex = new List<int>();
+                listIndex.Add(nRRUNo);
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(listIndex, dlgChooseRRU.nRRUTypeIndex, dlgChooseRRU.strWorkModel);
+
+                if(devRRUInfo == null || devRRUInfo.Count == 0)
+                {
+                    MessageBox.Show("MibInfoMgr.GetInstance().AddNewRru 返回为空");
+                    return false;
+                }
+
+                if(g_AllDevInfo.ContainsKey(EnumDevType.rru))
+                {
+                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                }
+                else
+                {
+                    g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
+                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                }
+
+                //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
+                //globalDic.Add(strRRUFullName, test);
+                //Type typeTest = DynamicObject.BuildTypeWithCustomAttributesOnMethod("rru", test);
+
+                if (dragObject.DesiredSize.HasValue)
+                {
+                    Size desiredSize = dragObject.DesiredSize.Value;
+                    newItem.Width = desiredSize.Width;
+                    newItem.Height = desiredSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
+                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
+                }
+                Canvas.SetZIndex(newItem, this.Children.Count);
+                this.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                this.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                if (ucTest != null)
+                {
+                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// 从xaml文件中获取对应的 RRU 的xaml信息，名称和大小
         /// </summary>
         /// <param name="nMaxRRUPath"></param>
         /// <param name="strXAML"></param>
         /// <param name="RRUSize"></param>
         /// <returns></returns>
-        private string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        public string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -98,12 +248,12 @@ namespace SCMTMainWindow.View
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
 
             string strName = string.Empty;
-            if(nMaxRRUPath == 1)
+            if (nMaxRRUPath == 1)
             {
                 strName = "g_OnePathRRU";
                 RRUSize = new Size(80, 70);
             }
-            else if(nMaxRRUPath == 2)
+            else if (nMaxRRUPath == 2)
             {
                 strName = "g_TwoPathRRU";
                 RRUSize = new Size(130, 70);
@@ -113,7 +263,7 @@ namespace SCMTMainWindow.View
                 strName = "g_FourPathRRU";
                 RRUSize = new Size(160, 70);
             }
-            else if(nMaxRRUPath == 8)
+            else if (nMaxRRUPath == 8)
             {
                 strName = "g_EightPathRRU";
                 RRUSize = new Size(260, 70);
@@ -126,7 +276,7 @@ namespace SCMTMainWindow.View
             else
             {
                 strName = "g_OnePathRRU";
-                RRUSize = new Size(80, 50);
+                RRUSize = new Size(80, 70);
             }
 
             Object content = el.FindName(strName) as Grid;
@@ -134,6 +284,136 @@ namespace SCMTMainWindow.View
             strXAML = XamlWriter.Save(content);
 
             return strXAML;
+        }
+        
+        /// <summary>
+        /// 双击 RRU 进行小区的设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            DesignerItem targetItem = sender as DesignerItem;
+
+            //Grid targetGrid = targetItem.Content as Grid;
+
+            //string strName = targetGrid.Name;
+            //int nRRUPoint = 1;
+
+            //switch(strName)
+            //{
+            //    case "g_OnePathRRU":
+            //        nRRUPoint = 1;
+            //        break;
+            //    case "g_TwoPathRRU":
+            //        nRRUPoint = 2;
+            //        break;
+            //    case "g_FourPathRRU":
+            //        nRRUPoint = 4;
+            //        break;
+            //    case "g_EightPathRRU":
+            //        nRRUPoint = 8;
+            //        break;
+            //    case "g_SixteenPathRRU":
+            //        nRRUPoint = 16;
+            //        break;
+            //    default:
+            //        nRRUPoint = 1;
+            //        break;
+                        
+            //}
+            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning);
+            dlg.ShowDialog();
+        }
+
+        #endregion
+
+        #region 构建rHUB
+        
+        /// <summary>
+        /// 构造 rHUB
+        /// </summary>
+        /// <param name="dragObject"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool CreaterHUB(DragObject dragObject, Point position)
+        {
+            ChooserHUBType dlg = new ChooserHUBType();
+            dlg.ShowDialog();
+
+            int nMaxrHUBPath = dlg.nRHUBType;         //rHUB 的最大通道数
+            int nrHUBNumber = dlg.nRHUBNo;           //需要添加的 rHUB 的数量
+            string strXAML = string.Empty;                                        //解析xml文件
+            Size newSize;                                                                  //根据不同的通道数，确定不同的 rHUB 的大小
+            string strRRUName = "rHUB";
+            strXAML = GetrHUBFromXML(nMaxrHUBPath, strXAML, out newSize);
+
+            dragObject.DesiredSize = newSize;          
+
+            //根据输入的个数，添加多个网元
+            for (int i = 0; i < nrHUBNumber; i++)
+            {
+                DesignerItem newItem = new DesignerItem();
+
+                string strXAML1 = strXAML;
+                string strrHUBFullName = string.Empty;
+
+                strrHUBFullName = string.Format("{0}-{1}", strRRUName, ++nrHUBNo);
+                string strInstedName = string.Format("Text=\"{0}\"", strrHUBFullName);
+                strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                newItem.Content = testContent;
+                newItem.ItemName = strrHUBFullName;
+
+                //添加 rHUB 的时候需要给基站下发，然后获取设备信息
+                List<int> listIndex = new List<int>();
+                listIndex.Add(nrHUBNo);
+                var devrHUBInfo = MibInfoMgr.GetInstance().AddNewRhub(listIndex, dlg.strrHUBType, dlg.strWorkModel);
+
+                if(devrHUBInfo == null || devrHUBInfo.Count == 0)
+                {
+                    MessageBox.Show("MibInfoMgr.GetInstance().AddNewRhub 返回为空");
+                    return false;
+                }
+
+                if(g_AllDevInfo.ContainsKey(EnumDevType.rhub))
+                {
+                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                }
+                else
+                {
+                    g_AllDevInfo.Add(EnumDevType.rhub, new Dictionary<string, string>());
+                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                }
+
+                if (dragObject.DesiredSize.HasValue)
+                {
+                    Size desiredSize = dragObject.DesiredSize.Value;
+                    newItem.Width = desiredSize.Width;
+                    newItem.Height = desiredSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
+                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
+                }
+                Canvas.SetZIndex(newItem, this.Children.Count);
+                this.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                this.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                if (ucTest != null)
+                {
+                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                    CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -174,7 +454,96 @@ namespace SCMTMainWindow.View
             return strXAML;
         }
 
-        private string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        #endregion
+
+        #region 构建Antenna
+
+        /// <summary>
+        /// 创建天线阵
+        /// </summary>
+        /// <param name="dragObject"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        private bool CreateAntenna(DragObject dragObject, Point position)
+        {
+            ChooseAntennaType dlg = new ChooseAntennaType();
+            dlg.ShowDialog();
+
+
+
+            int nMaxRRUPath = dlg.nAntennaType;         //RRU的最大通道数
+            int nRRUNumber = 1;           //需要添加的RRU的数量
+            string strXAML = string.Empty;                                        //解析xml文件
+            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
+            string strRRUName = "No:";
+            strXAML = GetAntennaromXML(nMaxRRUPath, strXAML, out newSize);
+
+            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
+
+            //根据输入的个数，添加多个网元
+            for (int i = 0; i < nRRUNumber; i++)
+            {
+                DesignerItem newItem = new DesignerItem();
+
+                string strXAML1 = strXAML;
+                string strRRUFullName = string.Empty;
+
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, ++nAntennaNo);
+                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                strXAML1 = strXAML1.Replace("Text=\"Antenna\"", strInstedName);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                newItem.Content = testContent;
+                newItem.ItemName = strRRUFullName;
+                
+                //添加 ant 的时候需要给基站下发，然后获取设备信息
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo);
+
+                if (devRRUInfo == null)
+                {
+                    MessageBox.Show("MibInfoMgr.GetInstance().AddNewAnt 返回为空");
+                    return false;
+                }
+
+                if(g_AllDevInfo.ContainsKey(EnumDevType.ant))
+                {
+                    g_AllDevInfo[EnumDevType.ant].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
+                }
+                else
+                {
+                    g_AllDevInfo.Add(EnumDevType.ant, new Dictionary<string, string>());
+                    g_AllDevInfo[EnumDevType.ant].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
+                }
+
+                if (dragObject.DesiredSize.HasValue)
+                {
+                    Size desiredSize = dragObject.DesiredSize.Value;
+                    newItem.Width = desiredSize.Width;
+                    newItem.Height = desiredSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
+                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
+                }
+                Canvas.SetZIndex(newItem, this.Children.Count);
+                this.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                this.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                if (ucTest != null)
+                {
+                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo);
+                    gridProperty.Children.Clear();
+                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
+                }
+            }
+
+            return true;
+        }
+        public string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -215,262 +584,7 @@ namespace SCMTMainWindow.View
             return strXAML;
         }
 
-        protected override void OnDrop(DragEventArgs e)
-        {
-            base.OnDrop(e);
-            DragObject dragObject = e.Data.GetData(typeof(DragObject)) as DragObject;
-
-            if (dragObject != null && !String.IsNullOrEmpty(dragObject.Xaml))
-            {
-                Point position = e.GetPosition(this);
-                if (dragObject.Xaml.Contains("Text=\"RRU\""))
-                {
-                    if(!CreateRRU(dragObject, position))
-                    {
-                        return;
-                    }
-                }else if(dragObject.Xaml.Contains("Text=\"rHUB\""))
-                {
-                    CreaterHUB(dragObject, position);
-                }
-                else if(dragObject.Xaml.Contains("Text=\"Antenna\""))
-                {
-                    CreateAntenna(dragObject, position);
-                }
-                else
-                {
-                    MessageBox.Show("Nothing");
-                    return;
-                }
-
-                e.Handled = true;
-            }
-        }
-
-        /// <summary>
-        /// 构造 RRU 网元
-        /// </summary>
-        /// <param name="dragObject"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        private bool CreateRRU(DragObject dragObject, Point position)
-        {
-            //弹出RRU属性对话框，选择RRU的相关类型以及要添加的数量
-            ChooseRRUType dlgChooseRRU = new ChooseRRUType();
-            dlgChooseRRU.ShowDialog();
-
-            if (!dlgChooseRRU.bOK)
-            {
-                return false;    //选择取消之后，不进行拖拽
-            }
-            int nMaxRRUPath = dlgChooseRRU.nMaxRRUPath;         //RRU的最大通道数
-            int nRRUNumber = dlgChooseRRU.nRRUNumber;           //需要添加的RRU的数量
-            string strXAML = string.Empty;                                        //解析xml文件
-            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
-            string strRRUName = dlgChooseRRU.strRRUName;
-            strXAML = GetElementFromXAML(nMaxRRUPath, strXAML, out newSize);
-
-            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
-
-            //根据输入的个数，添加多个网元
-            for (int i = 0; i < nRRUNumber; i++)
-            {
-                DesignerItem newItem = new DesignerItem();
-
-                string strXAML1 = strXAML;
-                string strRRUFullName = string.Empty;
-
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUNo++);
-                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
-                strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
-                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
-                newItem.Content = testContent;
-                newItem.ItemName = strRRUFullName;
-
-                //添加 RRU 的时候需要给基站下发，然后获取设备信息
-                List<int> listIndex = new List<int>();
-                listIndex.Add(nRRUNo);
-                var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(listIndex, dlgChooseRRU.nRRUTypeIndex, dlgChooseRRU.strWorkModel);
-
-                if(devRRUInfo == null || devRRUInfo.Count == 0)
-                {
-                    return false;
-                }
-
-                if(!g_AllDevInfo.Keys.Contains(strRRUFullName))
-                   g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
-
-                //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
-                //globalDic.Add(strRRUFullName, test);
-                //Type typeTest = DynamicObject.BuildTypeWithCustomAttributesOnMethod("rru", test);
-
-                if (dragObject.DesiredSize.HasValue)
-                {
-                    Size desiredSize = dragObject.DesiredSize.Value;
-                    newItem.Width = desiredSize.Width;
-                    newItem.Height = desiredSize.Height;
-
-                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
-                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
-                }
-                Canvas.SetZIndex(newItem, this.Children.Count);
-                this.Children.Add(newItem);
-                SetConnectorDecoratorTemplate(newItem);
-
-                this.SelectionService.SelectItem(newItem);
-                newItem.Focus();
-
-                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                if (ucTest != null)
-                {
-                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// 构造 rHUB
-        /// </summary>
-        /// <param name="dragObject"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        private bool CreaterHUB(DragObject dragObject, Point position)
-        {
-            ChooserHUBType dlg = new ChooserHUBType();
-            dlg.ShowDialog();
-
-            int nMaxrHUBPath = dlg.nRHUBType;         //rHUB 的最大通道数
-            int nrHUBNumber = dlg.nRHUBNo;           //需要添加的 rHUB 的数量
-            string strXAML = string.Empty;                                        //解析xml文件
-            Size newSize;                                                                  //根据不同的通道数，确定不同的 rHUB 的大小
-            string strRRUName = "rHUB";
-            strXAML = GetrHUBFromXML(nMaxrHUBPath, strXAML, out newSize);
-
-            dragObject.DesiredSize = newSize;          
-
-            //根据输入的个数，添加多个网元
-            for (int i = 0; i < nrHUBNumber; i++)
-            {
-                DesignerItem newItem = new DesignerItem();
-
-                string strXAML1 = strXAML;
-                string strrHUBFullName = string.Empty;
-
-                strrHUBFullName = string.Format("{0}-{1}", strRRUName, nrHUBNo++);
-                string strInstedName = string.Format("Text=\"{0}\"", strrHUBFullName);
-                strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
-                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
-                newItem.Content = testContent;
-                newItem.ItemName = strrHUBFullName;
-
-                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rHUB");
-                globalDic.Add(strrHUBFullName, test);
-
-                if (dragObject.DesiredSize.HasValue)
-                {
-                    Size desiredSize = dragObject.DesiredSize.Value;
-                    newItem.Width = desiredSize.Width;
-                    newItem.Height = desiredSize.Height;
-
-                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
-                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
-                }
-                Canvas.SetZIndex(newItem, this.Children.Count);
-                this.Children.Add(newItem);
-                SetConnectorDecoratorTemplate(newItem);
-
-                this.SelectionService.SelectItem(newItem);
-                newItem.Focus();
-
-                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                if (ucTest != null)
-                {
-                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    //CreateGirdForNetInfo(strrHUBFullName, test);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// 创建天线阵
-        /// </summary>
-        /// <param name="dragObject"></param>
-        /// <param name="position"></param>
-        /// <returns></returns>
-        private bool CreateAntenna(DragObject dragObject, Point position)
-        {
-            ChooseAntennaType dlg = new ChooseAntennaType();
-            dlg.ShowDialog();
-
-
-
-            int nMaxRRUPath = dlg.nAntennaType;         //RRU的最大通道数
-            int nRRUNumber = 1;           //需要添加的RRU的数量
-            string strXAML = string.Empty;                                        //解析xml文件
-            Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
-            string strRRUName = "No:";
-            strXAML = GetAntennaromXML(nMaxRRUPath, strXAML, out newSize);
-
-            dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
-
-            //根据输入的个数，添加多个网元
-            for (int i = 0; i < nRRUNumber; i++)
-            {
-                DesignerItem newItem = new DesignerItem();
-
-                string strXAML1 = strXAML;
-                string strRRUFullName = string.Empty;
-
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nAntennaNo++);
-                string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
-                strXAML1 = strXAML1.Replace("Text=\"Antenna\"", strInstedName);
-                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
-                newItem.Content = testContent;
-                newItem.ItemName = strRRUFullName;
-
-                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("ant");
-                globalDic.Add(strRRUFullName, test);
-
-                if (dragObject.DesiredSize.HasValue)
-                {
-                    Size desiredSize = dragObject.DesiredSize.Value;
-                    newItem.Width = desiredSize.Width;
-                    newItem.Height = desiredSize.Height;
-
-                    DesignerCanvas.SetLeft(newItem, Math.Max(0, position.X - newItem.Width / 2) + i * 20);
-                    DesignerCanvas.SetTop(newItem, Math.Max(0, position.Y - newItem.Height / 2) + i * 20);
-                }
-                Canvas.SetZIndex(newItem, this.Children.Count);
-                this.Children.Add(newItem);
-                SetConnectorDecoratorTemplate(newItem);
-
-                this.SelectionService.SelectItem(newItem);
-                newItem.Focus();
-
-                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                if (ucTest != null)
-                {
-                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    //CreateGirdForNetInfo(strRRUFullName, test);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
-                }
-            }
-
-            return true;
-        }
+        #endregion
 
         //尝试获取节点的根元素    根据网上的代码，查询一个元素的父节点的父节点。。。通过递归查找到 Name 为
         //某个值的元素
@@ -520,24 +634,19 @@ namespace SCMTMainWindow.View
             return null;
         }
 
-        //全局变量，将网元名称和网元信息结构体对应
-        private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
-        //全局变量，将网元名称和网元的属性表格对应
-        public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
-
-        //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
-        public Dictionary<string, string> g_AllDevInfo = new Dictionary<string, string>();
-
-        //保存界面上的属性表格
-        public Grid gridProperty;
 
         /// <summary>
         /// 为网元创建属性表格
         /// </summary>
         /// <param name="strName"></param>
         /// <param name="mibInfo"></param>
-        private void CreateGirdForNetInfo(string strName, DevAttributeInfo mibInfo)
+        public void CreateGirdForNetInfo(string strName, DevAttributeInfo mibInfo)
         {
+            if(g_GridForNet.Keys.Contains(strName))
+            {
+                return;
+            }
+
             Grid grid = new Grid();
 
             //创建两列，第一列显示属性名称Name，第二列显示属性值Value
@@ -630,6 +739,11 @@ namespace SCMTMainWindow.View
                             cbValue.IsReadOnly = true;
                             cbValue.IsEnabled = false;
                         }
+                        else
+                        {
+                            //属性是可以修改的，则创建选择改变事件
+                            cbValue.SelectionChanged += CbValue_SelectionChanged;
+                        }
                         break;
                     default:
                         TextBox txtValue = new TextBox();
@@ -655,6 +769,31 @@ namespace SCMTMainWindow.View
 
             if(!g_GridForNet.ContainsKey(strName))
                  g_GridForNet.Add(strName, grid);
+        }
+
+        /// <summary>
+        /// 下拉框选择改变事件，改变之后需要修改相关属性
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CbValue_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox targetItem = sender as ComboBox;
+            Grid grid = targetItem.Parent as Grid;
+            TextBlock targetText;
+
+            for(int i = 0; i < grid.Children.Count; i++)
+            {
+                if(grid.Children[i] == targetItem)
+                {
+                    targetText = grid.Children[i - 1] as TextBlock;
+                    if (targetText != null)
+                    {
+                        MessageBox.Show(targetText.Text.ToString());
+                    }
+                }
+            }
+
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -733,8 +872,16 @@ namespace SCMTMainWindow.View
                     {
                         return;
                     }
-                    if (!g_AllDevInfo.Keys.Contains(strRRUFullName))
-                        g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+
+                    if (g_AllDevInfo.ContainsKey(EnumDevType.rru))
+                    {
+                        g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                    }
+                    else
+                    {
+                        g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
+                        g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                    }
 
                     newItem.Width = newSize.Width;
                     newItem.Height = newSize.Height;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +31,8 @@ namespace SCMTOperationCore.Elements
 		public SiElement(string friendName, IPAddress neIp, ushort nePort = 5000)
 		: base(friendName, neIp, nePort)
 		{
-			_targetPoint = new NetworkEndPoint(NeAddress, nePort, IPMode.IPv4);
+			var ipMode = (neIp.AddressFamily == AddressFamily.InterNetwork) ? IPMode.IPv4 : IPMode.IPv6;
+			_targetPoint = new NetworkEndPoint(NeAddress, nePort, ipMode);
 			connection = new TcpConnection(_targetPoint);
 			connection.DataReceived += OnDataReceived;
 			connection.Disconnected += OnDisconnected;
@@ -69,7 +71,11 @@ namespace SCMTOperationCore.Elements
 					{
 						try
 						{
-							connection.Connect();
+							if (!connection.Connect())
+							{
+								Log.Debug($"连接基站失败，100ms后重连...");
+								Task.Delay(1000);
+							}
 						}
 						catch
 						{

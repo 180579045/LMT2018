@@ -103,7 +103,7 @@ namespace SCMTOperationCore.Connection.Udp
         }
 
         /// <inheritdoc />
-        public override void Connect(byte[] bytes = null, int timeout = 5000)
+        public override bool Connect(byte[] bytes = null, int timeout = 5000)
         {
             lock (stateLock)
             {
@@ -137,7 +137,7 @@ namespace SCMTOperationCore.Connection.Udp
                 //If we end up here I'm really lost...
                 lock (stateLock)
                     State = ConnectionState.NotConnected;
-                return;
+                return true;
             }
             catch (SocketException e)
             {
@@ -158,6 +158,8 @@ namespace SCMTOperationCore.Connection.Udp
                 Dispose();
                 throw new HazelException("Connection attempt timed out.");
             }
+
+	        return true;
         }
 
         /// <summary>

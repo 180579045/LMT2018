@@ -465,18 +465,20 @@ namespace LmtbSnmp
 				return -1;
 			}
 
+			if (0 != result.Pdu.ErrorStatus)
+			{
+				SnmErrorCodeHelper.GetInstance().SetLastErrorCode(result.Pdu.ErrorStatus);
+				return 2;
+			}
+
 			rs = SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false);
 
 			// Snmp Set Response处理
-			// TODO
-			//if (IsWindow(m_hWnd))
-			//{
+
 			// 实例序列化
 			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 			// 发布消息
 			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
-			//}
-
 			return 0;
 		}
 

@@ -35,6 +35,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,17 +48,19 @@
     <Compile Include="CfgFileLeafNodeIndexInfoOp.cs" />
     <Compile Include="CfgFileLeafNodeOp.cs" />
     <Compile Include="CfgFileOp.cs" />
-    <Compile Include="CfgReadDBMibTreeToMemory.cs" />
-    <Compile Include="CfgReadDBStructMibNode.cs" />
-    <Compile Include="CfgReadReclistExcel.cs" />
+    <Compile Include="CfgParseSelfExcel.cs" />
+    <Compile Include="CfgParseDBMibTreeToMemory.cs" />
+    <Compile Include="CfgParseDBMibTreeStrLineMib.cs" />
+    <Compile Include="CfgParseReclistExcel.cs" />
+    <Compile Include="CfgTableInstanceInfos.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="CfgFileOpStruct.cs" />
-    <Compile Include="CfgReadAntennaExcel.cs" />
-    <Compile Include="CfgReadRruExcel.cs" />
+    <Compile Include="CfgParseAntennaExcel.cs" />
+    <Compile Include="CfgParseRruExcel.cs" />
     <Compile Include="CfgTableOp.cs" />
     <Compile Include="CfgTableOpTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CfgReadAlarmExecl.cs" />
+    <Compile Include="CfgParseAlarmExecl.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -31,6 +31,9 @@
             <DataTemplate DataType="{x:Type ViewModel:NetPlanModel}">
                 <View:NetPlan></View:NetPlan>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:UeInfoModel}">
+                <View:UeInfo></View:UeInfo>
+            </DataTemplate>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -207,6 +210,11 @@
                     </Grid>
                 </TabItem>
 
+                <TabItem Header="修改调试用" Style="{StaticResource TabItemStyle}">
+                    <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
+                    <View:MainDataGrid x:Name="Main_Dynamic_DataGrid"></View:MainDataGrid>
+                </TabItem>
+
                 <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
                 </TabItem>
@@ -247,6 +255,16 @@
                         </Grid.RowDefinitions>
                         <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled">
                             <ViewModel:NetPlanModel/>
+                        </ScrollViewer>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="UE查询" Style="{StaticResource TabItemStyle}">
+                    <Grid Margin="0,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled">
+                            <ViewModel:UeInfoModel/>
                         </ScrollViewer>
                     </Grid>
                 </TabItem>

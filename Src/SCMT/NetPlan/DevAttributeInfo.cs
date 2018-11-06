@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LmtbSnmp;
+using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 
@@ -65,7 +67,7 @@ namespace NetPlan
 			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
-			InitDevInfo(mEnumDevType, strIndex);
+			InitDevInfo(mEnumDevType);
 		}
 
 		/// <summary>
@@ -217,6 +219,61 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 获取指定字段的值
+		/// </summary>
+		/// <param name="strFieldName">字段名</param>
+		/// <param name="bConvertToNum">枚举值是否需要转换为数字</param>
+		/// <returns>null:字段不存在</returns>
+		public string GetFieldOriginValue(string strFieldName, bool bConvertToNum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException("传入字段名无效");
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"该设备属性中不包含字段{strFieldName}");
+				return null;
+			}
+
+			var originValue = m_mapAttributes[strFieldName].m_strOriginValue;
+			if (bConvertToNum)
+			{
+				return SnmpToDatabase.ConvertStringToMibValue(m_mapAttributes[strFieldName].mibAttri, originValue);
+			}
+
+			return originValue;
+		}
+
+		/// <summary>
+		/// 获取字段的最新值
+		/// </summary>
+		/// <param name="strFieldName">字段名</param>
+		/// <param name="bConvertToNum">是否需要转换</param>
+		/// <returns></returns>
+		public string GetFieldLatestValue(string strFieldName, bool bConvertToNum = true)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException("传入字段名无效");
+			}
+
+			if (!m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"该设备属性中不包含字段{strFieldName}");
+				return null;
+			}
+
+			var latestValue = m_mapAttributes[strFieldName].m_strLatestValue;
+			if (null != latestValue && bConvertToNum)
+			{
+				return SnmpToDatabase.ConvertStringToMibValue(m_mapAttributes[strFieldName].mibAttri, latestValue);
+			}
+
+			return latestValue;
+		}
 
 		#endregion
 
@@ -226,6 +283,7 @@ namespace NetPlan
 		/// 生成设备oid索引。
 		/// 由于当前MIB的特性，板卡、RRU、天线阵等设备特性，只需要一个设备序号即可生成索引
 		/// </summary>
+		/// <param name="indexGrade"></param>
 		/// <param name="devIndex"></param>
 		/// <returns></returns>
 		private string GerenalDevOidIndex(int indexGrade, int devIndex)
@@ -251,6 +309,7 @@ namespace NetPlan
 		/// 添加新设备，初始化设备信息
 		/// </summary>
 		/// <param name="type"></param>
+		/// <param name="devIndex"></param>
 		private void InitDevInfo(EnumDevType type, int devIndex)
 		{
 			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
@@ -281,20 +340,33 @@ namespace NetPlan
 			{
 				AddIndexColumnToAttributes(tbl.childList, indexGrade);
 			}
+
+			var attriList = m_mapAttributes.Values.ToList();
+			attriList.Sort(new MLNIComparer());
+
+			// 排序后需要重新设置属性
+			m_mapAttributes.Clear();
+			foreach (var item in attriList)
+			{
+				m_mapAttributes[item.mibAttri.childNameMib] = item;
+			}
 		}
 
-		private void InitDevInfo(EnumDevType type, string strIndex)
+		private void InitDevInfo(EnumDevType type)
 		{
 			// 根据类型，找到MIB入口，然后找到MIB tbl 信息
 			var strEntryName = DevTypeHelper.GetEntryNameFromDevType(type);
 			if (null == strEntryName)
 			{
+				Log.Error($"根据{type.ToString()}未找到对应的表名");
 				return;
 			}
 
-			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, CSEnbHelper.GetCurEnbAddr());
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			var tbl = Database.GetInstance().GetMibDataByTableName(strEntryName, targetIp);
 			if (null == tbl)
 			{
+				Log.Error($"根据表名{strEntryName}未找到基站{targetIp}的表信息");
 				return;
 			}
 
@@ -302,6 +374,7 @@ namespace NetPlan
 			var attributes = NPECmdHelper.GetInstance().GetDevAttributesByEntryName(strEntryName);
 			if (null == attributes)
 			{
+				Log.Error($"根据表名{strEntryName}未找到对应的属性信息");
 				return;
 			}
 
@@ -311,6 +384,16 @@ namespace NetPlan
 			if (!m_bIsScalar)
 			{
 				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
+
+			var attriList = m_mapAttributes.Values.ToList();
+			attriList.Sort(new MLNIComparer());
+
+			// 排序后需要重新设置属性
+			m_mapAttributes.Clear();
+			foreach (var item in attriList)
+			{
+				m_mapAttributes[item.mibAttri.childNameMib] = item;
 			}
 		}
 
@@ -325,14 +408,20 @@ namespace NetPlan
 			for (var i = 1; i <= indexGrade; i++)
 			{
 				var indexColumn = childList.FirstOrDefault(childLeaf => i == childLeaf.childNo);
+				if (null == indexColumn)
+				{
+					Log.Error("查找信息失败");
+					return false;
+				}
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
 				var info = new MibLeafNodeInfo
 				{
 					m_strOriginValue = indexVale,
-					m_bReadOnly = true,
+					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
 					m_bVisible = true,
 					mibAttri = indexColumn
 				};
+
 				m_mapAttributes.Add(indexColumn.childNameMib, info);
 			}
 			return true;
@@ -342,9 +431,39 @@ namespace NetPlan
 
 	}
 
-	// 连接的属性
-	public class LinkAttributeInfo
+	/// <summary>
+	/// rhub设备，需要区分版本
+	/// </summary>
+	public class RHubDevAttri : DevAttributeInfo
 	{
-		
+		public RHubDevAttri(int devIndex, string strDevVersion)
+			: base(EnumDevType.rhub, devIndex)
+		{
+			m_strDevVersion = strDevVersion;
+		}
+
+		public RHubDevAttri(string strIndex, string strDevVersion)
+			: base(EnumDevType.rhub, strIndex)
+		{
+			m_strDevVersion = strDevVersion;
+		}
+
+		public string m_strDevVersion { get; }
+	}
+
+	// 连接的源端或者目的端
+	public struct LinkEndpoint
+	{
+		public EnumDevType devType;		// 设备类型
+		public string strDevIndex;		// 设备索引
+		public EnumPortType portType;	// 端口类型
+		public int nPortNo;				// 端口号
+	}
+
+	public struct WholeLink
+	{
+		public LinkEndpoint m_srcEndPoint;
+		public LinkEndpoint m_dstEndPoint;
+		public EnumDevType m_linkType;
 	}
 }

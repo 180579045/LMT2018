@@ -130,6 +130,37 @@ namespace NetPlan
 			return _netPlanBoardInfo?.rHubEquipment;
 		}
 
+		/// <summary>
+		/// 获取rhub设备的工作模式
+		/// </summary>
+		/// <returns></returns>
+		public List<string> GetRhubOfpWorkMode()
+		{
+			return GetMibValueRangeList("netRHUBOfpWorkMode");
+		}
+
+		/// <summary>
+		/// 根据基站类型获取基站的信息
+		/// </summary>
+		/// <param name="enbType"></param>
+		/// <returns></returns>
+		public Shelf GetShelfByEnbType(EnbTypeEnum enbType)
+		{
+			var shelfList = _netPlanBoardInfo.shelfEquipment;
+			if (null != shelfList && shelfList.Count > 0)
+			{
+				foreach (var itemShelf in shelfList)
+				{
+					if (itemShelf.equipNEType == (int)enbType)
+					{
+						return itemShelf;
+					}
+				}
+			}
+
+			return null;
+		}
+
 		#endregion
 
 		#region 私有方法

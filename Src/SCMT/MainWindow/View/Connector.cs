@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -15,6 +15,8 @@ namespace SCMTMainWindow.View
         private Point? dragStartPoint = null;
 
         public ConnectorOrientation Orientation { get; set; }
+
+        public string ID { get; set; }
 
         // center position of this Connector relative to the DesignerCanvas
         private Point position;

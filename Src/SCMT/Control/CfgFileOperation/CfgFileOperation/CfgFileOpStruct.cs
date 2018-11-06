@@ -491,32 +491,24 @@ namespace CfgFileOpStruct
             u32MainMibVer = 65;
             u32SubMibVer = 3;
             u32ReserveVer = 6;
-            //string strTempMibVersion = strMibVersion;
-            //strTempMibVersion.Replace('_', '.');
-            //int nPos = strTempMibVersion.Find('.');
-            //if (-1 == nPos)
-            //{
-            //    L_ERROR("版本号信息的格式应为*.*.*.*,当前版本号为%s，请检查SystemParameter表的MibPublicVersion字段", strTempMibVersion);
-            //    return FALSE;
-            //}
-            //CString strTemp;
-            //vector<LONGLONG> vecMibVer;
-            //while (-1 != nPos)
-            //{
-            //    strTemp = strTempMibVersion.Left(nPos);
-            //    vecMibVer.push_back(atoi((LPCTSTR)strTemp));
-            //    strTempMibVersion = strTempMibVersion.Right(strTempMibVersion.GetLength() - nPos - 1);
-            //    nPos = strTempMibVersion.Find('.');
-            //    if (-1 == nPos)
-            //    {
-            //        vecMibVer.push_back(atoi((LPCTSTR)strTempMibVersion));
-            //    }
-            //}
-            //cfgFileHeader.u32PublicMibVer = vecMibVer[0];
-            //cfgFileHeader.u32MainMibVer = vecMibVer[1];
-            //cfgFileHeader.u32SubMibVer = vecMibVer[2];
-            //cfgFileHeader.u32ReserveVer = vecMibVer[3];
 
+            string strTempMibVersion = strMibVersion;
+            int nPos = strTempMibVersion.IndexOf('_');
+            List<string> vecMibVer = new List<string>();
+            while (-1 != nPos)
+            {
+                string strMibVer = strTempMibVersion.Substring(0, nPos);
+                vecMibVer.Add(strMibVer);
+                strTempMibVersion = strTempMibVersion.Substring(nPos + 1);
+                nPos = strTempMibVersion.IndexOf('_');
+            }
+            vecMibVer.Add(strTempMibVersion);
+
+            string u32PublicMibVer1 = vecMibVer[0];
+            string u32MainMibVer1 = vecMibVer[1];
+            string u32SubMibVer1 = vecMibVer[2];
+            string u32ReserveVer1 = vecMibVer[3];
+            vecMibVer = null;
         }
         /// <summary>
         /// u8LastMotifyDate : 文件最新修改的日期, 按字符串存放

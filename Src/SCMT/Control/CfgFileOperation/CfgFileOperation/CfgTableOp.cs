@@ -23,7 +23,7 @@ namespace CfgFileOperation
         public int  m_tabDimen;                   //  索引数
         uint m_dyTabContent;                      //  动态表的表容量
         string m_strChFriendName;                 //  
-        public string m_strTableName;                    //  表名(En)
+        public string m_strTableName;             //  表名(En)
         string m_strOID;                          //  OID
         bool m_isDyTable;                         //  是否是
 
@@ -36,32 +36,27 @@ namespace CfgFileOperation
         /// <summary>
         /// 告警
         /// </summary>
-        class CTabInstInfo
-        {
-            string strInstantNum;
-            byte[] InstMem;
-
-            public CTabInstInfo(string strInstantNumVal, byte[] InstMemVal)
-            {
-                strInstantNum = strInstantNumVal;
-                InstMem = new byte[InstMemVal.Length];// Marshal.SizeOf(InstMemVal)];
-                Buffer.BlockCopy(InstMemVal, 0, InstMem, 0, InstMemVal.Length);
-            }
-            public string GetInstantNum() { return strInstantNum; }
-            public byte[] GetInstMem() { return InstMem; }
-        }
-        List<CTabInstInfo> m_cfgInsts; //表中每个实例的
-        public void m_cfgInsts_add(string strInstantNumVal, byte[] InstMemVal){ m_cfgInsts.Add(new CTabInstInfo( strInstantNumVal,  InstMemVal));}
+        //SetValueToByteArrayReverse
+        /// <summary>
+        /// 表中每个实例的
+        /// </summary>
+        public List<CfgTableInstanceInfos> m_cfgInsts; //表中每个实例的
+        public void m_cfgInsts_add(string strInstantNumVal, byte[] InstMemVal){ m_cfgInsts.Add(new CfgTableInstanceInfos( strInstantNumVal,  InstMemVal));}
+        /// <summary>
+        /// 获取实例的个数
+        /// </summary>
+        /// <returns></returns>
         public uint get_m_cfgInsts_num() { return (uint)m_cfgInsts.LongCount(); }
+        /// <summary>
+        /// 获取所有实例的索引值
+        /// </summary>
+        /// <returns></returns>
         public List<string> GetCfgInstsInstantNum()
         {
             List<string> strIndexL = new List<string>();
             foreach (var info in m_cfgInsts)
-            {
                 strIndexL.Add(info.GetInstantNum());
-            }
             return strIndexL;
-
         }
         /// <summary>
         /// 表信息
@@ -77,12 +72,16 @@ namespace CfgFileOperation
         /// reclist 解析后存在的变量 用于记录补丁文件
         /// </summary>
         public Dictionary <string, List<string>> m_InstIndex2LeafName = new Dictionary<string, List<string>>();//用于记录补丁文件 key :".0"
-        string m_TableRowStatusName = "";
-        //设置RowStatusName
-        public void SetRowStatusName(string strLeafName)
-        {
-		    m_TableRowStatusName = strLeafName;
-	    }
+        //string m_TableRowStatusName = "";
+        ////设置RowStatusName
+        //public void SetRowStatusName(string strLeafName)
+        //{
+        //    m_TableRowStatusName = strLeafName;
+        //}
+        /// <summary>
+        /// 查找 leaf中为"RowStatus"的节点名
+        /// </summary>
+        /// <returns></returns>
         public string GetRowStatusName()
         {
             foreach (var leafOp in m_LeafNodes)
@@ -91,45 +90,75 @@ namespace CfgFileOperation
                     return leafOp.m_struMibNode.strMibName;
             }
             return "";
-        }
-
-        public bool ReclistWriteValueToBuffer(string strMibNodeName, string strIndex, out CfgFileLeafNodeOp leafNodeOp)
+        }       
+        /// <summary>
+        /// 通过 leaf name en 查找 Class LeafNodeOp
+        /// </summary>
+        /// <param name="strMibNodeName"></param>
+        /// <param name="leafNodeOp"></param>
+        /// <returns></returns>
+        public bool GetLeafNodesByNodeName(string strMibNodeName, out CfgFileLeafNodeOp leafNodeOp)
         {
-            //写实例信息
-            bool bFind = false;
-            CTabInstInfo pInstInfo = null;
-            leafNodeOp = null;
-            //
-            if (m_cfgInsts.FindIndex(e => e.GetInstantNum() == strIndex) != -1)
-            {
-                bFind = true;
-                pInstInfo = m_cfgInsts.Find(e => e.GetInstantNum() == strIndex);
-            }
-            else
-            { return false; }
-
-            byte[] pBuff = pInstInfo.GetInstMem();
-            if (pBuff == null)
-                return false;
-            
             int Nodeindex = m_LeafNodes.FindIndex(e => String.Compare(e.m_struMibNode.strMibName, strMibNodeName, true) == 0);
-            
             if (-1 == Nodeindex)
+            {
+                leafNodeOp = null;
                 return false;
+            }
             else
             {
                 leafNodeOp = m_LeafNodes[Nodeindex];
                 return true;
-                //m_struFieldInfo = m_LeafNodes[Nodeindex].m_struFieldInfo;
-                //m_struMibNode = m_LeafNodes[Nodeindex].m_struMibNode;
-                //u16FieldLen = m_struFieldInfo.u16FieldLen;
-                //u16FieldOffset = m_struFieldInfo.u16FieldOffset;
             }
-
-
-            //WriteToBuffer(pBuff, strValue, u16FieldOffset, m_struFieldInfo.u8FieldType, u16FieldLen, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax);
-
-            
+        }
+        /// <summary>
+        /// 通过索引查找实例
+        /// </summary>
+        /// <param name="strIndex"></param>
+        /// <param name="InstInfoOp"></param>
+        /// <returns></returns>
+        public bool GetCfgInstsByIndex(string strIndex, out CfgTableInstanceInfos InstInfoOp, out int InstsPos)
+        {
+            InstsPos = m_cfgInsts.FindIndex(e => e.GetInstantNum() == strIndex);
+            if (InstsPos != -1)
+            {
+                InstInfoOp = m_cfgInsts[InstsPos];// m_cfgInsts.Find(e => e.GetInstantNum() == strIndex);
+                return true;
+            }
+            else
+            {
+                InstInfoOp = null;
+                return false;
+            }
+        }
+        /// <summary>
+        /// 方便reclist修改指定值
+        /// </summary>
+        /// <param name="index">要修改的实例的索引</param>
+        /// <param name="newMem">实例的新数值</param>
+        /// <returns></returns>
+        public bool SetInstsInfoValueByIndex(int index, byte[] newMem)
+        {
+            if (newMem == null)
+                return false;
+            m_cfgInsts[index].ReclistSetInstMem(newMem);
+            return true;
+        }
+        /// <summary>
+        /// 用于制作补丁文件
+        /// </summary>
+        /// <param name="RecordIndex">OID</param>
+        /// <param name="strLeafName"></param>
+        public void InsertInstOrLeaf(string RecordIndex, string strLeafName)
+        {
+            if (m_InstIndex2LeafName.ContainsKey(RecordIndex))
+            {
+                var listLeafName = m_InstIndex2LeafName[RecordIndex];
+                if(-1 == listLeafName.FindIndex(e => String.Compare(e, strLeafName, true) == 0))
+                    m_InstIndex2LeafName[RecordIndex].Add(strLeafName);
+            }
+            else
+                m_InstIndex2LeafName.Add(RecordIndex, new List<string>() { strLeafName });
         }
         /*********************        reclist 解析后存在的变量                         ***************************/
 
@@ -144,7 +173,7 @@ namespace CfgFileOperation
             // m_TableRowStatusName = "";
             m_cfgFile_TblInfo = new StruCfgFileTblInfo("init");
             m_LeafNodes = new List<CfgFileLeafNodeOp>();
-            m_cfgInsts = new List<CTabInstInfo>();
+            m_cfgInsts = new List<CfgTableInstanceInfos>();
             m_struIndex = new CfgFileLeafNodeIndexInfoOp();
         }
 

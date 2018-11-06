@@ -69,7 +69,7 @@ namespace SCMTMainWindow.View
                 strRRUName = this.cbRRUtype.SelectedItem.ToString();
                 nMaxRRUPath = dirRRU[strRRUName].rruTypeMaxAntPathNum;
 
-                nRRUNumber = dirRRU[strRRUName].rruTypeIndex;
+                nRRUTypeIndex = dirRRU[strRRUName].rruTypeIndex;
 
                 if (this.cbRRUWorkModel.SelectedItem != null)
                 {
