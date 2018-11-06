@@ -131,6 +131,15 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 获取rhub设备的工作模式
+		/// </summary>
+		/// <returns></returns>
+		public List<string> GetRhubOfpWorkMode()
+		{
+			return GetMibValueRangeList("netRHUBOfpWorkMode");
+		}
+
+		/// <summary>
 		/// 根据基站类型获取基站的信息
 		/// </summary>
 		/// <param name="enbType"></param>
