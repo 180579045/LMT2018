@@ -296,7 +296,9 @@ namespace SCMTMainWindow.View
                 {
                     return false;
                 }
-                g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+
+                if(!g_AllDevInfo.Keys.Contains(strRRUFullName))
+                   g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
 
                 //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
                 //globalDic.Add(strRRUFullName, test);
@@ -650,7 +652,9 @@ namespace SCMTMainWindow.View
             {
                 Grid.SetRowSpan(gridSplit, mibInfo.m_mapAttributes.Count);
             }
-            g_GridForNet.Add(strName, grid);
+
+            if(!g_GridForNet.ContainsKey(strName))
+                 g_GridForNet.Add(strName, grid);
         }
 
         protected override Size MeasureOverride(Size constraint)
@@ -688,6 +692,127 @@ namespace SCMTMainWindow.View
                 Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
                 if (decorator != null && template != null)
                     decorator.Template = template;
+            }
+        }
+
+        public void DrawTemplate(NPTemplate npTempalte)
+        {
+            //RRU
+            if (npTempalte.rruTypeInfo.Count > 0)
+            {
+                int nMaxRRUPath = 2;
+                string strRRUName;
+                string strXAML = string.Empty; //解析xml文件
+                Size newSize;                  //根据不同的通道数，确定不同的RRU的大小
+                int nrru = 0;
+
+                foreach (RruInfo rruInfo in npTempalte.rruTypeInfo)
+                {
+                    nMaxRRUPath = rruInfo.rruTypeMaxAntPathNum;//RRU的最大通道数
+                    strRRUName = rruInfo.rruTypeName;
+                    strXAML = GetElementFromXAML(nMaxRRUPath, strXAML, out newSize);
+
+                    DesignerItem newItem = new DesignerItem();
+
+                    string strXAML1 = strXAML;
+                    string strRRUFullName = string.Empty;
+
+                    strRRUFullName = string.Format("{0}-{1}", strRRUName, nrru++);
+                    string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                    strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
+                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                    newItem.Content = testContent;
+                    newItem.ItemName = strRRUFullName;
+
+                    //添加 RRU 的时候需要给基站下发，然后获取设备信息
+                    List<int> listIndex = new List<int>();
+                    listIndex.Add(nrru);
+                    var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(listIndex, rruInfo.rruTypeIndex, rruInfo.rruTypeNotMibSupportNetWorkMode[0].desc);
+
+                    if (devRRUInfo == null || devRRUInfo.Count == 0)
+                    {
+                        return;
+                    }
+                    if (!g_AllDevInfo.Keys.Contains(strRRUFullName))
+                        g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+
+                    newItem.Width = newSize.Width;
+                    newItem.Height = newSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, (this.ActualWidth - newItem.Width) / 2 + nrru * 20);
+                    DesignerCanvas.SetTop(newItem, (this.ActualHeight - newItem.Height) / 2 + nrru * 20);
+
+                    Canvas.SetZIndex(newItem, this.Children.Count);
+                    this.Children.Add(newItem);
+                    SetConnectorDecoratorTemplate(newItem);
+
+                    this.SelectionService.SelectItem(newItem);
+                    newItem.Focus();
+
+                    Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                    if (ucTest != null)
+                    {
+                        gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                        CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
+                        gridProperty.Children.Clear();
+                        gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
+                    }
+                }
+            }
+            //rHUB
+            if (npTempalte.rHubEquipment.Count > 0)
+            {
+                int nMaxrHUBPath;
+                string strXAML = string.Empty; //解析xml文件
+                Size newSize;                  //根据不同的通道数，确定不同的 rHUB 的大小
+                string strRRUName = "rHUB";
+                int nrHUB = 0;
+
+                foreach (RHUBEquipment rHub in npTempalte.rHubEquipment)
+                {
+                    nMaxrHUBPath = rHub.irOfpNum;
+                    strXAML = GetrHUBFromXML(nMaxrHUBPath, strXAML, out newSize);
+
+                    DesignerItem newItem = new DesignerItem();
+
+                    string strXAML1 = strXAML;
+                    string strrHUBFullName = string.Empty;
+
+                    strrHUBFullName = string.Format("{0}-{1}", strRRUName, nrHUB++);
+                    string strInstedName = string.Format("Text=\"{0}\"", strrHUBFullName);
+                    strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
+                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
+                    newItem.Content = testContent;
+                    newItem.ItemName = strrHUBFullName;
+
+                    var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rHUB");
+                    if (!globalDic.Keys.Contains(strrHUBFullName))
+                        globalDic.Add(strrHUBFullName, test);
+
+                    newItem.Width = newSize.Width;
+                    newItem.Height = newSize.Height;
+
+                    DesignerCanvas.SetLeft(newItem, (this.ActualWidth - newItem.Width) / 2 + nrHUB * 20);
+                    DesignerCanvas.SetTop(newItem, (this.ActualHeight - newItem.Height) / 2 + nrHUB * 20);
+
+                    Canvas.SetZIndex(newItem, this.Children.Count);
+                    this.Children.Add(newItem);
+                    SetConnectorDecoratorTemplate(newItem);
+
+                    this.SelectionService.SelectItem(newItem);
+                    newItem.Focus();
+
+                    Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+
+                    if (ucTest != null)
+                    {
+                        gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                        //CreateGirdForNetInfo(strrHUBFullName, test);
+                        gridProperty.Children.Clear();
+                        //gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
+                    }
+                }
             }
         }
     }

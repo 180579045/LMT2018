@@ -323,7 +323,8 @@ namespace NetPlan
 						m_bReadOnly = true          // 索引，只读
 					};
 
-					dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
+                    if(!dev.m_mapAttributes.ContainsKey(childLeaf.childNameMib))
+					   dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 				}
 				else
 				{
@@ -331,7 +332,8 @@ namespace NetPlan
 					var info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 					if (null != info)
 					{
-						dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
+                        if (!dev.m_mapAttributes.ContainsKey(childLeaf.childNameMib))
+                            dev.m_mapAttributes.Add(childLeaf.childNameMib, info);
 					}
 				}
 			}
