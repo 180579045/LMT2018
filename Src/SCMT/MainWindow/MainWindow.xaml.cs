@@ -1507,16 +1507,17 @@ namespace SCMTMainWindow
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
-			int RealIndexCount = IndexCount; // 真实的索引个数
+			int RealIndexCount = IndexCount;                         // 真实的索引纬度;
 			MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
 
-			if (IndexCount == 0)                                          // 如果索引个数为0，按照1来处理;
+			if (IndexCount == 0)                                     // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
 
 			var AlreadyRead = new List<string>();
+            var itemCount = 0;
 
-			// ar是遍历GetNext的结果，遍历后，将其转化为DataGrid能够显示的类型;
-			foreach (var iter in ar)
+            // ar是遍历GetNext的结果，遍历后，将其转化为DataGrid能够显示的类型;
+            foreach (var iter in ar)
 			{
 				var fulloid = iter.Key;
 
@@ -1537,7 +1538,7 @@ namespace SCMTMainWindow
                 // 创建一个能够填充到DataGrid控件的动态类型，这个类型的所有属性来自于读取的所有MIB节点;
 				dynamic model = new DyDataGrid_MIBModel();
 
-                // 当读取的列数大于0的时候，即有显示内容需要在DataGrid中填充的时候;
+                // 当多因维度大于0，即该表为矢量表的时候为该列添加表头;
 				if (RealIndexCount > 0)
 				{
 					var IndexOIDPre = "";
@@ -1560,12 +1561,12 @@ namespace SCMTMainWindow
                     // 参数三：单元格列中文名称;
 					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
 					{
-						m_Content = IndexContent,
-						oid = IndexOIDPre + ".",
-						MibName_CN = "实例描述",
-						MibName_EN = "indexlist"
-					}, "实例描述");
-				}
+                        m_Content = IndexContent,
+                        oid = IndexOIDPre + ".",
+                        MibName_CN = "实例描述",
+                        MibName_EN = "indexlist"
+                    }, "实例描述");
+                }
 
 				// 将ar当中所有匹配的结果取出,最后会取出了一行数据;
 				foreach (var iter3 in ar)
@@ -1573,13 +1574,13 @@ namespace SCMTMainWindow
 					// 将所有相同索引取出;
 					temp = iter3.Key.Split('.');
 					string TempIndex = "";
-
-					// TODO 这里和上面有什么区别？
+                    
 					for (int i = temp.Length - IndexCount; i < temp.Length; i++)
 					{
 						TempIndex += "." + temp[i];
 					}
 
+                    // 该步骤为抽取同样索引的内容，组成一行数据，然后添加至model中;
 					// 以前的写法有问题，比如0.0.10包含了0.0.1，会有误判的情况，此处修改by tangyun;
 					if (TempIndex == NowIndex)
 					{
@@ -1619,9 +1620,17 @@ namespace SCMTMainWindow
 				{
 					// 向单元格内添加内容;
 					contentlist.Add(model);
-				}
+                    itemCount++;
+                }
 
-			}
+                // 最终全部收集完成后，为控件赋值;
+                if(itemCount == contentlist.Count)
+                {
+                    this.Main_Dynamic_DataGrid.ColumnModel = model;
+                    this.Main_Dynamic_DataGrid.DataContext = contentlist;
+                }
+
+            }
 			// 增加表量表索引的列名;
 			if (RealIndexCount > 0)
 			{
@@ -1654,6 +1663,7 @@ namespace SCMTMainWindow
 			}
 
 			MibDataGrid.DataContext = contentlist;
+            
 		}
 
 		#endregion

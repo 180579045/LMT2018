@@ -13,18 +13,23 @@ namespace SCMTMainWindow
     /// </summary>
     public class DataGrid_Cell_MIB : GridCell
     {
-        public string m_Content { get; set; }          // 该单元格内要显示的内容;
-        
         // 单元格中的对象被拖拽到另一个对象上;
         public override void CellDragawayCallback()
         {
-            throw new NotImplementedException();
         }
 
         // 编辑该对象时的事件回调函数;
         public override void EditingCallback()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Editing Callback");
+        }
+
+        public override void MouseMoveOnCell()
+        {
+        }
+
+        public override void SelectionCellChanged()
+        {
         }
     }
 
@@ -33,8 +38,15 @@ namespace SCMTMainWindow
     /// </summary>
     public class DataGrid_Cell_MIB_ENUM : GridCell
     {
-        public Dictionary<int, string> m_AllContent { get; set; }     // 要显示的数据集合;
-        public string m_ShowContent { get; set; }                     // 当前要显示的内容;
+        /// <summary>
+        /// 要显示的数据集合;
+        /// </summary>
+        public Dictionary<int, string> m_AllContent { get; set; }
+        
+        /// <summary>
+        /// 当前值;
+        /// </summary>
+        public int m_CurrentValue { get; set; }
 
         public DataGrid_Cell_MIB_ENUM()
         {
@@ -46,7 +58,6 @@ namespace SCMTMainWindow
         /// </summary>
         public override void CellDragawayCallback()
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -54,8 +65,15 @@ namespace SCMTMainWindow
         /// </summary>
         public override void EditingCallback()
         {
-            // 需要留意必须在鼠标双击之后，才会回调该函数;
-            throw new NotImplementedException();
+            Console.WriteLine("Editing Callback");
+        }
+
+        public override void MouseMoveOnCell()
+        {
+        }
+
+        public override void SelectionCellChanged()
+        {
         }
     }
 

@@ -195,7 +195,6 @@
     <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
       <DependentUpon>OutputWin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\DataGrid_CellColumnFactory.cs" />
     <Compile Include="Controls\DataGridCellFactory.cs" />
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
@@ -247,6 +246,9 @@
     </Compile>
     <Compile Include="View\EditColumns.xaml.cs">
       <DependentUpon>EditColumns.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\MainDataGrid.xaml.cs">
+      <DependentUpon>MainDataGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UeInfo.xaml.cs">
       <DependentUpon>UeInfo.xaml</DependentUpon>
@@ -376,6 +378,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EditColumns.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainDataGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

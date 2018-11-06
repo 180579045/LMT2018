@@ -722,7 +722,7 @@ namespace LmtbSnmp
 	/// </summary>
 	public enum DataGrid_CellDataType
 	{
-		invalidType = -1,
+		invalidType = -1,                              // 未成功获取的单元格类型;
 		enumType = 0,                                  // MIB中的枚举类型;
 		bitType = 1,                                   // MIB中的BIT类型;
 		DateTime = 2,                                  // MIB中的时间类型;

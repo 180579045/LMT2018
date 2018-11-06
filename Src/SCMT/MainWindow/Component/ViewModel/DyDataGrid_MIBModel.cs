@@ -10,13 +10,25 @@ namespace SCMTMainWindow.Component.ViewModel
     /// </summary>
     public class DyDataGrid_MIBModel : DynamicObject
     {
-        // 用来保存这个动态类型的所有属性;
-        // string为属性的名字;
-        // object为属性的值（同时也包含了类型）;
+        /// <summary>
+        /// 用来保存这个动态类型的所有属性;
+        /// Key:为属性的名字;
+        /// Value:为属性的值（同时也包含了类型）;
+        /// </summary>
         public Dictionary<string, object> Properties = new Dictionary<string, object>();
 
-        // 用来保存中文列名与属性的对应关系;
+        /// <summary>
+        /// 用来保存中文列名与属性的对应关系;
+        /// </summary>
         Dictionary<string, string> ColName_Property = new Dictionary<string, string>();
+
+        /// <summary>
+        /// 优化结构:使用元组保存所有的动态属性;
+        /// Item1:属性名;
+        /// Item2:列名;
+        /// Item3:属性实例;
+        /// </summary>
+        public List<Tuple<string, string, object>> PropertyList { get; set; }
 
         // 为动态类型动态添加成员;
         public override bool TrySetMember(SetMemberBinder binder, object value)
@@ -49,6 +61,8 @@ namespace SCMTMainWindow.Component.ViewModel
                 string column_name = args[2] as string;
                 ColName_Property.Add(column_name, name);
 
+                PropertyList.Add(new Tuple<string, string, object>(name, column_name, value));
+
                 result = value;
                  return true;
             }
@@ -70,7 +84,7 @@ namespace SCMTMainWindow.Component.ViewModel
                     if (Properties.ContainsKey(key))
                     {
                         object property = Properties[key];
-                        (property as DataGrid_Cell_MIB).EditingCallback();
+                        (property as GridCell).EditingCallback();
                         result = property;
                         return true;
                     }
@@ -87,10 +101,23 @@ namespace SCMTMainWindow.Component.ViewModel
             return base.TryInvokeMember(binder, args, out result);
         }
 
-        // 获取属性;
+        /// <summary>
+        /// 获取属性;
+        /// </summary>
+        /// <param name="binder"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             return Properties.TryGetValue(binder.Name, out result);
+        }
+
+        /// <summary>
+        /// 初始化;
+        /// </summary>
+        public DyDataGrid_MIBModel()
+        {
+            PropertyList = new List<Tuple<string, string, object>>();
         }
 
     }

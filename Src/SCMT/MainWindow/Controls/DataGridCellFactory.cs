@@ -35,7 +35,7 @@ namespace SCMTMainWindow
                 var dgm = new DataGrid_Cell_MIB_ENUM()
                 {
                     m_AllContent = all_list,
-                    m_ShowContent = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
                     oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
@@ -46,12 +46,28 @@ namespace SCMTMainWindow
             // 如果是要时间类型的单元格;
             else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.DateTime)
             {
-                return null;
+                var dgm = new DataGrid_Cell_MIB()
+                {
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    oid = oid,
+                    MibName_CN = MibNameCN,
+                    MibName_EN = MibName
+                };
+
+                return dgm;
             }
             // 如果是BIT类型的单元格;
             else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.bitType)
             {
-                return null;
+                var dgm = new DataGrid_Cell_MIB()
+                {
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    oid = oid,
+                    MibName_CN = MibNameCN,
+                    MibName_EN = MibName
+                };
+
+                return dgm;
             }
 
             return null;
