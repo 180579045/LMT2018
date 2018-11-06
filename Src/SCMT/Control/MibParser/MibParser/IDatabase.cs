@@ -86,13 +86,10 @@ namespace MIBDataParser
 		/// <returns></returns>
 		public bool IsEmpoweredModify()
 		{
-			// 管理站可写属性中，如果有w，则认为可以修改
-			if (managerWriteAble.IndexOf("w", StringComparison.Ordinal) >= 0)
-			{
-				return true;
-			}
+			if (IsIndex == "True")
+				return false;
 
-			return false;
+			return !DisableEditMibHelper.IsDisabledEditMib(childNameMib);
 		}
 
 		#endregion
