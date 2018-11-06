@@ -48,6 +48,7 @@ namespace SCMTMainWindow.View
 
         //初始化连接
         private int nSizeChangedNo = 0;
+        private bool bInit = false;
 
         /// <summary>
         /// 初始化函数
@@ -1519,7 +1520,7 @@ namespace SCMTMainWindow.View
 
             if(nSizeChangedNo == 2)
             {
-                    InitAllConnection();
+                InitAllConnection();
             }
         }
 
@@ -1631,7 +1632,11 @@ namespace SCMTMainWindow.View
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //初始化网规
-            InitNetPlan();
+            if(!bInit)
+            {
+                bInit = true;
+                InitNetPlan();
+            }
         }
 
         /// <summary>
