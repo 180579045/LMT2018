@@ -20,10 +20,6 @@ namespace SCMTMainWindow.View
     /// </summary>
     public partial class EditColumns : Window
     {
-        public EditColumns()
-        {
-            InitializeComponent();
-        }
         private ObservableCollection<DataGridColumn> displayHeader = new ObservableCollection<DataGridColumn>();
         private ObservableCollection<DataGridColumn> HiddenHeader = new ObservableCollection<DataGridColumn>();
         public bool IsOK = false;

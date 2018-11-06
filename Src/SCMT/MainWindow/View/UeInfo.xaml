@@ -8,8 +8,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <TabControl >
-            <TabItem Header="UE信息查询"  Cursor="Hand" Height="40">
+        <TabControl Style="{StaticResource TabControlStyle }">
+            <TabItem  Header="UE信息查询"  Cursor="Hand" Height="40">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="3*"/>
