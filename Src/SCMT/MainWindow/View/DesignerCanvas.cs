@@ -27,9 +27,9 @@ namespace SCMTMainWindow.View
         public List<int> g_cellPlaning = new List<int>();
 
         //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
-        public int nRRUNo = 0;
+        public int nRRUNo = -1;
         public int nrHUBNo = 199;
-        public int nAntennaNo = 0;
+        public int nAntennaNo = -1;
 
         //全局变量，将网元名称和网元信息结构体对应
         private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
@@ -554,7 +554,7 @@ namespace SCMTMainWindow.View
             if (nMaxRRUPath == 1)
             {
                 strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 40);
+                RRUSize = new Size(30, 30);
             }
             else if (nMaxRRUPath == 2)
             {
@@ -574,7 +574,7 @@ namespace SCMTMainWindow.View
             else
             {
                 strName = "g_SignalAntenna";
-                RRUSize = new Size(40, 40);
+                RRUSize = new Size(30, 30);
             }
 
             Object content = el.FindName(strName) as Grid;

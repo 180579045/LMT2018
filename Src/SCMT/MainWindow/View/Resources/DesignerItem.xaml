@@ -85,10 +85,10 @@
     <!-- ConnectorDecoratorTemplate Default Template -->
     <ControlTemplate x:Key="ConnectorDecoratorTemplate" TargetType="{x:Type Control}">
         <Grid Margin="-5">
-            <s:Connector x:Name="Left" Orientation="Left" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <!--<s:Connector x:Name="Left" Orientation="Left" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             <s:Connector x:Name="Top" Orientation="Top" VerticalAlignment="Top" HorizontalAlignment="Center"/>
             <s:Connector x:Name="Right" Orientation="Right" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-            <s:Connector x:Name="Bottom" Orientation="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>
+            <s:Connector x:Name="Bottom" Orientation="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Center"/>-->
         </Grid>
     </ControlTemplate>
 

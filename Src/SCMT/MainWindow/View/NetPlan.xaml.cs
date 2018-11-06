@@ -50,6 +50,9 @@ namespace SCMTMainWindow.View
         private int nSizeChangedNo = 0;
         private bool bInit = false;
 
+        //判断是否取消连接点
+        private bool bHiddenLineConnector = true;
+
         /// <summary>
         /// 初始化函数
         /// </summary>
@@ -1450,6 +1453,10 @@ namespace SCMTMainWindow.View
             }
         }
 
+        /// <summary>
+        /// 构建连接点
+        /// </summary>
+        /// <param name="item"></param>
         private void SetConnectorDecoratorTemplate(DesignerItem item)
         {
             if (item.ApplyTemplate() && item.Content is UIElement)
@@ -1458,6 +1465,36 @@ namespace SCMTMainWindow.View
                 Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
                 if (decorator != null && template != null)
                     decorator.Template = template;
+            }
+        }
+
+        /// <summary>
+        /// 取消连接点
+        /// </summary>
+        /// <param name="item"></param>
+        private void HiddenConnectorDecoratorTemplate(DesignerItem item)
+        {
+            if (item.Content is UIElement)
+            {
+                ControlTemplate template = DesignerItem.GetConnectorDecoratorTemplate(item.Content as UIElement);
+                Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
+                if (decorator != null && template != null)
+                    decorator.Visibility = Visibility.Hidden;
+            }
+        }
+
+        /// <summary>
+        /// 恢复连接
+        /// </summary>
+        /// <param name="item"></param>
+        private void VisibilityConnectorDecoratorTemplate(DesignerItem item)
+        {
+            if (item.Content is UIElement)
+            {
+                ControlTemplate template = DesignerItem.GetConnectorDecoratorTemplate(item.Content as UIElement);
+                Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
+                if (decorator != null && template != null)
+                    decorator.Visibility = Visibility;
             }
         }
 
@@ -1521,6 +1558,7 @@ namespace SCMTMainWindow.View
             if(nSizeChangedNo == 2)
             {
                 InitAllConnection();
+                DeleteAllItemConnector();
             }
         }
 
@@ -1582,8 +1620,48 @@ namespace SCMTMainWindow.View
             //handle click event
             MessageBox.Show("ggggggggggggg");
         }
-        private void LineHandler(object sender, RoutedEventArgs e) {
-            MessageBox.Show("ggggggggggggg");
+
+
+
+        private void DeleteAllItemConnector()
+        {
+            //遍历 MyDesigner 的所有孩子，找到 strName 所对应的设备
+            for (int i = 1; i < MyDesigner.Children.Count; i++)
+            {
+                if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                {
+                    DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                    HiddenConnectorDecoratorTemplate(targetItem);
+                }
+            }
+        }
+
+        private void VisibilityAllConnector()
+        {
+            //遍历 MyDesigner 的所有孩子，找到 strName 所对应的设备
+            for (int i = 1; i < MyDesigner.Children.Count; i++)
+            {
+                if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                {
+                    DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                    VisibilityConnectorDecoratorTemplate(targetItem);
+                }
+            }
+        }
+        private void LineHandler(object sender, RoutedEventArgs e)
+        {
+            if(bHiddenLineConnector)     //如果连接点已经被取消，则重新打开
+            {
+                VisibilityAllConnector();
+                bHiddenLineConnector = false;
+            }
+            else
+            {
+                DeleteAllItemConnector();
+                bHiddenLineConnector = true;
+            }
         }
         private void ZoomIncreaseHandler(object sender, RoutedEventArgs e)
         {
