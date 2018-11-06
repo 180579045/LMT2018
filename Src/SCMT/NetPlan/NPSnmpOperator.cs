@@ -211,7 +211,63 @@ namespace NetPlan
 		{
 			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
 			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
-			return MibInfoMgr.GetInstance().DistributeBoardInfoToEnb(EnumDevType.board);
+			var result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.ant);
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board_rru);	// IR口规划信息
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub_prru);	// 以太口规划信息
+			if (!result)
+			{
+				return false;
+			}
+
+			// todo 天线权值
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
+			if (!result)
+			{
+				return false;
+			}
+
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru_ant);	// 天线安装
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.nrNetLc);	// 本地小区布配
+			if (!result)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		#endregion
@@ -241,7 +297,7 @@ namespace NetPlan
 			{
 				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
 				mibAttri = mibLeaf,
-				m_bReadOnly = (mibLeaf.IsIndex == "True"),      // 索引只读
+				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),      // 索引只读
 				m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
 			};
 
@@ -322,7 +378,7 @@ namespace NetPlan
 					{
 						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
-						m_bReadOnly = (childLeaf.IsIndex == "True"),      // 索引只读
+						m_bReadOnly = !childLeaf.IsEmpoweredModify(),      // 索引只读
 						m_bVisible = (childLeaf.ASNType != "RowStatus")   // 行状态不显示
 					};
 				}

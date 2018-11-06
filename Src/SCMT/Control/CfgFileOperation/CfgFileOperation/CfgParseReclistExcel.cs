@@ -16,8 +16,6 @@ namespace CfgFileOperation
     /// </summary>
     class CfgParseReclistExcel
     {
-        CfgParseDBMibTreeToMemory mibTreeMem = null;// 操作读取数据库 lm.mdb 把mibTree 安行顺序读入内存
-
         List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
 
         /// <summary>
@@ -63,9 +61,9 @@ namespace CfgFileOperation
             Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
             if (wbook == null)
                 return;
-            
+
             // 获取 lm.mdb中数据，存入内存中
-            ProcessingMdbData(strFileToDirectory);
+            //ProcessingMdbData(strFileToDirectory);var mibTreeMem = cfgOp.m_mibTreeMem;
 
             // 几种模式
             if (0 == String.Compare("0:默认", strUeType, true)) // 不区分大小写，相等
@@ -101,10 +99,12 @@ namespace CfgFileOperation
                 //strExcelPageArray[1] = "Cell参数表-17";
                 //strExcelPageArray[] = {"eNB参数表-11", "Cell参数表-17"};
             }
+            
+        }
 
-
-            //
-            //DealReclistPageData(string strCfgName, _WorksheetPtr ptrSingleSheet, int iPatchFlagColumn, CString strPageName)
+        public int GetVectPDGTabNameNum()
+        {
+            return m_vectPDGTabName.Count;
         }
 
         /// <summary>
@@ -185,7 +185,7 @@ namespace CfgFileOperation
                 ///3.处理每个reclist中node的默认值。
 
                 /// 1.通过node mibName 找 tableName，判断reclist中表名是否是在当前数据库中存在
-                string strTableName = GetTableNameFromDBMibTree(NodeName);
+                string strTableName = cfgOp.m_mibTreeMem.GetTableNameFromDBMibTree(NodeName);
                 if (String.Empty == strTableName)
                     continue;
 
@@ -198,7 +198,7 @@ namespace CfgFileOperation
 
                     strCurTableName = strTableName;//m_strCurTabName = strTableName;
                     m_vectIndexScope = new List<string>();
-                    m_iCurTabIndexNum = GetIndexNumFromDBMibTree(NodeName);
+                    m_iCurTabIndexNum = cfgOp.m_mibTreeMem.GetIndexNumFromDBMibTree(NodeName);
                     m_bIsMoreInsts = false;
                 }
 
@@ -494,35 +494,35 @@ namespace CfgFileOperation
                 return true;
         }
 
-        /// <summary>
-        /// 从内存中查询节点的表名
-        /// </summary>
-        /// <param name="strNodeName"></param>
-        /// <returns></returns>
-        string GetTableNameFromDBMibTree(string strNodeName)
-        {
-            if (null == mibTreeMem || string.Empty == strNodeName)
-                return "";
-            if (!mibTreeMem.pMapMibNodeByName.ContainsKey(strNodeName))
-                return "";
+        ///// <summary>
+        ///// 从内存中查询节点的表名
+        ///// </summary>
+        ///// <param name="strNodeName"></param>
+        ///// <returns></returns>
+        //string GetTableNameFromDBMibTree(string strNodeName)
+        //{
+        //    if (null == mibTreeMem || string.Empty == strNodeName)
+        //        return "";
+        //    if (!mibTreeMem.pMapMibNodeByName.ContainsKey(strNodeName))
+        //        return "";
 
-            return mibTreeMem.pMapMibNodeByName[strNodeName].strTableName;
-        }
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="strNodeName"></param>
-        /// <returns></returns>
-        int GetIndexNumFromDBMibTree(string strNodeName)
-        {
-            if (null == mibTreeMem || string.Empty == strNodeName)
-                return -1;
-            if (!mibTreeMem.pMapMibNodeByName.ContainsKey(strNodeName))
-                return -1;
-            var ddd = mibTreeMem.pMapMibNodeByName[strNodeName];
+        //    return mibTreeMem.pMapMibNodeByName[strNodeName].strTableName;
+        //}
+        ///// <summary>
+        ///// 
+        ///// </summary>
+        ///// <param name="strNodeName"></param>
+        ///// <returns></returns>
+        //int GetIndexNumFromDBMibTree(string strNodeName)
+        //{
+        //    if (null == mibTreeMem || string.Empty == strNodeName)
+        //        return -1;
+        //    if (!mibTreeMem.pMapMibNodeByName.ContainsKey(strNodeName))
+        //        return -1;
+        //    var ddd = mibTreeMem.pMapMibNodeByName[strNodeName];
 
-            return mibTreeMem.pMapMibNodeByName[strNodeName].nIndexNum;
-        }
+        //    return mibTreeMem.pMapMibNodeByName[strNodeName].nIndexNum;
+        //}
         /// <summary>
         /// 把
         /// </summary>
@@ -671,17 +671,17 @@ namespace CfgFileOperation
             }
         }
 
-        /// <summary>
-        /// 把lm.mdb mibtree 安行存入内存，方便使用
-        /// </summary>
-        /// <param name="strFileToDirectory"></param>
-        void ProcessingMdbData(string strFileToDirectory)
-        {
-            //string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
-            mibTreeMem = new CfgParseDBMibTreeToMemory();
-            mibTreeMem.ReadMibTreeToMemory(strFileToDirectory);
+        ///// <summary>
+        ///// 把lm.mdb mibtree 安行存入内存，方便使用
+        ///// </summary>
+        ///// <param name="strFileToDirectory"></param>
+        //void ProcessingMdbData(string strFileToDirectory)
+        //{
+        //    //string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+        //    mibTreeMem = new CfgParseDBMibTreeToMemory();
+        //    mibTreeMem.ReadMibTreeToMemory(strFileToDirectory);
 
-        }
+        //}
 
         
     }

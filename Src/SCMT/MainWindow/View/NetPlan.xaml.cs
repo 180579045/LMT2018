@@ -46,6 +46,10 @@ namespace SCMTMainWindow.View
         //选中时的边框显示
         private Polygon rect = new Polygon();
 
+        //初始化连接
+        private int nSizeChangedNo = 0;
+        private bool bInit = false;
+
         /// <summary>
         /// 初始化函数
         /// </summary>
@@ -386,7 +390,16 @@ namespace SCMTMainWindow.View
                     return;
                 }
 
-                MyDesigner.g_AllDevInfo.Add(strIRName, newBoardInfo.m_strOidIndex);
+                if(MyDesigner.g_AllDevInfo.ContainsKey(EnumDevType.board))
+                {
+                    MyDesigner.g_AllDevInfo[EnumDevType.board].Add(strIRName, newBoardInfo.m_strOidIndex);
+                }
+                else
+                {
+                    MyDesigner.g_AllDevInfo.Add(EnumDevType.board, new Dictionary<string, string>());
+                    MyDesigner.g_AllDevInfo[EnumDevType.board].Add(strIRName, newBoardInfo.m_strOidIndex);
+                }
+
                 targetCanvas.Children.Add(boardNameLabel);
 
                 Canvas.SetRight(boardNameLabel, 155);
@@ -419,7 +432,7 @@ namespace SCMTMainWindow.View
                 for (int i = 0; i < itemBoard.irOfpNum; i++)
                 {
                     DesignerItem designerItem = new DesignerItem();
-                    designerItem.ItemName = strIRName;
+                    designerItem.ItemName = strIRName + "-" + i;
 
                     Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
                     Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -428,6 +441,9 @@ namespace SCMTMainWindow.View
                     Object content = el.FindName("g_IR") as Grid;
 
                     string strXAML = XamlWriter.Save(content);
+
+                    string strText = string.Format("Text=\"{0}\"", i);
+                    strXAML = strXAML.Replace("Text=\"IR\"", strText);
                     Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
                     designerItem.Content = testContent;
 
@@ -436,7 +452,7 @@ namespace SCMTMainWindow.View
                     double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
                     double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
 
-                    Canvas.SetLeft(designerItem, CanvasLeft + 200 + 240 * nColumn - i * 20);
+                    Canvas.SetLeft(designerItem, CanvasLeft + 60 + 240 * nColumn + i * 20);
                     Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
 
                     MyDesigner.Children.Add(designerItem);
@@ -450,11 +466,11 @@ namespace SCMTMainWindow.View
                     return;
                 }
 
-                var labelTarget = targetCanvas.Children[2] as Label;
+                var labelTarget = targetCanvas.Children[1] as Label;
                 //为每个光口构造一个名称，根据板卡插槽号和 boardName，也是板卡的名称
                 string strIRName = string.Format("{0}-{1}", labelTarget.Content.ToString(), soltNum);
 
-                var boardAttribute = MibInfoMgr.GetInstance().GetDevAttributeInfo(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board);
+                var boardAttribute = MibInfoMgr.GetInstance().GetDevAttributeInfo(MyDesigner.g_AllDevInfo[EnumDevType.board][strIRName], EnumDevType.board);
                 if (boardAttribute != null)
                 {
                     MyDesigner.CreateGirdForNetInfo(strIRName, boardAttribute);
@@ -516,12 +532,12 @@ namespace SCMTMainWindow.View
                 string strIRName = string.Format("{0}-{1}", lbName.Content.ToString(), nPort);
 
                 //首先从基站删除
-                if (!MyDesigner.g_AllDevInfo.Keys.Contains(strIRName))
+                if (!MyDesigner.g_AllDevInfo[EnumDevType.board].ContainsKey(strIRName))
                 {
                     MessageBox.Show("没有从设备字典中查找到该设备，请注意");
                     return;
                 }
-                if (!MibInfoMgr.GetInstance().DelDev(MyDesigner.g_AllDevInfo[strIRName], EnumDevType.board))
+                if (!MibInfoMgr.GetInstance().DelDev(MyDesigner.g_AllDevInfo[EnumDevType.board][strIRName], EnumDevType.board))
                 {
                     MessageBox.Show("从基站侧删除设备失败，请注意");
                     return;
@@ -649,7 +665,7 @@ namespace SCMTMainWindow.View
         /// <summary>
         /// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
         /// </summary>
-        private void InitNetPlan()
+        private bool InitNetPlan()
         {
             //初始化是否成功
             MibInfoMgr.GetInstance().GetAllEnbInfo().Clear();            
@@ -663,8 +679,27 @@ namespace SCMTMainWindow.View
                 {
                     InitBoardInfo(allNPInfo[EnumDevType.board]);
                 }
+                if (allNPInfo.Keys.Contains(EnumDevType.rru))
+                {
+                    InitRruInfo(allNPInfo[EnumDevType.rru]);
+                }
+                if(allNPInfo.ContainsKey(EnumDevType.ant))
+                {
+                    InitAntennaInfo(allNPInfo[EnumDevType.ant]);
+                }
+                if(allNPInfo.ContainsKey(EnumDevType.rhub))
+                {
+                    InitRHUBInfo(allNPInfo[EnumDevType.rhub]);
+                }
+
+                return true;
+
             }
+
+            return false;
         }
+
+        #region 初始化板卡
 
         /// <summary>
         /// 初始化板卡信息
@@ -696,7 +731,7 @@ namespace SCMTMainWindow.View
                 {
                     int nPort = int.Parse(item.m_mapAttributes["boardSlotNo"].m_strOriginValue);
 
-                    if((nPort > 0) && (nPort < 7))
+                    if((nPort >= 0) && (nPort < boardColumn * boardRow))
                     {
                         Canvas targetItem = (Canvas)boardCanvas.Children[nPort];
                         Rectangle rect = (Rectangle)targetItem.Children[0];
@@ -745,15 +780,23 @@ namespace SCMTMainWindow.View
             //为每个光口构造一个名称，根据板卡插槽号和 boardName
             string strIRName = string.Format("{0}-{1}", boardNameLabel.Content.ToString(), soltNum);
 
-            if(!MyDesigner.g_AllDevInfo.ContainsKey(strIRName))
-                MyDesigner.g_AllDevInfo.Add(strIRName, strDevIndex);
+            if(MyDesigner.g_AllDevInfo.ContainsKey(EnumDevType.board))
+            {
+                if (!MyDesigner.g_AllDevInfo[EnumDevType.board].ContainsKey(strIRName))
+                    MyDesigner.g_AllDevInfo[EnumDevType.board].Add(strIRName, strDevIndex);
+            }
+            else
+            {
+                MyDesigner.g_AllDevInfo.Add(EnumDevType.board, new Dictionary<string, string>());
+                MyDesigner.g_AllDevInfo[EnumDevType.board].Add(strIRName, strDevIndex);
+            }
 
             //填充光口，根据获取到的数量进行添加
 
             for (int i = 0; i < nIRNumber; i++)
             {
                 DesignerItem designerItem = new DesignerItem();
-                designerItem.ItemName = strIRName;
+                designerItem.ItemName = strIRName + "-" + i;
 
                 Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
                 Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -762,6 +805,10 @@ namespace SCMTMainWindow.View
                 Object content = el.FindName("g_IR") as Grid;
 
                 string strXAML = XamlWriter.Save(content);
+
+                string strText = string.Format("Text=\"{0}\"", i);
+                strXAML = strXAML.Replace("Text=\"IR\"", strText);
+
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
                 designerItem.Content = testContent;
 
@@ -770,7 +817,7 @@ namespace SCMTMainWindow.View
                 double CanvasLeft = DesignerCanvas.GetLeft(boardCanvas);
                 double CanvasTop = DesignerCanvas.GetTop(boardCanvas);
 
-                Canvas.SetLeft(designerItem, CanvasLeft + 200 + 240 * nColumn - i * 20);
+                Canvas.SetLeft(designerItem, CanvasLeft + 60 + 240 * nColumn + i * 20);
                 Canvas.SetTop(designerItem, CanvasTop + 12.5 + 40 * (boardRow - 1 - nRow));
 
                 MyDesigner.Children.Add(designerItem);
@@ -778,7 +825,609 @@ namespace SCMTMainWindow.View
             }
         }
 
+        #endregion
 
+        #region 初始化RRU
+
+        /// <summary>
+        /// 初始化rru
+        /// </summary>
+        /// <param name="listRRUInfo"></param>
+        private void InitRruInfo(List<DevAttributeInfo> listRRUInfo)
+        {
+            if(listRRUInfo == null || listRRUInfo.Count == 0)
+            {
+                return;
+            }
+
+            //创建一个 dictionary 保存每个板卡对应连接的设备
+            Dictionary<int, int> allBoardToDev = new Dictionary<int, int>();
+
+            for(int i = 0; i < boardRow * boardColumn; i++)
+            {
+                allBoardToDev.Add(i, 0);
+            }
+
+            foreach(DevAttributeInfo item in listRRUInfo)
+            {
+                //获取索引信息
+                string strIndex = item.m_strOidIndex.Substring(1);
+                int nRRUid;
+                try
+                {
+                    nRRUid = int.Parse(strIndex);
+                    MyDesigner.nRRUNo = nRRUid;
+                }
+                catch
+                {
+                    MessageBox.Show("索引解析失败");
+                    return;
+                }
+
+                //获取类型信息
+                string strRRUType = item.m_mapAttributes["netRRUTypeIndex"].m_strOriginValue;
+                int nRRUType;
+                try
+                {
+                    nRRUType = int.Parse(strRRUType);
+                }
+                catch
+                {
+                    MessageBox.Show("类型解析失败");
+                    return;
+                }
+
+                //根据类型获取 rru 的属性
+                var rruItemInfo = NPERruHelper.GetInstance().GetRruInfoByType(nRRUType);
+
+                if(rruItemInfo == null)
+                {
+                    MessageBox.Show("获取rru信息失败");
+                    return;
+                }
+
+                DesignerItem newItem = new DesignerItem();
+
+                //从xml 中获取 rru 元素并创建
+                string strXAML = string.Empty;
+                Size newSize;
+                string strName = rruItemInfo.rruTypeName + "-" + nRRUid.ToString();
+                strXAML = MyDesigner.GetElementFromXAML(rruItemInfo.rruTypeNotMibMaxePortNo, strXAML, out newSize);
+                string strXAML1 = string.Format("Text=\"{0}\"", strName);
+                strXAML = strXAML.Replace("Text=\"RRU\"", strXAML1);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
+                newItem.Content = testContent;
+                newItem.ItemName = strName;
+                newItem.NPathNumber = rruItemInfo.rruTypeNotMibMaxePortNo;
+
+                newItem.Width = newSize.Width;
+                newItem.Height = newSize.Height;
+
+                Canvas.SetZIndex(newItem, MyDesigner.Children.Count);
+                MyDesigner.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                MyDesigner.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+
+                //这里需要根据板卡插槽号，对rru的位置进行设置
+                int nSlotNo;
+                try
+                {
+                    nSlotNo = int.Parse(item.m_mapAttributes["netRRUAccessSlotNo"].m_strOriginValue);
+                }
+                catch
+                {
+                    MessageBox.Show("插槽号解析失败 netRRUAccessSlotNo");
+                    return;
+                }
+
+                int nColumn = nSlotNo / boardRow;
+                int nRow = nSlotNo % boardRow;
+
+                //根据板卡的位置不同，向不同的方向添加rru，分为 top, top-right, top-left, bottom, bottom-right, bottom-left
+                double uiTop = 0;
+                double uiLeft = 0;
+                if(nColumn == (boardColumn-1))              //右侧
+                {
+                    if(nRow == (boardRow - 1))          //上侧
+                    {
+                        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                        uiTop = nTop;
+                        uiLeft = Canvas.GetLeft(boardCanvas) + 240 + 20;
+                    }else if(nRow > (boardRow / 2))      //右上侧
+                    {
+                        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20 + (40 * (boardRow - nRow - 1));
+                        uiTop = nTop;
+                        uiLeft = Canvas.GetLeft(boardCanvas) + 480 + allBoardToDev[nSlotNo] * 20 + 20;
+                    }else if(nRow == 0)       //下侧
+                    {
+                        uiTop = Canvas.GetTop(boardCanvas) + 40 * boardRow + allBoardToDev[nSlotNo] * 20;
+                        uiLeft = Canvas.GetLeft(boardCanvas) + 480 + allBoardToDev[nSlotNo] * 20 + 20;
+                    }
+                    else          //右下侧
+                    {
+                        double nTop = Canvas.GetTop(boardCanvas) + (40 * (boardRow - nRow - 1)) + allBoardToDev[nSlotNo] * 20;
+                        uiTop = nTop;
+                        uiLeft = Canvas.GetLeft(boardCanvas) + 480 + allBoardToDev[nSlotNo] * 20 + 20;
+                    }
+                }
+                else           //左侧
+                {
+                    if(nRow == 0)         //下侧
+                    {
+                        uiTop = Canvas.GetTop(boardCanvas) + 40 * boardRow + allBoardToDev[nSlotNo] * 20;
+                        double nLeft = Canvas.GetLeft(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                        uiLeft = nLeft ;
+                    }
+                    else if(nRow > (boardRow / 2))          //左上侧
+                    {
+                        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                        uiTop = nTop;
+                        double nLeft = Canvas.GetLeft(boardCanvas) -20 - allBoardToDev[nSlotNo] * 20;
+                        uiLeft = nLeft;
+                    }
+                    else if(nRow == (boardRow - 1))             //上侧
+                    {
+                        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                        uiTop = nTop;
+                        uiLeft = Canvas.GetLeft(boardCanvas);
+                    }
+                    else                 //左下侧
+                    {
+                        double nTop = Canvas.GetTop(boardCanvas) + (40 * (boardRow - nRow - 1)) + allBoardToDev[nSlotNo] * 20;
+                        uiTop = nTop;
+                        double nLeft = Canvas.GetLeft(boardCanvas) -20 - allBoardToDev[nSlotNo] * 20;
+                        uiLeft = nLeft;
+                    }
+                }
+
+                DesignerCanvas.SetTop(newItem, uiTop);
+                DesignerCanvas.SetLeft(newItem, uiLeft);
+
+                //对应的板卡设备数量 +1
+                allBoardToDev[nSlotNo]++;
+
+                //全局设备信息添加
+                if(MyDesigner.g_AllDevInfo.ContainsKey(EnumDevType.rru))
+                {
+                    if(MyDesigner.g_AllDevInfo[EnumDevType.rru].ContainsKey(strName))
+                    {
+                        MessageBox.Show("全局字典中已经包含该设备 rru，请注意  InitRRUInfo");
+                        return;
+                    }
+                    MyDesigner.g_AllDevInfo[EnumDevType.rru].Add(strName, item.m_strOidIndex);
+                }
+                else
+                {
+                    MyDesigner.g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
+                    MyDesigner.g_AllDevInfo[EnumDevType.rru].Add(strName, item.m_strOidIndex);
+                }
+                //创建属性
+                MyDesigner.CreateGirdForNetInfo(strName, item);
+
+                MyDesigner.gridProperty = this.gridProperty;
+            }
+        }
+        #endregion
+
+        #region    初始化天线阵
+
+        /// <summary>
+        /// 初始化天线阵
+        /// </summary>
+        /// <param name="listAntInfo"></param>
+        private void InitAntennaInfo(List<DevAttributeInfo> listAntInfo)
+        {
+            if (listAntInfo == null || listAntInfo.Count == 0)
+            {
+                return;
+            }
+
+            //创建一个 dictionary 保存每个 rru 对应连接的设备
+            Dictionary<int, int> allRRUToAnt = new Dictionary<int, int>();
+
+            foreach (DevAttributeInfo item in listAntInfo)
+            {
+                //获取索引信息
+                string strIndex = item.m_strOidIndex.Substring(1);
+                int nAntID;
+                try
+                {
+                    nAntID = int.Parse(strIndex);
+                    MyDesigner.nAntennaNo = nAntID;
+                }
+                catch
+                {
+                    MessageBox.Show("索引解析失败");
+                    return;
+                }
+
+                //获取天线阵的通道数
+                int nPort;
+                try
+                {
+                    nPort = int.Parse(item.m_mapAttributes["netAntArrayNum"].m_strOriginValue);
+                }catch
+                {
+                    MessageBox.Show("获取天线阵通道数失败InitAntennaInfo");
+                    return;
+                }
+
+                DesignerItem newItem = new DesignerItem();
+
+                //从xml 中获取 ant 元素并创建
+                string strXAML = string.Empty;
+                Size newSize;
+                string strName = "No:-" + nAntID;
+                strXAML = MyDesigner.GetAntennaromXML(nPort, strXAML, out newSize);
+                string strXAML1 = string.Format("Text=\"{0}\"", strName);
+                strXAML = strXAML.Replace("Text=\"Antenna\"", strXAML1);
+                Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
+                newItem.Content = testContent;
+                newItem.ItemName = strName;
+
+                newItem.Width = newSize.Width;
+                newItem.Height = newSize.Height;
+
+                Canvas.SetZIndex(newItem, MyDesigner.Children.Count);
+                MyDesigner.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                MyDesigner.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+
+                //这里需要 rru 的位置，设置天线阵的位置
+                //获取全部连接信息
+                var allLink = MibInfoMgr.GetInstance().GetLinks();
+
+                if(!allLink.ContainsKey(EnumDevType.rru_ant))
+                {
+                    MessageBox.Show("没有从连接线上找到 rru 到 ant 的连接 InitAntInfo");
+                    return;
+                }
+
+                foreach(WholeLink connectionItem in allLink[EnumDevType.rru_ant])
+                {
+                    if(connectionItem.m_dstEndPoint.devType == EnumDevType.ant)
+                    {
+                        //从连接中找到 当前 ant 的索引，然后获取 rru 的信息
+                        if(connectionItem.m_dstEndPoint.strDevIndex.Equals(item.m_strOidIndex))
+                        {
+                            string strRRUIndex = connectionItem.m_srcEndPoint.strDevIndex;
+
+                            foreach(var rruItem in MyDesigner.g_AllDevInfo[EnumDevType.rru].Keys)
+                            {
+                                if (MyDesigner.g_AllDevInfo[EnumDevType.rru][rruItem].Equals(strRRUIndex))
+                                {
+                                    for (int i = 1; i < MyDesigner.Children.Count; i++)
+                                    {
+                                        if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                                        {
+                                            DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                                            if (targetItem.ItemName.Equals(rruItem))
+                                            {
+                                                DesignerCanvas.SetLeft(newItem, DesignerCanvas.GetLeft(targetItem) + 120);
+                                                DesignerCanvas.SetTop(newItem, DesignerCanvas.GetTop(targetItem) - 20);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //int nSlotNo;
+                //try
+                //{
+                //    nSlotNo = int.Parse(item.m_mapAttributes["netRRUAccessSlotNo"].m_strOriginValue);
+                //}
+                //catch
+                //{
+                //    MessageBox.Show("插槽号解析失败 netRRUAccessSlotNo");
+                //    return;
+                //}
+
+                //int nColumn = nSlotNo / boardRow;
+                //int nRow = nSlotNo % boardRow;
+
+                //根据板卡的位置不同，向不同的方向添加rru，分为 top, top-right, top-left, bottom, bottom-right, bottom-left
+                //double uiTop = 0;
+                //double uiLeft = 0;
+                //if (nColumn == (boardColumn - 1))              //右侧
+                //{
+                //    if (nRow == (boardRow - 1))          //上侧
+                //    {
+                //        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                //        uiTop = nTop;
+                //        uiLeft = Canvas.GetLeft(boardCanvas) + 240 + 20;
+                //    }
+                //    else if (nRow > (boardRow / 2))      //右上侧
+                //    {
+                //        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20 + (40 * (boardRow - nRow - 1));
+                //        uiTop = nTop;
+                //        uiLeft = Canvas.GetLeft(boardCanvas) + 480 + allBoardToDev[nSlotNo] * 20 + 20;
+                //    }
+                //    else if (nRow == 0)       //下侧
+                //    {
+                //        uiTop = Canvas.GetTop(boardCanvas) + 40 * boardRow + allBoardToDev[nSlotNo] * 20;
+                //        uiLeft = Canvas.GetLeft(boardCanvas) + 480 + allBoardToDev[nSlotNo] * 20 + 20;
+                //    }
+                //    else          //右下侧
+                //    {
+                //        double nTop = Canvas.GetTop(boardCanvas) + (40 * (boardRow - nRow - 1)) + allBoardToDev[nSlotNo] * 20;
+                //        uiTop = nTop;
+                //        uiLeft = Canvas.GetLeft(boardCanvas) + 480 + allBoardToDev[nSlotNo] * 20 + 20;
+                //    }
+                //}
+                //else           //左侧
+                //{
+                //    if (nRow == 0)         //下侧
+                //    {
+                //        uiTop = Canvas.GetTop(boardCanvas) + 40 * boardRow + allBoardToDev[nSlotNo] * 20;
+                //        double nLeft = Canvas.GetLeft(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                //        uiLeft = nLeft;
+                //    }
+                //    else if (nRow > (boardRow / 2))          //左上侧
+                //    {
+                //        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                //        uiTop = nTop;
+                //        double nLeft = Canvas.GetLeft(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                //        uiLeft = nLeft;
+                //    }
+                //    else if (nRow == (boardRow - 1))             //上侧
+                //    {
+                //        double nTop = Canvas.GetTop(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                //        uiTop = nTop;
+                //        uiLeft = Canvas.GetLeft(boardCanvas);
+                //    }
+                //    else                 //左下侧
+                //    {
+                //        double nTop = Canvas.GetTop(boardCanvas) + (40 * (boardRow - nRow - 1)) + allBoardToDev[nSlotNo] * 20;
+                //        uiTop = nTop;
+                //        double nLeft = Canvas.GetLeft(boardCanvas) - 20 - allBoardToDev[nSlotNo] * 20;
+                //        uiLeft = nLeft;
+                //    }
+                //}
+
+                //DesignerCanvas.SetTop(newItem, uiTop);
+                //DesignerCanvas.SetLeft(newItem, uiLeft);
+
+                //对应的板卡设备数量 +1
+                //allBoardToDev[nSlotNo]++;
+
+                ////全局设备信息添加
+                if (MyDesigner.g_AllDevInfo.ContainsKey(EnumDevType.ant))
+                {
+                    if(MyDesigner.g_AllDevInfo[EnumDevType.ant].ContainsKey(strName))
+                    {
+                        MessageBox.Show("全局字典中已经存在该 antenna，请注意 InitAntInfo");
+                        return;
+                    }
+                    else
+                    {
+                        MyDesigner.g_AllDevInfo[EnumDevType.ant].Add(strName, item.m_strOidIndex);
+                    }
+                }
+                else
+                {
+                    MyDesigner.g_AllDevInfo.Add(EnumDevType.ant, new Dictionary<string, string>());
+                    MyDesigner.g_AllDevInfo[EnumDevType.ant].Add(strName, item.m_strOidIndex);
+                }
+                ////创建属性
+                MyDesigner.CreateGirdForNetInfo(strName, item);
+
+                MyDesigner.gridProperty = this.gridProperty;
+            }
+        }
+
+        #endregion
+
+        #region    初始化rHUB
+
+        /// <summary>
+        /// 初始化 rhub 设备信息
+        /// </summary>
+        /// <param name="listrHUBInfo"></param>
+        private void InitRHUBInfo(List<DevAttributeInfo> listrHUBInfo)
+        {
+
+        }
+
+        #endregion
+
+        #region 初始化 连接
+
+        private void InitAllConnection()
+        {
+            //获取全部连接信息
+            var allLink = MibInfoMgr.GetInstance().GetLinks();
+
+            //先初始化 板卡 到 rru 的连接
+            if(allLink.ContainsKey(EnumDevType.board_rru))
+            {
+                foreach(WholeLink item in allLink[EnumDevType.board_rru])
+                {
+                    InitBoardToRRU(item);
+                }
+            }
+            if(allLink.ContainsKey(EnumDevType.rru_ant))
+            {
+                for(int i = 0; i < allLink[EnumDevType.rru_ant].Count; i++)
+                { 
+                    if(i < allLink[EnumDevType.rru_ant].Count-1)
+                    {
+                        if (allLink[EnumDevType.rru_ant][i].m_dstEndPoint.strDevIndex.Equals(allLink[EnumDevType.rru_ant][i + 1].m_dstEndPoint.strDevIndex))
+                        {
+                            continue;
+                        }
+                    }
+
+                    InitRRUToAnt(allLink[EnumDevType.rru_ant][i]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 初始化 板卡到RRU 的连接
+        /// </summary>
+        /// <param name="linkBoardToRRU"></param>
+        private void InitBoardToRRU(WholeLink linkBoardToRRU)
+        {
+            //如果目的设备是 rru
+            if(linkBoardToRRU.m_dstEndPoint.devType == EnumDevType.rru)
+            {
+                Connector dstConnector = new Connector();
+                Connector srcConnector = new Connector();
+                //对每一个连接，都要遍历在设备信息中是否存在该设备
+                foreach (string strName in MyDesigner.g_AllDevInfo[EnumDevType.rru].Keys)
+                {
+                    //先找到 目标连接点
+                    if (MyDesigner.g_AllDevInfo[EnumDevType.rru][strName].Equals(linkBoardToRRU.m_dstEndPoint.strDevIndex))
+                    {
+                        dstConnector = FindRRUConnector(strName, linkBoardToRRU.m_dstEndPoint.nPortNo, "rru_to_bbu-");
+                        if(dstConnector == null)
+                        {
+                            MessageBox.Show("没有找到rru InitBoardToRRU");
+                            return;
+                        }
+                    }
+                }
+
+                foreach (string strName in MyDesigner.g_AllDevInfo[EnumDevType.board].Keys)
+                {
+
+                    //在寻找  源连接点
+                    if (MyDesigner.g_AllDevInfo[EnumDevType.board][strName].Equals(linkBoardToRRU.m_srcEndPoint.strDevIndex))
+                    {
+                        //遍历 MyDesigner 的所有孩子，找到 strName 所对应的设备
+                        for (int i = 1; i < MyDesigner.Children.Count; i++)
+                        {
+                            if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                            {
+                                DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                                if (targetItem.ItemName.Equals(strName + "-" + linkBoardToRRU.m_srcEndPoint.nPortNo))
+                                {
+                                    Control cd = targetItem.Template.FindName("PART_ConnectorDecorator", targetItem) as Control;
+
+                                    List<Connector> connectors = new List<Connector>();
+                                    GetConnectors(cd, connectors);
+
+                                    if (connectors.Count > 0)
+                                    {
+                                        srcConnector = connectors[0];
+
+                                        //构造连接
+                                        Connection newConnection = new Connection(srcConnector, dstConnector);
+                                        Canvas.SetZIndex(newConnection, MyDesigner.Children.Count);
+                                        MyDesigner.Children.Add(newConnection);
+                                    }
+                                    else
+                                    {
+                                        MessageBox.Show("没有找到板卡信息");
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+
+            }
+        }
+
+        private void InitRRUToAnt(WholeLink linkRRUToAnt)
+        {
+            //如果目的设备是 rru
+            if (linkRRUToAnt.m_srcEndPoint.devType == EnumDevType.rru)
+            {
+                Connector dstConnector = new Connector();
+                Connector srcConnector = new Connector();
+                //对每一个连接，都要遍历在设备信息中是否存在该设备
+                foreach (string strName in MyDesigner.g_AllDevInfo[EnumDevType.rru].Keys)
+                {
+                    //先找到 源连接点 即 RRU
+                    if (MyDesigner.g_AllDevInfo[EnumDevType.rru][strName].Equals(linkRRUToAnt.m_srcEndPoint.strDevIndex))
+                    {
+                        srcConnector = FindRRUConnector(strName, linkRRUToAnt.m_srcEndPoint.nPortNo, "rru_to_ant-");
+                        if (srcConnector == null)
+                        {
+                            MessageBox.Show("没有找到rru InitRRUToAnt");
+                            return;
+                        }
+                    }
+                }
+
+                foreach (string strName in MyDesigner.g_AllDevInfo[EnumDevType.ant].Keys)
+                {
+                    //寻找  目标连接点  ant
+                    if (MyDesigner.g_AllDevInfo[EnumDevType.ant][strName].Equals(linkRRUToAnt.m_dstEndPoint.strDevIndex))
+                    {
+                        dstConnector = FindRRUConnector(strName, linkRRUToAnt.m_dstEndPoint.nPortNo, "ant_to_rru-");
+                        if (dstConnector == null)
+                        {
+                            MessageBox.Show("没有找到ant InitRRUToAnt");
+                            return;
+                        }
+                        //构造连接
+                        Connection newConnection = new Connection(srcConnector, dstConnector);
+                        Canvas.SetZIndex(newConnection, MyDesigner.Children.Count);
+                        MyDesigner.Children.Add(newConnection);
+                    }
+                }
+            }
+            else
+            {
+
+            }
+
+        }
+
+        private Connector FindRRUConnector(string rruName, int nPort, string connectorType)
+        {
+            //遍历 MyDesigner 的所有孩子，找到 strName 所对应的设备
+            for (int i = 1; i < MyDesigner.Children.Count; i++)
+            {
+                if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                {
+                    DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                    if (targetItem.ItemName.Equals(rruName))
+                    {
+                        Control cd = targetItem.Template.FindName("PART_ConnectorDecorator", targetItem) as Control;
+
+                        List<Connector> connectors = new List<Connector>();
+                        GetConnectors(cd, connectors);
+
+                        string strPortID = connectorType + nPort;
+
+                        foreach (Connector connector in connectors)
+                        {
+                            if (connector.ID.Equals(strPortID))
+                            {
+                                return connector;
+                            }
+                            else
+                            {
+                                if (connector.ID.Equals(connectorType + 1))
+                                {
+                                    return connector;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        #endregion
 
         private string BroadName(BroadType bt)
         {
@@ -866,7 +1515,13 @@ namespace SCMTMainWindow.View
                 DesignerCanvas.SetLeft(uiItem, uiLeft);
                 DesignerCanvas.SetTop(uiItem, uiTop);
             }
-            
+
+            nSizeChangedNo++;
+
+            if(nSizeChangedNo == 2)
+            {
+                InitAllConnection();
+            }
         }
 
         private void PropertyGrid_PropertyValueChanged(object sender, Xceed.Wpf.Toolkit.PropertyGrid.PropertyValueChangedEventArgs e)
@@ -977,7 +1632,11 @@ namespace SCMTMainWindow.View
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             //初始化网规
-            InitNetPlan();
+            if(!bInit)
+            {
+                bInit = true;
+                InitNetPlan();
+            }
         }
 
         /// <summary>

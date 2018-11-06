@@ -66,8 +66,8 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
         public static void AddLogInfo(LogInfoTitle newLogInfo, LogInfoShow LogInfo)
         {
             DateTime nowTime = DateTime.Now;
-            newLogInfo.LogTime = nowTime.ToString("yyyy-MM-dd hh:mm:ss");
-            
+            newLogInfo.LogTime = nowTime.ToString("yyyy-MM-dd HH:mm:ss");
+
             Color color = Color.FromRgb(0, 0, 0);
             newLogInfo.LogColor = new SolidColorBrush(color);
 

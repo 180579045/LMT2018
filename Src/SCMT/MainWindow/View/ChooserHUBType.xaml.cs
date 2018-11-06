@@ -28,6 +28,8 @@ namespace SCMTMainWindow.View
         public bool bOK = false;
         private int nMaxRHUBNo;
         public int nRHUBNo;                       //要添加的rHUB的数量
+        public string strWorkModel;
+        public string strrHUBType;
 
         private List<RHUBEquipment> listRHUB;
 
@@ -45,7 +47,17 @@ namespace SCMTMainWindow.View
                 }
             }
 
+            var listWorkModel = NPEBoardHelper.GetInstance().GetRhubOfpWorkMode();
+            if(listWorkModel != null && listRHUB.Count > 0)
+            {
+                foreach(string item in listWorkModel)
+                {
+                    this.cbrHUBWorkModel.Items.Add(item);
+                }
+            }
+
             this.cbrHUBType.SelectedIndex = 0;
+            this.cbrHUBWorkModel.SelectedIndex = 0;
             //从配置文件获取最大拖动网元数量
             string strInfo = File.ReadAllText(".\\Component\\Configration\\RRUPropertyConfig.json");
             Dictionary<string, int> obj = JsonConvert.DeserializeObject<Dictionary<string, int>>(strInfo);
@@ -81,28 +93,45 @@ namespace SCMTMainWindow.View
         {
             if(this.cbrHUBType.SelectedItem != null)
             {
-                string strRHUBType = this.cbrHUBType.SelectedItem.ToString();
+                strrHUBType = this.cbrHUBType.SelectedItem.ToString();
                 foreach(RHUBEquipment item in listRHUB)
                 {
-                    if(item.friendlyUIName == strRHUBType)
+                    if(item.friendlyUIName == strrHUBType)
                     {
                         nRHUBType = item.irOfpNum;
                     }
                 }
 
-                try
+                if(this.cbrHUBWorkModel.SelectedItem != null)
                 {
-                    nRHUBNo = int.Parse(this.txtrHUBNumber.Text);
+                    strWorkModel = this.cbrHUBWorkModel.SelectedItem.ToString();
+                    try
+                    {
+                        nRHUBNo = int.Parse(this.txtrHUBNumber.Text);
+                    }
+                    catch
+                    {
+                        MessageBox.Show("请输入数字");
+                    }
+
+                    bOK = true;
+                    this.Close();
                 }
-                catch
+                else
                 {
-                    MessageBox.Show("请输入数字");
+                    MessageBox.Show("未选择工作模式");
+                    this.Close();
+                    return;
                 }
 
             }
+            else
+            {
+                MessageBox.Show("未选择rHUB类型");
+                this.Close();
+                return;
+            }
 
-            bOK = true;
-            this.Close();
         }
 
         //取消
@@ -110,6 +139,18 @@ namespace SCMTMainWindow.View
         {
             bOK = false;
             this.Close();
+        }
+
+        /// <summary>
+        /// rHUB 类型选择改变事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cbrHUBType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(this.cbrHUBType.SelectedItem != null)
+            {
+            }
         }
     }
 }

@@ -27,9 +27,9 @@ namespace SCMTMainWindow.View
         public List<int> g_cellPlaning = new List<int>();
 
         //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
-        private int nRRUNo = 0;
-        private int nrHUBNo = 0;
-        private int nAntennaNo = 0;
+        public int nRRUNo = 0;
+        public int nrHUBNo = 199;
+        public int nAntennaNo = 0;
 
         //全局变量，将网元名称和网元信息结构体对应
         private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
@@ -37,8 +37,7 @@ namespace SCMTMainWindow.View
         public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
 
         //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
-        public Dictionary<string, string> g_AllDevInfo = new Dictionary<string, string>();
-
+        public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
         //保存界面上的属性表格
         public Grid gridProperty;
 
@@ -168,7 +167,7 @@ namespace SCMTMainWindow.View
                 string strXAML1 = strXAML;
                 string strRRUFullName = string.Empty;
 
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nRRUNo++);
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, ++nRRUNo);
                 string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
                 strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
@@ -186,9 +185,19 @@ namespace SCMTMainWindow.View
 
                 if(devRRUInfo == null || devRRUInfo.Count == 0)
                 {
-                    //return false;
+                    MessageBox.Show("MibInfoMgr.GetInstance().AddNewRru 返回为空");
+                    return false;
                 }
-                //g_AllDevInfo.Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+
+                if(g_AllDevInfo.ContainsKey(EnumDevType.rru))
+                {
+                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                }
+                else
+                {
+                    g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
+                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                }
 
                 //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
                 //globalDic.Add(strRRUFullName, test);
@@ -231,7 +240,7 @@ namespace SCMTMainWindow.View
         /// <param name="strXAML"></param>
         /// <param name="RRUSize"></param>
         /// <returns></returns>
-        private string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        public string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -349,15 +358,33 @@ namespace SCMTMainWindow.View
                 string strXAML1 = strXAML;
                 string strrHUBFullName = string.Empty;
 
-                strrHUBFullName = string.Format("{0}-{1}", strRRUName, nrHUBNo++);
+                strrHUBFullName = string.Format("{0}-{1}", strRRUName, ++nrHUBNo);
                 string strInstedName = string.Format("Text=\"{0}\"", strrHUBFullName);
                 strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
                 newItem.ItemName = strrHUBFullName;
 
-                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rHUB");
-                globalDic.Add(strrHUBFullName, test);
+                //添加 rHUB 的时候需要给基站下发，然后获取设备信息
+                List<int> listIndex = new List<int>();
+                listIndex.Add(nrHUBNo);
+                var devrHUBInfo = MibInfoMgr.GetInstance().AddNewRhub(listIndex, dlg.strrHUBType, dlg.strWorkModel);
+
+                if(devrHUBInfo == null || devrHUBInfo.Count == 0)
+                {
+                    MessageBox.Show("MibInfoMgr.GetInstance().AddNewRhub 返回为空");
+                    return false;
+                }
+
+                if(g_AllDevInfo.ContainsKey(EnumDevType.rhub))
+                {
+                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                }
+                else
+                {
+                    g_AllDevInfo.Add(EnumDevType.rhub, new Dictionary<string, string>());
+                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                }
 
                 if (dragObject.DesiredSize.HasValue)
                 {
@@ -380,7 +407,7 @@ namespace SCMTMainWindow.View
                 if (ucTest != null)
                 {
                     gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    //CreateGirdForNetInfo(strrHUBFullName, test);
+                    CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
                 }
@@ -461,15 +488,31 @@ namespace SCMTMainWindow.View
                 string strXAML1 = strXAML;
                 string strRRUFullName = string.Empty;
 
-                strRRUFullName = string.Format("{0}-{1}", strRRUName, nAntennaNo++);
+                strRRUFullName = string.Format("{0}-{1}", strRRUName, ++nAntennaNo);
                 string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
                 strXAML1 = strXAML1.Replace("Text=\"Antenna\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
                 newItem.ItemName = strRRUFullName;
+                
+                //添加 ant 的时候需要给基站下发，然后获取设备信息
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo);
 
-                var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("ant");
-                globalDic.Add(strRRUFullName, test);
+                if (devRRUInfo == null)
+                {
+                    MessageBox.Show("MibInfoMgr.GetInstance().AddNewAnt 返回为空");
+                    return false;
+                }
+
+                if(g_AllDevInfo.ContainsKey(EnumDevType.ant))
+                {
+                    g_AllDevInfo[EnumDevType.ant].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
+                }
+                else
+                {
+                    g_AllDevInfo.Add(EnumDevType.ant, new Dictionary<string, string>());
+                    g_AllDevInfo[EnumDevType.ant].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
+                }
 
                 if (dragObject.DesiredSize.HasValue)
                 {
@@ -492,7 +535,7 @@ namespace SCMTMainWindow.View
                 if (ucTest != null)
                 {
                     gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    //CreateGirdForNetInfo(strRRUFullName, test);
+                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo);
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
                 }
@@ -500,7 +543,7 @@ namespace SCMTMainWindow.View
 
             return true;
         }
-        private string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        public string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;

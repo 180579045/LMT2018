@@ -56,6 +56,7 @@ namespace NetPlan
 					var dev = GetSameIndexDev(devList, strIndex);
 					if (null != dev)
 					{
+						NPLastErrorHelper.SetLastError($"未找到索引为{strIndex}的{type.ToString()}设备");
 						return dev;
 					}
 				}
@@ -233,6 +234,7 @@ namespace NetPlan
 			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType, false))
 			{
 				Log.Error("设置新板卡属性失败");
+				NPLastErrorHelper.SetLastError("设备新板卡属性失败");
 				return null;
 			}
 
@@ -256,6 +258,7 @@ namespace NetPlan
 			if (null == seqIndexList || string.IsNullOrEmpty(strWorkMode))
 			{
 				Log.Error("传入RRU索引列表为null；工作模式为null或空");
+				NPLastErrorHelper.SetLastError($"新增RRU失败，传入RRU索引列表或工作模式为空");
 				return null;
 			}
 
@@ -274,6 +277,7 @@ namespace NetPlan
 					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode, false))
 				{
 					Log.Error("设置RRU参数netRRUTypeIndex、netRRUOfpWorkMode失败");
+					NPLastErrorHelper.SetLastError($"设置RRU工作模式失败");
 					return null;
 				}
 
@@ -323,7 +327,7 @@ namespace NetPlan
 				}
 
 				var devIndex = dev.m_strOidIndex;
-				if (!HasSameIndexDev(type, devIndex))
+				if (HasSameIndexDev(type, devIndex))
 				{
 					Log.Error($"已经存在编号为{seqIndex}的rhub设备，添加失败");
 					return null;
@@ -507,6 +511,11 @@ namespace NetPlan
 					return null;
 				}
 			}
+			if (linkType == EnumDevType.rhub_prru)
+			{
+				// 设置
+			}
+			
 
 			return retDev;
 		}
@@ -715,10 +724,9 @@ namespace NetPlan
 
 		/// <summary>
 		/// 下发板卡信息到基站
-		/// TODO 基站类型需要获取
 		/// </summary>
 		/// <returns></returns>
-		public bool DistributeBoardInfoToEnb(EnumDevType devType)
+		public bool DistributeNetPlanInfoToEnb(EnumDevType devType)
 		{
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
@@ -756,13 +764,15 @@ namespace NetPlan
 
 					if (!DistributeSnmpData(item, cmdType, targetIp))
 					{
-						Log.Error($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败");
+						var log = $"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败";
+						Log.Error(log);
+						NPLastErrorHelper.SetLastError(log);
 						return false;
 					}
 
 					if (EnumSnmpCmdType.Del == cmdType)
 					{
-						waitRmList.Add(item);
+						waitRmList.Add(item);		// 如果是要删除的设备，参数下发后，直接删除内存中的数据
 					}
 					else
 					{
@@ -770,6 +780,17 @@ namespace NetPlan
 					}
 
 					Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
+
+					if (EnumDevType.nrNetLc == devType)
+					{
+						// 本地小区信息，下发成功后关闭布配开关
+						if (!NPCellOperator.SetNetPlanSwitch(false, item.m_strOidIndex, targetIp))
+						{
+							Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
+							NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
+							return false;	// TODO 此处返回，已经下发的删除的本地小区网规信息存在不一致的问题
+						}
+					}
 				}
 
 				foreach (var wrmDev in waitRmList)
@@ -1192,6 +1213,7 @@ namespace NetPlan
 				if (null != oldDev && RecordDataType.WaitDel != oldDev.m_recordType)
 				{
 					Log.Error($"存在相同类型{type.ToString()}相同索引{devIndex}的设备");
+					NPLastErrorHelper.SetLastError($"已存在编号为{lastIndexValue}的{type.ToString()}设备");
 					return null;
 				}
 			}

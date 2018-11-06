@@ -99,7 +99,7 @@ namespace NetPlan
 					{
 						mibAttri = mibLeaf,
 						m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, defaultValue), // 原始值设置为默认值
-						m_bReadOnly = (mibLeaf.IsIndex == "True"),		// 索引只读
+						m_bReadOnly = !mibLeaf.IsEmpoweredModify(),
 						m_bVisible = (mibLeaf.ASNType != "RowStatus")	// 行状态不显示
 					};
 

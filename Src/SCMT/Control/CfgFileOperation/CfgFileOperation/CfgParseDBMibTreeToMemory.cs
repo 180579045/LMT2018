@@ -21,8 +21,7 @@ namespace CfgFileOperation
         {
             
         }
-
-
+        
         public void ReadMibTreeToMemory(string strFileToDirectory)
         {
             //string strFileToDirectory = "";
@@ -33,9 +32,35 @@ namespace CfgFileOperation
             DataSet MibdateSet = RecordByAccessDb(strFileToDirectory, strSQL);
             // 处理重组信息
             ParseProcessing(MibdateSet);
+        }
 
+        /// <summary>
+        /// 从内存中查询节点的表名
+        /// </summary>
+        /// <param name="strNodeName"></param>
+        /// <returns></returns>
+        public string GetTableNameFromDBMibTree(string strNodeName)
+        {
+            if (null == pMapMibNodeByName || string.Empty == strNodeName)
+                return "";
+            if (!pMapMibNodeByName.ContainsKey(strNodeName))
+                return "";
 
-            //StruMibNode pTempNode = new StruMibNode();
+            return pMapMibNodeByName[strNodeName].strTableName;
+        }
+        /// <summary>
+        /// 通过节点名查询其表索引的个数
+        /// </summary>
+        /// <param name="strNodeName"></param>
+        /// <returns></returns>
+        public int GetIndexNumFromDBMibTree(string strNodeName)
+        {
+            if (null == pMapMibNodeByName || string.Empty == strNodeName)
+                return -1;
+            if (!pMapMibNodeByName.ContainsKey(strNodeName))
+                return -1;
+            //var ddd = pMapMibNodeByName[strNodeName];
+            return pMapMibNodeByName[strNodeName].nIndexNum;
         }
 
         /// <summary>

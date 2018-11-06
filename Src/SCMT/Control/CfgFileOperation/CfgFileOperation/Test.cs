@@ -21,6 +21,8 @@ namespace CfgFileOperation
         {
             Test test = new Test();
 
+            test.testForCreatePatchAndInit();
+
             test.testForReadSelfExcel();
 
             test.testForReadRecList();//
@@ -46,6 +48,12 @@ namespace CfgFileOperation
             //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
             //cfgOp.SaveFile_eNB("./path.cfg");
             //Console.ReadLine();
+        }
+
+        void testForCreatePatchAndInit()
+        {
+            CfgOp cfgOp = new CfgOp();
+            cfgOp.OnCreatePatchAndInitCfg();
         }
 
         void testForReadSelfExcel()
