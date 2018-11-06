@@ -22,6 +22,8 @@ namespace SCMTMainWindow
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };
+
+                return dgm;
             }
             // 如果是枚举类型的单元格;
             else if (SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.enumType)
@@ -38,19 +40,22 @@ namespace SCMTMainWindow
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };
+
+                return dgm;
             }
             // 如果是要时间类型的单元格;
             else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.DateTime)
             {
-
+                return null;
             }
             // 如果是BIT类型的单元格;
             else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.bitType)
             {
-
+                return null;
             }
 
             return null;
+            
         }
     }
 }
