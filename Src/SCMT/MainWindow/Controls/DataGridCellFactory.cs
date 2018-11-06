@@ -12,7 +12,6 @@ namespace SCMTMainWindow
         public static GridCell CreateGridCell(string MibName, string MibNameCN, string ContentValue, string oid, string targetIP)
         {
             // 如果是字符串类型的单元格;
-
             if (SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.RegularType)
             {
                 var dgm = new DataGrid_Cell_MIB()
@@ -25,6 +24,7 @@ namespace SCMTMainWindow
 
                 return dgm;
             }
+
             // 如果是枚举类型的单元格;
             else if (SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.enumType)
             {
@@ -43,6 +43,7 @@ namespace SCMTMainWindow
 
                 return dgm;
             }
+
             // 如果是要时间类型的单元格;
             else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.DateTime)
             {
@@ -56,6 +57,7 @@ namespace SCMTMainWindow
 
                 return dgm;
             }
+
             // 如果是BIT类型的单元格;
             else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.bitType)
             {

@@ -38,6 +38,8 @@ namespace SCMTMainWindow.View
             set
             {
                 m_ColumnModel = value;
+                this.DynamicDataGrid.Columns.Clear();
+
                 // 获取所有列信息，并将列信息填充到DataGrid当中;
                 foreach (var iter in m_ColumnModel.PropertyList)
                 {
