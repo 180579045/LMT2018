@@ -385,6 +385,7 @@ namespace NetPlan
 				else
 				{
 					var childFullOid = $"{mibPrefix}.{childLeaf.childOid.Trim('.')}.{strIndex.Trim('.')}";
+
 					info = GetMibLeafNodeWithRealValue(childFullOid, result, childLeaf);
 				}
 

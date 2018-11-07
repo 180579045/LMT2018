@@ -64,7 +64,9 @@ namespace SCMTMainWindow.View
             DrawNrRect();
 
             //构造板卡画板
-            CreateMainBoard();           
+            CreateMainBoard();
+
+            CreateTemplateList();
         }
 
 
@@ -1761,6 +1763,113 @@ namespace SCMTMainWindow.View
             MyDesigner.g_GridForNet.Clear();
 
             MyDesigner.Children.Clear();
+        }
+
+        /// <summary>
+        /// 保存网规模板文件路径和文件名
+        /// </summary>
+        private Dictionary<string, string> dicTemplateFile;
+
+        /// <summary>
+        ///创建网规模板列表
+        /// </summary>
+        private void CreateTemplateList()
+        {
+            //初始化从默认路径获取
+            var path = FilePathHelper.GetNetPlanTempaltePath();
+            FilePathHelper.CreateFolder(path);
+            DirectoryInfo dirInfo = new DirectoryInfo(path);
+
+            TemplateFileList.Items.Clear();
+            dicTemplateFile = new Dictionary<string, string>();
+
+            foreach (FileInfo fileinfo in dirInfo.GetFiles())
+            {
+                TemplateFileList.Items.Add(fileinfo.Name);
+                if(!dicTemplateFile.ContainsKey(fileinfo.Name))
+                    dicTemplateFile.Add(fileinfo.Name,fileinfo.FullName);
+            }                                   
+        }
+
+        private void ExportTemplateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            NPTemplate template = new NPTemplate();
+            List <RruInfo> rruInfo = NPERruHelper.GetInstance().GetAllRruInfo();
+
+            foreach (RruInfo info in rruInfo)
+            {
+                foreach(string key in MyDesigner.g_GridForNet.Keys)
+                {
+                    var pos = key.LastIndexOf("-");
+                    var tem = key.Substring(0, pos);
+                    if (tem.Equals(info.rruTypeName))
+                    {
+                        template.rruTypeInfo.Add(info);
+                    }
+                }           
+            }
+            template.TemplateName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
+            NetPlanTemplateInfo.GetInstance().SaveNetPlanTemplate(template);
+
+            return;
+        }
+
+        private void ImportTemplateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                //Filter = "Json Files(*.json)|*.json"
+            };
+            var result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                var filename = openFileDialog.FileName;
+                int index = filename.LastIndexOf("\\");
+                filename = filename.Substring(index + 1);
+                if (!dicTemplateFile.ContainsKey(filename))
+                    dicTemplateFile.Add(filename, openFileDialog.FileName);
+
+                //判断列表中是否存在
+                bool isexist = false;
+                foreach(string fname in TemplateFileList.Items)
+                {
+                    if (fname.Equals(filename))
+                        isexist = true;
+                }
+
+                if(!isexist)
+                   TemplateFileList.Items.Add(filename);
+            }
+               
+            return;
+        }
+
+        private void NewTemplateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            return;
+        }
+
+        private void TemplateListViewItem_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListViewItem item = sender as ListViewItem;
+
+            string selectedFile = TemplateFileList.SelectedItem as string;
+            string path = null;
+
+            if (!string.IsNullOrEmpty(selectedFile))
+            {
+                if(dicTemplateFile.ContainsKey(selectedFile))
+                    path = FilePathHelper.GetNetPlanTempaltePath() + selectedFile;
+
+                if (path == null)
+                    return;
+
+                NPTemplate npTempalte = NetPlanTemplateInfo.GetInstance().GetTemplateInfoFromFile(path);
+
+                if(npTempalte != null)
+                   MyDesigner.DrawTemplate(npTempalte);
+            }
         }
     }
 }

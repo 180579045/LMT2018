@@ -135,6 +135,7 @@ namespace SCMTMainWindow
 			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
 			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
 			MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
+            this.FileManagerTabItem.GotFocus += FileManagerTabItem_GotFocus;
 
 			// 解析保存的基站节点信息
 			var nodeList = NodeBControl.GetInstance().GetNodebInfo();
@@ -143,11 +144,11 @@ namespace SCMTMainWindow
 				AddNodeLabel(node.Key, node.Value);
 			}
 		}
-
-		/// <summary>
-		/// 窗口启动，注册所有所需要的基础功能;
-		/// </summary>
-		private void RegisterFunction()
+        
+        /// <summary>
+        /// 窗口启动，注册所有所需要的基础功能;
+        /// </summary>
+        private void RegisterFunction()
 		{
 			try
 			{
@@ -407,7 +408,15 @@ namespace SCMTMainWindow
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
 			{
-				throw new CustomException("尚未选中要操作的基站");
+                try
+                {
+                    
+                }
+                catch(Exception ex)
+                {
+                    throw new CustomException("尚未选中要操作的基站");
+                }
+				
 			}
 
 			NodeB node = new NodeB(targetIp, "NodeB");
@@ -504,8 +513,8 @@ namespace SCMTMainWindow
 
 			// 当前的问题：这个Title显示不出来;
 			sub.Title = "折线图";
-			sub.FloatingHeight = 400;
-			sub.FloatingWidth = 800;
+			sub.FloatingHeight = 460;
+			sub.FloatingWidth = 640;
 			sub.Content = content;
 			sub.FloatingLeft = 200;
 			sub.FloatingTop = 200;
@@ -519,39 +528,6 @@ namespace SCMTMainWindow
 			sub.PropertyChanged += content.WindowProperty_Changed;
 			sub.Closed += content.Sub_Closed;
 			
-			/* 后续使用真实数据;
-			//Add by Mayi
-			//实现鼠标的拖拽，这里通过一个简单的TreeView 做个演示
-			TreeView myTree = new TreeView();
-
-			var originStyle = myTree.Style;
-			var newStyle = new Style();
-			newStyle.BasedOn = originStyle;
-
-			//为鼠标移动添加事件
-			newStyle.Setters.Add(new EventSetter(MouseMoveEvent, new MouseEventHandler(TreeViewItem_MouseMove)));
-			myTree.ItemContainerStyle = newStyle;
-
-			//构造一个简单的TreeView
-			TreeViewItem RootItem1 = new TreeViewItem();
-			RootItem1.Header = "RootItem1";
-			myTree.Items.Add(RootItem1);
-
-			TreeViewItem SubItem1 = new TreeViewItem();
-			SubItem1.Header = "SubItem1";
-			RootItem1.Items.Add(SubItem1);
-
-			TreeViewItem SubSubItem1 = new TreeViewItem();
-			SubSubItem1.Header = "SubSubItem";
-			SubItem1.Items.Add(SubSubItem1);
-
-			TreeViewItem RootItem2 = new TreeViewItem();
-			RootItem2.Header = "RootItem2";
-			myTree.Items.Add(RootItem2);
-
-			//显示到主界面
-			this.FavLeaf_Lists.Children.Add(myTree);
-			*/
 		}
 
 		private void Sub_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1681,6 +1657,16 @@ namespace SCMTMainWindow
 		}
 
 
+        private void FileManagerTabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            MetroExpander_Click(sender, e);
+        }
+
+        /// <summary>
+        /// 弹出文件管理;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
 			var enbIp = CSEnbHelper.GetCurEnbAddr();

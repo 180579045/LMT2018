@@ -9,23 +9,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300" Loaded="UserControl_Loaded">
     <UserControl.Resources>
-            <ResourceDictionary>
-                <ResourceDictionary.MergedDictionaries>
-                    <ResourceDictionary Source="Resources/Styles/Shared.xaml"/>
-                    <ResourceDictionary Source="Resources/Styles/ButtonCommands.xaml"/>
-                    <ResourceDictionary Source="Resources/Styles/ToolBar.xaml"/>
-                    <ResourceDictionary Source="Resources/Styles/GroupBox.xaml"/>
-                    <ResourceDictionary Source="Resources/Styles/Expander.xaml"/>
-                    <ResourceDictionary Source="Resources/Styles/ScrollBar.xaml"/>
-                    <ResourceDictionary Source="Resources/ApplicationToolbar.xaml"/>
-                    <ResourceDictionary Source="Resources/DesignerItem.xaml"/>
-                    <ResourceDictionary Source="Resources/ToolboxItem.xaml"/>
-                    <ResourceDictionary Source="Resources/Toolbox.xaml"/>
-                    <ResourceDictionary Source="Resources/Connection.xaml"/>
-                    <ResourceDictionary Source="Resources/Stencils/FlowChartStencils.xaml"/>
-                    <ResourceDictionary Source="Resources/Stencils/ShapeStencils.xaml"/>
-                </ResourceDictionary.MergedDictionaries>
-            </ResourceDictionary>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/Styles/Shared.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ButtonCommands.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ToolBar.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/GroupBox.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/Expander.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/ScrollBar.xaml"/>
+                <ResourceDictionary Source="Resources/ApplicationToolbar.xaml"/>
+                <ResourceDictionary Source="Resources/DesignerItem.xaml"/>
+                <ResourceDictionary Source="Resources/ToolboxItem.xaml"/>
+                <ResourceDictionary Source="Resources/Toolbox.xaml"/>
+                <ResourceDictionary Source="Resources/Connection.xaml"/>
+                <ResourceDictionary Source="Resources/Stencils/FlowChartStencils.xaml"/>
+                <ResourceDictionary Source="Resources/Stencils/ShapeStencils.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="TemplateListViewItemStyle" TargetType="{x:Type ListViewItem}">
+                <EventSetter Event="MouseDoubleClick" Handler="TemplateListViewItem_MouseDoubleClick"></EventSetter>
+            </Style>
+        </ResourceDictionary>
     </UserControl.Resources>
     <UserControl.CommandBindings>        
         <CommandBinding Command="{StaticResource NewCommand}" 
@@ -80,6 +83,28 @@
                     <avalondock:LayoutPanel>
                         <avalondock:LayoutAnchorablePane>
                             <avalondock:LayoutAnchorable x:Name="LeftView" Title="模板列表">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                
+                                    <Button Name="TemlateBtn" Content="..." Grid.Row="0" Height="30">
+                                        <Button.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="新建" Click="NewTemplateMenuItem_Click"></MenuItem>
+                                                <MenuItem Header="导入" Click="ImportTemplateMenuItem_Click"></MenuItem>
+                                                <MenuItem Header="导出" Click="ExportTemplateMenuItem_Click"></MenuItem>
+                                            </ContextMenu>
+                                         </Button.ContextMenu>
+                                    </Button>
+                                    <ListView Name="TemplateFileList" Grid.Row="1" SelectionMode="Single" ItemContainerStyle="{StaticResource TemplateListViewItemStyle}" 
+                                              Background="AliceBlue" BorderBrush="Transparent" >
+                                        <ListView.Resources>
+                                            <Style TargetType="ScrollBar"/>
+                                        </ListView.Resources>
+                                     </ListView>
+                                </Grid>
                             </avalondock:LayoutAnchorable>
                             <avalondock:LayoutAnchorable Title="网络单元">
                                 <Expander Header="Shapes" Content="{StaticResource ShapeStencils}" IsExpanded="True"/>

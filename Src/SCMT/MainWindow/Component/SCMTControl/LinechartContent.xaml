@@ -6,13 +6,14 @@
              xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl"
              xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="300">
-    <Grid>
+             d:DesignHeight="480" d:DesignWidth="640">
+    <Grid Width="640" Height="480">
         <Grid.RowDefinitions>
-            <RowDefinition Height="10"></RowDefinition>
             <RowDefinition></RowDefinition>
+            <RowDefinition Height="10"></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Content="调试" Click="Button_Click" Grid.Row="0" Visibility="Hidden"></Button>
-        <cefSharp:ChromiumWebBrowser Grid.Row="1" x:Name="address" />
+        <cefSharp:ChromiumWebBrowser Grid.Row="0" x:Name="address" />
+
+        <Button Content="调试" Click="Button_Click" Grid.Row="1" Visibility="Hidden"></Button>
     </Grid>
 </UserControl>
