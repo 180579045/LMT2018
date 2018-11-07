@@ -110,9 +110,9 @@
     <!--*******************************************************************-->
     <!--单通道天线-->
     <GeometryGroup x:Key="SignalAntenna">
-      <LineGeometry StartPoint="0,0" EndPoint="15,20"></LineGeometry>
-      <LineGeometry StartPoint="30,0" EndPoint="15,20"></LineGeometry>
-      <LineGeometry StartPoint="15,0" EndPoint="15, 40"></LineGeometry>
+      <LineGeometry StartPoint="0,0" EndPoint="5,13"></LineGeometry>
+      <LineGeometry StartPoint="10,0" EndPoint="5,13"></LineGeometry>
+      <LineGeometry StartPoint="5,0" EndPoint="5, 30"></LineGeometry>
     </GeometryGroup>
 
     <!--双通道天线-->

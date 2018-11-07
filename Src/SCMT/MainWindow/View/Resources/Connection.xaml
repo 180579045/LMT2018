@@ -125,9 +125,9 @@
                               </TextBlock.RenderTransform>
                             </TextBlock>-->
 
-                        <Canvas.BitmapEffect>
+                        <!--<Canvas.BitmapEffect>    取消阴影效果
                             <DropShadowBitmapEffect Color="Gray" Direction="315" ShadowDepth="10" Softness="0" Opacity="0.1"/>
-                        </Canvas.BitmapEffect>
+                        </Canvas.BitmapEffect>-->
                     </Canvas>
                     <ControlTemplate.Triggers>
                         <!--<DataTrigger Value="Arrow" Binding="{Binding RelativeSource={RelativeSource Self},Path=SourceArrowSymbol}">
