@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using CommonUtility;
 using LinkPath;
 using LmtbSnmp;
@@ -127,7 +129,7 @@ namespace NetPlan
 		/// 调用时机：连接基站后，第一次进入网规页面
 		/// </summary>
 		/// <returns></returns>
-		public static bool InitNetPlanInfo()
+		public static async Task<bool> InitNetPlanInfo()
 		{
 			var curEnbIP = CSEnbHelper.GetCurEnbAddr();
 			if (null == curEnbIP)
@@ -145,45 +147,58 @@ namespace NetPlan
 				return false;
 			}
 
-			// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
-			foreach (var entry in mibEntryList)
-			{
-				var getCmdList = entry.Get;
-				if (getCmdList.Count == 0)
-				{
-					continue;
-				}
-
-				var temp = new List<DevAttributeInfo>();
-				var devType = DevTypeHelper.GetDevTypeFromEntryName(entry.MibEntry);
-				if (devType == EnumDevType.unknown)
-				{
-					continue;
-				}
-
-				// 同一个mib入口下可能有多个get命令，这些命令查询的结果要进行合并处理，因为同属于一张表，只不过每次查询了不同的部分
-				foreach (var cmd in getCmdList)
-				{
-					var oneCmdMibInfo = new List<DevAttributeInfo>();
-					if (!ExecuteNetPlanCmd(cmd, ref oneCmdMibInfo, devType))
-					{
-						Log.Error($"查询表{entry.MibEntry}信息命令{cmd}执行失败");
-						continue;
-						//return false;
-					}
-					MergeSameEntryData(ref temp, oneCmdMibInfo);
-				}
-
-				// 合并完成后，直接保存数据
-				if (temp.Count > 0)
-				{
-					MibInfoMgr.GetInstance().AddDevMibInfo(devType, temp);
-				}
-			}
-			// 所有设备信息保存完成后，解析连接信息
-			MibInfoMgr.GetInstance().ParseLinks();
+			await WalkAllNetPlanMibEntry(mibEntryList);
 
 			return true;
+		}
+
+		/// <summary>
+		/// 异步方法：遍历mib入口查询信息
+		/// </summary>
+		/// <param name="entryList"></param>
+		/// <returns></returns>
+		private static Task WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
+		{
+			return Task.Run(() =>
+			{
+				// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
+				foreach (var entry in entryList)
+				{
+					var getCmdList = entry.Get;
+					if (getCmdList.Count == 0)
+					{
+						continue;
+					}
+
+					var temp = new List<DevAttributeInfo>();
+					var devType = DevTypeHelper.GetDevTypeFromEntryName(entry.MibEntry);
+					if (devType == EnumDevType.unknown)
+					{
+						continue;
+					}
+
+					// 同一个mib入口下可能有多个get命令，这些命令查询的结果要进行合并处理，因为同属于一张表，只不过每次查询了不同的部分
+					foreach (var cmd in getCmdList)
+					{
+						var oneCmdMibInfo = new List<DevAttributeInfo>();
+						if (!ExecuteNetPlanCmd(cmd, ref oneCmdMibInfo, devType))
+						{
+							Log.Error($"查询表{entry.MibEntry}信息命令{cmd}执行失败");
+							continue;
+							//return false;
+						}
+						MergeSameEntryData(ref temp, oneCmdMibInfo);
+					}
+
+					// 合并完成后，直接保存数据
+					if (temp.Count > 0)
+					{
+						MibInfoMgr.GetInstance().AddDevMibInfo(devType, temp);
+					}
+				}
+				// 所有设备信息保存完成后，解析连接信息
+				MibInfoMgr.GetInstance().ParseLinks();
+			});
 		}
 
 		/// <summary>

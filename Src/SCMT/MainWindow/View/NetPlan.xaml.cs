@@ -663,51 +663,53 @@ namespace SCMTMainWindow.View
             }
         }
 
-        #endregion
+		#endregion
 
-        /// <summary>
-        /// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
-        /// </summary>
-        private bool InitNetPlan()
-        {
-            //初始化是否成功
-            MibInfoMgr.GetInstance().GetAllEnbInfo().Clear();            
+		/// <summary>
+		/// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
+		/// </summary>
+		private async Task<bool> InitNetPlan()
+		{
+			//初始化是否成功
+			MibInfoMgr.GetInstance().Clear();
 
-            if (NPSnmpOperator.InitNetPlanInfo())
-            {
-                var allNPInfo = MibInfoMgr.GetInstance().GetAllEnbInfo();
+			var initResult = await NPSnmpOperator.InitNetPlanInfo();
 
-                //初始化板卡信息
-                if(allNPInfo.Keys.Contains(EnumDevType.board))
-                {
-                    InitBoardInfo(allNPInfo[EnumDevType.board]);
-                }
-                if (allNPInfo.Keys.Contains(EnumDevType.rru))
-                {
-                    InitRruInfo(allNPInfo[EnumDevType.rru]);
-                }
-                if(allNPInfo.ContainsKey(EnumDevType.ant))
-                {
-                    InitAntennaInfo(allNPInfo[EnumDevType.ant]);
-                }
-                if(allNPInfo.ContainsKey(EnumDevType.rhub))
-                {
-                    InitRHUBInfo(allNPInfo[EnumDevType.rhub]);
-                }
+			// 剩下的工作全部推到UI线程中执行
+			if (initResult)
+			{
+				var allNPInfo = MibInfoMgr.GetInstance().GetAllEnbInfo();
 
-                return true;
+				//初始化板卡信息
+				if (allNPInfo.Keys.Contains(EnumDevType.board))
+				{
+					InitBoardInfo(allNPInfo[EnumDevType.board]);
+				}
+				if (allNPInfo.Keys.Contains(EnumDevType.rru))
+				{
+					InitRruInfo(allNPInfo[EnumDevType.rru]);
+				}
+				if (allNPInfo.ContainsKey(EnumDevType.ant))
+				{
+					InitAntennaInfo(allNPInfo[EnumDevType.ant]);
+				}
+				if (allNPInfo.ContainsKey(EnumDevType.rhub))
+				{
+					InitRHUBInfo(allNPInfo[EnumDevType.rhub]);
+				}
 
-            }
+				return true;
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-        #region 初始化板卡
+		#region 初始化板卡
 
-        /// <summary>
-        /// 初始化板卡信息
-        /// </summary>
-        private void InitBoardInfo(List<DevAttributeInfo> listBoardInfo)
+		/// <summary>
+		/// 初始化板卡信息
+		/// </summary>
+		private void InitBoardInfo(List<DevAttributeInfo> listBoardInfo)
         {
             if(listBoardInfo != null && listBoardInfo.Count != 0)
             {
