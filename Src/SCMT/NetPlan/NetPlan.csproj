@@ -49,6 +49,7 @@
     <Compile Include="MibLeafNodeInfo.cs" />
     <Compile Include="NetPlanLinkMgr.cs" />
     <Compile Include="NPCellOperator.cs" />
+    <Compile Include="NPDescHelper.cs" />
     <Compile Include="NPEAntHelper.cs" />
     <Compile Include="NPEBoardHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />
