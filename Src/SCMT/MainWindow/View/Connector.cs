@@ -23,7 +23,7 @@ namespace SCMTMainWindow.View
         //连接点的需要传给连接线的一些属性
         public EnumDevType DevType { get; set; }
 
-        public string devIndex;
+        private string devIndex;
         public string DevIndex
         {
             get
@@ -35,6 +35,7 @@ namespace SCMTMainWindow.View
                 devIndex = ParentDesignerItem.DevIndex;
             }
         }
+        
         public int PortNo { get; set; }
         public EnumPortType PortType { get; set; }
 

@@ -115,13 +115,15 @@ namespace SCMTMainWindow.View
                 dstPoint.nPortNo = sinkConnector.PortNo;
                 dstPoint.portType = sinkConnector.PortType;
 
-                //if(MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
-                //{
-
-                //}
-
-                Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
-                this.designerCanvas.Children.Add(newConnection);
+                if (MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
+                {
+                    Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
+                    this.designerCanvas.Children.Add(newConnection);
+                }
+                else
+                {
+                    MessageBox.Show("AddLink 失败");
+                }
                 
             }
             if (HitDesignerItem != null)

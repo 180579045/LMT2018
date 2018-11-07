@@ -672,12 +672,12 @@ namespace SCMTMainWindow.View
 		/// <summary>
 		/// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
 		/// </summary>
-		private async Task<bool> InitNetPlan()
+		private bool InitNetPlan()
 		{
 			//初始化是否成功
 			MibInfoMgr.GetInstance().Clear();
 
-			var initResult = await NPSnmpOperator.InitNetPlanInfo();
+			var initResult = NPSnmpOperator.InitNetPlanInfo();
 
 			// 剩下的工作全部推到UI线程中执行
 			if (initResult)
@@ -849,14 +849,12 @@ namespace SCMTMainWindow.View
                 return false;
             }
             Control cd = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
-
             List<Connector> connectors = new List<Connector>();
             GetConnectors(cd, connectors);
 
             if(connectors != null && connectors.Count != 0)
             {
                 connectors[0].PortNo = nPortNo;
-                connectors[0].PortType = EnumPortType.bbu_to_other;
 
                 return true;
             }

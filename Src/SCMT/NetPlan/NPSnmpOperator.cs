@@ -129,7 +129,7 @@ namespace NetPlan
 		/// 调用时机：连接基站后，第一次进入网规页面
 		/// </summary>
 		/// <returns></returns>
-		public static async Task<bool> InitNetPlanInfo()
+		public static bool InitNetPlanInfo()
 		{
 			var curEnbIP = CSEnbHelper.GetCurEnbAddr();
 			if (null == curEnbIP)
@@ -147,7 +147,7 @@ namespace NetPlan
 				return false;
 			}
 
-			await WalkAllNetPlanMibEntry(mibEntryList);
+			WalkAllNetPlanMibEntry(mibEntryList);
 
 			return true;
 		}
@@ -157,9 +157,8 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="entryList"></param>
 		/// <returns></returns>
-		private static Task WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
+		private static void WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
 		{
-			return Task.Run(() =>
 			{
 				// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 				foreach (var entry in entryList)
@@ -198,7 +197,7 @@ namespace NetPlan
 				}
 				// 所有设备信息保存完成后，解析连接信息
 				MibInfoMgr.GetInstance().ParseLinks();
-			});
+			}
 		}
 
 		/// <summary>
