@@ -171,9 +171,9 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" ID="rru_to_ant-1"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -193,10 +193,10 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-1"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-2"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-2" DevType="rru" PortNo="2" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -216,12 +216,12 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.313,0" ID="rru_to_ant-1"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-2"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-3"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0" ID="rru_to_ant-4"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.313,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-2" DevType="rru" PortNo="2" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-3" DevType="rru" PortNo="3" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0" ID="rru_to_ant-4" DevType="rru" PortNo="4" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -241,16 +241,16 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" ID="rru_to_ant-1"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" ID="rru_to_ant-2"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" ID="rru_to_ant-3"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" ID="rru_to_ant-4"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" ID="rru_to_ant-5"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" ID="rru_to_ant-6"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" ID="rru_to_ant-7"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" ID="rru_to_ant-8"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" ID="rru_to_ant-2" DevType="rru" PortNo="2" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" ID="rru_to_ant-3" DevType="rru" PortNo="3" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" ID="rru_to_ant-4" DevType="rru" PortNo="4" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" ID="rru_to_ant-5" DevType="rru" PortNo="5" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" ID="rru_to_ant-6" DevType="rru" PortNo="6" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" ID="rru_to_ant-7" DevType="rru" PortNo="7" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" ID="rru_to_ant-8" DevType="rru" PortNo="8" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -270,24 +270,24 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.169,0" ID="rru_to_ant-1"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.213,0" ID="rru_to_ant-2"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.257,0" ID="rru_to_ant-3"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.301,0" ID="rru_to_ant-4"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.345,0" ID="rru_to_ant-5"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.389,0" ID="rru_to_ant-6"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.477,0" ID="rru_to_ant-7"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.433,0" ID="rru_to_ant-8"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.521,0" ID="rru_to_ant-9"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.565,0" ID="rru_to_ant-10"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.609,0" ID="rru_to_ant-11"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.653,0" ID="rru_to_ant-12"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.697,0" ID="rru_to_ant-13"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.741,0" ID="rru_to_ant-14"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.785,0" ID="rru_to_ant-15"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.829,0" ID="rru_to_ant-16"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_bbu-1"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_bbu-2"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.169,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.213,0" ID="rru_to_ant-2" DevType="rru" PortNo="2" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.257,0" ID="rru_to_ant-3" DevType="rru" PortNo="3" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.301,0" ID="rru_to_ant-4" DevType="rru" PortNo="4" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.345,0" ID="rru_to_ant-5" DevType="rru" PortNo="5" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.389,0" ID="rru_to_ant-6" DevType="rru" PortNo="6" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.477,0" ID="rru_to_ant-7" DevType="rru" PortNo="7" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.433,0" ID="rru_to_ant-8" DevType="rru" PortNo="8" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.521,0" ID="rru_to_ant-9" DevType="rru" PortNo="9" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.565,0" ID="rru_to_ant-10" DevType="rru" PortNo="10" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.609,0" ID="rru_to_ant-11" DevType="rru" PortNo="11" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.653,0" ID="rru_to_ant-12" DevType="rru" PortNo="12" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.697,0" ID="rru_to_ant-13" DevType="rru" PortNo="13" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.741,0" ID="rru_to_ant-14" DevType="rru" PortNo="14" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.785,0" ID="rru_to_ant-15" DevType="rru" PortNo="15" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.829,0" ID="rru_to_ant-16" DevType="rru" PortNo="16" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -304,7 +304,7 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="0, 1, 0, 0">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0"></s:Connector>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" DevType="board"></s:Connector>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -324,16 +324,16 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="8" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -353,18 +353,18 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.357"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.595"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.357"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.595"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="8" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.357" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.595" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.357" DevType="rhub" PortNo="3" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.595" DevType="rhub" PortNo="4" PortType="rhub_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -380,7 +380,7 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,1" ID="ant_to_rru-1"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -397,8 +397,8 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-2"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -414,10 +414,10 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1" ID="ant_to_rru-2"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.667,1" ID="ant_to_rru-3"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-4"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.667,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-4" DevType="ant" PortNo="4" PortType="ant_to_rru"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -433,14 +433,14 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1" ID="ant_to_rru-2"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.286,1" ID="ant_to_rru-3"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.429,1" ID="ant_to_rru-4"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.571,1" ID="ant_to_rru-5"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1" ID="ant_to_rru-6"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.857,1" ID="ant_to_rru-7"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-8"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.286,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.429,1" ID="ant_to_rru-4" DevType="ant" PortNo="4" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.571,1" ID="ant_to_rru-5" DevType="ant" PortNo="5" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1" ID="ant_to_rru-6" DevType="ant" PortNo="6" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.857,1" ID="ant_to_rru-7" DevType="ant" PortNo="7" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-8" DevType="ant" PortNo="8" PortType="ant_to_rru"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>

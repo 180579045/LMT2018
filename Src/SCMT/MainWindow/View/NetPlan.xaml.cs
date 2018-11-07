@@ -436,6 +436,7 @@ namespace SCMTMainWindow.View
                 {
                     DesignerItem designerItem = new DesignerItem();
                     designerItem.ItemName = strIRName + "-" + i;
+                    designerItem.DevIndex = newBoardInfo.m_strOidIndex;
 
                     Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
                     Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -460,6 +461,7 @@ namespace SCMTMainWindow.View
 
                     MyDesigner.Children.Add(designerItem);
                     SetConnectorDecoratorTemplate(designerItem);
+                    SetBoardConnector(designerItem, i);
                 }
             }
             else if (e.ClickCount == 1)                   //单击显示属性，每次切换的时候重新获取
@@ -800,6 +802,7 @@ namespace SCMTMainWindow.View
             {
                 DesignerItem designerItem = new DesignerItem();
                 designerItem.ItemName = strIRName + "-" + i;
+                designerItem.DevIndex = strDevIndex;
 
                 Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
                 Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -825,8 +828,38 @@ namespace SCMTMainWindow.View
 
                 MyDesigner.Children.Add(designerItem);
                 SetConnectorDecoratorTemplate(designerItem);
+                SetBoardConnector(designerItem, i);
             }
         }
+
+        /// <summary>
+        /// 设置板卡光口号的属性
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="nPortNo"></param>
+        /// <returns></returns>
+        private bool SetBoardConnector(DesignerItem item, int nPortNo)
+        {
+            if(item == null)
+            {
+                return false;
+            }
+            Control cd = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
+
+            List<Connector> connectors = new List<Connector>();
+            GetConnectors(cd, connectors);
+
+            if(connectors != null && connectors.Count != 0)
+            {
+                connectors[0].PortNo = nPortNo;
+                connectors[0].PortType = EnumPortType.bbu_to_other;
+
+                return true;
+            }
+
+            return false;
+        }
+
 
         #endregion
 
@@ -1289,7 +1322,7 @@ namespace SCMTMainWindow.View
                     //先找到 目标连接点
                     if (MyDesigner.g_AllDevInfo[EnumDevType.rru][strName].Equals(linkBoardToRRU.m_dstEndPoint.strDevIndex))
                     {
-                        dstConnector = FindRRUConnector(strName, linkBoardToRRU.m_dstEndPoint.nPortNo, "rru_to_bbu-");
+                        dstConnector = FindRRUConnector(strName, linkBoardToRRU.m_dstEndPoint.nPortNo, "rru_to_other-");
                         if(dstConnector == null)
                         {
                             MessageBox.Show("没有找到rru InitBoardToRRU");

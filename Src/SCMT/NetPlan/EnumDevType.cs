@@ -31,12 +31,15 @@ namespace NetPlan
 	{
 		rhub_to_bbu,
 		rhub_to_pico,
-		pico_to_rhub,
+        rhub_to_other,
+        pico_to_rhub,
 		rru_to_bbu,
-		rru_to_ant,
+        rru_to_other,
+        rru_to_ant,
 		ant_to_rru,
 		bbu_to_rru,
 		bbu_to_rhub,
+        bbu_to_other,
 		rru_to_rru,
 		rhub_to_rhub,
 	}

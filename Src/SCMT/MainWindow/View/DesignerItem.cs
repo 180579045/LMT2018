@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using SCMTMainWindow.View.Controls;
+using NetPlan;
 
 namespace SCMTMainWindow.View
 {
@@ -30,6 +31,9 @@ namespace SCMTMainWindow.View
             set { nPathNumber = value; }
 
         }
+        //连接点的需要传给连接线的一些属性
+        public EnumDevType DevType { get; set; }
+        public string DevIndex { get; set; }
 
         #region ID
         private Guid id;
