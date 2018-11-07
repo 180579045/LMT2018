@@ -47,11 +47,11 @@ namespace NetPlan.Tests
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
 			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
+			db.resultInitData = async result =>
 			{
 				if (result)
 				{
-					var ret = NPSnmpOperator.InitNetPlanInfo();
+					var ret = await NPSnmpOperator.InitNetPlanInfo();
 					Assert.IsTrue(ret);
 					stop = true;
 				}

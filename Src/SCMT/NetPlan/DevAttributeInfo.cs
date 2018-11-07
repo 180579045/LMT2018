@@ -452,18 +452,119 @@ namespace NetPlan
 	}
 
 	// 连接的源端或者目的端
-	public struct LinkEndpoint
+	public class LinkEndpoint
 	{
 		public EnumDevType devType;		// 设备类型
 		public string strDevIndex;		// 设备索引
 		public EnumPortType portType;	// 端口类型
 		public int nPortNo;				// 端口号
+
+		public LinkEndpoint()
+		{
+			devType = EnumDevType.unknown;
+			strDevIndex = null;
+			portType = EnumPortType.unknown;
+			nPortNo = -1;
+		}
 	}
 
-	public struct WholeLink
+	public class WholeLink
 	{
 		public LinkEndpoint m_srcEndPoint;
 		public LinkEndpoint m_dstEndPoint;
 		public EnumDevType m_linkType;
+
+		public WholeLink()
+		{
+			m_srcEndPoint = new LinkEndpoint();
+			m_dstEndPoint = new LinkEndpoint();
+			m_linkType = EnumDevType.unknown;
+		}
+
+		public WholeLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
+		{
+			m_srcEndPoint = srcEndpoint;
+			m_dstEndPoint = dstEndpoint;
+			GetLinkType();
+		}
+
+		public EnumDevType GetLinkType()
+		{
+			var linkType = EnumDevType.unknown;
+
+			var bSrcIsRru = (EnumDevType.rru == m_srcEndPoint.devType);
+			var bSrcIsRhub = (EnumDevType.rhub == m_srcEndPoint.devType);
+
+			var srcDevTypeStr = m_srcEndPoint.devType.ToString();
+			var dstDevTypeStr = m_dstEndPoint.devType.ToString();
+
+			// 判断设备类型是否相同。todo 例外的是，级联的rru和rhub设备
+			if (m_srcEndPoint.devType == m_dstEndPoint.devType && (!bSrcIsRhub && !bSrcIsRru))
+			{
+				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且不是rru和rhub。添加连接失败");
+				return linkType;
+			}
+
+			// 判断级联的设备索引是否相同。级联的设备索引不能相同，也就是不能自己连接自己
+			if (m_srcEndPoint.devType == m_dstEndPoint.devType && m_srcEndPoint.strDevIndex == m_dstEndPoint.strDevIndex)
+			{
+				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且源和目的的索引值{m_srcEndPoint.strDevIndex}也相同");
+				return linkType;
+			}
+
+			// 判断源和目的是否是有效的组合
+			if (!DevTypeHelper.IsValidDevCop(m_srcEndPoint.devType, m_dstEndPoint.devType))
+			{
+				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}不是有效的组合");
+				return linkType;
+			}
+
+			var srcPortTypeStr = m_srcEndPoint.portType.ToString();
+			var dstPortTypeStr = m_dstEndPoint.portType.ToString();
+
+			// 判断源和目的的端口类型是否是有效的组合
+			if (!PortTypeHelper.IsValidPortCop(m_srcEndPoint.portType, m_dstEndPoint.portType))
+			{
+				Log.Error($"源设备端口类型{srcPortTypeStr}和目的设备类型{dstPortTypeStr}不是有效的组合");
+				return linkType;
+			}
+
+			// 获取连接类型
+			linkType = DevTypeHelper.GetLinkTypeByTwoEp(m_srcEndPoint.devType, m_dstEndPoint.devType);
+			m_linkType = linkType;
+			return linkType;
+		}
+
+		/// todo 如果是级联的情况，需要特别注意
+		public string GetDevIndex(EnumDevType devType)
+		{
+			if (m_srcEndPoint.devType == devType)
+			{
+				return m_srcEndPoint.strDevIndex;
+			}
+
+			if (m_dstEndPoint.devType == devType)
+			{
+				return m_dstEndPoint.strDevIndex;
+			}
+			return null;
+		}
+
+		public int GetDevIrPort(EnumDevType devType, EnumPortType portType)
+		{
+			if (m_srcEndPoint.devType == devType &&
+				m_srcEndPoint.portType == portType)
+			{
+				return m_srcEndPoint.nPortNo;
+			}
+
+			if (m_dstEndPoint.devType == devType &&
+			    m_dstEndPoint.portType == portType)
+			{
+				return m_dstEndPoint.nPortNo;
+			}
+
+			return -1;
+		}
 	}
 }

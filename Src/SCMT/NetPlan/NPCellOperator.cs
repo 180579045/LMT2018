@@ -170,7 +170,7 @@ namespace NetPlan
 				return false;
 			}
 
-			if (!MibInfoMgr.GetInstance().DevDevFromMemory(strIndexTemp, EnumDevType.nrCell))
+			if (!MibInfoMgr.GetInstance().DelDevFromMemory(strIndexTemp, EnumDevType.nrCell))
 			{
 				Log.Error($"从内存中删除索引为{strIndexTemp}的小区信息失败");
 				return false;
@@ -206,7 +206,7 @@ namespace NetPlan
 			}
 
 			// 删除本地小区后，只有nrCellEntry表变化，本地小区规划信息仍然存在
-			if (!MibInfoMgr.GetInstance().DevDevFromMemory(strIndexTemp, EnumDevType.nrLc))
+			if (!MibInfoMgr.GetInstance().DelDevFromMemory(strIndexTemp, EnumDevType.nrLc))
 			{
 				Log.Error($"从内存中删除索引为{strIndexTemp}的本地小区失败");
 				return false;

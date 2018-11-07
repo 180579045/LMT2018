@@ -73,11 +73,12 @@ namespace NetPlan.Tests
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
 			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
+			db.resultInitData = async result =>
 			{
 				if (result)
 				{
-					if (NPSnmpOperator.InitNetPlanInfo())
+					var ret = await NPSnmpOperator.InitNetPlanInfo();
+					if (ret)
 					{
 						var strIndex = ".0.0.1";
 						MibInfoMgr.GetInstance().SetDevAttributeValue(strIndex, "netBoardIrFrameType", "CPRI-HDLC", EnumDevType.board);

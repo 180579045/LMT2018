@@ -327,7 +327,7 @@ namespace NetPlan
 				}
 
 				var devIndex = dev.m_strOidIndex;
-				if (HasSameIndexDev(type, devIndex))
+				if (HasSameIndexDev(m_mapAllMibData, type, devIndex))
 				{
 					Log.Error($"已经存在编号为{seqIndex}的rhub设备，添加失败");
 					return null;
@@ -400,54 +400,15 @@ namespace NetPlan
 		/// <param name="srcEndpoint"></param>
 		/// <param name="dstEndpoint"></param>
 		/// <returns></returns>
-		public DevAttributeInfo AddLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
+		public bool AddLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
 		{
-			var bSrcIsRru = (EnumDevType.rru == srcEndpoint.devType);
-			var bSrcIsRhub = (EnumDevType.rhub == srcEndpoint.devType);
-
-			var srcDevTypeStr = srcEndpoint.devType.ToString();
-			var dstDevTypeStr = dstEndpoint.devType.ToString();
-
-			// 判断设备类型是否相同。todo 例外的是，级联的rru和rhub设备
-			if (srcEndpoint.devType == dstEndpoint.devType && (!bSrcIsRhub && !bSrcIsRru))
+			var linkType = EnumDevType.unknown;
+			if (!GetLinkTypeBySrcDstEnd(srcEndpoint, dstEndpoint, ref linkType))
 			{
-				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且不是rru和rhub。添加连接失败");
-				return null;
+				Log.Error("获取连接类型失败");
+				return false;
 			}
 
-			// 判断级联的设备索引是否相同。级联的设备索引不能相同，也就是不能自己连接自己
-			if (srcEndpoint.devType == dstEndpoint.devType && srcEndpoint.strDevIndex == dstEndpoint.strDevIndex)
-			{
-				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且源和目的的索引值{srcEndpoint.strDevIndex}也相同");
-				return null;
-			}
-
-			// 判断源和目的是否是有效的组合
-			if (!DevTypeHelper.IsValidDevCop(srcEndpoint.devType, dstEndpoint.devType))
-			{
-				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}不是有效的组合");
-				return null;
-			}
-
-			var srcPortTypeStr = srcEndpoint.portType.ToString();
-			var dstPortTypeStr = dstEndpoint.portType.ToString();
-
-			// 判断源和目的的端口类型是否是有效的组合
-			if (!PortTypeHelper.IsValidPortCop(srcEndpoint.portType, dstEndpoint.portType))
-			{
-				Log.Error($"源设备端口类型{srcPortTypeStr}和目的设备类型{dstPortTypeStr}不是有效的组合");
-				return null;
-			}
-
-			// 获取连接类型
-			var linkType = DevTypeHelper.GetLinkTypeByTwoEp(srcEndpoint.devType, dstEndpoint.devType);
-			if (EnumDevType.unknown == linkType)
-			{
-				Log.Error("根据设备类型获取连接类型失败");
-				return null;
-			}
-
-			DevAttributeInfo retDev = null;
 			// 根据linktype设置参数
 			if (linkType == EnumDevType.board_rru)
 			{
@@ -469,14 +430,14 @@ namespace NetPlan
 					nRruIrPort = srcEndpoint.nPortNo;
 				}
 
-				var bExisted = HasSameIndexDev(linkType, irEntryIndex);
+				var bExisted = HasSameIndexDev(m_mapAllMibData, linkType, irEntryIndex);
 				if (bExisted)
 				{
 					Log.Error($"已经存在类型为{linkType.ToString()}索引为{irEntryIndex}的信息，一个光口只能连接一个设备");
-					return null;
+					return false;
 				}
 
-				var dev = new DevAttributeInfo(linkType, irEntryIndex) {m_recordType = RecordDataType.NewAdd};
+				var dev = new DevAttributeInfo(linkType, irEntryIndex) { m_recordType = RecordDataType.NewAdd };
 				lock (_syncObj)
 				{
 					AddDevToMap(m_mapAllMibData, linkType, dev);
@@ -485,10 +446,10 @@ namespace NetPlan
 				if (!SetRruToBoardInfo(strBoardIndex, nBoardIrPort, strRruIndex, nRruIrPort))
 				{
 					Log.Error($"设置索引为{strRruIndex}RRU相关的接入板信息失败");
-					return null;
+					return false;
 				}
-				retDev = dev;
 			}
+
 			if (linkType == EnumDevType.rru_ant)
 			{
 				// 设置netRRUAntennaSettingEntry
@@ -505,19 +466,46 @@ namespace NetPlan
 					antIndex = srcEndpoint.strDevIndex;
 				}
 
-				if (!SetRruAntSettingTblRelateAntInfo(strRruIndex, nRruIrPort, antIndex, antIrPort, ref retDev))
+				if (!SetRruAntSettingTblRelateAntInfo(strRruIndex, nRruIrPort, antIndex, antIrPort))
 				{
-					Log.Error($"设备天线阵安装规划表信息失败");
-					return null;
+					Log.Error("设备天线阵安装规划表信息失败");
+					return false;
 				}
 			}
 			if (linkType == EnumDevType.rhub_prru)
 			{
 				// 设置
 			}
-			
 
-			return retDev;
+			m_linkMgr.AddLinkToList(srcEndpoint, dstEndpoint, linkType);
+
+			return true;
+		}
+
+		/// <summary>
+		/// 把类型为devType的Dev添加到给定的map中
+		/// </summary>
+		/// <param name="mapData"></param>
+		/// <param name="devType"></param>
+		/// <param name="dev"></param>
+		public static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dev)
+		{
+			if (null == mapData || devType == EnumDevType.unknown || null == dev)
+			{
+				return false;
+			}
+
+			if (mapData.ContainsKey(devType))
+			{
+				mapData[devType].Add(dev);
+			}
+			else
+			{
+				var devList = new List<DevAttributeInfo> { dev };
+				mapData[devType] = devList;
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -540,14 +528,6 @@ namespace NetPlan
 				return false;
 			}
 
-			if (RecordDataType.NewAdd != dev.m_recordType)  // 不是新加的设备就设置为WaitDev
-			{
-				dev.m_recordType = RecordDataType.WaitDel;
-				Log.Debug($"找到类型为{devType.ToString()}索引为{strIndex}的记录，设置记录数据状态为：{dev.m_recordType}");
-				return true;
-			}
-
-			Log.Debug($"找到类型为{devType.ToString()}索引为{strIndex}的记录，旧的记录类型为NewAdd，直接删除");
 			lock (_syncObj)
 			{
 				DelDevFromMap(m_mapAllMibData, devType, dev);
@@ -558,32 +538,45 @@ namespace NetPlan
 		/// <summary>
 		/// 删除连接
 		/// </summary>
-		/// <param name="strLinkIndex"></param>
-		/// <param name="linkType"></param>
+		/// <param name="srcEndpoint"></param>
+		/// <param name="dstEndpoint"></param>
 		/// <returns></returns>
-		public bool DelLink(string strLinkIndex, EnumDevType linkType)
+		public bool DelLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
 		{
-			if (string.IsNullOrEmpty(strLinkIndex))
+			var linkType = EnumDevType.unknown;
+			if (!GetLinkTypeBySrcDstEnd(srcEndpoint, dstEndpoint, ref linkType))
 			{
-				throw new ArgumentNullException("传入连接的索引无效");
-			}
-
-			var record = GetDevAttributeInfo(strLinkIndex, linkType);
-			if (null == record)
-			{
-				Log.Error($"未找到类型为{linkType.ToString()}，索引为{strLinkIndex}的记录");
+				Log.Error("获取连接类型失败，删除连接失败");
 				return false;
 			}
+
+			var wlink = new WholeLink(srcEndpoint, dstEndpoint);
 
 			if (EnumDevType.board_rru == linkType)
 			{
 				// linkIndex对应的是netIROptPlanEntry表的一行记录
-				var rackNo = record.GetFieldOriginValue("netIROfpPortRackNo");
-				var shelfNo = record.GetFieldOriginValue("netIROfpPortShelfNo");
-				var slotNo = record.GetFieldOriginValue("netIROfpPortSlotNo");
-				var irPort = record.GetFieldOriginValue("netIROfpPortIndexOnBoard");
+				var boardIndex = wlink.GetDevIndex(EnumDevType.board);
+				if (null == boardIndex)
+				{
+					Log.Error("根据源和目的获取板卡的索引值为null");
+					return false;
+				}
 
-				var boardIndex = $".{rackNo}.{shelfNo}.{slotNo}";
+				var irPort = wlink.GetDevIrPort(EnumDevType.board, EnumPortType.bbu_to_rru);
+				if (-1 == irPort)
+				{
+					Log.Error("根据源和目的获取板卡的光口号为-1");
+					return false;
+				}
+
+				var IrSetRecordIndex = $"{boardIndex}.{irPort}";
+				var record = GetDevAttributeInfo(IrSetRecordIndex, EnumDevType.board_rru);
+				if (null == record)
+				{
+					Log.Error($"根据索引{IrSetRecordIndex}获取netIROptPlanEntry表记录失败");
+					return false;
+				}
+
 				var board = GetDevAttributeInfo(boardIndex, EnumDevType.board);
 				if (null == board)
 				{
@@ -592,57 +585,50 @@ namespace NetPlan
 				}
 				var boardType = board.GetFieldOriginValue("netBoardType");
 
-				// 遍历netRruEntry表，找到rackNo、shelefNo和slotNo都匹配的rru信息，把对应的光口设置为-1
-				List<DevAttributeInfo> rruList = null;
-				lock (_syncObj)
+				// 获取这条连接对端的设备信息
+				var rruIndex = wlink.GetDevIndex(EnumDevType.rru);
+				if (null == rruIndex)
 				{
-					if (!m_mapAllMibData.ContainsKey(EnumDevType.rru))
-					{
-						Log.Error($"未找到类型为rru的信息");
-						return false;
-					}
-
-					rruList = m_mapAllMibData[EnumDevType.rru];
+					Log.Error("获取rru设备的索引返回null");
+					return false;
 				}
 
-				for (var i = 0; i < rruList.Count; i++)
+				var rruIrPort = wlink.GetDevIrPort(EnumDevType.rru, EnumPortType.rru_to_bbu);
+				if (-1 == rruIrPort)
 				{
-					var rru = rruList.ElementAt(i);
-
-					// 通过接口板的类型和插槽号确定是否是连接关联的rru
-					var accessBoardType = rru.GetFieldOriginValue("netRRUAccessBoardType");
-					if (accessBoardType != boardType)
-					{
-						continue;
-					}
-
-					for (var j = 1; j < 5; j++)
-					{
-						var strFieldName = "netRRUAccessSlotNo";
-						if (j > 1)
-						{
-							strFieldName = $"netRRUOfp{j}SlotNo";
-						}
-
-						var accessBoardSlot = rru.GetFieldOriginValue(strFieldName);
-						if (slotNo != accessBoardSlot)		// 判断光口n的接入槽位号和接口板的槽位号是否相同
-						{
-							continue;
-						}
-
-						strFieldName = $"netRRUOfp{j}AccessOfpPortNo";		// 判断光口n连接的接口板的光口号是否相同
-						var accessOfpPort = rru.GetFieldOriginValue(strFieldName);
-						if (irPort == accessOfpPort)
-						{
-							rru.SetFieldValue(strFieldName, "-1");
-
-							// todo 光口的接入级数是否需要重新计算
-						}
-					}
+					Log.Error("获取rru设备连接板卡光口号返回-1");
+					return false;
 				}
 
-				// todo 要反向设置吗到map中吗？不需要。 记录的record type尚未设置
+				var rruDai = GetDevAttributeInfo(rruIndex, EnumDevType.rru);
+				if (null == rruDai)
+				{
+					Log.Error($"根据索引{rruIndex}未找到对应的rru设备信息");
+					return false;
+				}
 
+				// 通过接口板的类型和插槽号确定是否是连接关联的rru
+				var accessBoardType = rruDai.GetFieldOriginValue("netRRUAccessBoardType");
+				if (accessBoardType != boardType)
+				{
+					Log.Error($"根据板卡索引{boardIndex}找到板卡类型{boardType}，与根据rru索引{rruIndex}找到连接板卡类型{accessBoardType}不一致");
+					return false;
+				}
+
+				var ofpMibName = $"netRRUOfp{rruIrPort}AccessOfpPortNo";
+				var linePosMibName = $"netRRUOfp{rruIrPort}AccessLinePosition";
+				var slotMibName = (rruIrPort == 1 ? "netRRUAccessSlotNo" : $"netRRUOfp{rruIrPort}SlotNo");
+
+				// todo rru与board的最后一条连接删除时，才设置板类型等信息，先不做
+				rruDai.SetFieldValue(ofpMibName, "-1");
+				rruDai.SetFieldValue(linePosMibName, "-1");
+				rruDai.SetFieldValue(slotMibName, "-1");
+				if (rruDai.m_recordType != RecordDataType.NewAdd)
+				{
+					rruDai.m_recordType = RecordDataType.Modified;
+				}
+
+				// 删掉一行netIROptPlanEntry记录
 				lock (_syncObj)
 				{
 					DelDevFromMap(m_mapAllMibData, linkType, record);
@@ -652,7 +638,61 @@ namespace NetPlan
 			if (EnumDevType.rru_ant == linkType)
 			{
 				// 天线阵安装规划表的一行记录，需要把天线阵编号和天线阵通道编号设置为默认值-1
+				var rruIndex = wlink.GetDevIndex(EnumDevType.rru);
+				if (null == rruIndex)
+				{
+					Log.Error("根据源和目的获取rru设备的索引值为null");
+					return false;
+				}
 
+				var rru = GetDevAttributeInfo(rruIndex, EnumDevType.rru);
+				if (null == rru)
+				{
+					Log.Error($"根据索引{rruIndex}获取rru设备失败");
+					return false;
+				}
+
+				var rruIrPort = wlink.GetDevIrPort(EnumDevType.rru, EnumPortType.rru_to_ant);
+				if (-1 == rruIrPort)
+				{
+					Log.Error("根据源和目的获取rru的光口号为-1");
+					return false;
+				}
+
+				var rruAntIndex = $"{rruIndex}.{rruIrPort}";
+				var antSetRecord = GetDevAttributeInfo(rruAntIndex, EnumDevType.rru_ant);
+				if (null == antSetRecord)
+				{
+					Log.Error($"根据索引{rruAntIndex}在天线阵安装规划表中未找到对应的记录");
+					return false;
+				}
+
+				var antIndex = wlink.GetDevIndex(EnumDevType.ant);
+				if (null == antIndex)
+				{
+					Log.Error("根据源和目的获取ant设备的索引值为null");
+					return false;
+				}
+
+				var ant = GetDevAttributeInfo(antIndex, EnumDevType.ant);
+				if (null == ant)
+				{
+					Log.Error($"根据索引{antIndex}获取ant设备失败");
+					return false;
+				}
+
+				var antIrPort = wlink.GetDevIrPort(EnumDevType.ant, EnumPortType.ant_to_rru);
+				if (-1 == antIrPort)
+				{
+					Log.Error("根据源和目的获取ant的光口号为-1");
+					return false;
+				}
+
+				// 两端设备信息都已经齐备，处理天线阵安装规划表中的记录
+				lock (_syncObj)
+				{
+					DelDevFromMap(m_mapAllMibData, linkType, antSetRecord);
+				}
 			}
 
 			return true;
@@ -664,7 +704,7 @@ namespace NetPlan
 		/// <param name="strIndex"></param>
 		/// <param name="devType"></param>
 		/// <returns></returns>
-		public bool DevDevFromMemory(string strIndex, EnumDevType devType)
+		public bool DelDevFromMemory(string strIndex, EnumDevType devType)
 		{
 			if (string.IsNullOrEmpty(strIndex) || EnumDevType.unknown == devType)
 			{
@@ -680,7 +720,7 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				DelDevFromMap(m_mapAllMibData, devType, dev);
+				DelDevFromMap(m_mapAllMibData, devType, dev, true);
 			}
 			return true;
 		}
@@ -703,23 +743,19 @@ namespace NetPlan
 			lock (_syncObj)
 			{
 				// 从基站中查询到设备修改属性，就需要移动到modify队列，等待参数下发
-				if (m_mapAllMibData.ContainsKey(devType))
-				{
-					var devList = m_mapAllMibData[devType];
-					var dev = GetSameIndexDev(devList, strIndex);
-					if (null != dev)
-					{
-						dev.SetFieldValue(strFieldName, strValue);
-						if (RecordDataType.NewAdd != dev.m_recordType)
-						{
-							dev.m_recordType = RecordDataType.Modified;
-						}
-						return true;
-					}
-				}
-			}
+				if (!m_mapAllMibData.ContainsKey(devType)) return false;
 
-			return false;
+				var devList = m_mapAllMibData[devType];
+				var dev = GetSameIndexDev(devList, strIndex);
+				if (null == dev) return false;
+
+				dev.SetFieldValue(strFieldName, strValue);
+				if (RecordDataType.NewAdd != dev.m_recordType)
+				{
+					dev.m_recordType = RecordDataType.Modified;
+				}
+				return true;
+			}
 		}
 
 		/// <summary>
@@ -892,6 +928,13 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 增加一行天线阵安装规划表记录
+		/// </summary>
+		/// <param name="strRruNo"></param>
+		/// <param name="strPort"></param>
+		/// <param name="lcInfo"></param>
+		/// <returns></returns>
 		public DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
 		{
 			var strIndex = $".{strRruNo.Trim('.')}.{strPort}";
@@ -921,22 +964,18 @@ namespace NetPlan
 			var devType = EnumDevType.rru_ant;
 			lock (_syncObj)
 			{
-				if (m_mapAllMibData.ContainsKey(devType))
-				{
-					var devList = m_mapAllMibData[devType];
-					foreach (var dai in devList)
-					{
-						var lcId1 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId");
-						var lcId2 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId2");
-						var lcId3 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId3");
-						var lcId4 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId4");
-						if (strLcId == lcId4 || strLcId == lcId1 ||
-							strLcId == lcId3 || strLcId == lcId2)
-						{
-							retList.Add(dai);
-						}
-					}
-				}
+				if (!m_mapAllMibData.ContainsKey(devType)) return retList;
+
+				var devList = m_mapAllMibData[devType];
+				retList.AddRange(
+					from dai in devList
+					let lcId1 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId")
+					let lcId2 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId2")
+					let lcId3 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId3")
+					let lcId4 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId4")
+					where strLcId == lcId4 || strLcId == lcId1 || strLcId == lcId3 || strLcId == lcId2
+					select dai
+					);
 			}
 
 			return retList;
@@ -1027,6 +1066,18 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 清理所有的数据
+		/// </summary>
+		public void Clear()
+		{
+			lock (_syncObj)
+			{
+				m_mapAllMibData.Clear();
+				m_linkMgr.Clear();
+			}
+		}
+
 		#endregion
 
 		#region 私有接口
@@ -1043,22 +1094,16 @@ namespace NetPlan
 		/// <param name="devType"></param>
 		/// <param name="strIndex"></param>
 		/// <returns></returns>
-		private bool HasSameIndexDev(EnumDevType devType, string strIndex)
+		private static bool HasSameIndexDev(MAP_DEVTYPE_DEVATTRI mapMibInfo, EnumDevType devType, string strIndex)
 		{
-			lock (_syncObj)
-			{
-				if (m_mapAllMibData.ContainsKey(devType))
-				{
-					var devList = m_mapAllMibData[devType];
-					return HasSameIndexDev(devList, strIndex);
-				}
-			}
+			if (!mapMibInfo.ContainsKey(devType)) return false;
 
-			return false;
+			var devList = mapMibInfo[devType];
+			return HasSameIndexDev(devList, strIndex);
 		}
 
 		// 判断给定的列表中是否存在与strIndex相同索引的设备
-		private bool HasSameIndexDev(List<DevAttributeInfo> devList, string strIndex)
+		private static bool HasSameIndexDev(List<DevAttributeInfo> devList, string strIndex)
 		{
 			return null != devList && devList.Any(dev => dev.m_strOidIndex == strIndex);
 		}
@@ -1069,35 +1114,13 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 从给定的map删除索引为strIndex、类型为devType的记录
+		/// 从map中删除数据
 		/// </summary>
-		/// <param name="mapData"></param>
-		/// <param name="devType"></param>
-		/// <param name="strIndex"></param>
-		private void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, string strIndex)
-		{
-			if (null == mapData)
-			{
-				return;
-			}
-
-			if (!mapData.ContainsKey(devType))
-			{
-				return;
-			}
-
-			var devList = mapData[devType];
-			foreach (var dev in devList)
-			{
-				if (dev.m_strOidIndex != strIndex) continue;
-
-				devList.Remove(dev);
-				mapData[devType] = devList;
-				break;
-			}
-		}
-
-		private void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai)
+		/// <param name="mapData">待操作的map</param>
+		/// <param name="devType">设备类型</param>
+		/// <param name="dai">设备属性</param>
+		/// <param name="bDelReal">是否立即删除，不仅是设置记录类型</param>
+		private void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
 		{
 			if (null == mapData || null == dai)
 			{
@@ -1109,30 +1132,13 @@ namespace NetPlan
 				return;
 			}
 
-			mapData[devType].Remove(dai);
-		}
-
-		/// <summary>
-		/// 把类型为devType的Dev添加到给定的map中
-		/// </summary>
-		/// <param name="mapData"></param>
-		/// <param name="devType"></param>
-		/// <param name="dev"></param>
-		private void AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dev)
-		{
-			if (null == mapData)
+			if (dai.m_recordType == RecordDataType.NewAdd || bDelReal)
 			{
-				return;
-			}
-
-			if (mapData.ContainsKey(devType))
-			{
-				mapData[devType].Add(dev);
+				mapData[devType].Remove(dai);
 			}
 			else
 			{
-				var devList = new List<DevAttributeInfo> {dev};
-				mapData[devType] = devList;
+				dai.m_recordType = RecordDataType.WaitDel;
 			}
 		}
 
@@ -1632,7 +1638,7 @@ namespace NetPlan
 		/// <param name="strAntIndex"></param>
 		/// <param name="nAntIrPort"></param>
 		/// <returns></returns>
-		private bool SetRruAntSettingTblRelateAntInfo(string strRruIndex, int nRruIrPort, string strAntIndex, int nAntIrPort, ref DevAttributeInfo newDev)
+		private bool SetRruAntSettingTblRelateAntInfo(string strRruIndex, int nRruIrPort, string strAntIndex, int nAntIrPort)
 		{
 			if (string.IsNullOrEmpty(strRruIndex) || string.IsNullOrEmpty(strAntIndex))
 			{
@@ -1666,8 +1672,25 @@ namespace NetPlan
 			{
 				AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newRecord);
 			}
-			newDev = newRecord;
 			return true;
+		}
+
+		/// <summary>
+		/// 根据连接两端信息，获取连接的类型
+		/// </summary>
+		/// <param name="srcEndpoint">源端信息</param>
+		/// <param name="dstEndpoint">目的端信息</param>
+		/// <param name="linkType">ref 连接类型，传出参数</param>
+		/// <returns>true:源和目的信息有效，获取到有效类型；false:其他情况</returns>
+		private bool GetLinkTypeBySrcDstEnd(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint, ref EnumDevType linkType)
+		{
+			var link = new WholeLink
+			{
+				m_srcEndPoint = srcEndpoint,
+				m_dstEndPoint = dstEndpoint
+			};
+			linkType = link.GetLinkType();
+			return (linkType != EnumDevType.unknown);
 		}
 
 		#endregion

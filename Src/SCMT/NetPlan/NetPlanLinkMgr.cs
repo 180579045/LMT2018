@@ -108,11 +108,11 @@ namespace NetPlan
 
 			if (!ParseBoardToRhubLink(rhubList, boardList))
 			{
-				
+				Log.Error("解析board到rhub设备属性");
 			}
 
 			// 解析rhub与pico之间的连接
-
+			// 在mib中，netRRUOfp1AccessEthernetPort表示连接的是对端Hub eth口
 
 			return true;
 		}
@@ -298,7 +298,7 @@ namespace NetPlan
 				return false;
 			}
 
-			// todo 上一级rru的连接板卡的光口号与rru之间的级联的光口号的关系如何确定
+			// 上一级rru的连接板卡的光口号与rru之间的级联的光口号的关系没有确定的关系
 			var prevRruDownLinePort = -1;	// 上级rru的下联口
 			if (1 == prevRruInfo.nRruIrPort)
 			{
@@ -325,8 +325,7 @@ namespace NetPlan
 				portType = EnumPortType.rru_to_rru
 			};
 
-			// todo 级联模式，设备类型设定为board to rru
-			AddLinkToList(prevEndpoint, curEndPoint, EnumDevType.board_rru);
+			AddLinkToList(prevEndpoint, curEndPoint, EnumDevType.rru_rru);
 
 			return true;
 		}
@@ -463,7 +462,7 @@ namespace NetPlan
 			}
 
 			var accessPos = rru.GetFieldOriginValue(accessPosMibName);
-			if ("-1" == accessPos) // todo 需要注意非级联模式设置为默认值-1的情况
+			if ("-1" == accessPos)	// 非级联，接入级数为1
 			{
 				Log.Error($"索引为{rruIndex}的RRU光口{nOfpIndex}连接对端光口{remoteOfPort}，但接入级数为-1，无效信息");
 				return false;
@@ -629,7 +628,6 @@ namespace NetPlan
 			}
 
 			// 5G的pico设备只有一个网口，通过网口与rhub的电口相连
-			// 在mib中，netRRUOfp1AccessEthernetPort表示连接的是对端Hub eth口
 			return HandleWaitPrevRhubList();
 		}
 
@@ -716,7 +714,7 @@ namespace NetPlan
 				return true;
 			}
 
-			if ("-1" == accessPos) // todo 需要注意非级联模式设置为默认值-1的情况
+			if ("-1" == accessPos)
 			{
 				Log.Error($"索引为{hubIndex}的RRU光口{nOfpIndex}连接对端光口{remoteOfPort}，但接入级数为-1，无效信息");
 				return false;
@@ -734,7 +732,7 @@ namespace NetPlan
 			// rhub连接板卡时，接入级数为1；正常模式，接入级数为1
 			if ("1" == accessPos)
 			{
-				// todo 在netIROptPlanEntry中查找是否存在这条连接。2级级联的设备不存在于这张表中
+				// todo 在netIROptPlanEntry中查找是否存在这条连接。2级级联的设备是否存在于这张表中？
 
 				if (!GenerateBoardToRhubLink(boardIndex, int.Parse(remoteOfPort), hubIndex, nOfpIndex))
 				{
@@ -766,7 +764,7 @@ namespace NetPlan
 
 			if (!GenerateRhubToRhubLink(prevRhub, parsedRhub))
 			{
-				Log.Error("生成rru到rru的连接失败");
+				Log.Error("生成rhub到rhub的连接失败");
 				return false;
 			}
 
@@ -775,7 +773,10 @@ namespace NetPlan
 			return true;
 		}
 
-
+		/// <summary>
+		/// 保存已经找到前一级的设备属性
+		/// </summary>
+		/// <param name="element"></param>
 		private void AddElementToParsedRruList(ParsedRruInfo element)
 		{
 			if (null == element)
@@ -789,6 +790,10 @@ namespace NetPlan
 			}
 		}
 
+		/// <summary>
+		/// 未找到前一级级联设备的设备，等待最后进行处理
+		/// </summary>
+		/// <param name="element"></param>
 		private void AddElementToWaitPrevList(ParsedRruInfo element)
 		{
 			if (null == element)
