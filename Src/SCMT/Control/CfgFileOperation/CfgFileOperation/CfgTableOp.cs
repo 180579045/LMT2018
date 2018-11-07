@@ -15,7 +15,9 @@ namespace CfgFileOperation
     class CfgTableOp
     {
         /*********************        变量                         ***************************/
-        uint u32CurTblOffset;                     //  每个索引项 每个表的数据在文件中的起始位置（相对文件头）
+        uint u32CurTblOffset;                     //  每个索引项 每个表的数据在文件中的起始位置（相对文件头） init.cfg中使用
+        uint u32CurTblOffset_PDG;                 //  作用与u32CurTblOffset相同, patch_ex.cfg中使用，如果这个表不需要写patch,则不赋值.
+                                                  //
         bool m_isMibInfoInitial;                  //  信息是否读取过 ? 作用是啥？？？
         /// <summary>
         /// table 的索引数

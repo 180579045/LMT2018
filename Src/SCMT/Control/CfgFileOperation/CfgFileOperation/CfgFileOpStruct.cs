@@ -919,7 +919,7 @@ namespace CfgFileOpStruct
         /// <returns></returns>
         public byte[] StruToByteArray()
         {
-            byte[] byteArray = new byte[Marshal.SizeOf(new StruCfgFileTblInfo())];// DataHead 转 byte[]
+            byte[] byteArray = new byte[Marshal.SizeOf(new StruCfgFileTblInfo("init"))];// DataHead 转 byte[]
             int bytePos = 0; //byteArray 写的位置, 依次往后写
             List<byte[]> byteAL = new List<byte[]>() { byteArray };
             List<int> bytePosL = new List<int>() { bytePos };
@@ -934,7 +934,7 @@ namespace CfgFileOpStruct
         }
         public byte[] StruToByteArrayReverse()
         {
-            byte[] byteArray = new byte[Marshal.SizeOf(new StruCfgFileTblInfo())];// DataHead 转 byte[]
+            byte[] byteArray = new byte[Marshal.SizeOf(new StruCfgFileTblInfo("init"))];// DataHead 转 byte[]
             int bytePos = 0; //byteArray 写的位置, 依次往后写
             List<byte[]> byteAL = new List<byte[]>() { byteArray };
             List<int> bytePosL = new List<int>() { bytePos };

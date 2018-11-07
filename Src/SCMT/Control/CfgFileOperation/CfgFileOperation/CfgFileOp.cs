@@ -165,12 +165,31 @@ namespace CfgFileOperation
         /// <returns></returns>
         public bool CreateFilePdg_eNB(string newFilePath, string strDBPath)
         {
-            //OM_STRU_CfgFile_Header_V1 m_eNB_pdgFile_Header;   
+            // 文件头
             WriteHeaderVersionInfoPDG(strDBPath);//Pdg文件头结构
+            // 数据块头
+            int m_tableNum = m_reclistExcel.GetVectPDGTabNameNum();
+            WriteDataHeadInfoPDG((uint)m_tableNum);//Pdg数据块头结构
+            // 偏移头
+            uint iFixedHeadOffset = 0;//固定头偏移 Fixed Head
+            iFixedHeadOffset += (uint)Marshal.SizeOf(new StruCfgFileHeader(""));      //文件头：956 字节，
+            iFixedHeadOffset += (ushort)Marshal.SizeOf(new StruDataHead("init"));     //数据头：24  字节， sizeof(DataHead);
+            iFixedHeadOffset += (uint)m_tableNum * (uint)Marshal.SizeOf(new UInt32());//偏移头：4 * 表个数 字节，每个表的偏移量 
 
-            int uintTableNum = m_reclistExcel.GetVectPDGTabNameNum();
-            WriteDataHeadInfoPDG((uint)uintTableNum);//Pdg数据块头结构
-
+            List<string> mTabNames = m_reclistExcel.GetVectPDGTabName();
+            foreach (var tabName in mTabNames)
+            {
+                if (m_mapTableInfo.ContainsKey(tabName))
+                {
+                    CfgTableOp tabOp = m_mapTableInfo[tabName];
+                    //uint iTableOffset = tabOp.GetTableOffset();
+                    string strTableContent = tabOp.GetDytabCont().ToString();
+                    bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
+                    //iFixedHeadOffset = SetTableOffset(tabOp, isDyTable, iFixedHeadOffset);                //计算表的偏移量
+                    // 总结 reclist、自定义中的特定的叶子节点
+                    iFixedHeadOffset = SetTableOffset_PDG(tabOp, isDyTable, iFixedHeadOffset);
+                }
+            }
 
             return true;
         }
@@ -350,8 +369,8 @@ namespace CfgFileOperation
             string strTableName = row["MIBName"].ToString();
             if (strTableName == "alarmCauseEntry")
                 Console.WriteLine("1111");
-            string strTableContent = row["TableContent"].ToString();//设置动态表的容量
-            bool isDyTable = isDynamicTable(strTableContent); // 是否为动态表
+            string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
+            bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
             //if (df.Tables[0].Rows.Count > 0)
             string strSQL = String.Format("select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", row["OID"].ToString());
             DataSet MibdateSet = CfgGetRecordByAccessDb(strFileToDirectory + "\\lm.mdb", strSQL);
@@ -410,8 +429,12 @@ namespace CfgFileOperation
                 tableOp.m_cfgFile_TblInfo.u32RecNum = TotalRecorNum;
                 TableOffset += (uint)(TotalRecorNum * tableOp.GetAllLeafsFieldLens());//字段总长;
             }
-            TableOffset += (uint)Marshal.SizeOf(new StruCfgFileTblInfo());
+            TableOffset += (uint)Marshal.SizeOf(new StruCfgFileTblInfo("init"));
             TableOffset += (uint)((uint)Marshal.SizeOf(new StruCfgFileFieldInfo()) * (uint)tableOp.m_LeafNodes.Count);
+            return TableOffset;
+        }
+        uint SetTableOffset_PDG(CfgTableOp tableOp, bool isDyTable, uint TableOffset)
+        {
             return TableOffset;
         }
         /// <summary>
