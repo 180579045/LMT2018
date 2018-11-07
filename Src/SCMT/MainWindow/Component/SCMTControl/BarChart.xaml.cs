@@ -17,6 +17,7 @@ using CefSharp.Wpf;
 using Xceed.Wpf.AvalonDock.Layout;
 using System.Threading;
 using LmtbSnmp;
+using CommonUtility;
 
 namespace SCMTMainWindow.Component.SCMTControl
 {
@@ -115,7 +116,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                             {
                                 // ！！！后续需要扩展功能，保存日志文件;
                                 SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-                                Ret = snmpmsg1.GetRequest(inputoid, "public", "172.27.245.92");
+                                Ret = snmpmsg1.GetRequest(inputoid, "public", CSEnbHelper.GetCurEnbAddr());
                                 double temp = 0;
 
                                 foreach (var iter2 in Ret)
