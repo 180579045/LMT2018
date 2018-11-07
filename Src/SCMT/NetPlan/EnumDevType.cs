@@ -14,21 +14,26 @@ namespace NetPlan
 		rru,
 		rhub,
 		ant,
-		board_rru,
-		rru_ant,
-		rhub_prru,
-		nrNetLc,
 		nrLc,
 		nrCell,
-		netLc,
+		nrNetLc,
+		nrNetLcCtr,
 		lc,
 		cell,
-		nrNetLcCtr,
+		netLc,
 		netLcCtr,
+		board_rru,          // 板卡与rru设备的连接，对应表：netIROptPlanEntry
+		board_rhub,         // 板卡与hub设备的连接，对应表：netIROptPlanEntry
+		rru_ant,            // rru与天线之间的连接，对应表：netRRUAntennaSettingEntry
+		rhub_prru,          // hub与pico之间的连接，只有netRruEntry表中的netRRUOfp1AccessEthernetPort，netRRUHubNo两个字段
+		prru_ant,           // pico与天线之间的连接，对应表：netRRUAntennaSettingEntry
+		rru_rru,            // rru之间的级联，对应表：netRruEntry
+		rhub_rhub,			// rhub之间的级联，对应表：netRHUBEntry
 	}
 
 	public enum EnumPortType
 	{
+		unknown = -1,
 		rhub_to_bbu,
 		rhub_to_pico,
 		pico_to_rhub,
@@ -39,6 +44,8 @@ namespace NetPlan
 		bbu_to_rhub,
 		rru_to_rru,
 		rhub_to_rhub,
+		pico_to_ant,
+		ant_to_pico,
 	}
 
 	/// 设备类型助手类
@@ -137,10 +144,17 @@ namespace NetPlan
 		public static EnumDevType GetLinkTypeByTwoEp(EnumDevType src, EnumDevType dst)
 		{
 			// 板卡和rru之间的连接
-			if ((EnumDevType.board == src && (EnumDevType.rru == dst || EnumDevType.rhub == dst)) ||
-			    (EnumDevType.board == dst && (EnumDevType.rru == src || EnumDevType.rhub == src)))
+			if ((EnumDevType.board == src && EnumDevType.rru == dst) ||
+			    (EnumDevType.board == dst && EnumDevType.rru == src))
 			{
 				return EnumDevType.board_rru;
+			}
+
+			// 板卡与rhub之间的连接
+			if ((EnumDevType.board == src && EnumDevType.rhub == dst) ||
+				(EnumDevType.board == dst && EnumDevType.rhub == src))
+			{
+				return EnumDevType.board_rhub;
 			}
 
 			// rru与ant之间的连接
@@ -150,10 +164,25 @@ namespace NetPlan
 				return EnumDevType.rru_ant;
 			}
 
-			// todo rhub与pico之间的连接
+			// rhub与pico之间的连接
+			if ((EnumDevType.rhub == src && EnumDevType.rru == dst) ||
+			    (EnumDevType.rhub == dst && EnumDevType.rru == src))
+			{
+				return EnumDevType.rhub_prru;
+			}
 
+			// todo pico与ant之间的连接不好判断，没有独立的Pico设备类型
 
-			// todo rru、rhub之间的级联
+			// rru、rhub之间的级联
+			if (EnumDevType.rhub == src && src == dst)
+			{
+				return EnumDevType.rhub_rhub;
+			}
+
+			if (EnumDevType.rru == src && src == dst)
+			{
+				return EnumDevType.rhub_rhub;
+			}
 
 			return EnumDevType.unknown;
 		}
