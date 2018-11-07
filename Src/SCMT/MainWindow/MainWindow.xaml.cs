@@ -135,6 +135,7 @@ namespace SCMTMainWindow
 			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
 			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
 			MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
+            this.FileManagerTabItem.GotFocus += FileManagerTabItem_GotFocus;
 
 			// 解析保存的基站节点信息
 			var nodeList = NodeBControl.GetInstance().GetNodebInfo();
@@ -143,11 +144,11 @@ namespace SCMTMainWindow
 				AddNodeLabel(node.Key, node.Value);
 			}
 		}
-
-		/// <summary>
-		/// 窗口启动，注册所有所需要的基础功能;
-		/// </summary>
-		private void RegisterFunction()
+        
+        /// <summary>
+        /// 窗口启动，注册所有所需要的基础功能;
+        /// </summary>
+        private void RegisterFunction()
 		{
 			try
 			{
@@ -1681,6 +1682,16 @@ namespace SCMTMainWindow
 		}
 
 
+        private void FileManagerTabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            MetroExpander_Click(sender, e);
+        }
+
+        /// <summary>
+        /// 弹出文件管理;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		private void MetroExpander_Click(object sender, EventArgs e)
 		{
 			var enbIp = CSEnbHelper.GetCurEnbAddr();

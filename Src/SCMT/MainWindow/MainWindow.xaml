@@ -219,7 +219,7 @@
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
                 </TabItem>
 
-                <TabItem Header="文件管理" Style="{StaticResource TabItemStyle}" >
+                <TabItem Header="文件管理" Style="{StaticResource TabItemStyle}" x:Name="FileManagerTabItem">
                     <Grid Name="TestFileManager">
                         <!--阿瓦隆界面布局-->
                         <xcad:DockingManager  BorderBrush="Blue" >
