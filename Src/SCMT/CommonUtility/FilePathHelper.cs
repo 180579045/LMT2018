@@ -255,5 +255,11 @@ namespace CommonUtility
             }
             return $"{GetDataPath()}lmdtz/{path}/";
         }
+
+        // 获取网规模板路径
+        public static string GetNetPlanTempaltePath()
+        {
+            return $"{GetDataPath()}NetPlanTemplate/";
+        }
     }
 }
