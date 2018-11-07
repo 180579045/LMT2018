@@ -38,7 +38,7 @@ namespace SCMTMainWindow.Component.SCMTControl
             CefSharp.CefSharpSettings.LegacyJavascriptBindingEnabled = true;
             
             m_CbForJs.canvas_height = "300";
-            m_CbForJs.canvas_width = "800";
+            m_CbForJs.canvas_width = "420";
 
             this.address.RegisterJsObject("JsObj", m_CbForJs);         // 向浏览器注册JavaScript对象,对象名称是JsObj，在前端可以访问;
             this.address.BeginInit();                                  // 刷新页面;
@@ -88,7 +88,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                 foreach(var iter in cell.SelectedCell.Properties)
                 {
                     // 找与其对应的节点;
-                    if(cell.HeaderName == (iter.Value as DataGrid_Cell_MIB).MibName_CN)
+                    if(cell.HeaderName == (iter.Value as GridCell).MibName_CN)
                     {
                         Console.WriteLine("Selected Cell Keys is " + iter.Key + "and value is " + (iter.Value as DataGrid_Cell_MIB).MibName_CN + 
                                           " This Node oid is "+ (iter.Value as DataGrid_Cell_MIB).oid);

@@ -90,12 +90,11 @@
                     </Metro:MetroExpander>
 
                     <!--分隔线-->
-                    <Grid Height="3" Background="#CCCCCC" ></Grid>
+                    <Grid Height="1" Background="#CCCCCC" ></Grid>
 
                     <!--
                     <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
-                    -->
-
+                    
                     <Metro:MetroExpander Header="消息模板" >
                         <StackPanel Margin="20,0,0,0">
                             <Metro:MetroExpander Header="信令消息" Click="ShowMessage_Click" Icon="Resources/NetPLanB.png">
@@ -104,9 +103,9 @@
                             </Metro:MetroExpander>
                         </StackPanel>
                     </Metro:MetroExpander>
-
+                    -->
+                    
                     <!--分隔线-->
-                    <Grid Height="3" Background="#CCCCCC"></Grid>
                     
                     <Metro:MetroExpander Header="窗口图表模板" >
                         <StackPanel Margin="20,0,0,0">
@@ -120,11 +119,11 @@
                     </Metro:MetroExpander>
 
                     <!--分隔线-->
-                    <Grid Height="3" Background="#CCCCCC"></Grid>
+                    <Grid Height="1" Background="#CCCCCC"></Grid>
                     <Metro:MetroExpander x:Name="Obj_Collect" Header="收藏节点" Click="Collect_Node_Click"/>
 
                     <!--分隔线-->
-                    <Grid Height="3" Background="#CCCCCC"></Grid>
+                    <Grid Height="1" Background="#CCCCCC"></Grid>
                     <!--对象树模型(对象树节点只到父节点级别)-->
                     <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点" IsExpanded="True" >
                         <!--<StackPanel Margin="20,0,0,0" Name="NodebList">-->
@@ -219,7 +218,7 @@
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
                 </TabItem>
 
-                <TabItem Header="文件管理" Style="{StaticResource TabItemStyle}" >
+                <TabItem Header="文件管理" Style="{StaticResource TabItemStyle}" x:Name="FileManagerTabItem">
                     <Grid Name="TestFileManager">
                         <!--阿瓦隆界面布局-->
                         <xcad:DockingManager  BorderBrush="Blue" >
