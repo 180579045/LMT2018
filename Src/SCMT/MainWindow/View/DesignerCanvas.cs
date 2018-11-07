@@ -198,6 +198,8 @@ namespace SCMTMainWindow.View
                     g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
                     g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
                 }
+                newItem.DevIndex = devRRUInfo[0].m_strOidIndex;
+                newItem.DevType = EnumDevType.rru;
 
                 //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
                 //globalDic.Add(strRRUFullName, test);
@@ -385,6 +387,8 @@ namespace SCMTMainWindow.View
                     g_AllDevInfo.Add(EnumDevType.rhub, new Dictionary<string, string>());
                     g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
                 }
+                newItem.DevType = EnumDevType.rhub;
+                newItem.DevIndex = devrHUBInfo[0].m_strOidIndex;
 
                 if (dragObject.DesiredSize.HasValue)
                 {
@@ -513,6 +517,8 @@ namespace SCMTMainWindow.View
                     g_AllDevInfo.Add(EnumDevType.ant, new Dictionary<string, string>());
                     g_AllDevInfo[EnumDevType.ant].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
                 }
+                newItem.DevIndex = devRRUInfo.m_strOidIndex;
+                newItem.DevType = EnumDevType.ant;
 
                 if (dragObject.DesiredSize.HasValue)
                 {

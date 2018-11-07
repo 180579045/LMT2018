@@ -7,6 +7,8 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 
+using NetPlan;
+
 namespace SCMTMainWindow.View
 {
     public class Connector : Control, INotifyPropertyChanged
@@ -17,6 +19,24 @@ namespace SCMTMainWindow.View
         public ConnectorOrientation Orientation { get; set; }
 
         public string ID { get; set; }
+
+        //连接点的需要传给连接线的一些属性
+        public EnumDevType DevType { get; set; }
+
+        public string devIndex;
+        public string DevIndex
+        {
+            get
+            {
+                return devIndex;
+            }
+            set
+            {
+                devIndex = ParentDesignerItem.DevIndex;
+            }
+        }
+        public int PortNo { get; set; }
+        public EnumPortType PortType { get; set; }
 
         // center position of this Connector relative to the DesignerCanvas
         private Point position;

@@ -106,6 +106,10 @@ namespace CfgFileOperation
         {
             return m_vectPDGTabName.Count;
         }
+        public List<string> GetVectPDGTabName()
+        {
+            return m_vectPDGTabName;
+        }
 
         /// <summary>
         /// 
