@@ -807,6 +807,7 @@ namespace SCMTMainWindow.View
                 DesignerItem designerItem = new DesignerItem();
                 designerItem.ItemName = strIRName + "-" + i;
                 designerItem.DevIndex = strDevIndex;
+                designerItem.PortNo = i;
 
                 Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
                 Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -937,6 +938,7 @@ namespace SCMTMainWindow.View
                 newItem.Content = testContent;
                 newItem.ItemName = strName;
                 newItem.NPathNumber = rruItemInfo.rruTypeNotMibMaxePortNo;
+                newItem.DevType = EnumDevType.rru;
 
                 newItem.Width = newSize.Width;
                 newItem.Height = newSize.Height;
@@ -1104,6 +1106,7 @@ namespace SCMTMainWindow.View
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
                 newItem.Content = testContent;
                 newItem.ItemName = strName;
+                newItem.DevType = EnumDevType.ant;
 
                 newItem.Width = newSize.Width;
                 newItem.Height = newSize.Height;

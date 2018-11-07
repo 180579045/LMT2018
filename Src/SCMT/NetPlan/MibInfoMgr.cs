@@ -1315,7 +1315,7 @@ namespace NetPlan
 
 			if (null == strLatestValue || strLatestValue == strOriginValue)
 			{
-				return null;
+				return strOriginValue;
 			}
 
 			return strLatestValue;
