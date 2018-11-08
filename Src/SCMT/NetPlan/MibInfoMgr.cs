@@ -56,12 +56,12 @@ namespace NetPlan
 					var dev = GetSameIndexDev(devList, strIndex);
 					if (null != dev)
 					{
-						NPLastErrorHelper.SetLastError($"未找到索引为{strIndex}的{type.ToString()}设备");
 						return dev;
 					}
 				}
 			}
 
+			NPLastErrorHelper.SetLastError($"未找到索引为{strIndex}的{type.ToString()}设备");
 			return null;
 		}
 
@@ -337,6 +337,12 @@ namespace NetPlan
 				if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode, false))
 				{
 					Log.Error("设置rhub参数netRHUBOfpWorkMode失败");
+					return null;
+				}
+
+				if (!dev.SetFieldOriginValue("netRHUBType", strDevVer, false))
+				{
+					Log.Error("设置rhub参数netRHUBType失败");
 					return null;
 				}
 
