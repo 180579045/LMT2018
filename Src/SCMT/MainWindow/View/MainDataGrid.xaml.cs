@@ -122,12 +122,12 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
-            this.DynamicDataGrid.MouseMove += DynamicDataGrid_MouseMove;
+            this.DynamicDataGrid.MouseMove += DynamicDataGrid_MouseMove;                          // 鼠标移动到单元格位置上边的时候;
             this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
-            this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;
-            this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;
+            this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;            // 当用户的选择发生变化的时候(用在枚举、BIT类型修改完成后);
+            this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;              // 捕获鼠标事件，用于判断用户拖拽事件;
         }
-
+        
         /// <summary>
         /// 单元格开始编辑时;
         /// </summary>
@@ -150,7 +150,9 @@ namespace SCMTMainWindow.View
 
         private void DynamicDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (((e.OriginalSource as ComboBox).SelectedIndex == -1))
+            // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
+            // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
+            if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
             {
                 return;
             }
@@ -256,5 +258,8 @@ namespace SCMTMainWindow.View
                 Console.WriteLine(ex);
             }
         }
+        
+
     }
+
 }
