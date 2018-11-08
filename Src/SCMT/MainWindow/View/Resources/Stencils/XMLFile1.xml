@@ -304,7 +304,7 @@
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="0, 1, 0, 0">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" DevType="board"></s:Connector>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" DevType="board" PortType="bbu_to_other"></s:Connector>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>

@@ -77,7 +77,7 @@ namespace NetPlan.Tests
 			{
 				if (result)
 				{
-					var ret = await NPSnmpOperator.InitNetPlanInfo();
+					var ret = NPSnmpOperator.InitNetPlanInfo();
 					if (ret)
 					{
 						var strIndex = ".0.0.1";

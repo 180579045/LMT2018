@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using SCMTMainWindow.View.Controls;
 using NetPlan;
+using System.Collections.Generic;
 
 namespace SCMTMainWindow.View
 {
@@ -34,6 +35,7 @@ namespace SCMTMainWindow.View
         //连接点的需要传给连接线的一些属性
         public EnumDevType DevType { get; set; }
         public string DevIndex { get; set; }
+        public int PortNo { get; set; }  //对于板卡的光口来说，需要设置一个 Portno
 
         #region ID
         private Guid id;
@@ -205,6 +207,27 @@ namespace SCMTMainWindow.View
         {
             if (base.Template != null)
             {
+
+                //对板卡的光口进行设置 portno  并且板卡光口不支持拖拽
+                if (this.DevType == EnumDevType.board)
+                {
+                    Control cd = this.Template.FindName("PART_ConnectorDecorator", this) as Control;
+                    List<Connector> connectors = new List<Connector>();
+                    GetConnectors(cd, connectors);
+
+                    if (connectors != null && connectors.Count != 0)
+                    {
+                        connectors[0].PortNo = this.PortNo;
+                    }
+                    DragThumb targetItem = this.Template.FindName("PART_DragThumb", this) as DragThumb;
+                    if (targetItem != null)
+                    {
+                        targetItem.Visibility = Visibility.Hidden;
+                    }
+
+                        return;
+                }
+
                 ContentPresenter contentPresenter =
                     this.Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
                 if (contentPresenter != null)
@@ -224,5 +247,26 @@ namespace SCMTMainWindow.View
                 }
             }
         }
+
+        /// <summary>
+        /// 查找 DesignerItem 中的连接点 Connector
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="connectors"></param>
+        private void GetConnectors(DependencyObject parent, List<Connector> connectors)
+        {
+            int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < childrenCount; i++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+                if (child is Connector)
+                {
+                    connectors.Add(child as Connector);
+                }
+                else
+                    GetConnectors(child, connectors);
+            }
+        }
+
     }
 }

@@ -68,60 +68,69 @@ namespace SCMTMainWindow.View
                 Connection newConnection = new Connection(sourceConnector, sinkConnector);
 
                 //这里是创建连接的地方，需要下发给基站
-                if(sourceConnector.PortType == EnumPortType.bbu_to_other)
-                {
-                    if(sinkConnector.DevType == EnumDevType.rru)
-                    {
-                        sourceConnector.PortType = EnumPortType.bbu_to_rru;
-                        sinkConnector.PortType = EnumPortType.rru_to_bbu;
-                    }else if(sinkConnector.DevType == EnumDevType.rhub)
-                    {
-                        sourceConnector.PortType = EnumPortType.bbu_to_rhub;
-                        sinkConnector.PortType = EnumPortType.rhub_to_bbu;
-                    }
-                }else if(sourceConnector.PortType == EnumPortType.rru_to_other)
-                {
-                    if(sinkConnector.DevType == EnumDevType.board)
-                    {
-                        sourceConnector.PortType = EnumPortType.rru_to_bbu;
-                        sinkConnector.PortType = EnumPortType.bbu_to_rru;
-                    }else if(sinkConnector.DevType == EnumDevType.rru)
-                    {
-                        sourceConnector.PortType = EnumPortType.rru_to_rru;
-                        sinkConnector.PortType = EnumPortType.rru_to_rru;
-                    }
-                }else if(sourceConnector.PortType == EnumPortType.rhub_to_other)
-                {
-                    if(sinkConnector.DevType == EnumDevType.board)
-                    {
-                        sinkConnector.PortType = EnumPortType.bbu_to_rhub;
-                        sourceConnector.PortType = EnumPortType.rhub_to_bbu;
-                    }else if(sinkConnector.DevType == EnumDevType.rhub)
-                    {
-                        sinkConnector.PortType = EnumPortType.rhub_to_rhub;
-                        sourceConnector.PortType = EnumPortType.rhub_to_rhub;
-                    }
-                }
 
                 LinkEndpoint srcPoint = new LinkEndpoint();
                 srcPoint.devType = sourceConnector.DevType;
                 srcPoint.strDevIndex = sourceConnector.DevIndex;
                 srcPoint.nPortNo = sourceConnector.PortNo;
-                srcPoint.portType = sourceConnector.PortType;
 
                 LinkEndpoint dstPoint = new LinkEndpoint();
                 dstPoint.devType = sinkConnector.DevType;
                 dstPoint.strDevIndex = sinkConnector.DevIndex;
                 dstPoint.nPortNo = sinkConnector.PortNo;
-                dstPoint.portType = sinkConnector.PortType;
+                if (sourceConnector.PortType == EnumPortType.bbu_to_other)
+                {
+                    if(sinkConnector.DevType == EnumDevType.rru)
+                    {
+                        srcPoint.portType = EnumPortType.bbu_to_rru;
+                        dstPoint.portType = EnumPortType.rru_to_bbu;
+                    }else if(sinkConnector.DevType == EnumDevType.rhub)
+                    {
+                        srcPoint.portType = EnumPortType.bbu_to_rhub;
+                        dstPoint.portType = EnumPortType.rhub_to_bbu;
+                    }
+                }else if(sourceConnector.PortType == EnumPortType.rru_to_other)
+                {
+                    if(sinkConnector.DevType == EnumDevType.board)
+                    {
+                        srcPoint.portType = EnumPortType.rru_to_bbu;
+                        dstPoint.portType = EnumPortType.bbu_to_rru;
+                    }else if(sinkConnector.DevType == EnumDevType.rru)
+                    {
+                        srcPoint.portType = EnumPortType.rru_to_rru;
+                        dstPoint.portType = EnumPortType.rru_to_rru;
+                    }
+                }else if(sourceConnector.PortType == EnumPortType.rhub_to_other)
+                {
+                    if(sinkConnector.DevType == EnumDevType.board)
+                    {
+                        dstPoint.portType = EnumPortType.bbu_to_rhub;
+                        srcPoint.portType = EnumPortType.rhub_to_bbu;
+                    }else if(sinkConnector.DevType == EnumDevType.rhub)
+                    {
+                        dstPoint.portType = EnumPortType.rhub_to_rhub;
+                        srcPoint.portType = EnumPortType.rhub_to_rhub;
+                    }
+                }
+                else
+                {
+                    srcPoint.portType = sourceConnector.PortType;
+                    dstPoint.portType = sinkConnector.PortType;
+                }
 
-                //if(MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
-                //{
+                if (MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
+                {
+                    Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
+                    this.designerCanvas.Children.Add(newConnection);
 
-                //}
-
-                Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
-                this.designerCanvas.Children.Add(newConnection);
+                    //将 to_other 的连接点设置为 确定的连接
+                    sourceConnector.PortType = srcPoint.portType;
+                    sinkConnector.PortType = dstPoint.portType;
+                }
+                else
+                {
+                    MessageBox.Show("AddLink 失败");
+                }
                 
             }
             if (HitDesignerItem != null)

@@ -51,7 +51,7 @@ namespace NetPlan.Tests
 			{
 				if (result)
 				{
-					var ret = await NPSnmpOperator.InitNetPlanInfo();
+					var ret =NPSnmpOperator.InitNetPlanInfo();
 					Assert.IsTrue(ret);
 					stop = true;
 				}
