@@ -31,9 +31,9 @@ namespace SCMTMainWindow
         public string Indexs { get; set; }             // 该单元格的索引;
         public string m_Content { get; set; }          // 该单元格内要显示的内容;
 
-        public abstract void EditingCallback();        // 单元格编辑事件;
-        public abstract void CellDragawayCallback();   // 单元格被拖拽事件;
-        public abstract void MouseMoveOnCell();        // 鼠标悬停在单元格;
-        public abstract void SelectionCellChanged();   // 当表格的单元格选择发生变化的时候;
+        public abstract void EditingCallback();                           // 单元格编辑事件;
+        public abstract void CellDragawayCallback();                      // 单元格被拖拽事件;
+        public abstract void MouseMoveOnCell();                           // 鼠标悬停在单元格;
+        public abstract void SelectionCellChanged(object SelectionObj);   // 当表格的单元格选择发生变化的时候;
     }
 }

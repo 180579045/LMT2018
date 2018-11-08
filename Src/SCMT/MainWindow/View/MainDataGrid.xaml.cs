@@ -73,7 +73,7 @@ namespace SCMTMainWindow.View
                            @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                                             xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                                             xmlns:model='clr-namespace:WPF.Model'>
-                                <ComboBox ItemsSource='{Binding " + iter.Item1 + @".m_AllContent.Values}' SelectedIndex='0'/>
+                                <ComboBox ItemsSource='{Binding " + iter.Item1 + @".m_AllContent}' SelectedIndex='0'/>
                              </DataTemplate>";
 
                         TextBlockTemplate = XamlReader.Parse(textblock_xaml) as DataTemplate;
@@ -169,8 +169,8 @@ namespace SCMTMainWindow.View
             }
             try
             {
-//                 ((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
-//                     (sender as DataGrid).SelectedCells[0].Column.Header.ToString());
+                 ((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
+                     (sender as DataGrid).SelectedCells[0].Column.Header.ToString(), (e.OriginalSource as ComboBox).SelectedItem);
             }
             catch
             {

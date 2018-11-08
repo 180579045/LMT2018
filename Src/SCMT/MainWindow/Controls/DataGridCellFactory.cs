@@ -36,6 +36,7 @@ namespace SCMTMainWindow
                 {
                     m_AllContent = all_list,
                     m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    m_CurrentValue = int.Parse(ContentValue),
                     oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
