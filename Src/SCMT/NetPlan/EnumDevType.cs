@@ -184,7 +184,7 @@ namespace NetPlan
 
 			if (EnumDevType.rru == src && src == dst)
 			{
-				return EnumDevType.rhub_rhub;
+				return EnumDevType.rru_rru;
 			}
 
 			return EnumDevType.unknown;
