@@ -15,9 +15,8 @@ namespace CfgFileOperation
     class CfgTableOp
     {
         /*********************        变量                         ***************************/
-        uint u32CurTblOffset;                     //  每个索引项 每个表的数据在文件中的起始位置（相对文件头） init.cfg中使用
+        uint u32CurTblOffset;                     //  每个索引项 每个表的数据在文件中的起始位置（相对文件头） init.cfg中使用        
         uint u32CurTblOffset_PDG;                 //  作用与u32CurTblOffset相同, patch_ex.cfg中使用，如果这个表不需要写patch,则不赋值.
-                                                  //
         bool m_isMibInfoInitial;                  //  信息是否读取过 ? 作用是啥？？？
         /// <summary>
         /// table 的索引数
@@ -71,9 +70,11 @@ namespace CfgFileOperation
 
         /*********************        reclist 解析后存在的变量                         ***************************/
         /// <summary>
-        /// reclist 解析后存在的变量 用于记录补丁文件
+        /// reclist 解析后存在的变量 用于记录补丁文件;
+        /// key : 索引，value ：表实例,即所有叶子节点实例取值.
         /// </summary>
         public Dictionary <string, List<string>> m_InstIndex2LeafName = new Dictionary<string, List<string>>();//用于记录补丁文件 key :".0"
+        
         //string m_TableRowStatusName = "";
         ////设置RowStatusName
         //public void SetRowStatusName(string strLeafName)
@@ -162,6 +163,7 @@ namespace CfgFileOperation
             else
                 m_InstIndex2LeafName.Add(RecordIndex, new List<string>() { strLeafName });
         }
+        
         /*********************        reclist 解析后存在的变量                         ***************************/
 
 
@@ -191,6 +193,16 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="tableOffset"></param>
         public void SetTableOffset(uint tableOffset){u32CurTblOffset = tableOffset;}
+        /// <summary>
+        /// 设置表在patch中的偏移量
+        /// </summary>
+        /// <param name="tableOffset"></param>
+        public void SetTableOffsetPDG(uint tableOffset) { u32CurTblOffset_PDG = tableOffset; }
+        /// <summary>
+        /// 获取表在patch中的偏移量
+        /// </summary>
+        /// <returns></returns>
+        public uint GetTableOffsetPDG() { return u32CurTblOffset_PDG; }
         /// <summary>
         /// //是否初始化完成
         /// </summary>
@@ -261,6 +273,10 @@ namespace CfgFileOperation
         /// <param name="strTabName"></param>
         public void SetTabName(string strTabName){ m_strTableName = strTabName;}
 
+        /// <summary>
+        /// 表实例,以字节的形式写入配置文件;(1.表头;2.叶子头;3.实例信息.)
+        /// </summary>
+        /// <returns></returns>
         public List<byte> WriteTofile()
         {
             List<byte> tableInfo = new List<byte>();
@@ -288,5 +304,66 @@ namespace CfgFileOperation
             
             return tableInfo;
         }
-   }
+        /// <summary>
+        /// 表块 的序列化: patch_ex
+        /// </summary>
+        /// <returns></returns>
+        public List<byte> WriteTofilePDG()
+        {
+            List<byte> tableInfo = new List<byte>();
+
+            //1.表头  StruCfgFileTblInfo
+            tableInfo.AddRange(m_cfgFile_TblInfo.StruToByteArrayReverse());
+
+            //2.每个叶子的头
+            foreach (var leaf in m_LeafNodes)
+            {
+                // 标记 节点是否可配置
+                SetLeafFieldConfigFlagPDG(leaf.m_struFieldInfo, leaf.m_struMibNode.strMibName);
+                // 每个叶子节点的头
+                tableInfo.AddRange(leaf.m_struFieldInfo.StruToByteArrayReverse());
+            }
+
+            //3. 表实例 : 表的每个叶子的内容 * 每个表实例
+            foreach (var InstleafName in m_InstIndex2LeafName)
+            {
+                string strInstIndex = InstleafName.Key;
+                CfgTableInstanceInfos inst = m_cfgInsts.Find(e => String.Compare(e.GetInstantNum(), strInstIndex, true) == 0);
+                if (null != inst)
+                    tableInfo.AddRange(inst.GetInstMem());
+            }
+            return tableInfo;
+        }
+        
+        void SetLeafFieldConfigFlagPDG(StruCfgFileFieldInfo FieldInfo, string strNodeName)
+        {
+            bool bFind = false;
+            foreach (var leafNames in m_InstIndex2LeafName.Values)
+            {
+                if (-1 != leafNames.FindIndex(e => String.Compare(e, strNodeName, true) == 0))
+                {
+                    bFind = true;
+                    break;
+                }
+            }
+
+            //如果节点本身是不可配置的即使被选中也是不可配置的，如果是可配置的节点在没有被选中的情况下
+            //也是不可配置的。索引字段全部为可配置的。add by yangyuming
+            if (true == bFind)
+            {
+                if (FieldInfo.u8ConfigFlag != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
+                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+            }
+            else
+            {
+                if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
+                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE;
+                else if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE && FieldInfo.u8FieldTag == 'Y')
+                {
+                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+                }
+            }
+
+        }
+    }
 }

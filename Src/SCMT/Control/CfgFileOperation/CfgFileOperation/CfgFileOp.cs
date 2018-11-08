@@ -72,44 +72,37 @@ namespace CfgFileOperation
             //2. lm.mdb 以每行为单位加载, reclist使用 
             m_mibTreeMem = new CfgParseDBMibTreeToMemory();
             m_mibTreeMem.ReadMibTreeToMemory(strFileToDirectory);
-            if (true)
-            {
-                //3. RRU信息
-                string excelName = excelPath + "\\RRU基本信息表_ty.xls";
-                m_rruExcel = new CfgParseRruExcel();
-                m_rruExcel.ProcessingExcel(excelName, "RRU基本信息表");
-                //List<RRuTypeTabStru> rruList = m_rruExcel.GetRruTypeInfoData();
-                //List<RRuTypePortTabStru> rruPortL = m_rruExcel.GetRruTypePortInfoData();
+            
+            //3. RRU信息
+            string excelName = excelPath + "\\RRU基本信息表_ty.xls";
+            m_rruExcel = new CfgParseRruExcel();
+            m_rruExcel.ProcessingExcel(excelName, "RRU基本信息表");
 
-                //4. 天线信息
-                excelName = excelPath + "\\LTE_基站天线广播波束权值参数配置表_5G.xls";
-                m_antennaExcel = new CfgParseAntennaExcel();
-                m_antennaExcel.ProcessingAntennaExcel(excelName, "波束扫描原始值");
-                //List<Dictionary<string, string>> data = m_antennaExcel.GetBeamScanData();
+            //4. 天线信息
+            excelName = excelPath + "\\LTE_基站天线广播波束权值参数配置表_5G.xls";
+            m_antennaExcel = new CfgParseAntennaExcel();
+            m_antennaExcel.ProcessingAntennaExcel(excelName, "波束扫描原始值");
 
-                //5. 告警信息
-                //在CreateCfgFile中就解析了
+            //5. 告警信息
+            //在CreateCfgFile中就解析了
 
+            //5. reclist 
+            excelName = excelPath + "\\RecList_V6.00.50.05.40.07.01.xls";
+            m_reclistExcel = new CfgParseReclistExcel();
+            m_reclistExcel.ProcessingExcel(excelName, strFileToDirectory, "0:默认", this);
 
-                //5. reclist 
-                excelName = excelPath + "\\RecList_V6.00.50.05.40.07.01.xls";
-                m_reclistExcel = new CfgParseReclistExcel();
-                m_reclistExcel.ProcessingExcel(excelName, strFileToDirectory, "0:默认", this);
+            //6. 自定义 (init, patch)
+            excelName = excelPath + "\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
+            m_selfExcel = new CfgParseSelfExcel();
+            m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "init", this);
+            m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "patch", this);
 
-                //6. 自定义 (init, patch)
-                excelName = excelPath + "\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
-                m_selfExcel = new CfgParseSelfExcel();
-                m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "init", this);
-                m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "patch", this);
-
-                //7. 开始生成 init.cfg, patch_ex.cfg
-                // 创建init.cfg
-                SaveFile_eNB("init.cfg");
-            }
+            //7. 开始生成 init.cfg, patch_ex.cfg
+            // 创建init.cfg
+            SaveFile_eNB("init.cfg");
             //创建patch_ex.cfg
-            int abc = 1;
             CreateFilePdg_eNB("patch_ex.cfg", strFileToDirectory);
-
+            SaveFilePdg_eNB("patch_ex.cfg");
 
         }
         /// <summary>
@@ -138,7 +131,7 @@ namespace CfgFileOperation
             List<byte> allBuff = new List<byte>();
             if (String.Empty == newFilePath)
                 return false;
-            allBuff.AddRange(m_cfgFile_Header.StruToByteArrayReverse());//写入头文件
+            allBuff.AddRange(m_cfgFile_Header.StruToByteArrayReverse());// 写入头文件
             allBuff.AddRange(m_dataHeadInfo.StruToByteArrayReverse());  // 数据块的头
             foreach (var table in m_mapTableInfo.Values)                // 设置节点偏移量  
             {
@@ -147,19 +140,16 @@ namespace CfgFileOperation
                 allBuff.AddRange(tableOffset);
             }
 
-            /// 2. 查数据库，遍历所有的 mibTree 生成 配置文件
+            /// 2.表实例
             foreach (var table in m_mapTableInfo.Values)//写入节点信息
-            {
                 allBuff.AddRange(table.WriteTofile());
-            }
 
             TestWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
         }
         /// <summary>
-        /// 函 数 名: CreateFilePdg_eNB
-        /// 功能描述: 创建 patch_ex.cfg 文件
-        /// 输入参数: mapInst2LeafName:保存了生成Pdg文件的表，叶子，以及记录信息
+        /// 创建 patch_ex.cfg 文件的相关内容;
+        /// 输入参数: mapInst2LeafName:保存了生成Pdg文件的表，叶子，以及记录信息.
         /// </summary>
         /// <param name="newFilePath"></param>
         /// <returns></returns>
@@ -170,27 +160,58 @@ namespace CfgFileOperation
             // 数据块头
             int m_tableNum = m_reclistExcel.GetVectPDGTabNameNum();
             WriteDataHeadInfoPDG((uint)m_tableNum);//Pdg数据块头结构
-            // 偏移头
+            // 偏移头(1.固定偏移;2.表实例偏移)
+            // 1.固定偏移
             uint iFixedHeadOffset = 0;//固定头偏移 Fixed Head
             iFixedHeadOffset += (uint)Marshal.SizeOf(new StruCfgFileHeader(""));      //文件头：956 字节，
             iFixedHeadOffset += (ushort)Marshal.SizeOf(new StruDataHead("init"));     //数据头：24  字节， sizeof(DataHead);
             iFixedHeadOffset += (uint)m_tableNum * (uint)Marshal.SizeOf(new UInt32());//偏移头：4 * 表个数 字节，每个表的偏移量 
-
-            List<string> mTabNames = m_reclistExcel.GetVectPDGTabName();
-            foreach (var tabName in mTabNames)
+            // 2.表实例偏移
+            foreach (var tabName in m_reclistExcel.GetVectPDGTabName())
             {
-                if (m_mapTableInfo.ContainsKey(tabName))
-                {
-                    CfgTableOp tabOp = m_mapTableInfo[tabName];
-                    //uint iTableOffset = tabOp.GetTableOffset();
-                    string strTableContent = tabOp.GetDytabCont().ToString();
-                    bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
-                    //iFixedHeadOffset = SetTableOffset(tabOp, isDyTable, iFixedHeadOffset);                //计算表的偏移量
-                    // 总结 reclist、自定义中的特定的叶子节点
-                    iFixedHeadOffset = SetTableOffset_PDG(tabOp, isDyTable, iFixedHeadOffset);
-                }
+                if (!m_mapTableInfo.ContainsKey(tabName))
+                    continue;
+                iFixedHeadOffset = SetTableOffset_PDG(m_mapTableInfo[tabName], iFixedHeadOffset);//计算表的偏移量
+            }
+            return true;
+        }
+        /// <summary>
+        /// 写 patch_ex 文件
+        /// </summary>
+        /// <param name="newFilePath"></param>
+        public bool SaveFilePdg_eNB(string newFilePath)
+        {
+            if (String.Empty == newFilePath)
+                return false;
+
+            // 申请内容
+            List<byte> allBuff = new List<byte>();
+
+            // 文件头   : 序列化
+            allBuff.AddRange(m_eNB_pdgFile_Header.StruToByteArrayReverse());// 写入头文件
+
+            // 数据块头 : 序列化
+            allBuff.AddRange(m_dataheadInfo_PDG.StruToByteArrayReverse());  // 数据块的头
+
+            // 偏移块头 : 序列化
+            foreach (var tabName in m_reclistExcel.GetVectPDGTabName())
+            {
+                if (!m_mapTableInfo.ContainsKey(tabName))
+                    continue;
+                byte[] tableOffset = BitConverter.GetBytes((uint)m_mapTableInfo[tabName].GetTableOffsetPDG());
+                Array.Reverse(tableOffset);
+                allBuff.AddRange(tableOffset);
             }
 
+            //  表块 实例 : 序列化
+            foreach (var tabName in m_reclistExcel.GetVectPDGTabName())
+            {
+                if (!m_mapTableInfo.ContainsKey(tabName))
+                    continue;
+                CfgTableOp tableOp = m_mapTableInfo[tabName];
+                allBuff.AddRange(tableOp.WriteTofilePDG());
+            }
+            TestWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
         }
         /// <summary>
@@ -433,8 +454,26 @@ namespace CfgFileOperation
             TableOffset += (uint)((uint)Marshal.SizeOf(new StruCfgFileFieldInfo()) * (uint)tableOp.m_LeafNodes.Count);
             return TableOffset;
         }
-        uint SetTableOffset_PDG(CfgTableOp tableOp, bool isDyTable, uint TableOffset)
+        /// <summary>
+        /// 计算表的偏移位置 patch
+        /// </summary>
+        /// <param name="tableOp"></param>
+        /// <param name="isDyTable"></param>
+        /// <param name="TableOffset"></param>
+        /// <returns></returns>
+        uint SetTableOffset_PDG(CfgTableOp tableOp, uint TableOffset)
         {
+            // 表的起始位置：是上一个表的结束位置
+            tableOp.SetTableOffsetPDG(TableOffset);
+            // 表块：包含3部分
+            // 1. 表头
+            TableOffset += (uint)Marshal.SizeOf(new StruCfgFileTblInfo("init"));
+            // 2. 所有叶子节点的头
+            TableOffset += (uint)((uint)Marshal.SizeOf(new StruCfgFileFieldInfo()) * (uint)tableOp.m_LeafNodes.Count);
+            // 3. 实例内容 = 每个实例(所有叶子节点信息的长度) * 实例个数
+            uint buflen = (uint)tableOp.m_cfgFile_TblInfo.u16RecLen;// 单个记录的有效长度（单位：字节）
+            uint InstNum = (uint)tableOp.m_InstIndex2LeafName.Count;
+            TableOffset += buflen * InstNum;
             return TableOffset;
         }
         /// <summary>

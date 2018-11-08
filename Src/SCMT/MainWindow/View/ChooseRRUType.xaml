@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
 
         <Label Grid.Row="1" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">RRU类型</Label>
-        <ComboBox Name="cbRRUtype" Width="150" Height="30" Grid.Row="1" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbRRUtype_SelectionChanged"></ComboBox>
+        <ComboBox Name="cbRRUtype" Width="150" Height="30" Grid.Row="1" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbRRUtype_SelectionChanged" IsEditable="True"></ComboBox>
 
         <!--RRU 工作模式-->
         <Label Grid.Row="2" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">工作模式</Label>

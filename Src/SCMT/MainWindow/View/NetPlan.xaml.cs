@@ -51,7 +51,7 @@ namespace SCMTMainWindow.View
         private bool bInit = false;
 
         //判断是否取消连接点
-        private bool bHiddenLineConnector = true;
+        public bool bHiddenLineConnector = true;
 
         /// <summary>
         /// 初始化函数
@@ -1510,7 +1510,7 @@ namespace SCMTMainWindow.View
         /// 取消连接点
         /// </summary>
         /// <param name="item"></param>
-        private void HiddenConnectorDecoratorTemplate(DesignerItem item)
+        public void HiddenConnectorDecoratorTemplate(DesignerItem item)
         {
             if (item.Content is UIElement)
             {
@@ -1525,7 +1525,7 @@ namespace SCMTMainWindow.View
         /// 恢复连接
         /// </summary>
         /// <param name="item"></param>
-        private void VisibilityConnectorDecoratorTemplate(DesignerItem item)
+        public void VisibilityConnectorDecoratorTemplate(DesignerItem item)
         {
             if (item.Content is UIElement)
             {
