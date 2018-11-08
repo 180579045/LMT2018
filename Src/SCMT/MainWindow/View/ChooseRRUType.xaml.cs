@@ -104,6 +104,10 @@ namespace SCMTMainWindow.View
         //RRU的类型选择改变的时候，需要重新加载  描述和工作模式
         private void cbRRUtype_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if(this.cbRRUtype.SelectedItem == null)
+            {
+                return;
+            }
             string strSelectedRRUName = this.cbRRUtype.SelectedItem.ToString();
 
             if (strSelectedRRUName != "")
