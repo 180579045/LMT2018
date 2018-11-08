@@ -1618,9 +1618,28 @@ namespace NetPlan
 			var ofp = $"netRRUOfp{nRruIrPort}AccessOfpPortNo";		// 射频单元光口n接入板的光口号
 			rru.SetFieldValue(ofp, nBoardIrPort.ToString());
 
-			var linePos = $"netRRUOfp{nRruIrPort}AccessLinePosition";	// 设备单元光口n接入级数
-			// todo 计算级数
+			var linePos = $"netRRUOfp{nRruIrPort}AccessLinePosition";   // 设备单元光口n接入级数
 
+			// 先判断rru的工作模式
+			var originWorkMode = rru.GetFieldOriginValue("netRRUOfpWorkMode", false);
+			var latestWorkMode = rru.GetFieldLatestValue("netRRUOfpWorkMode", false);
+
+			var wmode = GetNeedUpdateValue(originWorkMode, latestWorkMode);
+			if (null == wmode)
+			{
+				Log.Error("获取工作模式失败");
+				return false;
+			}
+
+			// 判断工作模式是否是级联
+			if (wmode.IndexOf("级联") < 0)
+			{
+				rru.SetFieldValue(linePos, "1");
+			}
+			else
+			{
+				// todo 计算级数
+			}
 
 			if (RecordDataType.NewAdd != rru.m_recordType)
 			{
@@ -1705,6 +1724,10 @@ namespace NetPlan
 		private NetPlanLinkMgr m_linkMgr;
 
 		private readonly object _syncObj = new object();
+
+		private List<ParsedRruInfo> m_listHasLinePosDev;    // 已经计算出级数的rru和rhub
+
+		private List<ParsedRruInfo> m_listWaitPrevDev;		// 需要等待上级设备才计算接入级数的设备信息
 
 		#endregion
 	}
