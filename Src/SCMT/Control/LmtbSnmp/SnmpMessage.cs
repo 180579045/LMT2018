@@ -228,8 +228,16 @@ namespace LmtbSnmp
                 pdu.VbList.Add(pdulist);
             }
 
-            // 接收结果;
-            m_Result = (SnmpV2Packet)target.Request(pdu, param);
+            try
+            {
+                // 接收结果;
+                m_Result = (SnmpV2Packet)target.Request(pdu, param);
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
 
             // 如果结果为空,则认为Agent没有回响应;
             if (m_Result != null)

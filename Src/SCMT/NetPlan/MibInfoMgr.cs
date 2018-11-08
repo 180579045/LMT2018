@@ -409,6 +409,7 @@ namespace NetPlan
 				return false;
 			}
 
+			var wlink = new WholeLink(srcEndpoint, dstEndpoint);
 			// 根据linktype设置参数
 			if (linkType == EnumDevType.board_rru)
 			{
@@ -472,9 +473,242 @@ namespace NetPlan
 					return false;
 				}
 			}
-			if (linkType == EnumDevType.rhub_prru)
+			if (linkType == EnumDevType.rhub_prru)		// rhub--pico
 			{
-				// 设置
+				// 此时可能board-rhub的连接未建立，rhub连接板卡的信息尚未设定，pico的信息也无法确定，需要在board-rhub的连接建立后rhub和pico的信息
+				// 也可能rhub与board的连接已经建立，可以查询到连接的板卡的信息，此时可以设定pico的信息
+				var rhubIndex = wlink.GetDevIndex(EnumDevType.rhub);
+				if (null == rhubIndex)
+				{
+					Log.Error("获取rhub设备的索引失败");
+					return false;
+				}
+
+				var rhubEthPort = wlink.GetDevIrPort(EnumDevType.rhub, EnumPortType.rhub_to_pico);
+				if (-1 == rhubEthPort)
+				{
+					Log.Error("获取rhub设备连接pico的端口失败");
+					return false;
+				}
+
+				var picoIndex = wlink.GetDevIndex(EnumDevType.rru);
+				if (null == picoIndex)
+				{
+					Log.Error("获取pico设备的索引失败");
+					return false;
+				}
+
+				var picoPort = wlink.GetDevIrPort(EnumDevType.rru, EnumPortType.pico_to_rhub);
+				if (-1 == picoPort)
+				{
+					Log.Error("获取pico设备连接rhub的端口失败");
+					return false;
+				}
+
+				var rhub = GetDevAttributeInfo(rhubIndex, EnumDevType.rhub);
+				if (null == rhub)
+				{
+					Log.Error($"根据rhub设备索引{rhubIndex}获取设备属性信息失败");
+					return false;
+				}
+
+				var rru = GetDevAttributeInfo(picoIndex, EnumDevType.rru);
+				if (null == rru)
+				{
+					Log.Error($"根据pico索引{picoIndex}获取设备属性信息失败");
+					return false;
+				}
+
+				// 查询rhub设备是否已经建立到board的连接
+				var boardSlot = GetNeedUpdateValue(rhub, "netRHUBAccessSlotNo");
+				if (null == boardSlot)
+				{
+					throw new CustomException("获取rhub连接板卡插槽号返回null");
+				}
+
+				// 判断是否已经连接板卡
+				if ("-1" == boardSlot)
+				{
+					Log.Debug($"rhub{rhubIndex}尚未连接板卡");
+
+					// 此时设置pico设备的两个信息即可
+				}
+				else
+				{
+					Log.Debug($"rhub{rhubIndex}已经连接板卡");
+
+					// 查询板卡相关的信息
+					var boardIndex = $".0.0.{boardSlot}";
+					var board = GetDevAttributeInfo(boardIndex, EnumDevType.board);
+					if (null == board)
+					{
+						Log.Error($"根据索引{boardIndex}未找到对应的板卡信息");
+						return false;
+					}
+
+					var boardType = rhub.GetFieldOriginValue("netRHUBAccessBoardType");
+					if (null == boardType || "-1" == boardType)
+					{
+						Log.Error("rhub连接板卡的类型信息错误");
+						return false;
+					}
+
+					// 添加一条以太网连接记录
+					var recordIndex = $"{boardIndex}{rhubIndex}.{rhubEthPort}";
+					var record = GetDevAttributeInfo(recordIndex, linkType);
+					if (null != record)
+					{
+						Log.Error($"根据索引{recordIndex}找到rhub以太网口记录,一个网口只能有一个连接");
+						return false;
+					}
+
+					record = new DevAttributeInfo(linkType, recordIndex);
+					AddDevToMap(m_mapAllMibData, linkType, record);
+
+					// 设置pico的相关信息
+					if (!SetDevAttributeValue(rru, "netRRUAccessRackNo", "0"))
+					{
+						// todo 事务啊事务
+					}
+
+					if (!SetDevAttributeValue(rru, "netRRUAccessShelfNo", "0"))
+					{
+						
+					}
+
+					if (!SetDevAttributeValue(rru, "netRRUAccessSlotNo", boardSlot))
+					{
+						
+					}
+
+					if (!SetDevAttributeValue(rru, "netRRUAccessBoardType", boardType))
+					{
+						
+					}
+				}
+
+				SetDevAttributeValue(rru, "netRRUOfp1AccessEthernetPort", rhubEthPort.ToString());
+				SetDevAttributeValue(rru, "netRRUHubNo", rhubIndex.Trim('.'));
+			}
+
+			if (linkType == EnumDevType.rhub_rhub)
+			{
+				throw new NotImplementedException("5G 90版本尚未支持rhub级联");
+			}
+
+			if (linkType == EnumDevType.rru_rru)
+			{
+				throw new NotImplementedException("5G 90版本尚未支持rhub级联");
+			}
+
+			if (linkType == EnumDevType.board_rhub)
+			{
+				// 需要注意先建立rhub与pico的连接，后建立board与rhub连接的情况
+				// todo rhub支持级联后，需要注意1级后的设备属性设置
+				var boardIndex = wlink.GetDevIndex(EnumDevType.board);
+				if (null == boardIndex)
+				{
+					Log.Error("获取board索引失败");
+					return false;
+				}
+
+				var boardPort = wlink.GetDevIrPort(EnumDevType.board, EnumPortType.bbu_to_rhub);
+				if (-1 == boardPort)
+				{
+					Log.Error("获取板卡连接光口失败");
+					return false;
+				}
+
+				var board = GetDevAttributeInfo(boardIndex, EnumDevType.board);
+				if (null == board)
+				{
+					Log.Error($"根据板卡属性{boardIndex}未找到对应的设备");
+					return false;
+				}
+
+				var rhubIndex = wlink.GetDevIndex(EnumDevType.rhub);
+				if (null == rhubIndex)
+				{
+					Log.Error("获取rhub设备索引失败");
+					return false;
+				}
+
+				var rhubPort = wlink.GetDevIrPort(EnumDevType.rhub, EnumPortType.rhub_to_bbu);
+				if (-1 == rhubPort)
+				{
+					Log.Error("获取rhub设备的光口号失败");
+					return false;
+				}
+
+				var rhub = GetDevAttributeInfo(rhubIndex, EnumDevType.rhub);
+				if (null == rhub)
+				{
+					Log.Error($"根据rhub设备属性{rhubIndex}未找到对应的设备信息");
+					return false;
+				}
+
+				// 确定netIROptPlanEntry中是否已经存在对应的记录
+				var irRecodeIndex = $"{boardIndex}.{boardPort}";
+				var irRecord = GetDevAttributeInfo(irRecodeIndex, EnumDevType.board_rru);
+				if (null != irRecord)
+				{
+					Log.Error($"根据板卡索引和光口号组合{irRecodeIndex}找到已经存在的记录，板卡的每个光口只能连接一个设备");
+					return false;
+				}
+
+				// 修改rhub设备的属性
+				var slotNo = GetNeedUpdateValue(board, "netBoardSlotNo");
+				if (null == slotNo)
+				{
+					Log.Error("获取板卡插槽号失败");
+					return false;
+				}
+
+				var boardType = GetNeedUpdateValue(board, "netBoardType");
+				if (null == boardType)
+				{
+					Log.Error("获取板卡类型失败");
+					return false;
+				}
+
+				var ofpMibName = $"netRHUBOfp{rhubPort}AccessOfpPortNo";				// 板卡的光口号
+				if (!rhub.IsExistField(ofpMibName))
+				{
+					Log.Error($"当前MIB版本中不包含{ofpMibName}字段，请确认MIB是否正确");
+					return false;
+				}
+				var ofpLinePosMibName = $"netRHUBOfp{rhubPort}AccessLinePosition";      // 接入级数
+				if (!rhub.IsExistField(ofpLinePosMibName))
+				{
+					Log.Error($"当前MIB版本中不包含{ofpLinePosMibName}字段，请确认MIB是否正确");
+					return false;
+				}
+
+				var accessSlotNoMib = rhubPort == 1 ? "netRHUBAccessSlotNo" : $"netRHUBOfp{rhubPort}SlotNo";
+				if (!rhub.IsExistField(accessSlotNoMib))
+				{
+					Log.Error($"当前MIB版本中不包含{accessSlotNoMib}字段，请确认MIB是否正确");
+					return false;
+				}
+
+				SetDevAttributeValue(rhub, "netRHUBAccessRackNo", "0");
+				SetDevAttributeValue(rhub, "netRHUBAccessShelfNo", "0");
+				SetDevAttributeValue(rhub, accessSlotNoMib, slotNo);
+				SetDevAttributeValue(rhub, "netRHUBAccessBoardType", boardType);
+				SetDevAttributeValue(rhub, ofpMibName, boardPort.ToString());
+				SetDevAttributeValue(rhub, ofpLinePosMibName, "1");
+
+				// 添加一条记录
+				irRecord = new DevAttributeInfo(EnumDevType.board_rru, irRecodeIndex);
+				AddDevToMap(m_mapAllMibData, EnumDevType.board_rru, irRecord);
+			}
+			if (linkType == EnumDevType.prru_ant)	// todo 可以合并到rru_ant中处理
+			{
+				
+			}
+			else
+			{
+				
 			}
 
 			m_linkMgr.AddLinkToList(srcEndpoint, dstEndpoint, linkType);
@@ -1321,6 +1555,26 @@ namespace NetPlan
 			return strLatestValue;
 		}
 
+		private string GetNeedUpdateValue(DevAttributeInfo dev, string strFieldName)
+		{
+			if (null == dev || string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException(strFieldName);
+			}
+
+			var mapAttributes = dev.m_mapAttributes;
+			if (!mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"索引为{dev.m_strOidIndex}的设备属性中不包含{strFieldName}字段");
+				return null;
+			}
+
+			var originValue = dev.GetFieldOriginValue(strFieldName);
+			var latestValue = dev.GetFieldLatestValue(strFieldName);
+
+			return GetNeedUpdateValue(originValue, latestValue);
+		}
+
 		/// <summary>
 		/// 布配网规信息
 		/// </summary>
@@ -1600,7 +1854,7 @@ namespace NetPlan
 				return false;
 			}
 
-			var boardType = GetNeedUpdateValue(board.GetFieldOriginValue("netBoardType"), board.GetFieldLatestValue("netBoardType"));
+			var boardType = GetNeedUpdateValue(board, "netBoardType");
 			if (null == boardType)
 			{
 				Log.Error($"根据板卡索引{strBoardIndex}查找netBoardType字段值失败");
@@ -1618,9 +1872,28 @@ namespace NetPlan
 			var ofp = $"netRRUOfp{nRruIrPort}AccessOfpPortNo";		// 射频单元光口n接入板的光口号
 			rru.SetFieldValue(ofp, nBoardIrPort.ToString());
 
-			var linePos = $"netRRUOfp{nRruIrPort}AccessLinePosition";	// 设备单元光口n接入级数
-			// todo 计算级数
+			var linePos = $"netRRUOfp{nRruIrPort}AccessLinePosition";   // 设备单元光口n接入级数
 
+			// 先判断rru的工作模式
+			var originWorkMode = rru.GetFieldOriginValue("netRRUOfpWorkMode", false);
+			var latestWorkMode = rru.GetFieldLatestValue("netRRUOfpWorkMode", false);
+
+			var wmode = GetNeedUpdateValue(originWorkMode, latestWorkMode);
+			if (null == wmode)
+			{
+				Log.Error("获取工作模式失败");
+				return false;
+			}
+
+			// 判断工作模式是否是级联
+			if (wmode.IndexOf("级联") < 0)
+			{
+				rru.SetFieldValue(linePos, "1");
+			}
+			else
+			{
+				// todo 计算级数
+			}
 
 			if (RecordDataType.NewAdd != rru.m_recordType)
 			{
@@ -1693,6 +1966,29 @@ namespace NetPlan
 			return (linkType != EnumDevType.unknown);
 		}
 
+		// 设置设备指定字段值
+		private bool SetDevAttributeValue(DevAttributeInfo dev, string strFieldName, string strValue)
+		{
+			if (null == dev || string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strValue))
+			{
+				throw new CustomException("属性值传入参数有误");
+			}
+
+			if (!dev.m_mapAttributes.ContainsKey(strFieldName))
+			{
+				Log.Error($"索引为{dev.m_strOidIndex}的设备中未找到{strFieldName}字段，无法设置字段值");
+				return false;
+			}
+
+			dev.m_mapAttributes[strFieldName].SetValue(strValue);
+			if (dev.m_recordType != RecordDataType.NewAdd)
+			{
+				dev.m_recordType = RecordDataType.Modified;
+			}
+
+			return true;
+		}
+
 		#endregion
 
 
@@ -1705,6 +2001,10 @@ namespace NetPlan
 		private NetPlanLinkMgr m_linkMgr;
 
 		private readonly object _syncObj = new object();
+
+		private List<ParsedRruInfo> m_listHasLinePosDev;    // 已经计算出级数的rru和rhub
+
+		private List<ParsedRruInfo> m_listWaitPrevDev;		// 需要等待上级设备才计算接入级数的设备信息
 
 		#endregion
 	}

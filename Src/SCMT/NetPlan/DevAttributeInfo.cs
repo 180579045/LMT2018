@@ -275,6 +275,21 @@ namespace NetPlan
 			return latestValue;
 		}
 
+		/// <summary>
+		/// 判断一个字段是否存在。不同的MIB版本可能存在不一致
+		/// </summary>
+		/// <param name="strFieldName"></param>
+		/// <returns></returns>
+		public bool IsExistField(string strFieldName)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException(strFieldName);
+			}
+
+			return m_mapAttributes.ContainsKey(strFieldName);
+		}
+
 		#endregion
 
 		#region 私有成员
