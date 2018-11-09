@@ -332,8 +332,8 @@
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="8" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
