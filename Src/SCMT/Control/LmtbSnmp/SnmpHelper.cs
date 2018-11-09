@@ -135,10 +135,12 @@ namespace LmtbSnmp
 			OctetString community = new OctetString(Community);
 			m_Param = new AgentParameters(community);
 			m_Param.Version = SnmpVersion.Ver2;
-			IpAddress agent = new IpAddress(IpAddr);
+
+			IPAddress agent = IPAddress.Parse(IpAddr);
+			//IpAddress agent = new IpAddress(IpAddr);
 
 			// 创建代理(基站);
-			m_target = new UdpTarget((IPAddress)agent, 161, 2000, 1);
+			m_target = new UdpTarget(agent, 161, 2000, 1);
 
 			return m_target;
 		}

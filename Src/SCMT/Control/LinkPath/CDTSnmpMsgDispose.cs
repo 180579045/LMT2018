@@ -40,6 +40,8 @@ namespace LinkPath
 		Dictionary<string, List<long>> m_ipToRequestIdsDicForEvent = new Dictionary<string, List<long>>();
 		// 配置变更Trap id
 		Dictionary<string, List<long>> m_ipToRequestIdsDicForConfigChg = new Dictionary<string, List<long>>();
+		// 告警Trap id
+		Dictionary<string, List<long>> m_ipToRequestIdsDicForAlarm = new Dictionary<string, List<long>>();
 
 		public int FileTransMacro { get; private set; }
 
@@ -152,9 +154,15 @@ namespace LinkPath
 			{
 				case 2:
 				case 24: // //alarmTraps
-						 //告警处理  注意添加各告警字段和日志的值
-						 //验证是否是同一个trap
-						 // TODO
+					//告警处理  注意添加各告警字段和日志的值
+					//验证是否是同一个trap
+					if (InterceptRepeatedTrap4Alarm(strNodeIp, lmtPdu.m_requestId) == true)
+					{
+						Log.Info(string.Format("收到相同Trap, request id:{0}", lmtPdu.m_requestId));
+						return 0;
+					}
+
+					// TODO
 
 					break;
 				case 3:
@@ -2013,6 +2021,40 @@ namespace LinkPath
 
 
 			return sbReVal.ToString();
+		}
+
+		/// <summary>
+		/// 检查是否为同一个告警类型的Trap
+		/// </summary>
+		/// <param name="strIp"></param>
+		/// <param name="requestId"></param>
+		/// <returns></returns>
+		private bool InterceptRepeatedTrap4Alarm(string strIp, long requestId)
+		{
+			List<long> requestIdList;
+			m_ipToRequestIdsDicForAlarm.TryGetValue(strIp, out requestIdList);
+			if (requestIdList == null)
+			{
+				requestIdList = new List<long>();
+				m_ipToRequestIdsDicForAlarm.Add(strIp, requestIdList);
+			}
+
+			if (requestIdList.Contains(requestId)) // 存在
+			{
+				return true;
+			}
+			else // 不能存在， 添加
+			{
+				// 只缓存4个id，多于4个删除
+				if (requestIdList.Count() > 4)
+				{
+					requestIdList.RemoveAt(0);
+				}
+
+				requestIdList.Add(requestId);
+			}
+
+			return false;
 		}
 
 		/// <summary>
