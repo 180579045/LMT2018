@@ -21,7 +21,8 @@ namespace CfgFileOperation
         {
             Test test = new Test();
 
-            test.testForCreatePatchAndInit();
+            test.testForParseAlarmEx();
+            //test.testForCreatePatchAndInit();
 
             //test.testForReadSelfExcel();
 
@@ -32,11 +33,11 @@ namespace CfgFileOperation
             //test.testForReadExcelRruType();
 
             //test.testForReadExcelAnnt();
-            
+
             //test.testForOpReadExcelForCfg();
 
             //test.test4();
-            
+
         }
         /// <summary>
         /// 生成 init 和 patch
@@ -46,6 +47,15 @@ namespace CfgFileOperation
             CfgOp cfgOp = new CfgOp();
             cfgOp.OnCreatePatchAndInitCfg();
         }
+
+        void testForParseAlarmEx()
+        {
+            string alarmMdbPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\LMTAlarm.mdb";
+            string alarmExPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls";
+            CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl(alarmExPath, alarmMdbPath);
+
+        }
+
 
         void testForReadSelfExcel()
         {
