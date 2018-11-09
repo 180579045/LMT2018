@@ -23,33 +23,24 @@ namespace CfgFileOperation
 
             test.testForCreatePatchAndInit();
 
-            test.testForReadSelfExcel();
+            //test.testForReadSelfExcel();
 
-            test.testForReadRecList();//
+            //test.testForReadRecList();//
 
-            test.testLoadMibTreeIntoMem();//
+            //test.testLoadMibTreeIntoMem();//
 
-            test.testForReadExcelRruType();
+            //test.testForReadExcelRruType();
 
-            test.testForReadExcelAnnt();
+            //test.testForReadExcelAnnt();
             
-            test.testForOpReadExcelForCfg();
+            //test.testForOpReadExcelForCfg();
 
-
-            test.test4();
-
-            //string strCfgFileName = "";
-            //string FileToDirectory = "";
-            //string strDBPath = "";
-            //string strDBName = ".\\Data\\lmdtz\\lm.dtz";
-            //byte[] byteArray = System.Text.Encoding.Default.GetBytes("123");
-            //Array.Reverse(byteArray);
-            //CfgOp cfgOp = new CfgOp();
-            //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
-            //cfgOp.SaveFile_eNB("./path.cfg");
-            //Console.ReadLine();
+            //test.test4();
+            
         }
-
+        /// <summary>
+        /// 生成 init 和 patch
+        /// </summary>
         void testForCreatePatchAndInit()
         {
             CfgOp cfgOp = new CfgOp();

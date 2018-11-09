@@ -113,6 +113,35 @@ namespace SCMTMainWindow.Component.ViewModel
         }
 
         /// <summary>
+        /// 当单元格失去焦点之后，统一调用单元格类的对应函数;
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool JudgePropertyName_ChangeSelection(string name, object SelectionObj)
+        {
+            bool ret = false;
+
+            // 在当前列名于属性列表中查找，看是否有匹配项;
+            if (ColName_Property.ContainsKey(name))
+            {
+                string key = ColName_Property[name];
+                if (Properties.ContainsKey(key))
+                {
+                    object property = Properties[key];
+                    (property as GridCell).SelectionCellChanged(SelectionObj);
+                    return true;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Can not find the right property");
+                return false;
+            }
+
+            return ret;
+        }
+
+        /// <summary>
         /// 初始化;
         /// </summary>
         public DyDataGrid_MIBModel()

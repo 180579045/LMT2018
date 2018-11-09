@@ -230,6 +230,16 @@ namespace SCMTMainWindow.View
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
                 }
+                //查看 NetPlan中，是否点击连接线
+                SCMTMainWindow.View.NetPlan targetNP = GetRootElement<SCMTMainWindow.View.NetPlan>(ucTest, "");
+                if (targetNP.bHiddenLineConnector)
+                {
+                    targetNP.HiddenConnectorDecoratorTemplate(newItem);
+                }
+                else
+                {
+                    targetNP.VisibilityConnectorDecoratorTemplate(newItem);
+                }
             }
 
             return true;
@@ -415,6 +425,17 @@ namespace SCMTMainWindow.View
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
                 }
+
+                //查看 NetPlan中，是否点击连接线
+                SCMTMainWindow.View.NetPlan targetNP = GetRootElement<SCMTMainWindow.View.NetPlan>(ucTest, "");
+                if(targetNP.bHiddenLineConnector)
+                {
+                    targetNP.HiddenConnectorDecoratorTemplate(newItem);
+                }
+                else
+                {
+                    targetNP.VisibilityConnectorDecoratorTemplate(newItem);
+                }
             }
 
             return true;
@@ -544,6 +565,16 @@ namespace SCMTMainWindow.View
                     CreateGirdForNetInfo(strRRUFullName, devRRUInfo);
                     gridProperty.Children.Clear();
                     gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
+                }
+                //查看 NetPlan中，是否点击连接线
+                SCMTMainWindow.View.NetPlan targetNP = GetRootElement<SCMTMainWindow.View.NetPlan>(ucTest, "");
+                if (targetNP.bHiddenLineConnector)
+                {
+                    targetNP.HiddenConnectorDecoratorTemplate(newItem);
+                }
+                else
+                {
+                    targetNP.VisibilityConnectorDecoratorTemplate(newItem);
                 }
             }
 

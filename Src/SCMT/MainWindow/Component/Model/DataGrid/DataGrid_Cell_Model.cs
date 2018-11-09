@@ -1,4 +1,20 @@
-﻿using System;
+﻿/*----------------------------------------------------------------
+// Copyright (C) 2017 大唐移动通信设备有限公司 版权所有;
+//
+// 文件名：ObjTreeNode.cs
+// 文件功能描述：DataGrid单元格类型;
+// 创建人：郭亮;
+// 版本：V1.0
+// 创建时间：2018-10-20
+// 说明：DataGrid的单元格一共有以下几种类型：
+//       1、仅显示字符串的单元格;
+//       2、显示枚举类型的单元格;
+//       3、显示BIT类型的单元格;
+//       4、显示时间类型的单元格;
+//       5、如果后续需要新增类型，都需要继承GridCell抽象类
+//----------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,7 +44,7 @@ namespace SCMTMainWindow
         {
         }
 
-        public override void SelectionCellChanged()
+        public override void SelectionCellChanged(object SelectionObj)
         {
         }
     }
@@ -72,8 +88,24 @@ namespace SCMTMainWindow
         {
         }
 
-        public override void SelectionCellChanged()
+        /// <summary>
+        /// 当枚举类型选择发生变化的时候;
+        /// </summary>
+        /// <param name="SelectionObj"></param>
+        public override void SelectionCellChanged(object SelectionObj)
         {
+            var selectionNo = (KeyValuePair<int, string>)SelectionObj;
+
+            // 如果用户选择没有发生变化的话,直接返回，不做处理;
+            if (selectionNo.Key == this.m_CurrentValue)
+            {
+                return;
+            }
+            else
+            {
+                Console.WriteLine("用户的选择由" + m_AllContent[this.m_CurrentValue] + "变更为" + selectionNo.Value + "("+ selectionNo.Key +")，进行相关操作：");
+                this.m_Content = selectionNo.Value;
+            }
         }
     }
 

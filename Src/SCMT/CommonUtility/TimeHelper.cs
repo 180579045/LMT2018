@@ -59,6 +59,11 @@ namespace CommonUtility
 			var sec = timeBytes[offset++];
 
 			year = year > 9999 ? 2009 : year;
+			month = (byte) (month > 12 ? 1 : month);
+			day = (byte) (day > 31 ? 1 : day);
+			hour = (byte) (hour > 24 ? 0 : hour);
+			min = (byte)(min > 59 ? 0 : min);
+			sec = (byte)(sec > 59 ? 0 : sec);
 
 			var dt = new DateTime(year, month, day, hour, min, sec, DateTimeKind.Utc);
 			return dt;
