@@ -90,21 +90,28 @@ namespace SCMTMainWindow
 
         /// <summary>
         /// 当枚举类型选择发生变化的时候;
+        /// 在此处控制用户修改完MIB内容后，下发SNMP、接收返回结果以及界面显示的功能;
         /// </summary>
         /// <param name="SelectionObj"></param>
         public override void SelectionCellChanged(object SelectionObj)
         {
-            var selectionNo = (KeyValuePair<int, string>)SelectionObj;
+            // 如果是枚举类型的单元格;
+            if(SelectionObj is KeyValuePair<int, string>)
+            {
+                var selectionNo = (KeyValuePair<int, string>)SelectionObj;    // 用户选择枚举类型的KeyValuePair;
 
-            // 如果用户选择没有发生变化的话,直接返回，不做处理;
-            if (selectionNo.Key == this.m_CurrentValue)
-            {
-                return;
-            }
-            else
-            {
-                Console.WriteLine("用户的选择由" + m_AllContent[this.m_CurrentValue] + "变更为" + selectionNo.Value + "("+ selectionNo.Key +")，进行相关操作：");
-                this.m_Content = selectionNo.Value;
+                // 如果用户选择没有发生变化的话,直接返回，不做处理;
+                if (selectionNo.Key == this.m_CurrentValue)
+                {
+                    return;
+                }
+                else
+                {
+                    Console.WriteLine("用户的选择由" + m_AllContent[this.m_CurrentValue] + "变更为" + selectionNo.Value
+                        + "(" + selectionNo.Key + ")，进行相关操作,Oid is " + this.oid);
+
+                    this.m_Content = selectionNo.Value;
+                }
             }
         }
     }
