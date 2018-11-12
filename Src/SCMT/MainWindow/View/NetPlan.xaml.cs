@@ -489,6 +489,7 @@ namespace SCMTMainWindow.View
                 if (boardAttribute != null)
                 {
                     MyDesigner.CreateGirdForNetInfo(strIRName, boardAttribute);
+                    MyDesigner.g_nowDevAttr = boardAttribute;
                 }
             }
         }

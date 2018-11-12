@@ -36,6 +36,9 @@ namespace SCMTMainWindow.View
         //全局变量，保存当前选中设备的信息
         public DevAttributeInfo g_nowDevAttr = null;
 
+        //属性修改的时候，保存之前的值，进行判断
+        private string strOldAttr;
+
         //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
         public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
         //保存界面上的属性表格
@@ -735,10 +738,6 @@ namespace SCMTMainWindow.View
                             cbValue.Items.Add(valueInfo.ElementAt(j).Value);
                         }
 
-                        //string[] strValue = mibInfo[i].mibAttri.defaultValue.Split(':');
-                        //string strDefaultInfo = valueInfo[int.Parse(strValue[0])];
-                        //cbValue.SelectedItem = strDefaultInfo;
-
                         grid.Children.Add(cbValue);
                         Grid.SetColumn(cbValue, 2);
                         Grid.SetRow(cbValue, nRow + 1);
@@ -781,6 +780,7 @@ namespace SCMTMainWindow.View
                         }
                         else
                         {
+                            txtValue.GotFocus += TxtValue_GotFocus;
                             txtValue.LostFocus += TxtValue_LostFocus;
                         }
                         break;
@@ -804,6 +804,17 @@ namespace SCMTMainWindow.View
         }
 
         /// <summary>
+        /// 文本框得到焦点的时候，保存当前的属性值
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TxtValue_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox targetText = sender as TextBox;
+            strOldAttr = targetText.Text;
+        }
+
+        /// <summary>
         /// 文本框失去焦点事件
         /// </summary>
         /// <param name="sender"></param>
@@ -821,7 +832,21 @@ namespace SCMTMainWindow.View
                     targetText = grid.Children[i - 1] as TextBlock;
                     if (targetText != null)
                     {
-                        MessageBox.Show(targetText.Text.ToString());
+                        foreach(var item in g_nowDevAttr.m_mapAttributes)
+                        {
+                            if(item.Value.mibAttri.childNameCh == targetText.Text)
+                            {
+                                if(strOldAttr != targetItem.Text)
+                                {
+                                    if(!MibInfoMgr.SetDevAttributeValue(g_nowDevAttr, item.Key, targetItem.Text))
+                                    {
+                                        MessageBox.Show("修改失败");
+                                    }
+                                }
+                            }
+                        }
+
+                        return;
                     }
                 }
             }
@@ -846,7 +871,18 @@ namespace SCMTMainWindow.View
                     targetText = grid.Children[i - 1] as TextBlock;
                     if (targetText != null)
                     {
-                        MessageBox.Show(targetText.Text.ToString());
+                        foreach (var item in g_nowDevAttr.m_mapAttributes)
+                        {
+                            if (item.Value.mibAttri.childNameCh == targetText.Text)
+                            {
+                                if (!MibInfoMgr.SetDevAttributeValue(g_nowDevAttr, item.Key, targetItem.SelectedItem.ToString()))
+                                {
+                                    MessageBox.Show("修改失败");
+                                }
+                            }
+                        }
+
+                        return;
                     }
                 }
             }
