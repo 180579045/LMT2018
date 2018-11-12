@@ -95,7 +95,10 @@ namespace SCMTMainWindow
 		public MainWindow()
 		{
 			InitializeComponent();
-			WindowState = WindowState.Maximized;          // 默认全屏模式;
+            var uri = new Uri("/PresentationFramework.AeroLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35;component/themes/AeroLite.NormalColor.xaml", UriKind.Relative);
+            var resourceDictionary = Application.LoadComponent(uri) as ResourceDictionary;
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+            WindowState = WindowState.Maximized;          // 默认全屏模式;
 			MinWidth = 1024;                                             // 设置一个最小分辨率;
 			MinHeight = 768;                                             // 设置一个最小分辨率;
 

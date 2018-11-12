@@ -20,7 +20,7 @@
         xmlns:View="clr-namespace:SCMTMainWindow.View"
         xmlns:fileManager="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
         xmlns:logInfo="clr-namespace:SCMTMainWindow.Component.SCMTControl.LogInfoShow"
-        mc:Ignorable="d"
+        mc:Ignorable="d"     BorderBrush="#0178D0"
         Height="778" Width="1024"
         Title="{Binding Title}"
         WindowStyle="None"
