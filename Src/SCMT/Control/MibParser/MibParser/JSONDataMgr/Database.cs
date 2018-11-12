@@ -487,7 +487,7 @@ namespace MIBDataParser.JSONDataMgr
 			UnzippedLmDtz unZip = new UnzippedLmDtz();
 			if (!unZip.UnZipFile(connectIp, out err))
 			{
-				resultInitData(false);
+				//resultInitData(false);
 				Console.WriteLine("Err : DBInitZip fail, {0}", err);
 				return false;
 			}

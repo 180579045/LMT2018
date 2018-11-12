@@ -307,7 +307,8 @@ namespace MIBDataParser.JSONDataMgr
         /// <returns></returns>
         bool UzipRenameDirectoryAssisDeal(string destinationDirectoryName, out string err)
         {
-            return moveFile(destinationDirectoryName + "lm", destinationDirectoryName + "lm.mdb" , out err);
+            //return moveFile(destinationDirectoryName + "lm", destinationDirectoryName + "lm.mdb" , out err);
+            return moveFile(destinationDirectoryName + "/output/lm.mdb", destinationDirectoryName + "lm.mdb", out err);
         }
 
         /// <summary>

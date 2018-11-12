@@ -8,6 +8,7 @@ using System.IO.Compression;// zip
 using System.IO;// File
 using System.Runtime.InteropServices;
 using System.Data;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CfgFileOpStruct
 {
@@ -1224,29 +1225,29 @@ namespace CfgFileOpStruct
 
     struct StruAlarmInfo
     {
-        string alarmCauseNo;
-        string alarmCauseRowStatus;
-        string alarmCauseSeverity;
-        string alarmCauseIsValid;
-        string alarmCauseType;
-        string alarmCauseClearStyle;
-        string alarmCauseToAlarmBox;
-        string alarmCauseItfNProtocolCauseNo;
-        string alarmCauseIsStateful;
-        string alarmCausePrimaryAlarmCauseNo;
-        string alarmCauseStatefulClearDeditheringInterval;
-        string alarmCauseStatefulCreateDeditheringInterval;
-        string alarmCauseStatefulDelayTime;
-        string alarmCauseCompressionInterval;
-        string alarmCauseCompressionRepetitions;
-        string alarmCauseAutoProcessPolicy;
-        string alarmCauseValueStyle;
-        string alarmCauseFaultObjectType;
-        string alarmCauseReportBoardType;
+        public string alarmCauseNo;
+        public string alarmCauseRowStatus;
+        public string alarmCauseSeverity;
+        public string alarmCauseIsValid;
+        public string alarmCauseType;//5
+        public string alarmCauseClearStyle;
+        public string alarmCauseToAlarmBox;
+        public string alarmCauseItfNProtocolCauseNo;
+        public string alarmCauseIsStateful;
+        public string alarmCausePrimaryAlarmCauseNo;//10
+        public string alarmCauseStatefulClearDeditheringInterval;
+        public string alarmCauseStatefulCreateDeditheringInterval;
+        public string alarmCauseStatefulDelayTime;
+        public string alarmCauseCompressionInterval;
+        public string alarmCauseCompressionRepetitions;//15
+        public string alarmCauseAutoProcessPolicy;
+        public string alarmCauseValueStyle;
+        public string alarmCauseFaultObjectType;
+        public string alarmCauseReportBoardType;//19
 
         //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
-        string strAlarmUnstableDispose;
-        string strAlarmCauseInsecureNo;  //不稳定态告警编号
+        public string strAlarmUnstableDispose;
+        public string strAlarmCauseInsecureNo;  //不稳定态告警编号
 
         public StruAlarmInfo(DataRow alarmRow)
         {
@@ -1362,6 +1363,87 @@ namespace CfgFileOpStruct
             }
             return ReturnValue;
         }
+        /// <summary>
+        /// 解析excel解析
+        /// </summary>
+        /// <param name="wks"></param>
+        public StruAlarmInfo(Dictionary<string, string> alarmExVal)
+        {
+            //if (wks == null)
+            //    return null;
+            //告警编号		
+            alarmCauseNo = alarmExVal[("AlaNumber")].ToString();
+            alarmCauseSeverity = alarmExVal[("AlaDegree")].ToString(); //告警级别
+            alarmCauseRowStatus = "4";  //告警行状态
+
+            // "5037" sStrValueYes
+            if (String.Equals("是", alarmExVal[("IsReportToOMCR")].ToString()))//strAlarmCauseValid == sStrValueYes)
+            {
+                alarmCauseIsValid = "0";
+                alarmCauseToAlarmBox = "1";
+            }
+            // "5038" sStrValueNO
+            else// (String.Equals("否", alarmRow[("IsReportToOMCR")].ToString()))
+            {
+                alarmCauseIsValid = "1";
+                alarmCauseToAlarmBox = "0";
+            }
+            string TmpValue = alarmExVal[("AlaType")].ToString();
+            int pos = TmpValue.IndexOf(" -")==-1?TmpValue.Length:TmpValue.IndexOf(" -");
+            alarmCauseType = TmpValue.Substring(0, pos);
+            string ClearStyle = alarmExVal[("ClearStyle")].ToString();
+            if (String.Equals("无", ClearStyle) | string.Empty == ClearStyle.Replace(" ", ""))
+                alarmCauseClearStyle = 255.ToString();
+            else
+            {
+                alarmCauseClearStyle = alarmExVal[("ClearStyle")].ToString().Replace(" ", "");
+            }
+            //alarmCauseClearStyle = alarmExVal[("ClearStyle")].ToString();
+            alarmCauseItfNProtocolCauseNo = alarmExVal[("ItfNProtocolCauseNo")].ToString();
+            //string strAlarmStateFul = alarmRow[("IsFault")].ToString();
+            if (String.Equals("Y", alarmExVal[("IsFault")].ToString()))//(strAlarmStateFul == sStrValueYes)
+            {
+                alarmCauseIsStateful = "0";
+            }
+            else
+            {
+                alarmCauseIsStateful = "1";
+            }
+            alarmCausePrimaryAlarmCauseNo = alarmExVal[("AlaSubtoPrimaryNumber")].ToString();
+            alarmCauseStatefulClearDeditheringInterval = alarmExVal[("ClearDeditheringInterval")].ToString();
+            alarmCauseStatefulCreateDeditheringInterval = alarmExVal[("CreateDeditheringInterval")].ToString();
+            alarmCauseCompressionInterval = alarmExVal[("CompressionInterval")].ToString();
+            alarmCauseCompressionRepetitions = alarmExVal[("CompressionRepetitions")].ToString();
+            alarmCauseValueStyle = alarmExVal[("ValueStyle")].ToString();
+
+            string FathernameOfObject = alarmExVal[("FathernameOfObject")].ToString();
+            //pos = FathernameOfObject.IndexOf(":") == -1 ? FathernameOfObject.Length : FathernameOfObject.IndexOf(":");
+            //FathernameOfObject = FathernameOfObject.Substring(0, pos);
+            string FathernameOfObject_CH = alarmExVal[("FathernameOfObject_CH")].ToString();
+            if (String.Empty != FathernameOfObject_CH)
+            {
+                pos = FathernameOfObject_CH.IndexOf(":");// == -1? FathernameOfObject_CH.Length : FathernameOfObject_CH.IndexOf(":");
+                if(pos != -1)
+                    FathernameOfObject_CH = FathernameOfObject_CH.Substring(pos + 1);
+            }
+            alarmCauseFaultObjectType = FathernameOfObject +"|"+ FathernameOfObject_CH;
+
+            //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
+            strAlarmUnstableDispose = alarmExVal[("AlaUnstableDispose")].ToString();
+            string UnstableAlaNum = alarmExVal[("UnstableAlaNum")].ToString();//不稳定态告警编号
+            if (string.Empty == UnstableAlaNum)
+            {
+                strAlarmCauseInsecureNo = 0.ToString();
+            }
+            else
+                strAlarmCauseInsecureNo = alarmExVal[("UnstableAlaNum")].ToString();  //不稳定态告警编号
+
+            alarmCauseStatefulDelayTime = "0";
+            alarmCauseAutoProcessPolicy = "0";
+            alarmCauseReportBoardType = "0";
+
+        }
+
         
     }
 

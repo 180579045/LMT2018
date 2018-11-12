@@ -448,7 +448,7 @@ namespace SCMTMainWindow.View
         /// <param name="strXAML"></param>
         /// <param name="RRUSize"></param>
         /// <returns></returns>
-        private string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
+        public string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
             Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;

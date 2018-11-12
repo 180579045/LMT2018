@@ -339,7 +339,7 @@ namespace CfgFileOperation
         /// <param name="fileName"></param>
         /// <param name="sqlContent"></param>
         /// <returns></returns>
-        private DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
+        public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
         {
             DataSet dateSet = new DataSet();
             AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
