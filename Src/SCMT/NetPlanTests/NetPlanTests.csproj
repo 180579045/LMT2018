@@ -51,6 +51,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DevLink\LinkBoardRruTests.cs" />
     <Compile Include="MibInfoMgrTests.cs" />
     <Compile Include="NPCellOperatorTests.cs" />
     <Compile Include="NPEAntHelperTests.cs" />

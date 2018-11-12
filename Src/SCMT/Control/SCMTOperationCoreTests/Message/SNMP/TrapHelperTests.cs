@@ -18,7 +18,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		public void InitReceiverTest()
 		{
 			TrapHelper trapHelper = new TrapHelper();
-			trapHelper.InitReceiver();
+			trapHelper.InitReceiverIpv6();
 
 			Debug.WriteLine("end ------------");
 		}
@@ -58,8 +58,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		private void TrapThd()
 		{
 			TrapHelper trapHelper = new TrapHelper();
-			trapHelper.InitReceiver();
-			
+			trapHelper.InitReceiverIpv6();
 		}
 	}
 }

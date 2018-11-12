@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
@@ -20,7 +23,8 @@ namespace NetPlan
 	}
 
 	// 设备的属性
-	public class DevAttributeInfo
+	[Serializable]
+	public class DevAttributeInfo : ICloneable
 	{
 		#region 公有属性
 
@@ -53,6 +57,8 @@ namespace NetPlan
 			//m_strOidIndex = m_bIsScalar ? ".0" : GerenalDevOidIndex(devIndex);	// 如果是标量，索引就直接设置为.0
 
 			InitDevInfo(mEnumDevType, devIndex);
+			m_recordType = RecordDataType.NewAdd;
+
 		}
 
 		/// <summary>
@@ -68,6 +74,8 @@ namespace NetPlan
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
 			InitDevInfo(mEnumDevType);
+
+			m_recordType = RecordDataType.NewAdd;
 		}
 
 		/// <summary>
@@ -117,7 +125,7 @@ namespace NetPlan
 		/// <param name="strFieldName">待修改的字段名</param>
 		/// <param name="strLatestValue">最后的值</param>
 		/// <returns>修改成功返回true，修改失败返回false</returns>
-		public bool SetFieldValue(string strFieldName, string strLatestValue)
+		public bool SetFieldLatestValue(string strFieldName, string strLatestValue)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strLatestValue))
 			{
@@ -444,6 +452,29 @@ namespace NetPlan
 
 		#endregion
 
+		//深拷贝
+		public DevAttributeInfo DeepClone()
+		{
+			using (Stream objectStream = new MemoryStream())
+			{
+				IFormatter formatter = new BinaryFormatter();
+				formatter.Serialize(objectStream, this);
+				objectStream.Seek(0, SeekOrigin.Begin);
+				return formatter.Deserialize(objectStream) as DevAttributeInfo;
+			}
+		}
+
+		//浅拷贝
+		public object Clone()
+		{
+			return this.MemberwiseClone();
+		}
+
+		//浅拷贝
+		public DevAttributeInfo ShallowClone()
+		{
+			return this.Clone() as DevAttributeInfo;
+		}
 	}
 
 	/// <summary>
