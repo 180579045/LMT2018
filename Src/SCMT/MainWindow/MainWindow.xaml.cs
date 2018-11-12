@@ -1922,7 +1922,6 @@ namespace SCMTMainWindow
             ItemCollection collection = MainHorizenTab.Items;
             for(int i = 0; i < collection.Count; i++)
                 (collection[i] as TabItem).IsEnabled = isEnable;
-
         }
     }
 
