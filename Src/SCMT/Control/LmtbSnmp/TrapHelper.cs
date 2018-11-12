@@ -19,12 +19,14 @@ namespace LmtbSnmp
 	/// </summary>
 	public class TrapHelper
 	{
-		// Trap socket
-		protected Socket _socket;
+		// Trap socket for IPV4
+		protected Socket _socketIpv4;
+		// Trap socket for IPV6
+		protected Socket _socketIpv6;
 		// 接收消息数组
 		protected byte[] _inBuffer;
 		// 对端IP
-		protected IPEndPoint _peerIp;
+//		protected IPEndPoint _peerIp;
 		// Trap端口号
 		protected int m_port = 162;
 
@@ -45,12 +47,12 @@ namespace LmtbSnmp
 		}
 
 		/// <summary>
-		/// 初始化Trap服务
+		/// 初始化IPV4 Trap服务
 		/// </summary>
 		/// <returns></returns>
-		public bool InitReceiver()
+		public bool InitReceiverIpv4()
 		{
-			if (_socket != null)
+			if (_socketIpv4 != null)
 			{
 				StopReceiver();
 			}
@@ -58,16 +60,16 @@ namespace LmtbSnmp
 			try
 			{
 				// create UDP Socket
-				_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+				_socketIpv4 = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 			}
 			catch (Exception ex)
 			{
 				Log.Error(ex.Message.ToString());
 				// there is no need to close the socket because it was never correctly created
-				_socket = null;
+				_socketIpv4 = null;
 			}
 
-			if (_socket == null)
+			if (_socketIpv4 == null)
 			{
 				return false;
 			}
@@ -76,22 +78,22 @@ namespace LmtbSnmp
 			{
 				// 绑定本地端口
 				EndPoint localEp = new IPEndPoint(IPAddress.Any, m_port);
-				_socket.Bind(localEp);
+				_socketIpv4.Bind(localEp);
 			}
 			catch (SocketException ex)
 			{
 				Log.Error(ex.Message.ToString());
-				_socket.Close();
-				_socket = null;
+				_socketIpv4.Close();
+				_socketIpv4 = null;
 				 throw ex;
 			}
 
-			if (_socket == null)
+			if (_socketIpv4 == null)
 			{
 				return false;
 			}
 
-			if (!RegisterReceiveOperation())
+			if (!RegisterReceiveOperation(_socketIpv4))
 			{
 				return false;
 			}
@@ -99,34 +101,101 @@ namespace LmtbSnmp
 			return true;
 		}
 
-
 		/// <summary>
-		/// 接收消息操作
+		/// 初始化IPV6 Trap服务
 		/// </summary>
 		/// <returns></returns>
-		public bool RegisterReceiveOperation()
+		public bool InitReceiverIpv6()
 		{
-			if (_socket == null)
+			if (_socketIpv6 != null)
+			{
+				StopReceiver();
+			}
+
+			try
+			{
+				// create UDP Socket
+				_socketIpv6 = new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message.ToString());
+				// there is no need to close the socket because it was never correctly created
+				_socketIpv6 = null;
+			}
+
+			if (_socketIpv6 == null)
 			{
 				return false;
 			}
 
 			try
 			{
-				_peerIp = new IPEndPoint(IPAddress.Any, 0);
-				EndPoint ep = (EndPoint)_peerIp;
+				// 绑定本地端口
+				EndPoint localEp = new IPEndPoint(IPAddress.IPv6Any, m_port);
+				_socketIpv6.Bind(localEp);
+			}
+			catch (SocketException ex)
+			{
+				Log.Error(ex.Message.ToString());
+				_socketIpv6.Close();
+				_socketIpv6 = null;
+				throw ex;
+			}
+
+			if (_socketIpv6 == null)
+			{
+				return false;
+			}
+
+			if (!RegisterReceiveOperation(_socketIpv6))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 接收消息操作
+		/// </summary>
+		/// <returns></returns>
+		public bool RegisterReceiveOperation(Socket socket)
+		{
+			if (socket == null)
+			{
+				return false;
+			}
+
+			try
+			{
+				EndPoint ep = null;
+                if (socket.AddressFamily == AddressFamily.InterNetwork) // IPV4
+				{
+					ep = new IPEndPoint(IPAddress.Any, 0);
+
+				}
+				else if (socket.AddressFamily == AddressFamily.InterNetworkV6) // IPV6
+				{
+					ep = new IPEndPoint(IPAddress.IPv6Any, 0);
+				}
+				else
+				{
+					Log.Error(string.Format("不能识别的Socket地址族 socket.AddressFamily:{0}", socket.AddressFamily));
+					return false;
+				}
 				_inBuffer = new byte[64 * 1024];
 				// 接收消息
-				_socket.BeginReceiveFrom(_inBuffer, 0, 64 * 1024, SocketFlags.None, ref ep, new AsyncCallback(ReceiveCallback), _socket);
+				socket.BeginReceiveFrom(_inBuffer, 0, 64 * 1024, SocketFlags.None, ref ep, new AsyncCallback(ReceiveCallback), socket);
 			}
 			catch ( Exception ex)
 			{
 				Log.Error(ex.Message.ToString());
-				_socket.Close();
-				_socket = null;
+				socket.Close();
+				socket = null;
 			}
 
-			if (_socket == null)
+			if (socket == null)
 			{
 				return false;
 			}
@@ -142,18 +211,26 @@ namespace LmtbSnmp
 		{
 			Socket sock = (Socket)result.AsyncState;
 
-			_peerIp = new IPEndPoint(IPAddress.Any, 0);
+			EndPoint ep = null;
+            if (sock.AddressFamily == AddressFamily.InterNetwork) // IPV4
+			{
+				ep = new IPEndPoint(IPAddress.Any, 0);
+			}
+			else if (sock.AddressFamily == AddressFamily.InterNetworkV6) // IPV6
+			{
+				ep = new IPEndPoint(IPAddress.IPv6Any, 0);
+			}
+			else
+			{
+				return;
+			}
 
 			// 接收的数据大小
 			int intLen;
 
-			EndPoint ep = null;
 			try
 			{
-				ep = (EndPoint)_peerIp;
 				intLen = sock.EndReceiveFrom(result, ref ep);
-				_peerIp = (IPEndPoint)ep;
-
 			}
 			catch (Exception ex)
 			{
@@ -161,7 +238,7 @@ namespace LmtbSnmp
 				intLen = -1;
 			}
 
-			if (_socket == null)
+			if (sock == null)
 			{
 				return;
 			}
@@ -169,7 +246,7 @@ namespace LmtbSnmp
 			// 数据未接收完，继续接收
 			if (intLen <= 0)
 			{
-				RegisterReceiveOperation();
+				RegisterReceiveOperation(sock);
 				return;
 			}
 
@@ -197,15 +274,15 @@ namespace LmtbSnmp
 				{
 					if (pkt.Pdu.Type == PduType.V2Trap) // trap
 					{
-						Log.Info(string.Format("** SNMPv2 Trap from {0}", _peerIp.ToString()));
+						Log.Info(string.Format("** SNMPv2 Trap from {0}", ep.ToString()));
 					}
 					else if (pkt.Pdu.Type == PduType.Inform) // inform
 					{
-						Log.Info(string.Format("** SNMPv2 Trap from {0}", _peerIp.ToString()));
+						Log.Info(string.Format("** SNMPv2 Trap from {0}", ep.ToString()));
 					}
 					else
 					{
-						Log.Error(string.Format("Invalid SNMPv2 packet from {0}", _peerIp.ToString()));
+						Log.Error(string.Format("Invalid SNMPv2 packet from {0}", ep.ToString()));
 						pkt = null;
 					}
 
@@ -233,7 +310,7 @@ namespace LmtbSnmp
 							// 发送Inform响应消息
 							SnmpV2Packet response = pkt.BuildInformResponse();
 							byte[] buf = response.encode();
-							_socket.SendTo(buf, (EndPoint)_peerIp);
+							sock.SendTo(buf, ep);
 						}
 
 						// Trap消息处理
@@ -254,7 +331,7 @@ namespace LmtbSnmp
 				}
 			}
 
-			RegisterReceiveOperation();
+			RegisterReceiveOperation(sock);
 		}
 
 		/// <summary>
@@ -262,10 +339,16 @@ namespace LmtbSnmp
 		/// </summary>
 		public void StopReceiver()
 		{
-			if (_socket != null)
+			if (_socketIpv4 != null)
 			{
-				_socket.Close();
-				_socket = null;
+				_socketIpv4.Close();
+				_socketIpv4 = null;
+			}
+
+			if (_socketIpv6 != null)
+			{
+				_socketIpv6.Close();
+				_socketIpv6 = null;
 			}
 		}
 
