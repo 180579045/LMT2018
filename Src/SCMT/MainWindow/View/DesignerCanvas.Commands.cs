@@ -931,8 +931,16 @@ namespace SCMTMainWindow.View
                     }else if(connection.Sink.DevType == EnumDevType.board)
                     {
                         srcPort.portType = EnumPortType.rru_to_bbu;
+                    }else if(connection.Sink.DevType == EnumDevType.rhub)
+                    {
+                        srcPort.portType = EnumPortType.pico_to_rhub;
                     }
-                }else if(srcPort.devType == EnumDevType.rhub)
+                    else
+                    {
+                        srcPort.portType = connection.Source.PortType;
+                    }
+                }
+                else if(srcPort.devType == EnumDevType.rhub)
                 {
                     if(connection.Sink.DevType == EnumDevType.board)
                     {
@@ -940,6 +948,9 @@ namespace SCMTMainWindow.View
                     }else if(connection.Sink.DevType == EnumDevType.rhub)
                     {
                         srcPort.portType = EnumPortType.rhub_to_rhub;
+                    }else if(connection.Sink.DevType == EnumDevType.rru)
+                    {
+                        srcPort.portType = EnumPortType.rhub_to_pico;
                     }
                 }
                 else
@@ -972,6 +983,9 @@ namespace SCMTMainWindow.View
                     else if (connection.Source.DevType == EnumDevType.board)
                     {
                         dstPort.portType = EnumPortType.rru_to_bbu;
+                    }else if(connection.Source.DevType == EnumDevType.rhub)
+                    {
+                        dstPort.portType = EnumPortType.pico_to_rhub;
                     }
                 }
                 else if (dstPort.devType == EnumDevType.rhub)
@@ -983,6 +997,9 @@ namespace SCMTMainWindow.View
                     else if (connection.Source.DevType == EnumDevType.rhub)
                     {
                         dstPort.portType = EnumPortType.rhub_to_rhub;
+                    }else if(connection.Source.DevType == EnumDevType.rru)
+                    {
+                        dstPort.portType = EnumPortType.rhub_to_pico;
                     }
                 }
                 else

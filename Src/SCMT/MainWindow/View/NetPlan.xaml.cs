@@ -1719,7 +1719,6 @@ namespace SCMTMainWindow.View
             {
                 MessageBox.Show("Faild");
             }
-            MessageBox.Show("ggggggggggggg");
         }
         /// <summary>
         /// 

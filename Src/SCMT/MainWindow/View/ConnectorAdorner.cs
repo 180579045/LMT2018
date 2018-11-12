@@ -100,6 +100,11 @@ namespace SCMTMainWindow.View
                         srcPoint.portType = EnumPortType.rru_to_rru;
                         dstPoint.portType = EnumPortType.rru_to_rru;
                     }
+                    else
+                    {
+                        srcPoint.portType = EnumPortType.pico_to_rhub;
+                        dstPoint.portType = EnumPortType.rhub_to_pico;
+                    }
                 }else if(sourceConnector.PortType == EnumPortType.rhub_to_other)
                 {
                     if(sinkConnector.DevType == EnumDevType.board)
@@ -111,6 +116,10 @@ namespace SCMTMainWindow.View
                         dstPoint.portType = EnumPortType.rhub_to_rhub;
                         srcPoint.portType = EnumPortType.rhub_to_rhub;
                     }
+                }else if(sourceConnector.PortType == EnumPortType.rhub_to_pico)
+                {
+                    srcPoint.portType = EnumPortType.rhub_to_pico;
+                    dstPoint.portType = EnumPortType.pico_to_rhub;
                 }
                 else
                 {

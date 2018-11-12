@@ -798,7 +798,10 @@ namespace SCMTMainWindow.View
             if (ucTest != null)
             {
                 gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                gridProperty.Children.Clear();
+                if(gridProperty.Children.Count != 0)
+                {
+                    gridProperty.Children.Clear();
+                }
                 gridProperty.Children.Add(grid);
             }
         }
