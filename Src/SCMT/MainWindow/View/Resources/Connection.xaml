@@ -8,12 +8,12 @@
     </ResourceDictionary.MergedDictionaries>
     
     <ContextMenu x:Key="ConnectionContextMenu">
-        <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}">
+        <MenuItem Header="删除" Command="{x:Static ApplicationCommands.Delete}">
             <MenuItem.Icon>
                 <Image Source="Images/Delete.png" Width="16"/>
             </MenuItem.Icon>
         </MenuItem>
-        <Separator/>
+        <!--<Separator/>
         <MenuItem Header="Order">
             <MenuItem Header="Bring Forward" Command="{x:Static s:DesignerCanvas.BringForward}">
                 <MenuItem.Icon>
@@ -35,7 +35,7 @@
                     <Image Source="Images/SendToBack.png" Width="16"/>
                 </MenuItem.Icon>
             </MenuItem>
-        </MenuItem>
+        </MenuItem>-->
     </ContextMenu>
 
     <Style TargetType="{x:Type s:Connection}">

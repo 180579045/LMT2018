@@ -31,10 +31,10 @@ namespace SCMTMainWindow.View
         public int nrHUBNo = 199;
         public int nAntennaNo = -1;
 
-        //全局变量，将网元名称和网元信息结构体对应
-        private Dictionary<string, List<MibLeafNodeInfo>> globalDic = new Dictionary<string, List<MibLeafNodeInfo>>();
         //全局变量，将网元名称和网元的属性表格对应
-        public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+        //public Dictionary<string, Grid> g_GridForNet = new Dictionary<string, Grid>();
+        //全局变量，保存当前选中设备的信息
+        public DevAttributeInfo g_nowDevAttr = null;
 
         //全局字典，保存设备名称和 index 索引，删除的时候需要根据 index 获取设备信息进行删除
         public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
@@ -221,16 +221,11 @@ namespace SCMTMainWindow.View
                 this.SelectionService.SelectItem(newItem);
                 newItem.Focus();
 
-                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+                CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
 
-                if (ucTest != null)
-                {
-                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
-                }
                 //查看 NetPlan中，是否点击连接线
+
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
                 SCMTMainWindow.View.NetPlan targetNP = GetRootElement<SCMTMainWindow.View.NetPlan>(ucTest, "");
                 if (targetNP.bHiddenLineConnector)
                 {
@@ -416,17 +411,10 @@ namespace SCMTMainWindow.View
                 this.SelectionService.SelectItem(newItem);
                 newItem.Focus();
 
-                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                if (ucTest != null)
-                {
-                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
-                }
+                CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
 
                 //查看 NetPlan中，是否点击连接线
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
                 SCMTMainWindow.View.NetPlan targetNP = GetRootElement<SCMTMainWindow.View.NetPlan>(ucTest, "");
                 if(targetNP.bHiddenLineConnector)
                 {
@@ -557,16 +545,10 @@ namespace SCMTMainWindow.View
                 this.SelectionService.SelectItem(newItem);
                 newItem.Focus();
 
-                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
+                CreateGirdForNetInfo(strRRUFullName, devRRUInfo);
 
-                if (ucTest != null)
-                {
-                    gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
-                }
                 //查看 NetPlan中，是否点击连接线
+                Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
                 SCMTMainWindow.View.NetPlan targetNP = GetRootElement<SCMTMainWindow.View.NetPlan>(ucTest, "");
                 if (targetNP.bHiddenLineConnector)
                 {
@@ -679,11 +661,6 @@ namespace SCMTMainWindow.View
         /// <param name="mibInfo"></param>
         public void CreateGirdForNetInfo(string strName, DevAttributeInfo mibInfo)
         {
-            if(g_GridForNet.Keys.Contains(strName))
-            {
-                return;
-            }
-
             Grid grid = new Grid();
 
             //创建两列，第一列显示属性名称Name，第二列显示属性值Value
@@ -717,7 +694,6 @@ namespace SCMTMainWindow.View
 
             if (mibInfo == null)
             {
-                g_GridForNet.Add(strName, grid);
                 return;
             }
 
@@ -767,9 +743,13 @@ namespace SCMTMainWindow.View
                         Grid.SetColumn(cbValue, 2);
                         Grid.SetRow(cbValue, nRow + 1);
 
-                        if (cbValue.Items.Contains(item.Value.m_strOriginValue))
+                        var strItem = MibInfoMgr.GetNeedUpdateValue(mibInfo, item.Key, false);
+                        if(strItem != null)
                         {
-                            cbValue.SelectedIndex = cbValue.Items.IndexOf(item.Value.m_strOriginValue);
+                            if (cbValue.Items.Contains(strItem))
+                            {
+                                cbValue.SelectedIndex = cbValue.Items.IndexOf(strItem);
+                            }
                         }
                         if (item.Value.m_bReadOnly)
                         {
@@ -786,13 +766,22 @@ namespace SCMTMainWindow.View
                         TextBox txtValue = new TextBox();
                         txtName.Margin = new Thickness(1);
                         txtName.Height = 25;
-                        txtValue.Text = item.Value.m_strOriginValue;
+
+                        var strItem2Text = MibInfoMgr.GetNeedUpdateValue(mibInfo, item.Key, false);
+                        if (strItem2Text != null)
+                        {
+                            txtValue.Text = strItem2Text;
+                        }
                         grid.Children.Add(txtValue);
                         Grid.SetColumn(txtValue, 2);
                         Grid.SetRow(txtValue, nRow + 1);
                         if (item.Value.m_bReadOnly)
                         {
                             txtValue.IsReadOnly = true;
+                        }
+                        else
+                        {
+                            txtValue.LostFocus += TxtValue_LostFocus;
                         }
                         break;
                 }
@@ -804,8 +793,39 @@ namespace SCMTMainWindow.View
                 Grid.SetRowSpan(gridSplit, mibInfo.m_mapAttributes.Count);
             }
 
-            if(!g_GridForNet.ContainsKey(strName))
-                 g_GridForNet.Add(strName, grid);
+            Grid ucTest = GetRootElement<Grid>(this, "MainGrid");
+
+            if (ucTest != null)
+            {
+                gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
+                gridProperty.Children.Clear();
+                gridProperty.Children.Add(grid);
+            }
+        }
+
+        /// <summary>
+        /// 文本框失去焦点事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TxtValue_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox targetItem = sender as TextBox;
+            Grid grid = targetItem.Parent as Grid;
+            TextBlock targetText;
+
+            for (int i = 0; i < grid.Children.Count; i++)
+            {
+                if (grid.Children[i] == targetItem)
+                {
+                    targetText = grid.Children[i - 1] as TextBlock;
+                    if (targetText != null)
+                    {
+                        MessageBox.Show(targetText.Text.ToString());
+                    }
+                }
+            }
+
         }
 
         /// <summary>
@@ -932,16 +952,7 @@ namespace SCMTMainWindow.View
 
                     this.SelectionService.SelectItem(newItem);
                     newItem.Focus();
-
-                    Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                    if (ucTest != null)
-                    {
-                        gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                        CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
-                        gridProperty.Children.Clear();
-                        gridProperty.Children.Add(g_GridForNet[strRRUFullName]);
-                    }
+                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
                 }
             }
             //rHUB
@@ -1004,16 +1015,8 @@ namespace SCMTMainWindow.View
 
                     this.SelectionService.SelectItem(newItem);
                     newItem.Focus();
+                    CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
 
-                    Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
-
-                    if (ucTest != null)
-                    {
-                        gridProperty = GetChildrenElement<Grid>(ucTest, "gridProperty");
-                        CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
-                        gridProperty.Children.Clear();
-                        gridProperty.Children.Add(g_GridForNet[strrHUBFullName]);
-                    }
                 }
             }
         }

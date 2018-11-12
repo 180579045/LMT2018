@@ -184,7 +184,7 @@ namespace LmtbSnmp
             throw new NotImplementedException();
         }
      
-        public override void SetRequest(AsyncCallback callback, List<string> PduList)
+        public override void SetRequest(AsyncCallback callback, Dictionary<string, string> PduList)
         {
             throw new NotImplementedException();
         }
@@ -193,5 +193,6 @@ namespace LmtbSnmp
         {
             throw new NotImplementedException();
         }
+        
     }
 }

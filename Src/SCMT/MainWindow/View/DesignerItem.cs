@@ -171,30 +171,28 @@ namespace SCMTMainWindow.View
                         //选中的时候切换属性的显示
                         if (this.itemName != null && this.itemName != string.Empty)
                         {
-                            if (designer.g_GridForNet.ContainsKey(this.itemName))
+                            if(designer.g_AllDevInfo[DevType].ContainsKey(this.ItemName))
                             {
-                                if (designer.gridProperty != null)
-                                {
-                                    designer.gridProperty.Children.Clear();
-                                    designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
-                                }
+                                var devAttr = MibInfoMgr.GetInstance().GetDevAttributeInfo(designer.g_AllDevInfo[DevType][this.itemName], DevType);
+                                designer.CreateGirdForNetInfo(this.itemName, devAttr);
+                                designer.g_nowDevAttr = devAttr;
                             }
+                            
                         }
                     }
                 else if (!this.IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
                     //选中的时候切换属性的显示
-                    if(this.itemName != null && this.itemName != string.Empty)
+                    if (this.itemName != null && this.itemName != string.Empty)
                     {
-                        if (designer.g_GridForNet.ContainsKey(this.itemName))
+                        if (designer.g_AllDevInfo[DevType].ContainsKey(this.ItemName))
                         {
-                            if (designer.gridProperty != null)
-                            {
-                                designer.gridProperty.Children.Clear();
-                                designer.gridProperty.Children.Add(designer.g_GridForNet[this.ItemName]);
-                            }
+                            var devAttr = MibInfoMgr.GetInstance().GetDevAttributeInfo(designer.g_AllDevInfo[DevType][this.itemName], DevType);
+                            designer.CreateGirdForNetInfo(this.itemName, devAttr);
+                            designer.g_nowDevAttr = devAttr;
                         }
+
                     }
                 }
                 Focus();
