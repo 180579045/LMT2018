@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -632,15 +633,11 @@ namespace NetPlan
 
 					Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
 
-					if (EnumDevType.nrNetLc == devType)
+					if (EnumDevType.nrNetLc == devType && !NPCellOperator.SetNetPlanSwitch(false, item.m_strOidIndex, targetIp))
 					{
-						// 本地小区信息，下发成功后关闭布配开关
-						if (!NPCellOperator.SetNetPlanSwitch(false, item.m_strOidIndex, targetIp))
-						{
-							Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
-							NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
-							return false;	// TODO 此处返回，已经下发的删除的本地小区网规信息存在不一致的问题
-						}
+						Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
+						NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
+						return false; // TODO 此处返回，已经下发的删除的本地小区网规信息存在不一致的问题
 					}
 				}
 
@@ -906,6 +903,7 @@ namespace NetPlan
 		/// <summary>
 		/// 判断已修改、所有、新添加的设备列表中是否存在与给定的索引相同设备
 		/// </summary>
+		/// <param name="mapMibInfo"></param>
 		/// <param name="devType"></param>
 		/// <param name="strIndex"></param>
 		/// <returns></returns>
@@ -1049,9 +1047,10 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="devInfo"></param>
 		/// <param name="listColumns"></param>
+		/// <param name="gmv"></param>
 		/// <param name="strRs">行状态的值：4，6</param>
 		/// <returns></returns>
-		private Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
+		private static Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
 		{
 			if (null == devInfo || null == listColumns)
 			{
@@ -1121,7 +1120,7 @@ namespace NetPlan
 		/// <param name="strOriginValue"></param>
 		/// <param name="strLatestValue"></param>
 		/// <returns></returns>
-		public static string GetNeedUpdateValue(string strOriginValue, string strLatestValue)
+		private static string GetNeedUpdateValue(string strOriginValue, string strLatestValue)
 		{
 			if (string.IsNullOrEmpty(strOriginValue))
 			{
@@ -1159,7 +1158,7 @@ namespace NetPlan
 		/// <summary>
 		/// 布配网规信息
 		/// </summary>
-		/// <param name="devType"></param>
+		/// <param name="devAttribute"></param>
 		/// <param name="cmdType"></param>
 		/// <param name="targetIp"></param>
 		/// <returns></returns>
@@ -1263,13 +1262,13 @@ namespace NetPlan
 			return ret;
 		}
 
-
 		/// <summary>
 		/// 获取RRU通道对应的小区信息
 		/// </summary>
 		/// <param name="dai"></param>
 		/// <param name="nRruNo"></param>
 		/// <param name="mapResult"></param>
+		/// <param name="bCellFix"></param>
 		private bool GetRruPortToCellInfo(DevAttributeInfo dai, int nRruNo, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
 		{
 			var mapAttri = dai.m_mapAttributes;
@@ -1285,7 +1284,7 @@ namespace NetPlan
 
 			// 通道频道信息是根据小区的id从netLc表中找到netLcFreqBand字段的值
 			// RRU 的ID相同，取出所有通道对应的信息
-			var rtc = new NPRruToCellInfo(trStatus: trxStatus);
+			var rtc = new NPRruToCellInfo(trxStatus);
 
 			var sb = new StringBuilder();
 			for (var i = 2; i <= 4; i++)
@@ -1329,14 +1328,14 @@ namespace NetPlan
 		/// <summary>
 		/// 根据本地小区ID和MIB节点名从netLocalCellTable表中查找对应的值
 		/// </summary>
-		/// <param name="strLcId">本地小区ID</param>
+		/// <param name="nLcId"></param>
 		/// <param name="strMibName">mib名称</param>
 		/// <returns></returns>
 		private string GetValueFromNetLcTableByLcIdAndMibName(int nLcId, string strMibName)
 		{
 			if (0 < nLcId || nLcId > 35)
 			{
-				Log.Error($"传入的本地小区ID超出[0,35]范围");
+				Log.Error("传入的本地小区ID超出[0,35]范围");
 				return null;
 			}
 
@@ -1408,141 +1407,15 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 设置Rru连接的基带板信息
-		/// 对应表：netRRUEntry
-		/// </summary>
-		/// <returns></returns>
-		private bool SetRruToBoardInfo(string strBoardIndex, int nBoardIrPort, string strRruIndex, int nRruIrPort)
-		{
-			if (string.IsNullOrEmpty(strBoardIndex) || string.IsNullOrEmpty(strRruIndex))
-			{
-				throw new ArgumentNullException("传入的参数错误");
-			}
-
-			// 根据rru索引获取对应的设备
-			var rru = GetDevAttributeInfo(strRruIndex, EnumDevType.rru);
-			if (null == rru)
-			{
-				Log.Error($"根据rru索引{strRruIndex}未找到对应的设备信息，一定是哪里出现了错误");
-				return false;
-			}
-
-			// 根据board索引获取板卡信息，找到板卡类型
-			var board = GetDevAttributeInfo(strBoardIndex, EnumDevType.board);
-			if (null == board)
-			{
-				Log.Error($"根据板卡索引{strBoardIndex}未找到对应的设备信息");
-				return false;
-			}
-
-			var boardType = GetNeedUpdateValue(board, "netBoardType");
-			if (null == boardType)
-			{
-				Log.Error($"根据板卡索引{strBoardIndex}查找netBoardType字段值失败");
-				return false;
-			}
-
-			var accessSlotNo = "netRRUAccessSlotNo";
-			if (nRruIrPort > 1)
-			{
-				accessSlotNo = $"netRRUOfp{nRruIrPort}SlotNo";
-			}
-			rru.SetFieldLatestValue(accessSlotNo, MibStringHelper.GetRealValueFromIndex(strBoardIndex, 3));
-			rru.SetFieldLatestValue("netRRUAccessBoardType", boardType);
-
-			var ofp = $"netRRUOfp{nRruIrPort}AccessOfpPortNo";		// 射频单元光口n接入板的光口号
-			rru.SetFieldLatestValue(ofp, nBoardIrPort.ToString());
-
-			var linePos = $"netRRUOfp{nRruIrPort}AccessLinePosition";   // 设备单元光口n接入级数
-
-			// 先判断rru的工作模式
-			var originWorkMode = rru.GetFieldOriginValue("netRRUOfpWorkMode", false);
-			var latestWorkMode = rru.GetFieldLatestValue("netRRUOfpWorkMode", false);
-
-			var wmode = GetNeedUpdateValue(originWorkMode, latestWorkMode);
-			if (null == wmode)
-			{
-				Log.Error("获取工作模式失败");
-				return false;
-			}
-
-			// 判断工作模式是否是级联
-			if (wmode.IndexOf("级联") < 0)
-			{
-				rru.SetFieldLatestValue(linePos, "1");
-			}
-			else
-			{
-				// todo 计算级数
-			}
-
-			if (RecordDataType.NewAdd != rru.m_recordType)
-			{
-				rru.m_recordType = RecordDataType.Modified;
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// 设备天线安装规划表相关的天线阵信息
-		/// </summary>
-		/// <param name="strRruIndex"></param>
-		/// <param name="nRruIrPort"></param>
-		/// <param name="strAntIndex"></param>
-		/// <param name="nAntIrPort"></param>
-		/// <returns></returns>
-		private bool SetRruAntSettingTblRelateAntInfo(string strRruIndex, int nRruIrPort, string strAntIndex, int nAntIrPort)
-		{
-			if (string.IsNullOrEmpty(strRruIndex) || string.IsNullOrEmpty(strAntIndex))
-			{
-				throw new ArgumentNullException("传入rru索引或天线阵设备索引无效");
-			}
-
-			var combineIndex = $"{strRruIndex}.{nRruIrPort}";
-			var tblRecord = GetDevAttributeInfo(combineIndex, EnumDevType.rru_ant);
-			if (null != tblRecord)
-			{
-				Log.Error($"根据索引{combineIndex}找到类型为rru_ant的信息，一个rru的光口只能连接一个ant的通道");
-				return false;
-			}
-
-			var ant = GetDevAttributeInfo(strAntIndex, EnumDevType.ant);
-			if (null == ant)
-			{
-				Log.Error($"根据索引{strAntIndex}未找到对应的天线阵信息");
-				return false;
-			}
-
-			var newRecord = new DevAttributeInfo(EnumDevType.rru_ant, combineIndex) {m_recordType = RecordDataType.NewAdd};
-			if (newRecord.m_mapAttributes.Count == 0)
-			{
-				Log.Error($"生成索引为{combineIndex}的信息失败");
-				return false;
-			}
-			newRecord.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntIndex.Trim('.'));
-			newRecord.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", nAntIrPort.ToString());
-			lock (_syncObj)
-			{
-				AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newRecord);
-			}
-			return true;
-		}
-
-		/// <summary>
 		/// 根据连接两端信息，获取连接的类型
 		/// </summary>
 		/// <param name="srcEndpoint">源端信息</param>
 		/// <param name="dstEndpoint">目的端信息</param>
 		/// <param name="linkType">ref 连接类型，传出参数</param>
 		/// <returns>true:源和目的信息有效，获取到有效类型；false:其他情况</returns>
-		private bool GetLinkTypeBySrcDstEnd(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint, ref EnumDevType linkType)
+		private static bool GetLinkTypeBySrcDstEnd(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint, ref EnumDevType linkType)
 		{
-			var link = new WholeLink
-			{
-				m_srcEndPoint = srcEndpoint,
-				m_dstEndPoint = dstEndpoint
-			};
+			var link = new WholeLink(srcEndpoint, dstEndpoint);
 			linkType = link.GetLinkType();
 			return (linkType != EnumDevType.unknown);
 		}
@@ -1579,13 +1452,9 @@ namespace NetPlan
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
 		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
 
-		private NetPlanLinkMgr m_linkMgr;
+		private readonly NetPlanLinkMgr m_linkMgr;
 
 		private readonly object _syncObj = new object();
-
-		private List<ParsedRruInfo> m_listHasLinePosDev;    // 已经计算出级数的rru和rhub
-
-		private List<ParsedRruInfo> m_listWaitPrevDev;		// 需要等待上级设备才计算接入级数的设备信息
 
 		#endregion
 	}

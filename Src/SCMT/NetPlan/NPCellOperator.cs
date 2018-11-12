@@ -14,7 +14,7 @@ using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 // 网规小区相关的操作
 namespace NetPlan
 {
-	public class NPCellOperator
+	public static class NPCellOperator
 	{
 		/// <summary>
 		/// 设置网元布配控制开关状态
@@ -135,8 +135,10 @@ namespace NetPlan
 		/// <summary>
 		/// 激活、去激活小区。操作之后要查询本地小区状态，设置颜色
 		/// </summary>
+		/// <param name="targetIp"></param>
 		/// <param name="operType">操作类型</param>
 		/// <param name="nDuration">延迟去激活的时长</param>
+		/// <param name="nCellId"></param>
 		/// <returns></returns>
 		public static bool SetCellActiveTrigger(int nCellId, string targetIp, CellOperType operType, int nDuration = 1)
 		{
