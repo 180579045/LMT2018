@@ -23,10 +23,6 @@ namespace LmtbSnmp
 		protected Socket _socketIpv4;
 		// Trap socket for IPV6
 		protected Socket _socketIpv6;
-		// 接收消息数组
-		protected byte[] _inBuffer;
-		// 对端IP
-//		protected IPEndPoint _peerIp;
 		// Trap端口号
 		protected int m_port = 162;
 
@@ -184,9 +180,11 @@ namespace LmtbSnmp
 					Log.Error(string.Format("不能识别的Socket地址族 socket.AddressFamily:{0}", socket.AddressFamily));
 					return false;
 				}
-				_inBuffer = new byte[64 * 1024];
+				StateObject stateObject = new StateObject();
+				stateObject.workSocket = socket;
 				// 接收消息
-				socket.BeginReceiveFrom(_inBuffer, 0, 64 * 1024, SocketFlags.None, ref ep, new AsyncCallback(ReceiveCallback), socket);
+				socket.BeginReceiveFrom(stateObject.buffer, 0, 64 * 1024, SocketFlags.None
+					, ref ep, new AsyncCallback(ReceiveCallback), stateObject);
 			}
 			catch ( Exception ex)
 			{
@@ -209,7 +207,9 @@ namespace LmtbSnmp
 		/// <param name="result"></param>
 		private void ReceiveCallback(IAsyncResult result)
 		{
-			Socket sock = (Socket)result.AsyncState;
+			StateObject stateObj = (StateObject)result.AsyncState;
+			Socket sock = stateObj.workSocket;
+			byte[] buffer = stateObj.buffer;
 
 			EndPoint ep = null;
             if (sock.AddressFamily == AddressFamily.InterNetwork) // IPV4
@@ -251,7 +251,7 @@ namespace LmtbSnmp
 			}
 
 			// 获取SNMP版本
-			int packetVersion = SnmpPacket.GetProtocolVersion(_inBuffer, intLen);
+			int packetVersion = SnmpPacket.GetProtocolVersion(buffer, intLen);
 			if (packetVersion == (int)SnmpVersion.Ver1)
 			{
 
@@ -262,7 +262,7 @@ namespace LmtbSnmp
 				SnmpV2Packet pkt = new SnmpV2Packet();
 				try
 				{
-					pkt.decode(_inBuffer, intLen);
+					pkt.decode(buffer, intLen);
 				}
 				catch (Exception ex)
 				{

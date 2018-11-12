@@ -196,6 +196,8 @@ namespace SnmpWindow
         /// <param name="e"></param>
         private void SetValue_Click(object sender, RoutedEventArgs e)
         {
+            // 实验数据;
+            // 1.3.6.1.4.1.5105.100.2.4.2.4.1.2.0: 223
             string oid1 = this.SetOId1.Text;
             string oid2 = this.SetOId2.Text;
             string oid3 = this.SetOId3.Text;
@@ -206,8 +208,8 @@ namespace SnmpWindow
 
             Dictionary<string, string> Pdulist1 = new Dictionary<string, string>();
             Pdulist1.Add(oid1, value1);
-            Pdulist1.Add(oid2, value2);
-            Pdulist1.Add(oid3, value3);
+            //Pdulist1.Add(oid2, value2);
+            //Pdulist1.Add(oid3, value3);
 
             SnmpMessageV2c SetValue = new SnmpMessageV2c();
             SetValue.SetRequest(Pdulist1, "public", "172.27.245.92");  // TODO 需要确定真正的enb地址

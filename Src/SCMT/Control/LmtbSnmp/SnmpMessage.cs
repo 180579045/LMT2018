@@ -360,11 +360,13 @@ namespace LmtbSnmp
             UdpTarget target = new UdpTarget((IPAddress)new IpAddress(IpAddress));
             // Create a SET PDU
             Pdu pdu = new Pdu(PduType.Set);
+
+            // TODO By Guoliang3:在Set的时候，需要确认下发的参数类型;
             foreach (var list in PduList)
             {
-                pdu.VbList.Add(new Oid(list.Key), new OctetString(list.Value));
+                pdu.VbList.Add(new Oid(list.Key), new Integer32(list.Value));
             }
-
+            
             // Set Agent security parameters
             AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(Community));
             // Response packet
