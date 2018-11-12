@@ -215,8 +215,8 @@ namespace NetPlan
 			new Dictionary<EnumDevType, List<EnumDevType>>()
 			{
 				{EnumDevType.board, new List<EnumDevType>{EnumDevType.rru, EnumDevType.rhub}},
-				{EnumDevType.rhub, new List<EnumDevType> { EnumDevType.rhub, EnumDevType.board, EnumDevType.ant}},
-				{EnumDevType.rru, new List<EnumDevType> { EnumDevType.rru, EnumDevType.board, EnumDevType.ant}},
+				{EnumDevType.rhub, new List<EnumDevType> { EnumDevType.rhub, EnumDevType.board, EnumDevType.ant, EnumDevType.rru}},
+				{EnumDevType.rru, new List<EnumDevType> { EnumDevType.rru, EnumDevType.board, EnumDevType.ant, EnumDevType.rhub}},
 				{EnumDevType.ant, new List<EnumDevType> {EnumDevType.rru}}
 			};
 
@@ -257,6 +257,7 @@ namespace NetPlan
 				{EnumPortType.rru_to_rru, EnumPortType.rru_to_rru },
 				{EnumPortType.rhub_to_rhub, EnumPortType.rhub_to_rhub },
 				{EnumPortType.rhub_to_pico, EnumPortType.pico_to_rhub },
+				{EnumPortType.pico_to_ant, EnumPortType.ant_to_pico }
 			};
 
 		#endregion
