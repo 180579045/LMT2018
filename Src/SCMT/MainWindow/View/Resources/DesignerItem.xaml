@@ -5,7 +5,7 @@
                     xmlns:c="clr-namespace:SCMTMainWindow.View.Controls">
 
     <ContextMenu x:Key="DesignerItemContextMenu">
-        <MenuItem Header="Cut" Command="{x:Static ApplicationCommands.Cut}">
+        <!--<MenuItem Header="Cut" Command="{x:Static ApplicationCommands.Cut}">
             <MenuItem.Icon>
                 <Image Source="Images/Cut.png" Width="16"/>
             </MenuItem.Icon>
@@ -19,13 +19,13 @@
             <MenuItem.Icon>
                 <Image Source="Images/Paste.png" Width="16"/>
             </MenuItem.Icon>
-        </MenuItem>
-        <MenuItem Header="Delete" Command="{x:Static ApplicationCommands.Delete}">
+        </MenuItem>-->
+        <MenuItem Header="删除" Command="{x:Static ApplicationCommands.Delete}">
             <MenuItem.Icon>
                 <Image Source="Images/Delete.png" Width="16"/>
             </MenuItem.Icon>
         </MenuItem>
-        <Separator/>
+        <!--<Separator/>
         <MenuItem Header="Grouping">
             <MenuItem Header="Group" Command="{x:Static s:DesignerCanvas.Group}">
                 <MenuItem.Icon>
@@ -58,8 +58,8 @@
                 <MenuItem.Icon>
                     <Image Source="Images/SendToBack.png" Width="16"/>
                 </MenuItem.Icon>
-            </MenuItem>
-        </MenuItem>
+            </MenuItem>-->
+        <!--</MenuItem>-->
     </ContextMenu>
 
     <!-- Connector Style     连接点的样式-->

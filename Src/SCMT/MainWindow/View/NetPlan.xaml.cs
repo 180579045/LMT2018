@@ -489,8 +489,6 @@ namespace SCMTMainWindow.View
                 if (boardAttribute != null)
                 {
                     MyDesigner.CreateGirdForNetInfo(strIRName, boardAttribute);
-                    gridProperty.Children.Clear();
-                    gridProperty.Children.Add(MyDesigner.g_GridForNet[strIRName]);
                 }
             }
         }
@@ -1830,8 +1828,6 @@ namespace SCMTMainWindow.View
         private void LayoutAnchorable_Closed(object sender, EventArgs e)
         {
             MyDesigner.g_AllDevInfo.Clear();
-            MyDesigner.g_GridForNet.Clear();
-
             MyDesigner.Children.Clear();
         }
 
@@ -1863,24 +1859,24 @@ namespace SCMTMainWindow.View
 
         private void ExportTemplateMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            NPTemplate template = new NPTemplate();
-            List <RruInfo> rruInfo = NPERruHelper.GetInstance().GetAllRruInfo();
+            //NPTemplate template = new NPTemplate();
+            //List <RruInfo> rruInfo = NPERruHelper.GetInstance().GetAllRruInfo();
 
-            foreach (RruInfo info in rruInfo)
-            {
-                foreach(string key in MyDesigner.g_GridForNet.Keys)
-                {
-                    var pos = key.LastIndexOf("-");
-                    var tem = key.Substring(0, pos);
-                    if (tem.Equals(info.rruTypeName))
-                    {
-                        template.rruTypeInfo.Add(info);
-                    }
-                }           
-            }
-            template.TemplateName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            //foreach (RruInfo info in rruInfo)
+            //{
+            //    foreach(string key in MyDesigner.g_GridForNet.Keys)
+            //    {
+            //        var pos = key.LastIndexOf("-");
+            //        var tem = key.Substring(0, pos);
+            //        if (tem.Equals(info.rruTypeName))
+            //        {
+            //            template.rruTypeInfo.Add(info);
+            //        }
+            //    }           
+            //}
+            //template.TemplateName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
-            NetPlanTemplateInfo.GetInstance().SaveNetPlanTemplate(template);
+            //NetPlanTemplateInfo.GetInstance().SaveNetPlanTemplate(template);
 
             return;
         }
