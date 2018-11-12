@@ -349,6 +349,8 @@ namespace NetPlan
 				}
 			}
 
+			dev.m_recordType = RecordDataType.Original;
+
 			return dev;
 		}
 
@@ -410,6 +412,9 @@ namespace NetPlan
 
 				dev.m_mapAttributes[childLeaf.childNameMib] = info;
 			}
+
+			dev.m_recordType = RecordDataType.Original;
+
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 
 			return dev;

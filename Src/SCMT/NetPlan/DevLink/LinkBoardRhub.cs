@@ -14,14 +14,67 @@ namespace NetPlan.DevLink
 
 		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
-			throw new NotImplementedException();
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return false;
+			}
+
+			var rhubClone = m_rhubDev.DeepClone();
+			if (!ResetBoardInfoInRhub(rhubClone, m_nRhubPort))
+			{
+				return false;
+			}
+
+			if (RecordDataType.NewAdd != rhubClone.m_recordType)
+			{
+				rhubClone.m_recordType = RecordDataType.Modified;
+			}
+
+			// 处理与rhub连接的pico的信息
+			if (mapMibInfo.ContainsKey(EnumDevType.rru))
+			{
+				// board与rhub连通的瞬间，先前rhub与pico的连接上pico设备属性也要设置
+				List<DevAttributeInfo> oldPicoList;
+				List<DevAttributeInfo> newPicoList;
+
+				var bbi = new BoardBaseInfo();
+
+				if (!UpdatePicoInfo(bbi, mapMibInfo[EnumDevType.rru], out oldPicoList, out newPicoList))
+				{
+					Log.Error("更新与rhub相连的pico信息失败");
+					return false;
+				}
+
+				foreach (var pico in oldPicoList)
+				{
+					mapMibInfo[EnumDevType.rru].Remove(pico);
+				}
+
+				foreach (var pico in newPicoList)
+				{
+					mapMibInfo[EnumDevType.rru].Add(pico);
+				}
+			}
+
+			// 删除board与rhub之间的连接
+			var irRecord = GetDevAttributeInfo(m_strIrRecodeIndex, EnumDevType.board_rru);
+			MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.board_rru, irRecord);
+
+			mapMibInfo[EnumDevType.rhub].Remove(m_rhubDev);
+			mapMibInfo[EnumDevType.rhub].Add(rhubClone);
+
+			// todo rhub级联的情况暂不支持
+
+			return true;
 		}
 
 		public override bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo))
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
 				return false;
 			}
@@ -35,7 +88,7 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			if (!SetOfpLinkInfoInRhub(rhubClone))
+			if (!SetOfpLinkInfoInRhub(rhubClone, m_nBoardPort))
 			{
 				return false;
 			}
@@ -50,7 +103,7 @@ namespace NetPlan.DevLink
 				// board与rhub连通的瞬间，先前rhub与pico的连接上pico设备属性也要设置
 				List<DevAttributeInfo> oldPicoList;
 				List<DevAttributeInfo> newPicoList;
-				if (!UpdatePicoInfo(mapMibInfo[EnumDevType.rru], out oldPicoList, out newPicoList))
+				if (!UpdatePicoInfo(bbi, mapMibInfo[EnumDevType.rru], out oldPicoList, out newPicoList))
 				{
 					Log.Error("更新与rhub相连的pico信息失败");
 					return false;
@@ -81,7 +134,7 @@ namespace NetPlan.DevLink
 		}
 
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
 		{
 			var boardIndex = wholeLink.GetDevIndex(EnumDevType.board);
 			if (null == boardIndex)
@@ -127,10 +180,14 @@ namespace NetPlan.DevLink
 
 			// 确定netIROptPlanEntry中是否已经存在对应的记录
 			m_strIrRecodeIndex = $"{boardIndex}.{m_nBoardPort}";
-			var irRecord = GetDevAttributeInfo(m_strIrRecodeIndex, EnumDevType.board_rru);
-			if (null != irRecord)
+			//var irRecord = GetDevAttributeInfo(m_strIrRecodeIndex, EnumDevType.board_rru);
+			//if (null != irRecord)
+			//{
+			//	Log.Error($"根据板卡索引和光口号组合{m_strIrRecodeIndex}找到已经存在的记录，板卡的每个光口只能连接一个设备");
+			//	return false;
+			//}
+			if (!checkExist.Invoke(m_strIrRecodeIndex, EnumDevType.board_rru))
 			{
-				Log.Error($"根据板卡索引和光口号组合{m_strIrRecodeIndex}找到已经存在的记录，板卡的每个光口只能连接一个设备");
 				return false;
 			}
 
@@ -172,6 +229,18 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
+		private bool ResetBoardInfoInRhub(DevAttributeInfo rhub, int nRhubPort)
+		{
+			var bbi = new BoardBaseInfo();
+			return SetBoardBaseInfoInRhub(bbi, rhub) && SetOfpLinkInfoInRhub(rhub, -1);
+		}
+
+		/// <summary>
+		/// 设置rhub设备和board相关的属性
+		/// </summary>
+		/// <param name="bbi"></param>
+		/// <param name="dev"></param>
+		/// <returns></returns>
 		private bool SetBoardBaseInfoInRhub(BoardBaseInfo bbi, DevAttributeInfo dev)
 		{
 			var rowstatus = MibInfoMgr.GetNeedUpdateValue(dev, "netRHUBRowStatus");
@@ -187,11 +256,11 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessRackNo", "0"))
+			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessRackNo", bbi.strRackNo))
 			{
 				return false;
 			}
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessShelfNo", "0"))
+			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessShelfNo", bbi.strShelfNo))
 			{
 				return false;
 			}
@@ -207,24 +276,23 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		private bool SetOfpLinkInfoInRhub(DevAttributeInfo rhub)
+		private bool SetOfpLinkInfoInRhub(DevAttributeInfo rhub, int nBoardPort)
 		{
-			var wmo = rhub.GetFieldOriginValue("netRHUBOfpWorkMode", false);
-			var wml = rhub.GetFieldLatestValue("netRHUBOfpWorkMode", false);
-
-			var workMode = MibInfoMgr.GetNeedUpdateValue(wmo, wml);
+			var workMode = MibInfoMgr.GetNeedUpdateValue(rhub, "netRHUBOfpWorkMode", false);
 			if (null == workMode)
 			{
 				Log.Error($"从rhub{rhub.m_strOidIndex}查询光口工作模式失败");
 				return false;
 			}
 
-			if (!MibInfoMgr.SetDevAttributeValue(rhub, m_strOfpMibName, m_nBoardPort.ToString()))
+			if (!MibInfoMgr.SetDevAttributeValue(rhub, m_strOfpMibName, nBoardPort.ToString()))
 			{
 				return false;
 			}
 
-			if (!MibInfoMgr.SetDevAttributeValue(rhub, m_strOfpLinePosMibName, "1"))
+			var lp = -1 == nBoardPort ? "-1" : "1";
+
+			if (!MibInfoMgr.SetDevAttributeValue(rhub, m_strOfpLinePosMibName, lp))
 			{
 				return false;
 			}
@@ -239,7 +307,7 @@ namespace NetPlan.DevLink
 		/// <param name="picoList">出参，保存原来map中的pico设备</param>
 		/// <param name="newPico">出参，保存clone的pico设备</param>
 		/// <returns></returns>
-		private bool UpdatePicoInfo(List<DevAttributeInfo> rruList, out List<DevAttributeInfo> picoList, out List<DevAttributeInfo> newPico)
+		private bool UpdatePicoInfo(BoardBaseInfo bbi, List<DevAttributeInfo> rruList, out List<DevAttributeInfo> picoList, out List<DevAttributeInfo> newPico)
 		{
 			newPico = new List<DevAttributeInfo>();
 			picoList = new List<DevAttributeInfo>();
@@ -250,8 +318,6 @@ namespace NetPlan.DevLink
 			}
 
 			var rhubNo = m_rhubDev.m_strOidIndex.Trim('.');
-
-			var bbi = GetBoardBaseInfo(m_boardDev);
 
 			foreach (var rru in rruList)
 			{
@@ -282,6 +348,11 @@ namespace NetPlan.DevLink
 				if (!SetBoardBaseInfoInRru(bbi, picoClone, 1))	// todo pico的端口硬编码
 				{
 					return false;
+				}
+
+				if (RecordDataType.NewAdd != rru.m_recordType)
+				{
+					picoClone.m_recordType = RecordDataType.Modified;
 				}
 
 				newPico.Add(picoClone);

@@ -12,12 +12,41 @@ namespace NetPlan.DevLink
 	{
 		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
-			throw new NotImplementedException();
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return false;
+			}
+
+			var oldRecord = GetDevAttributeInfo(m_irRecordIndex, EnumDevType.board_rru);
+
+			// 设置RRU连接的板卡的属性
+			var rruClone = m_rruDev.DeepClone();
+			if (!ResetRruToBoardInfo(rruClone, m_nRruPort))
+			{
+				return false;
+			}
+
+			if (RecordDataType.NewAdd != rruClone.m_recordType)
+			{
+				rruClone.m_recordType = RecordDataType.Modified;
+			}
+
+			// 删除旧的连接记录
+			MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.board_rru, oldRecord);
+
+			mapMibInfo[EnumDevType.rru].Remove(m_rruDev);
+			mapMibInfo[EnumDevType.rru].Add(rruClone);
+
+			// todo rru与board的最后一条连接删除时，才设置板类型等信息，先不做
+
+			return true;
 		}
 
 		public override bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo))
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
 				return false;
 			}
@@ -40,12 +69,15 @@ namespace NetPlan.DevLink
 			// 使用rruClone替代原来的rru，然后增加irRecord记录
 			mapMibInfo[EnumDevType.rru].Remove(m_rruDev);
 			mapMibInfo[EnumDevType.rru].Add(rruClone);
+
 			AddDevToMap(mapMibInfo, EnumDevType.board_rru, irRecord);
+
+			// todo RRU级联的情况
 
 			return true;
 		}
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
 		{
 			if (null == wholeLink || null == mapMibInfo || mapMibInfo.Count == 0)
 			{
@@ -66,8 +98,6 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			mapOriginData = mapMibInfo;
-
 			m_boardDev = GetDevAttributeInfo(boardIndex, EnumDevType.board);
 			if (null == m_boardDev)
 			{
@@ -76,10 +106,9 @@ namespace NetPlan.DevLink
 			}
 
 			m_irRecordIndex = $"{boardIndex}.{m_nBoardPort}";
-			var irRecord = GetDevAttributeInfo(m_irRecordIndex, EnumDevType.board_rru);
-			if (null != irRecord)
+			var bExist = checkExist.Invoke(m_irRecordIndex, EnumDevType.board_rru);
+			if (!bExist)
 			{
-				Log.Error($"根据索引{m_irRecordIndex}找到记录，板卡光口只能连接一个设备");
 				return false;
 			}
 
@@ -126,17 +155,19 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			if (!SetBoardBaseInfoInRru(bbi, rruDev, nRruPort))
-			{
-				return false;
-			}
+			return SetBoardBaseInfoInRru(bbi, rruDev, nRruPort) && SetRruOfpInfo(rruDev, nRruPort, nBoardPort);
+		}
 
-			if (!SetRruOfpInfo(rruDev, nRruPort, nBoardPort))
-			{
-				return false;
-			}
-
-			return true;
+		/// <summary>
+		/// 重置RRU属性中和板卡相关的所有信息
+		/// </summary>
+		/// <param name="rruDev"></param>
+		/// <param name="nRruPort"></param>
+		/// <returns></returns>
+		private bool ResetRruToBoardInfo(DevAttributeInfo rruDev, int nRruPort)
+		{
+			var bbi = new BoardBaseInfo();
+			return SetBoardBaseInfoInRru(bbi, rruDev, nRruPort) && SetRruOfpInfo(rruDev, nRruPort, -1);
 		}
 
 		#region 私有数据区

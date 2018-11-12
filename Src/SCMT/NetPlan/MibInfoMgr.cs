@@ -427,13 +427,8 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				if (!handler.AddLink(wlink, ref m_mapAllMibData))
-				{
-					return false;
-				}
+				return handler.AddLink(wlink, ref m_mapAllMibData);
 			}
-
-			return true;
 		}
 
 		/// <summary>
@@ -505,151 +500,17 @@ namespace NetPlan
 			}
 
 			var wlink = new WholeLink(srcEndpoint, dstEndpoint);
-
-			if (EnumDevType.board_rru == linkType)
+			var handler = LinkFactory.CreateLinkHandler(linkType);
+			if (null == handler)
 			{
-				// linkIndex对应的是netIROptPlanEntry表的一行记录
-				var boardIndex = wlink.GetDevIndex(EnumDevType.board);
-				if (null == boardIndex)
-				{
-					Log.Error("根据源和目的获取板卡的索引值为null");
-					return false;
-				}
-
-				var irPort = wlink.GetDevIrPort(EnumDevType.board, EnumPortType.bbu_to_rru);
-				if (-1 == irPort)
-				{
-					Log.Error("根据源和目的获取板卡的光口号为-1");
-					return false;
-				}
-
-				var IrSetRecordIndex = $"{boardIndex}.{irPort}";
-				var record = GetDevAttributeInfo(IrSetRecordIndex, EnumDevType.board_rru);
-				if (null == record)
-				{
-					Log.Error($"根据索引{IrSetRecordIndex}获取netIROptPlanEntry表记录失败");
-					return false;
-				}
-
-				var board = GetDevAttributeInfo(boardIndex, EnumDevType.board);
-				if (null == board)
-				{
-					Log.Error($"未找到索引为{boardIndex}的板卡信息");
-					return false;
-				}
-				var boardType = board.GetFieldOriginValue("netBoardType");
-
-				// 获取这条连接对端的设备信息
-				var rruIndex = wlink.GetDevIndex(EnumDevType.rru);
-				if (null == rruIndex)
-				{
-					Log.Error("获取rru设备的索引返回null");
-					return false;
-				}
-
-				var rruIrPort = wlink.GetDevIrPort(EnumDevType.rru, EnumPortType.rru_to_bbu);
-				if (-1 == rruIrPort)
-				{
-					Log.Error("获取rru设备连接板卡光口号返回-1");
-					return false;
-				}
-
-				var rruDai = GetDevAttributeInfo(rruIndex, EnumDevType.rru);
-				if (null == rruDai)
-				{
-					Log.Error($"根据索引{rruIndex}未找到对应的rru设备信息");
-					return false;
-				}
-
-				// 通过接口板的类型和插槽号确定是否是连接关联的rru
-				var accessBoardType = rruDai.GetFieldOriginValue("netRRUAccessBoardType");
-				if (accessBoardType != boardType)
-				{
-					Log.Error($"根据板卡索引{boardIndex}找到板卡类型{boardType}，与根据rru索引{rruIndex}找到连接板卡类型{accessBoardType}不一致");
-					return false;
-				}
-
-				var ofpMibName = $"netRRUOfp{rruIrPort}AccessOfpPortNo";
-				var linePosMibName = $"netRRUOfp{rruIrPort}AccessLinePosition";
-				var slotMibName = (rruIrPort == 1 ? "netRRUAccessSlotNo" : $"netRRUOfp{rruIrPort}SlotNo");
-
-				// todo rru与board的最后一条连接删除时，才设置板类型等信息，先不做
-				rruDai.SetFieldLatestValue(ofpMibName, "-1");
-				rruDai.SetFieldLatestValue(linePosMibName, "-1");
-				rruDai.SetFieldLatestValue(slotMibName, "-1");
-				if (rruDai.m_recordType != RecordDataType.NewAdd)
-				{
-					rruDai.m_recordType = RecordDataType.Modified;
-				}
-
-				// 删掉一行netIROptPlanEntry记录
-				lock (_syncObj)
-				{
-					DelDevFromMap(m_mapAllMibData, linkType, record);
-				}
+				Log.Error($"尚未支持类型为{linkType.ToString()}的连接处理");
+				return false;
 			}
 
-			if (EnumDevType.rru_ant == linkType)
+			lock (_syncObj)
 			{
-				// 天线阵安装规划表的一行记录，需要把天线阵编号和天线阵通道编号设置为默认值-1
-				var rruIndex = wlink.GetDevIndex(EnumDevType.rru);
-				if (null == rruIndex)
-				{
-					Log.Error("根据源和目的获取rru设备的索引值为null");
-					return false;
-				}
-
-				var rru = GetDevAttributeInfo(rruIndex, EnumDevType.rru);
-				if (null == rru)
-				{
-					Log.Error($"根据索引{rruIndex}获取rru设备失败");
-					return false;
-				}
-
-				var rruIrPort = wlink.GetDevIrPort(EnumDevType.rru, EnumPortType.rru_to_ant);
-				if (-1 == rruIrPort)
-				{
-					Log.Error("根据源和目的获取rru的光口号为-1");
-					return false;
-				}
-
-				var rruAntIndex = $"{rruIndex}.{rruIrPort}";
-				var antSetRecord = GetDevAttributeInfo(rruAntIndex, EnumDevType.rru_ant);
-				if (null == antSetRecord)
-				{
-					Log.Error($"根据索引{rruAntIndex}在天线阵安装规划表中未找到对应的记录");
-					return false;
-				}
-
-				var antIndex = wlink.GetDevIndex(EnumDevType.ant);
-				if (null == antIndex)
-				{
-					Log.Error("根据源和目的获取ant设备的索引值为null");
-					return false;
-				}
-
-				var ant = GetDevAttributeInfo(antIndex, EnumDevType.ant);
-				if (null == ant)
-				{
-					Log.Error($"根据索引{antIndex}获取ant设备失败");
-					return false;
-				}
-
-				var antIrPort = wlink.GetDevIrPort(EnumDevType.ant, EnumPortType.ant_to_rru);
-				if (-1 == antIrPort)
-				{
-					Log.Error("根据源和目的获取ant的光口号为-1");
-					return false;
-				}
-
-				// 两端设备信息都已经齐备，处理天线阵安装规划表中的记录
-				lock (_syncObj)
-				{
-					DelDevFromMap(m_mapAllMibData, linkType, antSetRecord);
-				}
+				return handler.DelLink(wlink, ref m_mapAllMibData);
 			}
-
-			return true;
 		}
 
 		/// <summary>
@@ -1074,7 +935,7 @@ namespace NetPlan
 		/// <param name="devType">设备类型</param>
 		/// <param name="dai">设备属性</param>
 		/// <param name="bDelReal">是否立即删除，不仅是设置记录类型</param>
-		private void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
+		public static void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
 		{
 			if (null == mapData || null == dai)
 			{

@@ -16,17 +16,22 @@ namespace NetPlan.DevLink
 		{
 			mapOriginData = mapMibInfo;
 
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo))
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
 				return false;
 			}
 
 			var picoClone = m_picoDev.DeepClone();
 
+			if (RecordDataType.NewAdd != picoClone.m_recordType)
+			{
+				picoClone.m_recordType = RecordDataType.Modified;
+			}
+
 			// 判断rhub是否已经连接到板卡，如果已经连接到板卡，就设置pico中板卡的属性信息
 			if (HasConnectedToBoard(m_rhubDev))
 			{
-				var bbi = GetBoardInfoFromRhub();
+				var bbi = GetBoardInfoFromRhub(RecordNotExistInAdd);
 				if (null == bbi)
 				{
 					return false;
@@ -39,7 +44,8 @@ namespace NetPlan.DevLink
 			}
 
 			// 设置pico中连接rhub的信息
-			if (!SetRhubInfoInPico(picoClone))
+			var hubNo = int.Parse(m_rhubDev.m_strOidIndex.Trim('.'));
+			if (!SetRhubInfoInPico(picoClone, m_nRhubEthPort, hubNo))
 			{
 				return false;
 			}
@@ -56,10 +62,49 @@ namespace NetPlan.DevLink
 
 		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
 		{
-			return base.DelLink(wholeLink, ref mapMibInfo);
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return false;
+			}
+
+			var picoClone = m_picoDev.DeepClone();
+			var bbi = new BoardBaseInfo();
+			if (!SetBoardBaseInfoInRru(bbi, picoClone, m_nPicoPort))
+			{
+				return false;
+			}
+
+			if (!SetRhubInfoInPico(picoClone, -1, -1))
+			{
+				return false;
+			}
+
+			if (HasConnectedToBoard(m_rhubDev))
+			{
+				bbi = GetBoardInfoFromRhub(RecordNotExistInAdd);
+				if (null == bbi)
+				{
+					return false;
+				}
+
+				var record = GetDevAttributeInfo(m_strEthRecordIndex, EnumDevType.rhub_prru);
+				MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.rhub_prru, record);
+			}
+
+			if (RecordDataType.NewAdd != picoClone.m_recordType)
+			{
+				picoClone.m_recordType = RecordDataType.Modified;
+			}
+
+			mapMibInfo[EnumDevType.rru].Remove(m_picoDev);
+			mapMibInfo[EnumDevType.rru].Add(picoClone);
+
+			return true;
 		}
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo, IsRecordExist checkExist)
 		{
 			var rhubIndex = wholeLink.GetDevIndex(EnumDevType.rhub);
 			if (null == rhubIndex)
@@ -107,7 +152,7 @@ namespace NetPlan.DevLink
 		}
 
 
-		private BoardBaseInfo GetBoardInfoFromRhub()
+		private BoardBaseInfo GetBoardInfoFromRhub(IsRecordExist checkExist)
 		{
 			var boardSlot = MibInfoMgr.GetNeedUpdateValue(m_rhubDev, "netRHUBAccessSlotNo");
 			if (null == boardSlot)
@@ -132,14 +177,18 @@ namespace NetPlan.DevLink
 				return null;
 			}
 
-			// 添加一条以太网连接记录
+			// 查询以太网连接是否存在
 			m_strEthRecordIndex = $"{boardIndex}{m_rhubDev.m_strOidIndex}.{m_nRhubEthPort}";
-			var record = GetDevAttributeInfo(m_strEthRecordIndex, EnumDevType.rhub_prru);
-			if (null != record)
+			if (!checkExist.Invoke(m_strEthRecordIndex, EnumDevType.rhub_prru))
 			{
-				Log.Error($"根据索引{m_strEthRecordIndex}找到rhub以太网口记录,一个网口只能有一个连接");
 				return null;
 			}
+			//var record = GetDevAttributeInfo(m_strEthRecordIndex, EnumDevType.rhub_prru);
+			//if (null != record)
+			//{
+			//	Log.Error($"根据索引{m_strEthRecordIndex}找到rhub以太网口记录,一个网口只能有一个连接");
+			//	return null;
+			//}
 
 			var bbi = new BoardBaseInfo
 			{
@@ -151,7 +200,6 @@ namespace NetPlan.DevLink
 
 			return bbi;
 		}
-
 
 		private static bool HasConnectedToBoard(DevAttributeInfo rhub)
 		{
@@ -170,14 +218,14 @@ namespace NetPlan.DevLink
 			return ("-1" == boardSlot);
 		}
 
-		private bool SetRhubInfoInPico(DevAttributeInfo dev)
+		private bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
 		{
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRRUOfp1AccessEthernetPort", m_nRhubEthPort.ToString()))
+			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRRUOfp1AccessEthernetPort", nEthPort.ToString()))
 			{
 				return false;
 			}
 
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", m_rhubDev.m_strOidIndex.Trim('.')))
+			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", nHubNo.ToString()))
 			{
 				return false;
 			}

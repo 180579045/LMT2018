@@ -15,28 +15,32 @@ namespace NetPlan.DevLink
 		{
 			mapOriginData = mapMibInfo;
 
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo))
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
 				return false;
 			}
 
 			// 增加netRRUAntennaSettingEntry表一行记录
 			var newRecord = new DevAttributeInfo(EnumDevType.rru_ant, m_strRruAntIndex);
-			if (!SetRruLinkAntInfo(newRecord))
-			{
-				return false;
-			}
-
-			return AddDevToMap(mapMibInfo, EnumDevType.rru_ant, newRecord);
+			return SetRruLinkAntInfo(newRecord) && AddDevToMap(mapMibInfo, EnumDevType.rru_ant, newRecord);
 		}
 
 		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
 		{
-			return base.DelLink(wholeLink, ref mapMibInfo);
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return false;
+			}
+
+			var raLink = GetDevAttributeInfo(m_strRruAntIndex, EnumDevType.rru_ant);
+			MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.rru_ant, raLink);
+			return true;
 		}
 
 		/// 验证两端连接的设备是否存在
-		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo, IsRecordExist checkExist)
 		{
 			var strRruIndex = wholeLink.GetDevIndex(EnumDevType.rru);
 			if (null == strRruIndex)
@@ -61,12 +65,16 @@ namespace NetPlan.DevLink
 
 			// 验证天线阵安装规划表中是否已经存在相同索引的实例
 			m_strRruAntIndex = $"{strRruIndex}.{m_nRruPort}";
-			var record = GetDevAttributeInfo(m_strRruAntIndex, EnumDevType.rru_ant);
-			if (null != record)
+			if (!checkExist.Invoke(m_strRruAntIndex, EnumDevType.rru_ant))
 			{
-				Log.Error($"索引为{strRruIndex}RRU{m_nRruPort}通道已经有到天线阵的连接");
 				return false;
 			}
+			//var record = GetDevAttributeInfo(m_strRruAntIndex, EnumDevType.rru_ant);
+			//if (null != record)
+			//{
+			//	Log.Error($"索引为{strRruIndex}RRU{m_nRruPort}通道已经有到天线阵的连接");
+			//	return false;
+			//}
 
 			var strAntIndex = wholeLink.GetDevIndex(EnumDevType.ant);
 			if (null == strAntIndex)
@@ -96,6 +104,11 @@ namespace NetPlan.DevLink
 
 		#region 私有接口
 
+		/// <summary>
+		/// 设置RRU设备中
+		/// </summary>
+		/// <param name="record"></param>
+		/// <returns></returns>
 		private bool SetRruLinkAntInfo(DevAttributeInfo record)
 		{
 			var strAntNo = m_antDev.m_strOidIndex.Trim('.');

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using LogManager;
@@ -10,6 +11,8 @@ namespace NetPlan.DevLink
 {
 	public class NetPlanLinkBase : INetPlanLink
 	{
+		public delegate bool IsRecordExist(string strRecordIndex, EnumDevType recordType);
+
 		#region 公共接口
 
 		public virtual bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
@@ -22,12 +25,23 @@ namespace NetPlan.DevLink
 			throw new NotImplementedException();
 		}
 
-		public virtual bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual bool SetBoardBaseInfoInRru(BoardBaseInfo bbi, DevAttributeInfo rru, int nRruIrPort)
+		#endregion
+
+		#region 基类公共接口
+
+		/// <summary>
+		/// 设置RRU属性中和板卡相关的属性信息
+		/// </summary>
+		/// <param name="bbi"></param>
+		/// <param name="rru"></param>
+		/// <param name="nRruIrPort"></param>
+		/// <returns></returns>
+		protected virtual bool SetBoardBaseInfoInRru(BoardBaseInfo bbi, DevAttributeInfo rru, int nRruIrPort)
 		{
 			var rruRs = MibInfoMgr.GetNeedUpdateValue(rru, "netRRURowStatus");
 			if (null == rruRs)
@@ -70,13 +84,16 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-
-		public virtual bool SetRruOfpInfo(DevAttributeInfo rru, int nRruIrPort, int nBoardIrPort)
+		/// <summary>
+		/// 设置RRU属性和板卡连接端口相关的属性信息
+		/// </summary>
+		/// <param name="rru"></param>
+		/// <param name="nRruIrPort"></param>
+		/// <param name="nBoardIrPort"></param>
+		/// <returns></returns>
+		protected virtual bool SetRruOfpInfo(DevAttributeInfo rru, int nRruIrPort, int nBoardIrPort)
 		{
-			var wmo = rru.GetFieldOriginValue("netRRUOfpWorkMode", false);
-			var wml = rru.GetFieldLatestValue("netRRUOfpWorkMode", false);
-
-			var workMode = MibInfoMgr.GetNeedUpdateValue(wmo, wml);
+			var workMode = MibInfoMgr.GetNeedUpdateValue(rru, "netRRUOfpWorkMode", false);
 			if (null == workMode)
 			{
 				Log.Error($"从rru{rru.m_strOidIndex}查询netRRUOfpWorkMode属性值失败");
@@ -90,8 +107,10 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
+			var lp = -1 == nBoardIrPort ? "-1" : "1";	// 如果端口是-1，那就是删除连接，级数上设置为-1
+
 			var ofpLinePosMib = $"netRRUOfp{nRruIrPort}AccessLinePosition";
-			if (!rru.SetFieldLatestValue(ofpLinePosMib, "1"))   // 和板卡相连的rru级联级数为1
+			if (!rru.SetFieldLatestValue(ofpLinePosMib, lp))
 			{
 				Log.Error($"RRU{rru.m_strOidIndex}设置字段{ofpPortMib}值失败");
 				return false;
@@ -105,7 +124,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public DevAttributeInfo GetDevAttributeInfo(string strIndex, EnumDevType type)
+		protected DevAttributeInfo GetDevAttributeInfo(string strIndex, EnumDevType type)
 		{
 			if (string.IsNullOrEmpty(strIndex) || EnumDevType.unknown == type)
 			{
@@ -153,7 +172,7 @@ namespace NetPlan.DevLink
 			return property.SetValue(strValue);
 		}
 
-		public static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType type, DevAttributeInfo newDev)
+		protected static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType type, DevAttributeInfo newDev)
 		{
 			if (null == mapData || type == EnumDevType.unknown || null == newDev)
 			{
@@ -173,7 +192,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public static BoardBaseInfo GetBoardBaseInfo(DevAttributeInfo board)
+		protected static BoardBaseInfo GetBoardBaseInfo(DevAttributeInfo board)
 		{
 			var boardRs = MibInfoMgr.GetNeedUpdateValue(board, "netBoardRowStatus");
 			if (null == boardRs)
@@ -227,6 +246,52 @@ namespace NetPlan.DevLink
 			return bbi;
 		}
 
+		/// <summary>
+		/// 删除连接时，指定类型、索引的记录必须存在
+		/// </summary>
+		/// <param name="strRecordIndex"></param>
+		/// <param name="recordType"></param>
+		/// <returns></returns>
+		protected bool RecordExistInDel(string strRecordIndex, EnumDevType recordType)
+		{
+			if (!mapOriginData.ContainsKey(recordType))
+			{
+				return false;
+			}
+
+			var devList = mapOriginData[recordType];
+			if (null == devList || devList.Count == 0)
+			{
+				return false;
+			}
+
+			var dev = devList.FirstOrDefault(tmp => tmp.m_strOidIndex == strRecordIndex);
+			return (null != dev);
+		}
+
+		/// <summary>
+		/// 增加连接时，指定类型、索引的记录不能存在
+		/// </summary>
+		/// <param name="strRecordIndex"></param>
+		/// <param name="recordType"></param>
+		/// <returns></returns>
+		protected bool RecordNotExistInAdd(string strRecordIndex, EnumDevType recordType)
+		{
+			if (!mapOriginData.ContainsKey(recordType))
+			{
+				return true;
+			}
+
+			var devList = mapOriginData[recordType];
+			if (null == devList || devList.Count == 0)
+			{
+				return true;
+			}
+
+			var dev = devList.FirstOrDefault(tmp => tmp.m_strOidIndex == strRecordIndex);
+			return (null == dev);
+		}
+
 		#endregion
 
 		#region 私有数据区
@@ -244,5 +309,21 @@ namespace NetPlan.DevLink
 		public string strShelfNo;
 		public string strSlotNo;
 		public string strBoardCode;
+
+		public BoardBaseInfo()
+		{
+			strRackNo = "-1";
+			strShelfNo = "-1";
+			strSlotNo = "-1";
+			strBoardCode = "0";
+		}
+
+		public BoardBaseInfo(string rack, string shelf, string slot, string code)
+		{
+			strBoardCode = code;
+			strShelfNo = shelf;
+			strSlotNo = slot;
+			strRackNo = rack;
+		}
 	}
 }
