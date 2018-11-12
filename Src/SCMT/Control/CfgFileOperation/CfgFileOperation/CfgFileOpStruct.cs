@@ -1346,7 +1346,7 @@ namespace CfgFileOpStruct
             }
             else if (ParaName.Contains("alarmCauseFaultObjectType"))
             {
-                ReturnValue = alarmCauseFaultObjectType;
+                ReturnValue = alarmCauseFaultObjectType;//故障源对象类型
             }
             else if (ParaName.Contains("alarmCauseReportBoardType"))
             {
@@ -1527,7 +1527,55 @@ namespace CfgFileOpStruct
             //RRU支持的频带宽度
             rruTypeBandWidth = excelRead(RRuInfo, "rruTypeBandWidth");
             //RRU支持的小区工作模式
-            rruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
+            string strRruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
+            int pos = 0;
+            while (true)
+            {
+                pos = strRruTypeSupportCellWorkMode.IndexOf("/");
+                if (-1 != pos) // LTE/TD
+                {
+                    string proStr = strRruTypeSupportCellWorkMode.Substring(0, pos);
+                    if (String.Compare(proStr, "LTE", true) == 0)
+                    {
+                        rruTypeSupportCellWorkMode += "LTE TDD";
+                    }
+                    else if (String.Compare(proStr, "TD", true) == 0)
+                    {
+                        rruTypeSupportCellWorkMode += "TD-SCDMA";
+                    }
+                    else if (String.Compare(proStr, "FDD", true) == 0)
+                    {
+                        rruTypeSupportCellWorkMode += "LTE FDD";
+                    }
+                    else
+                        Console.WriteLine("struct RRuTypeTabStru CellWorkMode is {0}....", proStr);
+                    rruTypeSupportCellWorkMode += "/";
+
+                    strRruTypeSupportCellWorkMode = strRruTypeSupportCellWorkMode.Substring(pos + 1, strRruTypeSupportCellWorkMode.Length - pos - 1);
+
+                }
+                else
+                {
+                    string proStr = strRruTypeSupportCellWorkMode;
+                    if (String.Compare(proStr, "LTE", true) == 0)
+                    {
+                        rruTypeSupportCellWorkMode += "LTE TDD";
+                    }
+                    else if (String.Compare(proStr, "TD", true) == 0)
+                    {
+                        rruTypeSupportCellWorkMode += "TD-SCDMA";
+                    }
+                    else if (String.Compare(proStr, "FDD", true) == 0)
+                    {
+                        rruTypeSupportCellWorkMode += "LTE FDD";
+                    }
+                    else
+                        Console.WriteLine("struct RRuTypeTabStru CellWorkMode is {0}....", proStr);
+                    break;
+                }
+
+            }
+            //rruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
             //行状态
             rruTypeRowStatus = "4";
             //2014-2-27 luoxin RRUType新增节点
@@ -1539,17 +1587,17 @@ namespace CfgFileOpStruct
         }
         
         public GetRruTypeByNodeNameEn excelRead;
-        string rruTypeManufacturerIndex;
-        string rruTypeIndex;
-        string rruTypeRowStatus;
-        string rruTypeName;
-        string rruTypeMaxAntPathNum;
-        string rruTypeMaxTxPower;
-        string rruTypeBandWidth;
-        string rruTypeSupportCellWorkMode;
-        string strRruTypeFiberLength;//2014-2-27 luoxin RRUType新增节点
-        string strRruTypeIrCompressMode;//2014-2-27 luoxin RRUType新增节点
-        string strRruTypeFamilyName;//2016-08-29 guoyingjie add  rruTypeFamilyName
+        public string rruTypeManufacturerIndex;
+        public string rruTypeIndex;
+        public string rruTypeRowStatus;
+        public string rruTypeName;
+        public string rruTypeMaxAntPathNum;
+        public string rruTypeMaxTxPower;
+        public string rruTypeBandWidth;
+        public string rruTypeSupportCellWorkMode;
+        public string strRruTypeFiberLength;//2014-2-27 luoxin RRUType新增节点
+        public string strRruTypeIrCompressMode;//2014-2-27 luoxin RRUType新增节点
+        public string strRruTypeFamilyName;//2016-08-29 guoyingjie add  rruTypeFamilyName
 
         public string  GetRRuLeafValue(string FieldName)
         {
@@ -1617,25 +1665,25 @@ namespace CfgFileOpStruct
     /// </summary>
     struct RRuTypePortTabStru
     {
-        string rruTypePortManufacturerIndex;
-        string rruTypePortIndex;
-        string rruTypePortNo;
-        string rruTypePortRowStatus;
-        string rruTypePortSupportFreqBand;
-        string rruTypePortSupportFreqBandWidth;
-        string rruTypePortPathNo;
+        public string rruTypePortManufacturerIndex;
+        public string rruTypePortIndex;
+        public string rruTypePortNo;
+        public string rruTypePortRowStatus;
+        public string rruTypePortSupportFreqBand;
+        public string rruTypePortSupportFreqBandWidth;
+        public string rruTypePortPathNo;
 
         //2013-04-10 luoxin DTMUC00153813
-        string rruTypePortSupportAbandTdsCarrierNum;
-        string rruTypePortSupportFBandTdsCarrierNum;
-        string rruTypePortCalAIqRxNom;
-        string rruTypePortCalAIqTxNom;
-        string rruTypePortCalPinRxNom;
-        string rruTypePortCalPoutTxNom;
+        public string rruTypePortSupportAbandTdsCarrierNum;
+        public string rruTypePortSupportFBandTdsCarrierNum;
+        public string rruTypePortCalAIqRxNom;
+        public string rruTypePortCalAIqTxNom;
+        public string rruTypePortCalPinRxNom;
+        public string rruTypePortCalPoutTxNom;
         //2013-04-10 luoxin end 
 
         //2014-3-5 luoxin RRU通道类型表增加新节点
-        string strRruTypePortAntMaxPower;
+        public string strRruTypePortAntMaxPower;
 
         public GetRruTypePortByNodeNameEn excelRead;
 

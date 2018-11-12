@@ -21,7 +21,7 @@ namespace CfgFileOperation
         {
             Test test = new Test();
 
-            test.testForParseAlarmEx();
+            //test.testForParseAlarmEx();
             //test.testForCreatePatchAndInit();
 
             //test.testForReadSelfExcel();
@@ -30,7 +30,7 @@ namespace CfgFileOperation
 
             //test.testLoadMibTreeIntoMem();//
 
-            //test.testForReadExcelRruType();
+            test.testForReadExcelRruType();
 
             //test.testForReadExcelAnnt();
 
@@ -52,8 +52,8 @@ namespace CfgFileOperation
         {
             string alarmMdbPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\LMTAlarm.mdb";
             string alarmExPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls";
-            CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl(alarmExPath, alarmMdbPath);
-
+            CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl();
+            alarmEx.CfgParseAlarmExeclAndMdb(alarmExPath, alarmMdbPath);
         }
 
 
@@ -115,11 +115,14 @@ namespace CfgFileOperation
         {
             CfgParseRruExcel rru = new CfgParseRruExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表_ty.xls";
-            string sheetName = "RRU基本信息表";
-            rru.ProcessingExcel(excelPath, sheetName);
-            List<RRuTypeTabStru> rruList = rru.GetRruTypeInfoData();
+            //string sheetName = "RRU基本信息表";
+            //rru.ProcessingExcel(excelPath, sheetName);
 
-            List<RRuTypePortTabStru> rruPortL = rru.GetRruTypePortInfoData();
+
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\LMTDBENODEB70.mdb";
+            //List<RRuTypeTabStru> rruList = rru.GetRruTypeInfoData();
+            rru.TestMdbAndExcel(excelPath, strFileToDirectory);
+            //List<RRuTypePortTabStru> rruPortL = rru.GetRruTypePortInfoData();
         }
 
         void testForReadExcelAnnt()

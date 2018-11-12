@@ -644,12 +644,7 @@ namespace CfgFileOperation
             int[] indexValue = new int[6];//索引值
             if (string.Equals("alarmCauseEntry", strTableName) && (isDyTable == true))//告警原因 // alarm info
             {
-                string strSQLAlarm = ("select  * from AlarmInform_5216");
-                string alarmPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-                DataSet AlarmdateSet = CfgGetRecordByAccessDb(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
-                //foreach (var col in AlarmdateSet.Tables[0].Columns)
-                //    Console.WriteLine(String.Format("rowName:{0},value:{1}.",col.ToString(), AlarmdateSet.Tables[0].Rows[0][col.ToString()]));
-                SetBuffersInfoForAlarmCause(tableRow, AlarmdateSet, tableOp, leafNum);
+                CreateSpecialTalbeAlarmCauseEntryByExcel(tableRow, tableOp, strFileToDirectory, leafNum);
             }
             else if (string.Equals("antennaArrayTypeEntry", strTableName))//天线器件库信息-天线阵//2012-06-25 luoxin DTMUC00104224 创建配置文件时器件库表下天线阵类型表不做动态表处理，记录设为空
             {
@@ -669,6 +664,28 @@ namespace CfgFileOperation
                 DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
                 SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
             }
+        }
+        private void CreateSpecialTalbeAlarmCauseEntryByMdb(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)
+        {
+            string strSQLAlarm = ("select  * from AlarmInform_5216");
+            string alarmPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
+            DataSet AlarmdateSet = CfgGetRecordByAccessDb(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
+            //foreach (var col in AlarmdateSet.Tables[0].Columns)
+            //    Console.WriteLine(String.Format("rowName:{0},value:{1}.",col.ToString(), AlarmdateSet.Tables[0].Rows[0][col.ToString()]));
+            SetBuffersInfoForAlarmCauseMdb(tableRow, AlarmdateSet, tableOp, leafNum);
+        }
+
+        private void CreateSpecialTalbeAlarmCauseEntryByExcel(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)
+        {
+            CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl();
+            alarmEx.ParseExcel(strFileToDirectory);
+            var vectAlarmInfoExcel = alarmEx.vectAlarmInfoExcel;
+            //string strSQLAlarm = ("select  * from AlarmInform_5216");
+            //string alarmPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
+            //DataSet AlarmdateSet = CfgGetRecordByAccessDb(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
+            //foreach (var col in AlarmdateSet.Tables[0].Columns)
+            //    Console.WriteLine(String.Format("rowName:{0},value:{1}.",col.ToString(), AlarmdateSet.Tables[0].Rows[0][col.ToString()]));
+            SetBuffersInfoForAlarmCauseExcel(tableRow, vectAlarmInfoExcel, tableOp, leafNum);
         }
         /// <summary>
         /// rruTypePort 的实例处理
@@ -765,7 +782,7 @@ namespace CfgFileOperation
         /// <param name="AlarmdateSet"></param>
         /// <param name="tableOp"></param>
         /// <param name="leafNum"></param>
-        private void SetBuffersInfoForAlarmCause(DataRow tableRow, DataSet AlarmdateSet, CfgTableOp tableOp, int leafNum)
+        private void SetBuffersInfoForAlarmCauseMdb(DataRow tableRow, DataSet AlarmdateSet, CfgTableOp tableOp, int leafNum)
         {
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
             string strTableContent = tableRow["TableContent"].ToString();//表容量
@@ -806,6 +823,52 @@ namespace CfgFileOperation
                     WriteToBuffer(BuffArrL, "0", bytePosL, tableOp.m_LeafNodes[0].m_struMibNode.strOMType, 0, "", "");
                     for (int k = 1; k < leafNum-1; k++){
                         WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType, 
+                            tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
+                    }
+                }
+                setBufTableNum++;
+                tableOp.m_cfgInsts_add(strTabIndex, BuffArrL[0]);
+            }
+            Console.WriteLine(tableOp.get_m_cfgInsts_num());
+        }
+
+        private void SetBuffersInfoForAlarmCauseExcel(DataRow tableRow, List<StruAlarmInfo> vectAlarmInfo, CfgTableOp tableOp, int leafNum)
+        {
+            ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
+            string strTableContent = tableRow["TableContent"].ToString();//表容量
+            int nTableNum = int.Parse(strTableContent);// 例如alarmCauseEntry表容量为4000
+            //int alarmCount = AlarmdateSet.Tables[0].Rows.Count; // 例如一个版本 2178个告警信息 0~2177
+            int alarmCount = vectAlarmInfo.Count;
+            int setBufTableNum = 0;//处理的表
+            List<string> exitInstIndexList = new List<string>();// 存真实数据库中的告警号
+            bool IsFirst = true;
+            Console.WriteLine(tableOp.get_m_cfgInsts_num());
+            for (int index = 0; index < nTableNum; index++)//告警表是一维
+            {
+                List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
+                string strTabIndex;
+                if (setBufTableNum < alarmCount - 1)
+                {
+                    WriteAlarmDataToCfg(BuffArrL, vectAlarmInfo[setBufTableNum], leafNum, tableOp);
+                    strTabIndex = "." + vectAlarmInfo[setBufTableNum].GetContrastValue(tableOp.m_LeafNodes[0].m_struMibNode.strMibName);
+                    exitInstIndexList.Add(strTabIndex);
+                }
+                else
+                {
+                    if (IsFirst)
+                    {
+                        index = 0;//从新开始判断实例索引是否已经使用
+                        IsFirst = false;
+                    }
+
+                    strTabIndex = ".0";
+                    if (exitInstIndexList.FindIndex(e => e.Equals(strTabIndex)) == -1) //不存在：返回-1，存在：返回位置。
+                        continue;
+                    List<int> bytePosL = new List<int>() { 0 };
+                    WriteToBuffer(BuffArrL, "0", bytePosL, tableOp.m_LeafNodes[0].m_struMibNode.strOMType, 0, "", "");
+                    for (int k = 1; k < leafNum - 1; k++)
+                    {
+                        WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
                             tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
                     }
                 }
