@@ -480,6 +480,7 @@ namespace NetPlan
 	/// <summary>
 	/// rhub设备，需要区分版本
 	/// </summary>
+	[Serializable]
 	public class RHubDevAttri : DevAttributeInfo
 	{
 		public RHubDevAttri(int devIndex, string strDevVersion)
