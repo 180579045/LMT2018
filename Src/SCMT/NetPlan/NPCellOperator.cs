@@ -66,7 +66,7 @@ namespace NetPlan
 			if (null == dev)
 			{
 				dev = new DevAttributeInfo(devType, strIndexTemp);
-				dev.SetFieldValue(mibName, dValue);
+				dev.SetFieldLatestValue(mibName, dValue);
 				dev.SetFieldOriginValue(mibName, dValue, false);
 				dev.m_recordType = RecordDataType.Original;
 				MibInfoMgr.GetInstance().AddDevMibInfo(devType, dev);

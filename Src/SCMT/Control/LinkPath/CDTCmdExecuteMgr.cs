@@ -276,7 +276,7 @@ namespace LinkPath
 			var rs = lmtbSnmpEx.SnmpSetSync(lmtPdu, out requestId, strIpAddr, timeOut);
 			if (rs != 0)
 			{
-				Log.Error("执行lmtbSnmpEx.SnmpGetSync()方法错误");
+				Log.Error("执行lmtbSnmpEx.SnmpSetSync()方法错误");
 			}
 			
 			return rs;

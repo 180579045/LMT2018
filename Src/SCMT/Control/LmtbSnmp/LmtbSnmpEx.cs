@@ -379,14 +379,16 @@ namespace LmtbSnmp
 			{
 				if (ReqResult.Pdu.ErrorStatus != 0)
 				{
-					logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
-						, ReqResult.Pdu.ErrorStatus, ReqResult.Pdu.ErrorIndex);
+					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
 					Log.Error(logMsg);
 					status = false;
 
-					// 
+					SnmErrorCodeHelper.GetInstance().SetLastErrorCode(ReqResult.Pdu.ErrorStatus);
+
+					// 资源不可用的情况需要上报
 					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
 					{
+						ShowLogHelper.Show($"执行snmp操作失败，错误码：13，描述：资源不可达", strIpAddr, InfoTypeEnum.ENB_GETOP_ERR_INFO);
 						return false;
 					}
 				}

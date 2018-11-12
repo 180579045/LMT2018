@@ -21,6 +21,7 @@ namespace MIBDataParser
 	}
 
 	// mib table类定义
+	[Serializable]
 	public class MibTable
 	{
 		public string nameMib;
@@ -38,6 +39,7 @@ namespace MIBDataParser
 	}
 
 	// mib leaf 类定义
+	[Serializable]
 	public class MibLeaf
 	{
 		public string childNameMib;

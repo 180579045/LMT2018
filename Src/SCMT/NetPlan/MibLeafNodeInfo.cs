@@ -9,6 +9,7 @@ using MIBDataParser.JSONDataMgr;
 namespace NetPlan
 {
 	// 具体的MIB信息及该字段对应的值
+	[Serializable]
 	public class MibLeafNodeInfo
 	{
 		public MibLeaf mibAttri;
@@ -60,7 +61,6 @@ namespace NetPlan
 
 			return !m_strOriginValue.Equals(m_strLatestValue, StringComparison.OrdinalIgnoreCase);  // 忽略大小写
 		}
-
 	}
 
 	/// <summary>

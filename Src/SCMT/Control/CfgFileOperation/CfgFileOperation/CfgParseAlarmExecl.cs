@@ -7,6 +7,7 @@ using Microsoft.Office.Interop.Excel;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Data;
 using CfgFileOpStruct;
+using System.IO;
 
 namespace CfgFileOperation
 {
@@ -20,9 +21,11 @@ namespace CfgFileOperation
         /// </summary>
         List<Dictionary<string, string>> alamNo = new List<Dictionary<string, string>>();
         List<StruAlarmInfo> vectAlarmInfoMdb = new List<StruAlarmInfo>();
-        List<StruAlarmInfo> vectAlarmInfoExcel = new List<StruAlarmInfo>();
+        public List<StruAlarmInfo> vectAlarmInfoExcel = new List<StruAlarmInfo>();
+        public CfgParseAlarmExecl()
+        { }
 
-        public CfgParseAlarmExecl(string strExcelPath, string strMdbPath)
+        public void CfgParseAlarmExeclAndMdb(string strExcelPath, string strMdbPath)
         {
             CfgExcelOp excelOp = new CfgExcelOp();
             //string strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls";
@@ -32,26 +35,141 @@ namespace CfgFileOperation
 
             ProcessingAlarmMdb(strMdbPath);
             ProcessingAlarmExcel(wks);
-            
-            //int a = 123;
-            //for (int i = 0; i < vectAlarmInfoMdb.Count; i++)
-            //{
 
-            //    is_same(vectAlarmInfoMdb[i], vectAlarmInfoExcel[i]);
-            //}
+
+            List<byte> bugbuff = new List<byte>();
             foreach (var mdb in vectAlarmInfoMdb)
             {
                 string alarmNo = mdb.alarmCauseNo;
                 int pos = vectAlarmInfoExcel.FindIndex(e => e.alarmCauseNo == alarmNo);
                 if (-1 == pos)
                 {
-                    //Console.WriteLine(String.Format("***alarm no = {0}, not in mdb.", alarmNo));
+                    //string bugbf = String.Format("***alarm no = {0}, not in mdb.\n", alarmNo);
+                    //byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugbf);
+                    //bugbuff.AddRange(byteArray);
+                    //Console.WriteLine(String.Format("***alarm no = {0}, not in mdb.\n", alarmNo));
                     continue;
                 }
-                is_same(mdb, vectAlarmInfoExcel[pos]);
+                is_same_pama(mdb, vectAlarmInfoExcel[pos], bugbuff);
             }
 
+            //byte[] wr = bugbuff.ToArray();
+            //FileStream fs = new FileStream("alarmBugWriteBuf.txt", FileMode.Create);
+            //fs.Seek(0, SeekOrigin.End);// 偏移的位置
+            //fs.Write(wr, 0, wr.Length);
+            //fs.Flush();
+            //fs.Close();
 
+        }
+
+        public void ParseExcel(string strExcelPath)
+        {
+            CfgExcelOp excelOp = new CfgExcelOp();
+            string strSheetName = "eNB告警信息表";
+            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
+            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strSheetName);
+            ProcessingAlarmExcel(wks);
+        }
+
+        public void ParseMdb(string strMdbPath)
+        {
+            CfgExcelOp excelOp = new CfgExcelOp();
+            ProcessingAlarmMdb(strMdbPath);
+        }
+        bool is_same_pama(StruAlarmInfo a, StruAlarmInfo b, List<byte> bugbuff)
+        {
+            string bugb = "";
+            if (!String.Equals(a.alarmCauseNo, b.alarmCauseNo))
+            {
+                bugb += (String.Format("alarmCauseNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseNo, b.alarmCauseNo));
+            }
+            if (!String.Equals(a.alarmCauseRowStatus, b.alarmCauseRowStatus))
+            {
+                bugb += (String.Format("alarmCauseRowStatus : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseRowStatus, b.alarmCauseRowStatus));
+            }
+            if (!String.Equals(a.alarmCauseSeverity, b.alarmCauseSeverity))
+            {
+                bugb += (String.Format("alarmCauseSeverity : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseSeverity, b.alarmCauseSeverity));
+            }
+            if (!String.Equals(a.alarmCauseIsValid, b.alarmCauseIsValid))
+            {
+                bugb += (String.Format("alarmCauseIsValid : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseIsValid, b.alarmCauseIsValid));
+            }
+            if (!String.Equals(a.alarmCauseType, b.alarmCauseType))
+            {
+                bugb += (String.Format("alarmCauseType : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseType, b.alarmCauseType));
+            }//5
+            if (!String.Equals(a.alarmCauseClearStyle, b.alarmCauseClearStyle))
+            {
+                bugb += (String.Format("alarmCauseClearStyle : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseClearStyle, b.alarmCauseClearStyle));
+            }
+            if (!String.Equals(a.alarmCauseToAlarmBox, b.alarmCauseToAlarmBox))
+            {
+                bugb += (String.Format("alarmCauseToAlarmBox : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseToAlarmBox, b.alarmCauseToAlarmBox));
+            }
+            if (!String.Equals(a.alarmCauseItfNProtocolCauseNo.Replace(" ", ""), b.alarmCauseItfNProtocolCauseNo.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseItfNProtocolCauseNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseItfNProtocolCauseNo, b.alarmCauseItfNProtocolCauseNo));
+            }
+            if (!String.Equals(a.alarmCauseIsStateful, b.alarmCauseIsStateful))
+            {
+                bugb += (String.Format("alarmCauseIsStateful : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseIsStateful, b.alarmCauseIsStateful));
+            }
+            if (!String.Equals(a.alarmCausePrimaryAlarmCauseNo, b.alarmCausePrimaryAlarmCauseNo))
+            {
+                bugb += (String.Format("alarmCausePrimaryAlarmCauseNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCausePrimaryAlarmCauseNo, b.alarmCausePrimaryAlarmCauseNo));
+            }//10
+            if (!String.Equals(a.alarmCauseStatefulClearDeditheringInterval, b.alarmCauseStatefulClearDeditheringInterval))
+            {
+                bugb += (String.Format("alarmCauseStatefulClearDeditheringInterval : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseStatefulClearDeditheringInterval, b.alarmCauseStatefulClearDeditheringInterval));
+            }
+            if (!String.Equals(a.alarmCauseStatefulCreateDeditheringInterval.Replace(" ", ""), b.alarmCauseStatefulCreateDeditheringInterval.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseStatefulCreateDeditheringInterval : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseStatefulCreateDeditheringInterval, b.alarmCauseStatefulCreateDeditheringInterval));
+            }
+            if (!String.Equals(a.alarmCauseStatefulDelayTime, b.alarmCauseStatefulDelayTime))
+            {
+                bugb += (String.Format("alarmCauseStatefulDelayTime : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseStatefulDelayTime, b.alarmCauseStatefulDelayTime));
+            }
+            if (!String.Equals(a.alarmCauseCompressionInterval.Replace(" ", ""), b.alarmCauseCompressionInterval.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseCompressionInterval : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseCompressionInterval, b.alarmCauseCompressionInterval));
+            }
+            if (!String.Equals(a.alarmCauseCompressionRepetitions.Replace(" ", ""), b.alarmCauseCompressionRepetitions.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseCompressionRepetitions : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseCompressionRepetitions, b.alarmCauseCompressionRepetitions));
+            }//15
+            if (!String.Equals(a.alarmCauseAutoProcessPolicy, b.alarmCauseAutoProcessPolicy))
+            {
+                bugb += (String.Format("alarmCauseAutoProcessPolicy : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseAutoProcessPolicy, b.alarmCauseAutoProcessPolicy));
+            }
+            if (!String.Equals(a.alarmCauseValueStyle.Replace(" ", ""), b.alarmCauseValueStyle.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseValueStyle : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseValueStyle, b.alarmCauseValueStyle));
+            }
+            //if (!String.Equals(a.alarmCauseFaultObjectType, b.alarmCauseFaultObjectType))
+            //{
+            //    bugb += (String.Format("alarmCauseFaultObjectType : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseFaultObjectType, b.alarmCauseFaultObjectType));
+            //}
+            if (!String.Equals(a.alarmCauseReportBoardType, b.alarmCauseReportBoardType))
+            {
+                bugb += (String.Format("alarmCauseReportBoardType : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseReportBoardType, b.alarmCauseReportBoardType));
+            }//19
+
+            //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
+            if (!String.Equals(a.strAlarmUnstableDispose.Replace(" ", ""), b.strAlarmUnstableDispose.Replace(" ", "")))
+            {
+                bugb += (String.Format("strAlarmUnstableDispose : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.strAlarmUnstableDispose, b.strAlarmUnstableDispose));
+            }
+            if (!String.Equals(a.strAlarmCauseInsecureNo, b.strAlarmCauseInsecureNo))
+            {
+                bugb += (String.Format("strAlarmCauseInsecureNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.strAlarmCauseInsecureNo, b.strAlarmCauseInsecureNo));
+            }  //不稳定态告警编号
+            Console.WriteLine(bugb);
+
+            byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugb);
+            bugbuff.AddRange(byteArray);
+            return true;
         }
 
         bool is_same(StruAlarmInfo a, StruAlarmInfo b)

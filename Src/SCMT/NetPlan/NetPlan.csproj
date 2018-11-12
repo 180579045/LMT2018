@@ -48,6 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DevAttributeInfo.cs" />
+    <Compile Include="DevLink\INetPlanLink.cs" />
+    <Compile Include="DevLink\LinkBoardRhub.cs" />
+    <Compile Include="DevLink\LinkFactory.cs" />
+    <Compile Include="DevLink\LinkRhubPico.cs" />
+    <Compile Include="DevLink\LinkRruAnt.cs" />
+    <Compile Include="DevLink\NetPlanLinkBase.cs" />
+    <Compile Include="DevLink\LinkBoardRru.cs" />
     <Compile Include="EnumDevType.cs" />
     <Compile Include="MibInfoMgr.cs" />
     <Compile Include="MibLeafNodeInfo.cs" />
@@ -86,6 +93,7 @@
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
