@@ -1018,7 +1018,11 @@ namespace SCMTMainWindow.View
 
                 if(MibInfoMgr.GetInstance().DelDev(item.DevIndex, item.DevType))
                 {
-                    //this.dicRRU.Remove(text.Text);
+                    //从全局中删除当前设备及其索引
+                    if(this.g_AllDevInfo[item.DevType].ContainsKey(item.ItemName))
+                    {
+                        this.g_AllDevInfo[item.DevType].Remove(item.ItemName);
+                    }
                     //首先判断属性框中是否是当前的属性
                     if ((this.gridProperty.Children.Count != 0))
                     {

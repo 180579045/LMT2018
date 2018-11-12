@@ -356,6 +356,11 @@ namespace SCMTMainWindow.View
             //双击显示
             if (e.ClickCount == 2)
             {
+                if(targetCanvas.Children.Count > 1)
+                {
+                    return;
+                }
+
                 //从后台获取板卡信息
                 List<BoardEquipment> listBoardInfo = NPEBoardHelper.GetInstance().GetSlotSupportBoardInfo(soltNum, SCMTOperationCore.Elements.EnbTypeEnum.ENB_EMB6116);
 
@@ -503,6 +508,11 @@ namespace SCMTMainWindow.View
         {
             Canvas targetCanvas = sender as Canvas;
 
+            if(targetCanvas.Children.Count < 2)
+            {
+                return;
+            }
+
             ContextMenu deleteMenu = new ContextMenu();
 
             MenuItem deleteBoard = new MenuItem();
@@ -562,13 +572,15 @@ namespace SCMTMainWindow.View
                     if (MyDesigner.Children[i].GetType().Name == "DesignerItem")
                     {
                         DesignerItem item = MyDesigner.Children[i] as DesignerItem;
-                        if ((item.ItemName ?? "") == strIRName)
+                        if ((item.DevIndex ?? "") == MyDesigner.g_AllDevInfo[EnumDevType.board][strIRName])
                         {
                             DeleteBoardIR(item);
                             i--;
                         }
                     }
                 }
+
+                MyDesigner.g_AllDevInfo[EnumDevType.board].Remove(strIRName);
 
                 for (int i = 1; i < targetCanvas.Children.Count; i++)
                 {

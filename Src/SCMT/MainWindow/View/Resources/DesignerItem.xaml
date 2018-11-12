@@ -21,9 +21,6 @@
             </MenuItem.Icon>
         </MenuItem>-->
         <MenuItem Header="删除" Command="{x:Static ApplicationCommands.Delete}">
-            <MenuItem.Icon>
-                <Image Source="Images/Delete.png" Width="16"/>
-            </MenuItem.Icon>
         </MenuItem>
         <!--<Separator/>
         <MenuItem Header="Grouping">
@@ -139,9 +136,9 @@
                         <c:DragThumb x:Name="PART_DragThumb" 
                                      Cursor="SizeAll"/>
                         <!-- PART_ResizeDecorator -->
-                        <!--<Control x:Name="PART_ResizeDecorator" 
+                        <Control x:Name="PART_ResizeDecorator" 
                                  Visibility="Collapsed"
-                                 Template="{StaticResource ResizeDecoratorTemplate}"/>-->
+                                 Template="{StaticResource ResizeDecoratorTemplate}"/>
                          <!--PART_ContentPresenter--> 
                         <ContentPresenter x:Name="PART_ContentPresenter"
                                           HorizontalAlignment="Stretch"
@@ -162,7 +159,7 @@
                                 <Condition Value="True" Binding="{Binding RelativeSource={RelativeSource Self},Path=IsSelected}"/>
                                 <Condition Value="{x:Static sys:Guid.Empty}" Binding="{Binding RelativeSource={RelativeSource Self},Path=ParentID}"/>
                             </MultiDataTrigger.Conditions>
-                            <!--<Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Visible"/>-->
+                            <Setter TargetName="PART_ResizeDecorator" Property="Visibility" Value="Visible"/>
                         </MultiDataTrigger>
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter TargetName="PART_ConnectorDecorator" Property="Visibility" Value="Visible"/>
