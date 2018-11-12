@@ -55,12 +55,22 @@ namespace LmtbSnmp
 			bool rs = true;
 
 			// 创建Trap监听实例
-			m_TrapHelper = new TrapHelper(m_TrapPort);
-			m_TrapHelper.StopReceiver();
-
-			if (false == m_TrapHelper.InitReceiver())
+			if (m_TrapHelper != null)
 			{
-				Log.Error("Trap监听实例创建失败！");
+				m_TrapHelper.StopReceiver();
+			}
+			m_TrapHelper = new TrapHelper(m_TrapPort);
+
+			// IPV4
+			if (false == m_TrapHelper.InitReceiverIpv4())
+			{
+				Log.Error("IPV4 Trap监听实例创建失败！");
+				rs = false;
+			}
+			// IPV6
+			if (false == m_TrapHelper.InitReceiverIpv6())
+			{
+				Log.Error("IPV6 Trap监听实例创建失败！");
 				rs = false;
 			}
 
