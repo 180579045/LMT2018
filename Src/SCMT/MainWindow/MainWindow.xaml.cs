@@ -1830,25 +1830,24 @@ namespace SCMTMainWindow
 		/// <returns></returns>
 		public int GetPcuSlot(string targetIp)
 		{
-			var cmdName = "GetBoardPowerInfo";
+			const string cmdName = "GetBoardInfo";
 			long reqId;
-			List<string> indexList;
-			Dictionary<string, string> resultMap;
-			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetNextSync(cmdName, out reqId, out indexList, out resultMap, targetIp);
+			var pdu = new CDTLmtbPdu(cmdName);
+			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0.0.4", targetIp, ref pdu);
 			if (0 != ret)
 			{
 				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
 				return 4;
 			}
 
-			if (null == indexList || 0 == indexList.Count())
+			string boardType;
+			if (!pdu.GetValueByMibName(targetIp, "boardHardwareType", out boardType))
 			{
-				Log.Error("查询基站电源信息失败，默认设置为5G基站");
+				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
 				return 4;
 			}
 
-			var strSlot = MibStringHelper.GetRealValueFromIndex(indexList.First(), 3);
-			return int.Parse(strSlot);
+			return (boardType == "106" ? 4 : 8);
 		}
 
 		#endregion
