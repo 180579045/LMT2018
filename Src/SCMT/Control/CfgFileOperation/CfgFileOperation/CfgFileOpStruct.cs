@@ -1373,7 +1373,12 @@ namespace CfgFileOpStruct
             //    return null;
             //告警编号		
             alarmCauseNo = alarmExVal[("AlaNumber")].ToString();
-            alarmCauseSeverity = alarmExVal[("AlaDegree")].ToString(); //告警级别
+            
+            string strAlaDegree = alarmExVal[("AlaDegree")].ToString(); //告警级别
+            if (-1 != strAlaDegree.IndexOf("."))
+                alarmCauseSeverity = strAlaDegree.Substring(0, strAlaDegree.IndexOf("."));
+            else
+                alarmCauseSeverity = strAlaDegree; //告警级别
             alarmCauseRowStatus = "4";  //告警行状态
 
             // "5037" sStrValueYes
@@ -1394,6 +1399,8 @@ namespace CfgFileOpStruct
             string ClearStyle = alarmExVal[("ClearStyle")].ToString();
             if (String.Equals("无", ClearStyle) | string.Empty == ClearStyle.Replace(" ", ""))
                 alarmCauseClearStyle = 255.ToString();
+            else if(String.Equals("恢复后主动清除", ClearStyle))
+                alarmCauseClearStyle = 1.ToString();
             else
             {
                 alarmCauseClearStyle = alarmExVal[("ClearStyle")].ToString().Replace(" ", "");
@@ -1416,17 +1423,61 @@ namespace CfgFileOpStruct
             alarmCauseCompressionRepetitions = alarmExVal[("CompressionRepetitions")].ToString();
             alarmCauseValueStyle = alarmExVal[("ValueStyle")].ToString();
 
-            string FathernameOfObject = alarmExVal[("FathernameOfObject")].ToString();
-            //pos = FathernameOfObject.IndexOf(":") == -1 ? FathernameOfObject.Length : FathernameOfObject.IndexOf(":");
-            //FathernameOfObject = FathernameOfObject.Substring(0, pos);
-            string FathernameOfObject_CH = alarmExVal[("FathernameOfObject_CH")].ToString();
-            if (String.Empty != FathernameOfObject_CH)
+            Dictionary<string, string> FaultObjType = new Dictionary<string, string>() {
+                { "0","all|所有对象都包含"},
+                {"1","nodeBEntry|基站"},
+                { "2", "boardEntry|板卡" },
+                { "3", "processorEntry|处理器" },
+                { "4", "fanEntry|风扇" },
+                { "5", "envEntry|环境监控" },
+                { "6", "oabEntry|OAB" },
+                { "7", "dryContactEntry|BBU干接点" },
+                { "8", "airConditionerEntry|空调" },
+                { "9", "rruEntry|RRU" },
+                { "10", "rcuEntry|电调天线单元" },
+                { "11", "cellEntry|LTE小区" },
+                { "12", "localcellEntry|LTE本地小区" },
+                { "13", "antArrayEntry|天线阵" },
+                { "14", "antPathEntry|天线通道" },
+                { "15", "clockEntry|时钟" },
+                { "16", "emTemperatureSensiorEntry|温度传感器" },
+                { "17", "emHumiditySensiorEntry|湿度传感器" },
+                { "18", "emSmokeSensiorEntry|烟雾传感器" },
+                { "19", "emWaterSensiorEntry|水浸传感器" },
+                { "20", "emTheftSensiorEntry|门禁传感器" },
+                { "21", "emThunderboltSensiorEntry|雷击传感器" },
+                { "22", "powerEntry|电源" },
+                { "23", "netBoardEntry|规划板卡" },
+                { "24", "netRruEntry|规划RRU" },
+                { "25", "ofPortEntry|光模块" },
+                { "26", "sctpEntry|sctp" },
+                { "27", "topoRRUAntSettingEntry|射频通道" },
+                { "28", "heatExEntry|热交换器" },
+                { "29", "processorCoreEntry|处理器核" },
+                { "30", "ethernetOAMEntry|以太OAM链路" },
+                { "31", "remoteClockModuleEntry|拉远时钟" },
+                { "32", "tdsLocalCellEntry|TD-SCDMA本地小区" },
+                { "33", "rruOfpPortEntry|RRU光模块" },
+                { "34", "netRHUBEntry|规划RHUB" },
+                { "35", "topologyRHUBEntry|RHUB" },
+                { "36", "netRRURootAlarmEntry|RRU干接点" }
+            };
+            string FathernameOfObject = alarmExVal[("FathernameOfObject")].ToString();//z
+            if (String.Empty == FathernameOfObject || String.Equals("无",FathernameOfObject))
             {
-                pos = FathernameOfObject_CH.IndexOf(":");// == -1? FathernameOfObject_CH.Length : FathernameOfObject_CH.IndexOf(":");
-                if(pos != -1)
-                    FathernameOfObject_CH = FathernameOfObject_CH.Substring(pos + 1);
+                alarmCauseFaultObjectType = "";
             }
-            alarmCauseFaultObjectType = FathernameOfObject +"|"+ FathernameOfObject_CH;
+            else
+            {
+                int findPos = FathernameOfObject.IndexOf(":");
+                if (findPos != -1)
+                {
+                    string key = FathernameOfObject.Substring(0, findPos);
+                    alarmCauseFaultObjectType = key + ":" + FaultObjType[key];
+                }
+                else
+                    alarmCauseFaultObjectType = "";
+            }
 
             //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
             strAlarmUnstableDispose = alarmExVal[("AlaUnstableDispose")].ToString();
@@ -1529,52 +1580,28 @@ namespace CfgFileOpStruct
             //RRU支持的小区工作模式
             string strRruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
             int pos = 0;
+            Dictionary<string, string> CellWorkMode = new Dictionary<string, string>() {
+                { "LTE","LTE TDD"},{ "TD","TD-SCDMA"},{ "NR","NR"},
+            };
             while (true)
             {
                 pos = strRruTypeSupportCellWorkMode.IndexOf("/");
                 if (-1 != pos) // LTE/TD
                 {
                     string proStr = strRruTypeSupportCellWorkMode.Substring(0, pos);
-                    if (String.Compare(proStr, "LTE", true) == 0)
-                    {
-                        rruTypeSupportCellWorkMode += "LTE TDD";
-                    }
-                    else if (String.Compare(proStr, "TD", true) == 0)
-                    {
-                        rruTypeSupportCellWorkMode += "TD-SCDMA";
-                    }
-                    else if (String.Compare(proStr, "FDD", true) == 0)
-                    {
-                        rruTypeSupportCellWorkMode += "LTE FDD";
-                    }
-                    else
-                        Console.WriteLine("struct RRuTypeTabStru CellWorkMode is {0}....", proStr);
-                    rruTypeSupportCellWorkMode += "/";
-
+                    rruTypeSupportCellWorkMode += CellWorkMode[proStr] + "/";
                     strRruTypeSupportCellWorkMode = strRruTypeSupportCellWorkMode.Substring(pos + 1, strRruTypeSupportCellWorkMode.Length - pos - 1);
-
                 }
                 else
                 {
                     string proStr = strRruTypeSupportCellWorkMode;
-                    if (String.Compare(proStr, "LTE", true) == 0)
-                    {
-                        rruTypeSupportCellWorkMode += "LTE TDD";
-                    }
-                    else if (String.Compare(proStr, "TD", true) == 0)
-                    {
-                        rruTypeSupportCellWorkMode += "TD-SCDMA";
-                    }
-                    else if (String.Compare(proStr, "FDD", true) == 0)
-                    {
-                        rruTypeSupportCellWorkMode += "LTE FDD";
-                    }
-                    else
-                        Console.WriteLine("struct RRuTypeTabStru CellWorkMode is {0}....", proStr);
+                    rruTypeSupportCellWorkMode += CellWorkMode[proStr] ;
                     break;
                 }
 
             }
+            if (String.Empty == rruTypeSupportCellWorkMode)
+                rruTypeSupportCellWorkMode = "";
             //rruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
             //行状态
             rruTypeRowStatus = "4";

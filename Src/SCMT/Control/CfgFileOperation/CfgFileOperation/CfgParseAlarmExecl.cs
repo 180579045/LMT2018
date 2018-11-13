@@ -36,6 +36,11 @@ namespace CfgFileOperation
             ProcessingAlarmMdb(strMdbPath);
             ProcessingAlarmExcel(wks);
 
+            FileStream fs = new FileStream("alarmBugWriteBuf.txt", FileMode.Create);
+            //实例化BinaryWriter
+            BinaryWriter bw = new BinaryWriter(fs);
+            
+            
 
             List<byte> bugbuff = new List<byte>();
             foreach (var mdb in vectAlarmInfoMdb)
@@ -43,16 +48,14 @@ namespace CfgFileOperation
                 string alarmNo = mdb.alarmCauseNo;
                 int pos = vectAlarmInfoExcel.FindIndex(e => e.alarmCauseNo == alarmNo);
                 if (-1 == pos)
-                {
-                    //string bugbf = String.Format("***alarm no = {0}, not in mdb.\n", alarmNo);
-                    //byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugbf);
-                    //bugbuff.AddRange(byteArray);
-                    //Console.WriteLine(String.Format("***alarm no = {0}, not in mdb.\n", alarmNo));
                     continue;
-                }
-                is_same_pama(mdb, vectAlarmInfoExcel[pos], bugbuff);
+                is_same_pama_str(mdb, vectAlarmInfoExcel[pos], bw);
             }
-
+            //清空缓冲区
+            bw.Flush();
+            //关闭流
+            bw.Close();
+            fs.Close();
             //byte[] wr = bugbuff.ToArray();
             //FileStream fs = new FileStream("alarmBugWriteBuf.txt", FileMode.Create);
             //fs.Seek(0, SeekOrigin.End);// 偏移的位置
@@ -165,10 +168,109 @@ namespace CfgFileOperation
             {
                 bugb += (String.Format("strAlarmCauseInsecureNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.strAlarmCauseInsecureNo, b.strAlarmCauseInsecureNo));
             }  //不稳定态告警编号
-            Console.WriteLine(bugb);
+            if (!String.Equals(bugb, ""))
+            {
+                Console.WriteLine(bugb);
 
-            byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugb);
-            bugbuff.AddRange(byteArray);
+                byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugb);
+                bugbuff.AddRange(byteArray);
+            }
+            return true;
+        }
+
+        bool is_same_pama_str(StruAlarmInfo a, StruAlarmInfo b, BinaryWriter bw)
+        {
+            string bugb = "";
+            if (!String.Equals(a.alarmCauseNo, b.alarmCauseNo))
+            {
+                bugb += (String.Format("alarmCauseNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseNo, b.alarmCauseNo));
+            }
+            if (!String.Equals(a.alarmCauseRowStatus, b.alarmCauseRowStatus))
+            {
+                bugb += (String.Format("alarmCauseRowStatus : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseRowStatus, b.alarmCauseRowStatus));
+            }
+            if (!String.Equals(a.alarmCauseSeverity, b.alarmCauseSeverity))
+            {
+                bugb += (String.Format("alarmCauseSeverity : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseSeverity, b.alarmCauseSeverity));
+            }
+            if (!String.Equals(a.alarmCauseIsValid, b.alarmCauseIsValid))
+            {
+                bugb += (String.Format("alarmCauseIsValid : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseIsValid, b.alarmCauseIsValid));
+            }
+            if (!String.Equals(a.alarmCauseType, b.alarmCauseType))
+            {
+                bugb += (String.Format("alarmCauseType : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseType, b.alarmCauseType));
+            }//5
+            if (!String.Equals(a.alarmCauseClearStyle, b.alarmCauseClearStyle))
+            {
+                bugb += (String.Format("alarmCauseClearStyle : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseClearStyle, b.alarmCauseClearStyle));
+            }
+            if (!String.Equals(a.alarmCauseToAlarmBox, b.alarmCauseToAlarmBox))
+            {
+                bugb += (String.Format("alarmCauseToAlarmBox : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseToAlarmBox, b.alarmCauseToAlarmBox));
+            }
+            if (!String.Equals(a.alarmCauseItfNProtocolCauseNo.Replace(" ", ""), b.alarmCauseItfNProtocolCauseNo.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseItfNProtocolCauseNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseItfNProtocolCauseNo, b.alarmCauseItfNProtocolCauseNo));
+            }
+            if (!String.Equals(a.alarmCauseIsStateful, b.alarmCauseIsStateful))
+            {
+                bugb += (String.Format("alarmCauseIsStateful : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseIsStateful, b.alarmCauseIsStateful));
+            }
+            if (!String.Equals(a.alarmCausePrimaryAlarmCauseNo, b.alarmCausePrimaryAlarmCauseNo))
+            {
+                bugb += (String.Format("alarmCausePrimaryAlarmCauseNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCausePrimaryAlarmCauseNo, b.alarmCausePrimaryAlarmCauseNo));
+            }//10
+            if (!String.Equals(a.alarmCauseStatefulClearDeditheringInterval, b.alarmCauseStatefulClearDeditheringInterval))
+            {
+                bugb += (String.Format("alarmCauseStatefulClearDeditheringInterval : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseStatefulClearDeditheringInterval, b.alarmCauseStatefulClearDeditheringInterval));
+            }
+            if (!String.Equals(a.alarmCauseStatefulCreateDeditheringInterval.Replace(" ", ""), b.alarmCauseStatefulCreateDeditheringInterval.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseStatefulCreateDeditheringInterval : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseStatefulCreateDeditheringInterval, b.alarmCauseStatefulCreateDeditheringInterval));
+            }
+            if (!String.Equals(a.alarmCauseStatefulDelayTime, b.alarmCauseStatefulDelayTime))
+            {
+                bugb += (String.Format("alarmCauseStatefulDelayTime : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseStatefulDelayTime, b.alarmCauseStatefulDelayTime));
+            }
+            if (!String.Equals(a.alarmCauseCompressionInterval.Replace(" ", ""), b.alarmCauseCompressionInterval.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseCompressionInterval : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseCompressionInterval, b.alarmCauseCompressionInterval));
+            }
+            if (!String.Equals(a.alarmCauseCompressionRepetitions.Replace(" ", ""), b.alarmCauseCompressionRepetitions.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseCompressionRepetitions : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseCompressionRepetitions, b.alarmCauseCompressionRepetitions));
+            }//15
+            if (!String.Equals(a.alarmCauseAutoProcessPolicy, b.alarmCauseAutoProcessPolicy))
+            {
+                bugb += (String.Format("alarmCauseAutoProcessPolicy : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseAutoProcessPolicy, b.alarmCauseAutoProcessPolicy));
+            }
+            if (!String.Equals(a.alarmCauseValueStyle.Replace(" ", ""), b.alarmCauseValueStyle.Replace(" ", "")))
+            {
+                bugb += (String.Format("alarmCauseValueStyle : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseValueStyle, b.alarmCauseValueStyle));
+            }
+            //if (!String.Equals(a.alarmCauseFaultObjectType, b.alarmCauseFaultObjectType))
+            //{
+            //    bugb += (String.Format("alarmCauseFaultObjectType : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseFaultObjectType, b.alarmCauseFaultObjectType));
+            //}
+            if (!String.Equals(a.alarmCauseReportBoardType, b.alarmCauseReportBoardType))
+            {
+                bugb += (String.Format("alarmCauseReportBoardType : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.alarmCauseReportBoardType, b.alarmCauseReportBoardType));
+            }//19
+
+            //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
+            if (!String.Equals(a.strAlarmUnstableDispose.Replace(" ", ""), b.strAlarmUnstableDispose.Replace(" ", "")))
+            {
+                bugb += (String.Format("strAlarmUnstableDispose : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.strAlarmUnstableDispose, b.strAlarmUnstableDispose));
+            }
+            if (!String.Equals(a.strAlarmCauseInsecureNo, b.strAlarmCauseInsecureNo))
+            {
+                bugb += (String.Format("strAlarmCauseInsecureNo : a.no={0},b.no={1}, a.v={2}, b.v={3} \n", a.alarmCauseNo, b.alarmCauseNo, a.strAlarmCauseInsecureNo, b.strAlarmCauseInsecureNo));
+            }  //不稳定态告警编号
+            if (!String.Equals(bugb, ""))
+            {
+                bw.Write(bugb);
+            }
             return true;
         }
 
@@ -240,14 +342,14 @@ namespace CfgFileOperation
             object[,] arryQ = (object[,])wks.Cells.get_Range("Q2", "Q" + rowCount).Value2;//{"清除方式", "Q"},//  [//{"ClearStyle"}]
             object[,] arryX = (object[,])wks.Cells.get_Range("X2", "X" + rowCount).Value2;//{"对应北向接口告警标准原因", "X"},//  [//{"ItfNProtocolCauseNo"}]
             object[,] arryY = (object[,])wks.Cells.get_Range("Y2", "Y" + rowCount).Value2;//{"是否需要上报OMCR", "Y"},//  [//{"IsReportToOMCR"}]
-            object[,] arryZ = (object[,])wks.Cells.get_Range("Z2", "Z" + rowCount).Value2;//{"故障对象名称", "Z"},//  [//{"IsReportToOMCR"}]
+            object[,] arryZ = (object[,])wks.Cells.get_Range("Z2", "Z" + rowCount).Value2;//{"故障对象名称", "Z"},//  [//{"FathernameOfObject"}]
 
             object[,] arryAA = (object[,])wks.Cells.get_Range("AA2", "AA" + rowCount).Value2;//{"告警值含义描述", "AA"},// [//{"ValueStyle"}]
             object[,] arryAC = (object[,])wks.Cells.get_Range("AC2", "AC" + rowCount).Value2;//{"故障类告警清除去抖周期{单位：s}", "AC"},// [//{"ClearDeditheringInterval"}]
             object[,] arryAD = (object[,])wks.Cells.get_Range("AD2", "AD" + rowCount).Value2;//{"告警频次去抖间隔（单位：min）", "AD"},// [//{"CompressionInterval"}]
             object[,] arryAE = (object[,])wks.Cells.get_Range("AE2", "AE" + rowCount).Value2;//{"告警频次去抖次数", "AE"},// [//{"CompressionRepetitions"}]
             object[,] arryAF = (object[,])wks.Cells.get_Range("AF2", "AF" + rowCount).Value2;//{"告警产生去抖周期{单位：s}", "AF"},// [//{"CreateDeditheringInterval"}]
-            object[,] arryAV = (object[,])wks.Cells.get_Range("AV2", "AV" + rowCount).Value2;//{"故障对象名称_EN", "AV"},// [//{"FathernameOfObject"}]
+            object[,] arryAV = (object[,])wks.Cells.get_Range("AV2", "AV" + rowCount).Value2;//{"故障对象名称_EN", "AV"},// [//{"FathernameOfObject_En"}]
             object[,] arryAW = (object[,])wks.Cells.get_Range("AW2", "AW" + rowCount).Value2;//{"告警不稳定态处理方式", "AW"},// [//{"AlaUnstableDispose"}]
             object[,] arryAX = (object[,])wks.Cells.get_Range("AX2", "AX" + rowCount).Value2;//{"不稳定态告警编号", "AX"},// [//{"UnstableAlaNum"}]
 
@@ -260,26 +362,6 @@ namespace CfgFileOperation
                     break;
                 if (almNo.ToString().Contains("*"))//带* 是tds使用的
                     continue;
-
-                //Dictionary<string, string> alarm = new Dictionary<string, string>(){
-                //    {"告警编号", GetCellValueToString(arryB[i, 1])},//  [{"AlaNumber"}] 
-                //    {"是否为故障类告警", GetCellValueToString(arryD[i, 1])},//  [//{"IsFault"}]
-                //    {"主告警编号", GetCellValueToString(arryG[i, 1])},//  [//{"AlaSubtoPrimaryNumber"}]
-                //    {"告警类型", GetCellValueToString(arryI[i, 1])},//  [//{"AlaType"}]
-                //    {"厂家告警级别", GetCellValueToString(arryJ[i, 1])},//  [//{"AlaDegree"}]
-                //    {"清除方式", GetCellValueToString(arryQ[i, 1])},//  [//{"ClearStyle"}]
-                //    {"对应北向接口告警标准原因", GetCellValueToString(arryX[i, 1])},//  [//{"ItfNProtocolCauseNo"}]
-                //    {"是否需要上报OMCR", GetCellValueToString(arryY[i, 1])},//  [//{"IsReportToOMCR"}]
-
-                //    {"告警值含义描述",GetCellValueToString(arryAA[i, 1])},// [//{"ValueStyle"}]
-                //    {"故障类告警清除去抖周期{单位：s}",GetCellValueToString(arryAC[i, 1])},// [//{"ClearDeditheringInterval"}]
-                //    {"告警频次去抖间隔（单位：min）",GetCellValueToString(arryAD[i, 1])},// [//{"CompressionInterval"}]
-                //    {"告警频次去抖次数",GetCellValueToString(arryAE[i, 1])},// [//{"CompressionRepetitions"}]
-                //    {"告警产生去抖周期{单位：s}",GetCellValueToString(arryAF[i, 1])},// [//{"CreateDeditheringInterval"}]
-                //    {"故障对象名称_EN",GetCellValueToString(arryAV[i, 1])},// [//{"FathernameOfObject"}]
-                //    {"告警不稳定态处理方式",GetCellValueToString(arryAW[i, 1])},// [//{"AlaUnstableDispose"}]
-                //    {"不稳定态告警编号",GetCellValueToString(arryAX[i, 1])},// [//{"UnstableAlaNum"}]
-                //};
 
                 Dictionary<string, string> alarmExVal = new Dictionary<string, string>();
                 alarmExVal.Add("AlaNumber", GetCellValueToString(arryB[i, 1]));//alarmCauseNo = alarmRow[("AlaNumber")].ToString();//告警编号
@@ -295,8 +377,8 @@ namespace CfgFileOperation
                 alarmExVal.Add("CompressionInterval", GetCellValueToString(arryAD[i, 1]));
                 alarmExVal.Add("CompressionRepetitions", GetCellValueToString(arryAE[i, 1]));
                 alarmExVal.Add("ValueStyle", GetCellValueToString(arryAA[i, 1]));
-                alarmExVal.Add("FathernameOfObject_CH", GetCellValueToString(arryZ[i, 1]));
-                alarmExVal.Add("FathernameOfObject", GetCellValueToString(arryAV[i, 1]));//IsReportToOMCR
+                alarmExVal.Add("FathernameOfObject", GetCellValueToString(arryZ[i, 1]));
+                //alarmExVal.Add("FathernameOfObject_En", GetCellValueToString(arryAV[i, 1]));//IsReportToOMCR
                 alarmExVal.Add("AlaUnstableDispose", GetCellValueToString(arryAW[i, 1]));
                 alarmExVal.Add("UnstableAlaNum", GetCellValueToString(arryAX[i, 1]));
                 //alarmExVal.Add("AlaNumber", GetCellValueToString(arryB[i, 1]));
