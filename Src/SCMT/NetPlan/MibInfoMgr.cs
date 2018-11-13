@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using DataBaseUtil;
 using LinkPath;
 using LmtbSnmp;
 using LogManager;
@@ -1215,7 +1216,7 @@ namespace NetPlan
 				{
 					if (2 == ret)
 					{
-						var desc = SnmErrorCodeHelper.GetInstance().GetLastErrorDesc();
+						var desc = SnmpErrDescHelper.GetLastErrorDesc();
 						Log.Error($"下发命令{cmdName}失败，原因：{desc}");
 					}
 					else
