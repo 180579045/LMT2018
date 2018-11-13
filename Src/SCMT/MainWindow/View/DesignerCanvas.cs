@@ -178,9 +178,6 @@ namespace SCMTMainWindow.View
                 newItem.ItemName = strRRUFullName;
                 newItem.NPathNumber = nMaxRRUPath;
 
-                //双击 RRU 绑定小区
-                newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
-
                 //添加 RRU 的时候需要给基站下发，然后获取设备信息
                 List<int> listIndex = new List<int>();
                 listIndex.Add(nRRUNo);
@@ -201,6 +198,9 @@ namespace SCMTMainWindow.View
                     g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
                     g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
                 }
+
+                //双击 RRU 绑定小区
+                newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
                 newItem.DevIndex = devRRUInfo[0].m_strOidIndex;
                 newItem.DevType = EnumDevType.rru;
 
@@ -301,7 +301,7 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DesignerItem targetItem = sender as DesignerItem;
 
@@ -576,7 +576,7 @@ namespace SCMTMainWindow.View
             if (nMaxRRUPath == 1)
             {
                 strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 30);
+                RRUSize = new Size(30, 40);
             }
             else if (nMaxRRUPath == 2)
             {
@@ -586,17 +586,17 @@ namespace SCMTMainWindow.View
             else if (nMaxRRUPath == 4)
             {
                 strName = "g_FourPathAntenna";
-                RRUSize = new Size(60, 40);
+                RRUSize = new Size(70, 40);
             }
             else if (nMaxRRUPath == 8)
             {
                 strName = "g_EightPathAntenna";
-                RRUSize = new Size(140, 40);
+                RRUSize = new Size(150, 40);
             }
             else
             {
                 strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 30);
+                RRUSize = new Size(30, 40);
             }
 
             Object content = el.FindName(strName) as Grid;

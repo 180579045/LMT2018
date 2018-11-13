@@ -150,11 +150,11 @@ namespace SCMTMainWindow.View
             cancel.Click += Cancel_Click;
             cellRightMenu.Items.Add(cancel);
 
-            MenuItem modifyRRU = new MenuItem();
-            modifyRRU.Header = "RRU功率调整";
-            modifyRRU.Name = "modifyRRU";
-            modifyRRU.Click += ModifyRRU_Click;
-            cellRightMenu.Items.Add(modifyRRU);
+            //MenuItem modifyRRU = new MenuItem();
+            //modifyRRU.Header = "RRU功率调整";
+            //modifyRRU.Name = "modifyRRU";
+            //modifyRRU.Click += ModifyRRU_Click;
+            //cellRightMenu.Items.Add(modifyRRU);
 
             MenuItem activeCell = new MenuItem();
             activeCell.Header = "去激活小区";
@@ -954,13 +954,6 @@ namespace SCMTMainWindow.View
                 newItem.Width = newSize.Width;
                 newItem.Height = newSize.Height;
 
-                Canvas.SetZIndex(newItem, MyDesigner.Children.Count);
-                MyDesigner.Children.Add(newItem);
-                SetConnectorDecoratorTemplate(newItem);
-
-                MyDesigner.SelectionService.SelectItem(newItem);
-                newItem.Focus();
-
                 //全局设备信息添加
                 if(MyDesigner.g_AllDevInfo.ContainsKey(EnumDevType.rru))
                 {
@@ -976,6 +969,14 @@ namespace SCMTMainWindow.View
                     MyDesigner.g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
                     MyDesigner.g_AllDevInfo[EnumDevType.rru].Add(strName, item.m_strOidIndex);
                 }
+
+                Canvas.SetZIndex(newItem, MyDesigner.Children.Count);
+                MyDesigner.Children.Add(newItem);
+                SetConnectorDecoratorTemplate(newItem);
+
+                MyDesigner.SelectionService.SelectItem(newItem);
+                newItem.Focus();
+                newItem.MouseDoubleClick += MyDesigner.NewItem_MouseDoubleClick;
                 //创建属性
                 MyDesigner.CreateGirdForNetInfo(strName, item);
 
