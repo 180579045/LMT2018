@@ -949,6 +949,7 @@ namespace SCMTMainWindow.View
                 newItem.ItemName = strName;
                 newItem.NPathNumber = rruItemInfo.rruTypeNotMibMaxePortNo;
                 newItem.DevType = EnumDevType.rru;
+                newItem.DevIndex = item.m_strOidIndex;
 
                 newItem.Width = newSize.Width;
                 newItem.Height = newSize.Height;
@@ -1039,6 +1040,7 @@ namespace SCMTMainWindow.View
                 newItem.Content = testContent;
                 newItem.ItemName = strName;
                 newItem.DevType = EnumDevType.ant;
+                newItem.DevIndex = item.m_strOidIndex;
 
                 newItem.Width = newSize.Width;
                 newItem.Height = newSize.Height;
@@ -1123,24 +1125,6 @@ namespace SCMTMainWindow.View
                 }
 
                 int nMaxRHUBPath = strrHUBType == "rhub1.0" ? 2 : 4;
-
-                //这里需要根据板卡插槽号，对 rHUB 的位置进行设置
-                //int nSlotNo;
-                //try
-                //{
-                //    nSlotNo = int.Parse(item.m_mapAttributes["netRHUBAccessSlotNo"].m_strOriginValue);
-                //}
-                //catch
-                //{
-                //    MessageBox.Show("插槽号解析失败 netRHUBAccessSlotNo");
-                //    return;
-                //}
-
-                //if (nSlotNo < 0 || nSlotNo >= boardColumn * boardRow)
-                //{
-                //    nSlotNo = 6;
-                //    //return;
-                //}
 
                 DesignerItem newItem = new DesignerItem();
 

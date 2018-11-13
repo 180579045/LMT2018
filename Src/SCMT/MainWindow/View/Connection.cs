@@ -276,7 +276,7 @@ namespace SCMTMainWindow.View
                     designer.SelectionService.SelectItem(this);
                 }
 
-                Focus();
+                //this.Focus();
             }
             e.Handled = false;
         }

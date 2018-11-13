@@ -355,7 +355,7 @@ namespace SCMTMainWindow.View
             int nrHUBNumber = dlg.nRHUBNo;           //需要添加的 rHUB 的数量
             string strXAML = string.Empty;                                        //解析xml文件
             Size newSize;                                                                  //根据不同的通道数，确定不同的 rHUB 的大小
-            string strRRUName = "rHUB";
+            string strRRUName = dlg.strrHUBType;
             strXAML = GetrHUBFromXML(nMaxrHUBPath, strXAML, out newSize);
 
             dragObject.DesiredSize = newSize;          

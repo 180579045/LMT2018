@@ -9,9 +9,6 @@
     
     <ContextMenu x:Key="ConnectionContextMenu">
         <MenuItem Header="删除" Command="{x:Static ApplicationCommands.Delete}">
-            <MenuItem.Icon>
-                <Image Source="Images/Delete.png" Width="16"/>
-            </MenuItem.Icon>
         </MenuItem>
         <!--<Separator/>
         <MenuItem Header="Order">

@@ -132,6 +132,10 @@ namespace SCMTMainWindow.View
                     Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
                     this.designerCanvas.Children.Add(newConnection);
 
+                    //Point pt = e.GetPosition(designerCanvas);
+                    //DesignerCanvas.SetLeft(newConnection, pt.X);
+                    //DesignerCanvas.SetTop(newConnection, pt.Y);
+
                     //将 to_other 的连接点设置为 确定的连接
                     sourceConnector.PortType = srcPoint.portType;
                     sinkConnector.PortType = dstPoint.portType;

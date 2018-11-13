@@ -264,7 +264,8 @@ namespace SCMTMainWindow.View
 
         private void Delete_Enabled(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.SelectionService.CurrentSelection.Count() > 0;
+            //e.CanExecute = this.SelectionService.CurrentSelection.Count() > 0;
+            e.CanExecute = true;
         }
 
         #endregion
@@ -909,108 +910,7 @@ namespace SCMTMainWindow.View
         {
             foreach (Connection connection in SelectionService.CurrentSelection.OfType<Connection>())
             {
-                LinkEndpoint srcPort = new LinkEndpoint();
-                srcPort.devType = connection.Source.DevType;
-                srcPort.strDevIndex = connection.Source.DevIndex;
-                srcPort.nPortNo = connection.Source.PortNo;
-
-                if (srcPort.devType == EnumDevType.board)
-                {
-                    if(connection.Sink.DevType == EnumDevType.rhub)
-                    {
-                        srcPort.portType = EnumPortType.bbu_to_rhub;
-                    }else if(connection.Sink.DevType == EnumDevType.rru)
-                    {
-                        srcPort.portType = EnumPortType.bbu_to_rru;
-                    }
-                }else if(srcPort.devType == EnumDevType.rru)
-                {
-                    if(connection.Sink.DevType == EnumDevType.rru)
-                    {
-                        srcPort.portType = EnumPortType.rru_to_rru;
-                    }else if(connection.Sink.DevType == EnumDevType.board)
-                    {
-                        srcPort.portType = EnumPortType.rru_to_bbu;
-                    }else if(connection.Sink.DevType == EnumDevType.rhub)
-                    {
-                        srcPort.portType = EnumPortType.pico_to_rhub;
-                    }
-                    else
-                    {
-                        srcPort.portType = connection.Source.PortType;
-                    }
-                }
-                else if(srcPort.devType == EnumDevType.rhub)
-                {
-                    if(connection.Sink.DevType == EnumDevType.board)
-                    {
-                        srcPort.portType = EnumPortType.rhub_to_bbu;
-                    }else if(connection.Sink.DevType == EnumDevType.rhub)
-                    {
-                        srcPort.portType = EnumPortType.rhub_to_rhub;
-                    }else if(connection.Sink.DevType == EnumDevType.rru)
-                    {
-                        srcPort.portType = EnumPortType.rhub_to_pico;
-                    }
-                }
-                else
-                {
-                    srcPort.portType = connection.Source.PortType;
-                }
-
-                LinkEndpoint dstPort = new LinkEndpoint();
-                dstPort.devType = connection.Sink.DevType;
-                dstPort.strDevIndex = connection.Sink.DevIndex;
-                dstPort.nPortNo = connection.Sink.PortNo;
-
-                if (dstPort.devType == EnumDevType.board)
-                {
-                    if (connection.Source.DevType == EnumDevType.rhub)
-                    {
-                        dstPort.portType = EnumPortType.bbu_to_rhub;
-                    }
-                    else if (connection.Source.DevType == EnumDevType.rru)
-                    {
-                        dstPort.portType = EnumPortType.bbu_to_rru;
-                    }
-                }
-                else if (dstPort.devType == EnumDevType.rru)
-                {
-                    if (connection.Source.DevType == EnumDevType.rru)
-                    {
-                        dstPort.portType = EnumPortType.rru_to_rru;
-                    }
-                    else if (connection.Source.DevType == EnumDevType.board)
-                    {
-                        dstPort.portType = EnumPortType.rru_to_bbu;
-                    }else if(connection.Source.DevType == EnumDevType.rhub)
-                    {
-                        dstPort.portType = EnumPortType.pico_to_rhub;
-                    }
-                }
-                else if (dstPort.devType == EnumDevType.rhub)
-                {
-                    if (connection.Source.DevType == EnumDevType.board)
-                    {
-                        dstPort.portType = EnumPortType.rhub_to_bbu;
-                    }
-                    else if (connection.Source.DevType == EnumDevType.rhub)
-                    {
-                        dstPort.portType = EnumPortType.rhub_to_rhub;
-                    }else if(connection.Source.DevType == EnumDevType.rru)
-                    {
-                        dstPort.portType = EnumPortType.rhub_to_pico;
-                    }
-                }
-                else
-                {
-                    dstPort.portType = connection.Sink.PortType;
-                }
-
-                if (MibInfoMgr.GetInstance().DelLink(srcPort, dstPort))
-                {
-                    this.Children.Remove(connection);
-                }
+                DeleteConnection(connection);
             }
 
             foreach (DesignerItem item in SelectionService.CurrentSelection.OfType<DesignerItem>())
@@ -1024,7 +924,7 @@ namespace SCMTMainWindow.View
                 {
                     foreach (Connection con in connector.Connections)
                     {
-                        this.Children.Remove(con);
+                        DeleteConnection(con);
                     }
                 }
                 this.Children.Remove(item);
@@ -1056,6 +956,94 @@ namespace SCMTMainWindow.View
 
             SelectionService.ClearSelection();
             UpdateZIndex();
+        }
+
+        private bool DeleteConnection(Connection connection)
+        {
+            LinkEndpoint srcPort = new LinkEndpoint();
+            srcPort.devType = connection.Source.DevType;
+            srcPort.strDevIndex = connection.Source.DevIndex;
+            srcPort.nPortNo = connection.Source.PortNo;
+
+            LinkEndpoint dstPort = new LinkEndpoint();
+            dstPort.devType = connection.Sink.DevType;
+            dstPort.strDevIndex = connection.Sink.DevIndex;
+            dstPort.nPortNo = connection.Sink.PortNo;
+
+            if (srcPort.devType == EnumDevType.board)
+            {
+                if (connection.Sink.DevType == EnumDevType.rhub)
+                {
+                    srcPort.portType = EnumPortType.bbu_to_rhub;
+                    dstPort.portType = EnumPortType.rhub_to_bbu;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rru)
+                {
+                    srcPort.portType = EnumPortType.bbu_to_rru;
+                    dstPort.portType = EnumPortType.rru_to_bbu;
+                }
+                else
+                {
+                    srcPort.portType = connection.Source.PortType;
+                    dstPort.portType = connection.Sink.PortType;
+                }
+            }
+            else if (srcPort.devType == EnumDevType.rru)
+            {
+                if (connection.Sink.DevType == EnumDevType.rru)
+                {
+                    srcPort.portType = EnumPortType.rru_to_rru;
+                    dstPort.portType = EnumPortType.rru_to_rru;
+                }
+                else if (connection.Sink.DevType == EnumDevType.board)
+                {
+                    srcPort.portType = EnumPortType.rru_to_bbu;
+                    dstPort.portType = EnumPortType.bbu_to_rru;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rhub)
+                {
+                    srcPort.portType = EnumPortType.pico_to_rhub;
+                    dstPort.portType = EnumPortType.rhub_to_pico;
+                }
+                else
+                {
+                    srcPort.portType = connection.Source.PortType;
+                    dstPort.portType = connection.Sink.PortType;
+                }
+            }
+            else if (srcPort.devType == EnumDevType.rhub)
+            {
+                if (connection.Sink.DevType == EnumDevType.board)
+                {
+                    srcPort.portType = EnumPortType.rhub_to_bbu;
+                    dstPort.portType = EnumPortType.bbu_to_rhub;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rhub)
+                {
+                    srcPort.portType = EnumPortType.rhub_to_rhub;
+                    dstPort.portType = EnumPortType.rhub_to_rhub;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rru)
+                {
+                    srcPort.portType = EnumPortType.rhub_to_pico;
+                    dstPort.portType = EnumPortType.pico_to_rhub;
+                }
+            }
+            else
+            {
+                srcPort.portType = connection.Source.PortType;
+                dstPort.portType = connection.Sink.PortType;
+            }            
+
+            if (MibInfoMgr.GetInstance().DelLink(srcPort, dstPort))
+            {
+                this.Children.Remove(connection);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void UpdateZIndex()
