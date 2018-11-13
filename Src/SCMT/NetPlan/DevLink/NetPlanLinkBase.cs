@@ -169,7 +169,7 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			return property.SetValue(strValue);
+			return property.SetLatestValue(strValue);
 		}
 
 		protected static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType type, DevAttributeInfo newDev)

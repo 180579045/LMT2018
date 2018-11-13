@@ -83,7 +83,7 @@ namespace NetPlan.DevLink
 
 			if (HasConnectedToBoard(m_rhubDev))
 			{
-				bbi = GetBoardInfoFromRhub(RecordNotExistInAdd);
+				bbi = GetBoardInfoFromRhub(RecordExistInDel);
 				if (null == bbi)
 				{
 					return false;
@@ -154,7 +154,7 @@ namespace NetPlan.DevLink
 
 		private BoardBaseInfo GetBoardInfoFromRhub(IsRecordExist checkExist)
 		{
-			var boardSlot = MibInfoMgr.GetNeedUpdateValue(m_rhubDev, "netRHUBAccessSlotNo");
+			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(m_rhubDev);
 			if (null == boardSlot)
 			{
 				Log.Error("从hub设备中查询连接的板卡插槽号失败");
@@ -170,7 +170,7 @@ namespace NetPlan.DevLink
 				return null;
 			}
 
-			var boardType = MibInfoMgr.GetNeedUpdateValue(board, "netBoardType", false);
+			var boardType = MibInfoMgr.GetNeedUpdateValue(board, "netBoardType");
 			if (null == boardType || "-1" == boardType)
 			{
 				Log.Error("rhub连接板卡的类型信息错误");
@@ -209,28 +209,14 @@ namespace NetPlan.DevLink
 			}
 
 			// 查询rhub设备是否已经建立到board的连接
-			var boardSlot = MibInfoMgr.GetNeedUpdateValue(rhub, "netRHUBAccessSlotNo");
-			if (null == boardSlot)
-			{
-				throw new CustomException("获取rhub连接板卡插槽号返回null");
-			}
-
+			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(rhub);
 			return ("-1" != boardSlot);
 		}
 
-		private bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
+		private static bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
 		{
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRRUOfp1AccessEthernetPort", nEthPort.ToString()))
-			{
-				return false;
-			}
-
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", nHubNo.ToString()))
-			{
-				return false;
-			}
-
-			return true;
+			return MibInfoMgr.SetDevAttributeValue(dev, "netRRUOfp1AccessEthernetPort", nEthPort.ToString()) && 
+				   MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", nHubNo.ToString());
 		}
 
 		#endregion

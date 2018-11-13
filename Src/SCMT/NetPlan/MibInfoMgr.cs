@@ -232,9 +232,9 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!dev.SetFieldOriginValue("netBoardType", strBoardType, false) ||
-			    !dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode, false) ||
-			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType, false))
+			if (!dev.SetFieldOriginValue("netBoardType", strBoardType) ||
+			    !dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode) ||
+			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType))
 			{
 				Log.Error("设置新板卡属性失败");
 				NPLastErrorHelper.SetLastError("设备新板卡属性失败");
@@ -276,8 +276,8 @@ namespace NetPlan
 					return null;
 				}
 
-				if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString(), false) ||
-					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode, false))
+				if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString()) ||
+					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
 				{
 					Log.Error("设置RRU参数netRRUTypeIndex、netRRUOfpWorkMode失败");
 					NPLastErrorHelper.SetLastError($"设置RRU工作模式失败");
@@ -337,13 +337,13 @@ namespace NetPlan
 				}
 				dev.m_recordType = RecordDataType.NewAdd;
 
-				if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode, false))
+				if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
 				{
 					Log.Error("设置rhub参数netRHUBOfpWorkMode失败");
 					return null;
 				}
 
-				if (!dev.SetFieldOriginValue("netRHUBType", strDevVer, false))
+				if (!dev.SetFieldOriginValue("netRHUBType", strDevVer))
 				{
 					Log.Error("设置rhub参数netRHUBType失败");
 					return null;
@@ -389,7 +389,7 @@ namespace NetPlan
 			var type = EnumDevType.nrNetLcCtr;
 			var dev = new DevAttributeInfo(type, strIndex);
 
-			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue, false))
+			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue))
 			{
 				Log.Error($"设置字段 nrNetLocalCellCtrlConfigSwitch 的 OriginValue 为{strSwitchValue}失败");
 				return null;
@@ -835,7 +835,7 @@ namespace NetPlan
 						var lcValue = GetEnumStringByMibName(mapAttributes, mibName);
 						if (lcValue != strLcId) continue;
 
-						mapAttributes[mibName].SetValue("-1");
+						mapAttributes[mibName].SetLatestValue("-1");
 
 						if (RecordDataType.NewAdd != item.m_recordType)
 						{
@@ -889,6 +889,24 @@ namespace NetPlan
 				m_mapAllMibData.Clear();
 				m_linkMgr.Clear();
 			}
+		}
+
+		/// <summary>
+		/// 获取RHUB设备连接的板卡的插槽号。遍历4个光口
+		/// </summary>
+		public static string GetRhubLinkToBoardSlotNo(DevAttributeInfo rhub)
+		{
+			for (var i = 1; i < 5; i++)
+			{
+				var mibName = (i == 1) ? "netRHUBAccessSlotNo" : $"netRHUBOfp{i}SlotNo";
+				var boardSlot = MibInfoMgr.GetNeedUpdateValue(rhub, mibName);
+				if (null != boardSlot && "-1" != boardSlot)
+				{
+					return boardSlot;
+				}
+			}
+
+			return "-1";
 		}
 
 		#endregion
@@ -1369,7 +1387,7 @@ namespace NetPlan
 			if (mapAttributes.ContainsKey("netSetRRUPortTxRxStatus"))
 			{
 				var tempAtrri = mapAttributes["netSetRRUPortTxRxStatus"];
-				tempAtrri.SetValue(lcInfo.TxRxStatus);
+				tempAtrri.SetLatestValue(lcInfo.TxRxStatus);
 			}
 
 			var lcIdList = lcInfo.CellIdList;
@@ -1379,27 +1397,27 @@ namespace NetPlan
 			var lcAttr4 = mapAttributes["netSetRRUPortSubtoLocalCellId4"];
 
 			// 先设置为-1。可能会删除通道关联的小区
-			lcAttr1.SetValue("-1");
-			lcAttr2.SetValue("-1");
-			lcAttr3.SetValue("-1");
-			lcAttr4.SetValue("-1");
+			lcAttr1.SetLatestValue("-1");
+			lcAttr2.SetLatestValue("-1");
+			lcAttr3.SetLatestValue("-1");
+			lcAttr4.SetLatestValue("-1");
 			for (int i = 1; i <= lcIdList.Count; i++)
 			{
 				if (1 == i)
 				{
-					lcAttr1.SetValue(lcIdList[i - 1].ToString());
+					lcAttr1.SetLatestValue(lcIdList[i - 1].ToString());
 				}
 				if (2 == i)
 				{
-					lcAttr2.SetValue(lcIdList[i - 1].ToString());
+					lcAttr2.SetLatestValue(lcIdList[i - 1].ToString());
 				}
 				if (3 == i)
 				{
-					lcAttr3.SetValue(lcIdList[i - 1].ToString());
+					lcAttr3.SetLatestValue(lcIdList[i - 1].ToString());
 				}
 				if (4 == i)
 				{
-					lcAttr4.SetValue(lcIdList[i - 1].ToString());
+					lcAttr4.SetLatestValue(lcIdList[i - 1].ToString());
 					break;
 				}
 			}
@@ -1435,7 +1453,8 @@ namespace NetPlan
 				return false;
 			}
 
-			dev.m_mapAttributes[strFieldName].SetValue(strValue);
+			//dev.m_mapAttributes[strFieldName].SetLatestValue(strValue);
+			dev.SetFieldLatestValue(strFieldName, strValue);
 			if (dev.m_recordType != RecordDataType.NewAdd)
 			{
 				dev.m_recordType = RecordDataType.Modified;

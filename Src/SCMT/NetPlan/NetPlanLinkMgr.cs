@@ -156,7 +156,7 @@ ParseBoardToRhub:
 			}
 
 			// 解析pico和ant之间的连接
-			if (!ParsePicoToAntLink(rhubList, antList, rruAntCfgList))
+			if (!ParsePicoToAntLink(rruList, antList, rruAntCfgList))
 			{
 				
 			}
@@ -742,7 +742,7 @@ ParseBoardToRhub:
 					Log.Error($"生成索引为{rruIndex}的rru到索引为{antIndex}的ant连接失败");
 					continue;
 				}
-				Log.Debug($"生成索引为{rruIndex}的rru通道{rruPathNo}到索引为{antIndex}的ant通道{antPathNo}连接成功");
+				//Log.Debug($"生成索引为{rruIndex}的rru通道{rruPathNo}到索引为{antIndex}的ant通道{antPathNo}连接成功");
 			}
 
 			return true;		// 如果中间有break调用，这里就会返回false
@@ -1001,15 +1001,15 @@ ParseBoardToRhub:
 				}
 
 				// todo 5G的pico只有1个电口，后续需要做兼容处理
-				var picoToHubPort = rru.GetFieldOriginValue("netRRUOfp1AccessEthernetPort");
-				var picoToHubNo = rru.GetFieldOriginValue("netRRUHubNo");
-				if ("-1" == picoToHubNo || "-1" == picoToHubPort)
+				var hubPort = rru.GetFieldOriginValue("netRRUOfp1AccessEthernetPort");
+				var hubNo = rru.GetFieldOriginValue("netRRUHubNo");
+				if ("-1" == hubNo || "-1" == hubPort)
 				{
 					Log.Error("pico设备没有连接到任何hub设备");
 					continue;
 				}
 
-				var picoToHubIndex = $".{picoToHubNo}";
+				var picoToHubIndex = $".{hubNo}";
 				var hubDev = rhubList.FirstOrDefault(rhub => rhub.m_strOidIndex == picoToHubIndex);
 				if (null == hubDev)
 				{
@@ -1019,21 +1019,26 @@ ParseBoardToRhub:
 
 				var rackNo = hubDev.GetFieldOriginValue("netRHUBAccessRackNo");
 				var shelfNo = hubDev.GetFieldOriginValue("netRHUBAccessShelfNo");
-				var slotNo = hubDev.GetFieldOriginValue("netRHUBAccessSlotNo");
+				var slotNo = MibInfoMgr.GetRhubLinkToBoardSlotNo(hubDev);
+				if ("-1" == slotNo)
+				{
+					Log.Debug($"索引为{picoToHubIndex}的RHUB设备没有连接到板卡");
+					continue;
+				}
 
 				// 此处不验证rhub连接的板卡是否存在，在上一步解析boardtohublink时已经验证过
 
-				var ethRecordIndex = $".{rackNo}.{shelfNo}.{slotNo}.{picoToHubNo}.{picoToHubPort}";
+				var ethRecordIndex = $".{rackNo}.{shelfNo}.{slotNo}.{hubNo}.{hubPort}";
 				if (null == ethCfgList.FirstOrDefault(ec => ec.m_strOidIndex == ethRecordIndex))
 				{
 					Log.Error($"根据索引{ethRecordIndex}未找到对应的以太网口配置信息");
 					continue;
 				}
 
-				var hubPort = int.Parse(picoToHubPort);
+				var nhubPort = int.Parse(hubPort);
 
 				// 创建连接
-				GenerateRhubToPicoLink(picoToHubIndex, hubPort, rru.m_strOidIndex, 1);	// todo 1的来历：5g pico只有1个端口
+				GenerateRhubToPicoLink(picoToHubIndex, nhubPort, rru.m_strOidIndex, 1);	// todo 1的来历：5g pico只有1个端口
 			}
 
 			return true;
