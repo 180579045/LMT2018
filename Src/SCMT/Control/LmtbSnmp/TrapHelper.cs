@@ -166,7 +166,7 @@ namespace LmtbSnmp
 			try
 			{
 				EndPoint ep = null;
-                if (socket.AddressFamily == AddressFamily.InterNetwork) // IPV4
+				if (socket.AddressFamily == AddressFamily.InterNetwork) // IPV4
 				{
 					ep = new IPEndPoint(IPAddress.Any, 0);
 
@@ -212,7 +212,7 @@ namespace LmtbSnmp
 			byte[] buffer = stateObj.buffer;
 
 			EndPoint ep = null;
-            if (sock.AddressFamily == AddressFamily.InterNetwork) // IPV4
+			if (sock.AddressFamily == AddressFamily.InterNetwork) // IPV4
 			{
 				ep = new IPEndPoint(IPAddress.Any, 0);
 			}
@@ -325,7 +325,7 @@ namespace LmtbSnmp
 							// 发布Trap消息
 							byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 							PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnTrap, bytes);
-                        }
+						}
 					}
 
 				}
@@ -363,7 +363,6 @@ namespace LmtbSnmp
 		/// <param name="isAsync"></param>
 		private bool SnmpPdu2LmtPdu4Trap(Pdu pdu, IPEndPoint iPEndPort, ref CDTLmtbPdu lmtPdu, int reason, bool isAsync)
 		{
-			string logMsg;
 			if (lmtPdu == null)
 			{
 				Log.Error("参数[lmtPdu]为空");
@@ -376,14 +375,12 @@ namespace LmtbSnmp
 				return false;
 			}
 
-			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo();
-			appendInfo.m_bIsSync = !isAsync;
+			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo {m_bIsSync = !isAsync};
 
-			logMsg = string.Format("snmpPackage.Pdu.Type = {0}", pdu.Type);
+			var logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
 			//			Log.Debug(logMsg);
 
 			appendInfo.m_bIsNeedPrint = true;
-
 
 			lmtPdu.Clear();
 			lmtPdu.m_LastErrorIndex = pdu.ErrorIndex;
@@ -427,7 +424,7 @@ namespace LmtbSnmp
 			string prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
 			if (string.IsNullOrEmpty(prefix))
 			{
-				Log.Error(string.Format("获取MIB前缀失败!"));
+				Log.Error("获取MIB前缀失败!");
 				return false;
 			}
 
@@ -454,12 +451,10 @@ namespace LmtbSnmp
 			foreach (Vb vb in pdu.VbList)
 			{
 				logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-					, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+					, vb.Oid, SnmpConstants.GetTypeName(vb.Value.Type), vb.Value);
 				Log.Debug(logMsg);
 
-				CDTLmtbVb lmtVb = new CDTLmtbVb();
-
-				lmtVb.Oid = vb.Oid.ToString();
+				CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = vb.Oid.ToString()};
 
 				// 值是否需要SetVbValue()处理
 				bool isNeedPostDispose = true;
