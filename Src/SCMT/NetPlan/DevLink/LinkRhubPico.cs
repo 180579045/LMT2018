@@ -151,7 +151,6 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-
 		private BoardBaseInfo GetBoardInfoFromRhub(IsRecordExist checkExist)
 		{
 			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(m_rhubDev);
@@ -213,9 +212,9 @@ namespace NetPlan.DevLink
 			return ("-1" != boardSlot);
 		}
 
-		private static bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
+		private bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
 		{
-			return MibInfoMgr.SetDevAttributeValue(dev, "netRRUOfp1AccessEthernetPort", nEthPort.ToString()) && 
+			return MibInfoMgr.SetDevAttributeValue(dev, $"netRRUOfp{m_nPicoPort}AccessEthernetPort", nEthPort.ToString()) && 
 				   MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", nHubNo.ToString());
 		}
 

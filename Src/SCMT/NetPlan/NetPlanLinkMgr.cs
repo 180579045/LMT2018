@@ -1000,8 +1000,19 @@ ParseBoardToRhub:
 					continue;
 				}
 
-				// todo 5G的pico只有1个电口，后续需要做兼容处理
+				var picoPort = 1;
 				var hubPort = rru.GetFieldOriginValue("netRRUOfp1AccessEthernetPort");
+				if ("-1" == hubPort)
+				{
+					hubPort = rru.GetFieldOriginValue("netRRUOfp2AccessEthernetPort");
+					if ("-1" == hubPort)
+					{
+						Log.Error($"索引为{rru.m_strOidIndex}的pico设置未连接到rhub设备");
+						continue;
+					}
+					picoPort = 2;
+				}
+
 				var hubNo = rru.GetFieldOriginValue("netRRUHubNo");
 				if ("-1" == hubNo || "-1" == hubPort)
 				{
@@ -1038,7 +1049,7 @@ ParseBoardToRhub:
 				var nhubPort = int.Parse(hubPort);
 
 				// 创建连接
-				GenerateRhubToPicoLink(picoToHubIndex, nhubPort, rru.m_strOidIndex, 1);	// todo 1的来历：5g pico只有1个端口
+				GenerateRhubToPicoLink(picoToHubIndex, nhubPort, rru.m_strOidIndex, picoPort);
 			}
 
 			return true;
