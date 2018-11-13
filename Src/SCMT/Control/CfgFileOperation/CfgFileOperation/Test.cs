@@ -22,7 +22,8 @@ namespace CfgFileOperation
             Test test = new Test();
 
             //test.testForParseAlarmEx();
-            //test.testForCreatePatchAndInit();
+
+            test.testForCreatePatchAndInit();
 
             //test.testForReadSelfExcel();
 
@@ -30,7 +31,7 @@ namespace CfgFileOperation
 
             //test.testLoadMibTreeIntoMem();//
 
-            test.testForReadExcelRruType();
+            //test.testForReadExcelRruType();
 
             //test.testForReadExcelAnnt();
 
@@ -44,8 +45,24 @@ namespace CfgFileOperation
         /// </summary>
         void testForCreatePatchAndInit()
         {
+            string dataBasePath  = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\5GCfg\\";
+            string dataMdbPath   = "lm.mdb";//1.数据库
+            string antennaExPath = "LTE_基站天线广播波束权值参数配置表_5G.xls";//2.天线信息
+            string alarmExPath   = "eNB告警信息表.xls";//3.告警信息
+            string rruInfoExPath = "RRU基本信息表.xls";//4.RRU信息
+            string reclistExPath = "RecList_V6.00.50.05.40.07.01.xls";//5.reclist
+            string selfDefExPath = "自定义_初配数据文件_ENB_5G_00_00_05.xls";//6.自定义文件(init, patch)
+
             CfgOp cfgOp = new CfgOp();
-            cfgOp.OnCreatePatchAndInitCfg();
+            Dictionary<string, string> paths = new Dictionary<string, string>() {
+                { "DataMdb", dataBasePath+dataMdbPath},
+                { "Antenna", dataBasePath+antennaExPath},
+                { "Alarm",   dataBasePath+alarmExPath},
+                { "RruInfo" ,dataBasePath+rruInfoExPath},
+                { "Reclist" ,dataBasePath+reclistExPath},
+                { "SelfDef" ,dataBasePath+selfDefExPath},
+            };
+            cfgOp.OnCreatePatchAndInitCfg(paths);
         }
 
         void testForParseAlarmEx()
@@ -65,7 +82,7 @@ namespace CfgFileOperation
             string FileToDirectory = "";
             string strDBPath = "";
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
-            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+            //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
 
             // reclist
             cfgOp.m_reclistExcel = new CfgParseReclistExcel();
@@ -93,7 +110,7 @@ namespace CfgFileOperation
             string FileToDirectory = "";
             string strDBPath = "";
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
-            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+            //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
 
             // reclist
             //CfgParseReclistExcel reclist = new CfgParseReclistExcel();
@@ -149,7 +166,7 @@ namespace CfgFileOperation
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
 
             CfgOp cfgOp = new CfgOp();
-            cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+            //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
             cfgOp.SaveFile_eNB("./path.cfg");
         }
 

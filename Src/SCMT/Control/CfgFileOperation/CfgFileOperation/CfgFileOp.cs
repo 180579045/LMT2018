@@ -57,53 +57,47 @@ namespace CfgFileOperation
         /// <summary>
         /// 创建 init.cfg path_ex.cfg
         /// </summary>
-        public void OnCreatePatchAndInitCfg()
+        public void OnCreatePatchAndInitCfg(Dictionary<string, string> paths)
         {
-            string strCfgFileName = "";
-            string FileToDirectory = "";
-            string strDBPath = "";
-            string strDBName = ".\\Data\\lmdtz\\lm.dtz";
-            string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123";
-            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            //3. RRU信息
+            m_rruExcel = new CfgParseRruExcel();
+            m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
 
             //1. lm.mdb 更新加载数据，整理成表和表实例的结构
-            CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
+            CreateCfgFile(paths);
 
             //2. lm.mdb 以每行为单位加载, reclist使用 
             m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            m_mibTreeMem.ReadMibTreeToMemory(strFileToDirectory);
+            m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
             
-            //3. RRU信息
-            string excelName = excelPath + "\\RRU基本信息表_ty.xls";
-            m_rruExcel = new CfgParseRruExcel();
-            m_rruExcel.ProcessingExcel(excelName, "RRU基本信息表");
+            ////3. RRU信息
+            //m_rruExcel = new CfgParseRruExcel();
+            //m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
 
             //4. 天线信息
-            excelName = excelPath + "\\LTE_基站天线广播波束权值参数配置表_5G.xls";
             m_antennaExcel = new CfgParseAntennaExcel();
-            m_antennaExcel.ProcessingAntennaExcel(excelName, "波束扫描原始值");
+            m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
 
             //5. 告警信息
             //在CreateCfgFile中就解析了
+            m_alarmExcel = new CfgParseAlarmExecl();
+            m_alarmExcel.ParseExcel(paths["Alarm"]);
 
             //5. reclist 
-            excelName = excelPath + "\\RecList_V6.00.50.05.40.07.01.xls";
             m_reclistExcel = new CfgParseReclistExcel();
-            m_reclistExcel.ProcessingExcel(excelName, strFileToDirectory, "0:默认", this);
+            m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
 
             //6. 自定义 (init, patch)
-            excelName = excelPath + "\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
             m_selfExcel = new CfgParseSelfExcel();
-            m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "init", this);
-            m_selfExcel.ProcessingExcel(excelName, strFileToDirectory, "patch", this);
+            m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "init", this);
+            m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
 
             //7. 开始生成 init.cfg, patch_ex.cfg
             // 创建init.cfg
             SaveFile_eNB("init.cfg");
             //创建patch_ex.cfg
-            CreateFilePdg_eNB("patch_ex.cfg", strFileToDirectory);
+            CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
             SaveFilePdg_eNB("patch_ex.cfg");
-
         }
         /// <summary>
         /// lm.mdb 更新加载数据，整理成表和表实例的结构
@@ -112,14 +106,14 @@ namespace CfgFileOperation
         /// <param name="FileToDirectory">解压释放的地方</param>
         /// <param name="strDBPath"></param>
         /// <param name="strDBName"></param>
-        public void CreateCfgFile(string strCfgFileName, string FileToDirectory, string strDBPath, string strDBName)
+        public void CreateCfgFile(Dictionary<string, string> paths)//string strCfgFileName, string FileToDirectory, string strDBPath, string strDBName)
         {
             // string FileToUnzip = currentPath + "\\Data\\lmdtz\\lm.dtz";//
             // string FileToDirectory = currentPath + "\\Data\\lmdtz";
-            string strFileToDirectory = strDBName.Substring(0, strDBName.Length - strDBName.IndexOf("lm")+1);
+            //string strFileToDirectory = strDBName.Substring(0, strDBName.Length - strDBName.IndexOf("lm")+1);
 
-            WriteHeaderVersionInfo(strFileToDirectory + "\\lm.mdb");
-            CreateCfgFileBody(strFileToDirectory);
+            WriteHeaderVersionInfo(paths["DataMdb"]);
+            CreateCfgFileBody(paths);
         }
         /// <summary>
         /// 创建init.cfg
@@ -274,17 +268,15 @@ namespace CfgFileOperation
         /// 文件体
         /// </summary>
         /// <param name="strFileToDirectory"></param>
-        private void CreateCfgFileBody(string strFileToDirectory)//string strDBName)
+        private void CreateCfgFileBody(Dictionary<string, string> paths)//string strFileToDirectory)//string strDBName)
         {
             /// sql 获取所有的 table 和 entry 
             string strSQL = ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
-            DataSet MibdateSet = CfgGetRecordByAccessDb(strFileToDirectory + "\\lm.mdb", strSQL);
+            DataSet MibdateSet = CfgGetRecordByAccessDb(paths["DataMdb"], strSQL);
             uint TableOffset = 0 ;// //设置表的偏移量
             for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
-                TableOffset = CreatCfgFile_tabInfo(MibdateSet.Tables[0].Rows[loop], null, strFileToDirectory, TableOffset);
-                //if (m_mapTableInfo.Count == 70) // 为了与参考patch_ex.cfg一致，好对比
-                //    break;
+                TableOffset = CreatCfgFile_tabInfo(MibdateSet.Tables[0].Rows[loop], null, paths, TableOffset);
             }
 
             uint m_tableNum = (uint)m_mapTableInfo.Count;
@@ -385,7 +377,7 @@ namespace CfgFileOperation
         /// <param name="strFileToDirectory"></param>
         /// <param name="TableOffset"></param>
         /// <returns></returns>
-        private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, string strFileToDirectory, uint TableOffset)//DataSet MibdateSet)
+        private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
             if (strTableName == "alarmCauseEntry")
@@ -394,14 +386,14 @@ namespace CfgFileOperation
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
             //if (df.Tables[0].Rows.Count > 0)
             string strSQL = String.Format("select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", row["OID"].ToString());
-            DataSet MibdateSet = CfgGetRecordByAccessDb(strFileToDirectory + "\\lm.mdb", strSQL);
+            DataSet MibdateSet = CfgGetRecordByAccessDb(paths["DataMdb"], strSQL);
             int childcount = MibdateSet.Tables[0].Rows.Count;
             if (childcount > 0)
             {
                 tableOp = new CfgTableOp();
                 CreatCfgFile_leafsInfo( MibdateSet, tableOp);                                 // 计算 buflen
                 if (isAlarmTable(strTableName))                                               // 是否是告警,是否为RRUType表和RRUTypePort和antennaArrayTypeTable表
-                    CreateSpecialTalbe(row, tableOp, MibdateSet, strFileToDirectory);         //告警信息从告警表获取
+                    CreateSpecialTalbe(row, tableOp, MibdateSet, paths);                      //告警信息从告警表获取
                 else
                     RecordInstanceMain(tableOp, isDyTable, strTableContent);                  //实例信息
                 tableOp.m_cfgFile_TblInfo.u16DataFmtVer = 0;                                  // = USDATAFMTVER;  MIB确定下来后会改变
@@ -634,7 +626,7 @@ namespace CfgFileOperation
         /// <param name="tableOp"></param>
         /// <param name="MibdateSet"></param>
         /// <param name="strFileToDirectory"></param>
-        private void CreateSpecialTalbe(DataRow tableRow, CfgTableOp tableOp, DataSet MibdateSet, string strFileToDirectory)
+        private void CreateSpecialTalbe(DataRow tableRow, CfgTableOp tableOp, DataSet MibdateSet, Dictionary<string, string> paths)//string strFileToDirectory)
         {
             int leafNum = MibdateSet.Tables[0].Rows.Count;
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
@@ -644,7 +636,7 @@ namespace CfgFileOperation
             int[] indexValue = new int[6];//索引值
             if (string.Equals("alarmCauseEntry", strTableName) && (isDyTable == true))//告警原因 // alarm info
             {
-                CreateSpecialTalbeAlarmCauseEntryByExcel(tableRow, tableOp, strFileToDirectory, leafNum);
+                CreateSpecialTalbeAlarmCauseEntryByExcel(tableRow, tableOp, paths["Alarm"], leafNum);
             }
             else if (string.Equals("antennaArrayTypeEntry", strTableName))//天线器件库信息-天线阵//2012-06-25 luoxin DTMUC00104224 创建配置文件时器件库表下天线阵类型表不做动态表处理，记录设为空
             {
@@ -652,19 +644,66 @@ namespace CfgFileOperation
             }
             else if (string.Equals("rruTypeEntry", strTableName) && (isDyTable == true))//器件库表-射频单元设备类型
             {
-                string strSQLRruType = ("select  * from rruType");
-                string rruTypePath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-                DataSet rruTypedateSet = CfgGetRecordByAccessDb(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
-                SetBuffersInfoForRruType(tableRow, rruTypedateSet, tableOp, leafNum);
+                CreateSpecialTalbeRruTypeByEx(tableRow, tableOp, leafNum);
+                //string strSQLRruType = ("select  * from rruType");
+                //string rruTypePath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
+                //DataSet rruTypedateSet = CfgGetRecordByAccessDb(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
+                //SetBuffersInfoForRruType(tableRow, rruTypedateSet, tableOp, leafNum);
             }
             else if (string.Equals("rruTypePortEntry", strTableName) && (isDyTable == true))//器件库表-射频单元射频通道设备
             {
-                string strSQLRruTypePort = ("select  * from rruTypePort");
-                string rruTypePortPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-                DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
-                SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
+                CreateSpecialTalbeRruPortTypeByEx(tableRow, tableOp, leafNum);
+                //string strSQLRruTypePort = ("select  * from rruTypePort");
+                //string rruTypePortPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
+                //DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
+                //SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="leafNum"></param>
+        private void CreateSpecialTalbeRruPortTypeByEx(DataRow tableRow, CfgTableOp tableOp, int leafNum)
+        {
+            List<RRuTypePortTabStru> rruPortL = m_rruExcel.GetRruTypePortInfoData();
+            SetBuffersInfoForRruTypePortByEx(tableRow, rruPortL, tableOp, leafNum);
+        }
+        private void CreateSpecialTalbeRruPortTypeByMdb(DataRow tableRow, CfgTableOp tableOp, int leafNum, Dictionary<string, string> paths)
+        {
+            string strSQLRruTypePort = ("select  * from rruTypePort");
+            string strFileToDirectory = paths["DataMdb"];
+            string rruTypePortPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
+            DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
+            SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
+        }
+        /// <summary>
+        /// RruType 
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="leafNum"></param>
+        private void CreateSpecialTalbeRruTypeByEx(DataRow tableRow, CfgTableOp tableOp, int leafNum)
+        {
+            List<RRuTypeTabStru> rruList = m_rruExcel.GetRruTypeInfoData();
+            SetBuffersInfoForRruTypeByEx(tableRow, rruList, tableOp, leafNum);
+        }
+        private void CreateSpecialTalbeRruTypeByMdb(DataRow tableRow, CfgTableOp tableOp, int leafNum, Dictionary<string, string> paths)
+        {
+            string strSQLRruType = ("select  * from rruType");
+            string strFileToDirectory = paths["DataMdb"];
+            string rruTypePath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
+            DataSet rruTypedateSet = CfgGetRecordByAccessDb(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
+            SetBuffersInfoForRruType(tableRow, rruTypedateSet, tableOp, leafNum);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="strFileToDirectory"></param>
+        /// <param name="leafNum"></param>
         private void CreateSpecialTalbeAlarmCauseEntryByMdb(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)
         {
             string strSQLAlarm = ("select  * from AlarmInform_5216");
@@ -774,6 +813,86 @@ namespace CfgFileOperation
                 }
             }
             //}
+        }
+        private void SetBuffersInfoForRruTypePortByEx(DataRow tableRow, List<RRuTypePortTabStru> vectRRUTypePortInfo, CfgTableOp tableOp, int leafNum)
+        {
+            //string strTableContent = tableRow["TableContent"].ToString();//表容量
+            //int rruTypePortCount = rruTypePortdateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
+            int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
+            //List<RRuTypePortTabStru> vectRRUTypePortInfo = new List<RRuTypePortTabStru>();
+            //for (int loop = 0; loop < rruTypePortCount - 1; loop++)
+            //{  // 在表之间循环
+            //    if (loop == nTableNum)
+            //        break;
+            //    vectRRUTypePortInfo.Add(new RRuTypePortTabStru(rruTypePortdateSet.Tables[0].Rows[loop]));
+            //}
+            int nVecSize = (int)vectRRUTypePortInfo.Count;
+            int i = 0;
+            ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
+            List<string> vectExitInstIndex = new List<string>();
+            bool IsFirst = true;
+            var mibNodesStruIndex = tableOp.m_struIndex.m_struIndex;
+            for (int index0 = 0; index0 < mibNodesStruIndex[0].indexNum; index0++)
+            {
+                for (int index1 = 0; index1 < mibNodesStruIndex[1].indexNum; index1++)
+                {
+                    for (int index2 = 0; index2 < mibNodesStruIndex[2].indexNum; index2++)
+                    {
+                        if (i == nTableNum)
+                            return;
+                        List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
+                        string stInstIndex;
+                        if (i < nVecSize)
+                        {
+                            string strIndex1 = vectRRUTypePortInfo[i].GetRRuTypePortValue(mibNodesStruIndex[0].mibName);
+                            int ipos = strIndex1.IndexOf(":");//4:大唐  取数字
+                            if (ipos > 0)
+                            {
+                                string strTempIndex = strIndex1.Substring(ipos);
+                                strIndex1 = strTempIndex;
+                            }
+                            string strIndex2 = vectRRUTypePortInfo[i].GetRRuTypePortValue(mibNodesStruIndex[1].mibName);
+                            string strIndex3 = vectRRUTypePortInfo[i].GetRRuTypePortValue(mibNodesStruIndex[2].mibName);
+                            stInstIndex = String.Format(".{0}.{1}.{2}", strIndex1, strIndex2, strIndex3);
+                            List<int> posL = new List<int>() { 0 };
+                            for (int ileafNum = 0; ileafNum < leafNum; ileafNum++)
+                            {
+                                CfgFileLeafNodeOp mibNode = tableOp.m_LeafNodes[ileafNum];
+                                StruMibNode m_struMibNode = tableOp.m_LeafNodes[ileafNum].m_struMibNode;
+                                int typeSize = mibNode.m_struFieldInfo.u16FieldLen;//.typeSize;
+                                string strCurrentValue = vectRRUTypePortInfo[ileafNum].GetRRuTypePortValue(m_struMibNode.strMibName);
+                                WriteToBuffer(BuffArrL, strCurrentValue, posL, m_struMibNode.strOMType, typeSize, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax);
+                            }
+                            vectExitInstIndex.Add(stInstIndex);
+                        }
+                        else
+                        {
+                            if (IsFirst)
+                            {
+                                index1 = 0;//从新开始判断实例索引是否已经使用
+                                index0 = 0;//如果实例索引已经存在则继续组织下一索引
+                                IsFirst = false;
+                            }
+                            stInstIndex = ".0.0.0";//stInstIndex.Format(".%d.%d.%d", 0, 0, 0);
+                            if (vectExitInstIndex.FindIndex(e => e.Equals(stInstIndex)) != -1) //不存在：返回-1，存在：返回位置。
+                                continue;
+                            List<int> bytePosL = new List<int>() { 0 };
+                            for (int k = 0; k < 3; k++)
+                            {
+                                var LeafNode = tableOp.m_LeafNodes[k];
+                                WriteToBuffer(BuffArrL, "0", bytePosL, LeafNode.m_struMibNode.strOMType, LeafNode.m_struFieldInfo.u16FieldLen, "", LeafNode.m_struMibNode.strMibSyntax);
+                            }
+                            for (int k = 3; k < leafNum - 1; k++)
+                            {
+                                WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
+                                    tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
+                            }
+                        }
+                        tableOp.m_cfgInsts_add(stInstIndex, BuffArrL[0]);
+                        i++;
+                    }
+                }
+            }
         }
         /// <summary>
         /// "alarmCauseEntry" 的实例处理
@@ -957,6 +1076,79 @@ namespace CfgFileOperation
                 }
             }
         }
+        private void SetBuffersInfoForRruTypeByEx(DataRow tableRow, List<RRuTypeTabStru> vectRRUTypeInfo,CfgTableOp tableOp, int leafNum)
+        {
+            //int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
+            int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
+            //List<RRuTypeTabStru> vectRRUTypeInfo = new List<RRuTypeTabStru>();
+            //for (int loop = 0; loop < rruTypeCount - 1; loop++)
+            //{
+            //    if (loop == nTableNum) break;
+            //    vectRRUTypeInfo.Add(new RRuTypeTabStru(rruTypedateSet.Tables[0].Rows[loop], rruTypedateSet));
+            //}
+
+            ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
+            int TableDimen = tableOp.m_tabDimen;// 索引数量
+            var m_struIndex = tableOp.m_struIndex.m_struIndex;
+            int i = 0;
+            List<string> vectExitInstIndex = new List<string>();
+            bool IsFirst = true;
+            for (int index0 = 0; index0 < m_struIndex[0].indexNum; index0++)
+            {
+                for (int index1 = 0; index1 < m_struIndex[1].indexNum; index1++)
+                {
+                    if (i == nTableNum)
+                        return;
+                    List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
+                    string stInstIndex;
+                    if (i < vectRRUTypeInfo.Count)
+                    {
+                        RRuTypeTabStru pRRuType = vectRRUTypeInfo[i];
+                        string strIndex1Name = tableOp.m_LeafNodes[0].m_struMibNode.strMibName;
+                        string strIndex2Name = tableOp.m_LeafNodes[1].m_struMibNode.strMibName;
+                        string strIndex1 = pRRuType.GetRRuLeafValue(strIndex1Name);
+                        if (strIndex1.IndexOf(":") > 0)//4:大唐  取数字
+                            strIndex1 = strIndex1.Substring(strIndex1.IndexOf(":"));
+                        string strIndex2 = pRRuType.GetRRuLeafValue(strIndex2Name);
+                        stInstIndex = String.Format(".{0}.{1}", strIndex1, strIndex2);
+                        List<int> bytePosL = new List<int>() { 0 };
+                        for (int ileafNum = 0; ileafNum < leafNum; ileafNum++)
+                        {
+                            var mibNode = tableOp.m_LeafNodes[ileafNum];
+                            string strCurrentValue = pRRuType.GetRRuLeafValue(mibNode.m_struMibNode.strMibName);
+                            int typeSize = (int)mibNode.m_struFieldInfo.u16FieldLen;
+                            WriteToBuffer(BuffArrL, strCurrentValue, bytePosL, mibNode.m_struMibNode.strOMType, typeSize, mibNode.m_struMibNode.strMIBVal_AllList, mibNode.m_struMibNode.strMibSyntax);
+                        }
+                        vectExitInstIndex.Add(stInstIndex);
+                    }
+                    else
+                    {
+                        if (IsFirst)
+                        {
+                            index1 = 0;//从新开始判断实例索引是否已经使用
+                            index0 = 0;//如果实例索引已经存在则继续组织下一索引
+                            IsFirst = false;
+                        }
+                        stInstIndex = ".0.0";
+                        if (vectExitInstIndex.FindIndex(e => e.Equals(stInstIndex)) != -1) //不存在：返回-1，存在：返回位置。
+                            continue;
+                        List<int> bytePosL = new List<int>() { 0 };
+                        for (int k = 0; k < 2; k++)
+                        {
+                            var LeafNode = tableOp.m_LeafNodes[k];
+                            WriteToBuffer(BuffArrL, "0", bytePosL, LeafNode.m_struMibNode.strOMType, LeafNode.m_struFieldInfo.u16FieldLen, "", LeafNode.m_struMibNode.strMibSyntax);
+                        }
+                        for (int k = 2; k < leafNum - 1; k++)
+                        {
+                            WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
+                                tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
+                        }
+                    }
+                    i++;
+                    tableOp.m_cfgInsts_add(stInstIndex, BuffArrL[0]);
+                }
+            }
+        }
         /// <summary>
         /// "alarmCauseEntry" 的实例处理 —— 特殊处理
         /// </summary>
@@ -1020,12 +1212,13 @@ namespace CfgFileOperation
                 ushort typeSize2 = tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen;//typeSize
                 string asnType2 = mibNode.strMibSyntax;//asnType
                 string strDefaultValue2 = mibNode.strMibDefValue;
+                string strValList = mibNode.strMIBVal_AllList;
                 if (isDyTable == true)//modify by yangyuming 增加对动态表的处理，动态表内容全部置成0 2012.3.23
                     WriteToBuffer(BuffArrL, "", bytePosL, strIndexOMType2, typeSize2, "", asnType2);
                 else
                 {
                     try{
-                        WriteToBuffer(BuffArrL, strDefaultValue2, bytePosL, strIndexOMType2, typeSize2, "", asnType2);
+                        WriteToBuffer(BuffArrL, strDefaultValue2, bytePosL, strIndexOMType2, typeSize2, strValList, asnType2);
                     }
                     catch //(Exception ex)
                     {

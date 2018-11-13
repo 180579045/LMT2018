@@ -208,21 +208,21 @@ namespace SCMTMainWindow
 			// TODO 添加控件
 		}
 
-		private void Flow_Click(object sender, RoutedEventArgs e)
-		{
-			//FlowChart f1 = new FlowChart();
-			//f1.Show();
+		//private void Flow_Click(object sender, RoutedEventArgs e)
+		//{
+		//	//FlowChart f1 = new FlowChart();
+		//	//f1.Show();
 
-			LayoutAnchorable sub = new LayoutAnchorable();
-			FlowChart content = new FlowChart();
+		//	LayoutAnchorable sub = new LayoutAnchorable();
+		//	FlowChart content = new FlowChart();
 
-			sub.Content = content;
-			//sub.FloatingHeight = 300;
-			//sub.FloatingWidth = 800;
+		//	sub.Content = content;
+		//	//sub.FloatingHeight = 300;
+		//	//sub.FloatingWidth = 800;
 
-			Pane.Children.Add(sub);
-			sub.Float();
-		}
+		//	Pane.Children.Add(sub);
+		//	sub.Float();
+		//}
 
 		/// <summary>
 		/// 更新数据库;
@@ -1921,6 +1921,19 @@ namespace SCMTMainWindow
             ItemCollection collection = MainHorizenTab.Items;
             for(int i = 0; i < collection.Count; i++)
                 (collection[i] as TabItem).IsEnabled = isEnable;
+        }
+
+        private void MetroImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            LayoutAnchorable sub = new LayoutAnchorable();
+            FlowChart content = new FlowChart();
+
+            sub.Content = content;
+            //sub.FloatingHeight = 300;
+            //sub.FloatingWidth = 800;
+
+            Pane.Children.Add(sub);
+            sub.Float();
         }
     }
 
