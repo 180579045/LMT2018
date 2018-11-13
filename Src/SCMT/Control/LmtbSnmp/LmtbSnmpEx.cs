@@ -226,7 +226,7 @@ namespace LmtbSnmp
 			SnmpHelper snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				logMsg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
 				Log.Error(logMsg);
 				return false;
 			}
@@ -241,8 +241,7 @@ namespace LmtbSnmp
 			{
 				if (ReqResult.Pdu.ErrorStatus != 0)
 				{
-					logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
-						, ReqResult.Pdu.ErrorStatus, ReqResult.Pdu.ErrorIndex);
+					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
 					Log.Error(logMsg);
 					status = false;
 				}
@@ -250,8 +249,8 @@ namespace LmtbSnmp
 				{
 					foreach (Vb vb in ReqResult.Pdu.VbList)
 					{
-						logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-							, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+						logMsg =
+							$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
 						//                       Log.Debug(logMsg);
 						results.Add(vb.Oid.ToString(), vb.Value.ToString());
 					}
@@ -279,8 +278,7 @@ namespace LmtbSnmp
 			requestId = 0;
 
 			Log.Debug("========== SnmpGetSync() Start ==========");
-			string msg = string.Format("pars: lmtPdu={0}, requestId={1}, strIpAddr={2}"
-				, lmtPdu, requestId, strIpAddr);
+			string msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}";
 			Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -365,7 +363,7 @@ namespace LmtbSnmp
 			SnmpHelper snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				logMsg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
 				Log.Error(logMsg);
 				return false;
 			}
@@ -388,8 +386,21 @@ namespace LmtbSnmp
 					// 资源不可用的情况需要上报
 					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
 					{
-						ShowLogHelper.Show($"执行snmp操作失败，错误码：13，描述：资源不可达", strIpAddr, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-						return false;
+						var errIndex = ReqResult.Pdu.ErrorIndex;
+						if (errIndex == 1)
+						{
+							var errVb = ReqResult.Pdu.VbList.ElementAt(0);
+							var errValue = errVb.Value.ToString();
+							if (errValue.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
+							{
+								return true;
+							}
+						}
+						else
+						{
+							ShowLogHelper.Show("执行snmp操作失败，错误码：13，描述：资源不可达", strIpAddr, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+							return false;
+						}
 					}
 				}
 				else
@@ -427,8 +438,7 @@ namespace LmtbSnmp
 			requestId = 0;
 
 //			Log.Debug("========== SnmpGetSync() Start ==========");
-			string msg = string.Format("pars: lmtPdu={0}, requestId={1}, strIpAddr={2}, timeOut={3}"
-				, lmtPdu, requestId, strIpAddr, timeOut);
+			string msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}, timeOut={timeOut}";
 //			Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -448,7 +458,7 @@ namespace LmtbSnmp
 			SnmpHelper snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				msg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
 				Log.Error(msg);
 				return -1;
 			}
@@ -494,8 +504,7 @@ namespace LmtbSnmp
 		public bool SnmpSetSync(string strIpAddr, List<CDTLmtbVb> setVbs, long timeOut)
 		{
 		//	Log.Debug("========== SnmpSetSync() Start ==========");
-			string logMsg = string.Format("pars: strIpAddr={0}, timeOut={1}"
-				,strIpAddr, timeOut);
+			string logMsg = $"pars: strIpAddr={strIpAddr}, timeOut={timeOut}";
 //			Log.Debug(logMsg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -507,7 +516,7 @@ namespace LmtbSnmp
 			SnmpHelper snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				logMsg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令", strIpAddr);
+				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
 				Log.Error(logMsg);
 				return false;
 			}
@@ -522,15 +531,12 @@ namespace LmtbSnmp
 				Log.Error("SNMP set request error, response is null.");
 				return false;
 			}
-			else
+
+			if (result.Pdu.ErrorStatus != 0)
 			{
-				if (result.Pdu.ErrorStatus != 0)
-				{
-					logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
-						, result.Pdu.ErrorStatus, result.Pdu.ErrorIndex);
-					//Log.Error(logMsg);
-					return false;
-				}
+				logMsg = $"Error in SNMP reply. Error {result.Pdu.ErrorStatus} index {result.Pdu.ErrorIndex}";
+				//Log.Error(logMsg);
+				return false;
 			}
 
 			return true;
@@ -549,8 +555,7 @@ namespace LmtbSnmp
 			requestId = 0;
 
 			Log.Debug("========== SnmpGetSync() Start ==========");
-			string msg = string.Format("pars: lmtPdu={0}, requestId={1}, strIpAddr={2}"
-				, lmtPdu, requestId, strIpAddr);
+			string msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}";
 			Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -669,7 +674,7 @@ namespace LmtbSnmp
 			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo();
 			appendInfo.m_bIsSync = !isAsync;
 
-			logMsg = string.Format("snmpPackage.Pdu.Type = {0}", pdu.Type);
+			logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
 			Log.Debug(logMsg);
 
 			// 判断响应消息类型
@@ -765,8 +770,8 @@ namespace LmtbSnmp
 
 			foreach (Vb vb in pdu.VbList)
 			{
-				logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-					, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
+				logMsg =
+					$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
 				Log.Debug(logMsg);
 
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
@@ -857,7 +862,7 @@ namespace LmtbSnmp
 		/// <param name="packet"></param>
 		private void SnmpCallbackFun(AsyncRequestResult result, SnmpPacket packet)
 		{
-			string logMsg = string.Format("SNMP异步请求结果: AsyncRequestResult = {0}", result);
+			string logMsg = $"SNMP异步请求结果: AsyncRequestResult = {result}";
 			Log.Info(logMsg);
 
 			if (result == AsyncRequestResult.NoError)
