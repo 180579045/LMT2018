@@ -22,7 +22,7 @@
 				"MibEntry" : "netRHUBEntry",
 				"Alias" : "rhub",
 				"Get" : ["GetNetRHUB"],
-				"Set" : ["SetNetRHUBGsm", "SetNetRHUB"],
+				"Set" : ["SetNetRHUB"],
 				"Add" : ["AddNetRHUB"],
 				"Del" : ["DelNetRHUB"]	
 			},
