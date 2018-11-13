@@ -46,6 +46,7 @@ namespace NetPlan.DevLink
 
 		public override bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
+			mapOriginData = mapMibInfo;
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
 				return false;

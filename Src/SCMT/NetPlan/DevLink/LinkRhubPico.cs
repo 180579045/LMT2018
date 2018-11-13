@@ -215,7 +215,7 @@ namespace NetPlan.DevLink
 				throw new CustomException("获取rhub连接板卡插槽号返回null");
 			}
 
-			return ("-1" == boardSlot);
+			return ("-1" != boardSlot);
 		}
 
 		private bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
