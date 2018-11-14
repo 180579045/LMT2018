@@ -77,6 +77,24 @@ namespace NetPlan
 			return true;
 		}
 
+		public static bool SetNetPlanSwitch(bool bOpen, string strLcIndex, string targetIp)
+		{
+			if (string.IsNullOrEmpty(strLcIndex))
+			{
+				Log.Error("传入的本地小区索引为null或空值");
+				return false;
+			}
+
+			int nLcNo;
+			if (!int.TryParse(strLcIndex.Trim('.'), out nLcNo))
+			{
+				Log.Error($"传入的本地小区索引{strLcIndex}无效");
+				return false;
+			}
+
+			return SetNetPlanSwitch(bOpen, nLcNo, targetIp);
+		}
+
 		/// <summary>
 		/// 查询网规布配开关
 		/// </summary>
