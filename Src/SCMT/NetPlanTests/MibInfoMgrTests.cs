@@ -25,9 +25,9 @@ namespace NetPlan.Tests
 			{
 				if (result)
 				{
-					var ant = MibInfoMgr.GetInstance().AddNewAnt(0);
+					var ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
 					Assert.IsNotNull(ant);
-					ant = MibInfoMgr.GetInstance().AddNewAnt(0);
+					ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
 					Assert.IsNull(ant);
 
 					stop = true;
