@@ -213,7 +213,14 @@
                                                 <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="删除网元 Ctrl+Alt+S" />
                                             </Button.ToolTip>
                                         </Button>
-                                        
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="200,0,0,0" Click="Button_Click">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/cellstatuslist.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="小区状态" />
+                                            </Button.ToolTip>
+                                        </Button>
                                     </ToolBar>
 
                                     <!-- <local:FirstView  x:Name="firstView"/>-->

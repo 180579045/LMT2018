@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Xceed.Wpf.AvalonDock.Layout;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
+using System.Windows.Controls.Primitives;
 
 
 using SCMTMainWindow.View.Document;
@@ -721,18 +722,36 @@ namespace SCMTMainWindow.View
 					InitRHUBInfo(allNPInfo[EnumDevType.rhub]);
 				}
 
+                InitCellStatus();
+
 				return true;
 			}
 
 			return false;
 		}
 
-		#region 初始化板卡
+        #region 初始化小区状态
 
-		/// <summary>
-		/// 初始化板卡信息
-		/// </summary>
-		private void InitBoardInfo(List<DevAttributeInfo> listBoardInfo)
+        private void InitCellStatus()
+        {
+            //获取当前基站的IP地址
+            string strIP = CSEnbHelper.GetCurEnbAddr();
+
+            if(strIP == null || strIP == "")
+            {
+                MessageBox.Show("未选择基站  InitCellStatus");
+                return;
+            }
+        }
+
+        #endregion
+
+        #region 初始化板卡
+
+        /// <summary>
+        /// 初始化板卡信息
+        /// </summary>
+        private void InitBoardInfo(List<DevAttributeInfo> listBoardInfo)
         {
             if(listBoardInfo != null && listBoardInfo.Count != 0)
             {
@@ -2024,6 +2043,167 @@ namespace SCMTMainWindow.View
                 if(npTempalte != null)
                    MyDesigner.DrawTemplate(npTempalte);
             }
+        }
+
+        /// <summary>
+        /// 小区状态显示
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Button targetBtn = sender as Button;
+
+            Popup pop = new Popup();
+            pop.PlacementTarget = targetBtn;
+            pop.StaysOpen = false;
+            pop.IsOpen = true;
+
+            Border popBorder = new Border();
+            popBorder.BorderBrush = new SolidColorBrush(Colors.Gray);
+            popBorder.BorderThickness = new Thickness(2);
+            pop.Child = popBorder;
+
+            Grid cellStatusGrid = new Grid();
+            popBorder.Child = cellStatusGrid;
+            cellStatusGrid.Background = new SolidColorBrush(Colors.White);
+
+            //创建8行2列，添加小区状态描述
+            ColumnDefinition strStatus = new ColumnDefinition();
+            strStatus.Width = new GridLength(100);
+            cellStatusGrid.ColumnDefinitions.Add(strStatus);
+            ColumnDefinition colorStatus = new ColumnDefinition();
+            colorStatus.Width = new GridLength(60);
+            cellStatusGrid.ColumnDefinitions.Add(colorStatus);
+
+            for (int i = 0; i < 15; i++)
+            {
+                RowDefinition newrow = new RowDefinition();
+
+                if (i % 2 == 0)
+                {
+                    newrow.Height = new GridLength(30);
+                    cellStatusGrid.RowDefinitions.Add(newrow);
+                }
+                else
+                {
+                    newrow.Height = GridLength.Auto;
+                    cellStatusGrid.RowDefinitions.Add(newrow);
+
+                    Grid newgrid = new Grid();
+                    newgrid.Background = new SolidColorBrush(Colors.Gray);
+                    newgrid.Height = 1;
+                    cellStatusGrid.Children.Add(newgrid);
+                    Grid.SetRow(newgrid, i);
+                    Grid.SetColumnSpan(newgrid, 2);
+                }
+            }
+            
+            TextBlock strCellStatus = new TextBlock();
+            strCellStatus.Text = "小区状态";
+            strCellStatus.HorizontalAlignment = HorizontalAlignment.Center;
+            strCellStatus.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(strCellStatus);
+            Grid.SetColumnSpan(strCellStatus, 2);
+
+            TextBlock notPlan = new TextBlock();
+            notPlan.Text = "未规划";
+            notPlan.HorizontalAlignment = HorizontalAlignment.Center;
+            notPlan.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(notPlan);
+            Grid.SetRow(notPlan, 2);
+            Grid.SetColumn(notPlan, 0);
+
+            Rectangle notPlanRect = new Rectangle();
+            notPlanRect.Fill = new SolidColorBrush(Colors.Red);
+            notPlanRect.Height = 30;
+            cellStatusGrid.Children.Add(notPlanRect);
+            Grid.SetRow(notPlanRect, 2);
+            Grid.SetColumn(notPlanRect, 1);
+
+            TextBlock planing = new TextBlock();
+            planing.Text = "规划中";
+            planing.HorizontalAlignment = HorizontalAlignment.Center;
+            planing.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(planing);
+            Grid.SetRow(planing, 4);
+            Grid.SetColumn(planing, 0);
+
+            Rectangle planingRect = new Rectangle();
+            planingRect.Fill = new SolidColorBrush(Colors.LightGreen);
+            planingRect.Height = 30;
+            cellStatusGrid.Children.Add(planingRect);
+            Grid.SetRow(planingRect, 4);
+            Grid.SetColumn(planingRect, 1);
+
+            TextBlock localCellNot = new TextBlock();
+            localCellNot.Text = "本地小区未建";
+            localCellNot.HorizontalAlignment = HorizontalAlignment.Center;
+            localCellNot.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(localCellNot);
+            Grid.SetRow(localCellNot, 6);
+            Grid.SetColumn(localCellNot, 0);
+
+            Rectangle localCellNotRect = new Rectangle();
+            localCellNotRect.Fill = new SolidColorBrush(Colors.Yellow);
+            localCellNotRect.Height = 30;
+            cellStatusGrid.Children.Add(localCellNotRect);
+            Grid.SetRow(localCellNotRect, 6);
+            Grid.SetColumn(localCellNotRect, 1);
+
+            TextBlock localCellOK = new TextBlock();
+            localCellOK.Text = "本地小区已建";
+            localCellOK.HorizontalAlignment = HorizontalAlignment.Center;
+            localCellOK.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(localCellOK);
+            Grid.SetRow(localCellOK, 8);
+            Grid.SetColumn(localCellOK, 0);
+
+            Rectangle localCellOKRect = new Rectangle();
+            localCellOKRect.Fill = new SolidColorBrush(Colors.Blue);
+            localCellOKRect.Height = 30;
+            cellStatusGrid.Children.Add(localCellOKRect);
+            Grid.SetRow(localCellOKRect, 8);
+            Grid.SetColumn(localCellOKRect, 1);
+
+            TextBlock CellOK = new TextBlock();
+            CellOK.Text = "小区已建";
+            CellOK.HorizontalAlignment = HorizontalAlignment.Center;
+            CellOK.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(CellOK);
+            Grid.SetRow(CellOK, 10);
+            Grid.SetColumn(CellOK, 0);
+
+            Rectangle CellOKRect = new Rectangle();
+            CellOKRect.Fill = new SolidColorBrush(Colors.LightBlue);
+            CellOKRect.Height = 30;
+            cellStatusGrid.Children.Add(CellOKRect);
+            Grid.SetRow(CellOKRect, 10);
+            Grid.SetColumn(CellOKRect, 1);
+
+            TextBlock strRRUAngAnt = new TextBlock();
+            strRRUAngAnt.Text = "RRU与天线阵状态";
+            strRRUAngAnt.HorizontalAlignment = HorizontalAlignment.Center;
+            strRRUAngAnt.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(strRRUAngAnt);
+            Grid.SetRow(strRRUAngAnt, 12);
+            Grid.SetColumnSpan(strRRUAngAnt, 2);
+
+            TextBlock notBelongCell = new TextBlock();
+            notBelongCell.Text = "未归属小区";
+            notBelongCell.HorizontalAlignment = HorizontalAlignment.Center;
+            notBelongCell.VerticalAlignment = VerticalAlignment.Center;
+            cellStatusGrid.Children.Add(notBelongCell);
+            Grid.SetRow(notBelongCell, 14);
+            Grid.SetColumn(notBelongCell, 0);
+
+            Rectangle notBelongCellRect = new Rectangle();
+            notBelongCellRect.Fill = new SolidColorBrush(Colors.DarkGray);
+            notBelongCellRect.Height = 30;
+            cellStatusGrid.Children.Add(notBelongCellRect);
+            Grid.SetRow(notBelongCellRect, 14);
+            Grid.SetColumn(notBelongCellRect, 1);
+
         }
     }
 }
