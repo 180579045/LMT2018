@@ -68,7 +68,7 @@ namespace NetPlan
 			return null;
 		}
 
-		public string GetDevAttributeValue(DevAttributeInfo dev, string strAttriName)
+		public static string GetDevAttributeValue(DevAttributeInfo dev, string strAttriName)
 		{
 			if (null == dev || string.IsNullOrEmpty(strAttriName))
 			{
@@ -151,13 +151,41 @@ namespace NetPlan
 		/// 增加一个新的天线设备
 		/// </summary>
 		/// <param name="nIndex">设备序号</param>
-		/// <param name="type"></param>
+		/// <param name="strVerdorName">厂家名称</param>
+		/// <param name="strAntTypeName">天线阵类型名</param>
 		/// <returns>null:添加失败</returns>
-		public DevAttributeInfo AddNewAnt(int nIndex, EnumDevType type = EnumDevType.ant)
+		public DevAttributeInfo AddNewAnt(int nIndex, string strVerdorName, string strAntTypeName)
 		{
+			const EnumDevType type = EnumDevType.ant;
 			var ant = GerenalNewDev(type, nIndex);
 			if (null == ant)
 			{
+				return null;
+			}
+
+			var strVendorNo = NPEAntHelper.GetInstance().GetVendorIndexByName(strVerdorName);
+			if (null == strVendorNo)
+			{
+				Log.Error($"根据厂家名{strVerdorName}获取厂家索引失败");
+				return null;
+			}
+
+			var strAntTypeNo = NPEAntHelper.GetInstance().GetTypeIndexByModelName(strAntTypeName);
+			if (null == strAntTypeNo)
+			{
+				Log.Error($"根据类型名{strAntTypeName}获取类型编号失败");
+				return null;
+			}
+
+			if (!ant.SetFieldOriginValue("netAntArrayVendorIndex", strVendorNo))
+			{
+				Log.Error($"设置字段netAntArrayVendorIndex的值{strVendorNo}失败");
+				return null;
+			}
+
+			if (!ant.SetFieldOriginValue("netAntArrayTypeIndex", strAntTypeNo))
+			{
+				Log.Error($"设置字段netAntArrayTypeIndex的值{strAntTypeNo}失败");
 				return null;
 			}
 

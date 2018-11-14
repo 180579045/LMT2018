@@ -19,7 +19,7 @@ namespace NetPlan
 		/// <summary>
 		/// 获取所有天线类型信息
 		/// </summary>
-		/// <returns>返回一个字典，key:添加厂家字符串，value:该厂家下所有的天线阵列表</returns>
+		/// <returns>返回一个字典，key:厂家字符串，value:该厂家下所有的天线阵列表</returns>
 		public Dictionary<string, List<AntType>> GetAllAntTypeInfo()
 		{
 			if (null == _antInfo)
@@ -54,9 +54,48 @@ namespace NetPlan
 			return mapAntInfo;
 		}
 
+		/// <summary>
+		/// 根据天线阵编号查询天线阵权重值
+		/// </summary>
+		/// <param name="antNo"></param>
+		/// <returns></returns>
 		public AntWeight GetAntWeightByNo(int antNo)
 		{
 			return _antInfo.antennaWeightTable.FirstOrDefault(antWeight => antNo == antWeight.antArrayNotMibNumber);
+		}
+
+		/// <summary>
+		/// 根据天线厂家名获取厂家索引
+		/// </summary>
+		/// <param name="strVendorName"></param>
+		/// <returns></returns>
+		public string GetVendorIndexByName(string strVendorName)
+		{
+			if (string.IsNullOrEmpty(strVendorName))
+			{
+				throw new ArgumentNullException(strVendorName);
+			}
+
+			return (from item in _antInfo.antennaTypeTable
+					where item.antArrayNotMibVendorName == strVendorName
+					select item.antArrayVendor.ToString()).FirstOrDefault();
+		}
+
+		/// <summary>
+		/// 根据天线阵类型名获取类型索引
+		/// </summary>
+		/// <param name="strModelName"></param>
+		/// <returns></returns>
+		public string GetTypeIndexByModelName(string strModelName)
+		{
+			if (string.IsNullOrEmpty(strModelName))
+			{
+				throw new ArgumentNullException(strModelName);
+			}
+
+			return (from item in _antInfo.antennaTypeTable
+					where item.antArrayModelName == strModelName
+					select item.antArrayIndex.ToString()).FirstOrDefault();
 		}
 
 		#endregion
