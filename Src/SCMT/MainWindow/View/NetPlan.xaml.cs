@@ -1201,7 +1201,7 @@ namespace SCMTMainWindow.View
             if(allLink.ContainsKey(EnumDevType.rru_ant))
             {
                 for(int i = 0; i < allLink[EnumDevType.rru_ant].Count; i++)
-                { 
+                {
                     if(i < allLink[EnumDevType.rru_ant].Count-1)
                     {
                         if (allLink[EnumDevType.rru_ant][i].m_dstEndPoint.strDevIndex.Equals(allLink[EnumDevType.rru_ant][i + 1].m_dstEndPoint.strDevIndex))
@@ -1209,8 +1209,14 @@ namespace SCMTMainWindow.View
                             continue;
                         }
                     }
-
                     InitRRUToAnt(allLink[EnumDevType.rru_ant][i]);
+                }
+            }
+            if(allLink.ContainsKey(EnumDevType.rhub_prru))
+            {
+                foreach(var item in allLink[EnumDevType.rhub_prru])
+                {
+                    InitRHUBToPRRU(item);
                 }
             }
         }
@@ -1412,6 +1418,7 @@ namespace SCMTMainWindow.View
         }
 
         private void InitRRUToAnt(WholeLink linkRRUToAnt)
+
         {
             //如果目的设备是 rru
             if (linkRRUToAnt.m_srcEndPoint.devType == EnumDevType.rru)
@@ -1456,7 +1463,7 @@ namespace SCMTMainWindow.View
                     //寻找  目标连接点  ant
                     if (MyDesigner.g_AllDevInfo[EnumDevType.ant][strName].Equals(linkRRUToAnt.m_dstEndPoint.strDevIndex))
                     {
-                        int nPortNo = linkRRUToAnt.m_srcEndPoint.nPortNo > 16 ? 1 : linkRRUToAnt.m_srcEndPoint.nPortNo;
+                        int nPortNo = linkRRUToAnt.m_dstEndPoint.nPortNo > 16 ? 1 : linkRRUToAnt.m_dstEndPoint.nPortNo;
                         dstConnector = FindDevConnector(strName, nPortNo, EnumPortType.ant_to_rru);
                         if (dstConnector == null)
                         {
@@ -1491,6 +1498,90 @@ namespace SCMTMainWindow.View
             {
 
             }
+
+        }
+
+        private void InitRHUBToPRRU(WholeLink linkrHUBToprru)
+        {
+            //如果目的设备是 rHUB
+            if (linkrHUBToprru.m_srcEndPoint.devType == EnumDevType.rhub)
+            {
+                Connector dstConnector = new Connector();
+                Connector srcConnector = new Connector();
+
+                DesignerItem rhubItem = new DesignerItem();
+                //对每一个连接，都要遍历在设备信息中是否存在该设备
+                foreach (string strName in MyDesigner.g_AllDevInfo[EnumDevType.rhub].Keys)
+                {
+                    //先找到 源连接点 即 rHUB
+                    if (MyDesigner.g_AllDevInfo[EnumDevType.rhub][strName].Equals(linkrHUBToprru.m_srcEndPoint.strDevIndex))
+                    {
+                        int nPortNo = linkrHUBToprru.m_srcEndPoint.nPortNo > 16 ? 1 : linkrHUBToprru.m_srcEndPoint.nPortNo;
+                        srcConnector = FindDevConnector(strName, nPortNo, EnumPortType.rhub_to_pico);
+                        if (srcConnector == null)
+                        {
+                            MessageBox.Show("没有找到 rhub InitRHUBToPRRU");
+                            return;
+                        }
+                        for (int i = 1; i < MyDesigner.Children.Count; i++)
+                        {
+                            if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                            {
+                                DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                                if (targetItem.ItemName.Equals(strName))
+                                {
+                                    rhubItem = targetItem;
+                                    break;
+                                }
+                            }
+                        }
+                        //跳出循环
+                        break;
+                    }
+                }
+
+                foreach (string strName in MyDesigner.g_AllDevInfo[EnumDevType.rru].Keys)
+                {
+                    //寻找  目标连接点  rru
+                    if (MyDesigner.g_AllDevInfo[EnumDevType.rru][strName].Equals(linkrHUBToprru.m_dstEndPoint.strDevIndex))
+                    {
+                        int nPortNo = linkrHUBToprru.m_dstEndPoint.nPortNo > 16 ? 1 : linkrHUBToprru.m_dstEndPoint.nPortNo;
+                        dstConnector = FindDevConnector(strName, nPortNo, EnumPortType.rru_to_other);
+                        if (dstConnector == null)
+                        {
+                            MessageBox.Show("没有找到 pico InitRHUBToPRRU");
+                            return;
+                        }
+                        //构造连接
+                        Connection newConnection = new Connection(srcConnector, dstConnector);
+                        Canvas.SetZIndex(newConnection, MyDesigner.Children.Count);
+                        MyDesigner.Children.Add(newConnection);
+
+                        for (int i = 1; i < MyDesigner.Children.Count; i++)
+                        {
+                            if ((MyDesigner.Children[i].GetType() == typeof(DesignerItem)))
+                            {
+                                DesignerItem targetItem = MyDesigner.Children[i] as DesignerItem;
+
+                                if (targetItem.ItemName.Equals(strName))
+                                {
+                                    DesignerCanvas.SetLeft(targetItem, DesignerCanvas.GetLeft(rhubItem) + 220);
+                                    DesignerCanvas.SetTop(targetItem, DesignerCanvas.GetTop(rhubItem) - 20);
+                                    break;
+                                }
+                            }
+                        }
+
+                        break;
+                    }
+                }
+            }
+            else
+            {
+
+            }
+
 
         }
 
