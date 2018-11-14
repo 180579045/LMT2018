@@ -68,44 +68,6 @@ namespace NetPlan
 			return null;
 		}
 
-		/// <summary>
-		/// 根据设备类型、索引、属性名查找该属性的值
-		/// </summary>
-		/// <param name="strIndex"></param>
-		/// <param name="type"></param>
-		/// <param name="strAttriName"></param>
-		/// <returns></returns>
-		public string GetDevAttributeValue(string strIndex, EnumDevType type, string strAttriName)
-		{
-			if (string.IsNullOrEmpty(strAttriName))
-			{
-				throw new CustomException($"传入参数无效");
-			}
-
-			var devWithSameIndex = GetDevAttributeInfo(strIndex, type);
-			if (null == devWithSameIndex)
-			{
-				Log.Error($"未找到索引为 {strIndex} 类型为 {type.ToString()} 的设备");
-				return null;
-			}
-
-			var mapAttri = devWithSameIndex.m_mapAttributes;
-			if (null == mapAttri || 0 == mapAttri.Count)
-			{
-				Log.Error($"索引为 {strIndex} 类型为 {type.ToString()} 的设备属性信息为空");
-				return null;
-			}
-
-			var strAttriValue = GetEnumStringByMibName(mapAttri, strAttriName);
-			if (null == strAttriValue)
-			{
-				Log.Error($"索引为 {strIndex} 类型为 {type.ToString()} 的设备属性 {strAttriName} 值为null");
-				return null;
-			}
-
-			return strAttriValue;
-		}
-
 		public string GetDevAttributeValue(DevAttributeInfo dev, string strAttriName)
 		{
 			if (null == dev || string.IsNullOrEmpty(strAttriName))
@@ -113,8 +75,7 @@ namespace NetPlan
 				throw new CustomException("传入参数无效");
 			}
 
-			var strAttriValue = GetEnumStringByMibName(dev.m_mapAttributes, strAttriName);
-			return strAttriValue;
+			return GetNeedUpdateValue(dev, strAttriName); ;
 		}
 
 		/// <summary>
@@ -389,7 +350,7 @@ namespace NetPlan
 			var type = EnumDevType.nrNetLcCtr;
 			var dev = new DevAttributeInfo(type, strIndex);
 
-			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue))
+			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue, true))
 			{
 				Log.Error($"设置字段 nrNetLocalCellCtrlConfigSwitch 的 OriginValue 为{strSwitchValue}失败");
 				return null;
@@ -1274,9 +1235,8 @@ namespace NetPlan
 				return null;
 			}
 
-			var ret = (null == attri.m_strLatestValue)
-				? SnmpToDatabase.ConvertValueToString(attri.mibAttri, attri.m_strOriginValue)
-				: SnmpToDatabase.ConvertValueToString(attri.mibAttri, attri.m_strLatestValue);
+			// 现在m_strOriginValue和m_strLatestValue存的是数字对应的字符串，无需转换
+			var ret = GetNeedUpdateValue(attri.m_strOriginValue, attri.m_strLatestValue);
 
 			return ret;
 		}
