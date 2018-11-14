@@ -116,7 +116,7 @@ namespace NetPlan
 			var ctrlDev = MibInfoMgr.GetInstance().GetDevAttributeInfo(strIndexTemp, EnumDevType.nrNetLcCtr);
 			if (null != ctrlDev)
 			{
-				var ctrlValue = MibInfoMgr.GetInstance().GetDevAttributeValue(ctrlDev, "nrNetLocalCellCtrlConfigSwitch");
+				var ctrlValue = MibInfoMgr.GetDevAttributeValue(ctrlDev, "nrNetLocalCellCtrlConfigSwitch");
 				if (null != ctrlValue)
 				{
 					return int.Parse(ctrlValue);
@@ -164,7 +164,7 @@ namespace NetPlan
 			var strIndexTemp = $".{nCellId}";
 
 			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
-			var enbType = EnbTypeEnum.ENB_EMB6116;
+			const EnbTypeEnum enbType = EnbTypeEnum.ENB_EMB6116;
 			var cmdName = "SetCellActiveTrigger";
 			var name2Value = new DIC_DOUBLE_STR();
 			if (EnbTypeEnum.ENB_EMB6116 == enbType)
@@ -280,7 +280,11 @@ namespace NetPlan
 					CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetLocalNRCellInfo", ref mapMibToValue, targetIp);
 				if (!bSuc)
 				{
-					Log.Error($"命令 GetLocalNRCellInfo 执行失败，本地小区{nCellId}状态设置为：Disabled");
+					Log.Error($"命令 GetLocalNRCellInfo 执行失败，原因：{SnmpErrDescHelper.GetLastErrorDesc()}。");
+					if (342 == SnmpErrDescHelper.GetLastErrorCode())
+					{
+						return LcStatus.UnPlan;
+					}
 					return LcStatus.Disabled;
 				}
 
