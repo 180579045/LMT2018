@@ -75,7 +75,7 @@ namespace SCMTMainWindow.View
                     Grid.SetRow(rruPoint, i + 1);
 
                     TextBlock lteCellID = new TextBlock();
-                    lteCellID.MouseLeftButtonDown += LteCellID_MouseLeftButtonDown;
+                    lteCellID.PreviewMouseLeftButtonUp += LteCellID_PreviewMouseLeftButtonUp;
                     lteCellID.HorizontalAlignment = HorizontalAlignment.Stretch;
                     lteCellID.TextAlignment = TextAlignment.Center;
                     string strCellId = string.Empty;
@@ -117,40 +117,22 @@ namespace SCMTMainWindow.View
             }
         }
 
-        private void RadioPathDirection_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// 确定选择小区id
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOK_Click(object sender, RoutedEventArgs e)
-        {
-            Button targetBtn = sender as Button;
-            Grid targetGrid = targetBtn.Parent as Grid;
-            Border targetBorder = targetGrid.Parent as Border;
-            Popup targetPop = targetBorder.Parent as Popup;
-
-            targetPop.IsOpen = false;
-
-        }
 
         /// <summary>
         /// 小区id 列 鼠标单击时弹出
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LteCellID_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void LteCellID_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             TextBlock targetItem = sender as TextBlock;
 
             //尝试使用 popup 弹出
             Popup newpop = new Popup();
             newpop.PlacementTarget = targetItem;
-            newpop.StaysOpen = true;
+            newpop.StaysOpen = false;
             newpop.IsOpen = true;
+            newpop.Focus();
             //newpop.Width = 150;
             //newpop.Height = 200;
 
@@ -173,7 +155,7 @@ namespace SCMTMainWindow.View
             newgrid.Children.Add(strTitle);
             strTitle.Margin = new Thickness(5);
 
-            for(int i = 0; i < g_listCell.Count; i++)
+            for (int i = 0; i < g_listCell.Count; i++)
             {
                 RowDefinition newRow = new RowDefinition();
                 newRow.Height = GridLength.Auto;
@@ -198,6 +180,26 @@ namespace SCMTMainWindow.View
             newgrid.Children.Add(btnOK);
             Grid.SetRow(btnOK, g_listCell.Count + 1);
             btnOK.Margin = new Thickness(5);
+        }
+
+        private void RadioPathDirection_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// 确定选择小区id
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnOK_Click(object sender, RoutedEventArgs e)
+        {
+            Button targetBtn = sender as Button;
+            Grid targetGrid = targetBtn.Parent as Grid;
+            Border targetBorder = targetGrid.Parent as Border;
+            Popup targetPop = targetBorder.Parent as Popup;
+
+            targetPop.IsOpen = false;
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
