@@ -252,7 +252,7 @@ namespace SCMTMainWindow.View
         /// <returns></returns>
         public string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
 
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
@@ -441,7 +441,7 @@ namespace SCMTMainWindow.View
         /// <returns></returns>
         public string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
 
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
@@ -567,7 +567,7 @@ namespace SCMTMainWindow.View
         }
         public string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
 
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;

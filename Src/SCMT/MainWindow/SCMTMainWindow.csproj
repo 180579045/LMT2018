@@ -546,7 +546,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="README.md" />
-    <Resource Include="View\Resources\Stencils\XMLFile1.xml">
+    <Resource Include="View\Resources\Stencils\NetElement.xml">
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>
