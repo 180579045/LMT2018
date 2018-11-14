@@ -485,14 +485,17 @@ namespace SCMTMainWindow.View
             ChooseAntennaType dlg = new ChooseAntennaType();
             dlg.ShowDialog();
 
+            if(!dlg.bOK)
+            {
+                return false;
+            }
 
-
-            int nMaxRRUPath = dlg.nAntennaType;         //RRU的最大通道数
+            AntType antInfo = dlg.currentSelectedAntType;         //RRU的最大通道数
             int nRRUNumber = 1;           //需要添加的RRU的数量
             string strXAML = string.Empty;                                        //解析xml文件
             Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
             string strRRUName = "No:";
-            strXAML = GetAntennaromXML(nMaxRRUPath, strXAML, out newSize);
+            strXAML = GetAntennaromXML(antInfo.antArrayNum, strXAML, out newSize);
 
             dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
 
@@ -512,7 +515,7 @@ namespace SCMTMainWindow.View
                 newItem.ItemName = strRRUFullName;
                 
                 //添加 ant 的时候需要给基站下发，然后获取设备信息
-                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo);
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo, antInfo.antArrayNotMibVendorName, antInfo.antArrayModelName);
 
                 if (devRRUInfo == null)
                 {

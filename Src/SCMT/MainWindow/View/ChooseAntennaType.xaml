@@ -18,11 +18,11 @@
         </Grid.RowDefinitions>
 
         <!--rHUB类型-->
-        <Label Grid.Row="1" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">天线阵类型</Label>
+        <Label Grid.Row="1" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">厂家名称</Label>
         <ComboBox Name="cbAntennaType" Width="150" Height="30" Grid.Row="1" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbAntennaType_SelectionChanged"></ComboBox>
 
         <!--rHUB 光口工作模式-->
-        <Label Grid.Row="2" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">工作模式</Label>
+        <Label Grid.Row="2" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">天线类型</Label>
         <ComboBox Name="cbAntennaWorkModel" Width="150" Height="30" Grid.Row="2" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbAntennaWorkModel_SelectionChanged"></ComboBox>
 
         <!--添加的 rHUB 的数量-->

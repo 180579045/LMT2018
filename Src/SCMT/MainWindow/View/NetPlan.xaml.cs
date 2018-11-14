@@ -306,7 +306,10 @@ namespace SCMTMainWindow.View
 
             if (!this.MyDesigner.g_cellPlaning.Contains(nCellNumber))
             {
-                this.MyDesigner.g_cellPlaning.Add(nCellNumber);
+                if (NPCellOperator.SetNetPlanSwitch(true, nCellNumber, CSEnbHelper.GetCurEnbAddr()))
+                {
+                    this.MyDesigner.g_cellPlaning.Add(nCellNumber);
+                }
             }
         }
 
