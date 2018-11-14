@@ -130,7 +130,17 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void NewGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            string strIP = CSEnbHelper.GetCurEnbAddr();
+            if(strIP == null || strIP == "")
+            {
+                MessageBox.Show("未选择基站");
+                return;
+            }
+
             Grid targetRect = sender as Grid;
+            int nCellId = this.nrRectCanvas.Children.IndexOf(targetRect);
+            var cellStatus = NPCellOperator.GetLcStatus(nCellId, strIP);
+
             ContextMenu cellRightMenu = new ContextMenu();
 
             MenuItem doCellPlan = new MenuItem();
@@ -168,6 +178,47 @@ namespace SCMTMainWindow.View
             deleteLocalCell.Name = "deleteLocalCell";
             deleteLocalCell.Click += DeleteLocalCell_Click;
             cellRightMenu.Items.Add(deleteLocalCell);
+
+            switch(cellStatus)
+            {
+                case LcStatus.UnPlan:
+                    doCellPlan.IsEnabled = true;
+                    deleteCellPlan.IsEnabled = false;
+                    cancel.IsEnabled = false;
+                    activeCell.IsEnabled = false;
+                    deleteLocalCell.IsEnabled = false;
+                    break;
+                case LcStatus.Planning:
+                    doCellPlan.IsEnabled = false;
+                    deleteCellPlan.IsEnabled = false;
+                    cancel.IsEnabled = true;
+                    activeCell.IsEnabled = false;
+                    deleteLocalCell.IsEnabled = false;
+                    break;
+                case LcStatus.LcUnBuilded:
+                    doCellPlan.IsEnabled = true;
+                    deleteCellPlan.IsEnabled = true;
+                    cancel.IsEnabled = false;
+                    activeCell.IsEnabled = false;
+                    deleteLocalCell.IsEnabled = false;
+                    break;
+                case LcStatus.LcBuilded:
+                    doCellPlan.IsEnabled = false;
+                    deleteCellPlan.IsEnabled = false;
+                    cancel.IsEnabled = false;
+                    activeCell.IsEnabled = false;
+                    deleteLocalCell.IsEnabled = true;
+                    break;
+                case LcStatus.CellBuilded:
+                    doCellPlan.IsEnabled = false;
+                    deleteCellPlan.IsEnabled = false;
+                    cancel.IsEnabled = false;
+                    activeCell.IsEnabled = true;
+                    deleteLocalCell.IsEnabled = false;
+                    break;
+                default:
+                    break;
+            }
 
             targetRect.ContextMenu = cellRightMenu;
         }
@@ -741,6 +792,35 @@ namespace SCMTMainWindow.View
             {
                 MessageBox.Show("未选择基站  InitCellStatus");
                 return;
+            }
+
+            for(int i = 0; i < this.nrRectCanvas.Children.Count; i++)
+            {
+                Grid targetGrid = this.nrRectCanvas.Children[i] as Grid;
+                Rectangle rect = targetGrid.Children[0] as Rectangle;
+
+                var cellStatus = NPCellOperator.GetLcStatus(i, strIP);
+
+                switch(cellStatus)
+                {
+                    case LcStatus.UnPlan:
+                        rect.Fill = new SolidColorBrush(Colors.Red);
+                        break;
+                    case LcStatus.Planning:
+                        rect.Fill = new SolidColorBrush(Colors.LightGreen);
+                        break;
+                    case LcStatus.LcUnBuilded:
+                        rect.Fill = new SolidColorBrush(Colors.Yellow);
+                        break;
+                    case LcStatus.LcBuilded:
+                        rect.Fill = new SolidColorBrush(Colors.Blue);
+                        break;
+                    case LcStatus.CellBuilded:
+                        rect.Fill = new SolidColorBrush(Colors.LightBlue);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
