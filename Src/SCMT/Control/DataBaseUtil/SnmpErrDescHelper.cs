@@ -12,13 +12,13 @@
 * 2018.10.xx  XXXX            XXXXX
 *************************************************************************************/
 
-using CommonUtility;
-using LogManager;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
 using System.Linq;
 using System.Text;
+using CommonUtility;
+using LogManager;
+using Newtonsoft.Json.Linq;
 
 namespace DataBaseUtil
 {
@@ -55,13 +55,13 @@ namespace DataBaseUtil
 			var strSearch = $"errorID = '{strErrId}'";
 			var dr = m_ErrDescTable.Select(strSearch);
 
-			if (dr.LongCount() > 0 )
+			if (dr.LongCount() > 0)
 			{
 				snmpErrDesc = new SnmpErrDesc
 				{
-					errorID = (string) dr[0]["errorID"],
-					errorChDesc = (string) dr[0]["errorChDesc"],
-					errorEnDesc = (string) dr[0]["errorEnDesc"]
+					errorID = (string)dr[0]["errorID"],
+					errorChDesc = (string)dr[0]["errorChDesc"],
+					errorEnDesc = (string)dr[0]["errorEnDesc"]
 				};
 
 				return snmpErrDesc;
@@ -84,7 +84,10 @@ namespace DataBaseUtil
 		/// <param name="nCode"></param>
 		public static void SetLastErrorCode(int nCode)
 		{
-			m_nLastErrorStatus = nCode;
+			lock (m_syncObj)
+			{
+				m_nLastErrorStatus = nCode;
+			}
 		}
 
 		/// <summary>
@@ -93,8 +96,19 @@ namespace DataBaseUtil
 		/// <returns></returns>
 		public static string GetLastErrorDesc()
 		{
-			var objErr = GetErrDescById(m_nLastErrorStatus.ToString());
-			return objErr.errorChDesc;
+			lock (m_syncObj)
+			{
+				var objErr = GetErrDescById(m_nLastErrorStatus.ToString());
+				return objErr.errorChDesc;
+			}
+		}
+
+		public static int GetLastErrorCode()
+		{
+			lock (m_syncObj)
+			{
+				return m_nLastErrorStatus;
+			}
 		}
 
 		/// <summary>
@@ -131,5 +145,6 @@ namespace DataBaseUtil
 			return snmpErrDesc;
 		}
 
+		private static readonly object m_syncObj = new object();
 	}
 }
