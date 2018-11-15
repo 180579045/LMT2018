@@ -95,6 +95,36 @@ namespace SCMTOperationCore.Control
 			return newNodeb;
 		}
 
+        /// <summary>
+        /// 修改网元的友好名，根据IP地址直接替换原来的友好名
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="friendlyName"></param>
+        /// <returns></returns>
+        public bool ModifyElement(string ip, string friendlyName)
+        {
+            string errorInfo = "";
+            if (!HasSameIpAddr(ip))
+            {
+                errorInfo = $"地址为{ip}的基站不存在，友好名为{friendlyName}";
+                Log.Error(errorInfo);
+                throw new CustomException(errorInfo);
+            }
+
+            if (mapElements.ContainsKey(ip))
+            {
+                mapElements[ip].FriendlyName = friendlyName;
+            }
+
+            if (!BSConInfo.GetInstance().modifyBaseStationConInfoByName(friendlyName, ip))
+            {
+                Log.Error("数据库模块修改节点配置失败");
+            }
+
+            return true;
+
+        }
+
 		// 删除网元
 		public override bool DelElement(string ip)
 		{

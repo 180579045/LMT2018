@@ -1775,6 +1775,7 @@ namespace SCMTMainWindow
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
 			EnableMenu(ip, "数据同步");
+            EnableMenu(ip, "修改友好名", false);
 
 			if (!result)
 			{
@@ -1805,6 +1806,7 @@ namespace SCMTMainWindow
 			EnableMenu(ip, "连接基站");
 			EnableMenu(ip, "断开连接", false);
 			EnableMenu(ip, "数据同步", false);
+            EnableMenu(ip, "修改友好名");
 
 			// 文件管理按钮禁用，文件管理窗口关闭
 			CloseFileMgrDlg(fname);

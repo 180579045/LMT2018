@@ -2036,10 +2036,13 @@ namespace SCMTMainWindow.View
             MyDesigner.Children.Clear();
         }
 
+        #region 网规模板列表相关操作
         /// <summary>
         /// 保存网规模板文件路径和文件名
         /// </summary>
         private Dictionary<string, string> dicTemplateFile;
+        //判断是否取消模板连接点
+        private bool bTemHiddenLineConnector = true;
 
         /// <summary>
         ///创建网规模板列表
@@ -2062,65 +2065,6 @@ namespace SCMTMainWindow.View
             }                                   
         }
 
-        private void ExportTemplateMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            //NPTemplate template = new NPTemplate();
-            //List <RruInfo> rruInfo = NPERruHelper.GetInstance().GetAllRruInfo();
-
-            //foreach (RruInfo info in rruInfo)
-            //{
-            //    foreach(string key in MyDesigner.g_GridForNet.Keys)
-            //    {
-            //        var pos = key.LastIndexOf("-");
-            //        var tem = key.Substring(0, pos);
-            //        if (tem.Equals(info.rruTypeName))
-            //        {
-            //            template.rruTypeInfo.Add(info);
-            //        }
-            //    }           
-            //}
-            //template.TemplateName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-
-            //NetPlanTemplateInfo.GetInstance().SaveNetPlanTemplate(template);
-
-            return;
-        }
-
-        private void ImportTemplateMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
-            {
-                //Filter = "Json Files(*.json)|*.json"
-            };
-            var result = openFileDialog.ShowDialog();
-            if (result == true)
-            {
-                var filename = openFileDialog.FileName;
-                int index = filename.LastIndexOf("\\");
-                filename = filename.Substring(index + 1);
-                if (!dicTemplateFile.ContainsKey(filename))
-                    dicTemplateFile.Add(filename, openFileDialog.FileName);
-
-                //判断列表中是否存在
-                bool isexist = false;
-                foreach(string fname in TemplateFileList.Items)
-                {
-                    if (fname.Equals(filename))
-                        isexist = true;
-                }
-
-                if(!isexist)
-                   TemplateFileList.Items.Add(filename);
-            }
-               
-            return;
-        }
-
-        private void NewTemplateMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            return;
-        }
-
         private void TemplateListViewItem_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             ListViewItem item = sender as ListViewItem;
@@ -2139,9 +2083,111 @@ namespace SCMTMainWindow.View
                 NPTemplate npTempalte = NetPlanTemplateInfo.GetInstance().GetTemplateInfoFromFile(path);
 
                 if(npTempalte != null)
-                   MyDesigner.DrawTemplate(npTempalte);
+                {
+                    //在网规页面：根据文件网元信息填充到当前网规中，后期处理
+
+                    //在模板页面：清空当前模板窗口
+                    MyDesignerTemplate.ClearTemInfo();                  
+                    //绘制当前选中模板信息
+                    MyDesignerTemplate.DrawTemplate(npTempalte);
+                }              
             }
         }
+
+        /// <summary>
+        /// 导入模板
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TemImportHandler(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog()
+            {
+                //Filter = "Json Files(*.json)|*.json"
+            };
+            var result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                var filename = openFileDialog.FileName;
+                int index = filename.LastIndexOf("\\");
+                filename = filename.Substring(index + 1);
+                if (!dicTemplateFile.ContainsKey(filename))
+                    dicTemplateFile.Add(filename, openFileDialog.FileName);
+
+                //判断列表中是否存在
+                bool isexist = false;
+                foreach (string fname in TemplateFileList.Items)
+                {
+                    if (fname.Equals(filename))
+                        isexist = true;
+                }
+
+                if (!isexist)
+                    TemplateFileList.Items.Add(filename);
+            }
+
+            return;
+        }
+        /// <summary>
+        /// 导出模板
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TemExportHandler(object sender, RoutedEventArgs e)
+        {
+            MyDesignerTemplate.CreateTempalteToFile();
+            CreateTemplateList();
+        }
+
+        private void VisibilityTemAllConnector()
+        {
+            for (int i = 1; i < MyDesignerTemplate.Children.Count; i++)
+            {
+                if ((MyDesignerTemplate.Children[i].GetType() == typeof(DesignerItem)))
+                {
+                    DesignerItem targetItem = MyDesignerTemplate.Children[i] as DesignerItem;
+
+                    VisibilityConnectorDecoratorTemplate(targetItem);
+                }
+            }
+        }
+
+        private void DeleteTemAllItemConnector()
+        {
+            for (int i = 1; i < MyDesignerTemplate.Children.Count; i++)
+            {
+                if ((MyDesignerTemplate.Children[i].GetType() == typeof(DesignerItem)))
+                {
+                    DesignerItem targetItem = MyDesignerTemplate.Children[i] as DesignerItem;
+
+                    HiddenConnectorDecoratorTemplate(targetItem);
+                }
+            }
+        }
+        private void TemLineHandler(object sender, RoutedEventArgs e)
+        {
+            if (bTemHiddenLineConnector)     //如果连接点已经被取消，则重新打开
+            {
+                VisibilityTemAllConnector();
+                bTemHiddenLineConnector = false;
+            }
+            else
+            {
+                DeleteTemAllItemConnector();
+                bTemHiddenLineConnector = true;
+            }
+        }
+
+        private void TemClearHandler(object sender, RoutedEventArgs e)
+        {
+            MyDesignerTemplate.ClearTemInfo();
+        }
+
+        private void MyDesignerTemplate_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+
+        }
+        #endregion
 
         /// <summary>
         /// 小区状态显示
