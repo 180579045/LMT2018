@@ -41,14 +41,14 @@ namespace SCMTMainWindow.View
             this.BoardType.SelectedIndex = 0;
 
 
-            List<string> listStringWorkModel = NPEBoardHelper.GetBoardWorkMode();
+            IEnumerable<string> listStringWorkModel = NPEBoardHelper.GetBoardWorkMode();
             foreach(string item in listStringWorkModel)
             {
                 this.workMode.Items.Add(item);
             }
             this.workMode.SelectedIndex = 0;
 
-            List<string> listStringFSM = NPEBoardHelper.GetBoardIrFrameType();
+            IEnumerable<string> listStringFSM = NPEBoardHelper.GetBoardIrFrameType();
             foreach (string item in listStringFSM)
             {
                 this.fsm.Items.Add(item);

@@ -301,6 +301,7 @@ namespace LmtbSnmp
 
 		/// <summary>
 		/// 将从SNMP协议读取到的数值转换为string类型;
+		/// e.g. "managerValueRange": "4:行有效/6:行无效", strValue传入4，返回行有效；传入6，返回行无效
 		/// </summary>
 		/// <param name="mibLeaf">Mib节点</param>
 		/// <param name="strValue">Snmp返回的具体数值</param>

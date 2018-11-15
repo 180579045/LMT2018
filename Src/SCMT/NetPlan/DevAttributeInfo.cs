@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
@@ -20,7 +23,8 @@ namespace NetPlan
 	}
 
 	// 设备的属性
-	public class DevAttributeInfo
+	[Serializable]
+	public class DevAttributeInfo : ICloneable
 	{
 		#region 公有属性
 
@@ -53,6 +57,7 @@ namespace NetPlan
 			//m_strOidIndex = m_bIsScalar ? ".0" : GerenalDevOidIndex(devIndex);	// 如果是标量，索引就直接设置为.0
 
 			InitDevInfo(mEnumDevType, devIndex);
+			m_recordType = RecordDataType.NewAdd;
 		}
 
 		/// <summary>
@@ -68,6 +73,8 @@ namespace NetPlan
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
 			InitDevInfo(mEnumDevType);
+
+			m_recordType = RecordDataType.NewAdd;
 		}
 
 		/// <summary>
@@ -116,8 +123,9 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strFieldName">待修改的字段名</param>
 		/// <param name="strLatestValue">最后的值</param>
+		/// <param name="bConvertToEnum">是否转换为枚举值</param>
 		/// <returns>修改成功返回true，修改失败返回false</returns>
-		public bool SetFieldValue(string strFieldName, string strLatestValue)
+		public bool SetFieldLatestValue(string strFieldName, string strLatestValue, bool bConvertToEnum = true)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strLatestValue))
 			{
@@ -135,12 +143,17 @@ namespace NetPlan
 				return false;
 			}
 
-			if (!field.SetValue(strLatestValue))
+			var strValue = strLatestValue;
+			if (bConvertToEnum)
 			{
-				return false;
+				int ret;
+				if (int.TryParse(strValue, out ret))
+				{
+					strValue = SnmpToDatabase.ConvertValueToString(field.mibAttri, strLatestValue);
+				}
 			}
 
-			return true;
+			return field.SetLatestValue(strValue);
 		}
 
 		/// <summary>
@@ -148,9 +161,9 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strFieldName"></param>
 		/// <param name="strOriginValue"></param>
-		/// <param name="bConvertToEnum">枚举值是否转为原值</param>
+		/// <param name="bConvertToEnum">枚举值是否转为int型值，也就是 : 前面的数字</param>
 		/// <returns></returns>
-		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = true)
+		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = false)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strOriginValue))
 			{
@@ -171,20 +184,10 @@ namespace NetPlan
 			var strValue = strOriginValue;
 			if (bConvertToEnum)
 			{
-				var managerRange = field.mibAttri.managerValueRange;
-				var mapEnums = MibStringHelper.SplitManageValue(managerRange);
-				if (null == mapEnums)
+				int ret;
+				if (int.TryParse(strValue, out ret))
 				{
-					return false;
-				}
-
-				foreach (var kv in mapEnums)
-				{
-					if (kv.Value == strOriginValue)
-					{
-						strValue = kv.Key.ToString();
-						break;
-					}
+					strValue = SnmpToDatabase.ConvertValueToString(field.mibAttri, strOriginValue);
 				}
 			}
 
@@ -273,6 +276,21 @@ namespace NetPlan
 			}
 
 			return latestValue;
+		}
+
+		/// <summary>
+		/// 判断一个字段是否存在。不同的MIB版本可能存在不一致
+		/// </summary>
+		/// <param name="strFieldName"></param>
+		/// <returns></returns>
+		public bool IsExistField(string strFieldName)
+		{
+			if (string.IsNullOrEmpty(strFieldName))
+			{
+				throw new ArgumentNullException(strFieldName);
+			}
+
+			return m_mapAttributes.ContainsKey(strFieldName);
 		}
 
 		#endregion
@@ -429,11 +447,35 @@ namespace NetPlan
 
 		#endregion
 
+		//深拷贝
+		public DevAttributeInfo DeepClone()
+		{
+			using (Stream objectStream = new MemoryStream())
+			{
+				IFormatter formatter = new BinaryFormatter();
+				formatter.Serialize(objectStream, this);
+				objectStream.Seek(0, SeekOrigin.Begin);
+				return formatter.Deserialize(objectStream) as DevAttributeInfo;
+			}
+		}
+
+		//浅拷贝
+		public object Clone()
+		{
+			return this.MemberwiseClone();
+		}
+
+		//浅拷贝
+		public DevAttributeInfo ShallowClone()
+		{
+			return this.Clone() as DevAttributeInfo;
+		}
 	}
 
 	/// <summary>
 	/// rhub设备，需要区分版本
 	/// </summary>
+	[Serializable]
 	public class RHubDevAttri : DevAttributeInfo
 	{
 		public RHubDevAttri(int devIndex, string strDevVersion)

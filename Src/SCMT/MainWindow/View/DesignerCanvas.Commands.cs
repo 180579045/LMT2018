@@ -13,6 +13,8 @@ using System.Xml;
 using System.Xml.Linq;
 using Microsoft.Win32;
 
+using NetPlan;
+
 namespace SCMTMainWindow.View
 {
     public partial class DesignerCanvas
@@ -262,7 +264,8 @@ namespace SCMTMainWindow.View
 
         private void Delete_Enabled(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = this.SelectionService.CurrentSelection.Count() > 0;
+            //e.CanExecute = this.SelectionService.CurrentSelection.Count() > 0;
+            e.CanExecute = true;
         }
 
         #endregion
@@ -907,7 +910,7 @@ namespace SCMTMainWindow.View
         {
             foreach (Connection connection in SelectionService.CurrentSelection.OfType<Connection>())
             {
-                this.Children.Remove(connection);
+                DeleteConnection(connection);
             }
 
             foreach (DesignerItem item in SelectionService.CurrentSelection.OfType<DesignerItem>())
@@ -921,7 +924,7 @@ namespace SCMTMainWindow.View
                 {
                     foreach (Connection con in connector.Connections)
                     {
-                        this.Children.Remove(con);
+                        DeleteConnection(con);
                     }
                 }
                 this.Children.Remove(item);
@@ -929,19 +932,118 @@ namespace SCMTMainWindow.View
                 //从全局 list 中删除相关的项
                 Grid grid = item.Content as Grid;
                 TextBlock text = grid.Children[1] as TextBlock;
-                
-                //this.dicRRU.Remove(text.Text);
-                //首先判断属性框中是否是当前的属性
-                if ((this.gridProperty.Children.Count != 0) && (this.gridProperty.Children[0] == this.g_GridForNet[text.Text]))
+
+                if(MibInfoMgr.GetInstance().DelDev(item.DevIndex, item.DevType))
                 {
-                    this.gridProperty.Children.Clear();
-                }
-                this.globalDic.Remove(text.Text);
-                this.g_GridForNet.Remove(text.Text);
+                    //从全局中删除当前设备及其索引
+                    if(this.g_AllDevInfo[item.DevType].ContainsKey(item.ItemName))
+                    {
+                        this.g_AllDevInfo[item.DevType].Remove(item.ItemName);
+                    }
+                    //首先判断属性框中是否是当前的属性
+                    if ((this.gridProperty.Children.Count != 0))
+                    {
+                        Grid propertyGrid = this.gridProperty.Children[0] as Grid;
+                        TextBlock textName = propertyGrid.Children[1] as TextBlock;
+
+                        if (textName.Text == text.Text)
+                        {
+                            this.gridProperty.Children.Clear();
+                        }
+                    }
+                }                
             }
 
             SelectionService.ClearSelection();
             UpdateZIndex();
+        }
+
+        private bool DeleteConnection(Connection connection)
+        {
+            LinkEndpoint srcPort = new LinkEndpoint();
+            srcPort.devType = connection.Source.DevType;
+            srcPort.strDevIndex = connection.Source.DevIndex;
+            srcPort.nPortNo = connection.Source.PortNo;
+
+            LinkEndpoint dstPort = new LinkEndpoint();
+            dstPort.devType = connection.Sink.DevType;
+            dstPort.strDevIndex = connection.Sink.DevIndex;
+            dstPort.nPortNo = connection.Sink.PortNo;
+
+            if (srcPort.devType == EnumDevType.board)
+            {
+                if (connection.Sink.DevType == EnumDevType.rhub)
+                {
+                    srcPort.portType = EnumPortType.bbu_to_rhub;
+                    dstPort.portType = EnumPortType.rhub_to_bbu;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rru)
+                {
+                    srcPort.portType = EnumPortType.bbu_to_rru;
+                    dstPort.portType = EnumPortType.rru_to_bbu;
+                }
+                else
+                {
+                    srcPort.portType = connection.Source.PortType;
+                    dstPort.portType = connection.Sink.PortType;
+                }
+            }
+            else if (srcPort.devType == EnumDevType.rru)
+            {
+                if (connection.Sink.DevType == EnumDevType.rru)
+                {
+                    srcPort.portType = EnumPortType.rru_to_rru;
+                    dstPort.portType = EnumPortType.rru_to_rru;
+                }
+                else if (connection.Sink.DevType == EnumDevType.board)
+                {
+                    srcPort.portType = EnumPortType.rru_to_bbu;
+                    dstPort.portType = EnumPortType.bbu_to_rru;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rhub)
+                {
+                    srcPort.portType = EnumPortType.pico_to_rhub;
+                    dstPort.portType = EnumPortType.rhub_to_pico;
+                }
+                else
+                {
+                    srcPort.portType = connection.Source.PortType;
+                    dstPort.portType = connection.Sink.PortType;
+                }
+            }
+            else if (srcPort.devType == EnumDevType.rhub)
+            {
+                if (connection.Sink.DevType == EnumDevType.board)
+                {
+                    srcPort.portType = EnumPortType.rhub_to_bbu;
+                    dstPort.portType = EnumPortType.bbu_to_rhub;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rhub)
+                {
+                    srcPort.portType = EnumPortType.rhub_to_rhub;
+                    dstPort.portType = EnumPortType.rhub_to_rhub;
+                }
+                else if (connection.Sink.DevType == EnumDevType.rru)
+                {
+                    srcPort.portType = EnumPortType.rhub_to_pico;
+                    dstPort.portType = EnumPortType.pico_to_rhub;
+                }
+            }
+            else
+            {
+                srcPort.portType = connection.Source.PortType;
+                dstPort.portType = connection.Sink.PortType;
+            }            
+
+            if (MibInfoMgr.GetInstance().DelLink(srcPort, dstPort))
+            {
+                this.Children.Remove(connection);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         private void UpdateZIndex()

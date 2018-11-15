@@ -20,7 +20,7 @@
         xmlns:View="clr-namespace:SCMTMainWindow.View"
         xmlns:fileManager="clr-namespace:SCMTMainWindow.Component.SCMTControl.FileManager"
         xmlns:logInfo="clr-namespace:SCMTMainWindow.Component.SCMTControl.LogInfoShow"
-        mc:Ignorable="d"
+        mc:Ignorable="d"     BorderBrush="#0178D0"
         Height="778" Width="1024"
         Title="{Binding Title}"
         WindowStyle="None"
@@ -56,7 +56,7 @@
                 <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="快捷键" Click="MetroMenuItem_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
                     <Metro:MetroMenuItem Header="跟踪设置" Click="MetroMenuItem_Click_1" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
-                    <Metro:MetroMenuItem Header="启动流程图" Click="Flow_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
+                    <!--<Metro:MetroMenuItem Header="启动流程图" Click="Flow_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>-->
                 </Metro:MetroMenuItem>
                 <Metro:MetroMenuItem Header="帮助" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png"/>
@@ -196,9 +196,11 @@
                                 <xcad:LayoutPanel Orientation="Horizontal">
                                     <xcad:LayoutAnchorablePane x:Name="Pane">
                                         <xcad:LayoutAnchorable ContentId="properties" CanHide="False" CanAutoHide="False">
-                                            <!-- 显示MIB内容的DataGrid -->
+                                            <!-- 显示MIB内容的DataGrid 
                                             <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" CanUserAddRows="False"
                                                       SelectionMode="Single" HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC"/>
+                                            -->
+                                            <View:MainDataGrid x:Name="Main_Dynamic_DataGrid"></View:MainDataGrid>
                                         </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>
@@ -211,7 +213,7 @@
 
                 <TabItem Header="修改调试用" Style="{StaticResource TabItemStyle}">
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
-                    <View:MainDataGrid x:Name="Main_Dynamic_DataGrid"></View:MainDataGrid>
+                    
                 </TabItem>
 
                 <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">
@@ -278,11 +280,11 @@
                                     <Metro:MetroScrollViewer>
                                         <Metro:MetroWaterfallFlow x:Name="waterfallFlow2" ListWidth="300">
                                             <Grid>
-                                                <Metro:MetroGroupBox Header="工具一">
+                                                <Metro:MetroGroupBox Header="启动流程图">
                                                     <Grid>
                                                         <StackPanel>
-                                                            <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                            <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            <Metro:MetroTextBlock Text="说明:显示设备各资源当前的状态" Opacity="0.65" />
+                                                            <Metro:MetroImage Source="Resources/chart.png" Margin="0,5,0,0" Cursor="Hand" MouseLeftButtonDown="MetroImage_MouseLeftButtonDown" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Metro:MetroGroupBox>

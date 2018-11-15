@@ -48,5 +48,33 @@ namespace SCMTMainWindow.View
                 }
             }
         }
+
+        private void CellQuery_Checked(object sender, RoutedEventArgs e)
+        {
+            if (this.UeIndex!=null)
+            {
+                this.UeIndex.IsReadOnly = true;
+                UeIndexTest.IsEnabled = false;
+            }
+        }
+
+        private void UeQuery_Checked(object sender, RoutedEventArgs e)
+        {
+            this.UeIndex.IsReadOnly = false;
+            UeIndexTest.IsEnabled = true;
+        }
+        /// <summary>
+        /// 当tab切换时触发方法 
+        /// 当选择Ue业务查询页面时执行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void UeTab_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           var a= sender as TabControl;
+            if (a.SelectedIndex==1) {
+                cellRadioButton.IsChecked = true;
+            }
+        }
     }
 }

@@ -110,47 +110,47 @@
     <!--*******************************************************************-->
     <!--单通道天线-->
     <GeometryGroup x:Key="SignalAntenna">
-      <LineGeometry StartPoint="0,0" EndPoint="5,13"></LineGeometry>
-      <LineGeometry StartPoint="10,0" EndPoint="5,13"></LineGeometry>
-      <LineGeometry StartPoint="5,0" EndPoint="5, 30"></LineGeometry>
+      <LineGeometry StartPoint="0,0" EndPoint="5,8"></LineGeometry>
+      <LineGeometry StartPoint="10,0" EndPoint="5,8"></LineGeometry>
+      <LineGeometry StartPoint="5,0" EndPoint="5, 40"></LineGeometry>
     </GeometryGroup>
 
     <!--双通道天线-->
     <GeometryGroup x:Key="TwoPathAntenna">
-      <LineGeometry StartPoint="5,0" EndPoint="20,20"></LineGeometry>
-      <LineGeometry StartPoint="35,0" EndPoint="20,20"></LineGeometry>
-      <LineGeometry StartPoint="20,0" EndPoint="20, 35"></LineGeometry>
-      <LineGeometry StartPoint="0,40" EndPoint="0, 35"></LineGeometry>
-      <LineGeometry StartPoint="40,40" EndPoint="40, 35"></LineGeometry>
-      <LineGeometry StartPoint="0,35" EndPoint="40, 35"></LineGeometry>
+      <LineGeometry StartPoint="15,0" EndPoint="20,8"></LineGeometry>
+      <LineGeometry StartPoint="25,0" EndPoint="20,8"></LineGeometry>
+      <LineGeometry StartPoint="20,0" EndPoint="20, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 25"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,25" EndPoint="40, 25"></LineGeometry>
     </GeometryGroup>
 
     <!--四通道天线-->
     <GeometryGroup x:Key="FourPathAntenna">
-      <LineGeometry StartPoint="15,0" EndPoint="30,20"></LineGeometry>
-      <LineGeometry StartPoint="45,0" EndPoint="30,20"></LineGeometry>
-      <LineGeometry StartPoint="30,0" EndPoint="30, 35"></LineGeometry>
-      <LineGeometry StartPoint="0,40" EndPoint="0, 35"></LineGeometry>
-      <LineGeometry StartPoint="20,40" EndPoint="20, 35"></LineGeometry>
-      <LineGeometry StartPoint="40,40" EndPoint="40, 35"></LineGeometry>
-      <LineGeometry StartPoint="60,40" EndPoint="60, 35"></LineGeometry>
-      <LineGeometry StartPoint="0,35" EndPoint="60, 35"></LineGeometry>
+      <LineGeometry StartPoint="25,0" EndPoint="30,8"></LineGeometry>
+      <LineGeometry StartPoint="35,0" EndPoint="30,8"></LineGeometry>
+      <LineGeometry StartPoint="30,0" EndPoint="30, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 25"></LineGeometry>
+      <LineGeometry StartPoint="20,40" EndPoint="20, 25"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 25"></LineGeometry>
+      <LineGeometry StartPoint="60,40" EndPoint="60, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,25" EndPoint="60, 25"></LineGeometry>
     </GeometryGroup>
 
     <!--八通道天线-->
     <GeometryGroup x:Key="EightPathAntenna">
-      <LineGeometry StartPoint="55,0" EndPoint="70,20"></LineGeometry>
-      <LineGeometry StartPoint="85,0" EndPoint="70,20"></LineGeometry>
-      <LineGeometry StartPoint="70,0" EndPoint="70,35"></LineGeometry>
-      <LineGeometry StartPoint="0,40" EndPoint="0, 35"></LineGeometry>
-      <LineGeometry StartPoint="20,40" EndPoint="20, 35"></LineGeometry>
-      <LineGeometry StartPoint="40,40" EndPoint="40, 35"></LineGeometry>
-      <LineGeometry StartPoint="60,40" EndPoint="60, 35"></LineGeometry>
-      <LineGeometry StartPoint="80,40" EndPoint="80, 35"></LineGeometry>
-      <LineGeometry StartPoint="100,40" EndPoint="100, 35"></LineGeometry>
-      <LineGeometry StartPoint="120,40" EndPoint="120, 35"></LineGeometry>
-      <LineGeometry StartPoint="140,40" EndPoint="140, 35"></LineGeometry>
-      <LineGeometry StartPoint="0,35" EndPoint="140, 35"></LineGeometry>
+      <LineGeometry StartPoint="65,0" EndPoint="70,8"></LineGeometry>
+      <LineGeometry StartPoint="75,0" EndPoint="70,8"></LineGeometry>
+      <LineGeometry StartPoint="70,0" EndPoint="70,25"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 25"></LineGeometry>
+      <LineGeometry StartPoint="20,40" EndPoint="20, 25"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 25"></LineGeometry>
+      <LineGeometry StartPoint="60,40" EndPoint="60, 25"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="80, 25"></LineGeometry>
+      <LineGeometry StartPoint="100,40" EndPoint="100, 25"></LineGeometry>
+      <LineGeometry StartPoint="120,40" EndPoint="120, 25"></LineGeometry>
+      <LineGeometry StartPoint="140,40" EndPoint="140, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,25" EndPoint="140, 25"></LineGeometry>
     </GeometryGroup>
 
 
@@ -167,6 +167,7 @@
           Data="{StaticResource OnePathRRU}"
           Stretch="Fill"
           IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
@@ -189,6 +190,8 @@
               Data="{StaticResource TwoPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,20,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="13,5,0,0" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
@@ -212,6 +215,10 @@
               Data="{StaticResource FourPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,65,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,25,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="15,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="55,5,0,0" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
@@ -237,6 +244,14 @@
               Data="{StaticResource EightPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,155,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,115,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,73,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,25,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="17,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="57,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="7" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="102,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="150,5,0,0" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
@@ -266,6 +281,22 @@
               Data="{StaticResource SixteenPathRRU}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,320,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,279,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,238,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,197,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,156,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,115,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="7" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,65,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="8" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,23,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="9" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="18,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="10" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="52,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="11" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="95,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="12" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="136,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="13" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="179,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="14" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="220,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="15" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="264,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="16" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="305,5,0,0" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
@@ -320,20 +351,28 @@
               Data="{StaticResource SingleRHUB}"
               Stretch="Fill"
               IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock FontSize="8" Text="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,155,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,115,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,73,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,25,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="17,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="57,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="102,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="7" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="150,5,0,0" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="rHUB" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="8" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
-          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="0" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
@@ -349,18 +388,26 @@
               Data="{StaticResource TwoPathRHUB}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
+    <TextBlock FontSize="8" Text="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,155,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,115,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,73,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,25,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="17,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="57,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="102,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="7" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="150,5,0,0" Width="10" Height="10"></TextBlock>
     <TextBlock Grid.Row="1" FontSize="10" Text="rHUB" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
-          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="8" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="0" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.357" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.595" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
           <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.357" DevType="rhub" PortNo="3" PortType="rhub_to_other"/>
@@ -375,8 +422,9 @@
     <Path Fill="Yellow" Stroke="Black"
               Data="{StaticResource SignalAntenna}"
               Stretch="Fill"
-              IsHitTestVisible="False"/>
-    <TextBlock FontSize="8" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 0, 0"></TextBlock>
+              IsHitTestVisible="False" Width="10"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 0, 0, 10"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
@@ -393,7 +441,9 @@
               Data="{StaticResource TwoPathAntenna}"
               Stretch="Fill"
               IsHitTestVisible="False"/>
-    <TextBlock FontSize="8" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 0, 0"></TextBlock>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="3,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10, 0, 0, 10"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
@@ -405,18 +455,22 @@
   </Grid>
 
   <!--四通道 天线阵-->
-  <Grid x:Name="g_FourPathAntenna">
+  <Grid x:Name="g_FourPathAntenna" Width="70">
     <Path Fill="Yellow" Stroke="Black"
               Data="{StaticResource FourPathAntenna}"
               Stretch="Fill"
-              IsHitTestVisible="False"/>
-    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 10, 0"></TextBlock>
+              IsHitTestVisible="False" Width="60" HorizontalAlignment="Right"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="23,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="43,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="63,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10, 0, 0, 10"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.667,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.428,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
           <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-4" DevType="ant" PortNo="4" PortType="ant_to_rru"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
@@ -424,22 +478,30 @@
   </Grid>
 
   <!--八通道 天线阵-->
-  <Grid x:Name="g_EightPathAntenna">
+  <Grid x:Name="g_EightPathAntenna" Width="150">
     <Path Fill="Yellow" Stroke="Black"
               Data="{StaticResource EightPathAntenna}"
               Stretch="Fill"
-              IsHitTestVisible="False"/>
-    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 10, 10, 0"></TextBlock>
+              IsHitTestVisible="False" Width="140" HorizontalAlignment="Right"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="23,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="43,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="63,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="83,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="103,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="7" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="123,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="8" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="143,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="40, 0, 0, 10"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>
         <c:RelativePositionPanel Margin="-4">
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.143,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.286,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.429,1" ID="ant_to_rru-4" DevType="ant" PortNo="4" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.571,1" ID="ant_to_rru-5" DevType="ant" PortNo="5" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.714,1" ID="ant_to_rru-6" DevType="ant" PortNo="6" PortType="ant_to_rru"/>
-          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.857,1" ID="ant_to_rru-7" DevType="ant" PortNo="7" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.067,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.2,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.333,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.467,1" ID="ant_to_rru-4" DevType="ant" PortNo="4" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.6,1" ID="ant_to_rru-5" DevType="ant" PortNo="5" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.733,1" ID="ant_to_rru-6" DevType="ant" PortNo="6" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.867,1" ID="ant_to_rru-7" DevType="ant" PortNo="7" PortType="ant_to_rru"/>
           <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-8" DevType="ant" PortNo="8" PortType="ant_to_rru"/>
         </c:RelativePositionPanel>
       </ControlTemplate>

@@ -287,11 +287,12 @@ namespace SCMTMainWindow.View
             ChooseAntennaType dlg = new ChooseAntennaType();
             dlg.ShowDialog();
 
+            AntType antInfo = dlg.currentSelectedAntType; 
             int nAntNumber = 1;                    //需要添加的Ant的数量
             string strXAML = string.Empty;         //解析xml文件
             Size newSize;                          //根据不同的通道数，确定不同的RRU的大小
             string strAntName = "No:";
-            strXAML = GetAntennaromXML(dlg.nAntennaType, strXAML, out newSize);
+            strXAML = GetAntennaromXML(antInfo.antArrayNum, strXAML, out newSize);
 
             dragObject.DesiredSize = newSize;      
 
@@ -313,7 +314,7 @@ namespace SCMTMainWindow.View
                 var temAntInfo = new TemAntInfo();
                 temAntInfo.antId = nAntNo;
                 temAntInfo.antName = strAntFullName;
-                temAntInfo.antArrayNum = dlg.nAntennaType;
+                temAntInfo.antArrayNum = antInfo.antArrayNum;
                 temAntInfo.antWorkMode = "正常模式";
                 ListTemAntInfo.Add(temAntInfo);
 

@@ -107,7 +107,7 @@ namespace NetPlan
 		/// TODO 这样不太好
 		/// </summary>
 		/// <returns></returns>
-		public static List<string> GetBoardWorkMode()
+		public static IEnumerable<string> GetBoardWorkMode()
 		{
 			return GetMibValueRangeList("netBoardWorkMode");
 		}
@@ -116,7 +116,7 @@ namespace NetPlan
 		/// 获取板卡帧结构类型描述信息列表
 		/// </summary>
 		/// <returns></returns>
-		public static List<string> GetBoardIrFrameType()
+		public static IEnumerable<string> GetBoardIrFrameType()
 		{
 			return GetMibValueRangeList("netBoardIrFrameType");
 		}
@@ -134,7 +134,7 @@ namespace NetPlan
 		/// 获取rhub设备的工作模式
 		/// </summary>
 		/// <returns></returns>
-		public List<string> GetRhubOfpWorkMode()
+		public static List<string> GetRhubOfpWorkMode()
 		{
 			return GetMibValueRangeList("netRHUBOfpWorkMode");
 		}
@@ -149,13 +149,7 @@ namespace NetPlan
 			var shelfList = _netPlanBoardInfo.shelfEquipment;
 			if (null != shelfList && shelfList.Count > 0)
 			{
-				foreach (var itemShelf in shelfList)
-				{
-					if (itemShelf.equipNEType == (int)enbType)
-					{
-						return itemShelf;
-					}
-				}
+				return shelfList.FirstOrDefault(itemShelf => itemShelf.equipNEType == (int) enbType);
 			}
 
 			return null;
@@ -182,6 +176,11 @@ namespace NetPlan
 			}
 		}
 
+		/// <summary>
+		/// 查询给定MIB的取值范围
+		/// </summary>
+		/// <param name="strMibName"></param>
+		/// <returns></returns>
 		private static List<string> GetMibValueRangeList(string strMibName)
 		{
 			var wmList = new List<string>();

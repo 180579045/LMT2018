@@ -8,6 +8,7 @@ using System.IO.Compression;// zip
 using System.IO;// File
 using System.Runtime.InteropServices;
 using System.Data;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace CfgFileOpStruct
 {
@@ -487,11 +488,10 @@ namespace CfgFileOpStruct
         public void FillVerInfo(string strMibVersion)
         {
             //"5_65_3_6";
-            u32PublicMibVer = 5;
-            u32MainMibVer = 65;
-            u32SubMibVer = 3;
-            u32ReserveVer = 6;
-
+            //u32PublicMibVer = 5;
+            //u32MainMibVer = 65;
+            //u32SubMibVer = 3;
+            //u32ReserveVer = 6;
             string strTempMibVersion = strMibVersion;
             int nPos = strTempMibVersion.IndexOf('_');
             List<string> vecMibVer = new List<string>();
@@ -503,11 +503,15 @@ namespace CfgFileOpStruct
                 nPos = strTempMibVersion.IndexOf('_');
             }
             vecMibVer.Add(strTempMibVersion);
+            //string u32PublicMibVer1 = vecMibVer[0];
+            //string u32MainMibVer1 = vecMibVer[1];
+            //string u32SubMibVer1 = vecMibVer[2];
+            //string u32ReserveVer1 = vecMibVer[3];
+            u32PublicMibVer = uint.Parse(vecMibVer[0]);
+            u32MainMibVer = uint.Parse(vecMibVer[1]);
+            u32SubMibVer = uint.Parse(vecMibVer[2]);
+            u32ReserveVer = uint.Parse(vecMibVer[3]);
 
-            string u32PublicMibVer1 = vecMibVer[0];
-            string u32MainMibVer1 = vecMibVer[1];
-            string u32SubMibVer1 = vecMibVer[2];
-            string u32ReserveVer1 = vecMibVer[3];
             vecMibVer = null;
         }
         /// <summary>
@@ -694,7 +698,7 @@ namespace CfgFileOpStruct
     struct StruDataHead
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        byte[] u8VerifyStr;                              // [4] 文件头的校验字段 "BEG\0"
+        public byte[] u8VerifyStr;                       // [4] 文件头的校验字段 "BEG\0"
         public uint u32DatType;                          // reserved , =1 
         public uint u32DatVer;                           // reserved , =1 
         public uint u32TableCnt;                         // 表的数目,指示索引表中的向目个数
@@ -864,6 +868,65 @@ namespace CfgFileOpStruct
                 Console.WriteLine(String.Format("SetValueToByteArray : new type : value={0}, type={1}", objParm.ToString(), objParm.GetType()));
             }
         }
+
+        public void SetValueByBytes(byte[] data)
+        {
+            int fromOf = 0;
+            int lenSize = 0;
+            //
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new byte())*4;
+            byte[] bytes123 = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8VerifyStr = GetBytesValueToParmBytes(bytes123);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatType);
+            byte[] bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatType = GetBytesValToUint(bytes);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatVer);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatVer = GetBytesValToUint(bytes);
+
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32TableCnt);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32TableCnt = GetBytesValToUint(bytes);
+        }
+
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+
+        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
     }
 
     /// <summary>
@@ -886,7 +949,7 @@ namespace CfgFileOpStruct
         /// 表名
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        byte[] u8TblName;                      // [32] 表名
+        public byte[] u8TblName;                      // [32] 表名
         /// <summary>
         /// 本表的单个记录包含的字段数
         /// </summary>
@@ -1067,6 +1130,99 @@ namespace CfgFileOpStruct
                 Console.WriteLine(String.Format("SetValueToByteArray : new type : value={0}, type={1}", objParm.ToString(), objParm.GetType()));
             }
         }
+
+        public void SetBytesValue(byte[] data)
+        {
+            int fromOf = 0;
+            int lenSize = 0;
+            byte[] bytes;
+            //
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new ushort());
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16DataFmtVer = GetBytesValToU16(bytes);
+            //
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte())*2;
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8pad = GetBytesValueToParmBytes(bytes);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte()) * 32;
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8TblName = GetBytesValueToParmBytes2(bytes);// new byte[32];
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16FieldNum);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16FieldNum = GetBytesValToU16(bytes);
+
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16RecLen);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16RecLen = GetBytesValToU16(bytes);
+
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u32RecNum);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32RecNum = GetBytesValToUint(bytes);
+        }
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+        ushort GetBytesValToU16(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt16(OxbytesToString(bytes), 16);
+        }
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
+        byte[] GetBytesValueToParmBytes2(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            ////var pos = bytes.DefaultIfEmpty();
+            //for (int i = bytes.Length; i > 0; i--)
+            //{
+            //    if (bytes[i] == '0')
+            //        bytes[i] = '/0';
+            //}
+            //Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
+        bool isEmptyByte(byte val)
+        {
+            if (val != '0')
+                return true;
+            return false;
+        }
     }
 
     /// <summary>
@@ -1224,29 +1380,29 @@ namespace CfgFileOpStruct
 
     struct StruAlarmInfo
     {
-        string alarmCauseNo;
-        string alarmCauseRowStatus;
-        string alarmCauseSeverity;
-        string alarmCauseIsValid;
-        string alarmCauseType;
-        string alarmCauseClearStyle;
-        string alarmCauseToAlarmBox;
-        string alarmCauseItfNProtocolCauseNo;
-        string alarmCauseIsStateful;
-        string alarmCausePrimaryAlarmCauseNo;
-        string alarmCauseStatefulClearDeditheringInterval;
-        string alarmCauseStatefulCreateDeditheringInterval;
-        string alarmCauseStatefulDelayTime;
-        string alarmCauseCompressionInterval;
-        string alarmCauseCompressionRepetitions;
-        string alarmCauseAutoProcessPolicy;
-        string alarmCauseValueStyle;
-        string alarmCauseFaultObjectType;
-        string alarmCauseReportBoardType;
+        public string alarmCauseNo;
+        public string alarmCauseRowStatus;
+        public string alarmCauseSeverity;
+        public string alarmCauseIsValid;
+        public string alarmCauseType;//5
+        public string alarmCauseClearStyle;
+        public string alarmCauseToAlarmBox;
+        public string alarmCauseItfNProtocolCauseNo;
+        public string alarmCauseIsStateful;
+        public string alarmCausePrimaryAlarmCauseNo;//10
+        public string alarmCauseStatefulClearDeditheringInterval;
+        public string alarmCauseStatefulCreateDeditheringInterval;
+        public string alarmCauseStatefulDelayTime;
+        public string alarmCauseCompressionInterval;
+        public string alarmCauseCompressionRepetitions;//15
+        public string alarmCauseAutoProcessPolicy;
+        public string alarmCauseValueStyle;
+        public string alarmCauseFaultObjectType;
+        public string alarmCauseReportBoardType;//19
 
         //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
-        string strAlarmUnstableDispose;
-        string strAlarmCauseInsecureNo;  //不稳定态告警编号
+        public string strAlarmUnstableDispose;
+        public string strAlarmCauseInsecureNo;  //不稳定态告警编号
 
         public StruAlarmInfo(DataRow alarmRow)
         {
@@ -1345,7 +1501,7 @@ namespace CfgFileOpStruct
             }
             else if (ParaName.Contains("alarmCauseFaultObjectType"))
             {
-                ReturnValue = alarmCauseFaultObjectType;
+                ReturnValue = alarmCauseFaultObjectType;//故障源对象类型
             }
             else if (ParaName.Contains("alarmCauseReportBoardType"))
             {
@@ -1362,6 +1518,138 @@ namespace CfgFileOpStruct
             }
             return ReturnValue;
         }
+        /// <summary>
+        /// 解析excel解析
+        /// </summary>
+        /// <param name="wks"></param>
+        public StruAlarmInfo(Dictionary<string, string> alarmExVal)
+        {
+            //if (wks == null)
+            //    return null;
+            //告警编号		
+            alarmCauseNo = alarmExVal[("AlaNumber")].ToString();
+            
+            string strAlaDegree = alarmExVal[("AlaDegree")].ToString(); //告警级别
+            if (-1 != strAlaDegree.IndexOf("."))
+                alarmCauseSeverity = strAlaDegree.Substring(0, strAlaDegree.IndexOf("."));
+            else
+                alarmCauseSeverity = strAlaDegree; //告警级别
+            alarmCauseRowStatus = "4";  //告警行状态
+
+            // "5037" sStrValueYes
+            if (String.Equals("是", alarmExVal[("IsReportToOMCR")].ToString()))//strAlarmCauseValid == sStrValueYes)
+            {
+                alarmCauseIsValid = "0";
+                alarmCauseToAlarmBox = "1";
+            }
+            // "5038" sStrValueNO
+            else// (String.Equals("否", alarmRow[("IsReportToOMCR")].ToString()))
+            {
+                alarmCauseIsValid = "1";
+                alarmCauseToAlarmBox = "0";
+            }
+            string TmpValue = alarmExVal[("AlaType")].ToString();
+            int pos = TmpValue.IndexOf(" -")==-1?TmpValue.Length:TmpValue.IndexOf(" -");
+            alarmCauseType = TmpValue.Substring(0, pos);
+            string ClearStyle = alarmExVal[("ClearStyle")].ToString();
+            if (String.Equals("无", ClearStyle) | string.Empty == ClearStyle.Replace(" ", ""))
+                alarmCauseClearStyle = 255.ToString();
+            else if(String.Equals("恢复后主动清除", ClearStyle))
+                alarmCauseClearStyle = 1.ToString();
+            else
+            {
+                alarmCauseClearStyle = alarmExVal[("ClearStyle")].ToString().Replace(" ", "");
+            }
+            //alarmCauseClearStyle = alarmExVal[("ClearStyle")].ToString();
+            alarmCauseItfNProtocolCauseNo = alarmExVal[("ItfNProtocolCauseNo")].ToString();
+            //string strAlarmStateFul = alarmRow[("IsFault")].ToString();
+            if (String.Equals("Y", alarmExVal[("IsFault")].ToString()))//(strAlarmStateFul == sStrValueYes)
+            {
+                alarmCauseIsStateful = "0";
+            }
+            else
+            {
+                alarmCauseIsStateful = "1";
+            }
+            alarmCausePrimaryAlarmCauseNo = alarmExVal[("AlaSubtoPrimaryNumber")].ToString();
+            alarmCauseStatefulClearDeditheringInterval = alarmExVal[("ClearDeditheringInterval")].ToString();
+            alarmCauseStatefulCreateDeditheringInterval = alarmExVal[("CreateDeditheringInterval")].ToString();
+            alarmCauseCompressionInterval = alarmExVal[("CompressionInterval")].ToString();
+            alarmCauseCompressionRepetitions = alarmExVal[("CompressionRepetitions")].ToString();
+            alarmCauseValueStyle = alarmExVal[("ValueStyle")].ToString();
+
+            Dictionary<string, string> FaultObjType = new Dictionary<string, string>() {
+                { "0","all|所有对象都包含"},
+                {"1","nodeBEntry|基站"},
+                { "2", "boardEntry|板卡" },
+                { "3", "processorEntry|处理器" },
+                { "4", "fanEntry|风扇" },
+                { "5", "envEntry|环境监控" },
+                { "6", "oabEntry|OAB" },
+                { "7", "dryContactEntry|BBU干接点" },
+                { "8", "airConditionerEntry|空调" },
+                { "9", "rruEntry|RRU" },
+                { "10", "rcuEntry|电调天线单元" },
+                { "11", "cellEntry|LTE小区" },
+                { "12", "localcellEntry|LTE本地小区" },
+                { "13", "antArrayEntry|天线阵" },
+                { "14", "antPathEntry|天线通道" },
+                { "15", "clockEntry|时钟" },
+                { "16", "emTemperatureSensiorEntry|温度传感器" },
+                { "17", "emHumiditySensiorEntry|湿度传感器" },
+                { "18", "emSmokeSensiorEntry|烟雾传感器" },
+                { "19", "emWaterSensiorEntry|水浸传感器" },
+                { "20", "emTheftSensiorEntry|门禁传感器" },
+                { "21", "emThunderboltSensiorEntry|雷击传感器" },
+                { "22", "powerEntry|电源" },
+                { "23", "netBoardEntry|规划板卡" },
+                { "24", "netRruEntry|规划RRU" },
+                { "25", "ofPortEntry|光模块" },
+                { "26", "sctpEntry|sctp" },
+                { "27", "topoRRUAntSettingEntry|射频通道" },
+                { "28", "heatExEntry|热交换器" },
+                { "29", "processorCoreEntry|处理器核" },
+                { "30", "ethernetOAMEntry|以太OAM链路" },
+                { "31", "remoteClockModuleEntry|拉远时钟" },
+                { "32", "tdsLocalCellEntry|TD-SCDMA本地小区" },
+                { "33", "rruOfpPortEntry|RRU光模块" },
+                { "34", "netRHUBEntry|规划RHUB" },
+                { "35", "topologyRHUBEntry|RHUB" },
+                { "36", "netRRURootAlarmEntry|RRU干接点" }
+            };
+            string FathernameOfObject = alarmExVal[("FathernameOfObject")].ToString();//z
+            if (String.Empty == FathernameOfObject || String.Equals("无",FathernameOfObject))
+            {
+                alarmCauseFaultObjectType = "";
+            }
+            else
+            {
+                int findPos = FathernameOfObject.IndexOf(":");
+                if (findPos != -1)
+                {
+                    string key = FathernameOfObject.Substring(0, findPos);
+                    alarmCauseFaultObjectType = key + ":" + FaultObjType[key];
+                }
+                else
+                    alarmCauseFaultObjectType = "";
+            }
+
+            //2013-06-27 luoxin 告警原因表新增一列“告警不稳定态处理方式”
+            strAlarmUnstableDispose = alarmExVal[("AlaUnstableDispose")].ToString();
+            string UnstableAlaNum = alarmExVal[("UnstableAlaNum")].ToString();//不稳定态告警编号
+            if (string.Empty == UnstableAlaNum)
+            {
+                strAlarmCauseInsecureNo = 0.ToString();
+            }
+            else
+                strAlarmCauseInsecureNo = alarmExVal[("UnstableAlaNum")].ToString();  //不稳定态告警编号
+
+            alarmCauseStatefulDelayTime = "0";
+            alarmCauseAutoProcessPolicy = "0";
+            alarmCauseReportBoardType = "0";
+
+        }
+
         
     }
 
@@ -1445,7 +1733,31 @@ namespace CfgFileOpStruct
             //RRU支持的频带宽度
             rruTypeBandWidth = excelRead(RRuInfo, "rruTypeBandWidth");
             //RRU支持的小区工作模式
-            rruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
+            string strRruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
+            int pos = 0;
+            Dictionary<string, string> CellWorkMode = new Dictionary<string, string>() {
+                { "LTE","LTE TDD"},{ "TD","TD-SCDMA"},{ "NR","NR"},
+            };
+            while (true)
+            {
+                pos = strRruTypeSupportCellWorkMode.IndexOf("/");
+                if (-1 != pos) // LTE/TD
+                {
+                    string proStr = strRruTypeSupportCellWorkMode.Substring(0, pos);
+                    rruTypeSupportCellWorkMode += CellWorkMode[proStr] + "/";
+                    strRruTypeSupportCellWorkMode = strRruTypeSupportCellWorkMode.Substring(pos + 1, strRruTypeSupportCellWorkMode.Length - pos - 1);
+                }
+                else
+                {
+                    string proStr = strRruTypeSupportCellWorkMode;
+                    rruTypeSupportCellWorkMode += CellWorkMode[proStr] ;
+                    break;
+                }
+
+            }
+            if (String.Empty == rruTypeSupportCellWorkMode)
+                rruTypeSupportCellWorkMode = "";
+            //rruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
             //行状态
             rruTypeRowStatus = "4";
             //2014-2-27 luoxin RRUType新增节点
@@ -1457,17 +1769,17 @@ namespace CfgFileOpStruct
         }
         
         public GetRruTypeByNodeNameEn excelRead;
-        string rruTypeManufacturerIndex;
-        string rruTypeIndex;
-        string rruTypeRowStatus;
-        string rruTypeName;
-        string rruTypeMaxAntPathNum;
-        string rruTypeMaxTxPower;
-        string rruTypeBandWidth;
-        string rruTypeSupportCellWorkMode;
-        string strRruTypeFiberLength;//2014-2-27 luoxin RRUType新增节点
-        string strRruTypeIrCompressMode;//2014-2-27 luoxin RRUType新增节点
-        string strRruTypeFamilyName;//2016-08-29 guoyingjie add  rruTypeFamilyName
+        public string rruTypeManufacturerIndex;
+        public string rruTypeIndex;
+        public string rruTypeRowStatus;
+        public string rruTypeName;
+        public string rruTypeMaxAntPathNum;
+        public string rruTypeMaxTxPower;
+        public string rruTypeBandWidth;
+        public string rruTypeSupportCellWorkMode;
+        public string strRruTypeFiberLength;//2014-2-27 luoxin RRUType新增节点
+        public string strRruTypeIrCompressMode;//2014-2-27 luoxin RRUType新增节点
+        public string strRruTypeFamilyName;//2016-08-29 guoyingjie add  rruTypeFamilyName
 
         public string  GetRRuLeafValue(string FieldName)
         {
@@ -1535,25 +1847,25 @@ namespace CfgFileOpStruct
     /// </summary>
     struct RRuTypePortTabStru
     {
-        string rruTypePortManufacturerIndex;
-        string rruTypePortIndex;
-        string rruTypePortNo;
-        string rruTypePortRowStatus;
-        string rruTypePortSupportFreqBand;
-        string rruTypePortSupportFreqBandWidth;
-        string rruTypePortPathNo;
+        public string rruTypePortManufacturerIndex;
+        public string rruTypePortIndex;
+        public string rruTypePortNo;
+        public string rruTypePortRowStatus;
+        public string rruTypePortSupportFreqBand;
+        public string rruTypePortSupportFreqBandWidth;
+        public string rruTypePortPathNo;
 
         //2013-04-10 luoxin DTMUC00153813
-        string rruTypePortSupportAbandTdsCarrierNum;
-        string rruTypePortSupportFBandTdsCarrierNum;
-        string rruTypePortCalAIqRxNom;
-        string rruTypePortCalAIqTxNom;
-        string rruTypePortCalPinRxNom;
-        string rruTypePortCalPoutTxNom;
+        public string rruTypePortSupportAbandTdsCarrierNum;
+        public string rruTypePortSupportFBandTdsCarrierNum;
+        public string rruTypePortCalAIqRxNom;
+        public string rruTypePortCalAIqTxNom;
+        public string rruTypePortCalPinRxNom;
+        public string rruTypePortCalPoutTxNom;
         //2013-04-10 luoxin end 
 
         //2014-3-5 luoxin RRU通道类型表增加新节点
-        string strRruTypePortAntMaxPower;
+        public string strRruTypePortAntMaxPower;
 
         public GetRruTypePortByNodeNameEn excelRead;
 

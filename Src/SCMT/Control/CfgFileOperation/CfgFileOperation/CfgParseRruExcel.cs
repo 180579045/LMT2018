@@ -1,6 +1,7 @@
 ﻿using CfgFileOpStruct;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ namespace CfgFileOperation
     class CfgParseRruExcel
     {
         private List<Dictionary<string, string>> RruInfo = null;//总的东西
-
         /// <summary>
         /// 保存  内容的内存
         /// </summary>
@@ -302,8 +302,6 @@ namespace CfgFileOperation
             return reStr;
         }
 
-
-
         /// <summary>
         /// 处理 cell 的内容;
         /// </summary>
@@ -352,6 +350,143 @@ namespace CfgFileOperation
                 if ( c != null)
                     numc++;
             }
+        }
+
+        public void TestMdbAndExcel(string strExcelPath, string strMdbPath)
+        {
+            string sheetName = "RRU基本信息表";
+            ProcessingExcel(strExcelPath, sheetName);
+            List<RRuTypeTabStru> rruList = GetRruTypeInfoData();
+            List<RRuTypePortTabStru> rruPortL = GetRruTypePortInfoData();
+
+            // mdb 
+            string strSQLRruType = ("select  * from rruType");
+            DataSet rruTypedateSet = new CfgOp().CfgGetRecordByAccessDb(strMdbPath, strSQLRruType);
+            int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
+
+            string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
+            //string strSQL = ("select * from MibTree where MIBName='rruTypeEntry' DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
+            string strSQL = ("select * from MibTree where MIBName='rruTypeEntry'");
+
+            DataSet MibdateSet = new CfgOp().CfgGetRecordByAccessDb(strFileToDirectory , strSQL);
+            DataRow tableRow = MibdateSet.Tables[0].Rows[0];
+            int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
+
+            // mdb rrutype
+            List<RRuTypeTabStru> vectRRUTypeInfo = new List<RRuTypeTabStru>();
+            for (int loop = 0; loop < rruTypeCount - 1; loop++)
+            {
+                if (loop == nTableNum) break;
+                vectRRUTypeInfo.Add(new RRuTypeTabStru(rruTypedateSet.Tables[0].Rows[loop], rruTypedateSet));
+            }
+
+            // mdb rrutypeport
+            string strSQLRruTypePort = ("select  * from rruTypePort");
+            DataSet rruTypePortDateSet = new CfgOp().CfgGetRecordByAccessDb(strMdbPath, strSQLRruTypePort);
+            int rruTypePortCount = rruTypePortDateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
+
+            //strSQL = ("select * from MibTree where MIBName='rruTypePortEntry' DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
+            strSQL = ("select * from MibTree where MIBName='rruTypePortEntry' ");
+            MibdateSet = new CfgOp().CfgGetRecordByAccessDb(strFileToDirectory, strSQL);
+            tableRow = MibdateSet.Tables[0].Rows[0];
+            nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
+
+            List<RRuTypePortTabStru> vectRRUTypePortInfo = new List<RRuTypePortTabStru>();
+            for (int loop = 0; loop < rruTypePortCount - 1; loop++)
+            {  // 在表之间循环
+                if (loop == nTableNum)
+                    break;
+                vectRRUTypePortInfo.Add(new RRuTypePortTabStru(rruTypePortDateSet.Tables[0].Rows[loop]));
+            }
+
+
+            is_same_rru(rruList, vectRRUTypeInfo);
+        }
+        void is_same_rru(List<RRuTypeTabStru> ExData, List<RRuTypeTabStru> MdbData)
+        {
+            List<byte> bugbuff = new List<byte>();
+            foreach (var mdb in MdbData)
+            {
+                string rruTypeIndex = mdb.rruTypeIndex;
+                int pos = ExData.FindIndex(e => e.rruTypeIndex == rruTypeIndex);
+                if (-1 == pos)
+                {
+                    string bugbf = String.Format("***rruTypeIndex no = {0}, not in ex.\n", rruTypeIndex);
+                    byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugbf);
+                    bugbuff.AddRange(byteArray);
+                    Console.WriteLine(bugbf);
+                    continue;
+                }
+                is_same_pama(mdb, ExData[pos], bugbuff);
+            }
+            foreach(var ex in ExData)
+            {
+                string rruTypeIndex = ex.rruTypeIndex;
+                int pos = MdbData.FindIndex(e => e.rruTypeIndex == rruTypeIndex);
+                if (-1 == pos)
+                {
+                    string bugbf = String.Format("***rruTypeIndex no = {0}, not in mdb.\n", rruTypeIndex);
+                    byte[] byteArray = System.Text.Encoding.ASCII.GetBytes(bugbf);
+                    bugbuff.AddRange(byteArray);
+                    Console.WriteLine(bugbf);
+                    //continue;
+                }
+                //is_same_pama(mdb, ExData[pos], bugbuff);
+            }
+            
+        }
+
+
+        void is_same_pama(RRuTypeTabStru mdb, RRuTypeTabStru ex, List<byte> bugbuff)
+        {
+            string bufBug = "";
+            //RRU生产厂家索引
+            if (!String.Equals(mdb.rruTypeManufacturerIndex, ex.rruTypeManufacturerIndex)) {
+                bufBug += String.Format("rruTypeManufacturerIndex: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeManufacturerIndex, ex.rruTypeManufacturerIndex);
+            }
+            //RRU设备类型索引
+            if (!String.Equals(mdb.rruTypeIndex, ex.rruTypeIndex))
+            {
+                bufBug += String.Format("rruTypeIndex: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeIndex, ex.rruTypeIndex);
+            }
+            if (!String.Equals(mdb.rruTypeName, ex.rruTypeName)) {
+                bufBug += String.Format("rruTypeName: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeName, ex.rruTypeName);
+            }
+            //RRU支持的天线数
+            if (!String.Equals(mdb.rruTypeMaxAntPathNum, ex.rruTypeMaxAntPathNum)) {
+                bufBug += String.Format("rruTypeMaxAntPathNum: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeMaxAntPathNum, ex.rruTypeMaxAntPathNum);
+            }
+            //RRU通道最大发射功率
+            if (!String.Equals(mdb.rruTypeMaxTxPower, ex.rruTypeMaxTxPower)) {
+                bufBug += String.Format("rruTypeMaxTxPower: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeMaxTxPower, ex.rruTypeMaxTxPower);
+            }
+            //RRU支持的频带宽度
+            if (!String.Equals(mdb.rruTypeBandWidth, ex.rruTypeBandWidth)) {
+                bufBug += String.Format("rruTypeBandWidth: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeBandWidth, ex.rruTypeBandWidth);
+            }
+            //RRU支持的小区工作模式
+            if (!String.Equals(mdb.rruTypeSupportCellWorkMode, ex.rruTypeSupportCellWorkMode)) {
+                bufBug += String.Format("rruTypeSupportCellWorkMode: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.rruTypeSupportCellWorkMode, ex.rruTypeSupportCellWorkMode);
+            }
+            //行状态
+            //if (!String.Equals(mdb.rruTypeRowStatus = "4";
+            //2014-2-27 luoxin RRUType新增节点
+            if (!String.Equals(mdb.strRruTypeFiberLength, ex.strRruTypeFiberLength))
+            {
+                bufBug += String.Format("rruTypeFiberLength: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.strRruTypeFiberLength, ex.strRruTypeFiberLength);
+            }// new RRuTypeTabStru().GetExcelRruInfoRruTypeFiberLength(bufBug += String.Format("rruTypeZoomProperty"));
+
+            if (!String.Equals(mdb.strRruTypeIrCompressMode, ex.strRruTypeIrCompressMode))
+            {
+                bufBug += String.Format("rruTypeCompressionProperty: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.strRruTypeIrCompressMode, ex.strRruTypeIrCompressMode);
+            }//rruTypeCompressionProperty
+
+            //2016-08-29 guoyingjie add  rruTypeFamilyName
+            if (!String.Equals(mdb.strRruTypeFamilyName, ex.strRruTypeFamilyName))
+            {
+                bufBug += String.Format("rruTypeFamilyName: mdb.no={0}, mdb.v={1}, ex.v={2} \n", mdb.rruTypeIndex, mdb.strRruTypeFamilyName, ex.strRruTypeFamilyName);
+            }
+            Console.WriteLine(bufBug);
         }
     }
 }

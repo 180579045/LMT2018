@@ -223,6 +223,9 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Compile Include="Pages\ModifyFriendlyName.xaml.cs">
+      <DependentUpon>ModifyFriendlyName.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="UeInfo\ChildrenUeInfo.cs" />
@@ -343,6 +346,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\AddNodeB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ModifyFriendlyName.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -474,6 +481,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Resources\cellstatuslist.png" />
+    <Resource Include="Resources\chart.png" />
     <Resource Include="Resources\add.png" />
     <Resource Include="Resources\delete.png" />
     <Resource Include="Resources\download.png" />
@@ -539,7 +548,7 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="README.md" />
-    <Resource Include="View\Resources\Stencils\XMLFile1.xml">
+    <Resource Include="View\Resources\Stencils\NetElement.xml">
       <SubType>Designer</SubType>
     </Resource>
   </ItemGroup>

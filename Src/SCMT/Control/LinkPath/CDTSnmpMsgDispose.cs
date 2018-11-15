@@ -12,6 +12,9 @@
 * 2018.10.xx  XXXX            XXXXX
 *************************************************************************************/
 
+using System;
+using System.Collections.Generic;
+using System.Text;
 using CommonUtility;
 using DataBaseUtil;
 using DataSync;
@@ -22,11 +25,6 @@ using MIBDataParser.JSONDataMgr;
 using MsgQueue;
 using SnmpSharpNet;
 using SuperLMT.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 
 namespace LinkPath
 {
@@ -37,9 +35,13 @@ namespace LinkPath
 	{
 		// 记录来自基站最近几条trap的RequestId，用于过滤重复发送的Trap消息
 		// 事件Trap id
-		Dictionary<string, List<long>> m_ipToRequestIdsDicForEvent = new Dictionary<string, List<long>>();
+		private Dictionary<string, List<long>> m_ipToRequestIdsDicForEvent = new Dictionary<string, List<long>>();
+
 		// 配置变更Trap id
-		Dictionary<string, List<long>> m_ipToRequestIdsDicForConfigChg = new Dictionary<string, List<long>>();
+		private Dictionary<string, List<long>> m_ipToRequestIdsDicForConfigChg = new Dictionary<string, List<long>>();
+
+		// 告警Trap id
+		private Dictionary<string, List<long>> m_ipToRequestIdsDicForAlarm = new Dictionary<string, List<long>>();
 
 		public int FileTransMacro { get; private set; }
 
@@ -52,18 +54,18 @@ namespace LinkPath
 		public CDTSnmpMsgDispose(DTLinkPathMgr linkPathMgr)
 		{
 			// 订阅SNMP模块发来的消息
-			 SubscribeHelper.AddSubscribe(TopicHelper.SnmpMsgDispose_OnResponse, CallOnResponse);
+			SubscribeHelper.AddSubscribe(TopicHelper.SnmpMsgDispose_OnResponse, CallOnResponse);
 			// 订阅Trap消息
 			SubscribeHelper.AddSubscribe(TopicHelper.SnmpMsgDispose_OnTrap, CallOnTrap);
 
-			this.m_LinkMgr = linkPathMgr;
+			m_LinkMgr = linkPathMgr;
 
 			// TODO
 			// alarmDealWorker = (CDTAlarmDealOpr*)AfxBeginThread(RUNTIME_CLASS(CDTAlarmDealOpr));
-
 		}
 
 		#region 订阅消息调用
+
 		/// <summary>
 		/// 调用OnResponse方法
 		/// </summary>
@@ -71,12 +73,10 @@ namespace LinkPath
 		private void CallOnResponse(SubscribeMsg msg)
 		{
 			// 消息类型转换
-			string strTopic = msg.Topic;
-			Log.Info(string.Format("msg.Topic = {0}", msg.Topic));
+			Log.Info($"msg.Topic = {msg.Topic}");
 
-			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
-			this.OnResponse(lmtPdu);
-
+			var lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+			OnResponse(lmtPdu);
 		}
 
 		/// <summary>
@@ -86,22 +86,21 @@ namespace LinkPath
 		private void CallOnTrap(SubscribeMsg msg)
 		{
 			// 消息类型转换
-			string strTopic = msg.Topic;
-			Log.Info(string.Format("msg.Topic = {0}", msg.Topic));
+			//var strTopic = msg.Topic;
+			Log.Info($"msg.Topic = {msg.Topic}");
 
-			CDTLmtbPdu lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
-			this.OnTrap(lmtPdu);
-
+			var lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+			OnTrap(lmtPdu);
 		}
 
-		#endregion
+		#endregion 订阅消息调用
 
 		/// <summary>
 		/// 处理接收到的Trap消息
 		/// </summary>
 		/// <param name="lmtPdu"></param>
 		public int OnTrap(CDTLmtbPdu lmtPdu)
-		{			
+		{
 			if (lmtPdu == null)
 			{
 				Log.Error("发来的Trap报文为空!");
@@ -109,12 +108,12 @@ namespace LinkPath
 			}
 
 			// 获取网元IP
-			string strNodeIp = lmtPdu.m_SourceIp;
-			Log.Info(string.Format("收到网元Trap, 网元ip:{0}", strNodeIp));
+			var strNodeIp = lmtPdu.m_SourceIp;
+			Log.Info($"收到网元Trap, 网元ip:{strNodeIp}");
 
 			// 验证包的合法性
-			string strErrorMsg = "";
-			if (false == CheckPDUValidity(lmtPdu, out strErrorMsg))
+			string strErrorMsg;
+			if (!CheckPDUValidity(lmtPdu, out strErrorMsg))
 			{
 				if (strErrorMsg != "")
 				{
@@ -126,25 +125,25 @@ namespace LinkPath
 			}
 
 			// 获得该网元所对应的MIB OID前缀
-			string strOidPrefix = SnmpToDatabase.GetMibPrefix();
+			var strOidPrefix = SnmpToDatabase.GetMibPrefix();
 			if (string.IsNullOrEmpty(strOidPrefix))
 			{
-				Log.Error(string.Format("获取MIB前缀失败!"));
+				Log.Error("获取MIB前缀失败!");
 				return -1;
 			}
 
 			// 验证是否是认识的Trap类型
-			CDTLmtbVb lmtVb = new CDTLmtbVb();
+			var lmtVb = new CDTLmtbVb();
 			lmtPdu.GetVbByIndex(1, ref lmtVb); // 第0个为时间戳，第1个为Trap包的OID
-			int intTrapType = 0;
-			if(false == CheckTrapOIDValidity(strNodeIp, lmtVb.Value, strOidPrefix, out intTrapType))
+			int intTrapType;
+			if (!CheckTrapOIDValidity(strNodeIp, lmtVb.Value, strOidPrefix, out intTrapType))
 			{
-				Log.Error(string.Format("验证Trap类型失败,未知Trap类型,OID为{0}！"), lmtVb.Value);
+				Log.Error($"验证Trap类型失败,未知Trap类型,OID为{lmtVb.Value}！");
 				return -1;
 			}
 
 			// TODO: 方便观察消息，生产环境时需去掉
-			ShowLogHelper.Show(string.Format("Trap消息，TrapType:{0}", intTrapType), lmtPdu.m_SourceIp
+			ShowLogHelper.Show($"Trap消息，TrapType:{intTrapType}", lmtPdu.m_SourceIp
 				, InfoTypeEnum.ENB_OTHER_INFO_IMPORT);
 
 			// 按不同类型处理Trap
@@ -154,22 +153,30 @@ namespace LinkPath
 				case 24: // //alarmTraps
 						 //告警处理  注意添加各告警字段和日志的值
 						 //验证是否是同一个trap
-						 // TODO
+					if (InterceptRepeatedTrap4Alarm(strNodeIp, lmtPdu.m_requestId))
+					{
+						Log.Info($"收到相同Trap, request id:{lmtPdu.m_requestId}");
+						return 0;
+					}
+
+					// TODO
 
 					break;
+
 				case 3:
 				case 21: //eventConfigChgTraps
-					// 验证是否是同一个trap
-					if (InterceptRepeatedTrap4ConfigChg(strNodeIp, lmtPdu.m_requestId) == true)
+						 // 验证是否是同一个trap
+					if (InterceptRepeatedTrap4ConfigChg(strNodeIp, lmtPdu.m_requestId))
 					{
-						Log.Info(string.Format("收到相同Trap, request id:{0}", lmtPdu.m_requestId));
+						Log.Info($"收到相同Trap, request id:{lmtPdu.m_requestId}");
 						return 0;
 					}
 					// 消息处理
 					DTDataSyncMgr.GetInstance().DealAlteration(lmtPdu);
 					break;
+
 				case 9:
-				case 16:	//eventFTPResultTraps
+				case 16:    //eventFTPResultTraps
 				case 20:    //eventGeneralEventTraps
 				case 22:    //eventManagementRequestTraps
 				case 23:    //eventFTPResultTraps
@@ -177,28 +184,29 @@ namespace LinkPath
 				case 26:    //eventSynchronizationTrap   同步活跃告警和一致性文件事情的处理
 				case 200:   //ANR专用事情
 				case 201:   //MRO专用事情
-				case 202:   //FC专有事件		
-				case 203:	//maintenceStateNotify 工程状态通知 
-				case 204:   //nodeBlockStateNotify 
-					// 事件处理
-					// 验证是否是同一个trap
-					if(InterceptRepeatedTrap4Event(strNodeIp, lmtPdu.m_requestId) == true)
+				case 202:   //FC专有事件
+				case 203:   //maintenceStateNotify 工程状态通知
+				case 204:   //nodeBlockStateNotify
+							// 事件处理
+							// 验证是否是同一个trap
+					if (InterceptRepeatedTrap4Event(strNodeIp, lmtPdu.m_requestId))
 					{
-						Log.Info(string.Format("收到相同Trap, id:{0}", lmtPdu.m_requestId));
+						Log.Info($"收到相同Trap, id:{lmtPdu.m_requestId}");
 						return 0;
 					}
 
 					// 事件处理
 					if (DealEventTrap(intTrapType, lmtPdu) == false)
 					{
-						Log.Error(string.Format("DealEventTrap事件处理失败,intTrapType:{0}", intTrapType));
+						Log.Error($"DealEventTrap事件处理失败,intTrapType:{intTrapType}");
 						return -1;
 					}
 
 					break;
+
 				default:
 					// 未知类型上报
-					Log.Error(string.Format("CDTSnmpMsgDispose::OnTrap方法中未知类型Trap上报:{0}", lmtVb.Value));
+					Log.Error($"CDTSnmpMsgDispose::OnTrap方法中未知类型Trap上报:{lmtVb.Value}");
 					break;
 			}
 
@@ -212,32 +220,27 @@ namespace LinkPath
 		/// <returns></returns>
 		public int OnResponse(CDTLmtbPdu lmtPdu)
 		{
-			Log.Info("收到网元Response，网元IP:{0}", lmtPdu.m_SourceIp);
+			Log.Info($"收到网元Response，网元IP:{lmtPdu.m_SourceIp}");
 
 			// 获取MIB前缀
-			string prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
+			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
 			if (string.IsNullOrEmpty(prefix))
 			{
-				Log.Error(string.Format("获取MIB前缀失败!"));
+				Log.Error("获取MIB前缀失败!");
 				return -1;
 			}
 
 			// 验证RequestID的合法性，从数据库中读出信息并删除
-			IDToTableStruct idToTb = new IDToTableStruct();
-			idToTb.pduType = lmtPdu.getReqMsgType();
-			idToTb.messageType = lmtPdu.m_requestId;
-			if (lmtPdu.get_CmdName() != null)
+			var idToTb = new IDToTableStruct
 			{
-				idToTb.strCmdName = lmtPdu.get_CmdName();
-			}
-			else
-			{
-				idToTb.strCmdName = "";
-			}
+				pduType = lmtPdu.getReqMsgType(),
+				messageType = lmtPdu.m_requestId,
+				strCmdName = lmtPdu.get_CmdName() ?? ""
+			};
 
 			// 验证包的合法性
-			string strErrorMsg = "";
-			if(false == CheckPDUValidity(lmtPdu, out strErrorMsg))
+			string strErrorMsg;
+			if (!CheckPDUValidity(lmtPdu, out strErrorMsg))
 			{
 				if (strErrorMsg != "")
 				{
@@ -248,21 +251,21 @@ namespace LinkPath
 			}
 
 			// Response PDU处理函数
-			if(lmtPdu.reason != -5 ) // SNMP_CLASS_TIMEOUT
+			if (lmtPdu.reason != -5) // SNMP_CLASS_TIMEOUT
 			{
-				if(lmtPdu.m_LastErrorStatus == 0) // SNMP_ERROR_SUCCESS
+				if (lmtPdu.m_LastErrorStatus == 0) // SNMP_ERROR_SUCCESS
 				{
 					DealSuccResponsePDU(idToTb, lmtPdu);
 				} // 如果是非getbulk的错误响应，不需要打印响应，则不用生成出错信息
-				else if (lmtPdu.m_bIsNeedPrint == true || lmtPdu.getReqMsgType() == (int)PduType.GetBulk)
+				else if (lmtPdu.m_bIsNeedPrint || lmtPdu.getReqMsgType() == (int)PduType.GetBulk)
 				{
 					DealFailResponsePDU(idToTb, lmtPdu);
 				}
 			}
-			else if (lmtPdu.m_bIsNeedPrint == true)
+			else if (lmtPdu.m_bIsNeedPrint)
 			{
-				string strTimeoutMsg = string.Format(CommString.IDS_STR_MSGDISPOSE_FMT1, lmtPdu.get_CmdName());
-				ShowLogHelper.Show(strTimeoutMsg, lmtPdu.m_SourceIp, InfoTypeEnum.ENB_INFO);
+				var strTimeoutMsg = string.Format(CommString.IDS_STR_MSGDISPOSE_FMT1, lmtPdu.get_CmdName());
+				ShowLogHelper.Show(strTimeoutMsg, lmtPdu.m_SourceIp);
 			}
 
 			// 向消息分发中心发送，必须注册为同步
@@ -273,7 +276,6 @@ namespace LinkPath
 				// TODO
 				//LRESULT lt;
 				//CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_APPRESPONSE, (WPARAM)pLmtbPdu, (LPARAM)(&idToTb), lt);
-
 			}
 
 			// 文件管理的处理，通过消息订阅调用
@@ -281,7 +283,6 @@ namespace LinkPath
 
 			return 0;
 		}
-
 
 		/// <summary>
 		/// 失败的Response PDU处理函数
@@ -298,135 +299,43 @@ namespace LinkPath
 				return;
 			}
 
-			// 错误信息
-			string strFailedReason = "";
-
-			switch (lmtPdu.m_LastErrorStatus)
-			{
-				case SnmpConstants.ErrTooBig:
-					strFailedReason = CommString.IDS_ERROR_TOO_BIG;//报文太大
-					break;
-				case SnmpConstants.ErrNoSuchName:
-					strFailedReason = CommString.IDS_ERROR_NO_SUCH_NAME;//不存在
-					break;
-				case SnmpConstants.ErrBadValue:
-					strFailedReason = CommString.IDS_ERROR_BAD_VALUE;//错误的值
-					break;
-				case SnmpConstants.ErrReadOnly:
-					strFailedReason = CommString.IDS_ERROR_READ_ONLY;//只读
-					break;
-				case SnmpConstants.ErrGenError:
-					strFailedReason = CommString.IDS_ERROR_GENERAL_VB_ERR;//产生其它错误
-					break;
-				case SnmpConstants.ErrNoAccess:
-					strFailedReason = CommString.IDS_ERROR_NO_ACCESS;//不可访问
-					break;
-				case SnmpConstants.ErrWrongType:
-					strFailedReason = CommString.IDS_ERROR_WRONG_TYPE;//设置类型与要求类型不一致
-					break;
-				case SnmpConstants.ErrWrongLength:
-					strFailedReason = CommString.IDS_ERROR_WRONG_LENGTH;//设置长度与要求长度不一致
-					break;
-				case SnmpConstants.ErrWrongEncoding:
-					strFailedReason = CommString.IDS_ERROR_WRONG_ENCODING;//ASN.1标签编码错误
-					break;
-				case SnmpConstants.ErrWrongValue:
-					strFailedReason = CommString.IDS_ERROR_WRONG_VALUE;//不可赋为设置值
-					break;
-				case SnmpConstants.ErrNoCreation:
-					strFailedReason = CommString.IDS_ERROR_NO_CREATION;//不存在
-					break;
-				case SnmpConstants.ErrInconsistentValue:
-					strFailedReason = CommString.IDS_ERROR_INCONSIST_VAL;//不适合当前环境
-					break;
-				case SnmpConstants.ErrResourceUnavailable:
-					strFailedReason = CommString.IDS_ERROR_RESOURCE_UNAVAIL;//赋值所需资源当前不可得到
-					break;
-				case SnmpConstants.ErrCommitFailed:
-					strFailedReason = CommString.IDS_ERROR_COMITFAIL;//提交失败
-					break;
-				case SnmpConstants.ErrUndoFailed:
-					strFailedReason = CommString.IDS_ERROR_UNDO_FAIL;//撤销失败
-					break;
-				case SnmpConstants.ErrAuthorizationError:
-					strFailedReason = CommString.IDS_ERROR_AUTH_ERR;//授权错误
-					break;
-				case SnmpConstants.ErrNotWritable:
-					strFailedReason = CommString.IDS_ERROR_NOT_WRITEABLE;//不可修改
-					break;
-				case SnmpConstants.ErrInconsistentName:
-					strFailedReason = CommString.IDS_ERROR_INCONSIS_NAME;//不存在,且在当前环境下不能生成
-					// TODO 新工具还要这个操作吗？
-					// CDTDataSyncMgr::GetInstance()->RemoveCMDData(pAdoConn, pLmtbPdu);
-					break;
-				case CommNums.SNMP_ERROR_LOGIN:
-					strFailedReason = CommString.IDS_ERROR_LOGIN;//LMT-eNB首次登录为错误报文
-					break;
-				case CommNums.SNMP_ERROR_ACTIONSHIELD:
-					strFailedReason = CommString.IDS_ERROR_ACTIONSHIELD;//该操作被屏蔽
-					break;
-				case CommNums.SNMP_ERROR_ACTIONFAILD:
-					strFailedReason = CommString.IDS_ERROR_ACTIONFAILD;//操作失败
-					break;
-				case CommNums.SNMP_ERROR_OMBUSY:
-					strFailedReason = CommString.IDS_ERROR_OMBUSY;//由于OM忙不能操作实现
-					break;
-				case CommNums.SNMP_ERROR_OBSOLETE:
-					strFailedReason = CommString.IDS_ERROR_OBSOLETE;//该操作目前已经废弃
-					break;
-				case CommNums.SNMP_ERROR_OVERTIME:
-					strFailedReason = CommString.IDS_ERROR_OVERTIME;//OM出现超时错误
-					break;
-				default:
-					// 获取Snmp错误信息
-					SnmpErrDesc snmpErrDesc = SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus.ToString());
-					if (snmpErrDesc != null)
-					{
-						strFailedReason = snmpErrDesc.errorChDesc;
-					}
-					else
-					{
-						// 如果获取错误码描述失败，则将错误码赋值给描述
-						strFailedReason = lmtPdu.m_LastErrorStatus.ToString();
-					}
-					break;
-			}
+			// 获取Snmp错误信息
+			var snmpErrDesc = SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus.ToString());
+			var strFailedReason = snmpErrDesc != null ? snmpErrDesc.errorChDesc : lmtPdu.m_LastErrorStatus.ToString();
 
 			// 获取名称、描述信息等信息
-			CDTLmtbVb lmtVb = new CDTLmtbVb();
-			string strName = "";
-			string strDesc = "";
-			string strUnitName = "";
+			var lmtVb = new CDTLmtbVb();
+			var strName = "";
 			if (lmtPdu.m_LastErrorIndex > 0)
 			{
-				int idx = (int)lmtPdu.m_LastErrorIndex - 1;
+				var idx = (int)lmtPdu.m_LastErrorIndex - 1;
 				if (idx > 0 && idx < lmtPdu.VbCount())
 				{
 					lmtPdu.GetVbByIndex(idx, ref lmtVb);
-					if (false == CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value
+					string strUnitName;
+					string strDesc;
+					if (!CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value
 						, out strName, out strDesc, out strUnitName))
 					{
-						Log.Error(string.Format("GetInfoByOID调用不成功,:OID = {0}", lmtVb.Oid));
+						Log.Error($"GetInfoByOID调用不成功,:OID = {lmtVb.Oid}");
 					}
 				}
 				else
 				{
-					Log.Error(string.Format("idx 超出PDU Count数 idx={0} lmtPdu.VbCount()={1}"
-						, idx, lmtPdu.VbCount()));
+					Log.Error($"idx 超出PDU Count数 idx={idx} lmtPdu.VbCount()={lmtPdu.VbCount()}");
 				}
 			}
 
 			// 后台执行的命令,不要显示在界面上了
 
 			// 控制台显示信息
-			string strShowMsg = "";
-			string strStyle = "";
-			string strTmp = "";
+			string strStyle;
+			string strTmp;
 
 			if (!string.IsNullOrEmpty(strName))
 			{
 				// 变量 %s %s
-				strTmp = string.Format("变量 {0} {1}", strName, strFailedReason);
+				strTmp = $"变量 {strName} {strFailedReason}";
 			}
 			else
 			{
@@ -434,7 +343,7 @@ namespace LinkPath
 			}
 
 			// 操作类型
-			InfoTypeEnum optType = InfoTypeEnum.ENB_OTHER_INFO_IMPORT;
+			var optType = InfoTypeEnum.ENB_OTHER_INFO_IMPORT;
 			if (idToTable.pduType == (int)PduType.Set)
 			{
 				strStyle = CommString.IDS_SETPDU_ERROR; //SET命令响应错误
@@ -450,8 +359,7 @@ namespace LinkPath
 				strStyle = CommString.IDS_PDU_ERROR;  //命令响应错误
 			}
 
-			strShowMsg = string.Format("{0}:{1}", strStyle, strTmp);
-
+			var strShowMsg = $"{strStyle}:{strTmp}";
 
 			ShowLogHelper.Show(strShowMsg, lmtPdu.m_SourceIp, optType);
 
@@ -461,7 +369,6 @@ namespace LinkPath
 			//char* pStrMsg = (char*)(LPCTSTR)strMsg;
 			//CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_MSGCMD_LOG, (WPARAM)pStrMsg, 0, lt);
 			//wangyun1 For CmdLine 2011-8-11<-----------------------------
-
 		}
 
 		/// <summary>
@@ -472,7 +379,7 @@ namespace LinkPath
 		private void DealSuccResponsePDU(IDToTableStruct idToTable, CDTLmtbPdu lmtPdu)
 		{
 			// 保活命令下发的信息不需要打印
-			if (idToTable.strCmdName.Equals(CommStructs.EPC_KEEPALIVE_SNMPFUNCNAME)) 
+			if (idToTable.strCmdName.Equals(CommStructs.EPC_KEEPALIVE_SNMPFUNCNAME))
 			{
 				return;
 			}
@@ -495,25 +402,26 @@ namespace LinkPath
 			}
 
 			// 显示信息
-			string strShowMsg = "";
+			var strShowMsg = "";
+
 			// 操作结果
-			string strOperResult = CommString.IDS_OPERLOG_SUCCESS; // "成功"
+			//var strOperResult = CommString.IDS_OPERLOG_SUCCESS; // "成功"
 
 			// 遍历vb对，通知上层更新数据
-			int vbCount = lmtPdu.VbCount();
-			for (int i = 0; i < vbCount; i++)
+			var vbCount = lmtPdu.VbCount();
+			for (var i = 0; i < vbCount; i++)
 			{
-				CDTLmtbVb lmtVb = new CDTLmtbVb();
+				var lmtVb = new CDTLmtbVb();
 				lmtPdu.GetVbByIndex(i, ref lmtVb);
 				// 获取名称及描述等信息
-				string strName = "";
-				string strDesc = "";
-				string strUnitName = "";
-				if (lmtPdu.m_bIsNeedPrint == true 
-						&& false == CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid
+				var strName = "";
+				var strDesc = "";
+				var strUnitName = "";
+				if (lmtPdu.m_bIsNeedPrint
+						&& !CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid
 							, lmtVb.Value, out strName, out strDesc, out strUnitName))
 				{
-					Log.Error(string.Format("GetInfoByOID调用不成功:OID = {0}", lmtVb.Oid));
+					Log.Error($"GetInfoByOID调用不成功:OID = {lmtVb.Oid}");
 					continue;
 				}
 
@@ -530,37 +438,32 @@ namespace LinkPath
 				}
 
 				// 需要打印信息
-				if (lmtPdu.m_bIsNeedPrint == true)
+				if (lmtPdu.m_bIsNeedPrint)
 				{
-					string strMsg = string.Format(CommString.IDS_INFOMSGSTYLE, strName, strDesc);
+					var strMsg = string.Format(CommString.IDS_INFOMSGSTYLE, strName, strDesc);
 					if (!string.IsNullOrEmpty(strUnitName))
 					{
-						strMsg = string.Format("{0} ({1}{2})", strMsg, CommString.IDS_UNITNAME, strUnitName);
+						strMsg = $"{strMsg} ({CommString.IDS_UNITNAME}{strUnitName})";
 					}
 
 					// 时间信息
 					// TODO:打印信息中已经有统一的时间了，在这在计算时间没意义吧？暂时去掉
 
-					strShowMsg = string.Format("{0}{1};\n", strShowMsg, strMsg);
+					strShowMsg = $"{strShowMsg}{strMsg};\n";
 
 					// 如果是set操作，写操作日志到数据库
 					if (idToTable.pduType == (int)PduType.Set)
 					{
 						// TODO 旧工具也没有这部分的实现
 					}
-
-
 				} // end if
-
-
-
 			} // end for
 
 			// 数据写入到数据库中，把数据库联接和PDU发给数据同步工作线程
 			// CDTDataSyncMgr::GetInstance()->DealResponse(pAdoConn, pLmtbPdu);
 			// TODO
 
-			if (lmtPdu.m_bIsNeedPrint == true)
+			if (lmtPdu.m_bIsNeedPrint)
 			{
 				// 去掉最后一个回车
 				strShowMsg = strShowMsg.TrimEnd('\n');
@@ -571,9 +474,7 @@ namespace LinkPath
 				//LPARAM lt;
 				//char* pStrMsg = (char*)(LPCTSTR)strMsg;
 				//CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_MSGCMD_LOG, (WPARAM)pStrMsg, 0, lt);
-
 			}
-
 		}
 
 		/// <summary>
@@ -585,14 +486,14 @@ namespace LinkPath
 		private bool DealEventTrap(int intTrapType, CDTLmtbPdu lmtPdu)
 		{
 			// 网元IP
-			string strNodeBIp = lmtPdu.m_SourceIp;
+			var strNodeBIp = lmtPdu.m_SourceIp;
 			string strValue;
 
-			string strEventInfo = "";
+			string strEventInfo;
 			// 判定事件类型，输出事件信息
-			if (false == ClassifyEvent(intTrapType, lmtPdu, out strEventInfo))
+			if (!ClassifyEvent(intTrapType, lmtPdu, out strEventInfo))
 			{
-				Log.Error(string.Format("事件分类处理方法ClassifyEvent返回错误:{0}", strEventInfo));
+				Log.Error($"事件分类处理方法ClassifyEvent返回错误:{strEventInfo}");
 				return false;
 			}
 
@@ -615,9 +516,9 @@ namespace LinkPath
 			}
 
 			// 保存事件信息
-			if (false == SaveEventTrap(lmtPdu, strEventInfo))
+			if (!SaveEventTrap(lmtPdu, strEventInfo))
 			{
-				Log.Error(string.Format("SaveEventTrap返回失败:{0}", strEventInfo));
+				Log.Error($"SaveEventTrap返回失败:{strEventInfo}");
 			}
 
 			// 文件传输事件处理
@@ -633,12 +534,12 @@ namespace LinkPath
 			CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_APPEVENTTRAP, (WPARAM)iTrapType, (LPARAM)pLmtbPdu, lt);
 			*/
 			// 将lmtPdu转换为string以便传递
-			string strLmtPdu = JsonHelper.SerializeObjectToString(lmtPdu);
-			string strPars = $"{{'TrapType' : {intTrapType}, 'LmtPdu' : {strLmtPdu} }}";
+			var strLmtPdu = JsonHelper.SerializeObjectToString(lmtPdu);
+			var strPars = $"{{'TrapType' : {intTrapType}, 'LmtPdu' : {strLmtPdu} }}";
 			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_AppEventTrap, strPars);
 
 			// fileTransNotiResult
-			if (true == lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiResult", out strValue))
+			if (lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiResult", out strValue))
 			{
 				//1:正在传输/2:正在解压缩
 				if ("1".Equals(strValue) || "2".Equals(strValue))
@@ -649,7 +550,7 @@ namespace LinkPath
 			}
 
 			// 输出信息
-			strEventInfo = string.Format("{0}{1}", CommString.IDS_RECEIVE, strEventInfo);
+			strEventInfo = $"{CommString.IDS_RECEIVE}{strEventInfo}";
 			ShowLogHelper.Show(strEventInfo, lmtPdu.m_SourceIp, InfoTypeEnum.OM_EVENT_NOTIFY_INFO);
 
 			return true;
@@ -662,11 +563,11 @@ namespace LinkPath
 		private void DealFileTransTrap(CDTLmtbPdu lmtPdu)
 		{
 			// 网元IP
-			string strIPAddr = lmtPdu.m_SourceIp;
+			var strIPAddr = lmtPdu.m_SourceIp;
 
 			string strValue;
 			// 文件传输结果
-			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiResult", out strValue); 
+			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiResult", out strValue);
 			if (!string.IsNullOrEmpty(strValue) && Convert.ToInt32(strValue) != 0)
 			{
 				Log.Error("文件传输不成功.");
@@ -685,12 +586,11 @@ namespace LinkPath
 
 			// 上传的文件类型
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiFileType", out strValue);
-			int uploadFileType = 0;
+			var uploadFileType = 0;
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				uploadFileType = Convert.ToInt32(strValue);
 			}
-				
 
 			// 含FTP服务器路径的文件名
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiFileName", out strValue);
@@ -700,22 +600,22 @@ namespace LinkPath
 				return;
 			}
 
-			Log.Info(string.Format("文件名:{0}", strValue));
+			Log.Info($"文件名:{strValue}");
 			//将文件路径转换成windows格式
-			strValue.Replace('/', '\\');
-			strValue.Trim();
+			strValue = strValue.Replace('/', '\\');
+			strValue = strValue.Trim();
 
 			// 件是否存在
 			if (FilePathHelper.FileExists(strValue) != true)
 			{
-				Log.Error(string.Format("上传的文件{0}不存在!", strValue));
+				Log.Error($"上传的文件{strValue}不存在!");
 				return;
 			}
 
 			// lm.dtz文件
 			if (26 == uploadFileType)
 			{
-				string strUploadFilePath = strValue;
+				var strUploadFilePath = strValue;
 				// 发布消息
 				PublishHelper.PublishMsg(TopicHelper.LoadLmdtzToVersionDb
 					, $"{{\"SourceIp\" : \"{lmtPdu.m_SourceIp}\", \"UploadFilePath\" :\"{strUploadFilePath}\" }}");
@@ -724,23 +624,21 @@ namespace LinkPath
 			}
 
 			// 文件的扩展名
-			string strFileType = strValue.Substring(strValue.Length - 3, 3);
+			var strFileType = strValue.Substring(strValue.Length - 3, 3);
 			strFileType = strFileType.ToLower();
 
-			
 			if (strFileType == "dcb") // 一致性文件
 			{
-				int index;
 				// 检查这个文件是否在指定目录下,如果在,则解析之
 				// 文件全路径
-				string strUpLoadFullPath = strValue;
+				var strUpLoadFullPath = strValue;
 
 				// 去掉文件名称，获取文件路径
-				index = strUpLoadFullPath.LastIndexOf("\\");
-				string strUpLoadPath = strUpLoadFullPath.Substring(0, index + 1);
+				var index = strUpLoadFullPath.LastIndexOf("\\", StringComparison.Ordinal);
+				var strUpLoadPath = strUpLoadFullPath.Substring(0, index + 1);
 
 				// 系统指定路径
-				string strAppointPath = AppPathUtiliy.Singleton.GetAppPath() + "filestorage\\DATA_CONSISTENCY";
+				var strAppointPath = AppPathUtiliy.Singleton.GetAppPath() + "filestorage\\DATA_CONSISTENCY";
 
 				// 去掉路径中的所有"\"，然后进行比较是否相同
 				strUpLoadPath = strUpLoadPath.Replace("\\", "");
@@ -760,12 +658,8 @@ namespace LinkPath
 
 				return;
 			}
-			else
-			{
-				Log.Error(string.Format("上传其他的文件类型{0}，暂时不处理.", strFileType));
 
-				return;
-			}
+			Log.Error($"上传其他的文件类型{strFileType}，暂时不处理.");
 		}
 
 		/// <summary>
@@ -792,33 +686,29 @@ namespace LinkPath
 				return;
 			}
 			// 基站IP
-			string strNodeIp = lmtPdu.m_SourceIp;
+			var strNodeIp = lmtPdu.m_SourceIp;
 
 			long taskId = 0;
 			long requestId = 0;
 			//收到初配上报事件, 发起一致性文件上传
-			string strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
+			var strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
 			var transFileObj = FileTransTaskMgr.FormatTransInfo(
 															strDataConsisFolderPath
-															,""
+															, ""
 															, Transfiletype5216.TRANSFILE_dataConsistency
 															, TRANSDIRECTION.TRANS_UPLOAD);
 			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(
 				strNodeIp, transFileObj, ref taskId, ref requestId))
 			{
-				Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}"
-					, strDataConsisFolderPath, strNodeIp));
-
+				Log.Error($"下发上传数据一致性文件传输任务失败，数据一致性文件目录{strDataConsisFolderPath}，网元IP为{strNodeIp}");
 			}
 			else
 			{
-				Log.Info("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strNodeIp);
+				Log.Info($"下发上传数据一致性文件传输任务成功！--网元IP为{strNodeIp}");
 			}
 
 			// TODO
 			// pLmtorInfo->bIsEquipInit = TRUE;//设置初配结束标识
-
-			return;
 		}
 
 		/// <summary>
@@ -834,25 +724,23 @@ namespace LinkPath
 			strDesc = "";
 
 			// 返回值
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			string strValue;
 			// 传输结果
-			string strTrapResult;
 			string strReValue;
-			string strGeneralEventType;
 
 			// 网元IP
-			string strNodeBIp = lmtPdu.m_SourceIp;
+			var strNodeBIp = lmtPdu.m_SourceIp;
 
-			switch(intTrapType)
+			switch (intTrapType)
 			{
 				case 22: //managementRequestObjects
 						 //eventManagementRequestTraps
 						 //managementRequestNEID
-					
+
 					// 网元标识
 					lmtPdu.GetValueByMibName(strNodeBIp, "equipStartupNotiNEID", out strValue);
-					if(!string.IsNullOrEmpty(strValue))
+					if (!string.IsNullOrEmpty(strValue))
 					{
 						sb.Append("网元标识:").Append(strValue).Append(";");
 					}
@@ -890,11 +778,11 @@ namespace LinkPath
 
 					// fileTransTrapFlag
 					lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiIndicator", out strValue);
-					if(!string.IsNullOrEmpty(strValue))
+					if (!string.IsNullOrEmpty(strValue))
 					{
 						// 根据Mib值获取其描述
-						
-						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue, true))
+
+						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -903,11 +791,11 @@ namespace LinkPath
 
 					// fileTransTrapResult
 					lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiResult", out strValue);
-					strTrapResult = strValue;
+					var strTrapResult = strValue;
 					if (!string.IsNullOrEmpty(strValue))
 					{
 						// 根据Mib值获取其描述
-						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue, true))
+						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -919,12 +807,12 @@ namespace LinkPath
 						lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiErrorCode", out strValue);
 						if (!string.IsNullOrEmpty(strValue))
 						{
-							if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue, true))
+							if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue))
 							{
 								return false;
 							}
 							sb.Append("错误类型为：").Append(strReValue).Append(" ");
-						} 
+						}
 					}
 
 					break;
@@ -932,12 +820,12 @@ namespace LinkPath
 				case 20:    //eventGeneralEventTraps
 							//old: 1:cellBlock|小区阻塞/2:cellUnblock|小区解阻塞/3:masterSlaveConsistency|主备一致性/4:ipoaBuild|IPOA建立结果/6:dynCfgActOn|管理站下载的动态配置文件激活结果/7:softActOnTime|软件定时激活启动/8:carrierCheck|载波状态上报/10:cellPerfStatistics|小区性能统计结果/11:cellR5PerfReport|小区性能统计上报/12:nbapNodeBReset|Nbap的nodeb复位/13:cellPerfDataClear|小区性能统计数据清零/16:masterSlaveSwap|主备用倒换结果/19:boardPowerOn|板卡启动/21:saalCreate|SAAL建立结果/22:saalDestroy|SAAL删除结果/23:pathCreate|Path建立结果/24:pathDestroy|Path删除结果/25:debugUpload|调试日志上传/26:dfgCreate|动态配置文件创建/27:antCfgParse|天线配置文件解析结果/28:gpsUpgrade|GPS升级结果/29:ifuNetworkPlanReq|IFU申请网络规划/30:programSyn|程序同步结果
 							//new: 1:cellBlock|小区阻塞/2:cellUnblock|小区解阻塞/3:masterSlaveConsistency|主备一致性/4:ipoaBuild|IPOA建立结果/6:dynCfgActOn|管理站下载的动态配置文件激活结果/7:softActOnTime|软件定时激活启动/8:carrierCheck|载波状态上报/10:cellPerfStatistics|小区性能统计结果/11:cellR5PerfReport|小区性能统计上报/12:nbapNodeBReset|Nbap的nodeb复位/13:cellPerfDataClear|小区性能统计数据清零/16:masterSlaveSwap|主备用倒换结果/19:boardPowerOn|板卡启动/21:saalCreate|SAAL建立结果/22:saalDestroy|SAAL删除结果/23:pathCreate|Path建立结果/24:pathDestroy|Path删除结果/25:debugUpload|调试日志上传/26:dfgCreate|动态配置文件创建/27:antCfgParse|天线配置文件解析结果/28:gpsUpgrade|GPS升级结果/29:ifuNetworkPlanReq|IFU申请网络规划/30:programSyn|程序同步结果)；事件结果 (0:fail/1:success)；事件附加信息 ((1..255)字符串)/31:initCfgResult|初配结果/32:localCellSetup|本地小区建立结果/33:localCellDelete|本地小区删除结果/34:cellSetup|小区建立结果/35:cellDelete|小区删除结果
-					//eventGeneralEventType
+							//eventGeneralEventType
 					lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiErrorCode", out strValue);
-					strGeneralEventType = strValue;
+					var strGeneralEventType = strValue;
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue, true))
+						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -948,7 +836,7 @@ namespace LinkPath
 					lmtPdu.GetValueByMibName(strNodeBIp, "eventGeneralEventResult", out strValue);
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (false == CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue, true))
+						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -962,20 +850,20 @@ namespace LinkPath
 					if (!string.IsNullOrEmpty(strValue))
 					{
 						// 机框
-						string strFrameNo = "";
+						var strFrameNo = "";
 						// 槽位
-						string strSlotNo = "";
-						string strValueTmp = strValue;
+						var strSlotNo = "";
+						var strValueTmp = strValue;
 
 						sb.Append("事件产生源:");
 						// 截取机框和槽位号
-						int intDotIndex = strValueTmp.LastIndexOf('.');
-						if (intDotIndex >= 0 & intDotIndex < strValueTmp.Length-1)
+						var intDotIndex = strValueTmp.LastIndexOf('.');
+						if (intDotIndex >= 0 & intDotIndex < strValueTmp.Length - 1)
 						{
 							// 槽位号
 							strSlotNo = strValueTmp.Substring(intDotIndex + 1, (strValueTmp.Length - intDotIndex));
 							strValueTmp = strValueTmp.Substring(0, intDotIndex);
-							
+
 							// 机框号
 							intDotIndex = strValueTmp.LastIndexOf('.');
 							if (intDotIndex >= 0 & intDotIndex < strValueTmp.Length - 1)
@@ -986,11 +874,11 @@ namespace LinkPath
 						}
 
 						// 获取Mib节点信息
-						var reDataByOid = new MibLeaf();
+						MibLeaf reDataByOid;
 						string strError;
-						if(false == Database.GetInstance().GetMibDataByOid(strValueTmp, out reDataByOid, strNodeBIp, out strError))
+						if (!Database.GetInstance().GetMibDataByOid(strValueTmp, out reDataByOid, strNodeBIp, out strError))
 						{
-							Log.Error(string.Format("获取MIb节点信息错误，oid={0}", strValueTmp));
+							Log.Error($"获取MIb节点信息错误，oid={strValueTmp}");
 							return false;
 						}
 						if (reDataByOid != null && !string.IsNullOrEmpty(strFrameNo) && !string.IsNullOrEmpty(strSlotNo))
@@ -1003,7 +891,6 @@ namespace LinkPath
 							sb.Append(strValue).Append(";");
 						}
 						sb.Append("  ");
-
 					}
 
 					// eventGeneralEventAdditionInfo字段，事件附加信息
@@ -1022,15 +909,18 @@ namespace LinkPath
 								//通用事件中上报TPA电流的事件类型
 								//return TRUE;
 								break;
+
 							case 102:
 								//HSDPA小区性能统计上报
 								strValue = " (" + GetCellPerfReportInfo(strValue) + ")";
 								break;
+
 							case 104:
 								//vb
 								//小区性能统计数据清零【改】
 								strValue = " (" + GetCellPerfDataClearInfo(strValue) + ")";
 								break;
+
 							default:
 								//其它的直接显示
 								break;
@@ -1047,27 +937,35 @@ namespace LinkPath
 					}
 
 					break;
+
 				case 25: // transactionResultObjects，事务
 					ProcessTransResultEvent(lmtPdu, out strDesc);
 					break;
+
 				case 26: // 数据同步事件Trap绑定变量
 					ProcessSyncFileEvent(lmtPdu, out strDesc);
 					break;
+
 				case 200: // 处理ANR专用事情
 					ProcessANREvent(lmtPdu, out strDesc);
 					break;
+
 				case 201:  //处理MRO专用事情
 					ProcessMROEvent(lmtPdu, out strDesc);
 					break;
+
 				case 202:  //处理FC专用事件
 					ProcessFCEvent(lmtPdu, out strDesc);
 					break;
+
 				case 203:  // maintenceStateNotify工程状态通知事件处理
 					ProcessMaintenceStateNotify(lmtPdu, out strDesc);
 					break;
+
 				case 204:  // nodeBlockStateNotify工程状态通知事件处理
 					ProcessnodeBlockStateNotify(lmtPdu, out strDesc);
 					break;
+
 				default:
 					Log.Error("ClassifyEvent方法中不能识别的PDU类型.");
 					return false;
@@ -1077,7 +975,6 @@ namespace LinkPath
 
 			return true;
 		}
-
 
 		/// <summary>
 		/// nodeBlockStateNotify工程状态通知事件处理
@@ -1089,42 +986,34 @@ namespace LinkPath
 		{
 			strDesc = "";
 
-			string strOidPrefix = SnmpToDatabase.GetMibPrefix();
-			string strVbOid = "";
-			string strValue = "";
-			string strReValue = "";
-			string strMibOid = "";
-			string strAsnTyep = "";
-			CDTLmtbVb lmtVb = null;
+			var strOidPrefix = SnmpToDatabase.GetMibPrefix();
+			var strReValue = "";
 
 			// 从第三个报文开始是内容
-			for (int i = 2; i < lmtPdu.VbCount(); i++)
+			for (var i = 2; i < lmtPdu.VbCount(); i++)
 			{
-				lmtVb = lmtPdu.GetVbByIndexEx(i);
-				if (lmtVb == null)
-				{
-					continue;
-				}
-				strVbOid = lmtVb.Oid;
+				var lmtVb = lmtPdu.GetVbByIndexEx(i);
+				var strVbOid = lmtVb?.Oid;
 				if (string.IsNullOrEmpty(strVbOid))
 				{
 					continue;
 				}
 
 				// 根据Vb 中的OID 获取 MibOid
-				if (false == ConvertVbOidToMibOid(strOidPrefix, strVbOid, out strMibOid))
+				string strMibOid;
+				if (!ConvertVbOidToMibOid(strOidPrefix, strVbOid, out strMibOid))
 				{
 					continue;
 				}
 
-				MibLeaf mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
+				var mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
 				if (null == mibLeaf)
 				{
 					continue;
 				}
 
-				strValue = lmtVb.Value;
-				strAsnTyep = lmtVb.AsnType;
+				var strValue = lmtVb.Value;
+				var strAsnTyep = lmtVb.AsnType;
 				if (!string.IsNullOrEmpty(strAsnTyep))
 				{
 					strAsnTyep = strAsnTyep.ToUpper();
@@ -1135,7 +1024,7 @@ namespace LinkPath
 					}
 				}
 
-				strDesc = string.Format("{0}{1}: {2}; ", strDesc, mibLeaf.childNameCh, strReValue);
+				strDesc = $"{strDesc}{mibLeaf.childNameCh}: {strReValue}; ";
 			}
 
 			return true;
@@ -1151,42 +1040,34 @@ namespace LinkPath
 		{
 			strDesc = "";
 
-			string strOidPrefix = SnmpToDatabase.GetMibPrefix();
-			string strVbOid = "";
-			string strValue = "";
-			string strReValue = "";
-			string strMibOid = "";
-			string strAsnTyep = "";
-			CDTLmtbVb lmtVb = null;
+			var strOidPrefix = SnmpToDatabase.GetMibPrefix();
+			var strReValue = "";
 
 			// 从第三个报文开始是内容
-			for (int i = 2; i < lmtPdu.VbCount(); i++)
+			for (var i = 2; i < lmtPdu.VbCount(); i++)
 			{
-				lmtVb = lmtPdu.GetVbByIndexEx(i);
-				if (lmtVb == null)
-				{
-					continue;
-				}
-				strVbOid = lmtVb.Oid;
+				var lmtVb = lmtPdu.GetVbByIndexEx(i);
+				var strVbOid = lmtVb?.Oid;
 				if (string.IsNullOrEmpty(strVbOid))
 				{
 					continue;
 				}
 
 				// 根据Vb 中的OID 获取 MibOid
-				if (false == ConvertVbOidToMibOid(strOidPrefix, strVbOid, out strMibOid))
+				string strMibOid;
+				if (!ConvertVbOidToMibOid(strOidPrefix, strVbOid, out strMibOid))
 				{
 					continue;
 				}
 
-				MibLeaf mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
+				var mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
 				if (null == mibLeaf)
 				{
 					continue;
 				}
 
-				strValue = lmtVb.Value;
-				strAsnTyep = lmtVb.AsnType;
+				var strValue = lmtVb.Value;
+				var strAsnTyep = lmtVb.AsnType;
 				if (!string.IsNullOrEmpty(strAsnTyep))
 				{
 					strAsnTyep = strAsnTyep.ToUpper();
@@ -1197,7 +1078,7 @@ namespace LinkPath
 					}
 				}
 
-				strDesc = string.Format("{0}{1}: {2}; ", strDesc, mibLeaf.childNameCh, strReValue);
+				strDesc = $"{strDesc}{mibLeaf.childNameCh}: {strReValue}; ";
 			}
 
 			return true;
@@ -1216,13 +1097,13 @@ namespace LinkPath
 			strMibOid = "";
 			if (string.IsNullOrEmpty(strOidPrefix) || string.IsNullOrEmpty(strVbOid))
 			{
-				Log.Error(string.Format("参数strOidPrefix:{0}或strVbOid{1}为空!", strOidPrefix, strVbOid));
+				Log.Error($"参数strOidPrefix:{strOidPrefix}或strVbOid{strVbOid}为空!");
 				return false;
 			}
 
-			if (strVbOid.IndexOf(strOidPrefix) < 0)
+			if (strVbOid.IndexOf(strOidPrefix, StringComparison.Ordinal) < 0)
 			{
-				Log.Error(string.Format("Oid前缀与Oid不匹配!strOidPrefix:{0},strVbOid{0}", strOidPrefix, strVbOid));
+				Log.Error($"Oid前缀与Oid不匹配!strOidPrefix:{strOidPrefix},strVbOid{strVbOid}");
 				return false;
 			}
 
@@ -1230,7 +1111,7 @@ namespace LinkPath
 			strMibOid = strVbOid.Replace(strOidPrefix, "");
 
 			// 去掉最后一位索引
-			int index = strMibOid.LastIndexOf('.');
+			var index = strMibOid.LastIndexOf('.');
 			if (index < 0)
 			{
 				return false;
@@ -1249,15 +1130,15 @@ namespace LinkPath
 		private bool ProcessFCEvent(CDTLmtbPdu lmtPdu, out string strDesc)
 		{
 			strDesc = "";
-			string strValue = "";
-			string strReValue = "";
-			string strNeIp = lmtPdu.m_SourceIp;
+			string strValue;
+			string strReValue;
+			var strNeIp = lmtPdu.m_SourceIp;
 
 			// //网元标识
 			lmtPdu.GetValueByMibName(strNeIp, "fcNotiNEID", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1};", CommString.IDS_NEID, strValue);
+				strDesc = $"{CommString.IDS_NEID}{strValue};";
 			}
 
 			// 网元类型
@@ -1265,54 +1146,52 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				CommSnmpFuns.TranslateMibValue(strNeIp, "fcNotiNEType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_NETYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strReValue};";
 			}
 
-			string strFcNotiType = "";
 			// FC事情类型
 			lmtPdu.GetValueByMibName(strNeIp, "fcNotiType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strFcNotiType = strValue;
 				CommSnmpFuns.TranslateMibValue(strNeIp, "fcNotiType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_FC_EVENT_TYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.DIS_FC_EVENT_TYPE}{strReValue};";
 			}
 
 			// 小区索引
 			lmtPdu.GetValueByMibName(strNeIp, "fcNotiCellId", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_MRO_NOTI_CELL_ID, strValue);
+				strDesc = $"{strDesc}{CommString.DIS_MRO_NOTI_CELL_ID}{strValue};";
 			}
 
 			// 事件产生时间
 			lmtPdu.GetValueByMibName(strNeIp, "fcNotiTime", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_EVENT_TIME, strValue);
+				strDesc = $"{strDesc}{CommString.DIS_EVENT_TIME}{strValue};";
 			}
 
 			// 建议mib取值列表
 			if (lmtPdu.VbCount() >= 11)
 			{
-				strDesc = string.Format("{0}相关mib节点建议取值如下:\r\n", strDesc);
-				for (int i = 10; i < lmtPdu.VbCount(); i++)
+				strDesc = $"{strDesc}相关mib节点建议取值如下:\r\n";
+				for (var i = 10; i < lmtPdu.VbCount(); i++)
 				{
-					CDTLmtbVb lmtVb = new CDTLmtbVb();
+					var lmtVb = new CDTLmtbVb();
 					lmtPdu.GetVbByIndex(i, ref lmtVb);
-					string strOid = lmtVb.Oid;
-					string strVbValue = lmtVb.Value;
+					var strOid = lmtVb.Oid;
+					var strVbValue = lmtVb.Value;
 					string strName;
 					string strValueDesc;
 					string strUnitName;
 					// 根据OID取出相关信息
-					if (false == CommSnmpFuns.GetInfoByOID(
+					if (!CommSnmpFuns.GetInfoByOID(
 						strNeIp, strOid, strVbValue, out strName, out strValueDesc, out strUnitName))
 					{
-						Log.Error(string.Format("GetInfoByOID()方法返回错误，oid:{0}", strOid));
+						Log.Error($"GetInfoByOID()方法返回错误，oid:{strOid}");
 						return false;
 					}
-					strDesc = string.Format("{0}Mib节点:{1},建议取值:{2} {3};\r\n", strDesc, strName, strVbValue, strUnitName);
+					strDesc = $"{strDesc}Mib节点:{strName},建议取值:{strVbValue} {strUnitName};\r\n";
 				}
 				// 删除结尾最后一个回车
 				char[] strTrim = { '\r', '\n' };
@@ -1331,15 +1210,15 @@ namespace LinkPath
 		private bool ProcessMROEvent(CDTLmtbPdu lmtPdu, out string strDesc)
 		{
 			strDesc = "";
-			string strValue = "";
-			string strReValue = "";
-			string strNeIp = lmtPdu.m_SourceIp;
+			string strValue;
+			string strReValue;
+			var strNeIp = lmtPdu.m_SourceIp;
 
 			// transactionResultTrapNEID
 			lmtPdu.GetValueByMibName(strNeIp, "mroNotiNEID", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1};", CommString.IDS_NEID, strValue);
+				strDesc = $"{CommString.IDS_NEID}{strValue};";
 			}
 
 			// 网元类型
@@ -1347,54 +1226,52 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				CommSnmpFuns.TranslateMibValue(strNeIp, "mroNotiNEType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_NETYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strReValue};";
 			}
 
-			string strMroNotiType = "";
 			// MRO事情类型
 			lmtPdu.GetValueByMibName(strNeIp, "mroNotiType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strMroNotiType = strValue;
 				CommSnmpFuns.TranslateMibValue(strNeIp, "mroNotiType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_MRO_EVENT_TYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.DIS_MRO_EVENT_TYPE}{strReValue};";
 			}
 
 			// 本小区索引
 			lmtPdu.GetValueByMibName(strNeIp, "mroNotiCellId", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_MRO_NOTI_CELL_ID, strValue);
+				strDesc = $"{strDesc}{CommString.DIS_MRO_NOTI_CELL_ID}{strValue};";
 			}
 
 			// 事件产生时间
 			lmtPdu.GetValueByMibName(strNeIp, "mroNotiTime", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_EVENT_TIME, strValue);
+				strDesc = $"{strDesc}{CommString.DIS_EVENT_TIME}{strValue};";
 			}
 
 			// 建议mib取值列表
 			if (lmtPdu.VbCount() >= 10)
 			{
-				strDesc = string.Format("{0}相关mib节点建议取值如下:\r\n", strDesc);
-				for (int i = 10; i < lmtPdu.VbCount(); i++)
+				strDesc = $"{strDesc}相关mib节点建议取值如下:\r\n";
+				for (var i = 10; i < lmtPdu.VbCount(); i++)
 				{
-					CDTLmtbVb lmtVb = new CDTLmtbVb();
+					var lmtVb = new CDTLmtbVb();
 					lmtPdu.GetVbByIndex(i, ref lmtVb);
-					string strOid = lmtVb.Oid;
-					string strVbValue = lmtVb.Value;
+					var strOid = lmtVb.Oid;
+					var strVbValue = lmtVb.Value;
 					string strName;
 					string strValueDesc;
 					string strUnitName;
 					// 根据OID取出相关信息
-					if (false == CommSnmpFuns.GetInfoByOID(
+					if (!CommSnmpFuns.GetInfoByOID(
 						strNeIp, strOid, strVbValue, out strName, out strValueDesc, out strUnitName))
 					{
-						Log.Error(string.Format("GetInfoByOID()方法返回错误，oid:{0}", strOid));
+						Log.Error($"GetInfoByOID()方法返回错误，oid:{strOid}");
 						return false;
 					}
-					strDesc = string.Format("{0}Mib节点:{1},建议取值:{2} {3};\r\n", strDesc, strName, strVbValue, strUnitName);
+					strDesc = $"{strDesc}Mib节点:{strName},建议取值:{strVbValue} {strUnitName};\r\n";
 				}
 				// 删除结尾最后一个回车
 				char[] strTrim = { '\r', '\n' };
@@ -1410,42 +1287,42 @@ namespace LinkPath
 		/// <param name="lmtPdu"></param>
 		/// <param name="strDesc"></param>
 		/// <returns></returns>
-		private bool ProcessANREvent(CDTLmtbPdu lmtPdu, out string strDesc)
+		private static bool ProcessANREvent(CDTLmtbPdu lmtPdu, out string strDesc)
 		{
 			strDesc = "";
-			string strValue = "";
-			string strReValue = "";
-			string strNeIp = lmtPdu.m_SourceIp;
+			string strValue;
+			string strReValue;
+			var strNeIp = lmtPdu.m_SourceIp;
 
 			// transactionResultTrapNEID
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiNEID", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1};", CommString.IDS_NEID, strValue);
+				strDesc = $"{CommString.IDS_NEID}{strValue};";
 			}
 			// 网元类型
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiNEType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_NETYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strReValue};";
 			}
 
-			string strAnrNotiType = "";
+			var strAnrNotiType = "";
 			// ANR事情类型
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				strAnrNotiType = strValue;
 				CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_EVENT_TYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_ANR_EVENT_TYPE}{strReValue};";
 			}
 
 			// 本小区索引
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiLcIdx", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_NOTILCIDX, strValue);
+				strDesc = $"{strDesc}{CommString.IDS_ANR_NOTILCIDX}{strValue};";
 			}
 
 			// 邻区关系索引
@@ -1454,25 +1331,25 @@ namespace LinkPath
 				lmtPdu.GetValueByMibName(strNeIp, "anrNotiAdjRelationIdx", out strValue);
 				if (!string.IsNullOrEmpty(strValue))
 				{
-					strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_NOTI_ADJ_RELATION_IDX, strValue);
+					strDesc = $"{strDesc}{CommString.IDS_ANR_NOTI_ADJ_RELATION_IDX}{strValue};";
 				}
 			}
 
 			// 邻区网络类型
-			string strAdjCellNetType = "";
+			var strAdjCellNetType = "";
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiAdjCellNetType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				strAdjCellNetType = strValue;
 				CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiAdjCellNetType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_NOTI_ADJ_CELL_NET_TYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_ANR_NOTI_ADJ_CELL_NET_TYPE}{strReValue};";
 			}
 
 			// 邻区移动国家码
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiAdjCellPlmnMcc", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_NOTI_ADJ_CELL_PLMN_MCC, strValue);
+				strDesc = $"{strDesc}{CommString.IDS_ANR_NOTI_ADJ_CELL_PLMN_MCC}{strValue};";
 			}
 
 			// 邻区移动网络码
@@ -1481,15 +1358,15 @@ namespace LinkPath
 			{
 				// MNC第三个数字为255时，不用显示
 				strValue = strValue.Replace(",255}", "}");
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_NOTI_ADJ_CELL_PLMN_MNC, strValue);
+				strDesc = $"{strDesc}{CommString.IDS_ANR_NOTI_ADJ_CELL_PLMN_MNC}{strValue};";
 			}
 
 			// 邻区索引
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiAdjCellId", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				string strAdjCellIdInfos = CommFuns.GenerateAdjCellIdInfo(strAdjCellNetType, strValue);
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.IDS_ANR_NOTI_ADJ_CELL_ID, strAdjCellIdInfos);
+				var strAdjCellIdInfos = CommFuns.GenerateAdjCellIdInfo(strAdjCellNetType, strValue);
+				strDesc = $"{strDesc}{CommString.IDS_ANR_NOTI_ADJ_CELL_ID}{strAdjCellIdInfos};";
 			}
 
 			if ("2".Equals(strAnrNotiType))
@@ -1498,7 +1375,7 @@ namespace LinkPath
 				if (!string.IsNullOrEmpty(strValue))
 				{
 					CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiResult", strValue, out strReValue);
-					strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_EVNET_RESULT, strReValue);
+					strDesc = $"{strDesc}{CommString.DIS_EVNET_RESULT}{strReValue};";
 				}
 
 				// 只有失败的时候才显示失败原因
@@ -1508,7 +1385,7 @@ namespace LinkPath
 					if (!string.IsNullOrEmpty(strValue))
 					{
 						CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiFailReason", strValue, out strReValue);
-						strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_EVENT_FAIL_RSULT, strReValue);
+						strDesc = $"{strDesc}{CommString.DIS_EVENT_FAIL_RSULT}{strReValue};";
 					}
 				}
 			}
@@ -1517,7 +1394,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiTime", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{2};", strDesc, CommString.DIS_EVENT_TIME, strValue);
+				strDesc = $"{strDesc}{CommString.DIS_EVENT_TIME}{strValue};";
 			}
 
 			return true;
@@ -1529,26 +1406,26 @@ namespace LinkPath
 		/// <param name="lmtPdu"></param>
 		/// <param name="strDesc"></param>
 		/// <returns></returns>
-		private bool ProcessSyncFileEvent(CDTLmtbPdu lmtPdu, out string strDesc)
+		private static bool ProcessSyncFileEvent(CDTLmtbPdu lmtPdu, out string strDesc)
 		{
 			strDesc = "";
 			string strValue;
 			string strReValue;
-			string strNeIp = lmtPdu.m_SourceIp;
+			var strNeIp = lmtPdu.m_SourceIp;
 
 			// 网元标示
 			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationNEID", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationNEID", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_NEID, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_NEID}{strReValue};";
 			}
 
 			// 网元ID
 			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_NETYPE, strValue);
+				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strValue};";
 			}
 
 			// 需要同步的文件类型
@@ -1558,21 +1435,21 @@ namespace LinkPath
 			{
 				strValue = strFileType;
 				CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationType", strValue, out strReValue);
-				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_SYNCFILETYPE, strReValue);
+				strDesc = $"{strDesc}{CommString.IDS_SYNCFILETYPE}{strReValue};";
 			}
 
 			// 附加信息
 			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationAdditionInfo", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_ADDITIONALINFO, strValue);
+				strDesc = $"{strDesc}{CommString.IDS_ADDITIONALINFO}{strValue};";
 			}
 
 			// 事件产生时间
 			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationOccurTime", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				strDesc = string.Format("{0}{1}{3};", strDesc, CommString.IDS_OCCURTIME, strValue); 
+				strDesc = $"{strDesc}{CommString.IDS_OCCURTIME}{strValue};";
 			}
 
 			if ("0".Equals(strFileType))
@@ -1581,20 +1458,19 @@ namespace LinkPath
 				return false;
 			}
 
-			int[] fileTransType = new int[32];
+			var fileTransType = new int[32];
 			fileTransType[0] = (int)Transfiletype5216.TRANSFILE_activeAlarmFile;
 			fileTransType[1] = (int)Transfiletype5216.TRANSFILE_dataConsistency;
 
 			// 转换为数字
-			 uint fileTypeBitsValue = Convert.ToUInt32(strFileType);
-			for (int i = 0; i < 32; i++)
+			var fileTypeBitsValue = Convert.ToUInt32(strFileType);
+			for (var i = 0; i < 32; i++)
 			{
-				int fileType = 0;
-				string strFilePath = FilePathHelper.GetDataPath();
-				int value = 1 << i;
+				var strFilePath = FilePathHelper.GetDataPath();
+				var value = 1 << i;
 				if ((fileTypeBitsValue & value) != 0)
 				{
-					fileType = fileTransType[i];
+					var fileType = fileTransType[i];
 					if (fileType == (int)Transfiletype5216.TRANSFILE_dataConsistency)
 					{
 						strFilePath = FilePathHelper.GetConsistencyFilePath();
@@ -1603,16 +1479,16 @@ namespace LinkPath
 					// 下发文件同步任务
 					long taskId = 0;
 					long reqId = 0;
-					CDTCommonFileTrans cft = FileTransTaskMgr.FormatTransInfo(strFilePath
+					var cft = FileTransTaskMgr.FormatTransInfo(strFilePath
 						, "", (Transfiletype5216)fileType, TRANSDIRECTION.TRANS_UPLOAD);
-					if (SENDFILETASKRES.TRANSFILE_TASK_SUCCEED != 
+					if (SENDFILETASKRES.TRANSFILE_TASK_SUCCEED !=
 						FileTransTaskMgr.SendTransFileTask(strNeIp, cft, ref taskId, ref reqId))
 					{
-						Log.Error(string.Format("下发上传同步文件传输任务失败,文件类型:{0},网元IP为:{1}", fileType, strNeIp));
+						Log.Error($"下发上传同步文件传输任务失败,文件类型:{fileType},网元IP为:{strNeIp}");
 					}
 					else
 					{
-						Log.Info(string.Format("下发上传同步文件传输任务成功！--网元IP为:{0}", strNeIp));
+						Log.Info($"下发上传同步文件传输任务成功！--网元IP为:{strNeIp}");
 					}
 				}
 			}
@@ -1626,15 +1502,14 @@ namespace LinkPath
 		/// <param name="lmtPdu"></param>
 		/// <param name="strDesc"></param>
 		/// <returns></returns>
-		private bool ProcessTransResultEvent(CDTLmtbPdu lmtPdu, out string strDesc)
+		private static bool ProcessTransResultEvent(CDTLmtbPdu lmtPdu, out string strDesc)
 		{
 			strDesc = "";
 			string strValue;
-			string strReValue;
-			StringBuilder sbReVal = new StringBuilder();
+			var sbReVal = new StringBuilder();
 
 			// 网元IP
-			string strIpAddr = lmtPdu.m_SourceIp;
+			var strIpAddr = lmtPdu.m_SourceIp;
 
 			// transactionResultTrapNEID
 			lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiNEID", out strValue);
@@ -1647,23 +1522,23 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue, true);
+				string strReValue;
+				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue);
 				sbReVal.Append("网元类型:").Append(strReValue).Append("; ");
 			}
 
-
 			//transactionResultTrapResult
-			bool bTransSuccess = true;
+			var bTransSuccess = true;
 			lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiResult", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				string strTmpVal;
-				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal, true);
+				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal);
 				if ("1".Equals(strValue)) //失败
 				{
 					bTransSuccess = false;
 					string strErrorValue;
-					StringBuilder sbErrorMsg = new StringBuilder();
+					var sbErrorMsg = new StringBuilder();
 					//第一个出错表的OID标示
 					lmtPdu.GetValueByMibName(strIpAddr, "transactionResultNotiFirstErrVariableOID", out strErrorValue);
 					if (!string.IsNullOrEmpty(strErrorValue))
@@ -1679,7 +1554,6 @@ namespace LinkPath
 					}
 
 					sbReVal.Append("事务结果:").Append(strTmpVal).Append(";").Append(sbErrorMsg).Append("; ");
-
 				}
 				else
 				{
@@ -1708,7 +1582,7 @@ namespace LinkPath
 				long requestId = 0;
 
 				//收到初配上报事件, 发起一致性文件上传
-				string strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
+				var strDataConsisFolderPath = AppPathUtiliy.Singleton.GetDataConsistencyFolderPath();
 				var transFileObj = FileTransTaskMgr.FormatTransInfo(
 																strDataConsisFolderPath
 																, ""
@@ -1717,15 +1591,12 @@ namespace LinkPath
 				if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == FileTransTaskMgr.SendTransFileTask(
 					strIpAddr, transFileObj, ref taskId, ref requestId))
 				{
-					Log.Error(string.Format("下发上传数据一致性文件传输任务失败，数据一致性文件目录{0}，网元IP为{1}"
-						, strDataConsisFolderPath, strIpAddr));
-
+					Log.Error($"下发上传数据一致性文件传输任务失败，数据一致性文件目录{strDataConsisFolderPath}，网元IP为{strIpAddr}");
 				}
 				else
 				{
-					Log.Info("下发上传数据一致性文件传输任务成功！--网元IP为{0}", strIpAddr);
+					Log.Info($"下发上传数据一致性文件传输任务成功！--网元IP为{strIpAddr}");
 				}
-
 			}
 
 			return true;
@@ -1736,65 +1607,61 @@ namespace LinkPath
 		/// </summary>
 		/// <param name="strAddiInfo"></param>
 		/// <returns></returns>
-		private string GetCellPerfDataClearInfo(string strAddiInfo)
+		private static string GetCellPerfDataClearInfo(string strAddiInfo)
 		{
 			// 返回值
-			StringBuilder sbReVal = new StringBuilder();
-			string strTmp;
-			int intTmp;
-			// 目前已经解析的数据
-			int iReadLength;
+			var sbReVal = new StringBuilder();
 
 			// ET 年
-			strTmp = strAddiInfo.Substring(0, 4);
-			intTmp = Convert.ToInt32(strTmp, 16);
+			var strTmp = strAddiInfo.Substring(0, 4);
+			var intTmp = Convert.ToInt32(strTmp, 16);
 			sbReVal.Append("本次性能数据清零的时间点：").Append(intTmp);   //hex
-			iReadLength = 4;
+			var iReadLength = 4;
 
 			//ET 月
 			strTmp = strAddiInfo.Substring(iReadLength, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append("-").Append(string.Format("0:D2",intTmp));   //补齐两位，空位补零
+			sbReVal.Append("-").Append($"{intTmp:D2}");   //补齐两位，空位补零
 			iReadLength = iReadLength + 2;//=6
 
 			//ET 日
 			strTmp = strAddiInfo.Substring(iReadLength, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append("-").Append(string.Format("0:D2", intTmp));   //补齐两位，空位补零
+			sbReVal.Append("-").Append($"{intTmp:D2}");   //补齐两位，空位补零
 			iReadLength = iReadLength + 2;//=8
 
 			//ET 时
 			strTmp = strAddiInfo.Substring(iReadLength, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append(" ").Append(string.Format("0:D2", intTmp));   //补齐两位，空位补零
+			sbReVal.Append(" ").Append($"{intTmp:D2}");   //补齐两位，空位补零
 			iReadLength = iReadLength + 2;//=10
 
 			//ET 分
 			strTmp = strAddiInfo.Substring(iReadLength, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append(":").Append(string.Format("0:D2", intTmp));   //补齐两位，空位补零
+			sbReVal.Append(":").Append($"{intTmp:D2}");   //补齐两位，空位补零
 			iReadLength = iReadLength + 2;//12
 
 			//ET 秒
 			strTmp = strAddiInfo.Substring(iReadLength, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append(":").Append(string.Format("0:D2", intTmp)).Append("; ");   //补齐两位，空位补零
+			sbReVal.Append(":").Append($"{intTmp:D2}").Append("; ");   //补齐两位，空位补零
 			iReadLength = iReadLength + 2;//=14
 
 			//LCCID 本地小区
 			strTmp = strAddiInfo.Substring(iReadLength, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append("本地小区编号：").Append(intTmp).Append("; ");  
+			sbReVal.Append("本地小区编号：").Append(intTmp).Append("; ");
 			iReadLength = iReadLength + 2;//=16
 
 			//LCCID 小区编号
-			strTmp = strAddiInfo.Substring(iReadLength,4);
+			strTmp = strAddiInfo.Substring(iReadLength, 4);
 			intTmp = Convert.ToInt32(strTmp, 16);
 			sbReVal.Append("小区编号：").Append(intTmp).Append("; ");
 			iReadLength = iReadLength + 4;//=20
 
 			//循环读取所有对象类型的信息
-			while(strAddiInfo.Length > iReadLength)
+			while (strAddiInfo.Length > iReadLength)
 			{
 				strTmp = strAddiInfo.Substring(iReadLength, 2);
 				intTmp = Convert.ToInt32(strTmp);
@@ -1806,6 +1673,7 @@ namespace LinkPath
 						iReadLength = iReadLength + 2;
 
 						break;
+
 					case 1: // 频点级
 						sbReVal.Append("对象类型：频点级，");
 						iReadLength = iReadLength + 2;
@@ -1816,12 +1684,12 @@ namespace LinkPath
 						iReadLength = iReadLength + 4;
 
 						break;
+
 					default:
 						sbReVal.Append("对象类型：未知！");
 						iReadLength = strAddiInfo.Length;
 						break;
 				}
-
 			} //end while
 
 			return sbReVal.ToString();
@@ -1835,17 +1703,11 @@ namespace LinkPath
 		private string GetCellPerfReportInfo(string strAddiInfo)
 		{
 			// 返回值
-			string strReVal;
-			StringBuilder sbReVal = new StringBuilder();
-
-			// 临时变量
-			string strTmp;
-			int intTmp;
-
+			var sbReVal = new StringBuilder();
 
 			// TI
-			strTmp = strAddiInfo.Substring(0, 4);
-			intTmp = Convert.ToInt32(strTmp, 16);
+			var strTmp = strAddiInfo.Substring(0, 4);
+			var intTmp = Convert.ToInt32(strTmp, 16);
 			sbReVal.Append("本次上报收集的性能数据时间间隔:").Append(intTmp).Append("秒").Append(";");
 
 			// ET 年
@@ -1856,27 +1718,27 @@ namespace LinkPath
 			// ET 月
 			strTmp = strAddiInfo.Substring(8, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append("-").Append(string.Format("0:D2", intTmp));// 补齐两位，空位补零
+			sbReVal.Append("-").Append($"{intTmp:D2}");// 补齐两位，空位补零
 
 			// ET 日
 			strTmp = strAddiInfo.Substring(10, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append("-").Append(string.Format("0:D2", intTmp));// 补齐两位，空位补零
+			sbReVal.Append("-").Append($"{intTmp:D2}");// 补齐两位，空位补零
 
 			// ET 时
 			strTmp = strAddiInfo.Substring(12, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append(" ").Append(string.Format("0:D2", intTmp)); // 补齐两位，空位补零
+			sbReVal.Append(" ").Append($"{intTmp:D2}"); // 补齐两位，空位补零
 
 			// ET 分
 			strTmp = strAddiInfo.Substring(14, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append(":").Append(string.Format("0:D2", intTmp)); // 补齐两位，空位补零
+			sbReVal.Append(":").Append($"{intTmp:D2}"); // 补齐两位，空位补零
 
 			// ET 秒
 			strTmp = strAddiInfo.Substring(16, 2);
 			intTmp = Convert.ToInt32(strTmp, 16);
-			sbReVal.Append(":").Append(string.Format("0:D2", intTmp)); // 补齐两位，空位补零
+			sbReVal.Append(":").Append($"{intTmp:D2}"); // 补齐两位，空位补零
 
 			// LCCID 本地小区
 			strTmp = strAddiInfo.Substring(18, 2);
@@ -1888,101 +1750,113 @@ namespace LinkPath
 			intTmp = Convert.ToInt32(strTmp, 16);
 			sbReVal.Append("小区编号：").Append(intTmp).Append(".");
 
-
-			int iFrequenceNum;
-			// 计数器数
-			int iCounterNum;
-			int iFqLoop;
 			//循环读取所有对象类型的信息
-			int iReadLength = 24;//目前已经解析的数据
-			while(strAddiInfo.Length > iReadLength)
+			var iReadLength = 24;//目前已经解析的数据
+			while (strAddiInfo.Length > iReadLength)
 			{
 				strTmp = strAddiInfo.Substring(iReadLength + 2, 2); // CNum 高八位为频点个数 26
 				intTmp = Convert.ToInt32(strTmp, 16); // 频点个数
-				iFrequenceNum = intTmp;
+				var iFrequenceNum = intTmp;
 				sbReVal.Append("对象类型：频点级，有").Append(intTmp).Append("个频点，");
 
 				strTmp = strAddiInfo.Substring(iReadLength + 2 + 2, 2);// 'CNum 低八位为每个频点的计数器个数
 				intTmp = Convert.ToInt32(strTmp, 16);
-				iCounterNum = intTmp; // 计数器数
+				var iCounterNum = intTmp;
 				sbReVal.Append("每个频点有").Append(intTmp).Append("个计数器，");
-				iFqLoop = iFrequenceNum;
+				var iFqLoop = iFrequenceNum;
 
 				sbReVal.Append("各个频点及其对应的计数器的值分别为：");
-				for(int i = 0; i < iFqLoop; i++)
+				for (var i = 0; i < iFqLoop; i++)
 				{
 					strTmp = strAddiInfo.Substring(iReadLength + 4 + 2 + (i * (4 + (10 * iCounterNum))), 4);// 'Ci 30
 					intTmp = Convert.ToInt32(strTmp, 16);
 					sbReVal.Append("频点:");
 
-					for(int j = 0; j < iCounterNum; j++)
+					for (var j = 0; j < iCounterNum; j++)
 					{
 						sbReVal.Append("计数器");
 						strTmp = strAddiInfo.Substring(iReadLength + 4 + 4 + 2 + (j * 10) + (i * (4 + (10 * iCounterNum))), 2);// 'Ci 34
 						intTmp = Convert.ToInt32(strTmp, 16);//计数器编号
 
 						string strLabel;
-						switch(intTmp)
+						switch (intTmp)
 						{
 							case 0:
 								strLabel = "吞吐量";
 								break;
+
 							case 1:
 								strLabel = "用户平均吞吐量";
 								break;
+
 							case 2:
 								strLabel = "收到的ACK数";
 								break;
+
 							case 3:
 								strLabel = "收到的NACK数";
 								break;
+
 							case 4:
 								strLabel = "丢弃的MAC帧数";
 								break;
+
 							case 5:
 								strLabel = "首次发送后的收到ACK个数";
 								break;
+
 							case 6:
 								strLabel = "首次发送后的收到NACK个数";
 								break;
+
 							case 7:
 								strLabel = "证实的用户数据量";
 								break;
+
 							case 8:
 								strLabel = "在缓存中具有用户数据的TTI数";
 								break;
+
 							case 9:
 								strLabel = "每个TTI在缓存中具有数据的队列数之和";
 								break;
+
 							case 10:
 								strLabel = "冲突的SYNC_UL数";
 								break;
+
 							case 11:
 								strLabel = "丢弃的SYNC_UL数";
 								break;
+
 							case 12:
 								strLabel = "收到的FPACH数";
 								break;
+
 							case 13:
 								strLabel = "hsdpa占用的Bru数";
 								break;
+
 							case 14:
 								strLabel = "hsupa占用的Bru数";
 								break;
+
 							case 15:
 								strLabel = "确认的MAC-e包比特数";
 								break;
+
 							case 16:
 								strLabel = "接收到的MAC-e层PDU个数";
 								break;
+
 							case 17:
 								strLabel = "接收到经过确认的MAC-e层PDU个数";
 								break;
-							default :
+
+							default:
 								strLabel = "未知计数意义";
 								break;
-							
-						} 
+						}
 
 						sbReVal.Append(intTmp).Append("(").Append(strLabel).Append(")");
 
@@ -1996,23 +1870,46 @@ namespace LinkPath
 						}
 						else
 						{
-							if (j != (iCounterNum - 1))
-							{
-								sbReVal.Append(";");
-							}
-							else
-							{
-								sbReVal.Append(".");
-							}
+							sbReVal.Append(j != (iCounterNum - 1) ? ";" : ".");
 						}
 					} // end for
 				}// end for
 				iReadLength = iReadLength + 2 + 4 + (iFrequenceNum * (4 + (10 * iCounterNum)));
-
 			} // end while
 
-
 			return sbReVal.ToString();
+		}
+
+		/// <summary>
+		/// 检查是否为同一个告警类型的Trap
+		/// </summary>
+		/// <param name="strIp"></param>
+		/// <param name="requestId"></param>
+		/// <returns></returns>
+		private bool InterceptRepeatedTrap4Alarm(string strIp, long requestId)
+		{
+			List<long> requestIdList;
+			m_ipToRequestIdsDicForAlarm.TryGetValue(strIp, out requestIdList);
+			if (requestIdList == null)
+			{
+				requestIdList = new List<long>();
+				m_ipToRequestIdsDicForAlarm.Add(strIp, requestIdList);
+			}
+
+			if (requestIdList.Contains(requestId)) // 存在
+			{
+				return true;
+			}
+
+			// 只缓存4个id，多于4个删除
+			if (requestIdList.Count > 4)
+			{
+				requestIdList.RemoveAt(0);
+			}
+
+			requestIdList.Add(requestId);
+
+			return false;
 		}
 
 		/// <summary>
@@ -2035,16 +1932,14 @@ namespace LinkPath
 			{
 				return true;
 			}
-			else // 不能存在， 添加
-			{
-				// 只缓存4个id，多于4个删除
-				if (requestIdList.Count() > 4)
-				{
-					requestIdList.RemoveAt(0);
-				}
 
-				requestIdList.Add(requestId);
+			// 只缓存4个id，多于4个删除
+			if (requestIdList.Count > 4)
+			{
+				requestIdList.RemoveAt(0);
 			}
+
+			requestIdList.Add(requestId);
 
 			return false;
 		}
@@ -2069,20 +1964,17 @@ namespace LinkPath
 			{
 				return true;
 			}
-			else // 不能存在， 添加
-			{
-				// 只缓存4个id，多于4个删除
-				if (requestIdList.Count() > 4)
-				{
-					requestIdList.RemoveAt(0);
-				}
 
-				requestIdList.Add(requestId);
+			// 只缓存4个id，多于4个删除
+			if (requestIdList.Count > 4)
+			{
+				requestIdList.RemoveAt(0);
 			}
+
+			requestIdList.Add(requestId);
 
 			return false;
 		}
-
 
 		/// <summary>
 		/// 查验Trap OID是否有效，有效的情况下，返回LMT-eNB自己定义的Trap类型
@@ -2102,7 +1994,7 @@ namespace LinkPath
 				return false;
 			}
 			// 去掉Mib前缀
-			string strSubTrapOid = strTrapOid.Replace(strOidPrefix, "");
+			var strSubTrapOid = strTrapOid.Replace(strOidPrefix, "");
 
 			if (string.IsNullOrEmpty(strSubTrapOid))
 			{
@@ -2111,18 +2003,18 @@ namespace LinkPath
 			}
 
 			// 根据oid获取Mib节点信息
-			MibLeaf mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(strIpAddr, strSubTrapOid);
+			var mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(strIpAddr, strSubTrapOid);
 			if (null == mibLeaf)
 			{
-				Log.Error("无法获取Mib节点信息，Oid:{0}", strSubTrapOid);
+				Log.Error($"无法获取Mib节点信息，Oid:{strSubTrapOid}");
 				return false;
 			}
 			// Mib名称
-			string strMibName = mibLeaf.childNameMib;
+			var strMibName = mibLeaf.childNameMib;
 
 			// 查询是否有该类型的Trap
-			Dictionary<string,Dictionary<string, string>> trapTypeInfo = Database.GetInstance().GetTrapInfo();
-			string strTrapId = trapTypeInfo[strMibName]["TrapID"];
+			var trapTypeInfo = Database.GetInstance().GetTrapInfo();
+			var strTrapId = trapTypeInfo[strMibName]["TrapID"];
 			if (string.IsNullOrEmpty(strTrapId))
 			{
 				Log.Error("数据库中没有找到相应的Trap类型信息!");
@@ -2163,37 +2055,32 @@ namespace LinkPath
 			// 判断包是否出错
 			if (lmtPdu.m_LastErrorStatus != 0) // SNMP_ERROR_SUCCESS
 			{
-				strErrorMsg = string.Format("ErrorStatus: {0} , ErrorIndex: {1} ."
-					, lmtPdu.m_LastErrorStatus, lmtPdu.m_LastErrorIndex);
-				Log.Error(string.Format("接收到的包不正确--{0}", strErrorMsg));
+				strErrorMsg = $"ErrorStatus: {lmtPdu.m_LastErrorStatus} , ErrorIndex: {lmtPdu.m_LastErrorIndex} .";
+				Log.Error($"接收到的包不正确--{strErrorMsg}");
 				return true;
 			}
 
 			// 判断VB个数
-			int vbCount = lmtPdu.VbCount();
+			var vbCount = lmtPdu.VbCount();
 			if (vbCount <= 0)
 			{
-				Log.Error(string.Format("接收到的包VB个数不正确:{0}", vbCount));
+				Log.Error($"接收到的包VB个数不正确:{vbCount}");
 				return false;
 			}
 
 			//挨个检查VB的OID字段
-			for (int i = 0; i < vbCount; i++)
+			for (var i = 0; i < vbCount; i++)
 			{
-				CDTLmtbVb lmtVb = new CDTLmtbVb();
+				var lmtVb = new CDTLmtbVb();
 				lmtPdu.GetVbByIndex(i, ref lmtVb);
 				if (string.IsNullOrEmpty(lmtVb.Oid))
 				{
-					Log.Error(string.Format("接收到的包VB的OID写法为空,不正确:{0}", i));
+					Log.Error($"接收到的包VB的OID写法为空,不正确:{i}");
 					return false;
 				}
-
 			}
 
 			return true;
 		}
-		
-
-
 	}
 }

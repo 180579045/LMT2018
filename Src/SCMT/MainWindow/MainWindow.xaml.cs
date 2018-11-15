@@ -95,7 +95,10 @@ namespace SCMTMainWindow
 		public MainWindow()
 		{
 			InitializeComponent();
-			WindowState = WindowState.Maximized;          // 默认全屏模式;
+            var uri = new Uri("/PresentationFramework.AeroLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35;component/themes/AeroLite.NormalColor.xaml", UriKind.Relative);
+            var resourceDictionary = Application.LoadComponent(uri) as ResourceDictionary;
+            this.Resources.MergedDictionaries.Add(resourceDictionary);
+            WindowState = WindowState.Maximized;          // 默认全屏模式;
 			MinWidth = 1024;                                             // 设置一个最小分辨率;
 			MinHeight = 768;                                             // 设置一个最小分辨率;
 
@@ -132,9 +135,9 @@ namespace SCMTMainWindow
 		/// </summary>
 		private void InitView()
 		{
-			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
-			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
-			MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
+// 			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
+// 			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
+// 			MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
             this.FileManagerTabItem.GotFocus += FileManagerTabItem_GotFocus;
 
 			// 解析保存的基站节点信息
@@ -205,21 +208,21 @@ namespace SCMTMainWindow
 			// TODO 添加控件
 		}
 
-		private void Flow_Click(object sender, RoutedEventArgs e)
-		{
-			//FlowChart f1 = new FlowChart();
-			//f1.Show();
+		//private void Flow_Click(object sender, RoutedEventArgs e)
+		//{
+		//	//FlowChart f1 = new FlowChart();
+		//	//f1.Show();
 
-			LayoutAnchorable sub = new LayoutAnchorable();
-			FlowChart content = new FlowChart();
+		//	LayoutAnchorable sub = new LayoutAnchorable();
+		//	FlowChart content = new FlowChart();
 
-			sub.Content = content;
-			//sub.FloatingHeight = 300;
-			//sub.FloatingWidth = 800;
+		//	sub.Content = content;
+		//	//sub.FloatingHeight = 300;
+		//	//sub.FloatingWidth = 800;
 
-			Pane.Children.Add(sub);
-			sub.Float();
-		}
+		//	Pane.Children.Add(sub);
+		//	sub.Float();
+		//}
 
 		/// <summary>
 		/// 更新数据库;
@@ -1400,61 +1403,61 @@ namespace SCMTMainWindow
 		/// <param name="oid_cn"></param>
 		/// <param name="oid_en"></param>
 		/// <param name="contentlist"></param>
-		public void UpdateMibDataGrid(IAsyncResult ar, dict_d_string oid_cn, dict_d_string oid_en, ObservableCollection<DyDataGrid_MIBModel> contentlist)
-		{
-			SnmpMessageResult res = ar as SnmpMessageResult;
-
-			// 将信息回填到DataGrid当中;
-			MibDataGrid.Dispatcher.Invoke(new Action(() =>
-			{
-				MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
-				dynamic model = new DyDataGrid_MIBModel();
-
-				// 遍历GetNext的结果;
-				foreach (KeyValuePair<string, string> iter in res.AsyncState as dict_d_string)
-				{
-					Console.WriteLine("NextIndex" + iter.Key + " Value:" + iter.Value);
-
-					// 通过基站反馈回来的一行结果，动态生成一个类型，用来与DataGrid对应;
-					foreach (var iter2 in oid_cn)
-					{
-						// 如果存在对应关系;
-						if (iter.Key.Contains(iter2.Key))
-						{
-							Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value + " and Header is:" + iter2.Value);
-							model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
-							{
-								m_Content = iter.Value,
-								oid = iter.Key,
-								MibName_CN = iter2.Value,
-								MibName_EN = oid_en[iter2.Key]
-							}, iter2.Value);
-						}
-					}
-				}
-
-				// 将这个整行数据填入List;
-				if (model.Properties.Count != 0)
-				{
-					// 向单元格内添加内容;
-					contentlist.Add(model);
-				}
-
-				foreach (var iter3 in oid_en)
-				{
-					Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
-					DataGridTextColumn column = new DataGridTextColumn();
-					column.Header = oid_cn[iter3.Key];
-					column.Binding = new Binding(iter3.Value + ".m_Content");
-
-					MibDataGrid.Columns.Add(column);
-
-				}
-
-				MibDataGrid.DataContext = contentlist;
-
-			}));
-		}
+// 		public void UpdateMibDataGrid(IAsyncResult ar, dict_d_string oid_cn, dict_d_string oid_en, ObservableCollection<DyDataGrid_MIBModel> contentlist)
+// 		{
+// 			SnmpMessageResult res = ar as SnmpMessageResult;
+// 
+// 			// 将信息回填到DataGrid当中;
+// 			MibDataGrid.Dispatcher.Invoke(new Action(() =>
+// 			{
+// 				MibDataGrid.Columns.Clear();                          //以最后一次为准即可;
+// 				dynamic model = new DyDataGrid_MIBModel();
+// 
+// 				// 遍历GetNext的结果;
+// 				foreach (KeyValuePair<string, string> iter in res.AsyncState as dict_d_string)
+// 				{
+// 					Console.WriteLine("NextIndex" + iter.Key + " Value:" + iter.Value);
+// 
+// 					// 通过基站反馈回来的一行结果，动态生成一个类型，用来与DataGrid对应;
+// 					foreach (var iter2 in oid_cn)
+// 					{
+// 						// 如果存在对应关系;
+// 						if (iter.Key.Contains(iter2.Key))
+// 						{
+// 							Console.WriteLine("Add Property:" + oid_en[iter2.Key] + " Value:" + iter.Value + " and Header is:" + iter2.Value);
+// 							model.AddProperty(oid_en[iter2.Key], new DataGrid_Cell_MIB()
+// 							{
+// 								m_Content = iter.Value,
+// 								oid = iter.Key,
+// 								MibName_CN = iter2.Value,
+// 								MibName_EN = oid_en[iter2.Key]
+// 							}, iter2.Value);
+// 						}
+// 					}
+// 				}
+// 
+// 				// 将这个整行数据填入List;
+// 				if (model.Properties.Count != 0)
+// 				{
+// 					// 向单元格内添加内容;
+// 					contentlist.Add(model);
+// 				}
+// 
+// 				foreach (var iter3 in oid_en)
+// 				{
+// 					Console.WriteLine("new binding is:" + iter3.Value + ".m_Content");
+// 					DataGridTextColumn column = new DataGridTextColumn();
+// 					column.Header = oid_cn[iter3.Key];
+// 					column.Binding = new Binding(iter3.Value + ".m_Content");
+// 
+// 					MibDataGrid.Columns.Add(column);
+// 
+// 				}
+// 
+// 				MibDataGrid.DataContext = contentlist;
+// 
+// 			}));
+// 		}
 
 		/// <summary>
 		/// 当SNMP模块收集全整表数据后，调用该函数;
@@ -1468,9 +1471,10 @@ namespace SCMTMainWindow
 		{
 			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int>(UpdateMibDataGridCallback);
 
-			MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
+            //MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
+            this.Main_Dynamic_DataGrid.Dispatcher.Invoke(action, new object[] { ar, oid_cn, oid_en, contentlist, ParentOID, IndexCount });
 		}
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -1484,7 +1488,7 @@ namespace SCMTMainWindow
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
 		{
 			int RealIndexCount = IndexCount;                         // 真实的索引纬度;
-			MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
+			//MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
 
 			if (IndexCount == 0)                                     // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
@@ -1615,7 +1619,7 @@ namespace SCMTMainWindow
 					Header = "实例描述",
 					Binding = new Binding("indexlist.m_Content")
 				};
-				MibDataGrid.Columns.Add(column);
+				//MibDataGrid.Columns.Add(column);
 			}
 
             // 所有需要显示的列名都确认好了，在DataGrid中添加列;
@@ -1635,10 +1639,10 @@ namespace SCMTMainWindow
 					Binding = new Binding(iter3.Value + ".m_Content")
 				};
 
-				MibDataGrid.Columns.Add(column);
+				//MibDataGrid.Columns.Add(column);
 			}
 
-			MibDataGrid.DataContext = contentlist;
+			//MibDataGrid.DataContext = contentlist;
             
 		}
 
@@ -1811,7 +1815,7 @@ namespace SCMTMainWindow
                 ExpanderBaseInfo.IsExpanded = false;
                 TabControlEnable(false);
                 Obj_Root.Children?.Clear();
-                MibDataGrid.Columns.Clear();
+                //MibDataGrid.Columns.Clear();
                 MainHorizenTab.SelectedIndex = 0;
             });
 
@@ -1826,25 +1830,24 @@ namespace SCMTMainWindow
 		/// <returns></returns>
 		public int GetPcuSlot(string targetIp)
 		{
-			var cmdName = "GetBoardPowerInfo";
+			const string cmdName = "GetBoardInfo";
 			long reqId;
-			List<string> indexList;
-			Dictionary<string, string> resultMap;
-			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetNextSync(cmdName, out reqId, out indexList, out resultMap, targetIp);
+			var pdu = new CDTLmtbPdu(cmdName);
+			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0.0.4", targetIp, ref pdu);
 			if (0 != ret)
 			{
 				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
 				return 4;
 			}
 
-			if (null == indexList || 0 == indexList.Count())
+			string boardType;
+			if (!pdu.GetValueByMibName(targetIp, "boardHardwareType", out boardType))
 			{
-				Log.Error("查询基站电源信息失败，默认设置为5G基站");
+				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
 				return 4;
 			}
 
-			var strSlot = MibStringHelper.GetRealValueFromIndex(indexList.First(), 3);
-			return int.Parse(strSlot);
+			return (boardType == "106" ? 4 : 8);
 		}
 
 		#endregion
@@ -1918,7 +1921,19 @@ namespace SCMTMainWindow
             ItemCollection collection = MainHorizenTab.Items;
             for(int i = 0; i < collection.Count; i++)
                 (collection[i] as TabItem).IsEnabled = isEnable;
+        }
 
+        private void MetroImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            LayoutAnchorable sub = new LayoutAnchorable();
+            FlowChart content = new FlowChart();
+
+            sub.Content = content;
+            //sub.FloatingHeight = 300;
+            //sub.FloatingWidth = 800;
+
+            Pane.Children.Add(sub);
+            sub.Float();
         }
     }
 

@@ -22,7 +22,7 @@
 				"MibEntry" : "netRHUBEntry",
 				"Alias" : "rhub",
 				"Get" : ["GetNetRHUB"],
-				"Set" : ["SetNetRHUBGsm", "SetNetRHUB"],
+				"Set" : ["SetNetRHUB"],
 				"Add" : ["AddNetRHUB"],
 				"Del" : ["DelNetRHUB"]	
 			},
@@ -65,7 +65,15 @@
 				"Set" : ["SetLocalNRCellNetworkPlan"],
 				"Add" : ["AddLocalNRCellNetworkPlan"],
 				"Del" : ["DelLocalNRCellNetworkPlan"]	
-			},	
+			},
+			{
+				"MibEntry" : "nrNetLocalCellCtrlEntry",
+				"Alias" : "nrNetLcCtr",
+				"Get" : ["GetNRNetwokPlanControlSwitch"],
+				"Set" : ["SetNRNetwokPlanControlSwitch"],
+				"Add" : [""],
+				"Del" : [""]
+			},			
 			{
 				"MibEntry" : "nrLocalCellEntry",
 				"Alias" : "nrLc",

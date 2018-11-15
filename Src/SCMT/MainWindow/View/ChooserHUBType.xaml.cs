@@ -47,7 +47,7 @@ namespace SCMTMainWindow.View
                 }
             }
 
-            var listWorkModel = NPEBoardHelper.GetInstance().GetRhubOfpWorkMode();
+            var listWorkModel = NPEBoardHelper.GetRhubOfpWorkMode();
             if(listWorkModel != null && listRHUB.Count > 0)
             {
                 foreach(string item in listWorkModel)

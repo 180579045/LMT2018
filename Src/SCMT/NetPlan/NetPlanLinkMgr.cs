@@ -45,45 +45,71 @@ namespace NetPlan
 				return false;
 			}
 
-			if (!mapMibInfo.ContainsKey(EnumDevType.rru))
-			{
-				Log.Error("传入的MIB信息中不包含rru信息");
-				return false;
-			}
-
 			var boardList = mapMibInfo[EnumDevType.board];
-			var rruList = mapMibInfo[EnumDevType.rru];
-			if (null == boardList || null == rruList || boardList.Count == 0 || rruList.Count == 0)
+			if (null == boardList || boardList.Count == 0)
 			{
-				Log.Error("传入的MIB信息中board信息或rru信息缺失");
+				Log.Error("传入的MIB信息中board信息缺失");
 				return false;
 			}
 
-			// 解析board与rru之间的连接
-			if (!ParseBoardToRruLink(rruList, boardList))
+			if (!mapMibInfo.ContainsKey(EnumDevType.board_rru))
 			{
-				Log.Error("解析board与rru之间的连接信息失败");
+				Log.Error("没有板卡连接到RRU和RHUB的信息");
 				return false;
+			}
+
+			var irOptList = mapMibInfo[EnumDevType.board_rru];
+			if (null == irOptList || 0 == irOptList.Count)
+			{
+				Log.Error("没有板卡连接到RRU和RHUB的信息");
+				return false;
+			}
+
+			List<DevAttributeInfo> rruList = null;
+			if (mapMibInfo.ContainsKey(EnumDevType.rru))
+			{
+				rruList = mapMibInfo[EnumDevType.rru];
+				if (null == rruList || 0 == rruList.Count)
+				{
+					goto ParseRruToAnt;
+				}
+
+				// 解析board与rru之间的连接
+				if (!ParseBoardToRruLink(rruList, boardList, irOptList))
+				{
+					Log.Error("解析board与rru之间的连接信息失败");
+					return false;
+				}
+			}
+
+ParseRruToAnt:
+
+			List<DevAttributeInfo> antList = null;
+			List<DevAttributeInfo> rruAntCfgList = null;
+
+			if (null == rruList || 0 == rruList.Count)
+			{
+				goto ParseBoardToRhub;
 			}
 
 			if (!mapMibInfo.ContainsKey(EnumDevType.rru_ant))
 			{
-				return true;
+				goto ParseBoardToRhub;
 			}
 
-			var rruAntCfgList = mapMibInfo[EnumDevType.rru_ant];
+			rruAntCfgList = mapMibInfo[EnumDevType.rru_ant];
 			if (0 == rruAntCfgList.Count)
 			{
-				return true;
+				goto ParseBoardToRhub;
 			}
 
 			if (0 != rruAntCfgList.Count && !mapMibInfo.ContainsKey(EnumDevType.ant))
 			{
-				Log.Error($"天线安装配置信息不为空，但天线信息为空");
+				Log.Error("天线安装配置信息不为空，但天线信息为空");
 				return false;
 			}
 
-			var antList = mapMibInfo[EnumDevType.ant];
+			antList = mapMibInfo[EnumDevType.ant];
 
 			// 解析rru与ant之间的连接
 			if (!ParseRruToAntLinks(rruAntCfgList, rruList, antList))
@@ -91,6 +117,8 @@ namespace NetPlan
 				Log.Error("解析rru到天线阵的连接失败");
 				return false;
 			}
+
+ParseBoardToRhub:
 
 			// 解析board与rhub之间的连接
 			if (!mapMibInfo.ContainsKey(EnumDevType.rhub))
@@ -106,13 +134,32 @@ namespace NetPlan
 				return true;
 			}
 
-			if (!ParseBoardToRhubLink(rhubList, boardList))
+			if (!ParseBoardToRhubLink(rhubList, boardList, irOptList))
 			{
 				Log.Error("解析board到rhub设备属性");
 			}
 
+			if (!mapMibInfo.ContainsKey(EnumDevType.rhub_prru))
+			{
+				Log.Debug("未找到rhub到pico设备的连接信息");
+				return true;
+			}
+
+			var ethList = mapMibInfo[EnumDevType.rhub_prru];
+
 			// 解析rhub与pico之间的连接
 			// 在mib中，netRRUOfp1AccessEthernetPort表示连接的是对端Hub eth口
+			if (!ParseRhubToPicoLink(rhubList, rruList, ethList))
+			{
+				Log.Error("解析rhub到pico的连接失败");
+				return false;
+			}
+
+			// 解析pico和ant之间的连接
+			if (!ParsePicoToAntLink(rruList, antList, rruAntCfgList))
+			{
+				
+			}
 
 			return true;
 		}
@@ -175,9 +222,16 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="rruDevList">rru设备列表</param>
 		/// <param name="boardDevList">板卡设备列表</param>
+		/// <param name="irOptList"></param>
 		/// <returns></returns>
-		private bool ParseBoardToRruLink(IEnumerable<DevAttributeInfo> rruDevList, List<DevAttributeInfo> boardDevList)
+		private bool ParseBoardToRruLink(IEnumerable<DevAttributeInfo> rruDevList, List<DevAttributeInfo> boardDevList,
+			IReadOnlyCollection<DevAttributeInfo> irOptList)
 		{
+			if (null == rruDevList || null == boardDevList || null == irOptList)
+			{
+				Log.Error("解析板卡到rru的连接，信息缺失");
+				return false;
+			}
 			foreach (var rru in rruDevList)
 			{
 				if (null == rru)
@@ -188,7 +242,7 @@ namespace NetPlan
 				// RRU最多有个4个光口连接板卡获取RRU
 				for (var i = 1; i < 5; i++)
 				{
-					if (!HandleRruOfpLinkInfo(i, rru, boardDevList))
+					if (!HandleRruOfpLinkInfo(i, rru, boardDevList, irOptList))
 						return false;
 				}
 			}
@@ -338,6 +392,7 @@ namespace NetPlan
 		/// <returns></returns>
 		private bool GenerateRhubToRhubLink(ParsedRruInfo prevRhubInfo, ParsedRruInfo curRhubInfo)
 		{
+			return true;
 			throw new NotImplementedException("rhub到rhub的级联模式尚未支持");
 		}
 
@@ -381,7 +436,93 @@ namespace NetPlan
 
 		private bool HandleWaitPrevRhubList()
 		{
-			throw new NotImplementedException();
+			var listDel = new List<ParsedRruInfo>();
+			while (m_listWaitPrevRru.Count > 0)
+			{
+				listDel.Clear();
+				for (int i = m_listWaitPrevRru.Count - 1; i >= 0; i--)
+				{
+					var waitPrevRhub = m_listWaitPrevRru.ElementAt(i);
+					foreach (var existedRhub in m_listParsedRru)
+					{
+						if (!waitPrevRhub.IsPrevRru(existedRhub)) continue;
+
+						if (!GenerateRhubToRhubLink(existedRhub, waitPrevRhub))
+						{
+							Log.Error("");
+							return false;
+						}
+					}
+
+					// 把waitPrevRhub加入到m_listParsedRru队列
+					AddElementToParsedRruList(waitPrevRhub);
+					listDel.Add(waitPrevRhub);
+				}
+
+				foreach (var item in listDel)
+				{
+					m_listWaitPrevRru.Remove(item);
+				}
+			}
+			return true;
+		}
+
+		/// <summary>
+		/// 生成一个hub到pico的连接
+		/// </summary>
+		/// <param name="strHubIndex"></param>
+		/// <param name="nHubEthPort"></param>
+		/// <param name="strPicoIndex"></param>
+		/// <param name="nPicoPort"></param>
+		/// <returns></returns>
+		private void GenerateRhubToPicoLink(string strHubIndex, int nHubEthPort, string strPicoIndex, int nPicoPort)
+		{
+			var hub = new LinkEndpoint
+			{
+				devType = EnumDevType.rhub,
+				strDevIndex = strHubIndex,
+				nPortNo = nHubEthPort,
+				portType = EnumPortType.rhub_to_pico
+			};
+
+			var pico = new LinkEndpoint
+			{
+				devType = EnumDevType.rru,
+				strDevIndex = strPicoIndex,
+				nPortNo = nPicoPort,
+				portType = EnumPortType.pico_to_rhub
+			};
+
+			AddLinkToList(hub, pico, EnumDevType.rhub_prru);
+		}
+
+		/// <summary>
+		/// 生成一条pico到天线阵的连接
+		/// </summary>
+		/// <param name="strPicoIndex"></param>
+		/// <param name="nPicoPort"></param>
+		/// <param name="strAntIndex"></param>
+		/// <param name="nAntPort"></param>
+		/// <returns></returns>
+		private void GeneratePicoToAntLink(string strPicoIndex, int nPicoPort, string strAntIndex, int nAntPort)
+		{
+			var pico = new LinkEndpoint
+			{
+				devType = EnumDevType.rru,
+				strDevIndex = strPicoIndex,
+				nPortNo = nPicoPort,
+				portType = EnumPortType.pico_to_ant
+			};
+
+			var ant = new LinkEndpoint
+			{
+				devType = EnumDevType.ant,
+				strDevIndex = strAntIndex,
+				nPortNo = nAntPort,
+				portType = EnumPortType.ant_to_pico
+			};
+
+			AddLinkToList(pico, ant, EnumDevType.prru_ant);
 		}
 
 		/// <summary>
@@ -402,8 +543,10 @@ namespace NetPlan
 			}
 		}
 
-		// 处理rru光口连接的信息。todo 应该能从board_rru中读到ir信息
-		private bool HandleRruOfpLinkInfo(int nOfpIndex, DevAttributeInfo rru, List<DevAttributeInfo> boardDevList)
+		// 处理rru光口连接的信息
+		private bool HandleRruOfpLinkInfo(int nOfpIndex, DevAttributeInfo rru, 
+			IEnumerable<DevAttributeInfo> boardDevList, 
+			IEnumerable<DevAttributeInfo> irOptList)
 		{
 			// 取出rru编号、接入板卡的信息
 			var rruNo = rru.GetFieldOriginValue("netRRUNo");
@@ -461,6 +604,14 @@ namespace NetPlan
 				return true;
 			}
 
+			var irIndex = $"{boardIndex}.{remoteOfPort}";
+			var record = irOptList.FirstOrDefault(tmp => tmp.m_strOidIndex == irIndex);
+			if (null == record)
+			{
+				Log.Error($"根据索引{irIndex}未找到netIROptPlanEntry表实例");
+				return false;
+			}
+
 			var accessPos = rru.GetFieldOriginValue(accessPosMibName);
 			if ("-1" == accessPos)	// 非级联，接入级数为1
 			{
@@ -480,8 +631,6 @@ namespace NetPlan
 			// rru连接板卡时，接入级数为1；正常模式，接入级数为1
 			if ("1" == accessPos)
 			{
-				// todo 在netIROptPlanEntry中查找是否存在这条连接。2级级联的设备不存在于这张表中
-
 				if (!GenerateBoardToRruLink(boardIndex, int.Parse(remoteOfPort), rruIndex, nOfpIndex))
 				{
 					Log.Error("生成板卡到rru的连接失败");
@@ -549,7 +698,7 @@ namespace NetPlan
 				return false;
 			}
 
-			foreach (var ra in rruAntCfgList)
+			foreach (var ra in rruAntCfgList)	// todo 这样子做连接很多啊，需要优化
 			{
 				var rruNo = ra.GetFieldOriginValue("netSetRRUNo");
 				var rruIndex = $".{rruNo}";
@@ -593,7 +742,7 @@ namespace NetPlan
 					Log.Error($"生成索引为{rruIndex}的rru到索引为{antIndex}的ant连接失败");
 					continue;
 				}
-				Log.Debug($"生成索引为{rruIndex}的rru通道{rruPathNo}到索引为{antIndex}的ant通道{antPathNo}连接成功");
+				//Log.Debug($"生成索引为{rruIndex}的rru通道{rruPathNo}到索引为{antIndex}的ant通道{antPathNo}连接成功");
 			}
 
 			return true;		// 如果中间有break调用，这里就会返回false
@@ -605,10 +754,16 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="rhubList"></param>
 		/// <param name="boardList"></param>
+		/// <param name="irDevList"></param>
 		/// <returns></returns>
 		private bool ParseBoardToRhubLink(IReadOnlyCollection<DevAttributeInfo> rhubList,
-			IReadOnlyCollection<DevAttributeInfo> boardList)
+			IReadOnlyCollection<DevAttributeInfo> boardList, IReadOnlyCollection<DevAttributeInfo> irDevList)
 		{
+			if (null == rhubList || null == boardList || null == irDevList)
+			{
+				Log.Error("解析板卡到rhub的连接信息缺失");
+				return false;
+			}
 			// rhub设备可能是4个光口连接，也可能是2个光口连接
 			foreach (var rhubDai in rhubList)
 			{
@@ -620,7 +775,7 @@ namespace NetPlan
 
 				for (var i = 1; i < 5; i++)
 				{
-					if (!HandleRhubOfpLinkInfo(i, rhubDai, boardList))
+					if (!HandleRhubOfpLinkInfo(i, rhubDai, boardList, irDevList))
 					{
 						return false;
 					}
@@ -638,7 +793,8 @@ namespace NetPlan
 		/// <param name="rhub">rhub设备属性信息</param>
 		/// <param name="boardDevList">板卡信息列表</param>
 		/// <returns></returns>
-		private bool HandleRhubOfpLinkInfo(int nOfpIndex, DevAttributeInfo rhub, IEnumerable<DevAttributeInfo> boardDevList)
+		private bool HandleRhubOfpLinkInfo(int nOfpIndex, DevAttributeInfo rhub, IEnumerable<DevAttributeInfo> boardDevList,
+			IEnumerable<DevAttributeInfo> irOptRecordList)
 		{
 			// 取出rru编号、接入板卡的信息
 			var rhubNo = rhub.GetFieldOriginValue("netRHUBNo");
@@ -707,6 +863,15 @@ namespace NetPlan
 				return true;
 			}
 
+			// todo 在netIROptPlanEntry中查找是否存在这条连接。2级级联的设备是否存在于这张表中？
+			var irIndex = $"{boardIndex}.{remoteOfPort}";
+			var record = irOptRecordList.FirstOrDefault(tmp => tmp.m_strOidIndex == irIndex);
+			if (null == record)
+			{
+				Log.Error($"根据索引{irIndex}未找到netIROptPlanEntry表实例");
+				return false;
+			}
+
 			var accessPos = rhub.GetFieldOriginValue(accessPosMibName);
 			if (null == accessPos)
 			{
@@ -716,7 +881,7 @@ namespace NetPlan
 
 			if ("-1" == accessPos)
 			{
-				Log.Error($"索引为{hubIndex}的RRU光口{nOfpIndex}连接对端光口{remoteOfPort}，但接入级数为-1，无效信息");
+				Log.Error($"索引为{hubIndex}的RHUB光口{nOfpIndex}连接对端光口{remoteOfPort}，但接入级数为-1，无效信息");
 				return false;
 			}
 
@@ -732,8 +897,6 @@ namespace NetPlan
 			// rhub连接板卡时，接入级数为1；正常模式，接入级数为1
 			if ("1" == accessPos)
 			{
-				// todo 在netIROptPlanEntry中查找是否存在这条连接。2级级联的设备是否存在于这张表中？
-
 				if (!GenerateBoardToRhubLink(boardIndex, int.Parse(remoteOfPort), hubIndex, nOfpIndex))
 				{
 					Log.Error($"生成板卡到rhub{hubIndex}的连接失败");
@@ -805,6 +968,163 @@ namespace NetPlan
 			{
 				m_listWaitPrevRru.Add(element);
 			}
+		}
+
+		/// <summary>
+		/// 解析rhub到pico的连接
+		/// </summary>
+		/// <param name="rhubList"></param>
+		/// <param name="rruList"></param>
+		/// <param name="ethCfgList"></param>
+		/// <returns></returns>
+		private bool ParseRhubToPicoLink(List<DevAttributeInfo> rhubList, IEnumerable<DevAttributeInfo> rruList, List<DevAttributeInfo> ethCfgList)
+		{
+			if (null == rhubList || null == rruList || null == ethCfgList)
+			{
+				Log.Error("解析rhub到pico的连接，信息缺失");
+				return false;
+			}
+
+			foreach (var rru in rruList)
+			{
+				var rruType = rru.GetFieldOriginValue("netRRUTypeIndex");
+				var rruStaticInfo = NPERruHelper.GetInstance().GetRruInfoByType(int.Parse(rruType));
+				if (string.IsNullOrEmpty(rruStaticInfo.rruTypeName))
+				{
+					continue;
+				}
+
+				// 类型名如果是p开头，就是pico设备
+				if (string.CompareOrdinal(rruStaticInfo.rruTypeName[0].ToString(), "p") != 0)
+				{
+					continue;
+				}
+
+				var picoPort = 1;
+				var hubPort = rru.GetFieldOriginValue("netRRUOfp1AccessEthernetPort");
+				if ("-1" == hubPort)
+				{
+					hubPort = rru.GetFieldOriginValue("netRRUOfp2AccessEthernetPort");
+					if ("-1" == hubPort)
+					{
+						Log.Error($"索引为{rru.m_strOidIndex}的pico设置未连接到rhub设备");
+						continue;
+					}
+					picoPort = 2;
+				}
+
+				var hubNo = rru.GetFieldOriginValue("netRRUHubNo");
+				if ("-1" == hubNo || "-1" == hubPort)
+				{
+					Log.Error("pico设备没有连接到任何hub设备");
+					continue;
+				}
+
+				var picoToHubIndex = $".{hubNo}";
+				var hubDev = rhubList.FirstOrDefault(rhub => rhub.m_strOidIndex == picoToHubIndex);
+				if (null == hubDev)
+				{
+					Log.Error($"根据索引{picoToHubIndex}未找到rhub设备");
+					continue;
+				}
+
+				var rackNo = hubDev.GetFieldOriginValue("netRHUBAccessRackNo");
+				var shelfNo = hubDev.GetFieldOriginValue("netRHUBAccessShelfNo");
+				var slotNo = MibInfoMgr.GetRhubLinkToBoardSlotNo(hubDev);
+				if ("-1" == slotNo)
+				{
+					Log.Debug($"索引为{picoToHubIndex}的RHUB设备没有连接到板卡");
+					continue;
+				}
+
+				// 此处不验证rhub连接的板卡是否存在，在上一步解析boardtohublink时已经验证过
+
+				var ethRecordIndex = $".{rackNo}.{shelfNo}.{slotNo}.{hubNo}.{hubPort}";
+				if (null == ethCfgList.FirstOrDefault(ec => ec.m_strOidIndex == ethRecordIndex))
+				{
+					Log.Error($"根据索引{ethRecordIndex}未找到对应的以太网口配置信息");
+					continue;
+				}
+
+				var nhubPort = int.Parse(hubPort);
+
+				// 创建连接
+				GenerateRhubToPicoLink(picoToHubIndex, nhubPort, rru.m_strOidIndex, picoPort);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 解析pico到ant之间的连接
+		/// </summary>
+		/// <param name="rruList"></param>
+		/// <param name="antList"></param>
+		/// <param name="rruAntCfgList">天线阵安装规划表中的信息</param>
+		/// <returns></returns>
+		private bool ParsePicoToAntLink(IEnumerable<DevAttributeInfo> rruList, List<DevAttributeInfo> antList,
+			List<DevAttributeInfo> rruAntCfgList)
+		{
+			if (null == rruList || null == antList || null == rruAntCfgList)
+			{
+				Log.Error("解析pico到天线阵的连接信息缺失");
+				return false;
+			}
+
+			foreach (var rru in rruList)
+			{
+				var rruType = rru.GetFieldOriginValue("netRRUTypeIndex");
+				var rruStaticInfo = NPERruHelper.GetInstance().GetRruInfoByType(int.Parse(rruType));
+				if (string.IsNullOrEmpty(rruStaticInfo.rruTypeName))
+				{
+					continue;
+				}
+
+				// 类型名如果是p开头，就是pico设备
+				if (string.CompareOrdinal(rruStaticInfo.rruTypeName[0].ToString(), "p") != 0)
+				{
+					continue;
+				}
+
+				foreach (var cfg in rruAntCfgList)
+				{
+					var rruNoInCfg = cfg.GetFieldOriginValue("netSetRRUNo");
+					if (rruNoInCfg != rru.m_strOidIndex)
+					{
+						continue;
+					}
+
+					var picoToAntPort = cfg.GetFieldOriginValue("netSetRRUPortNo");
+					var picoPort = int.Parse(picoToAntPort);
+
+					var antNo = cfg.GetFieldOriginValue("netSetRRUPortAntArrayNo");
+					if ("-1" == antNo)
+					{
+						Log.Debug($"索引为{rru.m_strOidIndex}pico设备{picoToAntPort}通道没有连接天线阵");
+						continue;
+					}
+
+					var antPort = cfg.GetFieldOriginValue("netSetRRUPortAntArrayPathNo");
+					if ("-1" == antPort)
+					{
+						Log.Error($"索引为.{antNo}的天线通道配置错误");
+						continue;
+					}
+
+					var antIr = int.Parse(antPort);
+
+					var antDev = antList.FirstOrDefault(ant => ant.m_strOidIndex == $".{antNo}");
+					if (null == antDev)
+					{
+						Log.Error($"根据索引.{antNo}未找到天线设备");
+						continue;
+					}
+
+					GeneratePicoToAntLink(rru.m_strOidIndex, picoPort, antDev.m_strOidIndex, antIr);
+				}
+			}
+
+			return true;
 		}
 
 		#endregion

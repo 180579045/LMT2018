@@ -1,5 +1,90 @@
 {
   "errorCodeInfo": [
+	{
+      "errorID": 1,
+      "errorChDesc": "响应报文过长",
+      "errorEnDesc": "Response PDU Too Big"
+    },
+	{
+      "errorID": 2,
+      "errorChDesc": "节点不存在",
+      "errorEnDesc": "Variable does not exist"
+    },
+	{
+      "errorID": 3,
+      "errorChDesc": "无法修改对象：值错误",
+      "errorEnDesc": "Cannot modify variable: Bad Value"
+    },
+	{
+      "errorID": 4,
+      "errorChDesc": "无法修改只读对象",
+      "errorEnDesc": "Cannot modify object, Read Only"
+    },
+	{
+      "errorID": 5,
+      "errorChDesc": "无法执行操作，通用错误",
+      "errorEnDesc": "Cannot perform operation, General Error"
+    },
+	{
+      "errorID": 6,
+      "errorChDesc": "无访问节点的权限",
+      "errorEnDesc": "Cannot access variable, No Access"
+    },
+	{
+      "errorID": 7,
+      "errorChDesc": "无法创建和修改节点：类型错误",
+      "errorEnDesc": "Cannot create/modify variable, Wrong Type"
+    },
+	{
+      "errorID": 8,
+      "errorChDesc": "无法创建和修改节点：长度错误",
+      "errorEnDesc": "Cannot create/set variable, Wrong Length"
+    },
+	{
+      "errorID": 9,
+      "errorChDesc": "无法创建和修改节点：编码错误",
+      "errorEnDesc": "Cannot create/set variable, Wrong Encoding"
+    },
+	{
+      "errorID": 10,
+      "errorChDesc": "无法创建和修改节点：值错误",
+      "errorEnDesc": "Cannot create/set variable, Wrong Value"
+    },
+	{
+      "errorID": 11,
+      "errorChDesc": "不允许创建该对象",
+      "errorEnDesc": "Cannot create variable, Creation Not Allowed"
+    },
+	{
+      "errorID": 12,
+      "errorChDesc": "无法创建和修改节点：不一致的值",
+      "errorEnDesc": "Cannot create/set variable, Inconsistent Value"
+    },
+	{
+      "errorID": 13,
+      "errorChDesc": "资源不可得",
+      "errorEnDesc": "Cannot create/set variable, Resource Unavailable"
+    },
+	{
+      "errorID": 16,
+      "errorChDesc": "鉴权错误，无法执行操作",
+      "errorEnDesc": "Cannot perform operation, Authorization Error"
+    },
+	{
+      "errorID": 17,
+      "errorChDesc": "无法创建和修改节点：对象不可写",
+      "errorEnDesc": "Cannot create/set variable, Not Writable"
+    },
+	{
+      "errorID": 18,
+      "errorChDesc": "变量不存在",
+      "errorEnDesc": "The variable does not exist"
+    },
+	{
+      "errorID": 19,
+      "errorChDesc": "未知错误",
+      "errorEnDesc": "Unknown Error Status"
+    },
     {
       "errorID": 21,
       "errorChDesc": "系统错误",
@@ -19,6 +104,36 @@
       "errorID": 24,
       "errorChDesc": "不支持IPV6",
       "errorEnDesc": "Not support IPV6"
+    },
+	{
+      "errorID": 31,
+      "errorChDesc": "LMT-eNB首次登录为错误报文",
+      "errorEnDesc": "First Login is error packet"
+    },
+	{
+      "errorID": 32,
+      "errorChDesc": "该操作被屏蔽",
+      "errorEnDesc": "The operation is forbidden"
+    },
+	{
+      "errorID": 33,
+      "errorChDesc": "操作失败",
+      "errorEnDesc": "The operation failed"
+    },
+	{
+      "errorID": 34,
+      "errorChDesc": "由于OM忙不能实现操作",
+      "errorEnDesc": "OM module is busy cannot complete the operation"
+    },
+	{
+      "errorID": 35,
+      "errorChDesc": "该操作目前已经废弃",
+      "errorEnDesc": "The operation is obsolete"
+    },
+	{
+      "errorID": 36,
+      "errorChDesc": "OM出现超时错误",
+      "errorEnDesc": "OM module timeout"
     },
     {
       "errorID": 51,

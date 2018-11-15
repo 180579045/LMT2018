@@ -64,6 +64,24 @@ namespace NetPlan
 			return _npeRru.rruTypeInfo.FirstOrDefault(rru => rru.rruTypeIndex == nRruType);
 		}
 
+		/// <summary>
+		/// 根据RRU型号，判断是否是pico设备
+		/// </summary>
+		/// <param name="nRruType"></param>
+		/// <returns></returns>
+		public bool IsPicoDevice(int nRruType)
+		{
+			var rruInfo = GetRruInfoByType(nRruType);
+			if (null == rruInfo)
+			{
+				Log.Error($"未找到类型为{nRruType}的rru信息，请更新RRU器件库");
+				return false;
+			}
+
+			var rruTypeName = rruInfo.rruTypeName;
+			return (rruTypeName.IndexOf('p') == 0) ;
+		}
+
 		#endregion
 
 		#region 私有方法

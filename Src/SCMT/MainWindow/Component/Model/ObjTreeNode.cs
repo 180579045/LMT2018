@@ -562,10 +562,10 @@ namespace SCMTMainWindow
 		/// 每当收集完一行数据后，更新主界面中的DataGrid;
 		/// </summary>
 		/// <param name="ar"></param>
-		private void ReceiveRes(IAsyncResult ar)
-		{
-			main.UpdateMibDataGrid(ar, oid_cn, oid_en, contentlist);
-		}
+// 		private void ReceiveRes(IAsyncResult ar)
+// 		{
+// 			main.UpdateMibDataGrid(ar, oid_cn, oid_en, contentlist);
+// 		}
 
 		/// <summary>
 		/// 按照单个节点进行GetNext;

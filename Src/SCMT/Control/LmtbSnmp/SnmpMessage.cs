@@ -15,6 +15,7 @@ using System.Net;
 using System.Threading;
 using SnmpSharpNet;
 using System.Threading.Tasks;
+using CommonUtility;
 
 namespace LmtbSnmp
 {
@@ -80,7 +81,7 @@ namespace LmtbSnmp
         /// </summary>
         /// <param name="callback"></param>
         /// <param name="PduList"></param>
-        public abstract void SetRequest(AsyncCallback callback, List<string>PduList);
+        public abstract void SetRequest(AsyncCallback callback, Dictionary<string, string>PduList);
 
         /// <summary>
         /// GetRequest的对外接口;
@@ -153,12 +154,10 @@ namespace LmtbSnmp
         /// value：数值;
         /// </summary>
         private Dictionary<string, string> m_Result;
-
         public void SetSNMPReslut(Dictionary<string, string> res)
         {
             this.m_Result = res;
         }
-
         public object AsyncState
         {
             get
@@ -301,7 +300,6 @@ namespace LmtbSnmp
                 
                 // 接收结果;
                 m_Result = (SnmpV2Packet)target.Request(pdu, param);
-
                 if (m_Result != null)
                 {
                     // ErrorStatus other then 0 is an error returned by 
@@ -353,7 +351,7 @@ namespace LmtbSnmp
         /// <summary>
         /// SetRequest的SnmpV2c版本
         /// </summary>
-        /// <param name="PduList">需要查询的Pdu列表</param>
+        /// <param name="PduList">需要设置的Pdu列表</param>
         /// <param name="Community">需要设置的Community</param>
         /// <param name="IpAddress">需要设置的IP地址</param>
         public override void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress)
@@ -362,18 +360,20 @@ namespace LmtbSnmp
             UdpTarget target = new UdpTarget((IPAddress)new IpAddress(IpAddress));
             // Create a SET PDU
             Pdu pdu = new Pdu(PduType.Set);
+
+            // TODO By Guoliang3:在Set的时候，需要确认下发的参数类型;
             foreach (var list in PduList)
             {
-                pdu.VbList.Add(new Oid(list.Key), new OctetString(list.Value));
+                pdu.VbList.Add(new Oid(list.Key), new Integer32(list.Value));
             }
-
+            
             // Set Agent security parameters
             AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(Community));
             // Response packet
             SnmpV2Packet response;
             try
             {
-                // Send request and wait for response
+                // 向Agent发送SetRequest消息，并等待反馈结果;
                 response = target.Request(pdu, aparam) as SnmpV2Packet;
             }
             catch (Exception ex)
@@ -405,9 +405,65 @@ namespace LmtbSnmp
             }
         }
 
-        public override void SetRequest(AsyncCallback callback, List<string> PduList)
+        /// <summary>
+        /// 异步SetRequest的SNMPV2c版本;
+        /// </summary>
+        /// <param name="callback"></param>
+        /// <param name="PduList"></param>
+        public override void SetRequest(AsyncCallback callback, Dictionary<string, string> PduList)
         {
-            throw new NotImplementedException();
+            // Prepare target
+            UdpTarget target = new UdpTarget((IPAddress)new IpAddress(CSEnbHelper.GetCurEnbAddr()));
+            // 需要返回的结果;
+            SnmpMessageResult res = new SnmpMessageResult();
+            // Create a SET PDU
+            Pdu pdu = new Pdu(PduType.Set);
+            foreach (var list in PduList)
+            {
+                pdu.VbList.Add(new Oid(list.Key), new OctetString(list.Value));
+            }
+
+            // 异步处理;
+            Task tsk = Task.Factory.StartNew(()=>{
+                // Set Agent security parameters
+                AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString("public"));
+
+                try
+                {
+                    // Send request and wait for response
+                    m_Result = target.Request(pdu, aparam) as SnmpV2Packet;
+                }
+                catch (Exception ex)
+                {
+                    // If exception happens, it will be returned here
+                    Console.WriteLine(String.Format("Request failed with exception: {0}", ex.Message));
+                    target.Close();
+                    callback(null);
+                    return;
+                }
+                // Make sure we received a response
+                if (m_Result == null)
+                {
+                    Console.WriteLine("Error in sending SNMP request.");
+                }
+                else
+                {
+                    // Check if we received an SNMP error from the agent
+                    if (m_Result.Pdu.ErrorStatus != 0)
+                    {
+                        Console.WriteLine(String.Format("SNMP agent returned ErrorStatus {0} on index {1}",
+                            m_Result.Pdu.ErrorStatus, m_Result.Pdu.ErrorIndex));
+                    }
+                    else
+                    {
+                        // Everything is ok. Agent will return the new value for the OID we changed
+                        Console.WriteLine(String.Format("Agent response {0}: {1}",
+                            m_Result.Pdu[0].Oid.ToString(), m_Result.Pdu[0].Value.ToString()));
+                    }
+                }
+
+            });
+            
         }
         
         /// <summary>
