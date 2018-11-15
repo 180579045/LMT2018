@@ -34,8 +34,8 @@
 
         <Grid Grid.Row="3">
             <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" VerticalAlignment="Center">
-                <Button Content="取消" Width="50" Height="24" ></Button>
-                <Button Content="确定" Width="50" Height="24" Margin="30,0,0,0"></Button>
+                <Button Content="取消" Width="50" Height="24" Click="CancelModify_OnClick"></Button>
+                <Button Content="确定" Width="50" Height="24" Margin="30,0,0,0" Click="ConfirmModify_OnClick"></Button>
             </StackPanel>
         </Grid>
 

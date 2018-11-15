@@ -21,9 +21,24 @@ namespace SCMTMainWindow.Pages
 	/// </summary>
 	public partial class ModifyFriendlyName : MetroWindow
 	{
-		public ModifyFriendlyName()
+		private ModifyFriendlyName()
 		{
 			InitializeComponent();
+		}
+
+		public static ModifyFriendlyName NewDlg(string strFriendlyName)
+		{
+			return new ModifyFriendlyName();
+		}
+
+		private void CancelModify_OnClick(object sender, RoutedEventArgs e)
+		{
+			Close();
+		}
+
+		private void ConfirmModify_OnClick(object sender, RoutedEventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
