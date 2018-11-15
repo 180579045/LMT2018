@@ -44,10 +44,10 @@ namespace SCMTMainWindow.ViewModel
             c1.Children.Add(c2);
             c1.Children.Add(c2);
             al.Add(c1);
-            //al.Add(c1);
-            //al.Add(c1);
-            //al.Add(c1);
-            //al.Add(c1);
+            al.Add(c1);
+            al.Add(c1);
+            al.Add(c1);
+            al.Add(c1);
             for (int i = 0; i < 10; i++)
             {
                 UeInformation ue = new UeInformation();
