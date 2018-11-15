@@ -13,7 +13,12 @@
     <RoutedUICommand x:Key="FullScreenCommand" Text="Text" />
     <RoutedUICommand x:Key="HiddenCellCommand" Text="Text" />
     <RoutedUICommand x:Key="DeleteElementCommand" Text="Text" />
-    
+
+    <RoutedUICommand x:Key="TemImportCommand" Text="Text" />
+    <RoutedUICommand x:Key="TemExportCommand" Text="Text" />
+    <RoutedUICommand x:Key="TemClearCommand" Text="Text" />
+    <RoutedUICommand x:Key="TemLineCommand" Text="Text" />
+
 
     <Style x:Key="DefaultToolTipStyle" TargetType="{x:Type ToolTip}">
         <Setter Property="Foreground" Value="Black"/>

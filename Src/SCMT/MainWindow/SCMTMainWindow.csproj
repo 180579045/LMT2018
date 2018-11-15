@@ -250,6 +250,7 @@
     <Compile Include="View\MainDataGrid.xaml.cs">
       <DependentUpon>MainDataGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\NetPlanTemplateCanvas.cs" />
     <Compile Include="View\UeInfo.xaml.cs">
       <DependentUpon>UeInfo.xaml</DependentUpon>
     </Compile>
