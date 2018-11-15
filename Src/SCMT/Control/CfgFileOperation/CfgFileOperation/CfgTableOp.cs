@@ -299,6 +299,18 @@ namespace CfgFileOperation
                 tableInfo.AddRange(inst.GetInstMem());
                 instNum++;
             }
+            //List<byte> lastByte = new List<byte>() { };
+            if (instNum < m_cfgFile_TblInfo.u32RecNum)
+            {
+                //byte[] lastByte = new byte[] { };
+                List<byte> lastByte = new List<byte>();
+                for (int lg = 0; lg < bufflong; lg++)
+                    lastByte.Add(0);
+                for (int i = 0; i < m_cfgFile_TblInfo.u32RecNum - instNum; i++)
+                {
+                    tableInfo.AddRange(lastByte.ToArray());
+                }
+            }
             if (instNum != m_cfgFile_TblInfo.u32RecNum)
                 Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头 Num is {2}。。。。。。", m_strTableName, instNum, m_cfgFile_TblInfo.u32RecNum));
             

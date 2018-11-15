@@ -63,6 +63,11 @@ namespace CfgFileOperation
             m_rruExcel = new CfgParseRruExcel();
             m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
 
+            //5. 告警信息
+            //在CreateCfgFile中就解析了
+            m_alarmExcel = new CfgParseAlarmExecl();
+            m_alarmExcel.ParseExcel(paths["Alarm"]);
+
             //1. lm.mdb 更新加载数据，整理成表和表实例的结构
             CreateCfgFile(paths);
 
@@ -78,10 +83,7 @@ namespace CfgFileOperation
             m_antennaExcel = new CfgParseAntennaExcel();
             m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
 
-            //5. 告警信息
-            //在CreateCfgFile中就解析了
-            m_alarmExcel = new CfgParseAlarmExecl();
-            m_alarmExcel.ParseExcel(paths["Alarm"]);
+            
 
             //5. reclist 
             m_reclistExcel = new CfgParseReclistExcel();
@@ -382,8 +384,8 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            //if (strTableName == "alarmCauseEntry")
-            //    Console.WriteLine("1111");
+            if (strTableName == "alarmCauseEntry")
+                Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
             //if (df.Tables[0].Rows.Count > 0)
@@ -409,7 +411,7 @@ namespace CfgFileOperation
                 tableOp.SetChFriendName(row["ChFriendName"].ToString());
                 tableOp.SetDytabCont(strTableContent);                                        //设置动态表的容量
                 tableOp.SetTabName(strTableName);                                             //设置表名 add by yangyuming
-                TableOffset = SetTableOffset(tableOp, isDyTable, TableOffset);                //计算表的偏移量
+                TableOffset = SetTableOffset_2(tableOp, isDyTable, TableOffset);              //计算表的偏移量
                 m_mapTableInfo.Add(strTableName, tableOp);
             }
             return TableOffset;
@@ -437,6 +439,36 @@ namespace CfgFileOperation
                     }
                     else
                         TotalRecorNum = DytabCont;
+                    tableOp.SetDyTable(isDyTable);
+                }
+                else
+                    TotalRecorNum *= tableOp.m_struIndex.GetIndexRecorNum();
+                tableOp.m_cfgFile_TblInfo.u32RecNum = TotalRecorNum;
+                TableOffset += (uint)(TotalRecorNum * tableOp.GetAllLeafsFieldLens());//字段总长;
+            }
+            TableOffset += (uint)Marshal.SizeOf(new StruCfgFileTblInfo("init"));
+            TableOffset += (uint)((uint)Marshal.SizeOf(new StruCfgFileFieldInfo()) * (uint)tableOp.m_LeafNodes.Count);
+            return TableOffset;
+        }
+        uint SetTableOffset_2(CfgTableOp tableOp, bool isDyTable, uint TableOffset)
+        {
+            uint TotalRecorNum = 1;
+            if (m_bEmptyCfg == false)
+            {
+                if (true == isDyTable)
+                {
+                    uint DytabCont = tableOp.GetDytabCont();//动态表容量
+                    TotalRecorNum = DytabCont;
+
+                    uint m_cfgInsts_num = tableOp.get_m_cfgInsts_num();
+                    //uint DytabCont = tableOp.GetDytabCont();//动态表容量
+                    if (m_cfgInsts_num != DytabCont)
+                    {
+                        //TotalRecorNum = m_cfgInsts_num > DytabCont ? DytabCont : m_cfgInsts_num;//动态表容量
+                        Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头(动态表容量) Num is {2}。。。。。。", tableOp.m_strTableName, m_cfgInsts_num, DytabCont));
+                    }
+                    //else
+                    //    TotalRecorNum = DytabCont;
                     tableOp.SetDyTable(isDyTable);
                 }
                 else
@@ -718,9 +750,9 @@ namespace CfgFileOperation
 
         private void CreateSpecialTalbeAlarmCauseEntryByExcel(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)
         {
-            CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl();
-            alarmEx.ParseExcel(strFileToDirectory);
-            var vectAlarmInfoExcel = alarmEx.vectAlarmInfoExcel;
+            //CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl();
+            //alarmEx.ParseExcel(strFileToDirectory);
+            var vectAlarmInfoExcel = m_alarmExcel.vectAlarmInfoExcel;
             //string strSQLAlarm = ("select  * from AlarmInform_5216");
             //string alarmPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
             //DataSet AlarmdateSet = CfgGetRecordByAccessDb(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
@@ -963,7 +995,7 @@ namespace CfgFileOperation
             int setBufTableNum = 0;//处理的表
             List<string> exitInstIndexList = new List<string>();// 存真实数据库中的告警号
             bool IsFirst = true;
-            Console.WriteLine(tableOp.get_m_cfgInsts_num());
+            //Console.WriteLine(tableOp.get_m_cfgInsts_num());
             for (int index = 0; index < nTableNum; index++)//告警表是一维
             {
                 List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
@@ -996,7 +1028,7 @@ namespace CfgFileOperation
                 setBufTableNum++;
                 tableOp.m_cfgInsts_add(strTabIndex, BuffArrL[0]);
             }
-            Console.WriteLine(tableOp.get_m_cfgInsts_num());
+            //Console.WriteLine(tableOp.get_m_cfgInsts_num());
         }
         /// <summary>
         /// rruTypeEntry 的实例处理

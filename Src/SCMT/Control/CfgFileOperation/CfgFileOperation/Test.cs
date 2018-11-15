@@ -244,6 +244,7 @@ namespace CfgFileOperation
         /// <returns></returns>
         bool TestBeyondComFileTableInfoMain(string YSFilePath, string NewFilePath)
         {
+            bool re = true;
             StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);
             List<uint> YsTablePos = GetTablesPos(YSFilePath, (int)YsDhead.u32TableCnt);
             Dictionary<string, uint> YsTableNamePosDict = GetTableNamesDictByTablesPos(YSFilePath, YsTablePos);
@@ -277,6 +278,7 @@ namespace CfgFileOperation
                 if (!TestIsSameTableHeadField(table, ysTblInfo, newTblInfo))
                 {
                     Console.WriteLine(String.Format("tableName={0}, table head info not all same.",table));
+                    re = false;
                     //break;
                 }
 
@@ -287,13 +289,14 @@ namespace CfgFileOperation
                 {
                     Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
                     //break;
+                    re = false;
                 }
 
                 
 
             }
 
-            return false;
+            return re;
         }
 
         Dictionary<string, StruCfgFileFieldInfo> TestGetLeafHeadFieldInfo(string filePath, ushort u16FieldNumYs, uint offset)
