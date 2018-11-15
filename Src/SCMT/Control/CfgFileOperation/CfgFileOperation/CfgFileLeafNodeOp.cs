@@ -28,7 +28,7 @@ namespace CfgFileOperation
         private CfgFileLeafNodeOp() { }
         
     }
-    
+
     /// <summary>
     /// 数据文件表字段信息
     /// sizeof : 60
@@ -127,6 +127,10 @@ namespace CfgFileOperation
             if (u8FieldName == null)
                 u8FieldName = new byte[48];
             StringToByteArray(str, u8FieldName);
+        }
+        public byte[] Getu8FieldName()
+        {
+            return u8FieldName;
         }
         /*********************        功能函数(私有)             ***************************/
         /// <summary>
@@ -433,6 +437,88 @@ namespace CfgFileOperation
                 maxNum = 2 * GetBITSNum(deckNum - 1);
             }
             return maxNum;
+        }
+
+        //
+        public void SetValueByBytes(byte[] data)
+        {
+            //u8FieldName = new byte[48];    /* [48] 字段名 */
+            //u16FieldOffset = 0;            /* 字段相对记录头偏移量*/
+            //u16FieldLen = 0;               /* 字段长度 单位：字节 */
+            //u8FieldType = 0;               /* 字段类型 */
+            //u8FieldTag = 0;                /* 字段是否为关键字 */
+            //u8SaveTag = 0;                 /* 字段是否需要存盘 */
+            //u8ConfigFlag = 0;              /* 字段是否可(需要)配置,0:不可配，1：可配*/
+            u8Pad = new byte[4];           /* [4] 保留*/
+
+            int fromOf = 0;
+            int lenSize = 0;
+            byte[] bytes;
+            //u8FieldName
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new byte()) * 48;
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8FieldName = GetBytesValue(bytes);
+            //u16FieldOffset
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16FieldOffset);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16FieldOffset = GetBytesValToU16(bytes);
+            //u16FieldLen
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16FieldLen);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16FieldLen = GetBytesValToU16(bytes);
+            //u8FieldType
+            fromOf += Marshal.SizeOf(new byte());
+            u8FieldType = data[fromOf];
+            //u8FieldTag
+            fromOf += Marshal.SizeOf(new byte());
+            u8FieldTag = data[fromOf];
+            //u8SaveTag
+            fromOf += Marshal.SizeOf(new byte());
+            u8SaveTag = data[fromOf];
+            //u8ConfigFlag
+            fromOf += Marshal.SizeOf(new byte());
+            u8ConfigFlag = data[fromOf];
+        }
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+        ushort GetBytesValToU16(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt16(OxbytesToString(bytes), 16);
+        }
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        byte[] GetBytesValueRev(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            return bytes;
+        }
+        byte[] GetBytesValue(byte[] bytes)
+        {
+            return bytes;
         }
     }
 
