@@ -1776,8 +1776,9 @@ namespace SCMTMainWindow
 			EnableMenu(ip, "断开连接");
 			EnableMenu(ip, "数据同步");
             EnableMenu(ip, "修改友好名", false);
+            EnableMenu(ip, "修改IP地址", false);
 
-			if (!result)
+            if (!result)
 			{
 				Log.Error($"数据库初始化失败，不再查询基站的电源信息");
 				return;
@@ -1807,9 +1808,10 @@ namespace SCMTMainWindow
 			EnableMenu(ip, "断开连接", false);
 			EnableMenu(ip, "数据同步", false);
             EnableMenu(ip, "修改友好名");
+            EnableMenu(ip, "修改IP地址");
 
-			// 文件管理按钮禁用，文件管理窗口关闭
-			CloseFileMgrDlg(fname);
+            // 文件管理按钮禁用，文件管理窗口关闭
+            CloseFileMgrDlg(fname);
 
             Dispatcher.Invoke(() =>
             {

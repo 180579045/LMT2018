@@ -223,6 +223,9 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Compile Include="Pages\ModifyIPAddr.xaml.cs">
+      <DependentUpon>ModifyIPAddr.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ModifyFriendlyName.xaml.cs">
       <DependentUpon>ModifyFriendlyName.xaml</DependentUpon>
     </Compile>
@@ -348,6 +351,10 @@
     <Page Include="Pages\AddNodeB.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ModifyIPAddr.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ModifyFriendlyName.xaml">
       <SubType>Designer</SubType>

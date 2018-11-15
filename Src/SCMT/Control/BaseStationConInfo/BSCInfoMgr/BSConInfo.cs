@@ -70,15 +70,15 @@ namespace BaseStationConInfo.BSCInfoMgr
 		{
 			if ((string.Empty == strName) |  (null == connectBSInfo))
 				return false;
-			// 不存在返回 false
-			if (!connectBSInfo.ContainsKey(strName)) 
-				return false;
+            // 不存在返回 false
+            if (!connectBSInfo.ContainsKey(strName))
+                return false;
 
-			connectBSInfo.Remove(strName);
+            connectBSInfo.Remove(strName);
 			writeBSInfoToJsonFile();
 			return true;
         }
-        public bool modifyBaseStationConInfoByName(string strName, string strIP)
+        public bool modifyBaseStationConInfoFriendlyName(string strName, string strIP)
         {
             if ((string.Empty == strName) || (null == connectBSInfo) || (string.Empty == strIP))
                 return false;
@@ -95,6 +95,20 @@ namespace BaseStationConInfo.BSCInfoMgr
             }
 
             return false;
+        }
+
+        public bool modifyBaseStationConInfoIP(string strName, string strIP)
+        {
+            if ((string.Empty == strName) || (null == connectBSInfo) || (string.Empty == strIP))
+                return false;
+            // 不存在返回 false
+            if (!connectBSInfo.ContainsKey(strName))
+                return false;
+
+            connectBSInfo[strName] = strIP;
+            writeBSInfoToJsonFile();
+
+            return true;
         }
 
         public void delAllBaseStationConInfo()
