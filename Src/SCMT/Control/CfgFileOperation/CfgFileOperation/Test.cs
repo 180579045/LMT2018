@@ -21,9 +21,11 @@ namespace CfgFileOperation
         {
             Test test = new Test();
 
-            //test.testForParseAlarmEx();
+            test.TestBeyondCompareMain();
+            //test.testForCreatePatchAndInit();
 
-            test.testForCreatePatchAndInit();
+            //test.TestReadOM_STRU_IcfIdxTableItem();
+            //test.testForParseAlarmEx();
 
             //test.testForReadSelfExcel();
 
@@ -40,6 +42,386 @@ namespace CfgFileOperation
             //test.test4();
 
         }
+
+        /// <summary>
+        /// 获取 数据块 的头
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        StruDataHead GetDataHeadFromFile(string filePath)
+        {
+            int offset = 956;
+            int readCount = 24;
+            byte[] Ysdata = new CfgOp().CfgReadFile(filePath, offset, readCount);
+            StruDataHead ysD = new StruDataHead("");
+            ysD.SetValueByBytes(Ysdata);
+            return ysD;
+        }
+
+        /// <summary>
+        /// 获取每个表的偏移量;OM_STRU_IcfIdxTableItem;4字节*表数
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        List<uint> GetTablesPos(string filePath, int iTableCounts)
+        {
+            List<uint> TablesPos = new List<uint>();
+            byte[] Ysdata;
+            CfgOp cfgOp = new CfgOp();
+            // 偏移块
+            for (int i = 0; i < iTableCounts; i++)
+            {
+                Ysdata = cfgOp.CfgReadFile(filePath, (956 + 24 + 4 * i), 4);
+                TablesPos.Add(GetBytesValToUint(Ysdata));
+            }
+            Ysdata = null;
+            cfgOp = null;
+            return TablesPos;
+        }
+
+        List<string> GetTableNamesByTablesPos(string filePath, List<uint> tablesPosL)
+        {
+            CfgOp cfgOp = new CfgOp();
+            byte[] bytedata;
+            List<string> tableNamesL = new List<string>();
+            foreach (uint pos in tablesPosL)
+            {
+                bytedata = cfgOp.CfgReadFile(filePath, pos, Marshal.SizeOf(new StruCfgFileTblInfo("")));
+                StruCfgFileTblInfo tableInfo = new StruCfgFileTblInfo("");
+                tableInfo.SetBytesValue(bytedata);
+                string tablName = Encoding.GetEncoding("GB2312").GetString(tableInfo.u8TblName).TrimEnd('\0');
+                tableNamesL.Add(tablName);
+            }
+            bytedata = null;
+            cfgOp = null;
+            return tableNamesL;
+        }
+
+        Dictionary<string,uint> GetTableNamesDictByTablesPos(string filePath, List<uint> tablesPosL)
+        {
+            CfgOp cfgOp = new CfgOp();
+            byte[] bytedata;
+            Dictionary<string, uint> tableNamesDict = new Dictionary<string, uint>();
+            foreach (uint pos in tablesPosL)
+            {
+                bytedata = cfgOp.CfgReadFile(filePath, pos, Marshal.SizeOf(new StruCfgFileTblInfo("")));
+                StruCfgFileTblInfo tableInfo = new StruCfgFileTblInfo("");
+                tableInfo.SetBytesValue(bytedata);
+                string tablName = Encoding.GetEncoding("GB2312").GetString(tableInfo.u8TblName).TrimEnd('\0');
+                tableNamesDict.Add( tablName, pos);
+            }
+            bytedata = null;
+            cfgOp = null;
+            return tableNamesDict;
+        }
+
+        bool TestBeyondTableName(List<string> tablesPosLA, List<string> tablesPosLB)
+        {
+            bool re = true;
+            List<string> tablNamesMore;
+            List<string> tablNamesLess;
+            if (tablesPosLA.Count > tablesPosLB.Count)
+            {
+                tablNamesMore = tablesPosLA;
+                tablNamesLess = tablesPosLB;
+            }
+            else
+            {
+                tablNamesMore = tablesPosLB;
+                tablNamesLess = tablesPosLA;
+            }
+
+            foreach (var table in tablNamesMore)
+            {
+                if (-1 == tablNamesLess.FindIndex(e => String.Equals(e, table)))
+                {
+                    Console.WriteLine(String.Format("not have {0}", table));
+                    re = false;
+                }
+            }
+            return re;
+        }
+
+        bool TestBeyondIcfIdxTableItemTableName()
+        {
+            return false;
+        }
+
+        void TestReadOM_STRU_IcfIdxTableItem()
+        {
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
+            string YSFilePath = dataBasePath + "5GCfg\\init_qyx.cfg";
+            string NewFilePath = dataBasePath + "init.cfg";
+
+            CfgOp cfgOp = new CfgOp();
+
+            // 获取 tableNum
+            int offset = 956;
+            int readCount = 24;
+            byte[] Ysdata = cfgOp.CfgReadFile(YSFilePath, offset, readCount);
+            byte[] Newdata = cfgOp.CfgReadFile(NewFilePath, offset, readCount);
+
+            StruDataHead ysD = new StruDataHead("");
+            ysD.SetValueByBytes(Ysdata);
+            int tableNumYs = (int)ysD.u32TableCnt;
+
+            StruDataHead newD = new StruDataHead("");
+            newD.SetValueByBytes(Newdata);
+            int tableNumNew = (int)newD.u32TableCnt;
+
+            // yuanshi
+            List<string> tableName = new List<string>();
+            offset = 956 + 24;
+            //readCount = 4 * tableNumYs;
+            for (int i = 1; i <= tableNumYs; i++)
+            {
+                Ysdata = cfgOp.CfgReadFile(YSFilePath, offset, 4);
+                uint nextTablePos = GetBytesValToUint(Ysdata);
+                //readCount = Marshal.SizeOf(new StruCfgFileTblInfo(""));
+                // StruCfgFileTblInfo
+                Ysdata = cfgOp.CfgReadFile(YSFilePath, nextTablePos, Marshal.SizeOf(new StruCfgFileTblInfo("")));
+                StruCfgFileTblInfo ddd = new StruCfgFileTblInfo("");
+                ddd.SetBytesValue(Ysdata);
+                string tablName = System.Text.Encoding.Default.GetString(ddd.u8TblName);
+                tableName.Add(tablName);
+                offset += 4;
+            }
+
+            List<string> tableNameNew = new List<string>();
+            offset = 956 + 24;
+            //readCount = 4 * tableNumYs;
+            for (int i = 1; i <= tableNumNew; i++)
+            {
+                //offset += 4;
+                Ysdata = cfgOp.CfgReadFile(NewFilePath, offset, 4);
+                uint nextTablePos = GetBytesValToUint(Ysdata);
+                //readCount = Marshal.SizeOf(new StruCfgFileTblInfo(""));
+                // StruCfgFileTblInfo
+                Ysdata = cfgOp.CfgReadFile(NewFilePath, nextTablePos, Marshal.SizeOf(new StruCfgFileTblInfo("")));
+                StruCfgFileTblInfo ddd = new StruCfgFileTblInfo("");
+                ddd.SetBytesValue(Ysdata);
+                string tablName = System.Text.Encoding.Default.GetString(ddd.u8TblName);
+                tableNameNew.Add(tablName);
+                offset += 4;
+            }
+
+            foreach (var table in tableName)
+            {
+                string name = tableNameNew.Find(e => String.Equals(e, table));
+                if (-1 == tableNameNew.FindIndex(e => String.Equals(e, table)))
+                {
+                    Console.WriteLine(String.Format("not have {0}", table));
+                }
+                if (String.Empty == name)
+                {
+                    Console.WriteLine("not have {0}", name);
+                }
+            }
+        }
+
+        void TestBeyondCompareMain()
+        {
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
+            string YSFilePath = dataBasePath + "5GCfg\\init_qyx.cfg";
+            string NewFilePath = dataBasePath + "init.cfg";
+
+            //StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);          
+            //List<uint> YsTablePos = GetTablesPos(YSFilePath, (int)YsDhead.u32TableCnt);           
+            //List<string> YsTableNames = GetTableNamesByTablesPos(YSFilePath, YsTablePos);
+
+            //StruDataHead NewDhead = GetDataHeadFromFile(NewFilePath);
+            //List<uint> NewTablePos = GetTablesPos(NewFilePath, (int)NewDhead.u32TableCnt);
+            //List<string> NewTableNames = GetTableNamesByTablesPos(NewFilePath, NewTablePos);
+
+            //bool re = TestBeyondTableName(YsTableNames, NewTableNames);
+            // 比较 表名是否一致
+            if (!TestBeyondCompFileTableNameMain(YSFilePath, NewFilePath))
+                Console.WriteLine("tables name not all same.");
+
+            // 比较 每个表的内容
+            if(!TestBeyondComFileTableInfoMain(YSFilePath, NewFilePath))
+                Console.WriteLine("tables info not all same.");
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="YSFilePath"></param>
+        /// <param name="NewFilePath"></param>
+        /// <returns></returns>
+        bool TestBeyondComFileTableInfoMain(string YSFilePath, string NewFilePath)
+        {
+            StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);
+            List<uint> YsTablePos = GetTablesPos(YSFilePath, (int)YsDhead.u32TableCnt);
+            Dictionary<string, uint> YsTableNamePosDict = GetTableNamesDictByTablesPos(YSFilePath, YsTablePos);
+
+            StruDataHead NewDhead = GetDataHeadFromFile(NewFilePath);
+            List<uint> NewTablePos = GetTablesPos(NewFilePath, (int)NewDhead.u32TableCnt);
+            Dictionary<string, uint> NewTableNamePosDict = GetTableNamesDictByTablesPos(NewFilePath, NewTablePos);
+
+            //StruCfgFileTblInfo 表头
+
+            return false;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="YSFilePath"></param>
+        /// <param name="NewFilePath"></param>
+        /// <returns></returns>
+        bool TestBeyondCompFileTableNameMain(string YSFilePath, string NewFilePath)
+        {
+            StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);
+            List<uint> YsTablePos = GetTablesPos(YSFilePath, (int)YsDhead.u32TableCnt);
+            List<string> YsTableNames = GetTableNamesByTablesPos(YSFilePath, YsTablePos);
+
+            StruDataHead NewDhead = GetDataHeadFromFile(NewFilePath);
+            List<uint> NewTablePos = GetTablesPos(NewFilePath, (int)NewDhead.u32TableCnt);
+            List<string> NewTableNames = GetTableNamesByTablesPos(NewFilePath, NewTablePos);
+
+            return TestBeyondTableName(YsTableNames, NewTableNames);
+        }
+
+        void TestBeyondCompare()
+        {
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
+            string YSFilePath = dataBasePath + "5GCfg\\init_qyx.cfg";
+            string NewFilePath = dataBasePath + "init.cfg";
+
+
+            CfgOp cfgOp = new CfgOp();
+
+            // 获取 tableNum
+            int offset = 956;
+            int readCount = 24;
+            byte[] Ysdata = cfgOp.CfgReadFile(YSFilePath, offset, readCount);
+            byte[] Newdata = cfgOp.CfgReadFile(NewFilePath, offset, readCount);
+
+            StruDataHead ysD = new StruDataHead("");
+            ysD.SetValueByBytes(Ysdata);
+            int tableNumYs = (int)ysD.u32TableCnt;
+
+            StruDataHead newD = new StruDataHead("");
+            newD.SetValueByBytes(Newdata);
+            int tableNumNew = (int)newD.u32TableCnt;
+
+            // 跳过 偏移量 获取tableInfo表块介绍
+            StruCfgFileTblInfo ysTblInfo = new StruCfgFileTblInfo("");
+            readCount = Marshal.SizeOf(new StruCfgFileTblInfo(""));
+            offset = 956 + 24 + 4 * tableNumYs;
+            Ysdata = cfgOp.CfgReadFile(YSFilePath, offset, readCount);
+            ysTblInfo.SetBytesValue(Ysdata);
+            ushort u16FieldNumYs = ysTblInfo.u16FieldNum;//叶子数
+            ushort u16RecLenYs = ysTblInfo.u16RecLen;//每个表实例的长度
+
+            StruCfgFileTblInfo newTblInfo = new StruCfgFileTblInfo("");
+            offset = 956 + 24 + 4 * tableNumNew;
+            Newdata = cfgOp.CfgReadFile(NewFilePath, offset, readCount);
+            newTblInfo.SetBytesValue(Newdata);
+            ushort u16FieldNumNew = newTblInfo.u16FieldNum;//叶子数
+            ushort u16RecLenNew = newTblInfo.u16RecLen;//每个表实例的长度
+
+            //
+        }
+
+        void testBeyondCompare1()
+        {
+            TestStruDataHead te = new TestStruDataHead();
+            bool re = te.testBeyondCompare();
+
+        }
+
+      
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+        uint GetBytesValToUint2(byte[] bytes)
+        {
+            //Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+
+        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            Array.Reverse((byte[])bytes);
+            Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return re;
+        }
+
+        object GetByteValueToParm(object objParm, byte[] bytes)
+        {
+            object re = null; 
+            if (objParm is byte)
+            {
+                re = bytes[0];
+            }
+            else if (objParm is byte[])
+            {
+                Array.Reverse((byte[])bytes);
+                Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            }
+            //else if (objParm is sbyte[])
+            //{
+            //    Array.Reverse((byte[])bytes);
+            //    Buffer.BlockCopy((sbyte[])bytes, 0, (byte[])re, bytePosL[0], ((sbyte[])objParm).Length);
+            //    bytePosL[0] += ((sbyte[])objParm).Length;
+            //}
+            else if (objParm is ushort)
+            {
+                Array.Reverse((byte[])bytes);
+                string reStr = OxbytesToString(bytes);
+                re = (ushort)Convert.ToUInt16(reStr, 16);
+            }
+            else if (objParm is uint)
+            {
+                Array.Reverse((byte[])bytes);
+                string reStr = OxbytesToString(bytes);
+                re = Convert.ToUInt32(OxbytesToString(bytes), 16);
+                //byte[] TypeToByteArr = BitConverter.GetBytes((uint)objParm); //  数据块起始位置 
+                //Buffer.BlockCopy(TypeToByteArr, 0, byteAL[0], bytePosL[0], TypeToByteArr.Length);
+                //bytePosL[0] += TypeToByteArr.Length;
+            }
+            //else if (objParm is uint[])
+            //{
+            //    re = new List<uint>();
+            //    foreach (var ui in (uint[])objParm)
+            //    {
+            //        byte[] TypeToByteArr = BitConverter.GetBytes((uint)ui); //  数据块起始位置 
+            //        Buffer.BlockCopy(TypeToByteArr, 0, byteAL[0], bytePosL[0], TypeToByteArr.Length);
+            //        bytePosL[0] += TypeToByteArr.Length;
+            //    }
+            //}
+            else
+            {
+                Console.WriteLine(String.Format("SetValueToByteArray : new type : value={0}, type={1}", objParm.ToString(), objParm.GetType()));
+            }
+            return re;
+        }
+
         /// <summary>
         /// 生成 init 和 patch
         /// </summary>

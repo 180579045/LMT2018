@@ -488,11 +488,10 @@ namespace CfgFileOpStruct
         public void FillVerInfo(string strMibVersion)
         {
             //"5_65_3_6";
-            u32PublicMibVer = 5;
-            u32MainMibVer = 65;
-            u32SubMibVer = 3;
-            u32ReserveVer = 6;
-
+            //u32PublicMibVer = 5;
+            //u32MainMibVer = 65;
+            //u32SubMibVer = 3;
+            //u32ReserveVer = 6;
             string strTempMibVersion = strMibVersion;
             int nPos = strTempMibVersion.IndexOf('_');
             List<string> vecMibVer = new List<string>();
@@ -504,11 +503,15 @@ namespace CfgFileOpStruct
                 nPos = strTempMibVersion.IndexOf('_');
             }
             vecMibVer.Add(strTempMibVersion);
+            //string u32PublicMibVer1 = vecMibVer[0];
+            //string u32MainMibVer1 = vecMibVer[1];
+            //string u32SubMibVer1 = vecMibVer[2];
+            //string u32ReserveVer1 = vecMibVer[3];
+            u32PublicMibVer = uint.Parse(vecMibVer[0]);
+            u32MainMibVer = uint.Parse(vecMibVer[1]);
+            u32SubMibVer = uint.Parse(vecMibVer[2]);
+            u32ReserveVer = uint.Parse(vecMibVer[3]);
 
-            string u32PublicMibVer1 = vecMibVer[0];
-            string u32MainMibVer1 = vecMibVer[1];
-            string u32SubMibVer1 = vecMibVer[2];
-            string u32ReserveVer1 = vecMibVer[3];
             vecMibVer = null;
         }
         /// <summary>
@@ -695,7 +698,7 @@ namespace CfgFileOpStruct
     struct StruDataHead
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        byte[] u8VerifyStr;                              // [4] 文件头的校验字段 "BEG\0"
+        public byte[] u8VerifyStr;                       // [4] 文件头的校验字段 "BEG\0"
         public uint u32DatType;                          // reserved , =1 
         public uint u32DatVer;                           // reserved , =1 
         public uint u32TableCnt;                         // 表的数目,指示索引表中的向目个数
@@ -865,6 +868,65 @@ namespace CfgFileOpStruct
                 Console.WriteLine(String.Format("SetValueToByteArray : new type : value={0}, type={1}", objParm.ToString(), objParm.GetType()));
             }
         }
+
+        public void SetValueByBytes(byte[] data)
+        {
+            int fromOf = 0;
+            int lenSize = 0;
+            //
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new byte())*4;
+            byte[] bytes123 = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8VerifyStr = GetBytesValueToParmBytes(bytes123);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatType);
+            byte[] bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatType = GetBytesValToUint(bytes);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatVer);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatVer = GetBytesValToUint(bytes);
+
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32TableCnt);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32TableCnt = GetBytesValToUint(bytes);
+        }
+
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+
+        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
     }
 
     /// <summary>
@@ -887,7 +949,7 @@ namespace CfgFileOpStruct
         /// 表名
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-        byte[] u8TblName;                      // [32] 表名
+        public byte[] u8TblName;                      // [32] 表名
         /// <summary>
         /// 本表的单个记录包含的字段数
         /// </summary>
@@ -1067,6 +1129,99 @@ namespace CfgFileOpStruct
             {
                 Console.WriteLine(String.Format("SetValueToByteArray : new type : value={0}, type={1}", objParm.ToString(), objParm.GetType()));
             }
+        }
+
+        public void SetBytesValue(byte[] data)
+        {
+            int fromOf = 0;
+            int lenSize = 0;
+            byte[] bytes;
+            //
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new ushort());
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16DataFmtVer = GetBytesValToU16(bytes);
+            //
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte())*2;
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8pad = GetBytesValueToParmBytes(bytes);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte()) * 32;
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8TblName = GetBytesValueToParmBytes2(bytes);// new byte[32];
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16FieldNum);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16FieldNum = GetBytesValToU16(bytes);
+
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16RecLen);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16RecLen = GetBytesValToU16(bytes);
+
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u32RecNum);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32RecNum = GetBytesValToUint(bytes);
+        }
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+        ushort GetBytesValToU16(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt16(OxbytesToString(bytes), 16);
+        }
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
+        byte[] GetBytesValueToParmBytes2(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            ////var pos = bytes.DefaultIfEmpty();
+            //for (int i = bytes.Length; i > 0; i--)
+            //{
+            //    if (bytes[i] == '0')
+            //        bytes[i] = '/0';
+            //}
+            //Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
+        bool isEmptyByte(byte val)
+        {
+            if (val != '0')
+                return true;
+            return false;
         }
     }
 

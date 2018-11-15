@@ -125,12 +125,14 @@ namespace CfgFileOperation
             List<byte> allBuff = new List<byte>();
             if (String.Empty == newFilePath)
                 return false;
-            allBuff.AddRange(m_cfgFile_Header.StruToByteArrayReverse());// 写入头文件
-            allBuff.AddRange(m_dataHeadInfo.StruToByteArrayReverse());  // 数据块的头
-            foreach (var table in m_mapTableInfo.Values)                // 设置节点偏移量  
+            //allBuff.AddRange(m_cfgFile_Header.StruToByteArrayReverse());// 写入头文件
+            allBuff.AddRange(m_cfgFile_Header.StruToByteArray());         // 写入头文件
+            //allBuff.AddRange(m_dataHeadInfo.StruToByteArrayReverse());  // 数据块的头
+            allBuff.AddRange(m_dataHeadInfo.StruToByteArray());           // 数据块的头
+            foreach (var table in m_mapTableInfo.Values)                  // 设置节点偏移量  
             {
                 byte[] tableOffset = BitConverter.GetBytes((uint)table.GetTableOffset());
-                Array.Reverse(tableOffset);
+                //Array.Reverse(tableOffset);
                 allBuff.AddRange(tableOffset);
             }
 
@@ -138,7 +140,7 @@ namespace CfgFileOperation
             foreach (var table in m_mapTableInfo.Values)//写入节点信息
                 allBuff.AddRange(table.WriteTofile());
 
-            TestWriteFile(newFilePath, allBuff.ToArray(), 0);
+            CfgWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
         }
         /// <summary>
@@ -205,7 +207,7 @@ namespace CfgFileOperation
                 CfgTableOp tableOp = m_mapTableInfo[tabName];
                 allBuff.AddRange(tableOp.WriteTofilePDG());
             }
-            TestWriteFile(newFilePath, allBuff.ToArray(), 0);
+            CfgWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
         }
         /// <summary>
@@ -274,7 +276,7 @@ namespace CfgFileOperation
             string strSQL = ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
             DataSet MibdateSet = CfgGetRecordByAccessDb(paths["DataMdb"], strSQL);
             uint TableOffset = 0 ;// //设置表的偏移量
-            for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
+            for (int loop = 0; loop <= MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
                 TableOffset = CreatCfgFile_tabInfo(MibdateSet.Tables[0].Rows[loop], null, paths, TableOffset);
             }
@@ -380,8 +382,8 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            if (strTableName == "alarmCauseEntry")
-                Console.WriteLine("1111");
+            //if (strTableName == "alarmCauseEntry")
+            //    Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
             //if (df.Tables[0].Rows.Count > 0)
@@ -1916,6 +1918,45 @@ namespace CfgFileOperation
             fs.Write(data, 0, data.Length);
             fs.Flush();
             fs.Close();
+        }
+
+        public void CfgWriteFile(string filepath, byte[] data, int offset)
+        {
+            FileStream fs = new FileStream(filepath, FileMode.Create);
+            fs.Seek(offset, SeekOrigin.End);// 偏移的位置
+            fs.Write(data, 0, data.Length);
+            fs.Flush();
+            fs.Close();
+        }
+        public byte[] CfgReadFile(string filePath, long readFromOffset, int readCount)
+        {
+            //byte[] byData = new byte[100];
+            //char[] charData = new char[1000];
+            byte[] byData = new byte[readCount];
+            char[] charData = new char[readCount];
+            try
+            {
+                //FileStream sFile = new FileStream("文件路径", FileMode.Open);
+                FileStream sFile = new FileStream(filePath, FileMode.Open);
+                //sFile.Seek(55, SeekOrigin.Begin);
+                //sFile.Read(byData, 0, 100);
+                sFile.Seek(readFromOffset, SeekOrigin.Begin);
+                sFile.Read(byData, 0, readCount);//第一个参数是被传进来的字节数组,用以接受FileStream对象中的数据,第2个参数是字节数组中开始写入数据的位置,它通常是0,表示从数组的开端文件中向数组写数据,最后一个参数规定从文件读多少字符.
+
+                sFile.Close();
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("An IO exception has been thrown!");
+                Console.WriteLine(e.ToString());
+                Console.ReadLine();
+                return null;
+            }
+            Decoder d = Encoding.UTF8.GetDecoder();
+            d.GetChars(byData, 0, byData.Length, charData, 0);
+            //Console.WriteLine(charData);
+            //Console.ReadLine();
+            return byData;
         }
         public void TestsetCfgFile_Header()
         {
