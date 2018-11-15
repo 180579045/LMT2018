@@ -82,6 +82,17 @@ namespace NetPlan
 			return (rruTypeName.IndexOf('p') == 0) ;
 		}
 
+		/// <summary>
+		/// 根据RRU类型索引和厂家索引获取所有RRU所有通道信息
+		/// </summary>
+		/// <param name="nTypeIdx">rru类型</param>
+		/// <param name="nVendorIdx">厂家编号</param>
+		/// <returns></returns>
+		public List<RruPortInfo> GetRruPathInfoByTypeAndVendor(int nTypeIdx, int nVendorIdx)
+		{
+			return _npeRru.rruTypePortInfo.Where(portInfo => portInfo.rruTypePortManufacturerIndex == nVendorIdx && portInfo.rruTypePortIndex == nTypeIdx).ToList();
+		}
+
 		#endregion
 
 		#region 私有方法

@@ -655,8 +655,6 @@ namespace NetPlan
 				throw new ArgumentNullException();
 			}
 
-			var retMap = new Dictionary<string, NPRruToCellInfo>();
-			const EnumDevType devType = EnumDevType.rru_ant;
 			int rruNo;
 
 			if (!int.TryParse(strIndex.Trim('.'), out rruNo))
@@ -665,18 +663,53 @@ namespace NetPlan
 				return null;
 			}
 
-			lock (_syncObj)
+			var rru = GetDevAttributeInfo(strIndex, EnumDevType.rru);
+			if (null == rru)
 			{
-				if (!m_mapAllMibData.ContainsKey(devType))
+				Log.Error($"不存在索引为{strIndex}的RRU设备");
+				return null;
+			}
+
+			// 得到RRU类型
+			var rruTypeIndex = GetNeedUpdateValue(rru, "netRRUTypeIndex");
+			if (null == rruTypeIndex)
+			{
+				Log.Error($"查询索引为{strIndex}RRU的类型索引值失败");
+				return null;
+			}
+
+			// 得到厂家索引
+			var rruVendorIndex = GetNeedUpdateValue(rru, "netRRUManufacturerIndex");
+			if (null == rruVendorIndex)
+			{
+				Log.Error($"查询索引为{strIndex}RRU的厂家索引值失败");
+				return null;
+			}
+
+			// 根据RRU类型和厂家索引，去器件库中查询RRU信息
+			var rruPathInfoList = NPERruHelper.GetInstance()
+				.GetRruPathInfoByTypeAndVendor(int.Parse(rruTypeIndex), int.Parse(rruVendorIndex));
+			if (null == rruPathInfoList)
+			{
+				Log.Error($"根据RRU类型{rruTypeIndex}和厂家编号{rruVendorIndex}获取RRU通道信息失败");
+				return null;
+			}
+
+			// 遍历rru通道信息
+			var retMap = new Dictionary<string, NPRruToCellInfo>();
+			foreach (var pathInfo in rruPathInfoList)
+			{
+				var pathNo = pathInfo.rruTypePortNo;		// rru通道编号
+				var tmpIdx = $"{strIndex}.{pathNo}";
+
+				// 查找是否存在天线阵安装规划表信息
+				var rai = GetDevAttributeInfo(tmpIdx, EnumDevType.rru_ant);
+				if (null == rai)
 				{
-					return retMap;
+					continue;
 				}
 
-				var devList = m_mapAllMibData[devType];
-				foreach (var item in devList)
-				{
-					GetRruPortToCellInfo(item, rruNo, ref retMap, (RecordDataType.Original == item.m_recordType));
-				}
+				GetRruPortToCellInfo(rai, pathInfo, ref retMap, (RecordDataType.Original == rai.m_recordType));
 			}
 
 			return retMap;
@@ -1244,46 +1277,31 @@ namespace NetPlan
 		/// <summary>
 		/// 获取RRU通道对应的小区信息
 		/// </summary>
-		/// <param name="dai"></param>
-		/// <param name="nRruNo"></param>
+		/// <param name="dev"></param>
+		/// <param name="rpi"></param>
 		/// <param name="mapResult"></param>
 		/// <param name="bCellFix"></param>
-		private bool GetRruPortToCellInfo(DevAttributeInfo dai, int nRruNo, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
+		private bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
 		{
-			var mapAttri = dai.m_mapAttributes;
-
-			var setNo = GetNeedUpdateValue(dai, "netSetRRUNo");
-			if (null == setNo)
+			var sb = new StringBuilder();
+			var supportTx = rpi.rruTypePortNotMibRxTxStatus;
+			foreach (var stx in supportTx)
 			{
-				Log.Error($"索引为{dai.m_strOidIndex}设备属性中未找到netSetRRUNo字段");
-				return false;
+				sb.Append($"{stx.value}:{stx.desc}/");
 			}
 
-			if (nRruNo.ToString() != setNo)
-			{
-				// 不是这个rru的信息
-				return true;
-			}
-
-			var trxStatus = GetEnumStringByMibName(mapAttri, "netSetRRUPortTxRxStatus");
+			var trxStatus = sb.ToString().TrimEnd('/');
 
 			// 通道频道信息是根据小区的id从netLc表中找到netLcFreqBand字段的值
 			// RRU 的ID相同，取出所有通道对应的信息
 			var rtc = new NPRruToCellInfo(trxStatus);
-
-			var sb = new StringBuilder();
+			var mapAttri = dev.m_mapAttributes;
 			for (var i = 2; i <= 4; i++)
 			{
 				var mibName = $"netSetRRUPortSubtoLocalCellId{i}";
 				var cellId = GetEnumStringByMibName(mapAttri, mibName);
 				if (null != cellId && "-1" != cellId)
 				{
-					var freqBand = GetValueFromNetLcTableByLcIdAndMibName(int.Parse(cellId), "nrNetLocalCellFreqBand");
-					if (!string.IsNullOrEmpty(freqBand))
-					{
-						sb.AppendFormat(freqBand + "/");
-					}
-
 					rtc.CellIdList.Add(new CellAndState {cellId = cellId, bIsFixed = bCellFix});
 				}
 			}
@@ -1291,11 +1309,6 @@ namespace NetPlan
 			var cellId1 = GetEnumStringByMibName(mapAttri, "netSetRRUPortSubtoLocalCellId");
 			if (null != cellId1 && -1 != int.Parse(cellId1))
 			{
-				var freqBand = GetValueFromNetLcTableByLcIdAndMibName(int.Parse(cellId1), "nrNetLocalCellFreqBand");
-				if (!string.IsNullOrEmpty(freqBand))
-				{
-					sb.AppendFormat(freqBand + "/");
-				}
 				rtc.CellIdList.Add(new CellAndState { cellId = cellId1, bIsFixed = bCellFix });
 			}
 
@@ -1304,6 +1317,15 @@ namespace NetPlan
 			{
 				return false;
 			}
+
+			sb.Clear();
+
+			var sfbList = rpi.rruTypePortSupportFreqBand;
+			foreach (var sfb in sfbList)
+			{
+				sb.Append($"{sfb.value}:{sfb.desc}/");
+			}
+
 			rtc.FreqBand = sb.ToString().TrimEnd('/');
 			mapResult.Add(portNo, rtc);
 
