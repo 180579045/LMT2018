@@ -21,24 +21,34 @@ namespace SCMTMainWindow.Pages
 	/// </summary>
 	public partial class ModifyFriendlyName : MetroWindow
 	{
-		private ModifyFriendlyName()
+        public string strNewFriendlyName = string.Empty;
+        public bool bOK = false;
+
+		public ModifyFriendlyName(string strFriendlyName)
 		{
 			InitializeComponent();
-		}
 
-		public static ModifyFriendlyName NewDlg(string strFriendlyName)
-		{
-			return new ModifyFriendlyName();
+            this.CurFName.Text = strFriendlyName;
 		}
 
 		private void CancelModify_OnClick(object sender, RoutedEventArgs e)
 		{
+            bOK = false;
 			Close();
 		}
 
 		private void ConfirmModify_OnClick(object sender, RoutedEventArgs e)
 		{
-			throw new NotImplementedException();
+            if(this.NewFName.Text != null && this.NewFName.Text != "")
+            {
+                strNewFriendlyName = this.NewFName.Text;
+                bOK = true;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("请输入新的友好名");
+            }
 		}
 	}
 }

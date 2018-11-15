@@ -29,9 +29,24 @@ namespace SCMTMainWindow
 				return;
 			}
 
+            string strIP = NodeBControl.GetInstance().GetNodeIpByFriendlyName(me.Header);
+            if(null == strIP || string.Empty == strIP)
+            {
+                MessageBox.Show("无法通过友好名获取IP地址");
+                return;
+            }
+
 			// 对话框
-			var nodebDlg = ModifyFriendlyName.NewDlg(me.Header);
+			var nodebDlg = new ModifyFriendlyName(me.Header);
 			nodebDlg.ShowDialog();
+
+            if(!nodebDlg.bOK)
+            {
+                return;
+            }
+
+            if(NodeBControl.GetInstance().ModifyElement(strIP, nodebDlg.strNewFriendlyName))
+                me.Header = nodebDlg.strNewFriendlyName;
 		}
 
 		/// <summary>
