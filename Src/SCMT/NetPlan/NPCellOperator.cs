@@ -278,61 +278,42 @@ namespace NetPlan
 				};
 				var bSuc =
 					CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetLocalNRCellInfo", ref mapMibToValue, targetIp);
-				if (!bSuc)
+				if (bSuc)	// 如果查询本地小区信息成功
 				{
-					Log.Error($"命令 GetLocalNRCellInfo 执行失败，原因：{SnmpErrDescHelper.GetLastErrorDesc()}。");
-					if (342 == SnmpErrDescHelper.GetLastErrorCode())
+					//Log.Error($"命令 GetLocalNRCellInfo 执行失败，原因：{SnmpErrDescHelper.GetLastErrorDesc()}。");
+					//if (342 == SnmpErrDescHelper.GetLastErrorCode())
+					//{
+					//	return LcStatus.UnPlan;
+					//}
+					//return LcStatus.Disabled;
+
+					if ("0" == mapMibToValue["nrLocalCellOperationalState"])
+					{
+						Log.Debug($"本地小区{nCellId}当前状态为：本地小区已建");
+						return LcStatus.LcBuilded;
+					}
+
+					if ("4" == mapMibToValue["nrLocalCellRowStatus"])
+					{
+						Log.Debug($"本地小区{nCellId}当前状态为：本地小区未建");
+						return LcStatus.LcUnBuilded;
+					}
+				}
+
+				// 查询网规的本地小区信息
+				var nnLc = MibInfoMgr.GetInstance().GetNrNetLcInfoByID(cellIndex);
+				if (null != nnLc)
+				{
+					var nlcrs = MibInfoMgr.GetNeedUpdateValue(nnLc, "nrNetLocalCellRowStatus");
+					if ("4" != nlcrs)
 					{
 						return LcStatus.UnPlan;
 					}
-					return LcStatus.Disabled;
-				}
-
-				if ("0" == mapMibToValue["nrLocalCellOperationalState"])
-				{
-					Log.Debug($"本地小区{nCellId}当前状态为：本地小区已建");
-					return LcStatus.LcBuilded;
-				}
-
-				if ("4" == mapMibToValue["nrLocalCellRowStatus"])
-				{
-					Log.Debug($"本地小区{nCellId}当前状态为：本地小区未建");
 					return LcStatus.LcUnBuilded;
 				}
 
 				return LcStatus.UnPlan;
 			}
-			//else
-			//{
-			//	var cellOperaStatus = CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetCellInfo", "cellOperationalState", targetIp);
-			//	if ("0" == cellOperaStatus)
-			//	{
-			//		return LcStatus.CellBuilded;
-			//	}
-
-			//	var mapMibToValue = new DIC_DOUBLE_STR
-			//	{
-			//		{"lcOperationalState", null}, {"lcRowStatus", null}
-			//	};
-			//	var bSuc =
-			//		CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetLocalCellInfo", ref mapMibToValue, targetIp);
-			//	if (!bSuc)
-			//	{
-			//		return LcStatus.Disabled;
-			//	}
-
-			//	if ("0" == mapMibToValue["lcOperationalState"])
-			//	{
-			//		return LcStatus.LcBuilded;
-			//	}
-
-			//	if ("0" == mapMibToValue["lcRowStatus"])
-			//	{
-			//		return LcStatus.LcUnBuilded;
-			//	}
-
-			//	return LcStatus.UnPlan;
-			//}
 
 			return LcStatus.Disabled;
 		}
@@ -353,7 +334,7 @@ namespace NetPlan
 		/// 3）netPlanControlLcConfigSwitch置为关闭
 		/// 4）刷新小区状态
 		/// </summary>
-		/// <param name="nLocalCellId"></param>
+		/// <param name="nLocalCellId">本地小区编号</param>
 		/// <param name="targetIp"></param>
 		/// <returns></returns>
 		public static bool DelLcNetPlan(int nLocalCellId, string targetIp)

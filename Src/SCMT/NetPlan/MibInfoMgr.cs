@@ -254,7 +254,7 @@ namespace NetPlan
 				return null;
 			}
 
-			var type = EnumDevType.rru;
+			const EnumDevType type = EnumDevType.rru;
 			var rruList = new List<DevAttributeInfo>();
 			foreach (var seqIndex in seqIndexList)
 			{
@@ -272,6 +272,8 @@ namespace NetPlan
 					NPLastErrorHelper.SetLastError($"设置RRU工作模式失败");
 					return null;
 				}
+
+				// todo 根据天线类型在器件库中查询支持的拉远距离
 
 				if (!MoveDevFromWaitDelToModifyMap(type, newRru, newRru.m_strOidIndex))
 				{
@@ -644,26 +646,36 @@ namespace NetPlan
 		/// 根据rru设备的索引获取该RRU每个通道上配置的本地小区配置信息
 		/// </summary>
 		/// <param name="strIndex"></param>
+		/// <returns>字典，key:通道号，value:该通道上本地小区的信息</returns>
 		public Dictionary<string, NPRruToCellInfo> GetNetLcInfoByRruIndex(string strIndex)
 		{
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
-			if (null == targetIp)
+			if (null == targetIp || string.IsNullOrEmpty(strIndex))
 			{
-				throw new CustomException("尚未选中基站");
+				throw new ArgumentNullException();
 			}
 
 			var retMap = new Dictionary<string, NPRruToCellInfo>();
-			var devType = EnumDevType.rru_ant;
-			var rruNo = int.Parse(strIndex.Trim('.'));
+			const EnumDevType devType = EnumDevType.rru_ant;
+			int rruNo;
+
+			if (!int.TryParse(strIndex.Trim('.'), out rruNo))
+			{
+				Log.Error($"传入的{strIndex}存在非法字符");
+				return null;
+			}
+
 			lock (_syncObj)
 			{
-				if (m_mapAllMibData.ContainsKey(devType))
+				if (!m_mapAllMibData.ContainsKey(devType))
 				{
-					var devList = m_mapAllMibData[devType];
-					foreach (var item in devList)
-					{
-						GetRruPortToCellInfo(item, rruNo, ref retMap, (RecordDataType.Original == item.m_recordType));
-					}
+					return retMap;
+				}
+
+				var devList = m_mapAllMibData[devType];
+				foreach (var item in devList)
+				{
+					GetRruPortToCellInfo(item, rruNo, ref retMap, (RecordDataType.Original == item.m_recordType));
 				}
 			}
 
@@ -737,7 +749,7 @@ namespace NetPlan
 		/// <param name="strPort"></param>
 		/// <param name="lcInfo"></param>
 		/// <returns></returns>
-		public DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
+		private DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
 		{
 			var strIndex = $".{strRruNo.Trim('.')}.{strPort}";
 			var newDev = new DevAttributeInfo(EnumDevType.rru_ant, strIndex);
@@ -790,79 +802,28 @@ namespace NetPlan
 		/// <returns></returns>
 		public bool ResetRelateLcIdInNetRruAntSettingTblByLcId(int nLcId)
 		{
-			var devType = EnumDevType.rru_ant;
+			const EnumDevType devType = EnumDevType.rru_ant;
 			var strLcId = nLcId.ToString();
 			lock (_syncObj)
 			{
 				if (!m_mapAllMibData.ContainsKey(devType))
 				{
-					Log.Error($"未找到类型为rru_ant的规划信息");
+					Log.Error($"未找到类型为{devType.ToString()}的规划信息");
 					return false;
 				}
 
 				var devList = m_mapAllMibData[devType];
+				if (null == devList)
+				{
+					Log.Error($"类型为{devType.ToString()}的信息为null");
+					return true;		// todo 是否合适？
+				}
 
 				// 需要遍历所有的天线阵安装规划表
-				Parallel.ForEach(devList, item =>
+				if (devList.Any(dev => !ResetNetLcConfig(dev, strLcId)))
 				{
-					var mapAttributes = item.m_mapAttributes;
-
-					for (var j = 1; j <= 4; j++)
-					{
-						var mibName = "netSetRRUPortSubtoLocalCellId";
-						if (j > 1)
-						{
-							mibName += $"{j}";
-						}
-
-						if (!mapAttributes.ContainsKey(mibName))
-						{
-							Log.Error($"在天线阵安装规划表中没有找到名为{mibName}的节点");
-							return;
-						}
-
-						var lcValue = GetEnumStringByMibName(mapAttributes, mibName);
-						if (lcValue != strLcId) continue;
-
-						mapAttributes[mibName].SetLatestValue("-1");
-
-						if (RecordDataType.NewAdd != item.m_recordType)
-						{
-							item.m_recordType = RecordDataType.Modified;
-						}
-					}
-				});
-
-				//for (var i = 0; i < devList.Count; i++)
-				//{
-				//	var dev = devList.ElementAt(i);
-				//	var mapAttributes = dev.m_mapAttributes;
-
-				//	for (var j = 1; j <= 4; j++)
-				//	{
-				//		var mibName = "netSetRRUPortSubtoLocalCellId";
-				//		if (j > 1)
-				//		{
-				//			mibName += $"{j}";
-				//		}
-
-				//		if (!mapAttributes.ContainsKey(mibName))
-				//		{
-				//			Log.Error($"在天线阵安装规划表中没有找到名为{mibName}的节点");
-				//			return false;
-				//		}
-
-				//		var lcValue = GetEnumStringByMibName(mapAttributes, mibName);
-				//		if (lcValue != strLcId) continue;
-
-				//		mapAttributes[mibName].SetValue("-1");
-
-				//		if (RecordDataType.NewAdd != dev.m_recordType)
-				//		{
-				//			dev.m_recordType = RecordDataType.Modified;
-				//		}
-				//	}
-				//}
+					return false;
+				}
 			}
 
 			return true;
@@ -896,6 +857,17 @@ namespace NetPlan
 			}
 
 			return "-1";
+		}
+
+		/// <summary>
+		/// 根据ID查询NR本地小区网规信息
+		/// </summary>
+		/// <param name="strLcID"></param>
+		/// <returns></returns>
+		public DevAttributeInfo GetNrNetLcInfoByID(string strLcID)
+		{
+			const EnumDevType type = EnumDevType.nrNetLc;
+			return GetDevAttributeInfo(strLcID, type);
 		}
 
 		#endregion
@@ -1245,7 +1217,7 @@ namespace NetPlan
 		/// <param name="mapInfos"></param>
 		/// <param name="strMibName"></param>
 		/// <returns></returns>
-		private string GetEnumStringByMibName(Dictionary<string, MibLeafNodeInfo> mapInfos, string strMibName)
+		private static string GetEnumStringByMibName(IReadOnlyDictionary<string, MibLeafNodeInfo> mapInfos, string strMibName)
 		{
 			if (null == mapInfos || string.IsNullOrEmpty(strMibName))
 			{
@@ -1279,13 +1251,19 @@ namespace NetPlan
 		private bool GetRruPortToCellInfo(DevAttributeInfo dai, int nRruNo, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
 		{
 			var mapAttri = dai.m_mapAttributes;
-			if (!mapAttri.ContainsKey("netSetRRUNo"))
-				return false;
 
-			var mibl = mapAttri["netSetRRUNo"];
-			var setNo = int.Parse(mibl.m_strLatestValue);   // modify队列中肯定都是修改的
-			if (nRruNo != setNo)
+			var setNo = GetNeedUpdateValue(dai, "netSetRRUNo");
+			if (null == setNo)
+			{
+				Log.Error($"索引为{dai.m_strOidIndex}设备属性中未找到netSetRRUNo字段");
 				return false;
+			}
+
+			if (nRruNo.ToString() != setNo)
+			{
+				// 不是这个rru的信息
+				return true;
+			}
 
 			var trxStatus = GetEnumStringByMibName(mapAttri, "netSetRRUPortTxRxStatus");
 
@@ -1326,7 +1304,7 @@ namespace NetPlan
 			{
 				return false;
 			}
-			rtc.FreqBand = sb.ToString();
+			rtc.FreqBand = sb.ToString().TrimEnd('/');
 			mapResult.Add(portNo, rtc);
 
 			return true;
@@ -1340,24 +1318,21 @@ namespace NetPlan
 		/// <returns></returns>
 		private string GetValueFromNetLcTableByLcIdAndMibName(int nLcId, string strMibName)
 		{
-			if (0 < nLcId || nLcId > 35)
+			if (nLcId < 0 || nLcId > 35)
 			{
 				Log.Error("传入的本地小区ID超出[0,35]范围");
 				return null;
 			}
 
-			var devType = EnumDevType.nrNetLc;
+			const EnumDevType devType = EnumDevType.nrNetLc;
 
-			lock (_syncObj)
+			if (m_mapAllMibData.ContainsKey(devType))
 			{
-				if (m_mapAllMibData.ContainsKey(devType))
+				var devList = m_mapAllMibData[devType];
+				var dev = GetSameIndexDev(devList, $".{nLcId}");
+				if (null != dev)
 				{
-					var devList = m_mapAllMibData[devType];
-					var dev = GetSameIndexDev(devList, $".{nLcId}");
-					if (null != dev)
-					{
-						return GetEnumStringByMibName(dev.m_mapAttributes, strMibName);
-					}
+					return GetEnumStringByMibName(dev.m_mapAttributes, strMibName);
 				}
 			}
 
@@ -1446,6 +1421,49 @@ namespace NetPlan
 			if (dev.m_recordType != RecordDataType.NewAdd)
 			{
 				dev.m_recordType = RecordDataType.Modified;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 重置本地小区相关的配置
+		/// </summary>
+		/// <param name="dev"></param>
+		/// <param name="strLcId"></param>
+		/// <returns></returns>
+		private bool ResetNetLcConfig(DevAttributeInfo dev, string strLcId)
+		{
+			if (null == dev || string.IsNullOrEmpty(strLcId))
+			{
+				throw new ArgumentNullException();
+			}
+
+			var mapAttributes = dev.m_mapAttributes;
+			for (var j = 1; j <= 4; j++)        // todo rru设备光口数硬编码最大为4
+			{
+				var mibName = "netSetRRUPortSubtoLocalCellId";
+				if (j > 1)
+				{
+					mibName += $"{j}";
+				}
+
+				if (!mapAttributes.ContainsKey(mibName))
+				{
+					Log.Error($"在天线阵安装规划表中没有找到名为{mibName}的节点，可能MIB版本错误");
+					continue;
+					//return false;
+				}
+
+				var lcValue = GetEnumStringByMibName(mapAttributes, mibName);
+				if (lcValue != strLcId) continue;
+
+				mapAttributes[mibName].SetLatestValue("-1");
+
+				if (RecordDataType.NewAdd != dev.m_recordType)
+				{
+					dev.m_recordType = RecordDataType.Modified;
+				}
 			}
 
 			return true;
