@@ -8,6 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+
         <Style TargetType="DataGrid">
             <!--网格线颜色-->
             <Setter Property="CanUserResizeColumns" Value="false"/>
@@ -19,9 +20,9 @@
                         <GradientStop Color="#d0e5f7" Offset="1"/>
                     </LinearGradientBrush>
                 </Setter.Value>
-                </Setter>
+            </Setter>
 
-                <Setter Property="BorderBrush" Value="#01ffffff" />
+            <Setter Property="BorderBrush" Value="#01ffffff" />
             <Setter Property="HorizontalGridLinesBrush">
                 <Setter.Value>
                     <SolidColorBrush Color="Black"/>
@@ -47,15 +48,6 @@
                 </Setter.Value>-->
             </Setter>
         </Style>
-
-        <!--标题栏样式-->
-        <!--<Style  TargetType="DataGridColumnHeader" >
-        <Setter Property="Width" Value="50"/>
-        <Setter Property="Height" Value="30"/>
-        <Setter Property="FontSize" Value="14" />
-        <Setter Property="Background" Value="White" />
-        <Setter  Property="FontWeight"  Value="Bold"/>
-    </Style>-->
 
         <Style TargetType="DataGridColumnHeader">
             <Setter Property="SnapsToDevicePixels" Value="True" />
@@ -88,8 +80,7 @@
             </Setter>
             <Setter Property="Height" Value="25"/>
         </Style>
-        <!--行样式触发-->
-        <!--背景色改变必须先设置cellStyle 因为cellStyle会覆盖rowStyle样式-->
+
         <Style  TargetType="DataGridRow">
             <Setter Property="Background" Value="#F2F2F2" />
             <Setter Property="Height" Value="auto"/>
@@ -113,7 +104,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <!--单元格样式触发-->
         <Style TargetType="DataGridCell">
             <Setter Property="Template">
@@ -135,7 +125,7 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <TabControl TabStripPlacement="Right">
+        <TabControl x:Name="UeTab" TabStripPlacement="Right" SelectionChanged="UeTab_SelectionChanged" >
 
             <TabControl.Resources>
                 <Style TargetType="{x:Type TabItem}">
@@ -234,8 +224,62 @@
                     </DataGrid>
                 </Grid>
             </TabItem>
-            <TabItem Header="UE业务&#13;面查询" Cursor="Hand" Height="auto" RenderTransformOrigin="0.5,0.5" />
-            <TabItem Header="UE测量&#13;  配置" Cursor="Hand" Height="auto" RenderTransformOrigin="0.5,0.5"></TabItem>
+            <TabItem Header="UE业务&#13;面查询" Cursor="Hand" Height="auto" RenderTransformOrigin="0.5,0.5" >
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                    <TextBlock  Text="选择查询类型："/>
+                        <RadioButton x:Name="cellRadioButton" Content="按小区查询" GroupName="queryGroup" Checked="CellQuery_Checked"  />
+                        <RadioButton Content="按用户查询" GroupName="queryGroup" Checked="UeQuery_Checked" />
+                       
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">                      
+                        <Label Content="小区索引：" />
+                        <TextBox x:Name="CellIndex" Width="60" ></TextBox>
+                        <Label x:Name="UeIndexTest" Content="用户索引：" ></Label>
+                        <TextBox x:Name="UeIndex" Width="60" ></TextBox>
+                        <Button Content="查询" Margin="40,0,0,0"></Button>
+                        <Button Content="导出" Margin="10,0,0,0"></Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="2">
+                        <Label Content="提示信息:"/>
+                        <Label x:Name="QueryResultInfo" Content="显示查询成功或失败"/>
+
+                    </StackPanel>
+                    <DataGrid   Grid.Row="3">                        
+                    </DataGrid>
+                    <DataGrid Grid.Row="4">                        
+                    </DataGrid>
+
+                </Grid>
+            </TabItem>
+            <TabItem Header="UE测量&#13;  配置" Cursor="Hand" Height="auto" RenderTransformOrigin="0.5,0.5">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height=" auto"/>
+                        <RowDefinition Height=" auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Grid.Row="0">
+                        <Label Content="UE基站索引："/>
+                        <TextBox Width="60"></TextBox>
+                        <Button Content="查询" Margin="40,0,0,0"></Button>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Row="1">
+                    <Label Content="提示信息:"/>
+                    <Label x:Name="QueryResultInfo1" Content="显示查询成功或失败"/>
+                    </StackPanel>
+                    <DataGrid Grid.Row="2">
+                        
+                    </DataGrid>
+                </Grid>
+            </TabItem>
         </TabControl>
     </Grid>
 </UserControl>
