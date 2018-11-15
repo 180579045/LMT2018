@@ -585,7 +585,7 @@ namespace SCMTMainWindow.View
 
         //尝试获取节点的根元素    根据网上的代码，查询一个元素的父节点的父节点。。。通过递归查找到 Name 为
         //某个值的元素
-        private T GetRootElement<T>(DependencyObject item, string strName) where T : FrameworkElement
+        public T GetRootElement<T>(DependencyObject item, string strName) where T : FrameworkElement
         {
             DependencyObject parent = VisualTreeHelper.GetParent(item);
 
@@ -603,7 +603,7 @@ namespace SCMTMainWindow.View
         }
 
         //尝试获取元素的子节点
-        private T GetChildrenElement<T>(DependencyObject item, string strName) where T : FrameworkElement
+        public T GetChildrenElement<T>(DependencyObject item, string strName) where T : FrameworkElement
         {
             DependencyObject child = null;
             T grandChild = null;
@@ -894,7 +894,7 @@ namespace SCMTMainWindow.View
             return size;
         }
 
-        private void SetConnectorDecoratorTemplate(DesignerItem item)
+        public void SetConnectorDecoratorTemplate(DesignerItem item)
         {
             if (item.ApplyTemplate() && item.Content is UIElement)
             {
@@ -902,136 +902,6 @@ namespace SCMTMainWindow.View
                 Control decorator = item.Template.FindName("PART_ConnectorDecorator", item) as Control;
                 if (decorator != null && template != null)
                     decorator.Template = template;
-            }
-        }
-
-        public void DrawTemplate(NPTemplate npTempalte)
-        {
-            //RRU
-            if (npTempalte.rruTypeInfo.Count > 0)
-            {
-                int nMaxRRUPath = 2;
-                string strRRUName;
-                string strXAML = string.Empty; //解析xml文件
-                Size newSize;                  //根据不同的通道数，确定不同的RRU的大小
-                int nrru = 0;
-
-                foreach (RruInfo rruInfo in npTempalte.rruTypeInfo)
-                {
-                    nMaxRRUPath = rruInfo.rruTypeMaxAntPathNum;//RRU的最大通道数
-                    strRRUName = rruInfo.rruTypeName;
-                    strXAML = GetElementFromXAML(nMaxRRUPath, strXAML, out newSize);
-
-                    DesignerItem newItem = new DesignerItem();
-
-                    string strXAML1 = strXAML;
-                    string strRRUFullName = string.Empty;
-
-                    strRRUFullName = string.Format("{0}-{1}", strRRUName, nrru++);
-                    string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
-                    strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
-                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
-                    newItem.Content = testContent;
-                    newItem.ItemName = strRRUFullName;
-
-                    //添加 RRU 的时候需要给基站下发，然后获取设备信息
-                    List<int> listIndex = new List<int>();
-                    listIndex.Add(nrru);
-                    var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(listIndex, rruInfo.rruTypeIndex, rruInfo.rruTypeNotMibSupportNetWorkMode[0].desc);
-
-                    if (devRRUInfo == null || devRRUInfo.Count == 0)
-                    {
-                        return;
-                    }
-
-                    if (g_AllDevInfo.ContainsKey(EnumDevType.rru))
-                    {
-                        g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
-                    }
-                    else
-                    {
-                        g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
-                        g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
-                    }
-
-                    newItem.Width = newSize.Width;
-                    newItem.Height = newSize.Height;
-
-                    DesignerCanvas.SetLeft(newItem, (this.ActualWidth - newItem.Width) / 2 + nrru * 20);
-                    DesignerCanvas.SetTop(newItem, (this.ActualHeight - newItem.Height) / 2 + nrru * 20);
-
-                    Canvas.SetZIndex(newItem, this.Children.Count);
-                    this.Children.Add(newItem);
-                    SetConnectorDecoratorTemplate(newItem);
-
-                    this.SelectionService.SelectItem(newItem);
-                    newItem.Focus();
-                    CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
-                }
-            }
-            //rHUB
-            if (npTempalte.rHubEquipment.Count > 0)
-            {
-                int nMaxrHUBPath;
-                string strXAML = string.Empty; //解析xml文件
-                Size newSize;                  //根据不同的通道数，确定不同的 rHUB 的大小
-                string strRRUName = "rHUB";
-                int nrHUB = 0;
-
-                foreach (RHUBEquipment rHub in npTempalte.rHubEquipment)
-                {
-                    nMaxrHUBPath = rHub.irOfpNum;
-                    strXAML = GetrHUBFromXML(nMaxrHUBPath, strXAML, out newSize);
-
-                    DesignerItem newItem = new DesignerItem();
-
-                    string strXAML1 = strXAML;
-                    string strrHUBFullName = string.Empty;
-
-                    strrHUBFullName = string.Format("{0}-{1}", strRRUName, nrHUB++);
-                    string strInstedName = string.Format("Text=\"{0}\"", strrHUBFullName);
-                    strXAML1 = strXAML1.Replace("Text=\"rHUB\"", strInstedName);
-                    Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
-                    newItem.Content = testContent;
-                    newItem.ItemName = strrHUBFullName;
-
-                    //添加 rHUB 的时候需要给基站下发，然后获取设备信息
-                    List<int> listIndex = new List<int>();
-                    listIndex.Add(nrHUBNo);
-                    var devrHUBInfo = MibInfoMgr.GetInstance().AddNewRhub(listIndex, rHub.friendlyUIName, "");
-
-                    if (devrHUBInfo == null || devrHUBInfo.Count == 0)
-                    {
-                        MessageBox.Show("MibInfoMgr.GetInstance().AddNewRhub 返回为空");
-                        return;
-                    }
-
-                    if (g_AllDevInfo.ContainsKey(EnumDevType.rhub))
-                    {
-                        g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
-                    }
-                    else
-                    {
-                        g_AllDevInfo.Add(EnumDevType.rhub, new Dictionary<string, string>());
-                        g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
-                    }
-
-
-                    newItem.Width = newSize.Width;
-                    newItem.Height = newSize.Height;
-
-                    DesignerCanvas.SetLeft(newItem, (this.ActualWidth - newItem.Width) / 2 + nrHUB * 20);
-                    DesignerCanvas.SetTop(newItem, (this.ActualHeight - newItem.Height) / 2 + nrHUB * 20);
-
-                    Canvas.SetZIndex(newItem, this.Children.Count);
-                    this.Children.Add(newItem);
-                    SetConnectorDecoratorTemplate(newItem);
-
-                    this.SelectionService.SelectItem(newItem);
-                    newItem.Focus();
-                    CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
-
-                }
             }
         }
     }

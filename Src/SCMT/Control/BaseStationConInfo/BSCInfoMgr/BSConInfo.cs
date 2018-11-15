@@ -70,16 +70,48 @@ namespace BaseStationConInfo.BSCInfoMgr
 		{
 			if ((string.Empty == strName) |  (null == connectBSInfo))
 				return false;
-			// 不存在返回 false
-			if (!connectBSInfo.ContainsKey(strName)) 
-				return false;
+            // 不存在返回 false
+            if (!connectBSInfo.ContainsKey(strName))
+                return false;
 
-			connectBSInfo.Remove(strName);
+            connectBSInfo.Remove(strName);
 			writeBSInfoToJsonFile();
 			return true;
-		}
+        }
+        public bool modifyBaseStationConInfoFriendlyName(string strName, string strIP)
+        {
+            if ((string.Empty == strName) || (null == connectBSInfo) || (string.Empty == strIP))
+                return false;
+            // 不存在返回 false
+            foreach(var item in connectBSInfo)
+            {
+                if(item.Value == strIP)
+                {
+                    connectBSInfo.Remove(item.Key);
+                    connectBSInfo.Add(strName, strIP);
+                    writeBSInfoToJsonFile();
+                    return true;
+                }
+            }
 
-		public void delAllBaseStationConInfo()
+            return false;
+        }
+
+        public bool modifyBaseStationConInfoIP(string strName, string strIP)
+        {
+            if ((string.Empty == strName) || (null == connectBSInfo) || (string.Empty == strIP))
+                return false;
+            // 不存在返回 false
+            if (!connectBSInfo.ContainsKey(strName))
+                return false;
+
+            connectBSInfo[strName] = strIP;
+            writeBSInfoToJsonFile();
+
+            return true;
+        }
+
+        public void delAllBaseStationConInfo()
 		{
 			connectBSInfo = null;
 			connectBSInfo = new Dictionary<string, string>();

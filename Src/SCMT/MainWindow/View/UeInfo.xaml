@@ -202,18 +202,16 @@
                             <DataGridTextColumn Header="Info3" Binding="{Binding Path=Info3}" />
                             <DataGridTemplateColumn Header="Info4" Width="*" >
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Expander >
+                                    <DataTemplate>                                        
                                             <TreeView  ItemsSource="{Binding Path=Info4}">
                                                 <TreeView.ItemTemplate>
-                                                    <HierarchicalDataTemplate DataType="{x:Type local2:ChildrenUeInfo}" ItemsSource="{Binding Path=Children}">
+                                                    <HierarchicalDataTemplate DataType="{x:Type local2:ChildrenUeInfo}" ItemsSource="{Binding Children}">
                                                         <StackPanel Orientation="Horizontal">
                                                             <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"></TextBlock>
                                                         </StackPanel>
                                                     </HierarchicalDataTemplate>
                                                 </TreeView.ItemTemplate>
-                                            </TreeView>
-                                        </Expander>
+                                            </TreeView>                                       
                                         <!--<DataGrid  ItemsSource="{Binding Path=Info4}"  AutoGenerateColumns="False"></DataGrid>-->
 
                                     </DataTemplate>

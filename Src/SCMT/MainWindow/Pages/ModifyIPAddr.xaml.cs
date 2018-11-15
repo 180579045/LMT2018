@@ -16,19 +16,19 @@ using UICore.Controls.Metro;
 
 namespace SCMTMainWindow.Pages
 {
-	/// <summary>
-	/// ModifyFriendlyName.xaml 的交互逻辑
-	/// </summary>
-	public partial class ModifyFriendlyName : MetroWindow
+    /// <summary>
+    /// ModifyIPAddr.xaml 的交互逻辑
+    /// </summary>
+    public partial class ModifyIPAddr : MetroWindow
 	{
-        public string strNewFriendlyName = string.Empty;
+        public string strNewIPAddr = string.Empty;
         public bool bOK = false;
 
-		public ModifyFriendlyName(string strFriendlyName)
+		public ModifyIPAddr(string strIP)
 		{
 			InitializeComponent();
 
-            this.CurFName.Text = strFriendlyName;
+            this.CurFName.Text = strIP;
 		}
 
 		private void CancelModify_OnClick(object sender, RoutedEventArgs e)
@@ -41,13 +41,13 @@ namespace SCMTMainWindow.Pages
 		{
             if(this.NewFName.Text != null && this.NewFName.Text != "")
             {
-                strNewFriendlyName = this.NewFName.Text;
+                strNewIPAddr = this.NewFName.Text;
                 bOK = true;
                 this.Close();
             }
             else
             {
-                MessageBox.Show("请输入新的友好名");
+                MessageBox.Show("请输入新的IP地址");
             }
 		}
 	}

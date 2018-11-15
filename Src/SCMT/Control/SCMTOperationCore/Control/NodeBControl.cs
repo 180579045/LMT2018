@@ -95,8 +95,80 @@ namespace SCMTOperationCore.Control
 			return newNodeb;
 		}
 
-		// 删除网元
-		public override bool DelElement(string ip)
+        /// <summary>
+        /// 修改网元的友好名，根据IP地址直接替换原来的友好名
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="friendlyName"></param>
+        /// <returns></returns>
+        public bool ModifyElementFriendlyName(string ip, string friendlyName)
+        {
+            string errorInfo = "";
+            if (!HasSameIpAddr(ip))
+            {
+                errorInfo = $"地址为{ip}的基站不存在，友好名为{friendlyName}";
+                Log.Error(errorInfo);
+                throw new CustomException(errorInfo);
+            }
+
+            if (mapElements.ContainsKey(ip))
+            {
+                mapElements[ip].FriendlyName = friendlyName;
+            }
+
+            if (!BSConInfo.GetInstance().modifyBaseStationConInfoFriendlyName(friendlyName, ip))
+            {
+                Log.Error("数据库模块修改节点配置失败");
+            }
+
+            return true;
+
+        }
+
+        /// <summary>
+        /// 修改网元的IP地址
+        /// </summary>
+        /// <param name="ip"></param>
+        /// <param name="friendlyName"></param>
+        /// <returns></returns>
+        public bool ModifyElementIPAddr(string ip, string friendlyName)
+        {
+            string errorInfo = "";
+            if (!HasSameFriendlyName(friendlyName))
+            {
+                errorInfo = $"友好名为{friendlyName}的基站不存在";
+                Log.Error(errorInfo);
+                throw new CustomException(errorInfo);
+            }
+            if (HasSameIpAddr(ip))
+            {
+                errorInfo = $"地址为{ip}的基站已存在，友好名为{GetFriendlyNameByIp(ip)}";
+                Log.Error(errorInfo);
+                throw new CustomException(errorInfo);
+            }
+
+            //if (!BSConInfo.GetInstance().modifyBaseStationConInfoIP(friendlyName, ip))
+            //{
+            //    Log.Error("数据库模块修改节点配置失败");
+            //    return false;
+            //}
+            if (DelElementByFriendlyName(friendlyName))
+            {
+                Element newNodeb = new NodeB(ip, friendlyName);
+                AddElement(ip, newNodeb);
+                if (!BSConInfo.GetInstance().addBaseStationConInfo(friendlyName, ip))
+                {
+                    Log.Error("数据库模块增加节点配置失败");
+                    return false;
+                }
+
+                return true;
+            }
+            return false;
+        }
+
+        // 删除网元
+        public override bool DelElement(string ip)
 		{
 			if (null == ip || ip.Trim().Equals(""))
 			{

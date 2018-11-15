@@ -283,12 +283,12 @@ namespace CfgFileOperation
 
             //1.表节点头部信息 StruCfgFileTblInfo
             //fwrite(&m_cfgFile_TblInfo, 1, sizeof(OM_STRU_CfgFile_TblInfo), pcfgOut);//节点头部信息
-            tableInfo.AddRange(m_cfgFile_TblInfo.StruToByteArrayReverse());
+            tableInfo.AddRange(m_cfgFile_TblInfo.StruToByteArray());
 
             //2.每个叶子的头
             foreach (var leaf in m_LeafNodes)
             {
-                tableInfo.AddRange(leaf.m_struFieldInfo.StruToByteArrayReverse());
+                tableInfo.AddRange(leaf.m_struFieldInfo.StruToByteArray());
             }
 
             //3.每个叶子的内容 * 每个表实例
@@ -313,7 +313,7 @@ namespace CfgFileOperation
             List<byte> tableInfo = new List<byte>();
 
             //1.表头  StruCfgFileTblInfo
-            tableInfo.AddRange(m_cfgFile_TblInfo.StruToByteArrayReverse());
+            tableInfo.AddRange(m_cfgFile_TblInfo.StruToByteArray());
 
             //2.每个叶子的头
             foreach (var leaf in m_LeafNodes)
@@ -321,7 +321,7 @@ namespace CfgFileOperation
                 // 标记 节点是否可配置
                 SetLeafFieldConfigFlagPDG(leaf.m_struFieldInfo, leaf.m_struMibNode.strMibName);
                 // 每个叶子节点的头
-                tableInfo.AddRange(leaf.m_struFieldInfo.StruToByteArrayReverse());
+                tableInfo.AddRange(leaf.m_struFieldInfo.StruToByteArray());
             }
 
             //3. 表实例 : 表的每个叶子的内容 * 每个表实例

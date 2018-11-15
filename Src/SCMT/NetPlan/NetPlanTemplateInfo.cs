@@ -30,7 +30,7 @@ namespace NetPlan
             {
                 if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
                 {
-                    var jsonContent = FileRdWrHelper.GetFileContent(templatePath);
+                    var jsonContent = FileRdWrHelper.GetFileContent(templatePath,Encoding.GetEncoding("gb2312"));
                     npTemplate = JsonHelper.SerializeJsonToObject<NPTemplate>(jsonContent);
                 }
             }
@@ -45,7 +45,7 @@ namespace NetPlan
 
         public void SaveNetPlanTemplate(NPTemplate template)
         {
-            string filepath = FilePathHelper.GetNetPlanTempaltePath() + template.TemplateName;
+            string filepath = FilePathHelper.GetNetPlanTempaltePath() + template.templateName;
             JsonSerializerSettings jsonSetting = new JsonSerializerSettings();
             jsonSetting.DefaultValueHandling = DefaultValueHandling.Include;
             string stringTemJson = JsonConvert.SerializeObject(template, Formatting.Indented, jsonSetting);
@@ -74,16 +74,115 @@ namespace NetPlan
     /// </summary>
     public class NPTemplate
     {
-        public string TemplateName;
-        public List<RruInfo> rruTypeInfo;
-        public List<RHUBEquipment> rHubEquipment;
-        public List<AntType> antennaTypeTable;
+        /// <summary>
+        /// 模板名称
+        /// </summary>
+        public string templateName;
+        /// <summary>
+        /// 网规列数
+        /// </summary>
+        public int boardColumn;
+        /// <summary>
+        /// 网规行数
+        /// </summary>
+        public int boardRow;
+
+        public List<TemBoardInfo> temBoardInfo;
+        public List<TemRRUInfo> temRruInfo;
+        public List<TemrHUBInfo> temrHubInfo;
+        public List<TemAntInfo> temAntInfo;
+        public List<WholeLink> temConnectInfo;
 
         public NPTemplate()
         {
-            rruTypeInfo = new List<RruInfo>();
-            rHubEquipment = new List<RHUBEquipment>();
-            antennaTypeTable = new List<AntType>();
+            temBoardInfo = new List<TemBoardInfo>();
+            temRruInfo = new List<TemRRUInfo>();
+            temrHubInfo = new List<TemrHUBInfo>();
+            temAntInfo = new List<TemAntInfo>();
+            temConnectInfo = new List<WholeLink>();
         }
+    }
+    /// <summary>
+    /// 模板板卡信息
+    /// </summary>
+    public class TemBoardInfo
+    {
+        /// <summary>
+        /// 所在槽号
+        /// </summary>
+        public int slotNum;
+        /// <summary>
+        /// 板卡名称
+        /// </summary>
+        public string boardName;
+        /// <summary>
+        /// 光口个数
+        /// </summary>
+        public int irNum;
+        /// <summary>
+        /// 板卡索引
+        /// </summary>
+        public string OidIndex;
+    }
+    /// <summary>
+    /// 模板RRU信息
+    /// </summary>
+    public class TemRRUInfo
+    {
+        public int rruId;
+        /// <summary>
+        /// rru名称
+        /// </summary>
+        public string rruName;
+        /// <summary>
+        /// rru类型索引
+        /// </summary>
+        public int rruIndex;      
+        /// <summary>
+        /// rru通道数
+        /// </summary>
+        public int rruPathNum;
+        /// <summary>
+        /// rru工作模式
+        /// </summary>
+        public string rruWorkMode;
+        /// <summary>
+        /// rru关联的板卡槽号
+        /// </summary>
+        public int rruAccessSlotNo;
+
+        public string rruOidIndex;
+    }
+    /// <summary>
+    /// 模板rHUB信息
+    /// </summary>
+    public class TemrHUBInfo
+    {
+        public int rHUBId;
+        public string rHUBName;
+        public int rHUBPathNum;
+        public string rHUBWorkMode;       
+    }
+    /// <summary>
+    /// 模板天线信息
+    /// </summary>
+    public class TemAntInfo
+    {
+        public int antId;
+        public string antName;
+        /// <summary>
+        /// 天线阵的通道数
+        /// </summary>
+        public int antArrayNum;
+        public string antWorkMode;
+        public string antOidIndex;
+    }
+    /// <summary>
+    /// 记录网元器件所在位置
+    /// </summary>
+    public class TemPostion
+    {
+        public int posX;
+        public int posY;
     }
 }
