@@ -272,13 +272,13 @@ namespace LinkPath
 			lmtPdu.m_bIsNeedPrint = isPrint;
 			lmtPdu.SetSyncId(true);
 
-			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
+			var lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
 			var rs = lmtbSnmpEx.SnmpSetSync(lmtPdu, out requestId, strIpAddr, timeOut);
 			if (rs != 0)
 			{
 				Log.Error("执行lmtbSnmpEx.SnmpSetSync()方法错误");
 			}
-			
+
 			return rs;
 		}
 
@@ -298,10 +298,8 @@ namespace LinkPath
 		/// <param name="name2Value"></param>
 		/// <param name="strIndex"></param>
 		/// <param name="strIpAddr"></param>
-		/// <param name="lmtPdu"></param>
 		/// <param name="isPrint"></param>
 		/// <param name="needCheck"></param>
-		/// <param name="timeOut"></param>
 		/// <returns></returns>
 		public static int CmdSetAsync(string cmdName, out long requestId, Dictionary<string, string> name2Value
 			, string strIndex, string strIpAddr, bool isPrint = true, bool needCheck = false)
@@ -314,7 +312,7 @@ namespace LinkPath
 			lmtPdu.m_bIsNeedPrint = isPrint;
 			lmtPdu.SetSyncId(false);
 
-			LmtbSnmpEx lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
+			var lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
 			var rs = lmtbSnmpEx.SnmpSetAsync(lmtPdu, out requestId, strIpAddr);
 			if (rs != 0)
 			{
@@ -323,35 +321,6 @@ namespace LinkPath
 
 			return rs;
 		}
-
-		/// <summary>
-		/// Add By Mayi  通过 oid 获取 父节点
-		/// </summary>
-		/// <param name="strIpAddr"></param>
-		/// <param name="strChildMibOid"></param>
-		/// <returns></returns>
-		//private MibNodeInfoTest GetParentMibNodeByChildOID(string strIpAddr, string strChildMibOid)
-		//{
-		//    string matchOid = strChildMibOid;
-
-		//    int oidLastSectionPos = matchOid.LastIndexOf('.');
-
-		//    while (-1 != oidLastSectionPos)
-		//    {
-		//        matchOid = matchOid.Substring(oidLastSectionPos);
-
-		//        MibNodeInfoTest parentNode = GetMibNodeInfoByOID(strIpAddr, matchOid);
-		//        if (null != parentNode)
-		//        {
-		//            return parentNode;
-		//        }
-
-		//        oidLastSectionPos = matchOid.LastIndexOf('.');
-		//    }
-
-		//    return null;
-		//}
-
 
 		// test
 		private MibNodeInfoTest GetMibNodeInfoByOID(string strIpAddr, string strMibOid)

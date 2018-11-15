@@ -178,9 +178,6 @@ namespace SCMTMainWindow.View
                 newItem.ItemName = strRRUFullName;
                 newItem.NPathNumber = nMaxRRUPath;
 
-                //双击 RRU 绑定小区
-                newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
-
                 //添加 RRU 的时候需要给基站下发，然后获取设备信息
                 List<int> listIndex = new List<int>();
                 listIndex.Add(nRRUNo);
@@ -201,6 +198,9 @@ namespace SCMTMainWindow.View
                     g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
                     g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
                 }
+
+                //双击 RRU 绑定小区
+                newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
                 newItem.DevIndex = devRRUInfo[0].m_strOidIndex;
                 newItem.DevType = EnumDevType.rru;
 
@@ -252,7 +252,7 @@ namespace SCMTMainWindow.View
         /// <returns></returns>
         public string GetElementFromXAML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
 
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
@@ -301,38 +301,10 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        public void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DesignerItem targetItem = sender as DesignerItem;
-
-            //Grid targetGrid = targetItem.Content as Grid;
-
-            //string strName = targetGrid.Name;
-            //int nRRUPoint = 1;
-
-            //switch(strName)
-            //{
-            //    case "g_OnePathRRU":
-            //        nRRUPoint = 1;
-            //        break;
-            //    case "g_TwoPathRRU":
-            //        nRRUPoint = 2;
-            //        break;
-            //    case "g_FourPathRRU":
-            //        nRRUPoint = 4;
-            //        break;
-            //    case "g_EightPathRRU":
-            //        nRRUPoint = 8;
-            //        break;
-            //    case "g_SixteenPathRRU":
-            //        nRRUPoint = 16;
-            //        break;
-            //    default:
-            //        nRRUPoint = 1;
-            //        break;
-                        
-            //}
-            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning);
+            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning, targetItem.DevIndex);
             dlg.ShowDialog();
         }
 
@@ -441,7 +413,7 @@ namespace SCMTMainWindow.View
         /// <returns></returns>
         public string GetrHUBFromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
 
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
@@ -485,14 +457,17 @@ namespace SCMTMainWindow.View
             ChooseAntennaType dlg = new ChooseAntennaType();
             dlg.ShowDialog();
 
+            if(!dlg.bOK)
+            {
+                return false;
+            }
 
-
-            int nMaxRRUPath = dlg.nAntennaType;         //RRU的最大通道数
+            AntType antInfo = dlg.currentSelectedAntType;         //RRU的最大通道数
             int nRRUNumber = 1;           //需要添加的RRU的数量
             string strXAML = string.Empty;                                        //解析xml文件
             Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
             string strRRUName = "No:";
-            strXAML = GetAntennaromXML(nMaxRRUPath, strXAML, out newSize);
+            strXAML = GetAntennaromXML(antInfo.antArrayNum, strXAML, out newSize);
 
             dragObject.DesiredSize = newSize;            //这个是之前代码留下的，实际上可以修改一下，这里并没有太大的意义，以后载重构吧，ByMayi 2018-0927
 
@@ -512,7 +487,7 @@ namespace SCMTMainWindow.View
                 newItem.ItemName = strRRUFullName;
                 
                 //添加 ant 的时候需要给基站下发，然后获取设备信息
-                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo);
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo, antInfo.antArrayNotMibVendorName, antInfo.antArrayModelName);
 
                 if (devRRUInfo == null)
                 {
@@ -567,7 +542,7 @@ namespace SCMTMainWindow.View
         }
         public string GetAntennaromXML(int nMaxRRUPath, string strXAML, out Size RRUSize)
         {
-            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/XMLFile1.xml");
+            Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
             Stream stream = Application.GetResourceStream(strUri).Stream;
 
             FrameworkElement el = XamlReader.Load(stream) as FrameworkElement;
@@ -576,7 +551,7 @@ namespace SCMTMainWindow.View
             if (nMaxRRUPath == 1)
             {
                 strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 30);
+                RRUSize = new Size(30, 40);
             }
             else if (nMaxRRUPath == 2)
             {
@@ -586,17 +561,17 @@ namespace SCMTMainWindow.View
             else if (nMaxRRUPath == 4)
             {
                 strName = "g_FourPathAntenna";
-                RRUSize = new Size(60, 40);
+                RRUSize = new Size(70, 40);
             }
             else if (nMaxRRUPath == 8)
             {
                 strName = "g_EightPathAntenna";
-                RRUSize = new Size(140, 40);
+                RRUSize = new Size(150, 40);
             }
             else
             {
                 strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 30);
+                RRUSize = new Size(30, 40);
             }
 
             Object content = el.FindName(strName) as Grid;

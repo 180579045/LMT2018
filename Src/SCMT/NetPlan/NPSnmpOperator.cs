@@ -262,11 +262,11 @@ namespace NetPlan
 			}
 
 			// todo 天线权值
-			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
-			if (!result)
-			{
-				return false;
-			}
+			//result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
+			//if (!result)
+			//{
+			//	return false;
+			//}
 
 
 			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru_ant);	// 天线安装

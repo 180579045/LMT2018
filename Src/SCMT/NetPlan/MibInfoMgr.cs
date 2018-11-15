@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using DataBaseUtil;
 using LinkPath;
 using LmtbSnmp;
 using LogManager;
@@ -67,53 +68,14 @@ namespace NetPlan
 			return null;
 		}
 
-		/// <summary>
-		/// 根据设备类型、索引、属性名查找该属性的值
-		/// </summary>
-		/// <param name="strIndex"></param>
-		/// <param name="type"></param>
-		/// <param name="strAttriName"></param>
-		/// <returns></returns>
-		public string GetDevAttributeValue(string strIndex, EnumDevType type, string strAttriName)
-		{
-			if (string.IsNullOrEmpty(strAttriName))
-			{
-				throw new CustomException($"传入参数无效");
-			}
-
-			var devWithSameIndex = GetDevAttributeInfo(strIndex, type);
-			if (null == devWithSameIndex)
-			{
-				Log.Error($"未找到索引为 {strIndex} 类型为 {type.ToString()} 的设备");
-				return null;
-			}
-
-			var mapAttri = devWithSameIndex.m_mapAttributes;
-			if (null == mapAttri || 0 == mapAttri.Count)
-			{
-				Log.Error($"索引为 {strIndex} 类型为 {type.ToString()} 的设备属性信息为空");
-				return null;
-			}
-
-			var strAttriValue = GetEnumStringByMibName(mapAttri, strAttriName);
-			if (null == strAttriValue)
-			{
-				Log.Error($"索引为 {strIndex} 类型为 {type.ToString()} 的设备属性 {strAttriName} 值为null");
-				return null;
-			}
-
-			return strAttriValue;
-		}
-
-		public string GetDevAttributeValue(DevAttributeInfo dev, string strAttriName)
+		public static string GetDevAttributeValue(DevAttributeInfo dev, string strAttriName)
 		{
 			if (null == dev || string.IsNullOrEmpty(strAttriName))
 			{
 				throw new CustomException("传入参数无效");
 			}
 
-			var strAttriValue = GetEnumStringByMibName(dev.m_mapAttributes, strAttriName);
-			return strAttriValue;
+			return GetNeedUpdateValue(dev, strAttriName); ;
 		}
 
 		/// <summary>
@@ -189,13 +151,41 @@ namespace NetPlan
 		/// 增加一个新的天线设备
 		/// </summary>
 		/// <param name="nIndex">设备序号</param>
-		/// <param name="type"></param>
+		/// <param name="strVerdorName">厂家名称</param>
+		/// <param name="strAntTypeName">天线阵类型名</param>
 		/// <returns>null:添加失败</returns>
-		public DevAttributeInfo AddNewAnt(int nIndex, EnumDevType type = EnumDevType.ant)
+		public DevAttributeInfo AddNewAnt(int nIndex, string strVerdorName, string strAntTypeName)
 		{
+			const EnumDevType type = EnumDevType.ant;
 			var ant = GerenalNewDev(type, nIndex);
 			if (null == ant)
 			{
+				return null;
+			}
+
+			var strVendorNo = NPEAntHelper.GetInstance().GetVendorIndexByName(strVerdorName);
+			if (null == strVendorNo)
+			{
+				Log.Error($"根据厂家名{strVerdorName}获取厂家索引失败");
+				return null;
+			}
+
+			var strAntTypeNo = NPEAntHelper.GetInstance().GetTypeIndexByModelName(strAntTypeName);
+			if (null == strAntTypeNo)
+			{
+				Log.Error($"根据类型名{strAntTypeName}获取类型编号失败");
+				return null;
+			}
+
+			if (!ant.SetFieldOriginValue("netAntArrayVendorIndex", strVendorNo))
+			{
+				Log.Error($"设置字段netAntArrayVendorIndex的值{strVendorNo}失败");
+				return null;
+			}
+
+			if (!ant.SetFieldOriginValue("netAntArrayTypeIndex", strAntTypeNo))
+			{
+				Log.Error($"设置字段netAntArrayTypeIndex的值{strAntTypeNo}失败");
 				return null;
 			}
 
@@ -231,9 +221,9 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!dev.SetFieldOriginValue("netBoardType", strBoardType, false) ||
-			    !dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode, false) ||
-			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType, false))
+			if (!dev.SetFieldOriginValue("netBoardType", strBoardType) ||
+			    !dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode) ||
+			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType))
 			{
 				Log.Error("设置新板卡属性失败");
 				NPLastErrorHelper.SetLastError("设备新板卡属性失败");
@@ -275,8 +265,8 @@ namespace NetPlan
 					return null;
 				}
 
-				if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString(), false) ||
-					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode, false))
+				if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString()) ||
+					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
 				{
 					Log.Error("设置RRU参数netRRUTypeIndex、netRRUOfpWorkMode失败");
 					NPLastErrorHelper.SetLastError($"设置RRU工作模式失败");
@@ -336,13 +326,13 @@ namespace NetPlan
 				}
 				dev.m_recordType = RecordDataType.NewAdd;
 
-				if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode, false))
+				if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
 				{
 					Log.Error("设置rhub参数netRHUBOfpWorkMode失败");
 					return null;
 				}
 
-				if (!dev.SetFieldOriginValue("netRHUBType", strDevVer, false))
+				if (!dev.SetFieldOriginValue("netRHUBType", strDevVer))
 				{
 					Log.Error("设置rhub参数netRHUBType失败");
 					return null;
@@ -388,7 +378,7 @@ namespace NetPlan
 			var type = EnumDevType.nrNetLcCtr;
 			var dev = new DevAttributeInfo(type, strIndex);
 
-			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue, false))
+			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue, true))
 			{
 				Log.Error($"设置字段 nrNetLocalCellCtrlConfigSwitch 的 OriginValue 为{strSwitchValue}失败");
 				return null;
@@ -834,7 +824,7 @@ namespace NetPlan
 						var lcValue = GetEnumStringByMibName(mapAttributes, mibName);
 						if (lcValue != strLcId) continue;
 
-						mapAttributes[mibName].SetValue("-1");
+						mapAttributes[mibName].SetLatestValue("-1");
 
 						if (RecordDataType.NewAdd != item.m_recordType)
 						{
@@ -888,6 +878,24 @@ namespace NetPlan
 				m_mapAllMibData.Clear();
 				m_linkMgr.Clear();
 			}
+		}
+
+		/// <summary>
+		/// 获取RHUB设备连接的板卡的插槽号。遍历4个光口
+		/// </summary>
+		public static string GetRhubLinkToBoardSlotNo(DevAttributeInfo rhub)
+		{
+			for (var i = 1; i < 5; i++)
+			{
+				var mibName = (i == 1) ? "netRHUBAccessSlotNo" : $"netRHUBOfp{i}SlotNo";
+				var boardSlot = MibInfoMgr.GetNeedUpdateValue(rhub, mibName);
+				if (null != boardSlot && "-1" != boardSlot)
+				{
+					return boardSlot;
+				}
+			}
+
+			return "-1";
 		}
 
 		#endregion
@@ -1215,7 +1223,7 @@ namespace NetPlan
 				{
 					if (2 == ret)
 					{
-						var desc = SnmErrorCodeHelper.GetInstance().GetLastErrorDesc();
+						var desc = SnmpErrDescHelper.GetLastErrorDesc();
 						Log.Error($"下发命令{cmdName}失败，原因：{desc}");
 					}
 					else
@@ -1255,9 +1263,8 @@ namespace NetPlan
 				return null;
 			}
 
-			var ret = (null == attri.m_strLatestValue)
-				? SnmpToDatabase.ConvertValueToString(attri.mibAttri, attri.m_strOriginValue)
-				: SnmpToDatabase.ConvertValueToString(attri.mibAttri, attri.m_strLatestValue);
+			// 现在m_strOriginValue和m_strLatestValue存的是数字对应的字符串，无需转换
+			var ret = GetNeedUpdateValue(attri.m_strOriginValue, attri.m_strLatestValue);
 
 			return ret;
 		}
@@ -1368,7 +1375,7 @@ namespace NetPlan
 			if (mapAttributes.ContainsKey("netSetRRUPortTxRxStatus"))
 			{
 				var tempAtrri = mapAttributes["netSetRRUPortTxRxStatus"];
-				tempAtrri.SetValue(lcInfo.TxRxStatus);
+				tempAtrri.SetLatestValue(lcInfo.TxRxStatus);
 			}
 
 			var lcIdList = lcInfo.CellIdList;
@@ -1378,27 +1385,27 @@ namespace NetPlan
 			var lcAttr4 = mapAttributes["netSetRRUPortSubtoLocalCellId4"];
 
 			// 先设置为-1。可能会删除通道关联的小区
-			lcAttr1.SetValue("-1");
-			lcAttr2.SetValue("-1");
-			lcAttr3.SetValue("-1");
-			lcAttr4.SetValue("-1");
+			lcAttr1.SetLatestValue("-1");
+			lcAttr2.SetLatestValue("-1");
+			lcAttr3.SetLatestValue("-1");
+			lcAttr4.SetLatestValue("-1");
 			for (int i = 1; i <= lcIdList.Count; i++)
 			{
 				if (1 == i)
 				{
-					lcAttr1.SetValue(lcIdList[i - 1].ToString());
+					lcAttr1.SetLatestValue(lcIdList[i - 1].ToString());
 				}
 				if (2 == i)
 				{
-					lcAttr2.SetValue(lcIdList[i - 1].ToString());
+					lcAttr2.SetLatestValue(lcIdList[i - 1].ToString());
 				}
 				if (3 == i)
 				{
-					lcAttr3.SetValue(lcIdList[i - 1].ToString());
+					lcAttr3.SetLatestValue(lcIdList[i - 1].ToString());
 				}
 				if (4 == i)
 				{
-					lcAttr4.SetValue(lcIdList[i - 1].ToString());
+					lcAttr4.SetLatestValue(lcIdList[i - 1].ToString());
 					break;
 				}
 			}
@@ -1434,7 +1441,8 @@ namespace NetPlan
 				return false;
 			}
 
-			dev.m_mapAttributes[strFieldName].SetValue(strValue);
+			//dev.m_mapAttributes[strFieldName].SetLatestValue(strValue);
+			dev.SetFieldLatestValue(strFieldName, strValue);
 			if (dev.m_recordType != RecordDataType.NewAdd)
 			{
 				dev.m_recordType = RecordDataType.Modified;

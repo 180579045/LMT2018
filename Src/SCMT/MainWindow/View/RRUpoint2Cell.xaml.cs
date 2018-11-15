@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NetPlan;
 
 using System.Windows.Controls.Primitives;
 
@@ -25,12 +26,12 @@ namespace SCMTMainWindow.View
         //全局变量，保存 小区id
         private List<int> g_listCell;
 
-        public RRUpoint2Cell(int nRRUPoint, List<int> listCell)
+        public RRUpoint2Cell(int nRRUPoint, List<int> listCell, string strIndex)
         {
             InitializeComponent();
 
             //根据 RRU 端口数量初始化界面，这里的 list 应该传入从后台获取的
-            InitRRUPoint2Cell(nRRUPoint, listCell);
+            InitRRUPoint2Cell(nRRUPoint, listCell, strIndex);
             g_listCell = listCell;
         }
 
@@ -39,12 +40,15 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="nRRUPoint"></param>
         /// <param name="listCell"></param>
-        private void InitRRUPoint2Cell(int nRRUPoint, List<int> listCell)
+        private void InitRRUPoint2Cell(int nRRUPoint, List<int> listCell, string strIndex)
         {
             if(nRRUPoint > 0)
             {
+                //根据 rru 的index获取信息
+                var cellInfo = MibInfoMgr.GetInstance().GetNetLcInfoByRruIndex(strIndex);
+
                 //添加边框
-                for(int i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Border newBorder = new Border();
                     newBorder.BorderBrush = new SolidColorBrush(Colors.Gray);
@@ -55,6 +59,8 @@ namespace SCMTMainWindow.View
                 }
                 for(int i = 0; i < nRRUPoint; i++)
                 {
+                    var currCellInfo = cellInfo[i.ToString()];
+
                     RowDefinition rowItem = new RowDefinition();
                     rowItem.Height = GridLength.Auto;
                     MainGrid.RowDefinitions.Add(rowItem);
@@ -75,7 +81,7 @@ namespace SCMTMainWindow.View
                     Grid.SetRow(rruPoint, i + 1);
 
                     TextBlock lteCellID = new TextBlock();
-                    lteCellID.MouseLeftButtonDown += LteCellID_MouseLeftButtonDown;
+                    lteCellID.PreviewMouseLeftButtonUp += LteCellID_PreviewMouseLeftButtonUp;
                     lteCellID.HorizontalAlignment = HorizontalAlignment.Stretch;
                     lteCellID.TextAlignment = TextAlignment.Center;
                     string strCellId = string.Empty;
@@ -100,14 +106,14 @@ namespace SCMTMainWindow.View
                     TextBlock radioPathDirection = new TextBlock();
                     radioPathDirection.MouseLeftButtonDown += RadioPathDirection_MouseLeftButtonDown;
                     radioPathDirection.HorizontalAlignment = HorizontalAlignment.Center;
-                    radioPathDirection.Text = "test";
+                    radioPathDirection.Text = currCellInfo.TxRxStatus;
                     radioPathDirection.Margin = new Thickness(5);
                     MainGrid.Children.Add(radioPathDirection);
                     Grid.SetColumn(radioPathDirection, 2);
                     Grid.SetRow(radioPathDirection, i + 1);
 
                     TextBlock supportFrequent = new TextBlock();
-                    supportFrequent.Text = "支持的频段";
+                    supportFrequent.Text = currCellInfo.FreqBand;
                     supportFrequent.HorizontalAlignment = HorizontalAlignment.Center;
                     supportFrequent.Margin = new Thickness(5);
                     MainGrid.Children.Add(supportFrequent);
@@ -117,40 +123,22 @@ namespace SCMTMainWindow.View
             }
         }
 
-        private void RadioPathDirection_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// 确定选择小区id
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void BtnOK_Click(object sender, RoutedEventArgs e)
-        {
-            Button targetBtn = sender as Button;
-            Grid targetGrid = targetBtn.Parent as Grid;
-            Border targetBorder = targetGrid.Parent as Border;
-            Popup targetPop = targetBorder.Parent as Popup;
-
-            targetPop.IsOpen = false;
-
-        }
 
         /// <summary>
         /// 小区id 列 鼠标单击时弹出
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LteCellID_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void LteCellID_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             TextBlock targetItem = sender as TextBlock;
 
             //尝试使用 popup 弹出
             Popup newpop = new Popup();
             newpop.PlacementTarget = targetItem;
-            newpop.StaysOpen = true;
+            newpop.StaysOpen = false;
             newpop.IsOpen = true;
+            newpop.Focus();
             //newpop.Width = 150;
             //newpop.Height = 200;
 
@@ -173,7 +161,7 @@ namespace SCMTMainWindow.View
             newgrid.Children.Add(strTitle);
             strTitle.Margin = new Thickness(5);
 
-            for(int i = 0; i < g_listCell.Count; i++)
+            for (int i = 0; i < g_listCell.Count; i++)
             {
                 RowDefinition newRow = new RowDefinition();
                 newRow.Height = GridLength.Auto;
@@ -198,6 +186,26 @@ namespace SCMTMainWindow.View
             newgrid.Children.Add(btnOK);
             Grid.SetRow(btnOK, g_listCell.Count + 1);
             btnOK.Margin = new Thickness(5);
+        }
+
+        private void RadioPathDirection_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// 确定选择小区id
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BtnOK_Click(object sender, RoutedEventArgs e)
+        {
+            Button targetBtn = sender as Button;
+            Grid targetGrid = targetBtn.Parent as Grid;
+            Border targetBorder = targetGrid.Parent as Border;
+            Popup targetPop = targetBorder.Parent as Popup;
+
+            targetPop.IsOpen = false;
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

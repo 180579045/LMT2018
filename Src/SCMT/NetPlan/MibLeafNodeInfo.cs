@@ -36,7 +36,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strLatestValue"></param>
 		/// <returns>true:设置成功,其他情况返回false</returns>
-		public bool SetValue(string strLatestValue)
+		public bool SetLatestValue(string strLatestValue)
 		{
 			m_strLatestValue = strLatestValue;
 			return true;

@@ -12,20 +12,22 @@
 * 2018.10.xx  XXXX            XXXXX
 *************************************************************************************/
 
-using CommonUtility;
-using LogManager;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Data;
 using System.Linq;
 using System.Text;
+using CommonUtility;
+using LogManager;
+using Newtonsoft.Json.Linq;
 
 namespace DataBaseUtil
 {
-	public class SnmpErrDescHelper
+	public static class SnmpErrDescHelper
 	{
 		// Snmp错误描述表，存储所有错误信息
-		public static DataTable m_ErrDescTable = new DataTable();
+		private static readonly DataTable m_ErrDescTable = new DataTable();
+
+		private static int m_nLastErrorStatus;
 
 		/// <summary>
 		/// 静态构造方法
@@ -41,24 +43,26 @@ namespace DataBaseUtil
 		/// <summary>
 		/// 根据错误Id获取错误信息
 		/// </summary>
-		/// <param name="strId"></param>
+		/// <param name="strErrId"></param>
 		/// <returns></returns>
 		public static SnmpErrDesc GetErrDescById(string strErrId)
 		{
 			// 说明：先从内存中检索，不存在时再从文件中检索
 
 			// 返回值
-			SnmpErrDesc snmpErrDesc = null;
+			SnmpErrDesc snmpErrDesc;
 			// 检索条件
-			string strSearch = string.Format("errorID = '{0}'", strErrId);
-			DataRow[] dr = m_ErrDescTable.Select(strSearch);
+			var strSearch = $"errorID = '{strErrId}'";
+			var dr = m_ErrDescTable.Select(strSearch);
 
-			if (dr.LongCount() > 0 )
+			if (dr.LongCount() > 0)
 			{
-				snmpErrDesc = new SnmpErrDesc();
-				snmpErrDesc.errorID = (string)dr[0]["errorID"];
-				snmpErrDesc.errorChDesc = (string)dr[0]["errorChDesc"];
-				snmpErrDesc.errorEnDesc = (string)dr[0]["errorEnDesc"];
+				snmpErrDesc = new SnmpErrDesc
+				{
+					errorID = (string)dr[0]["errorID"],
+					errorChDesc = (string)dr[0]["errorChDesc"],
+					errorEnDesc = (string)dr[0]["errorEnDesc"]
+				};
 
 				return snmpErrDesc;
 			}
@@ -75,39 +79,72 @@ namespace DataBaseUtil
 		}
 
 		/// <summary>
+		/// 设置最后一个SNMP错误码
+		/// </summary>
+		/// <param name="nCode"></param>
+		public static void SetLastErrorCode(int nCode)
+		{
+			lock (m_syncObj)
+			{
+				m_nLastErrorStatus = nCode;
+			}
+		}
+
+		/// <summary>
+		/// 根据错误码获取描述信息
+		/// </summary>
+		/// <returns></returns>
+		public static string GetLastErrorDesc()
+		{
+			lock (m_syncObj)
+			{
+				var objErr = GetErrDescById(m_nLastErrorStatus.ToString());
+				return objErr.errorChDesc;
+			}
+		}
+
+		public static int GetLastErrorCode()
+		{
+			lock (m_syncObj)
+			{
+				return m_nLastErrorStatus;
+			}
+		}
+
+		/// <summary>
 		/// 根据错误Id从文件中获取错Snmp误信息
 		/// </summary>
 		/// <param name="strErrId"></param>
 		/// <returns></returns>
-		public static SnmpErrDesc GetErrDescFromFile(string strErrId)
+		private static SnmpErrDesc GetErrDescFromFile(string strErrId)
 		{
 			// 返回值
 			SnmpErrDesc snmpErrDesc = null;
 
 			// 文件全路径
-			string strFullPath = FilePathHelper.GetConfigPath() + "ErrorCodeInfo.json";
+			var strFullPath = FilePathHelper.GetConfigPath() + "ErrorCodeInfo.json";
 			// 读取文件内容
-			string strJson = FileRdWrHelper.GetFileContent(strFullPath, Encoding.Default);
+			var strJson = FileRdWrHelper.GetFileContent(strFullPath, Encoding.Default);
 
 			if (string.IsNullOrEmpty(strJson))
 			{
-				Log.Error(string.Format("读取Snmp错误描述文件错误，文件路径={0}", strFullPath));
+				Log.Error($"读取Snmp错误描述文件错误，文件路径={strFullPath}");
 				return null;
 			}
 
-			JObject jObject = JObject.Parse(strJson);
+			var jObject = JObject.Parse(strJson);
 			// 检索条件
-			string strSearch = string.Format("$.errorCodeInfo[?(@.errorID=={0})]", strErrId);
-			JToken errDesc = jObject.SelectToken(strSearch);
+			var strSearch = $"$.errorCodeInfo[?(@.errorID=={strErrId})]";
+			var errDesc = jObject.SelectToken(strSearch);
 
 			if (errDesc != null)
 			{
 				snmpErrDesc = errDesc.ToObject<SnmpErrDesc>();
 			}
 
-
 			return snmpErrDesc;
 		}
 
+		private static readonly object m_syncObj = new object();
 	}
 }

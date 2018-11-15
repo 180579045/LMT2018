@@ -58,7 +58,6 @@ namespace NetPlan
 
 			InitDevInfo(mEnumDevType, devIndex);
 			m_recordType = RecordDataType.NewAdd;
-
 		}
 
 		/// <summary>
@@ -124,8 +123,9 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strFieldName">待修改的字段名</param>
 		/// <param name="strLatestValue">最后的值</param>
+		/// <param name="bConvertToEnum">是否转换为枚举值</param>
 		/// <returns>修改成功返回true，修改失败返回false</returns>
-		public bool SetFieldLatestValue(string strFieldName, string strLatestValue)
+		public bool SetFieldLatestValue(string strFieldName, string strLatestValue, bool bConvertToEnum = true)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strLatestValue))
 			{
@@ -143,12 +143,17 @@ namespace NetPlan
 				return false;
 			}
 
-			if (!field.SetValue(strLatestValue))
+			var strValue = strLatestValue;
+			if (bConvertToEnum)
 			{
-				return false;
+				int ret;
+				if (int.TryParse(strValue, out ret))
+				{
+					strValue = SnmpToDatabase.ConvertValueToString(field.mibAttri, strLatestValue);
+				}
 			}
 
-			return true;
+			return field.SetLatestValue(strValue);
 		}
 
 		/// <summary>
@@ -156,9 +161,9 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strFieldName"></param>
 		/// <param name="strOriginValue"></param>
-		/// <param name="bConvertToEnum">枚举值是否转为原值</param>
+		/// <param name="bConvertToEnum">枚举值是否转为int型值，也就是 : 前面的数字</param>
 		/// <returns></returns>
-		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = true)
+		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = false)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strOriginValue))
 			{
@@ -179,20 +184,10 @@ namespace NetPlan
 			var strValue = strOriginValue;
 			if (bConvertToEnum)
 			{
-				var managerRange = field.mibAttri.managerValueRange;
-				var mapEnums = MibStringHelper.SplitManageValue(managerRange);
-				if (null == mapEnums)
+				int ret;
+				if (int.TryParse(strValue, out ret))
 				{
-					return false;
-				}
-
-				foreach (var kv in mapEnums)
-				{
-					if (kv.Value == strOriginValue)
-					{
-						strValue = kv.Key.ToString();
-						break;
-					}
+					strValue = SnmpToDatabase.ConvertValueToString(field.mibAttri, strOriginValue);
 				}
 			}
 

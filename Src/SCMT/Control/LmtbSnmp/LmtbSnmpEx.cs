@@ -1,14 +1,11 @@
-﻿using CommonUtility;
-using LogManager;
-using MIBDataParser;
-using MsgQueue;
-using SnmpSharpNet;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using CommonUtility;
+using DataBaseUtil;
+using LogManager;
+using MsgQueue;
+using SnmpSharpNet;
 
 namespace LmtbSnmp
 {
@@ -24,10 +21,10 @@ namespace LmtbSnmp
 		private SnmpHelper m_SnmpAsync = null;
 
 		// 缓存异步SNMP请求时，requestId 与 LmtPdu对应关系
-		Dictionary<long, stru_LmtbPduAppendInfo> m_ReqIdPduInfo = new Dictionary<long, stru_LmtbPduAppendInfo>();
+		private Dictionary<long, stru_LmtbPduAppendInfo> m_ReqIdPduInfo = new Dictionary<long, stru_LmtbPduAppendInfo>();
 
 		// 数据库里的节点类型描述到Snmp Syntax的映射
-		public static Dictionary<string, SNMP_SYNTAX_TYPE> m_ValType2SynTax 
+		public static Dictionary<string, SNMP_SYNTAX_TYPE> m_ValType2SynTax
 			= new Dictionary<string, SNMP_SYNTAX_TYPE>
 			{
 				{ "OCTETS", SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS},
@@ -72,13 +69,9 @@ namespace LmtbSnmp
 			return m_SnmpAsync;
 		}
 
-
-
 		public LmtbSnmpEx()
 		{
 		}
-
-		
 
 		/// <summary>
 		/// 功能描述：Snmp的初始化工作，包括：
@@ -97,17 +90,14 @@ namespace LmtbSnmp
 		/// <returns></returns>
 		public int SnmpLibStartUp(string commnuity, string destIpAddr)
 		{
-	 //       Log.Debug("========== SnmpLibStartUp() Start ==========");
+			//       Log.Debug("========== SnmpLibStartUp() Start ==========");
 
 			// ipv4
 			CreateSnmpSession(commnuity, destIpAddr, false);
 
 			// TODO: ipv6
 
-
-
-
-	 //       Log.Debug("========== SnmpLibStartUp() End ==========");
+			//       Log.Debug("========== SnmpLibStartUp() End ==========");
 
 			return 0;
 		}
@@ -119,7 +109,7 @@ namespace LmtbSnmp
 		/// <returns></returns>
 		public int CreateSnmpSession(string commnuity, string destIpAddr, bool isIpV6)
 		{
-			int status = 0;
+			var status = 0;
 			// 同步snmp连接
 			m_SnmpSync = new SnmpHelperV2c(commnuity, destIpAddr);
 			// 异步snmp连接
@@ -140,9 +130,8 @@ namespace LmtbSnmp
 		{
 			requestId = 0;
 
- //           Log.Debug("========== SnmpGetSync() Start ==========");
 			var msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}, timeOut={timeOut}";
- //           Log.Debug(msg);
+			//           Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
 			{
@@ -155,11 +144,10 @@ namespace LmtbSnmp
 				return -1;
 			}
 
-
-			SnmpHelper snmp = m_SnmpSync;
+			var snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令");
+				msg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
 				Log.Error(msg);
 				return -1;
 			}
@@ -167,7 +155,7 @@ namespace LmtbSnmp
 			lmtPdu.setReqMsgType((int)PduType.Get);
 
 			Pdu pdu;
-			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
+			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 			if (!rs)
 			{
 				Log.Error("LmtPdu2SnmpPdu()转换错误");
@@ -176,7 +164,7 @@ namespace LmtbSnmp
 
 			pdu.Type = PduType.Get;
 
-			SnmpV2Packet result = snmp.GetRequest(pdu);
+			var result = snmp.GetRequest(pdu);
 			if (result == null)
 			{
 				Log.Error("SNMP request error, response is null.");
@@ -185,17 +173,15 @@ namespace LmtbSnmp
 
 			requestId = result.Pdu.RequestId;
 
-			rs = SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false);
+			if (!SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false))
+			{
+				return -1;
+			}
 
-			// Snmp Get Response处理
-			// TODO
-			//if (IsWindow(m_hWnd))
-			//{
-				// 实例序列化
-				byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
-				// 发布消息
-				PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
-			//}
+			// 实例序列化
+			var bytes = SerializeHelper.Serialize2Binary(lmtPdu);
+			// 发布消息
+			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
 
 			return 0;
 		}
@@ -212,7 +198,7 @@ namespace LmtbSnmp
 		{
 			// 初始化out参数
 			results = new Dictionary<string, string>();
-			
+
 			// log msg
 			string logMsg;
 			bool status;
@@ -223,7 +209,7 @@ namespace LmtbSnmp
 				return false;
 			}
 
-			SnmpHelper snmp = m_SnmpSync;
+			var snmp = m_SnmpSync;
 			if (null == snmp)
 			{
 				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
@@ -231,11 +217,10 @@ namespace LmtbSnmp
 				return false;
 			}
 
-
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
 
-			SnmpV2Packet ReqResult = (SnmpV2Packet)m_SnmpSync.GetRequest(pdu);
+			var ReqResult = (SnmpV2Packet)m_SnmpSync.GetRequest(pdu);
 
 			if (null != ReqResult)
 			{
@@ -247,7 +232,7 @@ namespace LmtbSnmp
 				}
 				else
 				{
-					foreach (Vb vb in ReqResult.Pdu.VbList)
+					foreach (var vb in ReqResult.Pdu.VbList)
 					{
 						logMsg =
 							$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
@@ -278,7 +263,7 @@ namespace LmtbSnmp
 			requestId = 0;
 
 			Log.Debug("========== SnmpGetSync() Start ==========");
-			string msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}";
+			var msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}";
 			Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -295,20 +280,20 @@ namespace LmtbSnmp
 			// TODO: 根据基站ip获取Lmtor信息
 			//LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(remoteIpAddr);
 
-			SnmpHelper snmp = m_SnmpAsync;
+			var snmp = m_SnmpAsync;
 			if (null == snmp)
 			{
 				msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令");
 				Log.Error(msg);
 				return -1;
 			}
-			
+
 			lmtPdu.setReqMsgType((int)PduType.Get);
 
-			Pdu pdu = new Pdu();
+			var pdu = new Pdu();
 			requestId = pdu.RequestId;
 
-			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
+			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 			if (!rs)
 			{
 				Log.Error("LmtPdu2SnmpPdu()转换错误");
@@ -317,9 +302,9 @@ namespace LmtbSnmp
 
 			pdu.Type = PduType.Get;
 
-			SnmpAsyncResponse callback = new SnmpAsyncResponse(SnmpCallbackFun);
+			var callback = new SnmpAsyncResponse(SnmpCallbackFun);
 
-			bool status = snmp.GetRequestAsync(pdu, callback);
+			var status = snmp.GetRequestAsync(pdu, callback);
 
 			if (!status)
 			{
@@ -327,7 +312,7 @@ namespace LmtbSnmp
 			}
 
 			// 缓存异步消息
-			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo();
+			var appendInfo = new stru_LmtbPduAppendInfo();
 			lmtPdu.getAppendValue(appendInfo);
 			Push_appendInfo(requestId, appendInfo);
 
@@ -342,11 +327,11 @@ namespace LmtbSnmp
 		/// <param name="result"></param>
 		/// <param name="timeout"></param>
 		/// <returns></returns>
-		public bool GetNextRequest(string strIpAddr, List<CDTLmtbVb> queryVbs, out Dictionary<string,string> result, long timeout)
+		public bool GetNextRequest(string strIpAddr, List<CDTLmtbVb> queryVbs, out Dictionary<string, string> result, long timeout)
 		{
 			result = new Dictionary<string, string>();
 
-			bool status = false;
+			var status = false;
 			string logMsg;
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -360,7 +345,7 @@ namespace LmtbSnmp
 				return false;
 			}
 
-			SnmpHelper snmp = m_SnmpSync;
+			var snmp = m_SnmpSync;
 			if (null == snmp)
 			{
 				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
@@ -371,7 +356,7 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
 
-			SnmpV2Packet ReqResult = (SnmpV2Packet)snmp.GetNextRequest(pdu);
+			var ReqResult = (SnmpV2Packet)snmp.GetNextRequest(pdu);
 
 			if (null != ReqResult)
 			{
@@ -381,7 +366,7 @@ namespace LmtbSnmp
 					Log.Error(logMsg);
 					status = false;
 
-					SnmErrorCodeHelper.GetInstance().SetLastErrorCode(ReqResult.Pdu.ErrorStatus);
+					SnmpErrDescHelper.SetLastErrorCode(ReqResult.Pdu.ErrorStatus);
 
 					// 资源不可用的情况需要上报
 					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
@@ -405,11 +390,11 @@ namespace LmtbSnmp
 				}
 				else
 				{
-					foreach (Vb vb in ReqResult.Pdu.VbList)
+					foreach (var vb in ReqResult.Pdu.VbList)
 					{
 						//logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
 						//	, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
- //                       Log.Debug(logMsg);
+						//                       Log.Debug(logMsg);
 						result.Add(vb.Oid.ToString(), vb.Value.ToString());
 					}
 					status = true;
@@ -424,7 +409,6 @@ namespace LmtbSnmp
 			return status;
 		}
 
-
 		/// <summary>
 		/// 同步Set操作
 		/// </summary>
@@ -437,9 +421,9 @@ namespace LmtbSnmp
 		{
 			requestId = 0;
 
-//			Log.Debug("========== SnmpGetSync() Start ==========");
-			string msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}, timeOut={timeOut}";
-//			Log.Debug(msg);
+			//			Log.Debug("========== SnmpGetSync() Start ==========");
+			var msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}, timeOut={timeOut}";
+			//			Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
 			{
@@ -455,7 +439,7 @@ namespace LmtbSnmp
 			// TODO: 根据基站ip获取Lmtor信息
 			//LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(remoteIpAddr);
 
-			SnmpHelper snmp = m_SnmpSync;
+			var snmp = m_SnmpSync;
 			if (null == snmp)
 			{
 				msg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
@@ -463,13 +447,12 @@ namespace LmtbSnmp
 				return -1;
 			}
 
-			 lmtPdu.setReqMsgType((int)PduType.Set);
+			lmtPdu.setReqMsgType((int)PduType.Set);
 
+			var pdu = new Pdu();
+			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 
-			Pdu pdu = new Pdu();
-			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
-
-			SnmpV2Packet result = snmp.SetRequest(pdu);
+			var result = snmp.SetRequest(pdu);
 
 			if (result == null)
 			{
@@ -479,7 +462,7 @@ namespace LmtbSnmp
 
 			if (0 != result.Pdu.ErrorStatus)
 			{
-				SnmErrorCodeHelper.GetInstance().SetLastErrorCode(result.Pdu.ErrorStatus);
+				SnmpErrDescHelper.SetLastErrorCode(result.Pdu.ErrorStatus);
 				return 2;
 			}
 
@@ -488,7 +471,7 @@ namespace LmtbSnmp
 			// Snmp Set Response处理
 
 			// 实例序列化
-			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
+			var bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 			// 发布消息
 			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
 			return 0;
@@ -503,9 +486,9 @@ namespace LmtbSnmp
 		/// <returns></returns>
 		public bool SnmpSetSync(string strIpAddr, List<CDTLmtbVb> setVbs, long timeOut)
 		{
-		//	Log.Debug("========== SnmpSetSync() Start ==========");
-			string logMsg = $"pars: strIpAddr={strIpAddr}, timeOut={timeOut}";
-//			Log.Debug(logMsg);
+			//	Log.Debug("========== SnmpSetSync() Start ==========");
+			var logMsg = $"pars: strIpAddr={strIpAddr}, timeOut={timeOut}";
+			//			Log.Debug(logMsg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
 			{
@@ -513,7 +496,7 @@ namespace LmtbSnmp
 				return false;
 			}
 
-			SnmpHelper snmp = m_SnmpSync;
+			var snmp = m_SnmpSync;
 			if (null == snmp)
 			{
 				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
@@ -524,7 +507,7 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketSetPdu(setVbs, out pdu);
 
-			SnmpV2Packet result = snmp.SetRequest(pdu);
+			var result = snmp.SetRequest(pdu);
 
 			if (result == null)
 			{
@@ -542,7 +525,6 @@ namespace LmtbSnmp
 			return true;
 		}
 
-
 		/// <summary>
 		/// 异步Set操作
 		/// </summary>
@@ -555,7 +537,7 @@ namespace LmtbSnmp
 			requestId = 0;
 
 			Log.Debug("========== SnmpGetSync() Start ==========");
-			string msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}";
+			var msg = $"pars: lmtPdu={lmtPdu}, requestId={requestId}, strIpAddr={strIpAddr}";
 			Log.Debug(msg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -572,7 +554,7 @@ namespace LmtbSnmp
 			// TODO: 根据基站ip获取Lmtor信息
 			//LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(remoteIpAddr);
 
-			SnmpHelper snmp = m_SnmpAsync;
+			var snmp = m_SnmpAsync;
 			if (null == snmp)
 			{
 				msg = string.Format("基站[{0}]的snmp连接不存在，无法下发snmp命令");
@@ -582,11 +564,10 @@ namespace LmtbSnmp
 
 			lmtPdu.setReqMsgType((int)PduType.Set);
 
-
-			Pdu pdu = new Pdu();
+			var pdu = new Pdu();
 			requestId = pdu.RequestId;
 			// TODO:
-			bool rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
+			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 			if (!rs)
 			{
 				Log.Error("LmtPdu2SnmpPdu()转换错误");
@@ -594,7 +575,7 @@ namespace LmtbSnmp
 
 			pdu.Type = PduType.Set;
 
-			SnmpAsyncResponse snmpCallback = new SnmpAsyncResponse(this.SnmpCallbackFun);
+			var snmpCallback = new SnmpAsyncResponse(this.SnmpCallbackFun);
 
 			rs = snmp.SetRequestAsync(pdu, snmpCallback);
 
@@ -604,14 +585,12 @@ namespace LmtbSnmp
 			}
 
 			// 缓存异步请求信息
-			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo();
+			var appendInfo = new stru_LmtbPduAppendInfo();
 			lmtPdu.getAppendValue(appendInfo);
 			Push_appendInfo(requestId, appendInfo);
 
-
 			return 0;
 		}
-
 
 		/// <summary>
 		/// 将LmtPdu转换为snmpPdu
@@ -627,31 +606,28 @@ namespace LmtbSnmp
 			string strValue;
 			SNMP_SYNTAX_TYPE strSyntaxType;
 
-			int lmtVbCount = lmtPdu.VbCount();
-			for (int i = 0; i < lmtVbCount; i++)
+			var lmtVbCount = lmtPdu.VbCount();
+			for (var i = 0; i < lmtVbCount; i++)
 			{
-				CDTLmtbVb cDTLmtbVb = lmtPdu.GetVbByIndexEx(i);
+				var cDTLmtbVb = lmtPdu.GetVbByIndexEx(i);
 
 				strTmpOid = cDTLmtbVb.Oid;
 				strSyntaxType = cDTLmtbVb.SnmpSyntax;
 				strValue = cDTLmtbVb.Value;
 
-				Vb vb = new Vb(new Oid(strTmpOid));
+				var vb = new Vb(new Oid(strTmpOid));
 
-				string strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, strTmpOid);
+				var strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, strTmpOid);
 
 				SnmpHelper.SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
 
 				// TODO
 
 				pdu.VbList.Add(vb);
-
 			} // end for
-
 
 			return true;
 		}
-
 
 		/// <summary>
 		/// 将snmp类型的pdu转换为LmtSnmp的pdu
@@ -663,30 +639,26 @@ namespace LmtbSnmp
 		/// <param name="isAsync"></param>
 		private bool SnmpPdu2LmtPdu(Pdu pdu, UdpTarget target, ref CDTLmtbPdu lmtPdu, int reason, bool isAsync)
 		{
-			string logMsg;
 			if (lmtPdu == null)
 			{
 				Log.Error("参数[lmtPdu]为空");
 				return false;
 			}
 
+			var appendInfo = new stru_LmtbPduAppendInfo { m_bIsSync = !isAsync };
 
-			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo();
-			appendInfo.m_bIsSync = !isAsync;
-
-			logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
+			var logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
 			Log.Debug(logMsg);
 
 			// 判断响应消息类型
 			if (pdu.Type != PduType.V2Trap) // 非Trap消息
 			{
-				
 				if (isAsync)
 				{
 					//如果该操作是异步Snmp命令发起的，该函数必定在Rsp_CallBack里被调用，lmtPdu里没有任何信息，需要从map里取
 					if (false == Pop_appendInfo(pdu.RequestId, ref appendInfo))
 					{
-						Log.Error(string.Format("{找不到requestId={0}的PduAppendInfo实例}", pdu.RequestId));
+						Log.Error($"找不到requestId={pdu.RequestId}的PduAppendInfo实例");
 						return false;
 					}
 				}
@@ -694,13 +666,11 @@ namespace LmtbSnmp
 				{
 					lmtPdu.getAppendValue(appendInfo);
 				}
-
 			}
 			else // Trap消息
 			{
 				appendInfo.m_bIsNeedPrint = true;
 			}
-
 
 			lmtPdu.Clear();
 			lmtPdu.m_LastErrorIndex = pdu.ErrorIndex;
@@ -709,14 +679,13 @@ namespace LmtbSnmp
 			lmtPdu.assignAppendValue(appendInfo);
 
 			// 设置IP和端口信息
-			IPAddress srcIpAddr = target.Address;
-			int port = target.Port;
+			var srcIpAddr = target.Address;
+			var port = target.Port;
 			lmtPdu.m_SourceIp = srcIpAddr.ToString();
 			lmtPdu.m_SourcePort = port;
 
 			lmtPdu.reason = reason;
 			lmtPdu.m_type = (ushort)pdu.Type;
-
 
 			// TODO
 			/*
@@ -737,22 +706,23 @@ namespace LmtbSnmp
 			//如果是错误的响应，则直接返回
 			if (lmtPdu.m_LastErrorStatus != 0 || reason == -5)
 			{
-				return true;
-			}
-
-			// 获取MIB前缀
-			string prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
-			if (string.IsNullOrEmpty(prefix))
-			{
-				Log.Error(string.Format("获取MIB前缀失败!"));
+				SnmpErrDescHelper.SetLastErrorCode((int)lmtPdu.m_LastErrorStatus);
 				return false;
 			}
 
-			// 对于Trap消息,我们自己额外构造两个Vb，用来装载时间戳和trap Id 
+			// 获取MIB前缀
+			var prefix = SnmpToDatabase.GetMibPrefix().Trim('.');
+			if (string.IsNullOrEmpty(prefix))
+			{
+				Log.Error("获取MIB前缀失败!");
+				return false;
+			}
+
+			// 对于Trap消息,我们自己额外构造两个Vb，用来装载时间戳和trap Id
 			if (pdu.Type == PduType.V2Trap) // Trap
 			{
 				// 构造时间戳Vb
-				CDTLmtbVb lmtVb = new CDTLmtbVb();
+				var lmtVb = new CDTLmtbVb();
 				lmtVb.Oid = "时间戳";
 				// TODO 是这个时间戳吗？？？？
 				lmtVb.Value = pdu.TrapSysUpTime.ToString();
@@ -768,20 +738,20 @@ namespace LmtbSnmp
 				lmtPdu.AddVb(lmtVb);
 			}
 
-			foreach (Vb vb in pdu.VbList)
+			foreach (var vb in pdu.VbList)
 			{
 				logMsg =
 					$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
 				Log.Debug(logMsg);
 
-				CDTLmtbVb lmtVb = new CDTLmtbVb();
+				var lmtVb = new CDTLmtbVb();
 
 				lmtVb.Oid = vb.Oid.ToString();
 
 				// 值是否需要SetVbValue()处理
-				bool isNeedPostDispose = true;
+				var isNeedPostDispose = true;
 
-				string strValue = vb.Value.ToString();
+				var strValue = vb.Value.ToString();
 
 				// TODO
 				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Type; //vb.GetType();
@@ -796,7 +766,7 @@ namespace LmtbSnmp
 				if (SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS == lmtVb.SnmpSyntax)
 				{
 					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
-					string strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp,lmtVb.Oid);
+					var strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, lmtVb.Oid);
 					// strNodeType = "DateandTime";
 
 					if (string.Equals("DateandTime", strNodeType, StringComparison.OrdinalIgnoreCase))
@@ -806,7 +776,7 @@ namespace LmtbSnmp
 					}
 					else if (string.Equals("inetaddress", strNodeType, StringComparison.OrdinalIgnoreCase))
 					{
-						IpAddress ipAddr = new IpAddress((OctetString)vb.Value);
+						var ipAddr = new IpAddress((OctetString)vb.Value);
 						strValue = ipAddr.ToString();
 						isNeedPostDispose = false;
 					}
@@ -820,7 +790,7 @@ namespace LmtbSnmp
 						strValue = SnmpHelper.OctetStrToU32Array((OctetString)vb.Value);
 						isNeedPostDispose = false;
 					}
-					else if (string.Equals("Integer32Array", strNodeType, StringComparison.OrdinalIgnoreCase) 
+					else if (string.Equals("Integer32Array", strNodeType, StringComparison.OrdinalIgnoreCase)
 						|| "".Equals(strNodeType))
 					{
 						strValue = SnmpHelper.OctetStrToS32Array((OctetString)vb.Value);
@@ -837,11 +807,10 @@ namespace LmtbSnmp
 				{
 					SnmpHelper.GetVbValue(vb, ref strValue);
 				}
-				
+
 				lmtVb.Value = strValue;
 				lmtPdu.AddVb(lmtVb);
 			} // end foreach
-
 
 			//如果得到的LmtbPdu对象里的vb个数为0，说明是是getbulk响应，并且没有任何实例
 			//为方便后面统一处理，将错误码设为资源不可得
@@ -862,12 +831,12 @@ namespace LmtbSnmp
 		/// <param name="packet"></param>
 		private void SnmpCallbackFun(AsyncRequestResult result, SnmpPacket packet)
 		{
-			string logMsg = $"SNMP异步请求结果: AsyncRequestResult = {result}";
+			var logMsg = $"SNMP异步请求结果: AsyncRequestResult = {result}";
 			Log.Info(logMsg);
 
 			if (result == AsyncRequestResult.NoError)
 			{
-				SnmpV2Packet packetv2 = (SnmpV2Packet)packet;
+				var packetv2 = (SnmpV2Packet)packet;
 
 				if (packetv2 == null)
 				{
@@ -875,21 +844,18 @@ namespace LmtbSnmp
 					return;
 				}
 
-				CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
-				bool rs = SnmpPdu2LmtPdu(packetv2.Pdu, m_SnmpAsync.m_target, ref lmtPdu, 0, false);
+				var lmtPdu = new CDTLmtbPdu();
+				var rs = SnmpPdu2LmtPdu(packetv2.Pdu, m_SnmpAsync.m_target, ref lmtPdu, 0, false);
 
 				// TODO
 				// 发消息
 				if (packetv2.Pdu.Type == PduType.Inform)
 				{
 				}
-
-
 			}
 
 			return;
 		}
-
 
 		/// <summary>
 		/// 将CDTLmtbVb数组转换为SNMP Pdu
@@ -904,13 +870,13 @@ namespace LmtbSnmp
 			{
 				Log.Error("参数queryVbs为空");
 				return;
-	}
+			}
 
-			foreach (CDTLmtbVb lmtVb in queryVbs)
+			foreach (var lmtVb in queryVbs)
 			{
-				Vb vb = new Vb(new Oid(lmtVb.Oid));
+				var vb = new Vb(new Oid(lmtVb.Oid));
 				pdu.VbList.Add(vb);
-}
+			}
 		}
 
 		public void PacketQueryPdu(List<string> oidList, out Pdu pdu)
@@ -936,12 +902,11 @@ namespace LmtbSnmp
 		{
 			setPdu = new Pdu(PduType.Set);
 
-			foreach (CDTLmtbVb lmtbVb in setVbs)
+			foreach (var lmtbVb in setVbs)
 			{
+				var vb = new Vb(new Oid(lmtbVb.Oid));
 
-				Vb vb = new Vb(new Oid(lmtbVb.Oid));
-
-				 SnmpHelper.SetVbValue(ref vb, lmtbVb.SnmpSyntax, lmtbVb.Value);
+				SnmpHelper.SetVbValue(ref vb, lmtbVb.SnmpSyntax, lmtbVb.Value);
 
 				setPdu.VbList.Add(vb);
 			}
@@ -956,7 +921,6 @@ namespace LmtbSnmp
 		{
 			return m_ValType2SynTax[strType];
 		}
-
 
 		/// <summary>
 		/// 保存异步SNMP请求信息
@@ -976,8 +940,8 @@ namespace LmtbSnmp
 		/// <returns></returns>
 		public bool Pop_appendInfo(long requestId, ref stru_LmtbPduAppendInfo appendInfo)
 		{
-			bool rs = false;
-			foreach (KeyValuePair<long, stru_LmtbPduAppendInfo> item in m_ReqIdPduInfo)
+			var rs = false;
+			foreach (var item in m_ReqIdPduInfo)
 			{
 				if (item.Key == requestId)
 				{
@@ -990,7 +954,5 @@ namespace LmtbSnmp
 
 			return rs;
 		}
-
-
 	}
 }
