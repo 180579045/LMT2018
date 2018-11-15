@@ -270,6 +270,11 @@ namespace SCMTMainWindow.View
             MenuItem obj = sender as MenuItem;
             ContextMenu test = obj.Parent as ContextMenu;
             Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+            Rectangle rect = targetRect.Children[0] as Rectangle;
+            rect.Fill = new SolidColorBrush(Colors.Red);
+
+            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
+            this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
         }
 
         /// <summary>
@@ -283,6 +288,9 @@ namespace SCMTMainWindow.View
             ContextMenu test = obj.Parent as ContextMenu;
             Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
             Rectangle rect = targetRect.Children[0] as Rectangle;
+
+
+
             rect.Fill = new SolidColorBrush(Colors.Red);
 
             int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
@@ -811,6 +819,13 @@ namespace SCMTMainWindow.View
                         break;
                     case LcStatus.Planning:
                         rect.Fill = new SolidColorBrush(Colors.LightGreen);
+                        if (!this.MyDesigner.g_cellPlaning.Contains(i))
+                        {
+                            if (NPCellOperator.SetNetPlanSwitch(true, i, CSEnbHelper.GetCurEnbAddr()))
+                            {
+                                this.MyDesigner.g_cellPlaning.Add(i);
+                            }
+                        }
                         break;
                     case LcStatus.LcUnBuilded:
                         rect.Fill = new SolidColorBrush(Colors.Yellow);

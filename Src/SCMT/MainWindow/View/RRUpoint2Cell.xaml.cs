@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using NetPlan;
 
 using System.Windows.Controls.Primitives;
 
@@ -25,12 +26,12 @@ namespace SCMTMainWindow.View
         //全局变量，保存 小区id
         private List<int> g_listCell;
 
-        public RRUpoint2Cell(int nRRUPoint, List<int> listCell)
+        public RRUpoint2Cell(int nRRUPoint, List<int> listCell, string strIndex)
         {
             InitializeComponent();
 
             //根据 RRU 端口数量初始化界面，这里的 list 应该传入从后台获取的
-            InitRRUPoint2Cell(nRRUPoint, listCell);
+            InitRRUPoint2Cell(nRRUPoint, listCell, strIndex);
             g_listCell = listCell;
         }
 
@@ -39,12 +40,15 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="nRRUPoint"></param>
         /// <param name="listCell"></param>
-        private void InitRRUPoint2Cell(int nRRUPoint, List<int> listCell)
+        private void InitRRUPoint2Cell(int nRRUPoint, List<int> listCell, string strIndex)
         {
             if(nRRUPoint > 0)
             {
+                //根据 rru 的index获取信息
+                var cellInfo = MibInfoMgr.GetInstance().GetNetLcInfoByRruIndex(strIndex);
+
                 //添加边框
-                for(int i = 0; i < 5; i++)
+                for (int i = 0; i < 5; i++)
                 {
                     Border newBorder = new Border();
                     newBorder.BorderBrush = new SolidColorBrush(Colors.Gray);
@@ -55,6 +59,8 @@ namespace SCMTMainWindow.View
                 }
                 for(int i = 0; i < nRRUPoint; i++)
                 {
+                    var currCellInfo = cellInfo[i.ToString()];
+
                     RowDefinition rowItem = new RowDefinition();
                     rowItem.Height = GridLength.Auto;
                     MainGrid.RowDefinitions.Add(rowItem);
@@ -100,14 +106,14 @@ namespace SCMTMainWindow.View
                     TextBlock radioPathDirection = new TextBlock();
                     radioPathDirection.MouseLeftButtonDown += RadioPathDirection_MouseLeftButtonDown;
                     radioPathDirection.HorizontalAlignment = HorizontalAlignment.Center;
-                    radioPathDirection.Text = "test";
+                    radioPathDirection.Text = currCellInfo.TxRxStatus;
                     radioPathDirection.Margin = new Thickness(5);
                     MainGrid.Children.Add(radioPathDirection);
                     Grid.SetColumn(radioPathDirection, 2);
                     Grid.SetRow(radioPathDirection, i + 1);
 
                     TextBlock supportFrequent = new TextBlock();
-                    supportFrequent.Text = "支持的频段";
+                    supportFrequent.Text = currCellInfo.FreqBand;
                     supportFrequent.HorizontalAlignment = HorizontalAlignment.Center;
                     supportFrequent.Margin = new Thickness(5);
                     MainGrid.Children.Add(supportFrequent);

@@ -304,35 +304,7 @@ namespace SCMTMainWindow.View
         public void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DesignerItem targetItem = sender as DesignerItem;
-
-            //Grid targetGrid = targetItem.Content as Grid;
-
-            //string strName = targetGrid.Name;
-            //int nRRUPoint = 1;
-
-            //switch(strName)
-            //{
-            //    case "g_OnePathRRU":
-            //        nRRUPoint = 1;
-            //        break;
-            //    case "g_TwoPathRRU":
-            //        nRRUPoint = 2;
-            //        break;
-            //    case "g_FourPathRRU":
-            //        nRRUPoint = 4;
-            //        break;
-            //    case "g_EightPathRRU":
-            //        nRRUPoint = 8;
-            //        break;
-            //    case "g_SixteenPathRRU":
-            //        nRRUPoint = 16;
-            //        break;
-            //    default:
-            //        nRRUPoint = 1;
-            //        break;
-                        
-            //}
-            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning);
+            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning, targetItem.DevIndex);
             dlg.ShowDialog();
         }
 
