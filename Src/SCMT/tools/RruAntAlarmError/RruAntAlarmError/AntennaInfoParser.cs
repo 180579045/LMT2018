@@ -414,7 +414,7 @@ namespace RruAntAlarmError
                     {
                         JObject oneAntennaJObject = new JObject {
                             { "antArrayNotMibNumber", antennaWeightTable.antArrayNotMibNumber},
-                            { "antArrayMultWeightInfo", oneAntennaWeightJArray} };
+                            { "antArrayMultWeight", oneAntennaWeightJArray} };
                         antennaWeightJArray.Add(oneAntennaJObject);
                         oneAntennaWeightJArray.Clear();
                     }
