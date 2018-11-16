@@ -67,7 +67,14 @@ namespace NetPlan
 				throw new CustomException("天线阵的权重信息为空");
 			}
 
-			return weightList.FirstOrDefault(antWeight => antNo == antWeight.antArrayNotMibNumber);
+			foreach (var item in weightList)
+			{
+				if (item.antArrayNotMibNumber == antNo)
+				{
+					return item;
+				}
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -305,22 +312,22 @@ namespace NetPlan
 		public string antennaWeightMultNotMibAntStatus;
 		public int antennaWeightMultAntHalfPowerBeamWidth;
 		public int antennaWeightMultAntVerHalfPowerBeamWidth;
-		public int antennaWeightMultAntAmplitude0;
-		public int antennaWeightMultAntPhase0;
-		public int antennaWeightMultAntAmplitude1;
-		public int antennaWeightMultAntPhase1;
-		public int antennaWeightMultAntAmplitude2;
-		public int antennaWeightMultAntPhase2;
-		public int antennaWeightMultAntAmplitude3;
-		public int antennaWeightMultAntPhase3;
-		public int antennaWeightMultAntAmplitude4;
-		public int antennaWeightMultAntPhase4;
-		public int antennaWeightMultAntAmplitude5;
-		public int antennaWeightMultAntPhase5;
-		public int antennaWeightMultAntAmplitude6;
-		public int antennaWeightMultAntPhase6;
-		public int antennaWeightMultAntAmplitude7;
-		public int antennaWeightMultAntPhase7;
+		public int antennaWeightMultAntAmplitude0 { get; set; }
+		public int antennaWeightMultAntPhase0 { get; set; }
+		public int antennaWeightMultAntAmplitude1 { get; set; }
+		public int antennaWeightMultAntPhase1 { get; set; }
+		public int antennaWeightMultAntAmplitude2 { get; set; }
+		public int antennaWeightMultAntPhase2 { get; set; }
+		public int antennaWeightMultAntAmplitude3 { get; set; }
+		public int antennaWeightMultAntPhase3 { get; set; }
+		public int antennaWeightMultAntAmplitude4 { get; set; }
+		public int antennaWeightMultAntPhase4 { get; set; }
+		public int antennaWeightMultAntAmplitude5 { get; set; }
+		public int antennaWeightMultAntPhase5 { get; set; }
+		public int antennaWeightMultAntAmplitude6 { get; set; }
+		public int antennaWeightMultAntPhase6 { get; set; }
+		public int antennaWeightMultAntAmplitude7 { get; set; }
+		public int antennaWeightMultAntPhase7 { get; set; }
 	}
 
 
@@ -340,22 +347,22 @@ namespace NetPlan
 	{
 		public int antCouplCoeffFreq;
 		public int antCouplCoeffAntGrpIndex;
-		public int antCouplCoeffAmplitude0;
-		public int antCouplCoeffPhase0;
-		public int antCouplCoeffAmplitude1;
-		public int antCouplCoeffPhase1;
-		public int antCouplCoeffAmplitude2;
-		public int antCouplCoeffPhase2;
-		public int antCouplCoeffAmplitude3;
-		public int antCouplCoeffPhase3;
-		public int antCouplCoeffAmplitude4;
-		public int antCouplCoeffPhase4;
-		public int antCouplCoeffAmplitude5;
-		public int antCouplCoeffPhase5;
-		public int antCouplCoeffAmplitude6;
-		public int antCouplCoeffPhase6;
-		public int antCouplCoeffAmplitude7;
-		public int antCouplCoeffPhase7;
+		public int antCouplCoeffAmplitude0 { get; set; }
+		public int antCouplCoeffPhase0 { get; set; }
+		public int antCouplCoeffAmplitude1 { get; set; }
+		public int antCouplCoeffPhase1 { get; set; }
+		public int antCouplCoeffAmplitude2 { get; set; }
+		public int antCouplCoeffPhase2 { get; set; }
+		public int antCouplCoeffAmplitude3 { get; set; }
+		public int antCouplCoeffPhase3 { get; set; }
+		public int antCouplCoeffAmplitude4 { get; set; }
+		public int antCouplCoeffPhase4 { get; set; }
+		public int antCouplCoeffAmplitude5 { get; set; }
+		public int antCouplCoeffPhase5 { get; set; }
+		public int antCouplCoeffAmplitude6 { get; set; }
+		public int antCouplCoeffPhase6 { get; set; }
+		public int antCouplCoeffAmplitude7 { get; set; }
+		public int antCouplCoeffPhase7 { get; set; }
 	}
 
 	#endregion

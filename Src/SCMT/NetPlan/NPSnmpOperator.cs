@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using CommonUtility;
 using LinkPath;
 using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
-using SCMTOperationCore.Control;
 using SCMTOperationCore.Elements;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NetPlan
 {
-
-
 	/// <summary>
 	/// 网规snmp相关的操作
 	/// </summary>
@@ -64,7 +59,7 @@ namespace NetPlan
 				return false;
 			}
 
-			DIC_DOUBLE_STR result;	// key:完全oid，包括前缀和索引，value:该项对应的真实值
+			DIC_DOUBLE_STR result;  // key:完全oid，包括前缀和索引，value:该项对应的真实值
 			List<string> indexList;
 			if (!QueryNetPlanInfo(cmdName, out result, out indexList))
 			{
@@ -86,7 +81,7 @@ namespace NetPlan
 				return false;
 			}
 
-			var indexGrade = tbl.indexNum;		// 索引级数
+			var indexGrade = tbl.indexNum;      // 索引级数
 			var childList = tbl.childList;
 
 			// 存储同一类设备的所有信息
@@ -96,7 +91,7 @@ namespace NetPlan
 			}
 
 			// 区分标量和表量
-			if (indexGrade == 0)	// 索引级数为0，认为是标量表
+			if (indexGrade == 0)    // 索引级数为0，认为是标量表
 			{
 				// 存储一个设备的所有属性信息
 				var oneDevAttributes = GetScalarMibInfo(childList, result, devType);
@@ -138,12 +133,10 @@ namespace NetPlan
 				return false;
 			}
 
-			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(curEnbIP);
-			var mibEntryList =  NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(EnbTypeEnum.ENB_EMB6116);
+			var mibEntryList = NPECmdHelper.GetInstance().GetAllMibEntryAndCmds(EnbTypeEnum.ENB_EMB6116);
 			if (null == mibEntryList)
 			{
 				Log.Error("查询所有的MIB入口及对应命令失败");
-				//allEnbNetPlanInfo = null;
 				return false;
 			}
 
@@ -163,6 +156,12 @@ namespace NetPlan
 				// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 				foreach (var entry in entryList)
 				{
+					// 判断是否要进行查询。InitQuery配置为false，表示初始化时不需要进行查询
+					if (null != entry.InitQuery && entry.InitQuery.Equals("false"))
+					{
+						continue;
+					}
+
 					var getCmdList = entry.Get;
 					if (getCmdList.Count == 0)
 					{
@@ -219,6 +218,7 @@ namespace NetPlan
 
 		/// <summary>
 		/// 布配网规数据到设备中
+		/// todo 开启一个线程，否则可能会卡死
 		/// </summary>
 		/// <returns></returns>
 		public static bool DistributeNetPlanData()
@@ -249,33 +249,32 @@ namespace NetPlan
 				return false;
 			}
 
-			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board_rru);	// IR口规划信息
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board_rru);    // IR口规划信息
 			if (!result)
 			{
 				return false;
 			}
 
-			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub_prru);	// 以太口规划信息
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub_prru);    // 以太口规划信息
 			if (!result)
 			{
 				return false;
 			}
 
-			// todo 天线权值
-			//result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub);
-			//if (!result)
-			//{
-			//	return false;
-			//}
-
-
-			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru_ant);	// 天线安装
+			// 天线权值
+			result = MibInfoMgr.GetInstance().DistributeAntWcbInfo();
 			if (!result)
 			{
 				return false;
 			}
 
-			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.nrNetLc);	// 本地小区布配
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rru_ant);  // 天线安装
+			if (!result)
+			{
+				return false;
+			}
+
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.nrNetLc);  // 本地小区布配
 			if (!result)
 			{
 				return false;
@@ -284,7 +283,7 @@ namespace NetPlan
 			return true;
 		}
 
-		#endregion
+		#endregion 公共接口
 
 		#region 私有接口
 
@@ -466,13 +465,13 @@ namespace NetPlan
 				}
 				else
 				{
-					mapExist[newIndex] = nd;	// 已有的结构中不包含已有的索引，就直接保存数据
+					mapExist[newIndex] = nd;    // 已有的结构中不包含已有的索引，就直接保存数据
 				}
 			}
 
 			existData = mapExist.Values.ToList();
 		}
 
-		#endregion
+		#endregion 私有接口
 	}
 }

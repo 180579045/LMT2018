@@ -563,10 +563,10 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 下发板卡信息到基站
+		/// 下发网规信息
 		/// </summary>
 		/// <returns></returns>
-		public bool DistributeNetPlanInfoToEnb(EnumDevType devType)
+		private bool DistributeData(EnumDevType devType, MAP_DEVTYPE_DEVATTRI mapDataSource)
 		{
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
@@ -574,11 +574,10 @@ namespace NetPlan
 				throw new CustomException("下发网规参数失败，尚未选中基站");
 			}
 
-			lock (_syncObj)
 			{
-				if (!m_mapAllMibData.ContainsKey(devType) || m_mapAllMibData[devType].Count <= 0) return true;
+				if (!mapDataSource.ContainsKey(devType) || mapDataSource[devType].Count <= 0) return true;
 
-				var mibList = m_mapAllMibData[devType];
+				var mibList = mapDataSource[devType];
 				var waitRmList = new List<DevAttributeInfo>();
 
 				foreach (var item in mibList)
@@ -632,6 +631,42 @@ namespace NetPlan
 				foreach (var wrmDev in waitRmList)
 				{
 					mibList.Remove(wrmDev);
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 下发网规的信息
+		/// </summary>
+		/// <param name="devType"></param>
+		/// <returns></returns>
+		public bool DistributeNetPlanInfoToEnb(EnumDevType devType)
+		{
+			return DistributeData(devType, m_mapAllMibData);
+		}
+
+		/// <summary>
+		/// 下发天线阵的权重、耦合系数和波束扫描信息
+		/// 天线阵的这3个信息都是新加的，实时生成的
+		/// </summary>
+		/// <returns></returns>
+		public bool DistributeAntWcbInfo()
+		{
+			lock (_syncObj)
+			{
+				m_mapAntWcb.Clear();
+				if (!GeneralAllAntWCBDev())
+				{
+					return false;
+				}
+
+				if (!DistributeData(EnumDevType.antWeight, m_mapAntWcb) ||
+					!DistributeData(EnumDevType.antCoup, m_mapAntWcb) ||
+					!DistributeData(EnumDevType.antBfScan, m_mapAntWcb))
+				{
+					return false;
 				}
 			}
 
@@ -976,8 +1011,9 @@ namespace NetPlan
 		/// <returns>全部查询成功，返回true；其他情况返回false</returns>
 		private static bool GetNeedUpdateValue(DevAttributeInfo dev, IDictionary<string, string> mapFieldAndValue, bool bConvertToDigital = true)
 		{
-			foreach (var kv in mapFieldAndValue)
+			for (var i = 0; i < mapFieldAndValue.Count; i++)
 			{
+				var kv = mapFieldAndValue.ElementAt(i);
 				var value = GetNeedUpdateValue(dev, kv.Key, bConvertToDigital);
 				if (null == value)
 				{
@@ -1013,32 +1049,24 @@ namespace NetPlan
 				}
 
 				dev.SetFieldOriginValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
 				dev.SetFieldOriginValue("antennaWeightMultAntVerHalfPowerBeamWidth", item.antennaWeightMultAntVerHalfPowerBeamWidth.ToString());
 
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude0", item.antennaWeightMultAntAmplitude0.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase0", item.antennaWeightMultAntPhase0.ToString());
+				dynamic amplitudeValue;
+				dynamic phaseValue;
 
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude1", item.antennaWeightMultAntAmplitude1.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase1", item.antennaWeightMultAntPhase1.ToString());
+				for (var i = 0; i < 8; i++)
+				{
+					var amp = $"antennaWeightMultAntAmplitude{i}";
+					var pha = $"antennaWeightMultAntPhase{i}";
+					if (!UtilityHelper.GetFieldValueOfType<Weight>(item, amp, out amplitudeValue) ||
+						!UtilityHelper.GetFieldValueOfType<Weight>(item, pha, out phaseValue))
+					{
+						break;
+					}
 
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude2", item.antennaWeightMultAntAmplitude2.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase2", item.antennaWeightMultAntPhase2.ToString());
-
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude3", item.antennaWeightMultAntAmplitude3.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase3", item.antennaWeightMultAntPhase3.ToString());
-
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude4", item.antennaWeightMultAntAmplitude4.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase4", item.antennaWeightMultAntPhase4.ToString());
-
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude5", item.antennaWeightMultAntAmplitude5.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase5", item.antennaWeightMultAntPhase5.ToString());
-
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude6", item.antennaWeightMultAntAmplitude6.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase6", item.antennaWeightMultAntPhase6.ToString());
-
-				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude7", item.antennaWeightMultAntAmplitude7.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntPhase7", item.antennaWeightMultAntPhase7.ToString());
+					dev.SetFieldOriginValue(amp, amplitudeValue.ToString());
+					dev.SetFieldOriginValue(pha, phaseValue.ToString());
+				}
 
 				AddDevToMap(m_mapAntWcb, EnumDevType.antWeight, dev);
 			}
@@ -1065,29 +1093,22 @@ namespace NetPlan
 					continue;
 				}
 
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude0", item.antCouplCoeffAmplitude0.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase0", item.antCouplCoeffPhase0.ToString());
+				dynamic amplitudeValue;
+				dynamic phaseValue;
 
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude1", item.antCouplCoeffAmplitude1.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase1", item.antCouplCoeffPhase1.ToString());
+				for (var i = 0; i < 8; i++)
+				{
+					var amp = $"antCouplCoeffAmplitude{i}";
+					var pha = $"antCouplCoeffPhase{i}";
+					if (!UtilityHelper.GetFieldValueOfType<Weight>(item, amp, out amplitudeValue) ||
+						!UtilityHelper.GetFieldValueOfType<Weight>(item, pha, out phaseValue))
+					{
+						break;
+					}
 
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude2", item.antCouplCoeffAmplitude2.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase2", item.antCouplCoeffPhase2.ToString());
-
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude3", item.antCouplCoeffAmplitude3.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase3", item.antCouplCoeffPhase3.ToString());
-
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude4", item.antCouplCoeffAmplitude0.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase4", item.antCouplCoeffPhase4.ToString());
-
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude5", item.antCouplCoeffAmplitude5.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase5", item.antCouplCoeffPhase5.ToString());
-
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude6", item.antCouplCoeffAmplitude6.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase6", item.antCouplCoeffPhase6.ToString());
-
-				dev.SetFieldOriginValue("antCouplCoeffAmplitude7", item.antCouplCoeffAmplitude7.ToString());
-				dev.SetFieldOriginValue("antCouplCoeffPhase7", item.antCouplCoeffPhase7.ToString());
+					dev.SetFieldOriginValue(amp, amplitudeValue.ToString());
+					dev.SetFieldOriginValue(pha, phaseValue.ToString());
+				}
 
 				AddDevToMap(m_mapAntWcb, EnumDevType.antCoup, dev);
 			}
@@ -1097,9 +1118,9 @@ namespace NetPlan
 
 		#region 私有接口
 
-		private MibInfoMgr(MAP_DEVTYPE_DEVATTRI mMapAntWcb)
+		private MibInfoMgr()
 		{
-			m_mapAntWcb = mMapAntWcb;
+			m_mapAntWcb = new MAP_DEVTYPE_DEVATTRI();
 			m_mapAllMibData = new MAP_DEVTYPE_DEVATTRI();
 			m_linkMgr = new NetPlanLinkMgr();
 		}
@@ -1379,7 +1400,7 @@ namespace NetPlan
 			}
 
 			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
-			var enbType = EnbTypeEnum.ENB_EMB6116;
+			const EnbTypeEnum enbType = EnbTypeEnum.ENB_EMB6116;
 			var cmdList = NPECmdHelper.GetInstance().GetCmdList(devAttribute.m_enumDevType, cmdType, enbType);
 			if (null == cmdList || 0 == cmdList.Count)
 			{
@@ -1589,15 +1610,19 @@ namespace NetPlan
 					case 1:
 						lcAttr1.SetLatestValue(lcIdList[i - 1].ToString());
 						break;
+
 					case 2:
 						lcAttr2.SetLatestValue(lcIdList[i - 1].ToString());
 						break;
+
 					case 3:
 						lcAttr3.SetLatestValue(lcIdList[i - 1].ToString());
 						break;
+
 					case 4:
 						lcAttr4.SetLatestValue(lcIdList[i - 1].ToString());
 						break;
+
 					default:
 						break;
 				}
@@ -1695,7 +1720,7 @@ namespace NetPlan
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
 		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
 
-		private MAP_DEVTYPE_DEVATTRI m_mapAntWcb;			// 天线阵的weight, couple, bfscan信息
+		private MAP_DEVTYPE_DEVATTRI m_mapAntWcb;           // 天线阵的weight, couple, bfscan信息
 
 		private readonly NetPlanLinkMgr m_linkMgr;
 
