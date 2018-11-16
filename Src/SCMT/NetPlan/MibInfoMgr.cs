@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CommonUtility;
 using DataBaseUtil;
 using LinkPath;
@@ -12,7 +9,6 @@ using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using NetPlan.DevLink;
-using SCMTOperationCore.Control;
 using SCMTOperationCore.Elements;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -112,11 +108,11 @@ namespace NetPlan
 			{
 				if (m_mapAllMibData.ContainsKey(type))
 				{
-					m_mapAllMibData[type].AddRange(listDevInfo);	// 已经存在同类的设备信息，直接添加
+					m_mapAllMibData[type].AddRange(listDevInfo);    // 已经存在同类的设备信息，直接添加
 				}
 				else
 				{
-					m_mapAllMibData[type] = listDevInfo;			// 还不存在同类的设备信息，直接保存
+					m_mapAllMibData[type] = listDevInfo;            // 还不存在同类的设备信息，直接保存
 				}
 			}
 		}
@@ -141,7 +137,7 @@ namespace NetPlan
 				}
 				else
 				{
-					var listDev = new List<DevAttributeInfo> {devInfo};
+					var listDev = new List<DevAttributeInfo> { devInfo };
 					m_mapAllMibData[type] = listDev;
 				}
 			}
@@ -222,8 +218,8 @@ namespace NetPlan
 			}
 
 			if (!dev.SetFieldOriginValue("netBoardType", strBoardType) ||
-			    !dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode) ||
-			    !dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType))
+				!dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode) ||
+				!dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType))
 			{
 				Log.Error("设置新板卡属性失败");
 				NPLastErrorHelper.SetLastError("设备新板卡属性失败");
@@ -616,7 +612,7 @@ namespace NetPlan
 
 					if (EnumSnmpCmdType.Del == cmdType)
 					{
-						waitRmList.Add(item);		// 如果是要删除的设备，参数下发后，直接删除内存中的数据
+						waitRmList.Add(item);       // 如果是要删除的设备，参数下发后，直接删除内存中的数据
 					}
 					else
 					{
@@ -699,7 +695,7 @@ namespace NetPlan
 			var retMap = new Dictionary<string, NPRruToCellInfo>();
 			foreach (var pathInfo in rruPathInfoList)
 			{
-				var pathNo = pathInfo.rruTypePortNo;		// rru通道编号
+				var pathNo = pathInfo.rruTypePortNo;        // rru通道编号
 				var tmpIdx = $"{strIndex}.{pathNo}";
 
 				// 查找是否存在天线阵安装规划表信息
@@ -727,7 +723,7 @@ namespace NetPlan
 				throw new CustomException("尚未选中基站");
 			}
 
-			var devType = EnumDevType.rru_ant;
+			const EnumDevType devType = EnumDevType.rru_ant;
 			var rruNo = strRruIndex.Trim('.');
 			var waitRemoveList = new List<string>();
 
@@ -740,35 +736,44 @@ namespace NetPlan
 					{
 						var strIndex = $".{rruNo}.{kv.Key}"; // 用rru编号和port编号组成索引
 						var dev = GetSameIndexDev(devList, strIndex);
-						if (null != dev)
-						{
-							var mapAttri = dev.m_mapAttributes;
 
-							SetRruAntSettingTableInfo(mapAttri, kv.Value);
-							if (dev.m_recordType != RecordDataType.NewAdd)
-							{
-								dev.m_recordType = RecordDataType.Modified;
-							}
+						if (null == dev)
+							continue;
+
+						var mapAttri = dev.m_mapAttributes;
+
+						SetRruAntSettingTableInfo(mapAttri, kv.Value);
+
+						if (dev.m_recordType != RecordDataType.NewAdd)
+						{
+							dev.m_recordType = RecordDataType.Modified;
 						}
+						waitRemoveList.Add(kv.Key);
 					}
 				}
 			}
 
-			// 如果还有信息没有用完，就new一个rru_ant对象，存入m_mapNewAdd
-			if (portToCellInfoList.Count > 0)
+			foreach (var item in waitRemoveList)
 			{
-				foreach (var item in portToCellInfoList)
+				portToCellInfoList.Remove(item);
+			}
+
+			waitRemoveList.Clear();
+
+			// 如果还有信息没有用完，就new一个rru_ant对象
+			if (portToCellInfoList.Count <= 0) return true;
+
+			foreach (var item in portToCellInfoList)
+			{
+				var newDev = AddNewRruAntDev(rruNo, item.Key, item.Value);
+				if (null == newDev)
 				{
-					var newDev = AddNewRruAntDev(rruNo, item.Key, item.Value);
-					if (null == newDev)
-					{
-						Log.Error("新加天线阵安装规划表实例失败");
-						return false;
-					}
-					lock (_syncObj)
-					{
-						AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newDev);
-					}
+					Log.Error("新加天线阵安装规划表实例失败");
+					return false;
+				}
+				lock (_syncObj)
+				{
+					AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newDev);
 				}
 			}
 
@@ -782,16 +787,11 @@ namespace NetPlan
 		/// <param name="strPort"></param>
 		/// <param name="lcInfo"></param>
 		/// <returns></returns>
-		private DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
+		private static DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
 		{
 			var strIndex = $".{strRruNo.Trim('.')}.{strPort}";
 			var newDev = new DevAttributeInfo(EnumDevType.rru_ant, strIndex);
-			if (!SetRruAntSettingTableInfo(newDev.m_mapAttributes, lcInfo))
-			{
-				return null;
-			}
-			newDev.m_recordType = RecordDataType.NewAdd;
-			return newDev;
+			return !SetRruAntSettingTableInfo(newDev.m_mapAttributes, lcInfo) ? null : newDev;
 		}
 
 		/// <summary>
@@ -801,14 +801,14 @@ namespace NetPlan
 		/// <returns></returns>
 		public List<DevAttributeInfo> GetRowFromRruAntSetTableByLcId(int nLcId)
 		{
-			if (0 < nLcId || nLcId > 35)	// TODO 小区的数量先写死为36个
+			if (nLcId < 0 || nLcId > 35)    // TODO 小区的数量先写死为36个
 			{
 				return null;
 			}
 
 			var retList = new List<DevAttributeInfo>();
 			var strLcId = nLcId.ToString();
-			var devType = EnumDevType.rru_ant;
+			const EnumDevType devType = EnumDevType.rru_ant;
 			lock (_syncObj)
 			{
 				if (!m_mapAllMibData.ContainsKey(devType)) return retList;
@@ -849,7 +849,7 @@ namespace NetPlan
 				if (null == devList)
 				{
 					Log.Error($"类型为{devType.ToString()}的信息为null");
-					return true;		// todo 是否合适？
+					return true;        // todo 是否合适？
 				}
 
 				// 需要遍历所有的天线阵安装规划表
@@ -903,7 +903,7 @@ namespace NetPlan
 			return GetDevAttributeInfo(strLcID, type);
 		}
 
-		#endregion
+		#endregion 公共接口
 
 		#region 私有接口
 
@@ -1208,11 +1208,14 @@ namespace NetPlan
 				case EnumSnmpCmdType.Set:
 					gmv = GetNeedUpdateValue;
 					break;
+
 				case EnumSnmpCmdType.Add:
 					break;
+
 				case EnumSnmpCmdType.Del:
 					strRs = "6";
 					break;
+
 				default:
 					throw new ArgumentOutOfRangeException(nameof(cmdType), cmdType, null);
 			}
@@ -1302,7 +1305,7 @@ namespace NetPlan
 				var cellId = GetEnumStringByMibName(mapAttri, mibName);
 				if (null != cellId && "-1" != cellId)
 				{
-					rtc.CellIdList.Add(new CellAndState {cellId = cellId, bIsFixed = bCellFix});
+					rtc.CellIdList.Add(new CellAndState { cellId = cellId, bIsFixed = bCellFix });
 				}
 			}
 
@@ -1367,7 +1370,7 @@ namespace NetPlan
 		/// <param name="mapAttributes"></param>
 		/// <param name="lcInfo"></param>
 		/// <returns></returns>
-		private bool SetRruAntSettingTableInfo(Dictionary<string, MibLeafNodeInfo> mapAttributes, NPRruToCellInfo lcInfo)
+		private static bool SetRruAntSettingTableInfo(IReadOnlyDictionary<string, MibLeafNodeInfo> mapAttributes, NPRruToCellInfo lcInfo)
 		{
 			if (mapAttributes.ContainsKey("netSetRRUPortTxRxStatus"))
 			{
@@ -1381,29 +1384,31 @@ namespace NetPlan
 			var lcAttr3 = mapAttributes["netSetRRUPortSubtoLocalCellId3"];
 			var lcAttr4 = mapAttributes["netSetRRUPortSubtoLocalCellId4"];
 
-			// 先设置为-1。可能会删除通道关联的小区
+			// 先设置为-1。todo 处于本地小区未建状态的LC是否可以挪动，待确定是否存在问题
 			lcAttr1.SetLatestValue("-1");
 			lcAttr2.SetLatestValue("-1");
 			lcAttr3.SetLatestValue("-1");
 			lcAttr4.SetLatestValue("-1");
-			for (int i = 1; i <= lcIdList.Count; i++)
+
+			// todo 目前每个通道只支持3个本地小区
+			for (var i = 1; i <= lcIdList.Count; i++)
 			{
-				if (1 == i)
+				switch (i)
 				{
-					lcAttr1.SetLatestValue(lcIdList[i - 1].ToString());
-				}
-				if (2 == i)
-				{
-					lcAttr2.SetLatestValue(lcIdList[i - 1].ToString());
-				}
-				if (3 == i)
-				{
-					lcAttr3.SetLatestValue(lcIdList[i - 1].ToString());
-				}
-				if (4 == i)
-				{
-					lcAttr4.SetLatestValue(lcIdList[i - 1].ToString());
-					break;
+					case 1:
+						lcAttr1.SetLatestValue(lcIdList[i - 1].ToString());
+						break;
+					case 2:
+						lcAttr2.SetLatestValue(lcIdList[i - 1].ToString());
+						break;
+					case 3:
+						lcAttr3.SetLatestValue(lcIdList[i - 1].ToString());
+						break;
+					case 4:
+						lcAttr4.SetLatestValue(lcIdList[i - 1].ToString());
+						break;
+					default:
+						break;
 				}
 			}
 
@@ -1491,8 +1496,7 @@ namespace NetPlan
 			return true;
 		}
 
-		#endregion
-
+		#endregion 私有接口
 
 		#region 私有成员、数据
 
@@ -1504,6 +1508,6 @@ namespace NetPlan
 
 		private readonly object _syncObj = new object();
 
-		#endregion
+		#endregion 私有成员、数据
 	}
 }
