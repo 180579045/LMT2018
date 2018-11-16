@@ -253,49 +253,127 @@ namespace CfgFileOperation
             List<uint> NewTablePos = GetTablesPos(NewFilePath, (int)NewDhead.u32TableCnt);
             Dictionary<string, uint> NewTableNamePosDict = GetTableNamesDictByTablesPos(NewFilePath, NewTablePos);
 
-            // 1. 每个表的表头是否相同
 
-
-            //StruCfgFileTblInfo 表头
-            //CfgOp cfgOp = new CfgOp();
-
-            //int offset = 0;
-            //int readCount = 0;
-            //byte[] Ysdata;
-            //string tableName = YsTableNamePosDict.Keys.ToArray()[0];
-            //uint offset = YsTableNamePosDict.Values.ToArray()[0];
-            foreach(string table in YsTableNamePosDict.Keys)
-            //foreach (var offset in YsTableNamePosDict.Values)
+            // 每个表的内容比较
+            StruCfgFileTblInfo ysTblInfo;
+            StruCfgFileTblInfo newTblInfo;
+            Dictionary<string, StruCfgFileFieldInfo> YsLeafHeadL;
+            Dictionary<string, StruCfgFileFieldInfo> NewLeafHeadL;
+            uint offsetYs;
+            uint offsetNew;
+            foreach (string table in YsTableNamePosDict.Keys)
             {
+                ///1.StruCfgFileTblInfo:44 字节，表内容头;
+                ///2.StruCfgFileFieldInfo[u16FieldNum]:60 字节* u16FieldNum，每个叶子的内容介绍;
+                ///3.u16RecLen(Stru) * u32RecNum(个数):每个实例内容(大小为u16RecLen) * 实例数.
+                if (String.Equals(table, "adjeNBEntry"))
+                    Console.WriteLine("Debug");
                 // 获取tableInfo表块介绍
-                uint offsetYs = YsTableNamePosDict[table];
-                StruCfgFileTblInfo ysTblInfo = TestGetTableHeadInfo(YSFilePath, offsetYs);
+                offsetYs = YsTableNamePosDict[table];
+                ysTblInfo = TestGetTableHeadInfo(YSFilePath, offsetYs);
 
-                uint offsetNew = NewTableNamePosDict[table];
-                StruCfgFileTblInfo newTblInfo = TestGetTableHeadInfo(NewFilePath, offsetNew);
+                offsetNew = NewTableNamePosDict[table];
+                newTblInfo = TestGetTableHeadInfo(NewFilePath, offsetNew);
 
-                // 表头
+                // 1. 每个表的表头是否相同 : StruCfgFileTblInfo
                 if (!TestIsSameTableHeadField(table, ysTblInfo, newTblInfo))
                 {
                     Console.WriteLine(String.Format("tableName={0}, table head info not all same.",table));
                     re = false;
-                    //break;
                 }
 
-                // 叶子头
-                Dictionary<string, StruCfgFileFieldInfo> YsLeafHeadL = TestGetLeafHeadFieldInfo(YSFilePath, ysTblInfo.u16FieldNum, offsetYs);
-                Dictionary<string, StruCfgFileFieldInfo> NewLeafHeadL = TestGetLeafHeadFieldInfo(NewFilePath, newTblInfo.u16FieldNum, offsetNew);
+                // 2. 每个表的叶子的头是否相同 : StruCfgFileFieldInfo[u16FieldNum];
+                YsLeafHeadL = TestGetLeafHeadFieldInfo(YSFilePath, ysTblInfo.u16FieldNum, offsetYs);
+                NewLeafHeadL = TestGetLeafHeadFieldInfo(NewFilePath, newTblInfo.u16FieldNum, offsetNew);
                 if (!TestIsSameLeafHeadInfoList(YsLeafHeadL, NewLeafHeadL))
                 {
                     Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
-                    //break;
                     re = false;
                 }
 
-                
-
+                // 3. 每个表的实例是否一致
+                List<byte[]> YsInsts = GetInstsData(YSFilePath, offsetYs, (int)ysTblInfo.u32RecNum, (int)ysTblInfo.u16FieldNum, ysTblInfo.u16RecLen);
+                List<byte[]> NewInsts = GetInstsData(NewFilePath, offsetNew, (int)newTblInfo.u32RecNum, (int)newTblInfo.u16FieldNum, newTblInfo.u16RecLen);
+                if (!TestIsSameInstsList(table, (int)ysTblInfo.u32RecNum, YsLeafHeadL, YsInsts, NewInsts))
+                {
+                    Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
+                    re = false;
+                }
             }
 
+            return re;
+        }
+
+        /// <summary>
+        /// 获取表的所有实例
+        /// </summary>
+        /// <param name="filePath">文件地址</param>
+        /// <param name="offset">表头的位置</param>
+        /// <param name="u32RecNum">表的实例的个数</param>
+        /// /// <param name="u16FieldNum">表的叶子的个数</param>
+        /// <param name="u16FieldLen">每个实例的长度</param>
+        /// <returns></returns>
+        List<byte[]> GetInstsData(string filePath, uint offset, int u32RecNum, int u16FieldNum, int u16FieldLen)
+        {
+            List<byte[]> re = new List<byte[]>();
+            int instOffset = 0;
+            instOffset += (int)offset;// 表头位置
+            instOffset += Marshal.SizeOf(new StruCfgFileTblInfo(""));// 44字节 叶子节头点位置
+            instOffset += Marshal.SizeOf(new StruCfgFileFieldInfo("")) * u16FieldNum;//第一个实例位置
+            for (int i = 0; i < u32RecNum; i++)
+            {
+                instOffset = u16FieldLen * i;
+                byte[] YsInstsData = new CfgOp().CfgReadFile(filePath, instOffset, u16FieldLen);
+                re.Add(YsInstsData);
+            }
+            return re;
+        }
+
+        bool TestIsSameInstsList(string tableName,int u32RecNum,  Dictionary<string, StruCfgFileFieldInfo> LeafHead, List<byte[]> InstsAList, List<byte[]> InstsBList)
+        {
+            bool re = true;
+            byte[] instA;
+            byte[] instB;
+            for (int instNo=0; instNo< u32RecNum; instNo++)
+            {
+                instA = InstsAList[instNo];//实例
+                instB = InstsBList[instNo];
+                if (!TestIsSameInst(tableName, LeafHead, instA, instB))
+                {
+                    re = false;
+                    Console.WriteLine(String.Format("table({0}), instNo({1}) info no same", tableName, instNo));
+                    break;
+                }
+            }
+            return re;
+        }
+        bool TestIsSameInst(string tableName, Dictionary<string, StruCfgFileFieldInfo> LeafHead, byte[] instA, byte[] instB)
+        {
+            bool re = true;
+            StruCfgFileFieldInfo FieldH;
+            ushort u16FieldOffset;       /* 字段相对记录头偏移量*/
+            ushort u16FieldLen;          /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
+            byte u8FieldType;            /* 字段类型 */
+
+            foreach (string leafName in LeafHead.Keys)
+            {
+                FieldH = LeafHead[leafName];
+                u16FieldOffset = FieldH.u16FieldOffset;       /* 字段相对记录头偏移量*/
+                u16FieldLen = FieldH.u16FieldLen;             /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
+                u8FieldType = FieldH.u8FieldType;             /* 字段类型 */
+
+                byte[] InA = instA.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();
+                byte[] InB = instB.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();
+                string leafNameA = Encoding.GetEncoding("GB2312").GetString(InA).TrimEnd('\0');
+                string leafNameB = Encoding.GetEncoding("GB2312").GetString(InB).TrimEnd('\0');
+                if (!BytesCompare_Base64(InA, InB))
+                {
+                    re = false;
+                    Console.WriteLine(String.Format("table({0}),leafName({1})(a.{2},b.{3}) no same", 
+                        tableName, leafName, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
+                    break;
+                }
+            }
             return re;
         }
 
@@ -375,6 +453,8 @@ namespace CfgFileOperation
                 re = false;
                 Console.WriteLine(String.Format("FieldName={0}; u8ConfigFlag(a,{1},b.{2}) no same", leafName, leafHA.u8ConfigFlag, leafHB.u8ConfigFlag));
             }
+            //Console.WriteLine(String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}) ", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
+            //Console.WriteLine(String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) ", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
             return re;
         }
 
@@ -432,7 +512,7 @@ namespace CfgFileOperation
                 re = false;
                 Console.WriteLine(String.Format("TableHead:TableName={0}; u32RecNum(a,{1},b.{2}) no same", tableName, tblFieldA.u32RecNum, tblFieldB.u32RecNum));
             }
-
+            //Console.WriteLine(String.Format("**** TableHead:TableName={0}; 记录有效长度 u16RecLen (a,{1},b.{2})", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
             return re;
         }
 
