@@ -44385,7 +44385,7 @@
     },
     {
       "antArrayNotMibNumber": 226,
-      "antArrayMultWeightInfo": [
+      "antArrayMultWeight": [
         {
           "antennaWeightMultFrequencyBand": 4096,
           "antennaWeightMultAntGrpIndex": 0,

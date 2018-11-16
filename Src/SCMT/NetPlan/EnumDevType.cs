@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogManager;
 
 namespace NetPlan
 {
@@ -29,6 +30,10 @@ namespace NetPlan
 		prru_ant,           // pico与天线之间的连接，对应表：netRRUAntennaSettingEntry
 		rru_rru,            // rru之间的级联，对应表：netRruEntry
 		rhub_rhub,			// rhub之间的级联，对应表：netRHUBEntry
+
+		antWeight,			// 天线权重·
+		antCoup,			// 天线耦合系数
+		antBfScan,			// 天线波束扫描
 	}
 
 	public enum EnumPortType
@@ -36,15 +41,15 @@ namespace NetPlan
 		unknown = -1,
 		rhub_to_bbu,
 		rhub_to_pico,
-        rhub_to_other,
-        pico_to_rhub,
+		rhub_to_other,
+		pico_to_rhub,
 		rru_to_bbu,
-        rru_to_other,
-        rru_to_ant,
+		rru_to_other,
+		rru_to_ant,
 		ant_to_rru,
 		bbu_to_rru,
 		bbu_to_rhub,
-        bbu_to_other,
+		bbu_to_other,
 		rru_to_rru,
 		rhub_to_rhub,
 		pico_to_ant,
@@ -84,6 +89,11 @@ namespace NetPlan
 			return devType;
 		}
 
+		/// <summary>
+		/// 根据MIB表入口名查询设备类型
+		/// </summary>
+		/// <param name="strEntryName">MIB表入口名，以entry结尾</param>
+		/// <returns></returns>
 		public static EnumDevType GetDevTypeFromEntryName(string strEntryName)
 		{
 			var devType = EnumDevType.unknown;
@@ -92,14 +102,24 @@ namespace NetPlan
 				return devType;
 			}
 
-			if (mapDevTypes.ContainsKey(strEntryName))
+			// 根据表入口名得到Alias字符串
+			var alias = NPECmdHelper.GetInstance().GetAliasByEntryName(strEntryName);
+			if (string.IsNullOrEmpty(alias))
 			{
-				return mapDevTypes[strEntryName];
+				Log.Error($"根据表入口{strEntryName}查询对应的alias失败");
+				return devType;
 			}
 
-			return devType;
+			// 把alias转换为类型
+			return Enum.TryParse(alias, true, out devType) ? devType : EnumDevType.unknown;
 		}
 
+		/// <summary>
+		/// 根据设备类型名查询MIB表入口
+		/// 类型名和配置文件中的alias一一对应方可
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
 		public static string GetEntryNameFromDevType(EnumDevType type)
 		{
 			if (EnumDevType.unknown == type)
@@ -107,12 +127,14 @@ namespace NetPlan
 				return null;
 			}
 
-			if (mapDevTypes.ContainsValue(type))
-			{
-				return mapDevTypes.FirstOrDefault(kv => kv.Value == type).Key;
-			}
+			var strDevType = type.ToString();
+			return NPECmdHelper.GetInstance().GetEntryNameByAlias(strDevType);
+			//if (mapDevTypes.ContainsValue(type))
+			//{
+			//	return mapDevTypes.FirstOrDefault(kv => kv.Value == type).Key;
+			//}
 
-			return null;
+			//return null;
 		}
 
 		/// <summary>
@@ -148,7 +170,7 @@ namespace NetPlan
 		{
 			// 板卡和rru之间的连接
 			if ((EnumDevType.board == src && EnumDevType.rru == dst) ||
-			    (EnumDevType.board == dst && EnumDevType.rru == src))
+				(EnumDevType.board == dst && EnumDevType.rru == src))
 			{
 				return EnumDevType.board_rru;
 			}
@@ -162,14 +184,14 @@ namespace NetPlan
 
 			// rru与ant之间的连接
 			if ((EnumDevType.rru == src && EnumDevType.ant == dst) ||
-			    (EnumDevType.rru == dst && EnumDevType.ant == src))
+				(EnumDevType.rru == dst && EnumDevType.ant == src))
 			{
 				return EnumDevType.rru_ant;
 			}
 
 			// rhub与pico之间的连接
 			if ((EnumDevType.rhub == src && EnumDevType.rru == dst) ||
-			    (EnumDevType.rhub == dst && EnumDevType.rru == src))
+				(EnumDevType.rhub == dst && EnumDevType.rru == src))
 			{
 				return EnumDevType.rhub_prru;
 			}
@@ -192,24 +214,27 @@ namespace NetPlan
 
 		#region 私有数据区
 
-		private static readonly Dictionary<string, EnumDevType> mapDevTypes = new Dictionary<string, EnumDevType>()
-		{
-			["netBoardEntry"] = EnumDevType.board,
-			["netRRUEntry"] = EnumDevType.rru,
-			["netRHUBEntry"] = EnumDevType.rhub,
-			["netAntennaArrayEntry"] = EnumDevType.ant,
-			["netRRUAntennaSettingEntry"] = EnumDevType.rru_ant,
-			["netIROptPlanEntry"] = EnumDevType.board_rru,
-			["netEthPlanEntry"] = EnumDevType.rhub_prru,
-			["nrNetLocalCellEntry"] = EnumDevType.nrNetLc,
-			["nrLocalCellEntry"] = EnumDevType.nrLc,
-			["nrCellEntry"] = EnumDevType.nrCell,
-			["netLocalCellEntry"] = EnumDevType.netLc,
-			["localCellEntry"] = EnumDevType.lc,
-			["cellEntry"] = EnumDevType.cell,
-			["nrNetLocalCellCtrlEntry"] = EnumDevType.nrNetLcCtr,
-			["netLocalCellCtrlEntry"] = EnumDevType.netLcCtr,
-		};
+		/// <summary>
+		/// todo 读取alias的值
+		/// </summary>
+		//private static readonly Dictionary<string, EnumDevType> mapDevTypes = new Dictionary<string, EnumDevType>()
+		//{
+		//	["netBoardEntry"] = EnumDevType.board,
+		//	["netRRUEntry"] = EnumDevType.rru,
+		//	["netRHUBEntry"] = EnumDevType.rhub,
+		//	["netAntennaArrayEntry"] = EnumDevType.ant,
+		//	["netRRUAntennaSettingEntry"] = EnumDevType.rru_ant,
+		//	["netIROptPlanEntry"] = EnumDevType.board_rru,
+		//	["netEthPlanEntry"] = EnumDevType.rhub_prru,
+		//	["nrNetLocalCellEntry"] = EnumDevType.nrNetLc,
+		//	["nrLocalCellEntry"] = EnumDevType.nrLc,
+		//	["nrCellEntry"] = EnumDevType.nrCell,
+		//	["netLocalCellEntry"] = EnumDevType.netLc,
+		//	["localCellEntry"] = EnumDevType.lc,
+		//	["cellEntry"] = EnumDevType.cell,
+		//	["nrNetLocalCellCtrlEntry"] = EnumDevType.nrNetLcCtr,
+		//	["netLocalCellCtrlEntry"] = EnumDevType.netLcCtr,
+		//};
 
 		private static readonly Dictionary<EnumDevType, List<EnumDevType>> mapValidDevTypeCon =
 			new Dictionary<EnumDevType, List<EnumDevType>>()
