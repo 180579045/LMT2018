@@ -55,13 +55,19 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 根据天线阵编号查询天线阵权重值
+		/// 根据天线阵类型编号查询天线阵权重值
 		/// </summary>
 		/// <param name="antNo"></param>
 		/// <returns></returns>
 		public AntWeight GetAntWeightByNo(int antNo)
 		{
-			return _antInfo.antennaWeightTable.FirstOrDefault(antWeight => antNo == antWeight.antArrayNotMibNumber);
+			var weightList = _antInfo.antennaWeightTable;
+			if (null == weightList || 0 == weightList.Count)
+			{
+				throw new CustomException("天线阵的权重信息为空");
+			}
+
+			return weightList.FirstOrDefault(antWeight => antNo == antWeight.antArrayNotMibNumber);
 		}
 
 		/// <summary>
@@ -98,6 +104,41 @@ namespace NetPlan
 					select item.antArrayIndex.ToString()).FirstOrDefault();
 		}
 
+		/// <summary>
+		/// 根据厂家索引和类型索引获取天线阵权重信息
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		public AntWeight GetAntWeightByNo(string strVendorIdx, string strTypeIdx)
+		{
+			var antNo = GetAntNoByVendorAndType(strVendorIdx, strTypeIdx);
+			return -1 == antNo ? null : GetAntWeightByNo(antNo);
+		}
+
+
+		public AntCoupCoe GetCouplingByAntVendorAndType(string strVendorIdx, string strTypeIdx)
+		{
+			var antNo = GetAntNoByVendorAndType(strVendorIdx, strTypeIdx);
+			return -1 == antNo ? null : GetAntCoupCoeByNo(antNo);
+		}
+
+		/// <summary>
+		/// 根据天线阵编号获取该天线阵的耦合系数
+		/// </summary>
+		/// <param name="antNo"></param>
+		/// <returns></returns>
+		public AntCoupCoe GetAntCoupCoeByNo(int antNo)
+		{
+			var coupList = _antInfo.couplingCoeffctTable;
+			if (null == coupList || 0 == coupList.Count)
+			{
+				throw new CustomException("天线阵的权重信息为空");
+			}
+
+			return coupList.FirstOrDefault(tmp => antNo == tmp.antArrayNotMibNumber);
+		}
+
 		#endregion
 
 		#region 私有接口、数据区
@@ -122,6 +163,29 @@ namespace NetPlan
 
 		private readonly WholeAntInfo _antInfo;
 
+
+		/// <summary>
+		/// 根据厂家索引和类型索引获取天线阵编号
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		private int GetAntNoByVendorAndType(string strVendorIdx, string strTypeIdx)
+		{
+			var nVIdx = int.Parse(strVendorIdx);
+			var nTIdx = int.Parse(strTypeIdx);
+
+			foreach (var item in _antInfo.antennaTypeTable)
+			{
+				if (item.antArrayVendor == nVIdx && item.antArrayIndex == nTIdx)
+				{
+					return item.antArrayNotMibNumber;
+				}
+			}
+
+			return -1;
+		}
+
 		#endregion
 	}
 
@@ -141,6 +205,9 @@ namespace NetPlan
 		}
 	}
 
+	/// <summary>
+	/// 天线阵类型信息
+	/// </summary>
 	public class AntType
 	{
 		public int antArrayNotMibNumber;
@@ -186,6 +253,9 @@ namespace NetPlan
 		}
 	}
 
+	/// <summary>
+	/// 多天线权重
+	/// </summary>
 	public class AntWeight
 	{
 		public int antArrayNotMibNumber;
@@ -196,7 +266,7 @@ namespace NetPlan
 			antArrayMultWeight = new List<Weight>();
 		}
 
-		// 格式化支持的天线阵频段
+		// todo 格式化支持的天线阵频段
 		public string FormatSupportFeqBand()
 		{
 			var feqBandMvr =
@@ -224,6 +294,9 @@ namespace NetPlan
 		}
 	}
 
+	/// <summary>
+	/// 权重信息
+	/// </summary>
 	public struct Weight
 	{
 		public int antennaWeightMultFrequencyBand;
@@ -250,12 +323,19 @@ namespace NetPlan
 		public int antennaWeightMultAntPhase7;
 	}
 
+
+	/// <summary>
+	/// 天线耦合
+	/// </summary>
 	public class AntCoupCoe
 	{
 		public int antArrayNotMibNumber;
 		public List<CoupCoe> antArrayCouplingCoeffctInfo;
 	}
 
+	/// <summary>
+	/// 耦合数据
+	/// </summary>
 	public struct CoupCoe
 	{
 		public int antCouplCoeffFreq;

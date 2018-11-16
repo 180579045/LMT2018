@@ -153,7 +153,7 @@ namespace NetPlan
 		public DevAttributeInfo AddNewAnt(int nIndex, string strVerdorName, string strAntTypeName)
 		{
 			const EnumDevType type = EnumDevType.ant;
-			var ant = GerenalNewDev(type, nIndex);
+			var ant = GeneralNewDev(type, nIndex);
 			if (null == ant)
 			{
 				return null;
@@ -210,7 +210,7 @@ namespace NetPlan
 			}
 
 			const EnumDevType type = EnumDevType.board;
-			var dev = GerenalNewDev(type, slot);
+			var dev = GeneralNewDev(type, slot);
 			if (null == dev)
 			{
 				Log.Error($"生成新设备属性失败，可能已经存在相同索引相同类型的设备");
@@ -254,7 +254,7 @@ namespace NetPlan
 			var rruList = new List<DevAttributeInfo>();
 			foreach (var seqIndex in seqIndexList)
 			{
-				var newRru = GerenalNewDev(type, seqIndex);
+				var newRru = GeneralNewDev(type, seqIndex);
 				if (null == newRru)
 				{
 					Log.Error($"根据RRU编号{seqIndex}生成新设备失败");
@@ -355,7 +355,7 @@ namespace NetPlan
 		public DevAttributeInfo AddNewLocalCell(int nLocalCellId)
 		{
 			const EnumDevType type = EnumDevType.nrNetLc;
-			var dev = GerenalNewDev(type, nLocalCellId);
+			var dev = GeneralNewDev(type, nLocalCellId);
 			if (null == dev)
 			{
 				Log.Error($"生成本地小区{nLocalCellId}的属性失败");
@@ -870,6 +870,7 @@ namespace NetPlan
 			lock (_syncObj)
 			{
 				m_mapAllMibData.Clear();
+				m_mapAntWcb.Clear();
 				m_linkMgr.Clear();
 			}
 		}
@@ -903,12 +904,202 @@ namespace NetPlan
 			return GetDevAttributeInfo(strLcID, type);
 		}
 
+		/// <summary>
+		/// 生成天线阵权重、耦合系数、波束扫描信息
+		/// </summary>
+		/// <returns></returns>
+		public bool GeneralAllAntWCBDev()
+		{
+			if (!m_mapAllMibData.ContainsKey(EnumDevType.ant))
+			{
+				return false;
+			}
+
+			var antList = m_mapAllMibData[EnumDevType.ant];
+			if (null == antList || 0 == antList.Count)
+			{
+				return false;
+			}
+
+			var mapKv = new Dictionary<string, string>
+			{
+				["netAntArrayTypeIndex"] = null,
+				["netAntArrayVendorIndex"] = null
+			};
+
+			foreach (var ant in antList)
+			{
+				if (!GetNeedUpdateValue(ant, mapKv))
+				{
+					Log.Error($"查询索引为{ant.m_strOidIndex}天线阵的厂家和类型索引失败，不下发该天线阵的权重信息");
+					continue;
+				}
+
+				var strAntNo = ant.m_strOidIndex.TrimStart('.');
+
+				var vi = mapKv["netAntArrayVendorIndex"];
+				var ti = mapKv["netAntArrayTypeIndex"];
+				var antWeight = NPEAntHelper.GetInstance().GetAntWeightByNo(vi, ti);
+				if (null != antWeight)
+				{
+					// 生成权重信息
+					GeneralAntWeigthDev(antWeight, strAntNo);
+				}
+				else
+				{
+					Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵权重信息失败");
+				}
+
+				// 生成耦合系数
+				var antCoupling = NPEAntHelper.GetInstance().GetCouplingByAntVendorAndType(vi, ti);
+				if (null != antCoupling)
+				{
+					GeneralAntCoupling(antCoupling, strAntNo);
+				}
+				else
+				{
+					Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵耦合系数信息失败");
+				}
+
+				// todo 波束宽度扫描信息后续添加
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 查询指定设备的多个字段值
+		/// </summary>
+		/// <param name="dev">设备属性</param>
+		/// <param name="mapFieldAndValue">多个字段。key:字段名，value:字段值</param>
+		/// <param name="bConvertToDigital">枚举值是否转换为数字</param>
+		/// <returns>全部查询成功，返回true；其他情况返回false</returns>
+		private static bool GetNeedUpdateValue(DevAttributeInfo dev, IDictionary<string, string> mapFieldAndValue, bool bConvertToDigital = true)
+		{
+			foreach (var kv in mapFieldAndValue)
+			{
+				var value = GetNeedUpdateValue(dev, kv.Key, bConvertToDigital);
+				if (null == value)
+				{
+					return false;
+				}
+
+				mapFieldAndValue[kv.Key] = value;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 生成天线阵权重
+		/// </summary>
+		/// <param name="aw"></param>
+		/// <param name="strAntNo"></param>
+		/// <returns></returns>
+		private void GeneralAntWeigthDev(AntWeight aw, string strAntNo)
+		{
+			var witList = aw.antArrayMultWeight;
+
+			foreach (var item in witList)
+			{
+				var fb = item.antennaWeightMultFrequencyBand;
+				var gi = item.antennaWeightMultAntGrpIndex;
+				var si = item.antennaWeightMultAntStatusIndex;
+				var idx = $".{strAntNo}.{fb}.{gi}.{si}";
+				var dev = new DevAttributeInfo(EnumDevType.antWeight, idx);
+				if (dev.m_mapAttributes.Count == 0)
+				{
+					continue;
+				}
+
+				dev.SetFieldOriginValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntVerHalfPowerBeamWidth", item.antennaWeightMultAntVerHalfPowerBeamWidth.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude0", item.antennaWeightMultAntAmplitude0.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase0", item.antennaWeightMultAntPhase0.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude1", item.antennaWeightMultAntAmplitude1.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase1", item.antennaWeightMultAntPhase1.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude2", item.antennaWeightMultAntAmplitude2.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase2", item.antennaWeightMultAntPhase2.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude3", item.antennaWeightMultAntAmplitude3.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase3", item.antennaWeightMultAntPhase3.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude4", item.antennaWeightMultAntAmplitude4.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase4", item.antennaWeightMultAntPhase4.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude5", item.antennaWeightMultAntAmplitude5.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase5", item.antennaWeightMultAntPhase5.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude6", item.antennaWeightMultAntAmplitude6.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase6", item.antennaWeightMultAntPhase6.ToString());
+
+				dev.SetFieldOriginValue("antennaWeightMultAntAmplitude7", item.antennaWeightMultAntAmplitude7.ToString());
+				dev.SetFieldOriginValue("antennaWeightMultAntPhase7", item.antennaWeightMultAntPhase7.ToString());
+
+				AddDevToMap(m_mapAntWcb, EnumDevType.antWeight, dev);
+			}
+		}
+
+		/// <summary>
+		/// 生成天线阵的耦合系数
+		/// </summary>
+		/// <param name="coupCoe"></param>
+		/// <param name="strAnoNo"></param>
+		private void GeneralAntCoupling(AntCoupCoe coupCoe, string strAnoNo)
+		{
+			var coupList = coupCoe.antArrayCouplingCoeffctInfo;
+
+			foreach (var item in coupList)
+			{
+				var fb = item.antCouplCoeffFreq;
+				var gi = item.antCouplCoeffAntGrpIndex;
+				var idx = $".{strAnoNo}.{fb}.{gi}";
+
+				var dev = new DevAttributeInfo(EnumDevType.antCoup, idx);
+				if (dev.m_mapAttributes.Count == 0)
+				{
+					continue;
+				}
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude0", item.antCouplCoeffAmplitude0.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase0", item.antCouplCoeffPhase0.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude1", item.antCouplCoeffAmplitude1.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase1", item.antCouplCoeffPhase1.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude2", item.antCouplCoeffAmplitude2.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase2", item.antCouplCoeffPhase2.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude3", item.antCouplCoeffAmplitude3.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase3", item.antCouplCoeffPhase3.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude4", item.antCouplCoeffAmplitude0.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase4", item.antCouplCoeffPhase4.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude5", item.antCouplCoeffAmplitude5.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase5", item.antCouplCoeffPhase5.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude6", item.antCouplCoeffAmplitude6.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase6", item.antCouplCoeffPhase6.ToString());
+
+				dev.SetFieldOriginValue("antCouplCoeffAmplitude7", item.antCouplCoeffAmplitude7.ToString());
+				dev.SetFieldOriginValue("antCouplCoeffPhase7", item.antCouplCoeffPhase7.ToString());
+
+				AddDevToMap(m_mapAntWcb, EnumDevType.antCoup, dev);
+			}
+		}
+
 		#endregion 公共接口
 
 		#region 私有接口
 
-		private MibInfoMgr()
+		private MibInfoMgr(MAP_DEVTYPE_DEVATTRI mMapAntWcb)
 		{
+			m_mapAntWcb = mMapAntWcb;
 			m_mapAllMibData = new MAP_DEVTYPE_DEVATTRI();
 			m_linkMgr = new NetPlanLinkMgr();
 		}
@@ -1019,7 +1210,7 @@ namespace NetPlan
 		/// <param name="type"></param>
 		/// <param name="lastIndexValue"></param>
 		/// <returns></returns>
-		private DevAttributeInfo GerenalNewDev(EnumDevType type, int lastIndexValue)
+		private DevAttributeInfo GeneralNewDev(EnumDevType type, int lastIndexValue)
 		{
 			var dev = new DevAttributeInfo(type, lastIndexValue);
 			if (dev.m_mapAttributes.Count == 0)
@@ -1503,6 +1694,8 @@ namespace NetPlan
 		// 保存所有的网规MIB数据。开始保存的是从设备中查询回来的信息，如果对这些信息进行了修改、删除，就从这个数据结构中移动到对应的结构中
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
 		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
+
+		private MAP_DEVTYPE_DEVATTRI m_mapAntWcb;			// 天线阵的weight, couple, bfscan信息
 
 		private readonly NetPlanLinkMgr m_linkMgr;
 
