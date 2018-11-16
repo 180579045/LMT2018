@@ -384,7 +384,7 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            if (strTableName == "alarmCauseEntry")
+            if (strTableName == "adjeNBEntry")
                 Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
@@ -1218,7 +1218,9 @@ namespace CfgFileOperation
         private bool RecordInstanceSetCfgInst(int TableDimen, ushort bufLens, bool isDyTable, int[] indexValue, CfgTableOp tableOp, string strTableContent, int nTableRecord)
         {
             if (isDyTable == true && nTableRecord == int.Parse(strTableContent))//动态表的处理
-            return false;
+            {
+                return false;
+            }
             string strInstantNum = "";
             if (TableDimen == 0)//0维索引：即标量表
                 strInstantNum = "." + "0";//标量
@@ -1291,6 +1293,8 @@ namespace CfgFileOperation
                 else // 如果是最后一维度
                     if (RecordInstanceSetCfgInst(TableDimen, bufLens, isDyTable, indexValue, tableOp, strTableContent, nTableRecord))
                         nTableRecord++;
+                //if (nTableRecord == 95)
+                //    Console.WriteLine();
             }
             return nTableRecord;
         }
@@ -1404,6 +1408,15 @@ namespace CfgFileOperation
                 }
             }
         }
+        /// <summary>
+        /// 实例 ：索引相关的数据值
+        /// </summary>
+        /// <param name="pBuff"></param>
+        /// <param name="StartNo"></param>
+        /// <param name="TableDimen"></param>
+        /// <param name="indexValue"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="bytePosL"></param>
         private void RecordIndexInstance(List<byte[]> pBuff, int StartNo,int TableDimen, int[] indexValue, CfgTableOp tableOp, List<int> bytePosL)//struIndexInfoCFG* pStruIndexInfo,
         {
             string defaultVal = "";
@@ -1496,7 +1509,12 @@ namespace CfgFileOperation
                 if (("×" == value))
                     value = "";
                 byte[] mybyte = Encoding.Unicode.GetBytes(value);
-                SetValueToByteArray(byteArray, bytePosL, mybyte);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
+                byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
+                string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
+                SetValueToByteArray(byteArray, bytePosL, mybyte2);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
+                if (mybyte2.Length < strLen)
+                    bytePosL[0] += strLen - mybyte2.Length;
+
             }
             else if (OMType == "s8")   //char *
             {
@@ -1863,8 +1881,10 @@ namespace CfgFileOperation
                     TypeToByteArr = BitConverter.GetBytes((ushort)nVlaue);
                     SetValueToByteArray(byteArrayNew, bytePosLNew, TypeToByteArr[0]);//memcpy(pszOut++, &nVlaue, sizeof(char));
                 }
+                // 最后一位字节补位: 0xFF
                 int defauleValue = 255;
                 TypeToByteArr = BitConverter.GetBytes((ushort)defauleValue);
+                //byte decBytes = Convert.ToByte("255", 16);
                 SetValueToByteArray(byteArrayNew, bytePosLNew, TypeToByteArr[0]); //memcpy(pszOut++, &defauleValue, sizeof(char));
             }
             else
@@ -1874,10 +1894,16 @@ namespace CfgFileOperation
                     string strTempValue = strInput[i].ToString();// strInput.Substring(i, 1);// Mid(i, 1);
                     int nVlaue = int.Parse(strTempValue);//atoi(strTempValue);
                     TypeToByteArr = BitConverter.GetBytes((ushort)nVlaue);
+                    //byte decBytes = Convert.ToByte(strTempValue, 16);
                     SetValueToByteArray(byteArrayNew, bytePosLNew, TypeToByteArr[0]);//memcpy(pszOut++, &nVlaue, sizeof(char));
                 }
             }
+            if (strInput.Length < 2)
+            {
+                Console.WriteLine(String.Format("{0} len = {1} is to shorter than 3.", strInput, strInput.Length));
+            }
             Buffer.BlockCopy((byte[])byteArrayNew[0], 0, byteArray[0], bytePosL[0], 3);
+            bytePosL[0] += 3;
             return;
         }
         private void GetDateAndTimeTypeValue(List<byte[]> byteArray, List<int> bytePosL, string strInput)
