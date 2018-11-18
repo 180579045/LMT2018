@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using CommonUtility;
 using DataBaseUtil;
@@ -469,8 +468,40 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
+				// 由于rru设备的特殊性，同时关系到本地小区映射关系和天线阵的连接，删除RRU设备时，需要删除天线阵安装规划表中的所有相关联的数据
+				if (EnumDevType.rru == devType)
+				{
+					if (!DelRecordFromRruAntSettingTblByRruIndex(strIndex))
+					{
+						return false;
+					}
+				}
+
 				DelDevFromMap(m_mapAllMibData, devType, dev);
 			}
+			return true;
+		}
+
+		/// <summary>
+		/// 根据rru索引删除天线安装规划表中的所有记录
+		/// </summary>
+		/// <param name="strRruIndex"></param>
+		private bool DelRecordFromRruAntSettingTblByRruIndex(string strRruIndex)
+		{
+			var rruPathInfoList = GetRruPortInfoByIndex(strRruIndex);
+			if (null == rruPathInfoList)
+			{
+				return false;
+			}
+
+			foreach (var pathInfo in rruPathInfoList)
+			{
+				var portNo = pathInfo.rruTypePortNo;
+				var ridx = $"{strRruIndex}.{portNo}";
+				var record = GetDevAttributeInfo(ridx, EnumDevType.rru_ant);
+				DelDevFromMap(m_mapAllMibData, EnumDevType.rru_ant, record);
+			}
+
 			return true;
 		}
 
@@ -687,6 +718,125 @@ namespace NetPlan
 				throw new ArgumentNullException();
 			}
 
+			var retMap = new Dictionary<string, NPRruToCellInfo>();
+			var rruPathInfoList = GetRruPortInfoByIndex(strIndex);
+			if (null == rruPathInfoList)
+			{
+				return retMap;
+			}
+
+			// 遍历rru通道信息
+			foreach (var pathInfo in rruPathInfoList)
+			{
+				var pathNo = pathInfo.rruTypePortNo;        // rru通道编号
+				var tmpIdx = $"{strIndex}.{pathNo}";
+
+				// 查找是否存在天线阵安装规划表信息
+				var rai = GetDevAttributeInfo(tmpIdx, EnumDevType.rru_ant);
+				if (null == rai)
+				{
+					rai = new DevAttributeInfo(EnumDevType.rru_ant, tmpIdx);    // todo 删除天线阵时，才删除所有的天线阵安装规划表信息
+					AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, rai);
+				}
+
+				GetRruPortToCellInfo(rai, pathInfo, ref retMap, (RecordDataType.Original == rai.m_recordType));
+			}
+
+			return retMap;
+		}
+
+		/// <summary>
+		/// 配置RRU通道与本地小区的关联关系
+		/// </summary>
+		/// <param name="strRruIndex">rru索引</param>
+		/// <param name="portToCellInfoList">端口对应的本地小区信息。key:rru通道号，value:本地小区信息</param>
+		/// <returns></returns>
+		public bool SetNetLcInfo(string strRruIndex, Dictionary<string, NPRruToCellInfo> portToCellInfoList)
+		{
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (null == targetIp)
+			{
+				throw new CustomException("尚未选中基站");
+			}
+
+			const EnumDevType devType = EnumDevType.rru_ant;
+			var rruNo = strRruIndex.Trim('.');
+
+			Func<KeyValuePair<string, NPRruToCellInfo>, bool> la = (kv) =>
+			{
+				var newDev = AddNewRruAntDev(rruNo, kv.Key, kv.Value);
+				if (null == newDev)
+				{
+					Log.Error("新加天线阵安装规划表实例失败");
+					return false;
+				}
+				AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newDev);
+				return true;
+			};
+
+			lock (_syncObj)
+			{
+				if (m_mapAllMibData.ContainsKey(devType))
+				{
+					var devList = m_mapAllMibData[devType];
+					foreach (var kv in portToCellInfoList) // 遍历传入的所有值
+					{
+						var strIndex = $".{rruNo}.{kv.Key}"; // 用rru编号和port编号组成索引
+						var dev = GetSameIndexDev(devList, strIndex);
+
+						if (null == dev)
+						{
+							if (!la(kv))
+							{
+								return false;
+							}
+						}
+						else
+						{
+							var mapAttri = dev.m_mapAttributes;
+
+							SetRruAntSettingTableInfo(mapAttri, kv.Value);
+
+							if (dev.m_recordType != RecordDataType.NewAdd)
+							{
+								dev.m_recordType = RecordDataType.Modified;
+							}
+						}
+					}
+				}
+				else
+				{
+					if (portToCellInfoList.Any(kv => !la(kv)))
+					{
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 增加一行天线阵安装规划表记录
+		/// </summary>
+		/// <param name="strRruNo"></param>
+		/// <param name="strPort"></param>
+		/// <param name="lcInfo"></param>
+		/// <returns></returns>
+		private static DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
+		{
+			var strIndex = $".{strRruNo.Trim('.')}.{strPort}";
+			var newDev = new DevAttributeInfo(EnumDevType.rru_ant, strIndex);
+			return !SetRruAntSettingTableInfo(newDev.m_mapAttributes, lcInfo) ? null : newDev;
+		}
+
+		/// <summary>
+		/// 根据RRU设备索引获取所有通道信息
+		/// </summary>
+		/// <param name="strIndex"></param>
+		/// <returns></returns>
+		private IEnumerable<RruPortInfo> GetRruPortInfoByIndex(string strIndex)
+		{
 			int rruNo;
 
 			if (!int.TryParse(strIndex.Trim('.'), out rruNo))
@@ -727,107 +877,7 @@ namespace NetPlan
 				return null;
 			}
 
-			// 遍历rru通道信息
-			var retMap = new Dictionary<string, NPRruToCellInfo>();
-			foreach (var pathInfo in rruPathInfoList)
-			{
-				var pathNo = pathInfo.rruTypePortNo;        // rru通道编号
-				var tmpIdx = $"{strIndex}.{pathNo}";
-
-				// 查找是否存在天线阵安装规划表信息
-				var rai = GetDevAttributeInfo(tmpIdx, EnumDevType.rru_ant);
-				if (null == rai)
-				{
-					continue;
-				}
-
-				GetRruPortToCellInfo(rai, pathInfo, ref retMap, (RecordDataType.Original == rai.m_recordType));
-			}
-
-			return retMap;
-		}
-
-		/// <summary>
-		/// 配置RRU通道与本地小区的关联关系
-		/// </summary>
-		/// <returns></returns>
-		public bool SetNetLcInfo(string strRruIndex, Dictionary<string, NPRruToCellInfo> portToCellInfoList)
-		{
-			var targetIp = CSEnbHelper.GetCurEnbAddr();
-			if (null == targetIp)
-			{
-				throw new CustomException("尚未选中基站");
-			}
-
-			const EnumDevType devType = EnumDevType.rru_ant;
-			var rruNo = strRruIndex.Trim('.');
-			var waitRemoveList = new List<string>();
-
-			lock (_syncObj)
-			{
-				if (m_mapAllMibData.ContainsKey(devType))
-				{
-					var devList = m_mapAllMibData[devType];
-					foreach (var kv in portToCellInfoList) // 遍历传入的所有值
-					{
-						var strIndex = $".{rruNo}.{kv.Key}"; // 用rru编号和port编号组成索引
-						var dev = GetSameIndexDev(devList, strIndex);
-
-						if (null == dev)
-							continue;
-
-						var mapAttri = dev.m_mapAttributes;
-
-						SetRruAntSettingTableInfo(mapAttri, kv.Value);
-
-						if (dev.m_recordType != RecordDataType.NewAdd)
-						{
-							dev.m_recordType = RecordDataType.Modified;
-						}
-						waitRemoveList.Add(kv.Key);
-					}
-				}
-			}
-
-			foreach (var item in waitRemoveList)
-			{
-				portToCellInfoList.Remove(item);
-			}
-
-			waitRemoveList.Clear();
-
-			// 如果还有信息没有用完，就new一个rru_ant对象
-			if (portToCellInfoList.Count <= 0) return true;
-
-			foreach (var item in portToCellInfoList)
-			{
-				var newDev = AddNewRruAntDev(rruNo, item.Key, item.Value);
-				if (null == newDev)
-				{
-					Log.Error("新加天线阵安装规划表实例失败");
-					return false;
-				}
-				lock (_syncObj)
-				{
-					AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newDev);
-				}
-			}
-
-			return true;
-		}
-
-		/// <summary>
-		/// 增加一行天线阵安装规划表记录
-		/// </summary>
-		/// <param name="strRruNo"></param>
-		/// <param name="strPort"></param>
-		/// <param name="lcInfo"></param>
-		/// <returns></returns>
-		private static DevAttributeInfo AddNewRruAntDev(string strRruNo, string strPort, NPRruToCellInfo lcInfo)
-		{
-			var strIndex = $".{strRruNo.Trim('.')}.{strPort}";
-			var newDev = new DevAttributeInfo(EnumDevType.rru_ant, strIndex);
-			return !SetRruAntSettingTableInfo(newDev.m_mapAttributes, lcInfo) ? null : newDev;
+			return rruPathInfoList;
 		}
 
 		/// <summary>
@@ -944,7 +994,7 @@ namespace NetPlan
 		/// 生成天线阵权重、耦合系数、波束扫描信息
 		/// </summary>
 		/// <returns></returns>
-		public bool GeneralAllAntWCBDev()
+		private bool GeneralAllAntWCBDev()
 		{
 			if (!m_mapAllMibData.ContainsKey(EnumDevType.ant))
 			{
@@ -1497,7 +1547,7 @@ namespace NetPlan
 		/// <param name="rpi"></param>
 		/// <param name="mapResult"></param>
 		/// <param name="bCellFix"></param>
-		private bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
+		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
 		{
 			var rtc = new NPRruToCellInfo();
 			var supportTx = rpi.rruTypePortNotMibRxTxStatus;
@@ -1555,7 +1605,7 @@ namespace NetPlan
 				}
 			}
 
-			rtc.SupportFreqBand= sb.ToString().TrimEnd('/');
+			rtc.SupportFreqBand = sb.ToString().TrimEnd('/');
 			mapResult.Add(portNo, rtc);
 
 			return true;
@@ -1616,7 +1666,7 @@ namespace NetPlan
 			lcAttr3.SetLatestValue("-1");
 			lcAttr4.SetLatestValue("-1");
 
-			// todo 目前每个通道只支持3个本地小区
+			// todo 目前每个通道只支持3个本地小区，后面可能会扩展
 			for (var i = 1; i <= lcIdList.Count; i++)
 			{
 				switch (i)
@@ -1689,7 +1739,7 @@ namespace NetPlan
 		/// <param name="dev"></param>
 		/// <param name="strLcId"></param>
 		/// <returns></returns>
-		private bool ResetNetLcConfig(DevAttributeInfo dev, string strLcId)
+		private static bool ResetNetLcConfig(DevAttributeInfo dev, string strLcId)
 		{
 			if (null == dev || string.IsNullOrEmpty(strLcId))
 			{
