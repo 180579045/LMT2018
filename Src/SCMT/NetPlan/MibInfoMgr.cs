@@ -1672,19 +1672,19 @@ namespace NetPlan
 				switch (i)
 				{
 					case 1:
-						lcAttr1.SetLatestValue(lcIdList[i - 1].ToString());
+						lcAttr1.SetLatestValue(lcIdList[i - 1].cellId.ToString());
 						break;
 
 					case 2:
-						lcAttr2.SetLatestValue(lcIdList[i - 1].ToString());
+						lcAttr2.SetLatestValue(lcIdList[i - 1].cellId.ToString());
 						break;
 
 					case 3:
-						lcAttr3.SetLatestValue(lcIdList[i - 1].ToString());
+						lcAttr3.SetLatestValue(lcIdList[i - 1].cellId.ToString());
 						break;
 
 					case 4:
-						lcAttr4.SetLatestValue(lcIdList[i - 1].ToString());
+						lcAttr4.SetLatestValue(lcIdList[i - 1].cellId.ToString());
 						break;
 
 					default:
