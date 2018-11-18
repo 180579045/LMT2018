@@ -292,6 +292,23 @@ namespace NetPlan.DevLink
 			return (null == dev);
 		}
 
+		/// <summary>
+		/// 修改dev的记录类型为modify
+		/// </summary>
+		/// <param name="dev"></param>
+		protected void ChangeDevRecordTypeToModify(DevAttributeInfo dev)
+		{
+			if (null == dev)
+			{
+				return;
+			}
+
+			if (RecordDataType.NewAdd != dev.m_recordType)
+			{
+				dev.m_recordType = RecordDataType.Modified;
+			}
+		}
+
 		#endregion
 
 		#region 私有数据区

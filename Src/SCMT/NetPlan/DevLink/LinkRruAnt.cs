@@ -15,14 +15,36 @@ namespace NetPlan.DevLink
 		{
 			mapOriginData = mapMibInfo;
 
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, null))		// 这里传入null，因为rru和本地小区的关联也会添加rru_ant类型的记录，此处直接跳过不检查
 			{
 				return false;
 			}
 
 			// 增加netRRUAntennaSettingEntry表一行记录
-			var newRecord = new DevAttributeInfo(EnumDevType.rru_ant, m_strRruAntIndex);
-			return SetRruLinkAntInfo(newRecord) && AddDevToMap(mapMibInfo, EnumDevType.rru_ant, newRecord);
+			DevAttributeInfo newRecord;
+			var oldRecord = GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
+			if (null != oldRecord)
+			{
+				newRecord = oldRecord.DeepClone();
+			}
+			else
+			{
+				newRecord = new DevAttributeInfo(m_recordType, m_strRruAntIndex);
+			}
+
+			ChangeDevRecordTypeToModify(newRecord);
+
+			if (!SetRruLinkAntInfo(newRecord, "1"))
+			{
+				return false;
+			}
+
+			if (null != oldRecord)
+			{
+				mapMibInfo[m_recordType].Remove(oldRecord);
+			}
+
+			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
 		}
 
 		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
@@ -34,9 +56,20 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			var raLink = GetDevAttributeInfo(m_strRruAntIndex, EnumDevType.rru_ant);
-			MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.rru_ant, raLink);
-			return true;
+			var raLink = GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
+
+			// 不能直接删除，可能带有RRU与小区的关联数据
+			var newRecord = raLink.DeepClone();
+			ChangeDevRecordTypeToModify(newRecord);
+
+			if (!SetRruLinkAntInfo(newRecord, "-1"))
+			{
+				return false;
+			}
+
+			mapMibInfo[m_recordType].Remove(raLink);
+
+			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
 		}
 
 		/// 验证两端连接的设备是否存在
@@ -65,11 +98,14 @@ namespace NetPlan.DevLink
 
 			// 验证天线阵安装规划表中是否已经存在相同索引的实例
 			m_strRruAntIndex = $"{strRruIndex}.{m_nRruPort}";
-			if (!checkExist.Invoke(m_strRruAntIndex, EnumDevType.rru_ant))
+			if (null != checkExist)
 			{
-				return false;
+				if (!checkExist.Invoke(m_strRruAntIndex, m_recordType))
+				{
+					return false;
+				}
 			}
-			//var record = GetDevAttributeInfo(m_strRruAntIndex, EnumDevType.rru_ant);
+			//var record = GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
 			//if (null != record)
 			//{
 			//	Log.Error($"索引为{strRruIndex}RRU{m_nRruPort}通道已经有到天线阵的连接");
@@ -108,21 +144,20 @@ namespace NetPlan.DevLink
 		/// 设置RRU设备中
 		/// </summary>
 		/// <param name="record"></param>
+		/// <param name="strValue">重置的值。如果为-1，表示重置</param>
 		/// <returns></returns>
-		private bool SetRruLinkAntInfo(DevAttributeInfo record)
+		private bool SetRruLinkAntInfo(DevAttributeInfo record, string strValue)
 		{
-			var strAntNo = m_antDev.m_strOidIndex.Trim('.');
-			if (!record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo))
+			var strAntNo = m_antDev.m_strOidIndex.Trim('.');;
+			var strPathNo = m_nAntPort.ToString();
+			if ("-1" == strValue)
 			{
-				return false;
+				strAntNo = "-1";
+				strPathNo = "-1";
 			}
 
-			if (!record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", m_nAntPort.ToString()))
-			{
-				return false;
-			}
-
-			return true;
+			return  record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
+					record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", strPathNo);
 		}
 
 		#endregion
@@ -135,6 +170,7 @@ namespace NetPlan.DevLink
 		private int m_nRruPort;
 		private int m_nAntPort;
 		private string m_strRruAntIndex;
+		private const EnumDevType m_recordType = EnumDevType.rru_ant; // todo 后面移动到基类中
 
 		#endregion
 	}
