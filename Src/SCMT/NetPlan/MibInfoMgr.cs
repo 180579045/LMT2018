@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using CommonUtility;
 using DataBaseUtil;
@@ -1498,18 +1499,24 @@ namespace NetPlan
 		/// <param name="bCellFix"></param>
 		private bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
 		{
-			var sb = new StringBuilder();
+			var rtc = new NPRruToCellInfo();
 			var supportTx = rpi.rruTypePortNotMibRxTxStatus;
 			foreach (var stx in supportTx)
 			{
-				sb.Append($"{stx.value}:{stx.desc}/");
+				var trxMap = MibStringHelper.SplitMibEnumString(stx.desc);
+				if (null != trxMap)
+				{
+					rtc.SupportTxRxStatus.AddRange(trxMap.Values);
+				}
 			}
 
-			var trxStatus = sb.ToString().TrimEnd('/');
+			if (rtc.SupportTxRxStatus.Count > 0)
+			{
+				rtc.RealTRx = rtc.SupportTxRxStatus.Last();
+			}
 
 			// 通道频道信息是根据小区的id从netLc表中找到netLcFreqBand字段的值
 			// RRU 的ID相同，取出所有通道对应的信息
-			var rtc = new NPRruToCellInfo(trxStatus);
 			var mapAttri = dev.m_mapAttributes;
 			for (var i = 2; i <= 4; i++)
 			{
@@ -1533,15 +1540,22 @@ namespace NetPlan
 				return false;
 			}
 
-			sb.Clear();
+			var sb = new StringBuilder();
 
 			var sfbList = rpi.rruTypePortSupportFreqBand;
 			foreach (var sfb in sfbList)
 			{
-				sb.Append($"{sfb.value}:{sfb.desc}/");
+				var kvMap = MibStringHelper.SplitMibEnumString(sfb.desc);
+				if (null != kvMap)
+				{
+					foreach (var kv in kvMap)
+					{
+						sb.Append($"{kv.Value}/");
+					}
+				}
 			}
 
-			rtc.FreqBand = sb.ToString().TrimEnd('/');
+			rtc.SupportFreqBand= sb.ToString().TrimEnd('/');
 			mapResult.Add(portNo, rtc);
 
 			return true;
@@ -1587,7 +1601,7 @@ namespace NetPlan
 			if (mapAttributes.ContainsKey("netSetRRUPortTxRxStatus"))
 			{
 				var tempAtrri = mapAttributes["netSetRRUPortTxRxStatus"];
-				tempAtrri.SetLatestValue(lcInfo.TxRxStatus);
+				tempAtrri.SetLatestValue(lcInfo.RealTRx);
 			}
 
 			var lcIdList = lcInfo.CellIdList;

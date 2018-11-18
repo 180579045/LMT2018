@@ -9,13 +9,14 @@ namespace NetPlan
 	public class NPRruToCellInfo
 	{
 		public List<CellAndState> CellIdList;
-		public string TxRxStatus;			// 收发方向
-		public string FreqBand;				// 通道频段
+		public List<string> SupportTxRxStatus;		// 支持的收发方向，只用于呈现在端口归属小区窗口中
+		public string RealTRx;						// 用于配置的频道收发方向
+		public string SupportFreqBand;				// 支持的通道频段
 
-		public NPRruToCellInfo(string trStatus)
+		public NPRruToCellInfo()
 		{
 			CellIdList = new List<CellAndState>();
-			TxRxStatus = trStatus;
+			SupportTxRxStatus = new List<string>();
 		}
 	}
 
