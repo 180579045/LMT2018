@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Common.Logging;
 using System.Runtime.CompilerServices;
+//using Common.Logging;
+using log4net;
 
 //[assembly: log4net.Config.XmlConfigurator(ConfigFile = "config/LogCfg/Log4Net.xml", Watch = true)]
 namespace LogManager
 {
-	public class Log
+	public static class Log
 	{
-		private static readonly ILog log = Common.Logging.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-		 ///<summary>
-		 ///输出日志到Log4Net
-		 ///</summary>
-		 ///<param name = "ex" ></ param >
+		//private static readonly ILog log = Common.Logging.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+		private static ILog log;
+
 		#region static void WriteLog(Exception ex)
 
 		//错误信息
@@ -26,6 +22,7 @@ namespace LogManager
 		{
 			log.Error($"{filePath} {memeberName} {lineNumber} Error", ex);
 		}
+
 		//严重错误
 		public static void WriteLogFatal(Exception ex,
 			[CallerFilePath] string filePath = null,
@@ -34,12 +31,14 @@ namespace LogManager
 		{
 			log.Fatal($"{filePath} {memeberName} {lineNumber} Fatal", ex);
 		}
-		#endregion
+
+		#endregion static void WriteLog(Exception ex)
 
 		/// <summary>
 		/// 输出日志到Log4Net
 		/// </summary>
 		/// <param name="msg"></param>
+
 		#region static void WriteLog(string msg)
 
 		//调试信息
@@ -59,7 +58,7 @@ namespace LogManager
 		{
 			log.Info($"{filePath} {memeberName} {lineNumber} {msg}");
 		}
-		
+
 		public static void Warn(string msg,
 			[CallerFilePath] string filePath = null,
 			[CallerLineNumber] int lineNumber = 0,
@@ -76,6 +75,11 @@ namespace LogManager
 			log.Error($"{filePath} {memeberName} {lineNumber} {msg}");
 		}
 
-		#endregion
+		public static void SetLogFileName(string strFileName)
+		{
+			log = CustomRollingFileLogger.GetCustomLogger(strFileName);
+		}
+
+		#endregion static void WriteLog(string msg)
 	}
 }
