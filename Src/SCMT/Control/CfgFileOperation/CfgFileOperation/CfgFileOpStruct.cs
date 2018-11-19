@@ -1418,10 +1418,15 @@ namespace CfgFileOpStruct
                 alarmCauseToAlarmBox = "1";
             }
             // "5038" sStrValueNO
-            else// (String.Equals("否", alarmRow[("IsReportToOMCR")].ToString()))
+            else if (String.Equals("否", alarmRow[("IsReportToOMCR")].ToString()))
             {
                 alarmCauseIsValid = "1";
                 alarmCauseToAlarmBox = "0";
+            }
+            else
+            {
+                alarmCauseIsValid = "0";
+                alarmCauseToAlarmBox = "1";
             }
             string TmpValue = alarmRow[("AlaType")].ToString();
             alarmCauseType = TmpValue.Substring(0, TmpValue.IndexOf(" -"));
@@ -1543,19 +1548,27 @@ namespace CfgFileOpStruct
                 alarmCauseToAlarmBox = "1";
             }
             // "5038" sStrValueNO
-            else// (String.Equals("否", alarmRow[("IsReportToOMCR")].ToString()))
+            else if (String.Equals("否", alarmExVal[("IsReportToOMCR")].ToString()))
             {
                 alarmCauseIsValid = "1";
                 alarmCauseToAlarmBox = "0";
             }
+            else
+            {
+                alarmCauseIsValid = "0";
+                alarmCauseToAlarmBox = "1";
+            }
+
             string TmpValue = alarmExVal[("AlaType")].ToString();
             int pos = TmpValue.IndexOf(" -")==-1?TmpValue.Length:TmpValue.IndexOf(" -");
             alarmCauseType = TmpValue.Substring(0, pos);
             string ClearStyle = alarmExVal[("ClearStyle")].ToString();
-            if (String.Equals("无", ClearStyle) | string.Empty == ClearStyle.Replace(" ", ""))
-                alarmCauseClearStyle = 255.ToString();
+            if (String.Equals("无", ClearStyle) )
+                alarmCauseClearStyle = "";
+            else if (string.Empty == ClearStyle.Replace(" ", ""))
+                alarmCauseClearStyle = "";// 255.ToString();
             else if(String.Equals("恢复后主动清除", ClearStyle))
-                alarmCauseClearStyle = 1.ToString();
+                alarmCauseClearStyle = ""; //1.ToString();
             else
             {
                 alarmCauseClearStyle = alarmExVal[("ClearStyle")].ToString().Replace(" ", "");
@@ -1572,7 +1585,11 @@ namespace CfgFileOpStruct
                 alarmCauseIsStateful = "1";
             }
             alarmCausePrimaryAlarmCauseNo = alarmExVal[("AlaSubtoPrimaryNumber")].ToString();
-            alarmCauseStatefulClearDeditheringInterval = alarmExVal[("ClearDeditheringInterval")].ToString();
+            string ClearDeditheringInterval = alarmExVal[("ClearDeditheringInterval")].ToString();
+            if (String.Equals(ClearDeditheringInterval, "×"))
+                alarmCauseStatefulClearDeditheringInterval = "";
+            else
+                alarmCauseStatefulClearDeditheringInterval = ClearDeditheringInterval;
             alarmCauseStatefulCreateDeditheringInterval = alarmExVal[("CreateDeditheringInterval")].ToString();
             alarmCauseCompressionInterval = alarmExVal[("CompressionInterval")].ToString();
             alarmCauseCompressionRepetitions = alarmExVal[("CompressionRepetitions")].ToString();
