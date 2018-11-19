@@ -59,6 +59,13 @@ namespace SCMTMainWindow.Component.ViewModel
                     result = null;
                     return false;
                 }
+
+	            if (Properties.Count > 0 && Properties.ContainsKey(name))
+	            {
+		            result = null;
+		            return true;
+	            }
+
                 // 向属性列表添加属性及其值;
                 object value = args[1];
                 Properties.Add(name, value);

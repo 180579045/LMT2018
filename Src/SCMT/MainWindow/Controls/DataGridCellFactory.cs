@@ -11,12 +11,16 @@ namespace SCMTMainWindow
     {
         public static GridCell CreateGridCell(string MibName, string MibNameCN, string ContentValue, string oid, string targetIP)
         {
-            // 如果是字符串类型的单元格;
-            if (SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.RegularType)
+			// 如果是字符串类型的单元格;
+			var value = ContentValue.Replace(" ", "");
+			var dataType = SnmpToDatabase.GetMibNodeDataType(MibName, targetIP);
+			if (dataType == DataGrid_CellDataType.RegularType || 
+				dataType == DataGrid_CellDataType.OID ||
+				dataType == DataGrid_CellDataType.Array)
             {
                 var dgm = new DataGrid_Cell_MIB()
                 {
-                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
@@ -26,7 +30,7 @@ namespace SCMTMainWindow
             }
 
             // 如果是枚举类型的单元格;
-            else if (SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.enumType)
+            else if (dataType == DataGrid_CellDataType.enumType)
             {
                 Dictionary<int, string> all_list = new Dictionary<int, string>();     // 获取所有要显示的值的集合;
 
@@ -35,8 +39,8 @@ namespace SCMTMainWindow
                 var dgm = new DataGrid_Cell_MIB_ENUM()
                 {
                     m_AllContent = all_list,
-                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
-                    m_CurrentValue = int.Parse(ContentValue),
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
+                    m_CurrentValue = int.Parse(value),
                     oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
@@ -46,11 +50,11 @@ namespace SCMTMainWindow
             }
 
             // 如果是要时间类型的单元格;
-            else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.DateTime)
+            else if(dataType == DataGrid_CellDataType.DateTime)
             {
                 var dgm = new DataGrid_Cell_MIB()
                 {
-                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
@@ -60,11 +64,11 @@ namespace SCMTMainWindow
             }
 
             // 如果是BIT类型的单元格;
-            else if(SnmpToDatabase.GetMibNodeDataType(MibName, targetIP) == DataGrid_CellDataType.bitType)
+            else if(dataType == DataGrid_CellDataType.bitType)
             {
                 var dgm = new DataGrid_Cell_MIB()
                 {
-                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, ContentValue, targetIP) as string,
+                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
