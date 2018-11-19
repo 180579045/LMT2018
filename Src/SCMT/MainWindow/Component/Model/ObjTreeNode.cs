@@ -84,12 +84,14 @@ namespace SCMTMainWindow
 
 		public static int ChildCount { get; set; }                     // 孩子节点的个数;
 
-		/// <summary>
-		/// 对象树节点点击事件;
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		public abstract void ClickObjNode(object sender, EventArgs e);
+        public static MibTable nodeMibTable { get; set; }        //每个节点对应的Mib信息
+
+        /// <summary>
+        /// 对象树节点点击事件;
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public abstract void ClickObjNode(object sender, EventArgs e);
 		
 		/// <summary>
 		/// 递归某个节点的所有孩子节点，并填入对象树容器中;
@@ -240,7 +242,9 @@ namespace SCMTMainWindow
 			oid_en = new Dictionary<string, string>();
 			contentlist = new ObservableCollection<DyDataGrid_MIBModel>();
 			GetNextResList = new Dictionary<string, string>();
-		}
+            nodeMibTable = new MibTable();
+
+        }
 
 		private void ObjNode_IsRightMouseDown(object sender, MouseButtonEventArgs e)
 		{
@@ -366,14 +370,16 @@ namespace SCMTMainWindow
 			contentlist.Clear();
 			GetNextResList.Clear();
 			ObjParentOID = string.Empty;
+            nodeMibTable = new MibTable();
 
-			// 目前可以获取到节点对应的中文名以及对应的表名;
-			//Console.WriteLine("LeafNode Clicked!" + node.ObjName + " and TableName " + node.ObjTableName);
+            // 目前可以获取到节点对应的中文名以及对应的表名;
+            //Console.WriteLine("LeafNode Clicked!" + node.ObjName + " and TableName " + node.ObjTableName);
 
-			var errorInfo = "";
+            var errorInfo = "";
 			//根据表名获取该表内所有MIB节点;
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(node.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+            nodeMibTable = ret;
 
 			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
 			name_cn.Clear();
@@ -461,7 +467,7 @@ namespace SCMTMainWindow
 			// 全部节点都已经收集完毕;
 			if (LastColumn == ChildCount)
 			{
-				main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount);
+				main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
 			}
 		}
 	}
@@ -492,16 +498,18 @@ namespace SCMTMainWindow
 			contentlist.Clear();
 			GetNextResList.Clear();
 			ObjParentOID = String.Empty;
+            nodeMibTable = new MibTable();
 
-			// 目前可以获取到节点对应的中文名以及对应的表名;
-			Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
+            // 目前可以获取到节点对应的中文名以及对应的表名;
+            Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " +this.ObjTableName);
 
 			var errorInfo = "";
 			//根据表名获取该表内所有MIB节点;
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
-			
-			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
+            nodeMibTable = ret;
+
+            var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
 			name_cn.Clear();oid_cn.Clear();oid_en.Clear();         // 每个节点都有自己的表数据结构;
 			try
 			{
@@ -594,7 +602,7 @@ namespace SCMTMainWindow
 			// 全部节点都已经收集完毕;
 			if(LastColumn == ChildCount)
 			{
-				main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount);
+				main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
 			}
 		}
 

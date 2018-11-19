@@ -15,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using UICore.Controls.Metro;
+using MIBDataParser;
 
 namespace SCMTMainWindow.View
 {
@@ -126,8 +128,9 @@ namespace SCMTMainWindow.View
             this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
             this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;            // 当用户的选择发生变化的时候(用在枚举、BIT类型修改完成后);
             this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;              // 捕获鼠标事件，用于判断用户拖拽事件;
-        }
-        
+            this.DynamicDataGrid.MouseRightButtonDown += DynamicDataGrid_MouseRightButtonDown;    //鼠标右键按下弹出右键菜单
+        }       
+
         /// <summary>
         /// 单元格开始编辑时;
         /// </summary>
@@ -258,8 +261,90 @@ namespace SCMTMainWindow.View
                 Console.WriteLine(ex);
             }
         }
+
+        private MetroContextMenu dataGridMenu = new MetroContextMenu();
         
+        /// <summary>
+        /// 根据选择的节点树，显示相应的右键菜单
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynamicDataGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            string MenuHeaderName = (m_ColumnModel.TableProperty as MibTable).nameCh;
+            string MemuChildHeaderName = "";
+            // 右键菜单的添加
+            var menu = new MetroContextMenu();
 
+            var menuItem = new MetroMenuItem();
+            menuItem.Header = "添加命令";
+            menuItem.Click += AddMenuItem_Click;
+            menuItem.IsEnabled = true;
+
+            var menuChildItem = new MetroMenuItem();
+            menuChildItem.Header = "增加" + MemuChildHeaderName;
+            menuChildItem.Click += AddMenuChildItem_Click;
+            menuChildItem.IsEnabled = true;
+
+            menuItem.Items.Add(menuChildItem);
+            menu.Items.Add(menuItem);
+
+            menuItem = new MetroMenuItem();
+            menuItem.Header = "修改" + MenuHeaderName;
+            menuItem.Click += ModifyMenuItem_Click; ;
+            menuItem.IsEnabled = true;
+
+            menuChildItem = new MetroMenuItem();
+            menuChildItem.Header = "修改" + MemuChildHeaderName;
+            menuChildItem.Click += ModifyMenuChildItem_Click;
+            menuChildItem.IsEnabled = true;
+
+            menuItem.Items.Add(menuChildItem);
+            menu.Items.Add(menuItem);
+
+            menuItem = new MetroMenuItem();
+            menuItem.Header = "查询" + MenuHeaderName;
+            menuItem.Click += GetMenuItem_Click; ;
+            menuItem.IsEnabled = true;
+            menuChildItem = new MetroMenuItem();
+            menuChildItem.Header = "查询" + MemuChildHeaderName;
+            menuChildItem.Click += GetMenuChildItem_Click;
+            menuChildItem.IsEnabled = true;
+
+            menuItem.Items.Add(menuChildItem);
+            menu.Items.Add(menuItem);
+
+            this.ContextMenu = menu;
+        }
+
+        private void GetMenuChildItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void ModifyMenuChildItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void AddMenuChildItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void GetMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void ModifyMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
-
 }

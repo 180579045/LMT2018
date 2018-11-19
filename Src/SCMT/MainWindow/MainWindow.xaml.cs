@@ -1467,12 +1467,12 @@ namespace SCMTMainWindow
 		/// <param name="oid_en"></param>
 		/// <param name="contentlist"></param>
 		public void UpdateAllMibDataGrid(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
-			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
+			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
-			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int>(UpdateMibDataGridCallback);
+			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int,MibTable>(UpdateMibDataGridCallback);
 
             //MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
-            this.Main_Dynamic_DataGrid.Dispatcher.Invoke(action, new object[] { ar, oid_cn, oid_en, contentlist, ParentOID, IndexCount });
+            this.Main_Dynamic_DataGrid.Dispatcher.Invoke(action, new object[] { ar, oid_cn, oid_en, contentlist, ParentOID, IndexCount, mibTable });
 		}
         
         /// <summary>
@@ -1485,7 +1485,7 @@ namespace SCMTMainWindow
         /// <param name="ParentOID"></param>
         /// <param name="IndexCount">真实的索引个数</param>
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
-			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount)
+			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
 			int RealIndexCount = IndexCount;                         // 真实的索引纬度;
 			//MibDataGrid.Columns.Clear();                             // 清除上一次的结果;
@@ -1546,6 +1546,11 @@ namespace SCMTMainWindow
                         MibName_CN = "实例描述",
                         MibName_EN = "indexlist"
                     }, "实例描述");
+                }
+
+                if(mibTable != null)
+                {
+                    model.AddTableProperty(mibTable);
                 }
 
 				// 将ar当中所有匹配的结果取出,最后会取出了一行数据;

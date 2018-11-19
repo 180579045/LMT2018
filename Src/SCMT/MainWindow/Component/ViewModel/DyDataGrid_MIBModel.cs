@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Dynamic;
+using MIBDataParser;
 
 namespace SCMTMainWindow.Component.ViewModel
 {
@@ -29,6 +30,11 @@ namespace SCMTMainWindow.Component.ViewModel
         /// Item3:属性实例;
         /// </summary>
         public List<Tuple<string, string, object>> PropertyList { get; set; }
+        /// <summary>
+        /// 用于保存当前点击节点对应MibTable，便于根据表明进行添加，查询，修改等操作
+        /// </summary>
+
+        public object TableProperty = new object();
 
         // 为动态类型动态添加成员;
         public override bool TrySetMember(SetMemberBinder binder, object value)
@@ -96,6 +102,23 @@ namespace SCMTMainWindow.Component.ViewModel
                     return false;
                 }
 
+            }
+
+            if (binder.Name == "AddTableProperty" && binder.CallInfo.ArgumentCount == 1)
+            {
+                string name = (args[0] as MibTable).nameCh;
+
+                if (name == null)
+                {
+                    result = null;
+                    return false;
+                }
+                // 向属性列表添加属性及其值;
+                object value = args[0];
+                TableProperty = value;
+
+                result = value;
+                return true;
             }
 
             return base.TryInvokeMember(binder, args, out result);
