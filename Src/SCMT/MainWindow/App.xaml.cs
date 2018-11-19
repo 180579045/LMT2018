@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using AtpMessage;
 using AtpMessage.LinkMgr;
+using CommonUtility;
+using LogManager;
 using MsgQueue;
 using MsgDispatcher;
 
@@ -19,6 +21,11 @@ namespace SCMTMainWindow
 	{
 		protected override void OnStartup(StartupEventArgs e)
 		{
+			// 设置日志名
+			var timeString = TimeHelper.DateTimeToString(DateTime.Now, "yyyyMMdd-HHmmss");
+			var logFilePath = $"SCMT_log_{timeString}.log";
+			Log.SetLogFileName(logFilePath);
+
 			MqInitial.Init();
 			ConnectWorker.GetInstance();
 			DoMsgDispatcher.GetInstance();

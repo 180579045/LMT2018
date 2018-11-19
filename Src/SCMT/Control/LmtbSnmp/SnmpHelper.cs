@@ -11,13 +11,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using SnmpSharpNet;
-using System.Threading.Tasks;
-using LogManager;
 using System.Globalization;
+using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using DataBaseUtil;
+using LogManager;
+using SnmpSharpNet;
 
 namespace LmtbSnmp
 {
@@ -78,7 +79,7 @@ namespace LmtbSnmp
 		/// <param name="PduList">需要查询的Pdu列表</param>
 		/// <param name="Community">需要设置的Community</param>
 		/// <param name="IpAddress">需要设置的IP地址</param>
-		public abstract void GetRequest(AsyncCallback callback, List<string>PduList, string Community, string IpAddress);
+		public abstract void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddress);
 
 		/// <summary>
 		/// GetRequest的对外接口，入参只有Pdulist
@@ -93,7 +94,6 @@ namespace LmtbSnmp
 		/// <param name="pdu"></param>
 		/// <returns></returns>
 		public abstract SnmpV2Packet GetRequest(Pdu pdu);
-
 
 		public abstract bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
 
@@ -119,8 +119,7 @@ namespace LmtbSnmp
 		/// </summary>
 		/// <param name="callback"></param>
 		/// <param name="PduList"></param>
-		public abstract void SetRequest(AsyncCallback callback, List<string>PduList);
-
+		public abstract void SetRequest(AsyncCallback callback, List<string> PduList);
 
 		public abstract SnmpPacket GetNextRequest(Pdu pdu);
 
@@ -144,7 +143,7 @@ namespace LmtbSnmp
 
 			return m_target;
 		}
-		
+
 		/// <summary>
 		/// 将SNMP的DateTime类型转换为字符串
 		/// </summary>
@@ -154,17 +153,17 @@ namespace LmtbSnmp
 		{
 			byte[] bts = v.ToArray();
 
-			byte[] format_str = new byte[128];   //保存格式化过后的时间字符串  
+			byte[] format_str = new byte[128];   //保存格式化过后的时间字符串
 
-			//int msecond;        
+			//int msecond;
 			var year = bts[0] * 256 + bts[1];
 			int month = bts[2];
 			int day = bts[3];
 			int hour = bts[4];
 			int minute = bts[5];
 			int second = bts[6];
-			//msecond = bts[7];  
-			//以下为格式化字符串  
+			//msecond = bts[7];
+			//以下为格式化字符串
 			int index = 3;
 			int temp = year;
 
@@ -188,11 +187,9 @@ namespace LmtbSnmp
 			temp = day;
 			for (; index >= 8; index--)
 			{
-
 				format_str[index] = (byte)(48 + (temp - temp / 10 * 10));
 
 				temp /= 10;
-
 			}
 			format_str[10] = (byte)' ';
 			index = 12;
@@ -208,11 +205,9 @@ namespace LmtbSnmp
 			temp = minute;
 			for (; index >= 14; index--)
 			{
-
 				format_str[index] = (byte)(48 + (temp - temp / 10 * 10));
 
 				temp /= 10;
-
 			}
 
 			format_str[16] = (byte)':';
@@ -223,20 +218,18 @@ namespace LmtbSnmp
 				format_str[index] = (byte)(48 + (temp - temp / 10 * 10));
 
 				temp /= 10;
-
 			}
 
-			//int i = 6;  
-			//while (i >= 0)  
-			//{  
-			//    Console.WriteLine("{0}", bts[i]);  
-			//    i--;  
-			//}  
+			//int i = 6;
+			//while (i >= 0)
+			//{
+			//    Console.WriteLine("{0}", bts[i]);
+			//    i--;
+			//}
 
 			string strTmp = System.Text.Encoding.Default.GetString(format_str);
 
-			return strTmp; // new String(format_str);  
-
+			return strTmp; // new String(format_str);
 		}
 
 		/// <summary>
@@ -520,7 +513,6 @@ namespace LmtbSnmp
 			return sb.ToString();
 		}
 
-
 		/// <summary>
 		/// UTF8字符串转ANSI编码字符串
 		/// </summary>
@@ -595,6 +587,7 @@ namespace LmtbSnmp
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW:
 					strValTmp = "到达MIB结尾";
 					break;
+
 				default:
 					strValTmp = vb.Value.ToString();
 					break;
@@ -626,6 +619,7 @@ namespace LmtbSnmp
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT:
 						vb.Value = new Integer32(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_BITS:
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS:
 						if (value == null)
@@ -638,46 +632,54 @@ namespace LmtbSnmp
 							vb.Value = PacketOctetStr(vb.Oid.ToString(), value, strDataType);
 						}
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NULL:
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OID:
 						// TODO:
 						vb.Value = new Oid(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_IPADDR:
 						vb.Value = new IpAddress(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR32:
 						vb.Value = new Counter32(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_GAUGE32:
 						vb.Value = new UInteger32(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_TIMETICKS:
 						vb.Value = new TimeTicks(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OPAQUE:
 						vb.Value = new Opaque(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR64:
 						// TODO 是否需要大小端转换？？？？
 						vb.Value = new Counter64(value);
 						break;
+
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHOBJECT:
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NOSUCHINSTANCE:
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW:
 						// do nothing
 						break;
+
 					default:
 						// do nothing
 						break;
-
 				}
-
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
+				Log.Error(e.Message);
 				throw e;
 			}
 
@@ -735,10 +737,8 @@ namespace LmtbSnmp
 			// TODO 转换为UTF8编码(与原来逻辑不一样，不知道是否正确？？？？)
 			return new OctetString(Encoding.UTF8.GetString(Encoding.UTF8.GetBytes(strValue)));
 		}
-
-
-
 	}
+
 	/// <summary>
 	/// 异步获取SNMP结果参数;
 	/// </summary>
@@ -786,8 +786,6 @@ namespace LmtbSnmp
 				throw new NotImplementedException();
 			}
 		}
-
-
 	}
 
 	/// <summary>
@@ -798,7 +796,6 @@ namespace LmtbSnmp
 		public SnmpHelperV2c(string Commnuity, string ipaddr) : base(Commnuity, ipaddr)
 		{
 		}
-
 
 		/// <summary>
 		/// GetRequest
@@ -823,21 +820,21 @@ namespace LmtbSnmp
 			{
 				pdu.VbList.Add(pdulist);
 			}
-			
+
 			// 接收结果;
 			m_Result = (SnmpV2Packet)target.Request(pdu, param);
 
 			// 如果结果为空,则认为Agent没有回响应;
 			if (m_Result != null)
 			{
-				// ErrorStatus other then 0 is an error returned by 
+				// ErrorStatus other then 0 is an error returned by
 				// the Agent - see SnmpConstants for error definitions
-				if (m_Result.Pdu.ErrorStatus != 0)
+				var es = m_Result.Pdu.ErrorStatus;
+				if (es != 0)
 				{
 					// agent reported an error with the request
-					Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-						m_Result.Pdu.ErrorStatus,
-						m_Result.Pdu.ErrorIndex);
+					Log.Error($"Error in SNMP reply. Error {es} index {m_Result.Pdu.ErrorIndex} Error Desc {SnmpErrDescHelper.GetErrDescById(es)}");
+
 
 					rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
 				}
@@ -847,7 +844,6 @@ namespace LmtbSnmp
 					{
 						rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
 					}
-
 				}
 			}
 			else
@@ -876,7 +872,7 @@ namespace LmtbSnmp
 			param.Version = SnmpVersion.Ver2;
 
 			// 创建代理(基站);
-			UdpTarget target = ConnectToAgent(Community,IpAddr);
+			UdpTarget target = ConnectToAgent(Community, IpAddr);
 
 			// Pdu请求形式Get;
 			Pdu pdu = new Pdu(PduType.Get);
@@ -884,22 +880,21 @@ namespace LmtbSnmp
 			{
 				pdu.VbList.Add(pdulist);
 			}
-			
-			Task tsk = Task.Factory.StartNew(()=> {
-				
+
+			Task tsk = Task.Factory.StartNew(() =>
+			{
 				// 接收结果;
 				m_Result = (SnmpV2Packet)target.Request(pdu, param);
 
 				if (m_Result != null)
 				{
-					// ErrorStatus other then 0 is an error returned by 
+					// ErrorStatus other then 0 is an error returned by
 					// the Agent - see SnmpConstants for error definitions
-					if (m_Result.Pdu.ErrorStatus != 0)
+					var es = m_Result.Pdu.ErrorStatus;
+					if (es != 0)
 					{
 						// agent reported an error with the request
-						Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-							m_Result.Pdu.ErrorStatus,
-							m_Result.Pdu.ErrorIndex);
+						Log.Error($"Error in SNMP reply. Error {es} index {m_Result.Pdu.ErrorIndex} Error Desc {SnmpErrDescHelper.GetErrDescById(es)}");
 
 						rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
 						res.SetSNMPReslut(rest);
@@ -915,7 +910,6 @@ namespace LmtbSnmp
 							Thread.Sleep(3111);
 							callback(res);
 						}
-
 					}
 				}
 				else
@@ -925,7 +919,6 @@ namespace LmtbSnmp
 
 				target.Close();
 			});
-			
 		}
 
 		/// <summary>
@@ -947,7 +940,7 @@ namespace LmtbSnmp
 
 			Pdu pdu = new Pdu(PduType.Get);
 
-			foreach(string oid in VbList)
+			foreach (string oid in VbList)
 			{
 				pdu.VbList.Add(oid);
 			}
@@ -955,38 +948,15 @@ namespace LmtbSnmp
 			try
 			{
 				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				if (null != result)
-				{
-					if (result.Pdu.ErrorStatus != 0)
-					{
-						logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
-							, result.Pdu.ErrorStatus, result.Pdu.ErrorIndex);
-						Log.Error(logMsg);
-					}
-					else
-					{
-						foreach(Vb vb in result.Pdu.VbList)
-						{
-							logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-								, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
-							Log.Debug(logMsg);
-						}
-					}
-				}
-				else
-				{
-					Log.Error("No response received from SNMP agent.");
-				}
+				HandleGetRequestResult(result);
 			}
-			catch ( Exception e)
+			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
-				throw e;
+				Log.Error(e.Message);
+				throw;
 			}
-		   
 
 			return result;
-
 		}
 
 		public override SnmpV2Packet GetRequest(Pdu pdu)
@@ -1005,49 +975,26 @@ namespace LmtbSnmp
 
 			// Log msg
 			string logMsg;
-			SnmpV2Packet result = null;
+			SnmpV2Packet result;
 
 			pdu.Type = PduType.Get;
 			try
 			{
 				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				if (null != result)
-				{
-					if (result.Pdu.ErrorStatus != 0)
-					{
-						logMsg = string.Format("Error in SNMP reply. Error {0} index {1}"
-							, result.Pdu.ErrorStatus, result.Pdu.ErrorIndex);
-						Log.Error(logMsg);
-					}
-					else
-					{
-						foreach (Vb vb in result.Pdu.VbList)
-						{
-							logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-								, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
-							//Log.Debug(logMsg);
-						}
-					}
-				}
-				else
-				{
-					Log.Error("No response received from SNMP agent.");
-				}
+				HandleGetRequestResult(result);
 			}
-			catch(SnmpException e1)
+			catch (SnmpException e1)
 			{
-				Log.Error(e1.Message.ToString());
+				Log.Error(e1.Message);
 				return null;
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
-				throw e;
+				Log.Error(e.Message);
+				throw;
 			}
 
-
 			return result;
-
 		}
 
 		/// <summary>
@@ -1079,17 +1026,15 @@ namespace LmtbSnmp
 				{
 					Log.Error("SNMP异步请求错误");
 				}
-				
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
-				throw e;
+				Log.Error(e.Message);
+				throw;
 			}
 
 			return rs;
 		}
-
 
 		/// <summary>
 		/// GetNextRequest
@@ -1118,38 +1063,43 @@ namespace LmtbSnmp
 			try
 			{
 				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				if (null != result)
-				{
-					if (result.Pdu.ErrorStatus != 0)
-					{
-						logMsg = string.Format("Error in SNMP reply. Error {0}, index {1}"
-							, result.Pdu.ErrorStatus, result.Pdu.ErrorIndex);
-						//Log.Error(logMsg);
-						
-					}
-					else
-					{
-						foreach (Vb vb in result.Pdu.VbList)
-						{
-							logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
-								, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
-							//Log.Debug(logMsg);
-						}
-					}
-				}
-				else
-				{
-					Log.Error("No response received from SNMP agent.");
-				}
+				HandleGetRequestResult(result);
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
-				throw e;
+				Log.Error(e.Message);
+				throw;
 			}
 
 			return result;
 		}
+
+		private void HandleGetRequestResult(object result)
+		{
+			if (!(result is SnmpV2Packet)) return;
+
+			var newObj = (SnmpV2Packet)Convert.ChangeType(result, typeof(SnmpV2Packet));
+			if (newObj == null)
+				return;
+
+			string logMsg;
+
+			var es = newObj.Pdu.ErrorStatus;
+			if (es != 0)
+			{
+				logMsg = $"Error in SNMP reply. Error {es}, index {newObj.Pdu.ErrorIndex}, Error Desc {SnmpErrDescHelper.GetErrDescById(es)}";
+				Log.Error(logMsg);
+			}
+			else
+			{
+				//foreach (var vb in newObj.Pdu.VbList)
+				//{
+				//	logMsg = $"ObjectName={vb.Oid}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value}";
+				//	Log.Debug(logMsg);
+				//}
+			}
+		}
+
 		/// <summary>
 		/// SNMP Set
 		/// </summary>
@@ -1182,7 +1132,7 @@ namespace LmtbSnmp
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
+				Log.Error(e.Message);
 				throw e;
 			}
 
@@ -1194,22 +1144,19 @@ namespace LmtbSnmp
 			{
 				if (response.Pdu.ErrorStatus != 0)
 				{
-					logMsg = string.Format("SNMP agent returned ErrorStatus {0} on index {1}"
-						, response.Pdu.ErrorStatus, response.Pdu.ErrorIndex);
+					logMsg = $"SNMP agent returned ErrorStatus {response.Pdu.ErrorStatus} on index {response.Pdu.ErrorIndex}";
 				}
 				else
 				{
-					foreach(Vb vb in response.Pdu.VbList)
+					foreach (Vb vb in response.Pdu.VbList)
 					{
-						logMsg = string.Format("ObectName={0}, Type={1}, Value={2}"
-							, vb.Oid.ToString(), vb.Value.Type.ToString(), vb.Value.ToString());
+						logMsg = $"ObectName={vb.Oid}, Type={vb.Value.Type}, Value={vb.Value}";
 					}
 				}
 			}
 
 			return response;
 		}
-  
 
 		/// <summary>
 		/// SetRequest的SnmpV2c版本
@@ -1240,7 +1187,7 @@ namespace LmtbSnmp
 			catch (Exception ex)
 			{
 				// If exception happens, it will be returned here
-				Console.WriteLine(string.Format("Request failed with exception: {0}", ex.Message));
+				Console.WriteLine($"Request failed with exception: {ex.Message}");
 				target.Close();
 				return;
 			}
@@ -1254,18 +1201,15 @@ namespace LmtbSnmp
 				// Check if we received an SNMP error from the agent
 				if (response.Pdu.ErrorStatus != 0)
 				{
-					Console.WriteLine(string.Format("SNMP agent returned ErrorStatus {0} on index {1}",
-						response.Pdu.ErrorStatus, response.Pdu.ErrorIndex));
+					Console.WriteLine($"SNMP agent returned ErrorStatus {response.Pdu.ErrorStatus} on index {response.Pdu.ErrorIndex}");
 				}
 				else
 				{
 					// Everything is ok. Agent will return the new value for the OID we changed
-					Console.WriteLine(string.Format("Agent response {0}: {1}",
-						response.Pdu[0].Oid.ToString(), response.Pdu[0].Value.ToString()));
+					Console.WriteLine($"Agent response {response.Pdu[0].Oid}: {response.Pdu[0].Value}");
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// 异步SetRequest
@@ -1296,11 +1240,10 @@ namespace LmtbSnmp
 				{
 					Log.Error("SNMP异步请求错误");
 				}
-
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message.ToString());
+				Log.Error(e.Message);
 				throw e;
 			}
 
@@ -1311,8 +1254,5 @@ namespace LmtbSnmp
 		{
 			throw new NotImplementedException();
 		}
-		
-
 	}
-
 }

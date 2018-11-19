@@ -1862,9 +1862,17 @@ namespace SCMTMainWindow.View
                 DesignerCanvas.SetTop(uiItem, uiTop);
             }
 
-            nSizeChangedNo++;
+            if(nSizeChangedNo < 3)
+            {
+                nSizeChangedNo++;
+            }
+            if (nSizeChangedNo == 1)
+            {
 
-            if(nSizeChangedNo == 2)
+                //MyDesigner.Width = MyDesigner.ActualWidth + 10;
+                //MyDesigner.Height = MyDesigner.ActualHeight + 10;
+            }
+            if (nSizeChangedNo == 2)
             {
                 InitAllConnection();
                 DeleteAllItemConnector();
@@ -2347,6 +2355,16 @@ namespace SCMTMainWindow.View
             cellStatusGrid.Children.Add(notBelongCellRect);
             Grid.SetRow(notBelongCellRect, 14);
             Grid.SetColumn(notBelongCellRect, 1);
+
+        }
+
+        private void MyDesigner_Loaded(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MyDesigner_LayoutUpdated(object sender, EventArgs e)
+        {
 
         }
     }

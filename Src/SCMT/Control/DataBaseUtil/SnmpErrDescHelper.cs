@@ -78,6 +78,17 @@ namespace DataBaseUtil
 			return snmpErrDesc;
 		}
 
+		public static string GetErrDescById(int nErrId)
+		{
+			var ed = GetErrDescById(nErrId.ToString());
+			if (null == ed)
+			{
+				return "unknown error";
+			}
+
+			return ed.errorChDesc;
+		}
+
 		/// <summary>
 		/// 设置最后一个SNMP错误码
 		/// </summary>

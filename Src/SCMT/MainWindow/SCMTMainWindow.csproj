@@ -100,12 +100,6 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Logging">
-      <HintPath>..\packages\Lib\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging.Log4Net">
-      <HintPath>..\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
-    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>

@@ -104,6 +104,57 @@
                             <avalondock:LayoutAnchorable Title="网络单元">
                                 <Expander Header="Shapes" Content="{StaticResource ShapeStencils}" IsExpanded="True"/>
                             </avalondock:LayoutAnchorable>
+                            <avalondock:LayoutAnchorable Title="网规模板" CanClose="True" IsVisible="False">
+                                <Grid x:Name="gridNetPlanTemlplate">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <ToolBar Grid.Row="0" Height="24" Margin="3,0,0,0">
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0"
+                                                Command="{StaticResource TemImportCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/file1.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="导入模板 Ctrl+Alt+E" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
+                                                Command="{StaticResource TemExportCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/download.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="导出模板 Ctrl+Alt+D" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
+                                                Command="{StaticResource TemClearCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/delete.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="清除模板 Ctrl+Alt+C" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource TemLineCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
+                                            <Button.Content>
+                                                <Image Source="/SCMTMainWindow;component/Resources/line.png" ></Image>
+                                            </Button.Content>
+                                            <Button.ToolTip>
+                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="连线 Ctrl+Alt+L" />
+                                            </Button.ToolTip>
+                                        </Button>
+                                    </ToolBar>
+                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
+                                        <local:NetPlanTemplateCanvas Focusable="true" x:Name="MyDesignerTemplate" SizeChanged="MyDesignerTemplate_SizeChanged"
+                                                              Background="{StaticResource WindowBackgroundBrush}"
+                                                              Margin="10" FocusVisualStyle="{x:Null}"/>
+                                    </ScrollViewer>
+                                </Grid>
+                            </avalondock:LayoutAnchorable >
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*">
                             <avalondock:LayoutAnchorable Title="网络规划" Closed="LayoutAnchorable_Closed" CanClose="True">
@@ -227,57 +278,7 @@
                                     </ScrollViewer>
                                 </Grid>
                             </avalondock:LayoutAnchorable>
-                            <avalondock:LayoutAnchorable Title="网规模板" CanClose="True">
-                                <Grid x:Name="gridNetPlanTemlplate">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="30"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <ToolBar Grid.Row="0" Height="24" Margin="3,0,0,0">
-                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0"
-                                                Command="{StaticResource TemImportCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
-                                            <Button.Content>
-                                                <Image Source="/SCMTMainWindow;component/Resources/file1.png" ></Image>
-                                            </Button.Content>
-                                            <Button.ToolTip>
-                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="导入模板 Ctrl+Alt+E" />
-                                            </Button.ToolTip>
-                                        </Button>
-                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
-                                                Command="{StaticResource TemExportCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
-                                            <Button.Content>
-                                                <Image Source="/SCMTMainWindow;component/Resources/download.png" ></Image>
-                                            </Button.Content>
-                                            <Button.ToolTip>
-                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="导出模板 Ctrl+Alt+D" />
-                                            </Button.ToolTip>
-                                        </Button>
-                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" 
-                                                Command="{StaticResource TemClearCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
-                                            <Button.Content>
-                                                <Image Source="/SCMTMainWindow;component/Resources/delete.png" ></Image>
-                                            </Button.Content>
-                                            <Button.ToolTip>
-                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="清除模板 Ctrl+Alt+C" />
-                                            </Button.ToolTip>
-                                        </Button>
-                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource TemLineCommand}" CommandTarget="{Binding ElementName=MyDesignerTemplate}">
-                                            <Button.Content>
-                                                <Image Source="/SCMTMainWindow;component/Resources/line.png" ></Image>
-                                            </Button.Content>
-                                            <Button.ToolTip>
-                                                <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="连线 Ctrl+Alt+L" />
-                                            </Button.ToolTip>
-                                        </Button>
-                                    </ToolBar>
-                                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1">
-                                        <local:NetPlanTemplateCanvas Focusable="true" x:Name="MyDesignerTemplate" SizeChanged="MyDesignerTemplate_SizeChanged"
-                                                              Background="{StaticResource WindowBackgroundBrush}"
-                                                              Margin="10" FocusVisualStyle="{x:Null}"/>
-                                    </ScrollViewer>
-                                </Grid>
-                            </avalondock:LayoutAnchorable>
+                            
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePaneGroup Orientation="Vertical">
                             <avalondock:LayoutAnchorablePane x:Name="PropertyView"  DockWidth="1*" >

@@ -55,13 +55,26 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 根据天线阵编号查询天线阵权重值
+		/// 根据天线阵类型编号查询天线阵权重值
 		/// </summary>
 		/// <param name="antNo"></param>
 		/// <returns></returns>
 		public AntWeight GetAntWeightByNo(int antNo)
 		{
-			return _antInfo.antennaWeightTable.FirstOrDefault(antWeight => antNo == antWeight.antArrayNotMibNumber);
+			var weightList = _antInfo.antennaWeightTable;
+			if (null == weightList || 0 == weightList.Count)
+			{
+				throw new CustomException("天线阵的权重信息为空");
+			}
+
+			foreach (var item in weightList)
+			{
+				if (item.antArrayNotMibNumber == antNo)
+				{
+					return item;
+				}
+			}
+			return null;
 		}
 
 		/// <summary>
@@ -98,6 +111,41 @@ namespace NetPlan
 					select item.antArrayIndex.ToString()).FirstOrDefault();
 		}
 
+		/// <summary>
+		/// 根据厂家索引和类型索引获取天线阵权重信息
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		public AntWeight GetAntWeightByNo(string strVendorIdx, string strTypeIdx)
+		{
+			var antNo = GetAntNoByVendorAndType(strVendorIdx, strTypeIdx);
+			return -1 == antNo ? null : GetAntWeightByNo(antNo);
+		}
+
+
+		public AntCoupCoe GetCouplingByAntVendorAndType(string strVendorIdx, string strTypeIdx)
+		{
+			var antNo = GetAntNoByVendorAndType(strVendorIdx, strTypeIdx);
+			return -1 == antNo ? null : GetAntCoupCoeByNo(antNo);
+		}
+
+		/// <summary>
+		/// 根据天线阵编号获取该天线阵的耦合系数
+		/// </summary>
+		/// <param name="antNo"></param>
+		/// <returns></returns>
+		public AntCoupCoe GetAntCoupCoeByNo(int antNo)
+		{
+			var coupList = _antInfo.couplingCoeffctTable;
+			if (null == coupList || 0 == coupList.Count)
+			{
+				throw new CustomException("天线阵的权重信息为空");
+			}
+
+			return coupList.FirstOrDefault(tmp => antNo == tmp.antArrayNotMibNumber);
+		}
+
 		#endregion
 
 		#region 私有接口、数据区
@@ -122,6 +170,29 @@ namespace NetPlan
 
 		private readonly WholeAntInfo _antInfo;
 
+
+		/// <summary>
+		/// 根据厂家索引和类型索引获取天线阵编号
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		private int GetAntNoByVendorAndType(string strVendorIdx, string strTypeIdx)
+		{
+			var nVIdx = int.Parse(strVendorIdx);
+			var nTIdx = int.Parse(strTypeIdx);
+
+			foreach (var item in _antInfo.antennaTypeTable)
+			{
+				if (item.antArrayVendor == nVIdx && item.antArrayIndex == nTIdx)
+				{
+					return item.antArrayNotMibNumber;
+				}
+			}
+
+			return -1;
+		}
+
 		#endregion
 	}
 
@@ -141,6 +212,9 @@ namespace NetPlan
 		}
 	}
 
+	/// <summary>
+	/// 天线阵类型信息
+	/// </summary>
 	public class AntType
 	{
 		public int antArrayNotMibNumber;
@@ -186,6 +260,9 @@ namespace NetPlan
 		}
 	}
 
+	/// <summary>
+	/// 多天线权重
+	/// </summary>
 	public class AntWeight
 	{
 		public int antArrayNotMibNumber;
@@ -196,7 +273,7 @@ namespace NetPlan
 			antArrayMultWeight = new List<Weight>();
 		}
 
-		// 格式化支持的天线阵频段
+		// todo 格式化支持的天线阵频段
 		public string FormatSupportFeqBand()
 		{
 			var feqBandMvr =
@@ -224,6 +301,9 @@ namespace NetPlan
 		}
 	}
 
+	/// <summary>
+	/// 权重信息
+	/// </summary>
 	public struct Weight
 	{
 		public int antennaWeightMultFrequencyBand;
@@ -232,50 +312,57 @@ namespace NetPlan
 		public string antennaWeightMultNotMibAntStatus;
 		public int antennaWeightMultAntHalfPowerBeamWidth;
 		public int antennaWeightMultAntVerHalfPowerBeamWidth;
-		public int antennaWeightMultAntAmplitude0;
-		public int antennaWeightMultAntPhase0;
-		public int antennaWeightMultAntAmplitude1;
-		public int antennaWeightMultAntPhase1;
-		public int antennaWeightMultAntAmplitude2;
-		public int antennaWeightMultAntPhase2;
-		public int antennaWeightMultAntAmplitude3;
-		public int antennaWeightMultAntPhase3;
-		public int antennaWeightMultAntAmplitude4;
-		public int antennaWeightMultAntPhase4;
-		public int antennaWeightMultAntAmplitude5;
-		public int antennaWeightMultAntPhase5;
-		public int antennaWeightMultAntAmplitude6;
-		public int antennaWeightMultAntPhase6;
-		public int antennaWeightMultAntAmplitude7;
-		public int antennaWeightMultAntPhase7;
+		public int antennaWeightMultAntAmplitude0 { get; set; }
+		public int antennaWeightMultAntPhase0 { get; set; }
+		public int antennaWeightMultAntAmplitude1 { get; set; }
+		public int antennaWeightMultAntPhase1 { get; set; }
+		public int antennaWeightMultAntAmplitude2 { get; set; }
+		public int antennaWeightMultAntPhase2 { get; set; }
+		public int antennaWeightMultAntAmplitude3 { get; set; }
+		public int antennaWeightMultAntPhase3 { get; set; }
+		public int antennaWeightMultAntAmplitude4 { get; set; }
+		public int antennaWeightMultAntPhase4 { get; set; }
+		public int antennaWeightMultAntAmplitude5 { get; set; }
+		public int antennaWeightMultAntPhase5 { get; set; }
+		public int antennaWeightMultAntAmplitude6 { get; set; }
+		public int antennaWeightMultAntPhase6 { get; set; }
+		public int antennaWeightMultAntAmplitude7 { get; set; }
+		public int antennaWeightMultAntPhase7 { get; set; }
 	}
 
+
+	/// <summary>
+	/// 天线耦合
+	/// </summary>
 	public class AntCoupCoe
 	{
 		public int antArrayNotMibNumber;
 		public List<CoupCoe> antArrayCouplingCoeffctInfo;
 	}
 
+	/// <summary>
+	/// 耦合数据
+	/// </summary>
 	public struct CoupCoe
 	{
 		public int antCouplCoeffFreq;
 		public int antCouplCoeffAntGrpIndex;
-		public int antCouplCoeffAmplitude0;
-		public int antCouplCoeffPhase0;
-		public int antCouplCoeffAmplitude1;
-		public int antCouplCoeffPhase1;
-		public int antCouplCoeffAmplitude2;
-		public int antCouplCoeffPhase2;
-		public int antCouplCoeffAmplitude3;
-		public int antCouplCoeffPhase3;
-		public int antCouplCoeffAmplitude4;
-		public int antCouplCoeffPhase4;
-		public int antCouplCoeffAmplitude5;
-		public int antCouplCoeffPhase5;
-		public int antCouplCoeffAmplitude6;
-		public int antCouplCoeffPhase6;
-		public int antCouplCoeffAmplitude7;
-		public int antCouplCoeffPhase7;
+		public int antCouplCoeffAmplitude0 { get; set; }
+		public int antCouplCoeffPhase0 { get; set; }
+		public int antCouplCoeffAmplitude1 { get; set; }
+		public int antCouplCoeffPhase1 { get; set; }
+		public int antCouplCoeffAmplitude2 { get; set; }
+		public int antCouplCoeffPhase2 { get; set; }
+		public int antCouplCoeffAmplitude3 { get; set; }
+		public int antCouplCoeffPhase3 { get; set; }
+		public int antCouplCoeffAmplitude4 { get; set; }
+		public int antCouplCoeffPhase4 { get; set; }
+		public int antCouplCoeffAmplitude5 { get; set; }
+		public int antCouplCoeffPhase5 { get; set; }
+		public int antCouplCoeffAmplitude6 { get; set; }
+		public int antCouplCoeffPhase6 { get; set; }
+		public int antCouplCoeffAmplitude7 { get; set; }
+		public int antCouplCoeffPhase7 { get; set; }
 	}
 
 	#endregion

@@ -459,6 +459,7 @@ namespace CfgFileOperation
             lenSize = Marshal.SizeOf(new byte()) * 48;
             bytes = data.Skip(fromOf).Take(lenSize).ToArray();
             u8FieldName = GetBytesValue(bytes);
+            string leafName = Encoding.GetEncoding("GB2312").GetString(u8FieldName).TrimEnd('\0');
             //u16FieldOffset
             fromOf += lenSize;
             lenSize = Marshal.SizeOf(u16FieldOffset);

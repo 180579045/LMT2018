@@ -134,7 +134,7 @@ namespace NetPlan.Tests
 				{
 					var strRruNo = "10";
 					var lcInfoMap = new Dictionary<string, NPRruToCellInfo>();
-					var lcInfo = new NPRruToCellInfo("接收发送均有效");
+					var lcInfo = new NPRruToCellInfo();
 					lcInfo.CellIdList.Add(new CellAndState { cellId = "0", bIsFixed = false });
 					lcInfo.CellIdList.Add(new CellAndState { cellId = "1", bIsFixed = false });
 					lcInfo.CellIdList.Add(new CellAndState { cellId = "2", bIsFixed = false });
@@ -144,7 +144,7 @@ namespace NetPlan.Tests
 					var ret = MibInfoMgr.GetInstance().SetNetLcInfo(strRruNo, lcInfoMap);
 					Assert.IsTrue(ret);
 
-					lcInfo = new NPRruToCellInfo("接收有效");
+					lcInfo = new NPRruToCellInfo();
 					lcInfo.CellIdList.Add(new CellAndState { cellId = "6", bIsFixed = false });
 					lcInfo.CellIdList.Add(new CellAndState { cellId = "7", bIsFixed = false });
 					lcInfo.CellIdList.Add(new CellAndState { cellId = "8", bIsFixed = false });

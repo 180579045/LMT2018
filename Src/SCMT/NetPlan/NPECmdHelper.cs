@@ -100,7 +100,7 @@ namespace NetPlan
 						mibAttri = mibLeaf,
 						m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, defaultValue), // 原始值设置为默认值
 						m_bReadOnly = !mibLeaf.IsEmpoweredModify(),
-						m_bVisible = (mibLeaf.ASNType != "RowStatus")	// 行状态不显示
+						m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
 					};
 
 					// todo netRRUEntry表存在问题：默认值为0：unknown，但取值范围中没有0，会设置为null
@@ -116,7 +116,7 @@ namespace NetPlan
 					}
 					else
 					{
-						ret[mibLeaf.childNameMib] = info;		// 如果已存在，直接更新
+						ret[mibLeaf.childNameMib] = info;       // 如果已存在，直接更新
 					}
 				}
 			}
@@ -127,12 +127,7 @@ namespace NetPlan
 		// 获取所有的mib信息和命令信息
 		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(EnbTypeEnum enbType)
 		{
-			if (EnbTypeEnum.ENB_EMB6116 == enbType)
-			{
-				return _npeCmd.EMB6116.NetPlanMibEntrys;
-			}
-
-			return _npeCmd.EMB5116.NetPlanMibEntrys;
+			return EnbTypeEnum.ENB_EMB6116 == enbType ? _npeCmd.EMB6116.NetPlanMibEntrys : null;
 		}
 
 		/// <summary>
@@ -167,15 +162,19 @@ namespace NetPlan
 				case EnumSnmpCmdType.Get:
 					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Get).FirstOrDefault();
 					break;
+
 				case EnumSnmpCmdType.Set:
 					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Set).FirstOrDefault();
 					break;
+
 				case EnumSnmpCmdType.Add:
 					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Add).FirstOrDefault();
 					break;
+
 				case EnumSnmpCmdType.Del:
 					cmds = (from mibEntry in mibEntrys where mibEntry.MibEntry.Equals(entryName) select mibEntry.Del).FirstOrDefault();
 					break;
+
 				default:
 					throw new ArgumentOutOfRangeException(nameof(cmdType), cmdType, null);
 			}
@@ -220,7 +219,34 @@ namespace NetPlan
 			return mapCmdNameToMibLeafInfoList;
 		}
 
-		#endregion
+		/// <summary>
+		/// 根据表入口名，查询Alias字段的名字
+		/// </summary>
+		/// <param name="strEntryName"></param>
+		/// <returns></returns>
+		public string GetAliasByEntryName(string strEntryName)
+		{
+			return (from tmp in _npeCmd.EMB6116.NetPlanMibEntrys
+					where tmp.MibEntry == strEntryName
+					select tmp.Alias)
+					.FirstOrDefault();
+		}
+
+		/// <summary>
+		/// 根据别名查询MIB入口名
+		/// </summary>
+		/// <param name="strAlias"></param>
+		/// <returns></returns>
+		public string GetEntryNameByAlias(string strAlias)
+		{
+			return (from tmp in _npeCmd.EMB6116.NetPlanMibEntrys
+					where tmp.Alias.Equals(strAlias, StringComparison.InvariantCultureIgnoreCase)
+					select tmp.MibEntry)
+				.FirstOrDefault();
+		}
+
+
+		#endregion 公共接口
 
 		#region 私有方法
 
@@ -241,21 +267,19 @@ namespace NetPlan
 			}
 		}
 
-		#endregion
-
+		#endregion 私有方法
 
 		#region 私有属性
 
 		private readonly NPECmd _npeCmd;
 
-		#endregion
-
+		#endregion 私有属性
 	}
 
 	public class NPECmd
 	{
 		public GridMibCfg EMB6116;
-		public GridMibCfg EMB5116;
+		//public GridMibCfg EMB5116;
 	}
 
 	public class GridMibCfg
@@ -268,6 +292,7 @@ namespace NetPlan
 	{
 		public string MibEntry;
 		public string Alias;
+		public string InitQuery;        //用于判定初始化网规页面时，是否从基站中查询这个消息
 		public List<string> Get;
 		public List<string> Set;
 		public List<string> Add;

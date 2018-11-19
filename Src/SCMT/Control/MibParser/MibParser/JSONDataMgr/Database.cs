@@ -29,6 +29,11 @@ namespace MIBDataParser.JSONDataMgr
 				m_leaflist.Add(leaf.ToString());
 			}
 		}
+
+		public CmdMibInfo()
+		{
+			m_leaflist = new List<string>();
+		}
 	}
 
 	/// <summary>

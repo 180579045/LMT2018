@@ -5,6 +5,7 @@
 			{
 				"MibEntry" : "netBoardEntry",
 				"Alias" : "board",
+				"InitQuery" : "true",
 				"Get" : ["GetNetBoard"],
 				"Set" : ["SetNetBoard"],
 				"Add" : ["AddNetBoard"],
@@ -13,6 +14,7 @@
 			{
 				"MibEntry" : "netRRUEntry",
 				"Alias" : "rru",
+				"InitQuery" : "true",
 				"Get" : ["GetNetRRU", "GetNetRRUPGCInfo", "GetNetRRUJamResistantInfo"],
 				"Set" : ["SetNetRRU", "SetNetRRUPGCInfo", "SetNetRRUJamResistantInfo"],
 				"Add" : ["AddNetRRU"],
@@ -21,6 +23,7 @@
 			{
 				"MibEntry" : "netRHUBEntry",
 				"Alias" : "rhub",
+				"InitQuery" : "true",
 				"Get" : ["GetNetRHUB"],
 				"Set" : ["SetNetRHUB"],
 				"Add" : ["AddNetRHUB"],
@@ -29,6 +32,7 @@
 			{
 				"MibEntry" : "netAntennaArrayEntry",
 				"Alias" : "ant",
+				"InitQuery" : "true",
 				"Get" : ["GetNetAntennaArray", "GetTDSInheritNetAntennaArray"],
 				"Set" : ["SetNetAntennaArray", "SetNetAntRAEScan"],
 				"Add" : ["AddNetAntennaArray"],
@@ -37,6 +41,7 @@
 			{
 				"MibEntry" : "netRRUAntennaSettingEntry",
 				"Alias" : "rru_ant",
+				"InitQuery" : "true",
 				"Get" : ["GetNetRRUAntennaSetting"],
 				"Set" : ["SetNetRRUAntennaSetting", "SetNetRRUAntennaLcID"],
 				"Add" : ["AddNetRRUAntennaSetting"],
@@ -45,6 +50,7 @@
 			{
 				"MibEntry" : "netIROptPlanEntry",
 				"Alias" : "board_rru",
+				"InitQuery" : "true",
 				"Get" : ["GetIROfpPortInfo"],
 				"Set" : ["SetIROfpPortInfo"],
 				"Add" : ["AddIROfpPortInfo"],
@@ -53,6 +59,7 @@
 			{
 				"MibEntry" : "netEthPlanEntry",
 				"Alias" : "rhub_prru",
+				"InitQuery" : "true",
 				"Get" : ["GetEthPortInfo"],
 				"Set" : ["SetEthPortInfo"],
 				"Add" : ["AddEthPortInfo"],
@@ -61,6 +68,7 @@
 			{
 				"MibEntry" : "nrNetLocalCellEntry",
 				"Alias" : "nrNetLc",
+				"InitQuery" : "true",
 				"Get" : ["GetLocalNRCellNetworkPlan"],
 				"Set" : ["SetLocalNRCellNetworkPlan"],
 				"Add" : ["AddLocalNRCellNetworkPlan"],
@@ -69,6 +77,7 @@
 			{
 				"MibEntry" : "nrNetLocalCellCtrlEntry",
 				"Alias" : "nrNetLcCtr",
+				"InitQuery" : "true",
 				"Get" : ["GetNRNetwokPlanControlSwitch"],
 				"Set" : ["SetNRNetwokPlanControlSwitch"],
 				"Add" : [""],
@@ -77,6 +86,7 @@
 			{
 				"MibEntry" : "nrLocalCellEntry",
 				"Alias" : "nrLc",
+				"InitQuery" : "true",
 				"Get" : ["GetLocalNRCellInfo"],
 				"Set" : ["SetNRLcAddDelTrigger"],
 				"Add" : ["SetNRLcAddDelTrigger"],
@@ -85,98 +95,39 @@
 			{
 				"MibEntry" : "nrCellEntry",
 				"Alias" : "nrCell",
+				"InitQuery" : "true",
 				"Get" : ["GetNRCellInfo"],
 				"Set" : ["SetNRCellActiveTrigger"],
 				"Add" : [],
 				"Del" : []
-			}				
-		]
-	
-	},
-	"EMB5116" : {
-		"Description" : "5G基站网络规划MIB入口配置",
-		"NetPlanMibEntrys" : [
-			{
-				"MibEntry" : "netBoardEntry",
-				"Alias" : "board",
-				"Get" : ["GetNetBoard"],
-				"Set" : ["SetNetBoard"],
-				"Add" : ["AddNetBoard"],
-				"Del" : ["DelNetBoard"]	
 			},
 			{
-				"MibEntry" : "netRRUEntry",
-				"Alias" : "rru",
-				"Get" : ["GetNetRRU", "GetNetRRUPGCInfo", "GetNetRRUJamResistantInfo"],
-				"Set" : ["SetNetRRU", "SetNetRRUPGCInfo", "SetNetRRUJamResistantInfo"],
-				"Add" : ["AddNetRRU"],
-				"Del" : ["DelNetRRU"]	
+				"MibEntry" : "antennaWeightMultAntEntry",
+				"Alias" : "antWeight",
+				"InitQuery" : "false",
+				"Get" : ["GetAntennaWeightMultAntInfo"],
+				"Set" : ["SetAntennaWeightMultAntInfo"],
+				"Add" : ["AddAntennaWeightMultAntInfo"],
+				"Del" : ["DelAntennaWeightMultAntInfo"]
 			},
 			{
-				"MibEntry" : "netRHUBEntry",
-				"Alias" : "rhub",
-				"Get" : ["GetNetRHUB"],
-				"Set" : ["SetNetRHUBGsm", "SetNetRHUB"],
-				"Add" : ["AddNetRHUB"],
-				"Del" : ["DelNetRHUB"]	
+				"MibEntry" : "antennaCouplingCoeffctEntry",
+				"Alias" : "antCoup",
+				"InitQuery" : "false",
+				"Get" : ["GetAntennaCouplingCoeffctInfo"],
+				"Set" : ["SetAntennaCouplingCoeffctInfo"],
+				"Add" : ["AddAntennaCouplingCoeffctInfo"],
+				"Del" : ["DelAntennaCouplingCoeffctInfo"]
 			},
 			{
-				"MibEntry" : "netAntennaArrayEntry",
-				"Alias" : "ant",
-				"Get" : ["GetNetAntennaArray", "GetTDSInheritNetAntennaArray"],
-				"Set" : ["SetNetAntennaArray", "SetNetAntRAEScan"],
-				"Add" : ["AddNetAntennaArray"],
-				"Del" : ["DelNetAntennaArray"]	
-			},
-			{
-				"MibEntry" : "netRRUAntennaSettingEntry",
-				"Alias" : "rru_ant",
-				"Get" : ["GetNetRRUAntennaSetting"],
-				"Set" : ["SetNetRRUAntennaSetting", "SetNetRRUAntennaLcID"],
-				"Add" : ["AddNetRRUAntennaSetting"],
-				"Del" : ["DelNetRRUAntennaSetting"]	
-			},
-			{
-				"MibEntry" : "netIROptPlanEntry",
-				"Alias" : "board_rru",
-				"Get" : ["GetIROfpPortInfo"],
-				"Set" : ["SetIROfpPortInfo"],
-				"Add" : ["AddIROfpPortInfo"],
-				"Del" : ["DelIROfpPortInfo"]	
-			},
-			{
-				"MibEntry" : "netEthPlanEntry",
-				"Alias" : "rhub_prru",
-				"Get" : ["GetEthPortInfo"],
-				"Set" : ["SetEthPortInfo"],
-				"Add" : ["AddEthPortInfo"],
-				"Del" : ["DelEthPortInfo"]	
-			},
-			{
-				"MibEntry" : "netLocalCellEntry",
-				"Alias" : "netLc",
-				"Get" : ["GetLocalCellNetworkPlan"],
-				"Set" : ["SetLocalCellNetworkPlan"],
-				"Add" : ["AddLocalCellNetworkPlan"],
-				"Del" : ["DelLocalCellNetworkPlan"]	
-			},	
-			{
-				"MibEntry" : "localCellEntry",
-				"Alias" : "lc",
-				"Get" : ["GetLocalCellInfo"],
-				"Set" : ["SetLcAddDelTrigger"],
-				"Add" : ["SetLcAddDelTrigger"],
-				"Del" : ["SetLcAddDelTrigger"]	
-			},
-			{
-				"MibEntry" : "cellEntry",
-				"Alias" : "cell",
-				"Get" : ["GetCellInfo"],
-				"Set" : ["SetCellActiveTrigger"],
-				"Add" : [""],
-				"Del" : [""]
+				"MibEntry" : "antennaBfScanWeightEntry",
+				"Alias" : "antBfScan",
+				"InitQuery" : "false",
+				"Get" : ["GetAntennaBfScanWeightInfo"],
+				"Set" : ["SetAntennaBfScanWeightInfo"],
+				"Add" : ["AddAntennaBfScanWeightInfo"],
+				"Del" : ["DelAntennaBfScanWeightInfo"]
 			}
-		]
-	
+		]	
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
 
 namespace MIBDataParser.JSONDataMgr
@@ -72,6 +73,25 @@ namespace MIBDataParser.JSONDataMgr
 
 			return true;
 		}
+
+		/// <summary>
+		/// 根据表名查询所有的命令信息
+		/// </summary>
+		/// <param name="strTblName"></param>
+		/// <param name="strTargetIp"></param>
+		public List<CmdMibInfo> GetCmdsByTblName(string strTblName)
+		{
+			if (string.IsNullOrEmpty(strTblName))
+			{
+				throw new ArgumentNullException();
+			}
+
+			var cmdsValueList = cmdInfoNew.Values.ToList();
+			var cmdInfoList = cmdsValueList.Where(item => item.m_tableName == strTblName).ToList();
+
+			return cmdInfoList;
+		}
+
 
 		private string getCmdJsonFilePath()
 		{
