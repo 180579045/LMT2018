@@ -68,6 +68,10 @@ namespace CfgFileOperation
             m_alarmExcel = new CfgParseAlarmExecl();
             m_alarmExcel.ParseExcel(paths["Alarm"]);
 
+            //4. 天线信息
+            m_antennaExcel = new CfgParseAntennaExcel();
+            m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
+
             //1. lm.mdb 更新加载数据，整理成表和表实例的结构
             CreateCfgFile(paths);
 
@@ -384,7 +388,7 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            if (strTableName == "adjeNBEntry")
+            if (strTableName == "antennaBfScanWeightEntry")
                 Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
@@ -1000,7 +1004,7 @@ namespace CfgFileOperation
             {
                 List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
                 string strTabIndex;
-                if (setBufTableNum < alarmCount - 1)
+                if (setBufTableNum < alarmCount)
                 {
                     WriteAlarmDataToCfg(BuffArrL, vectAlarmInfo[setBufTableNum], leafNum, tableOp);
                     strTabIndex = "." + vectAlarmInfo[setBufTableNum].GetContrastValue(tableOp.m_LeafNodes[0].m_struMibNode.strMibName);
@@ -1194,7 +1198,7 @@ namespace CfgFileOperation
         {
             int pos = 0;
             List<int> posL = new List<int>() { pos };
-            for (int ileafNum = 0; ileafNum < leafNum-1; ileafNum++)
+            for (int ileafNum = 0; ileafNum < leafNum; ileafNum++)
             {
                 CfgFileLeafNodeOp mibNode = tableOp.m_LeafNodes[ileafNum];
                 StruMibNode m_struMibNode = tableOp.m_LeafNodes[ileafNum].m_struMibNode;
@@ -1549,8 +1553,11 @@ namespace CfgFileOperation
                 }
                 else if (String.Compare(strAsnType, "InetAddress", true) == 0)
                 {
+                    int posStart = bytePosL[0];
                     value = value.Replace("\"", ""); //value.Trim("\"");
                     GetInetAddressValue(byteArray, bytePosL, value);
+                    if(bytePosL[0] - posStart < strLen)
+                        bytePosL[0] = posStart + strLen;
                 }
                 else if (String.Compare(strAsnType, "MacAddress", true) == 0)
                 {

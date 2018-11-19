@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MIBDataParser.JSONDataMgr;
 using CfgFileOpStruct;
-
+using System.Data;
 
 namespace CfgFileOperation
 {
@@ -224,7 +224,7 @@ namespace CfgFileOperation
             string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
             string YSFilePath = dataBasePath + "5GCfg\\init_qyx.cfg";
             string NewFilePath = dataBasePath + "init.cfg";
-
+            
             //bool re = TestBeyondTableName(YsTableNames, NewTableNames);
             // 比较 表名是否一致
             if (!TestBeyondCompFileTableNameMain(YSFilePath, NewFilePath))
@@ -244,6 +244,7 @@ namespace CfgFileOperation
         /// <returns></returns>
         bool TestBeyondComFileTableInfoMain(string YSFilePath, string NewFilePath)
         {
+            
             bool re = true;
             StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);
             List<uint> YsTablePos = GetTablesPos(YSFilePath, (int)YsDhead.u32TableCnt);
@@ -261,13 +262,18 @@ namespace CfgFileOperation
             Dictionary<string, StruCfgFileFieldInfo> NewLeafHeadL;
             uint offsetYs;
             uint offsetNew;
+            int iTableIndexNum = 0;
             foreach (string table in YsTableNamePosDict.Keys)
             {
+
+                iTableIndexNum = TestGetIndexNum(table);
                 ///1.StruCfgFileTblInfo:44 字节，表内容头;
                 ///2.StruCfgFileFieldInfo[u16FieldNum]:60 字节* u16FieldNum，每个叶子的内容介绍;
                 ///3.u16RecLen(Stru) * u32RecNum(个数):每个实例内容(大小为u16RecLen) * 实例数.
-                if (String.Equals(table, "adjeNBEntry"))
+                if (String.Equals(table, "antennaBfScanWeightEntry"))
+                {
                     Console.WriteLine("Debug");
+                }
                 // 获取tableInfo表块介绍
                 offsetYs = YsTableNamePosDict[table];
                 ysTblInfo = TestGetTableHeadInfo(YSFilePath, offsetYs);
@@ -294,16 +300,78 @@ namespace CfgFileOperation
                 // 3. 每个表的实例是否一致
                 List<byte[]> YsInsts = GetInstsData(YSFilePath, offsetYs, (int)ysTblInfo.u32RecNum, (int)ysTblInfo.u16FieldNum, ysTblInfo.u16RecLen);
                 List<byte[]> NewInsts = GetInstsData(NewFilePath, offsetNew, (int)newTblInfo.u32RecNum, (int)newTblInfo.u16FieldNum, newTblInfo.u16RecLen);
-                if (!TestIsSameInstsList(table, (int)ysTblInfo.u32RecNum, YsLeafHeadL, YsInsts, NewInsts))
+                if (String.Equals(table, "alarmCauseEntry"))
                 {
-                    Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
-                    re = false;
+                    if (!TestIsSameInstsListAlarm(table, (int)ysTblInfo.u32RecNum, YsLeafHeadL, YsInsts, NewInsts))
+                    {
+                        Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
+                        re = false;
+                    }
+                }
+                else if (String.Equals(table, "antennaBfScanWeightEntry"))
+                {
+                    Console.WriteLine("antennaBfScanWeightEntry");
+
+                }
+                else {
+                    if (!TestIsSameInstsList(table, (int)ysTblInfo.u32RecNum, YsLeafHeadL, YsInsts, NewInsts))
+                    {
+                        Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
+                        re = false;
+                    }
+                }
+            }
+            return re;
+        }
+        int TestGetIndexNum(string table)
+        {
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\5GCfg\\";
+            string dataMdbPath = "lm.mdb";//1.数据库
+
+            string strSQL = String.Format("select * from MibTree where MIBName='{0}' and DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine", table);
+            //string strSQL2 = String.Format("select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", row["OID"].ToString());
+            DataSet TableMibdateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL);
+            DataRow TableRow = TableMibdateSet.Tables[0].Rows[0];
+            string strTableName = TableRow["MIBName"].ToString().Trim(' ');
+            if (!String.Equals(strTableName, table))
+            {
+                Console.WriteLine("不相同，有问题");//不相同，有问题
+            }
+            string strSQL2 = String.Format("select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", TableRow["OID"].ToString());
+            DataSet MibLeafsDateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL);
+            int childcount = MibLeafsDateSet.Tables[0].Rows.Count;
+            if (childcount == 0)
+            {
+                Console.WriteLine("有问题");//不相同，有问题
+            }
+            int tableIndexNum = 0;// 索引个数
+            for (int loop = 0; loop < MibLeafsDateSet.Tables[0].Rows.Count; loop++)//在表之间循环
+            {
+                DataRow leafRow = MibLeafsDateSet.Tables[0].Rows[loop];
+                if ((bool)leafRow["IsIndex"])//是否为索引??????? col=39
+                {
+                    tableIndexNum++;
                 }
             }
 
-            return re;
+            return tableIndexNum;
         }
-
+        public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
+        {
+            DataSet dateSet = new DataSet();
+            AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
+            try
+            {
+                mdbData.Open();
+                dateSet = mdbData.GetDataSet(sqlContent);
+                mdbData.Close();
+            }
+            finally
+            {
+                mdbData = null;
+            }
+            return dateSet;
+        }
         /// <summary>
         /// 获取表的所有实例
         /// </summary>
@@ -322,8 +390,8 @@ namespace CfgFileOperation
             instOffset += Marshal.SizeOf(new StruCfgFileFieldInfo("")) * u16FieldNum;//第一个实例位置
             for (int i = 0; i < u32RecNum; i++)
             {
-                instOffset = u16FieldLen * i;
-                byte[] YsInstsData = new CfgOp().CfgReadFile(filePath, instOffset, u16FieldLen);
+                int pos = instOffset + u16FieldLen * i;
+                byte[] YsInstsData = new CfgOp().CfgReadFile(filePath, pos, u16FieldLen);
                 re.Add(YsInstsData);
             }
             return re;
@@ -347,6 +415,146 @@ namespace CfgFileOperation
             }
             return re;
         }
+
+        bool TestIsSameInstsListAlarm(string tableName, int u32RecNum, Dictionary<string, StruCfgFileFieldInfo> LeafHead, List<byte[]> InstsAList, List<byte[]> InstsBList)
+        {
+            bool re = true;
+
+            // 检查所有的告警编号
+            if (!TestIsSameAlarmNo(u32RecNum, InstsAList, InstsBList))
+            {
+                //
+                Console.WriteLine(String.Format("告警编号不同"));
+                re = false;
+            }
+
+            // 如果告警编号没有问题， 以告警编号为key ，重新排列实例
+            Dictionary<uint, byte[]> AlarmNoAndInfoA = GetAlarmNoAndInfo(u32RecNum, InstsAList);
+            Dictionary<uint, byte[]> AlarmNoAndInfoB = GetAlarmNoAndInfo(u32RecNum, InstsBList);
+            // 对比实例
+            byte[] instA;
+            byte[] instB;
+            foreach (uint alno in AlarmNoAndInfoA.Keys)
+            {
+                instA = AlarmNoAndInfoA[alno];//实例
+                instB = AlarmNoAndInfoB[alno];
+                //
+                if (!TestIsSameInst(tableName, LeafHead, instA, instB))
+                {
+                    re = false;
+                    Console.WriteLine(String.Format("table({0}), alarmNo({1}) info no same", tableName, alno));
+                    break;
+                }
+            }
+            return re;
+        }
+        
+        bool TestIsSameAlarmNo(int u32RecNum, List<byte[]> InstsAList, List<byte[]> InstsBList)
+        {
+            List<uint> alarmNoA = GetAllAlarmNoForInsts(u32RecNum, InstsAList);
+            List<uint> alarmNoB = GetAllAlarmNoForInsts(u32RecNum, InstsBList);
+            bool re = true;
+            if (alarmNoA.Count != alarmNoB.Count)
+            {
+                Console.WriteLine(String.Format("alarm no num not same.A.num={0},b.num={1}.", alarmNoA.Count, alarmNoB.Count));
+                re = false;
+            }
+
+            if (!TestIsSameAlarmNoBeyondCom(alarmNoA, alarmNoB))
+            {
+                Console.WriteLine(String.Format("alarmA no all not same than alarmB."));
+                re = false;
+            }
+            if (!TestIsSameAlarmNoBeyondCom(alarmNoB, alarmNoA))
+            {
+                Console.WriteLine(String.Format("alarmB no all not same than alarmA."));
+                re = false;
+            }
+            return re;
+        }
+        List<uint> GetAllAlarmNoForInsts(int u32RecNum, List<byte[]> InstsAList)
+        {
+            byte[] inst;
+            uint alarmCauseNo = 0;
+            byte[] emtpyArray = new byte[InstsAList[0].LongCount()];
+            emtpyArray.Initialize();
+
+            List<uint> alarmNo = new List<uint>();
+            for (int instNo = 0; instNo < u32RecNum; instNo++)
+            {
+                // 判断告警号：数量，内容是否相同
+                inst = InstsAList[instNo];//实例
+                if (TestIsByteListSame(emtpyArray, inst))
+                {
+                    Console.WriteLine("===");
+                    break;// 结束
+                }
+                alarmCauseNo = GetBytesValToUint2(inst.Skip(0).Take(4).Reverse().ToArray());
+                if (-1 != alarmNo.FindIndex(e => e == alarmCauseNo))
+                {
+                    // 出现重复
+                    Console.WriteLine(String.Format("出现重复的告警编号{0}", alarmCauseNo));
+                }
+                alarmNo.Add(alarmCauseNo);
+            }
+            return alarmNo;
+        }
+        bool TestIsByteListSame(byte[] aArray, byte[] bArray)
+        {
+            bool re = true;
+            for (int i = 0; i < aArray.Length; i++)
+            {
+                if (aArray[i] != bArray[i])
+                {
+                    re = false;
+                    break;
+                }
+            }
+            return re;
+        }
+        bool TestIsSameAlarmNoBeyondCom(List<uint> alarmNoA, List<uint> alarmNoB)
+        {
+            bool re = true;
+            for (int no = 0; no < alarmNoA.Count; no++)
+            {
+                uint alarmNo = alarmNoA[no];
+                int pos = alarmNoB.FindIndex(e => e == alarmNo);
+                if (-1 == pos)
+                {
+                    Console.WriteLine(String.Format("Not have alarm num num={0}.", alarmNo));
+                    re = false;
+                    //break;
+                }
+            }
+            return re;
+        }
+        Dictionary<uint, byte[]> GetAlarmNoAndInfo(int u32RecNum, List<byte[]> InstsAList)
+        {
+            byte[] inst;
+            uint alarmCauseNo = 0;
+            byte[] emtpyArray = new byte[InstsAList[0].LongCount()];
+            emtpyArray.Initialize();
+
+            Dictionary<uint, byte[]> alarmNoAndInfo = new Dictionary<uint, byte[]>();
+            for (int instNo = 0; instNo < u32RecNum; instNo++)
+            {
+                // 判断告警号：数量，内容是否相同
+                inst = InstsAList[instNo];//实例
+                if (TestIsByteListSame(emtpyArray, inst))
+                {
+                    break;// 结束
+                }
+                //
+                alarmCauseNo = GetBytesValToUint2(inst.Skip(0).Take(4).Reverse().ToArray());
+                if (-1 != alarmNoAndInfo.Keys.ToList().FindIndex(e => e == alarmCauseNo))
+                {
+                    // 出现重复
+                    Console.WriteLine(String.Format("出现重复的告警编号{0}", alarmCauseNo));
+                }
+                alarmNoAndInfo.Add(alarmCauseNo, inst);
+            }
+            return alarmNoAndInfo;
+        }
         bool TestIsSameInst(string tableName, Dictionary<string, StruCfgFileFieldInfo> LeafHead, byte[] instA, byte[] instB)
         {
             bool re = true;
@@ -355,8 +563,11 @@ namespace CfgFileOperation
             ushort u16FieldLen;          /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
             byte u8FieldType;            /* 字段类型 */
 
+            uint indexNo = 0;
+
             foreach (string leafName in LeafHead.Keys)
             {
+                indexNo = GetBytesValToUint2(instA.Skip(0).Take(4).Reverse().ToArray());
                 FieldH = LeafHead[leafName];
                 u16FieldOffset = FieldH.u16FieldOffset;       /* 字段相对记录头偏移量*/
                 u16FieldLen = FieldH.u16FieldLen;             /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
@@ -369,14 +580,13 @@ namespace CfgFileOperation
                 if (!BytesCompare_Base64(InA, InB))
                 {
                     re = false;
-                    Console.WriteLine(String.Format("table({0}),leafName({1})(a.{2},b.{3}) no same", 
-                        tableName, leafName, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
+                    Console.WriteLine(String.Format("table({0}),leafName({1})(a.{2},b.{3}) no same, indexNo={4}", 
+                        tableName, leafName, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB), indexNo));
                     break;
                 }
             }
             return re;
         }
-
         Dictionary<string, StruCfgFileFieldInfo> TestGetLeafHeadFieldInfo(string filePath, ushort u16FieldNumYs, uint offset)
         {
             CfgOp cfgOp = new CfgOp();
