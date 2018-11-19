@@ -1560,12 +1560,22 @@ namespace NetPlan
 				}
 			}
 
-			if (rtc.SupportTxRxStatus.Count > 0)
+			var mapAttri = dev.m_mapAttributes;
+
+			var rtxv = GetEnumStringByMibName(mapAttri, "netSetRRUPortTxRxStatus");
+			if (null == rtxv)
 			{
-				rtc.RealTRx = rtc.SupportTxRxStatus.Last();
+				if (rtc.SupportTxRxStatus.Count > 0)
+				{
+					rtc.RealTRx = rtc.SupportTxRxStatus.Last();
+
+				}
+			}
+			else
+			{
+				rtc.RealTRx = rtxv;
 			}
 
-			var mapAttri = dev.m_mapAttributes;
 			var cellId1 = GetEnumStringByMibName(mapAttri, "netSetRRUPortSubtoLocalCellId");
 			if (null != cellId1 && -1 != int.Parse(cellId1))
 			{
