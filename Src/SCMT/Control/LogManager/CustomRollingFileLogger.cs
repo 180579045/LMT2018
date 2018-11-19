@@ -102,12 +102,10 @@ namespace LogManager
 		{
 			if (string.IsNullOrEmpty(category))
 			{
-				return $@"Log\{loggerName}.txt";
+				return $@"Log\{loggerName}";
 			}
-			else
-			{
-				return $@"Log\{category}\{loggerName}.txt";
-			}
+
+			return $@"Log\{category}\{loggerName}";
 		}
 
 		private static Level GetLoggerLevel(string level)
