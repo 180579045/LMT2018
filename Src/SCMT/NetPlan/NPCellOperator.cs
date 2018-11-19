@@ -1,4 +1,5 @@
-﻿using CommonUtility;
+﻿using System;
+using CommonUtility;
 using DataBaseUtil;
 using LinkPath;
 using LmtbSnmp;
@@ -362,6 +363,29 @@ namespace NetPlan
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// 判断本地小区是否可以在RRU端口配置中被修改
+		/// </summary>
+		/// <param name="strLcId"></param>
+		/// <returns></returns>
+		public static bool IsFixedLc(string strLcId)
+		{
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
+			if (null == targetIp)
+			{
+				throw new CustomException("尚未选中基站");
+			}
+
+			if (string.IsNullOrEmpty(strLcId))
+			{
+				throw new ArgumentNullException(strLcId);
+			}
+
+			var lcStatus = GetLcStatus(int.Parse(strLcId), targetIp);
+
+			return (lcStatus != LcStatus.Planning);
 		}
 	}
 

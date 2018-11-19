@@ -735,11 +735,11 @@ namespace NetPlan
 				var rai = GetDevAttributeInfo(tmpIdx, EnumDevType.rru_ant);
 				if (null == rai)
 				{
-					rai = new DevAttributeInfo(EnumDevType.rru_ant, tmpIdx);    // todo 删除天线阵时，才删除所有的天线阵安装规划表信息
+					rai = new DevAttributeInfo(EnumDevType.rru_ant, tmpIdx);    // 删除天线阵时，才删除所有的天线阵安装规划表信息
 					AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, rai);
 				}
 
-				GetRruPortToCellInfo(rai, pathInfo, ref retMap, (RecordDataType.Original == rai.m_recordType));
+				GetRruPortToCellInfo(rai, pathInfo, ref retMap);
 			}
 
 			return retMap;
@@ -1547,7 +1547,7 @@ namespace NetPlan
 		/// <param name="rpi"></param>
 		/// <param name="mapResult"></param>
 		/// <param name="bCellFix"></param>
-		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult, bool bCellFix = false)
+		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult)
 		{
 			var rtc = new NPRruToCellInfo();
 			var supportTx = rpi.rruTypePortNotMibRxTxStatus;
@@ -1565,23 +1565,28 @@ namespace NetPlan
 				rtc.RealTRx = rtc.SupportTxRxStatus.Last();
 			}
 
+			var mapAttri = dev.m_mapAttributes;
+			var cellId1 = GetEnumStringByMibName(mapAttri, "netSetRRUPortSubtoLocalCellId");
+			if (null != cellId1 && -1 != int.Parse(cellId1))
+			{
+				//var attObj = mapAttri["netSetRRUPortSubtoLocalCellId"];
+				//bCellFix = (attObj.m_attRecordType != RecordDataType.NewAdd);
+				var bCellFix = NPCellOperator.IsFixedLc(cellId1);
+				rtc.CellIdList.Add(new CellAndState { cellId = cellId1, bIsFixed = bCellFix });
+			}
+
 			// 通道频道信息是根据小区的id从netLc表中找到netLcFreqBand字段的值
 			// RRU 的ID相同，取出所有通道对应的信息
-			var mapAttri = dev.m_mapAttributes;
 			for (var i = 2; i <= 4; i++)
 			{
 				var mibName = $"netSetRRUPortSubtoLocalCellId{i}";
 				var cellId = GetEnumStringByMibName(mapAttri, mibName);
 				if (null != cellId && "-1" != cellId)
 				{
+					var bCellFix = NPCellOperator.IsFixedLc(cellId);
+
 					rtc.CellIdList.Add(new CellAndState { cellId = cellId, bIsFixed = bCellFix });
 				}
-			}
-
-			var cellId1 = GetEnumStringByMibName(mapAttri, "netSetRRUPortSubtoLocalCellId");
-			if (null != cellId1 && -1 != int.Parse(cellId1))
-			{
-				rtc.CellIdList.Add(new CellAndState { cellId = cellId1, bIsFixed = bCellFix });
 			}
 
 			var portNo = GetEnumStringByMibName(mapAttri, "netSetRRUPortNo");
@@ -1596,12 +1601,11 @@ namespace NetPlan
 			foreach (var sfb in sfbList)
 			{
 				var kvMap = MibStringHelper.SplitMibEnumString(sfb.desc);
-				if (null != kvMap)
+				if (null == kvMap) continue;
+
+				foreach (var kv in kvMap)
 				{
-					foreach (var kv in kvMap)
-					{
-						sb.Append($"{kv.Value}/");
-					}
+					sb.Append($"{kv.Value}/");
 				}
 			}
 
@@ -1661,30 +1665,36 @@ namespace NetPlan
 			var lcAttr4 = mapAttributes["netSetRRUPortSubtoLocalCellId4"];
 
 			// 先设置为-1。todo 处于本地小区未建状态的LC是否可以挪动，待确定是否存在问题
-			lcAttr1.SetLatestValue("-1");
-			lcAttr2.SetLatestValue("-1");
-			lcAttr3.SetLatestValue("-1");
-			lcAttr4.SetLatestValue("-1");
+			Func<MibLeafNodeInfo, string, bool> SetLcIdCfg = (attribute, newLcId) =>
+			{
+				//if (attribute.m_attRecordType == RecordDataType.NewAdd)		// 新增的小区配置属性才修改
+				//{
+				//	attribute.SetLatestValue(newLcId);
+				//}
+				attribute?.SetLatestValue(newLcId);
+				return true;
+			};
 
 			// todo 目前每个通道只支持3个本地小区，后面可能会扩展
 			for (var i = 1; i <= lcIdList.Count; i++)
 			{
+				var newValue = lcIdList[i - 1].cellId;
 				switch (i)
 				{
 					case 1:
-						lcAttr1.SetLatestValue(lcIdList[i - 1].cellId.ToString());
+						SetLcIdCfg(lcAttr1, newValue);
 						break;
 
 					case 2:
-						lcAttr2.SetLatestValue(lcIdList[i - 1].cellId.ToString());
+						SetLcIdCfg(lcAttr2, newValue);
 						break;
 
 					case 3:
-						lcAttr3.SetLatestValue(lcIdList[i - 1].cellId.ToString());
+						SetLcIdCfg(lcAttr3, newValue);
 						break;
 
 					case 4:
-						lcAttr4.SetLatestValue(lcIdList[i - 1].cellId.ToString());
+						SetLcIdCfg(lcAttr4, newValue);
 						break;
 
 					default:
