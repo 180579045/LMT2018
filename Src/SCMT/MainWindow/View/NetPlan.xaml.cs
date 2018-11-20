@@ -2091,10 +2091,19 @@ namespace SCMTMainWindow.View
         {
             //handle click event
 
-            if(!NPSnmpOperator.DistributeNetPlanData())
-            {
-                MessageBox.Show("Faild");
-            }
+	        var choice = MessageBox.Show("是否同步下发天线阵权重信息？\r\n注意：同步下发天线阵权重信息耗时较长。", "网络规划", MessageBoxButton.YesNoCancel,
+		        MessageBoxImage.Warning);
+	        if (choice == MessageBoxResult.Cancel)
+	        {
+		        return;
+	        }
+
+	        var bDlWcb = (choice == MessageBoxResult.Yes);
+	        if (!NPSnmpOperator.DistributeNetPlanData(bDlWcb))
+	        {
+		        MessageBox.Show("下发网络规划信息失败", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+	        }
+
         }
         /// <summary>
         /// 
