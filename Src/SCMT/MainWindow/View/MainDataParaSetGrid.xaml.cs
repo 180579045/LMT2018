@@ -301,8 +301,8 @@ namespace SCMTMainWindow.View
                     {
                         MibLeaf mibLeaf = Database.GetInstance().GetMibDataByOid(oid, CSEnbHelper.GetCurEnbAddr());
                         dynamic model = new DyDataGrid_MIBModel();
-                        
-                        string[] devalue = mibLeaf.defaultValue.Split(':');
+
+                        string devalue = ConvertValidValue(mibLeaf);
 
                         model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
                         {
@@ -313,7 +313,7 @@ namespace SCMTMainWindow.View
                         }, "参数名称");
 
                         // 在这里要区分DataGrid要显示的数据类型;
-                        var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue[0], mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
+                        var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
 
                         model.AddParaProperty("ParaValue", dgm, "参数值");
 
@@ -350,31 +350,43 @@ namespace SCMTMainWindow.View
                         }
                     }
                 }
-
-                var column = new DataGridTextColumn
-                {
-                    Header = "参数名称",
-                    Binding = new Binding("ParaName.m_Content")
-                };
-
-                column = new DataGridTextColumn
-                {
-                    Header = "参数值",
-                    Binding = new Binding("ParaValue.m_Content")
-                };
-
-                column = new DataGridTextColumn
-                {
-                    Header = "取值范围",
-                    Binding = new Binding("ParaValueRange.m_Content")
-                };
-
-                column = new DataGridTextColumn
-                {
-                    Header = "单位",
-                    Binding = new Binding("ParaUnit.m_Content")
-                };
             }        
+        }
+        /// <summary>
+        /// 对无效的值"X",根据取值范围进行转换
+        /// </summary>
+        /// <param name="leaf"></param>
+        /// <returns></returns>
+
+        private string  ConvertValidValue(MibLeaf leaf)
+        {
+            string value = leaf.defaultValue;
+            if (leaf.defaultValue.Equals("×"))
+            {
+                if (leaf.OMType.Equals("u32") || leaf.OMType.Equals("s32"))
+                {
+                    string[] str = leaf.managerValueRange.Split('-');
+                    value = str[0];
+                }
+
+                if (leaf.OMType.Equals("enum"))
+                {
+                    // 1.取出该节点的取值范围
+                    var mvr = leaf.managerValueRange;
+
+                    // 2.分解取值范围
+                    var mapKv = MibStringHelper.SplitManageValue(mvr);
+                    if (!mapKv.ContainsValue(value))
+                        value = mapKv.FirstOrDefault().Key.ToString();
+                }
+            }
+            else
+            {
+                string[] devalue = leaf.defaultValue.Split(':');
+                value = devalue[0];
+            }
+
+            return value;
         }
         
         public DyDataGrid_MIBModel ParaDataModel
