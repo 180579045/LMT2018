@@ -1223,6 +1223,12 @@ namespace SCMTMainWindow.View
                 string strName = rruItemInfo.rruTypeName + "-" + nRRUid.ToString();
                 strXAML = MyDesigner.GetElementFromXAML(rruItemInfo.rruTypeNotMibMaxePortNo, strXAML, out newSize);
                 string strXAML1 = string.Format("Text=\"{0}\"", strName);
+
+                if(rruItemInfo.rruTypeNotMibMaxePortNo > 16)
+                {
+                    string strPortNo = string.Format("Text=\"1..{0}\"", rruItemInfo.rruTypeNotMibMaxePortNo);
+                    strXAML = strXAML.Replace("Text=\"1\"", strPortNo);
+                }
                 strXAML = strXAML.Replace("Text=\"RRU\"", strXAML1);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
                 newItem.Content = testContent;
@@ -1315,11 +1321,17 @@ namespace SCMTMainWindow.View
                 Size newSize;
                 string strName = "No:-" + nAntID;
                 strXAML = MyDesigner.GetAntennaromXML(nPort, strXAML, out newSize);
+                if (nPort > 8)
+                {
+                    string strPortNo = string.Format("Text=\"1..{0}\"", nPort);
+                    strXAML = strXAML.Replace("Text=\"1\"", strPortNo);
+                }
                 string strXAML1 = string.Format("Text=\"{0}\"", strName);
                 strXAML = strXAML.Replace("Text=\"Antenna\"", strXAML1);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML)));
                 newItem.Content = testContent;
                 newItem.ItemName = strName;
+                newItem.NPathNumber = nPort;
                 newItem.DevType = EnumDevType.ant;
                 newItem.DevIndex = item.m_strOidIndex;
 
