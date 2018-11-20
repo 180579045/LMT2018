@@ -250,6 +250,9 @@
     <Compile Include="View\MainDataGrid.xaml.cs">
       <DependentUpon>MainDataGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\MainDataParaSetGrid.xaml.cs">
+      <DependentUpon>MainDataParaSetGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\NetPlanTemplateCanvas.cs" />
     <Compile Include="View\UeInfo.xaml.cs">
       <DependentUpon>UeInfo.xaml</DependentUpon>
@@ -391,6 +394,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\MainDataGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainDataParaSetGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

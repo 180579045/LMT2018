@@ -46,8 +46,8 @@ namespace RruAntAlarmError
             infoJObect.Add("antennaTypeTable", antennaTypeJArray);
             infoJObect.Add("antennaWeightTable", antennaWeightJArray);
             infoJObect.Add("couplingCoeffctTable", couplingCoeffctJArray);
-            jsonFile.WriteFile(@".\output\component_AntennaInfo.json", infoJObect.ToString());
-            Log.Info("======parse " + fileName + "into output\\component_AntennaInfo.json ok");
+            jsonFile.WriteFile(@".\output\NetPlanElement_AntennaInfo.json", infoJObect.ToString());
+            Log.Info("======parse " + fileName + "into output\\NetPlanElement_AntennaInfo.json ok");
             return true;
         }
         //天线阵/多天线权值解析

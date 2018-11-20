@@ -71,13 +71,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Common.Logging">
-      <HintPath>..\..\packages\Common.Logging.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\1101\SCMT\Src\SCMT\packages\Lib\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging.Log4Net">
-      <HintPath>..\..\packages\Common.Logging.Log4Net.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\1101\SCMT\Src\SCMT\packages\Lib\Common.Logging.Log4Net.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\1101\SCMT\Src\SCMT\packages\Lib\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

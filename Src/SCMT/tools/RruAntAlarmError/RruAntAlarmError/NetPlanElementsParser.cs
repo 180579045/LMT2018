@@ -45,8 +45,8 @@ namespace RruAntAlarmError
                 return false;
             }
             JsonFile jsonFile = new JsonFile();
-            jsonFile.WriteFile(@".\output\component_netPlanElement.json", infoJObect.ToString());
-            Log.Info("======parse " + fileName + "into output\\component_netPlanElement.json ok");
+            jsonFile.WriteFile(@".\output\NetPlanElement_Board.json", infoJObect.ToString());
+            Log.Info("======parse " + fileName + "into output\\NetPlanElement_Board.json ok");
             return true;
         }
         public bool parseNetPlanElements(string sheetName, bool isFirstRowColumn, string fileName)
