@@ -7,7 +7,7 @@
   "rruTypePortSupportFreqBand":"1:a|A频段(2010-2025)/2:d|D频段(2570-2620)/4:e|E频段(2300-2400)/8:f|F频段(1880-1920)/16:dl|DL频段(2545-2575)/32:v|V频段(1447-1467)/64:b41|B41频段(2496-2690)/128:t|T频段(1785-1805)/256:b03|B03频段(1805-1880)/512:b01|B01频段(2110-2170)/1024:b44|B44频段(703-803)/2048:b42|B42频段(3400-3600)/4096:n78|N78频段(3300-3800)/8192:b08|B08频段(930-960)/16384:n79|N79频段(4400-5000)",
   "netRRUOfpWorkMode":"1:normal|正常模式/2:lined|级联模式/3:backup|主备模式/4:shared|负荷分担模式",
   "netIROfpTransPlanSpeed":"0:mbps2500|2.5G/1:mbps5000|5G/3:mbps10000|10G/4:mbps25000|25G/5:mbps100000|100G",
-  "netEthTransPlanSpeed":"0:mbps1250|1.25G/1:mbps2500|2.5G/2:mbps5000|5G",
+  "netEthTransPlanSpeed":"0:mbps1250|1.25G/1:mbps2500|2.5G/2:mbps5000|5G/3:mbps10000|10G",
   "netLcFreqBandWidth":"0:val5M|5MHz/1:val10M|10MHz/2:val15M|15MHz/3:val20M|20MHz/4:val100M|100MHz",
   "netSetRRUPortTxRxStatus":"1:rx|接收有效/2:tx|发送有效/3:rxAndTx|接收发送均有效/4:invalid|无效",
   "equipNEType":"0:unknown|未知/2:tlb60a|TLB60A/3:emb5116tdlte|EMB5116 TD-LTE/4:emb5132tdlte|EMB5132 TD-LTE/5:emb5116|EMB5116/10:emb6116|EMB6116/21:epc|EPC/41:ims|IMS",

@@ -30,9 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CommonUtility">
-      <HintPath>..\CommonUtility\bin\Debug\CommonUtility.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Lib\Newtonsoft.Json.dll</HintPath>
@@ -72,6 +69,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonUtility\CommonUtility.csproj">
+      <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
+      <Name>CommonUtility</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\LogManager\LogManager.csproj">
       <Project>{b42da179-3976-44a1-a54f-0b5e0046ddbc}</Project>
       <Name>LogManager</Name>
