@@ -301,8 +301,18 @@ namespace SCMTMainWindow.View
                     {
                         MibLeaf mibLeaf = Database.GetInstance().GetMibDataByOid(oid, CSEnbHelper.GetCurEnbAddr());
                         dynamic model = new DyDataGrid_MIBModel();
-
+                        
                         string devalue = ConvertValidValue(mibLeaf);
+                        //对行状态默认值为无效行时，改变为有效
+                        if (mibLeaf.childNameCh.Contains("行状态"))
+                        {
+                            var mapKv = MibStringHelper.SplitManageValue(mibLeaf.managerValueRange);
+
+                            if (devalue.Equals("6"))
+                            {
+                                devalue = mapKv.FirstOrDefault(q => q.Value == "行有效").Key.ToString();
+                            }
+                        }
 
                         model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
                         {
