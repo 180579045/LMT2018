@@ -20,7 +20,7 @@ namespace SCMTMainWindow.Component.ViewModel
         /// <summary>
         /// 用来保存中文列名与属性的对应关系;
         /// </summary>
-        Dictionary<string, string> ColName_Property = new Dictionary<string, string>();
+        public Dictionary<string, string> ColName_Property = new Dictionary<string, string>();
 
         /// <summary>
         /// 优化结构:使用元组保存所有的动态属性;

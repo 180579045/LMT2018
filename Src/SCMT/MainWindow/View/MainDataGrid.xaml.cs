@@ -1,4 +1,12 @@
-﻿using SCMTMainWindow.Component.ViewModel;
+﻿using CommonUtility;
+using LinkPath;
+using LmtbSnmp;
+using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
+using MsgQueue;
+using SCMTMainWindow.Component.ViewModel;
+using SCMTMainWindow.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -126,14 +134,124 @@ namespace SCMTMainWindow.View
             this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
             this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;            // 当用户的选择发生变化的时候(用在枚举、BIT类型修改完成后);
             this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;              // 捕获鼠标事件，用于判断用户拖拽事件;
-        }
+			this.DynamicDataGrid.LostFocus += DynamicDataGrid_LostFocus;                          // 单元格失去焦点事件;
+		}
         
-        /// <summary>
-        /// 单元格开始编辑时;
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DynamicDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+
+		/// <summary>
+		/// 单元格失去焦点事件
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void DynamicDataGrid_LostFocus(object sender, RoutedEventArgs e)
+		{
+			// 目前只处理ComboBox和TextBox
+			if (typeof(ComboBox) != e.OriginalSource.GetType()
+				&& typeof(TextBox) != e.OriginalSource.GetType())
+			{
+				return;
+			}
+
+			// 变更后的值
+			string strVal = null;
+			// 操作信息
+			string strMsg = "";
+			// Mib英文名称
+			string mibNameEn = null;
+			// oid 
+			string oid = null;
+			// 英文与值的对应关系
+			Dictionary<string, string> enName2Value = new Dictionary<string, string>();
+
+			// ComboBox
+			if (typeof(ComboBox) == e.OriginalSource.GetType())
+			{
+				ComboBox cbx = (ComboBox)e.OriginalSource;
+				if (cbx.IsDropDownOpen) // 如果是打开状态不处理
+				{
+					return;
+				}
+
+				// 获取ComboBox的值
+				KeyValuePair<int, string> keyVal = (KeyValuePair<int, string>)cbx.SelectedItem;
+				strVal = keyVal.Key.ToString();
+			}
+
+			// TextBox
+			if (typeof(TextBox) == e.OriginalSource.GetType())
+			{
+				// 获取TextBox的值
+				TextBox tbx = (TextBox)e.OriginalSource;
+				strVal = tbx.Text;
+			}
+
+
+			DataGrid dataGrid = (DataGrid)sender;
+			// 行Model
+			DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
+			// 行数据
+			Dictionary<string, object>  lineDataPro = mibModel.Properties;
+
+			// 获取当前表格的Mib英文名和oid
+			if (false == DataGridUtils.GetOidAndEnName(dataGrid.CurrentCell, out oid, out mibNameEn))
+			{
+				strMsg = string.Format("无法获取Mib英文名称错误，oid:{0}", oid);
+				Log.Error(strMsg);
+				return;
+			}
+
+			if (string.IsNullOrEmpty(mibNameEn))
+			{
+				strMsg = string.Format("无法获取Mib英文名称，oid:{0}", oid);
+				Log.Error(strMsg);
+				return;
+			}
+
+			// 判断值是否有变化
+			if (false == DataGridUtils.IsValueChanged(lineDataPro, mibNameEn, strVal))
+			{
+				return;
+			}
+
+			enName2Value.Add(mibNameEn, strVal);
+			// 组装Vb
+			List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
+			if (false == DataGridUtils.MakeSnmpVbs(lineDataPro, enName2Value, ref setVbs, out strMsg))
+			{
+				Log.Error(strMsg);
+				return;
+			}
+
+			// SNMP Set
+			long requestId;
+			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+			// 发送SNMP Set命令
+			int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
+			if (res != 0)
+			{
+				strMsg = string.Format("CDTCmdExecuteMgr.VbsSetSync()方法调用失败，EnbIp:{0}", CSEnbHelper.GetCurEnbAddr());
+				Log.Error(strMsg);
+				return;
+			}
+
+			// 使用返回的Pdu更新DataGrid
+			if (false == DataGridUtils.UpdateGridByPdu(lineDataPro, lmtPdu))
+			{
+				strMsg = "使用CDTLmtbPdu更新DataGrid时出错!";
+				Log.Error(strMsg);
+				return;
+			}
+
+			MessageBox.Show("参数修改成功！");
+
+		}
+
+		/// <summary>
+		/// 单元格开始编辑时;
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void DynamicDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
             dynamic temp = e.Column.GetCellContent(e.Row).DataContext as DyDataGrid_MIBModel;
             // 根据不同的列（既数据类型）改变不同的处理策略;
@@ -150,35 +268,27 @@ namespace SCMTMainWindow.View
 
         private void DynamicDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+			// 只处理ComboBox
+			if (typeof(ComboBox) != e.OriginalSource.GetType())
+			{
+				return;
+			}
+			return;
             // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
             // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
             if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
             {
                 return;
             }
-            else
-            {
-                try
-                {
-                    (sender as DataGrid).SelectedCells[0].Item.GetType();
-                }
-                catch (Exception ex)
-                {
-                    return;
-                }
-            }
-            try
-            {
-                 ((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
-                     (sender as DataGrid).SelectedCells[0].Column.Header.ToString(), (e.OriginalSource as ComboBox).SelectedItem);
-            }
-            catch
-            {
-
-            }
+				
+			 
+			((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
+				(sender as DataGrid).SelectedCells[0].Column.Header.ToString(), (e.OriginalSource as ComboBox).SelectedItem);
+			
+           
 
         }
-
+		
         /// <summary>
         /// 鼠标移动事件;
         /// </summary>

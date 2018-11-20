@@ -230,6 +230,7 @@
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="UeInfo\ChildrenUeInfo.cs" />
     <Compile Include="UeInfo\UeInfo.cs" />
+    <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
     <Compile Include="ViewModel\UeInfoModel.cs" />
     <Compile Include="View\AddBoardWindow.xaml.cs">
