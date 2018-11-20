@@ -172,6 +172,11 @@ namespace SCMTMainWindow.View
 
                 strRRUFullName = string.Format("{0}-{1}", strRRUName, ++nRRUNo);
                 string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
+                if (nMaxRRUPath > 16)
+                {
+                    string strPortNo = string.Format("Text=\"1..{0}\"", nMaxRRUPath);
+                    strXAML1 = strXAML1.Replace("Text=\"1\"", strPortNo);
+                }
                 strXAML1 = strXAML1.Replace("Text=\"RRU\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
@@ -285,7 +290,7 @@ namespace SCMTMainWindow.View
             }
             else
             {
-                strName = "g_OnePathRRU";
+                strName = "g_OtherPathRRU";
                 RRUSize = new Size(80, 70);
             }
 
@@ -480,12 +485,19 @@ namespace SCMTMainWindow.View
                 string strRRUFullName = string.Empty;
 
                 strRRUFullName = string.Format("{0}-{1}", strRRUName, ++nAntennaNo);
+
+                if (antInfo.antArrayNum > 8)
+                {
+                    string strPortNo = string.Format("Text=\"1..{0}\"", antInfo.antArrayNum);
+                    strXAML1 = strXAML1.Replace("Text=\"1\"", strPortNo);
+                }
                 string strInstedName = string.Format("Text=\"{0}\"", strRRUFullName);
                 strXAML1 = strXAML1.Replace("Text=\"Antenna\"", strInstedName);
                 Object testContent = XamlReader.Load(XmlReader.Create(new StringReader(strXAML1)));
                 newItem.Content = testContent;
                 newItem.ItemName = strRRUFullName;
-                
+                newItem.NPathNumber = antInfo.antArrayNum;
+
                 //添加 ant 的时候需要给基站下发，然后获取设备信息
                 var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo, antInfo.antArrayNotMibVendorName, antInfo.antArrayModelName);
 
@@ -570,8 +582,8 @@ namespace SCMTMainWindow.View
             }
             else
             {
-                strName = "g_SignalAntenna";
-                RRUSize = new Size(30, 40);
+                strName = "g_OtherAntenna";
+                RRUSize = new Size(40, 40);
             }
 
             Object content = el.FindName(strName) as Grid;
