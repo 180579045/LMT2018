@@ -18,5 +18,21 @@ namespace UTestForAll.Tests
 
 			Console.WriteLine("------");
 		}
+
+		[TestMethod]
+		public void TestTest()
+		{
+			string str2 = "";
+			string str1 = "";
+
+			if (string.Compare(str1, str2) == 0)
+			{
+				Console.WriteLine("====");
+			}
+			else
+			{
+				Console.WriteLine("<><><>");
+			}
+		}
 	}
 }

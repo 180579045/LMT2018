@@ -127,14 +127,25 @@ namespace SCMTMainWindow.View
                     dstPoint.portType = sinkConnector.PortType;
                 }
 
-                if (MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
+                if(sinkConnector.ParentDesignerItem.NPathNumber > 16 && sourceConnector.ParentDesignerItem.NPathNumber > 16)
                 {
+                    if(sinkConnector.ParentDesignerItem.NPathNumber != sourceConnector.ParentDesignerItem.NPathNumber)
+                    {
+                        MessageBox.Show("暂不支持这种连接");
+                        return;
+                    }
+                    for(int i =1; i <= sinkConnector.ParentDesignerItem.NPathNumber; i++)
+                    {
+                        srcPoint.nPortNo = i;
+                        dstPoint.nPortNo = i;
+                        if (!MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
+                        {
+                            MessageBox.Show("AddLink 失败");
+                            return;
+                        }
+                    }
                     Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
                     this.designerCanvas.Children.Add(newConnection);
-
-                    //Point pt = e.GetPosition(designerCanvas);
-                    //DesignerCanvas.SetLeft(newConnection, pt.X);
-                    //DesignerCanvas.SetTop(newConnection, pt.Y);
 
                     //将 to_other 的连接点设置为 确定的连接
                     sourceConnector.PortType = srcPoint.portType;
@@ -142,7 +153,23 @@ namespace SCMTMainWindow.View
                 }
                 else
                 {
-                    MessageBox.Show("AddLink 失败");
+                    if (MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
+                    {
+                        Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
+                        this.designerCanvas.Children.Add(newConnection);
+
+                        //Point pt = e.GetPosition(designerCanvas);
+                        //DesignerCanvas.SetLeft(newConnection, pt.X);
+                        //DesignerCanvas.SetTop(newConnection, pt.Y);
+
+                        //将 to_other 的连接点设置为 确定的连接
+                        sourceConnector.PortType = srcPoint.portType;
+                        sinkConnector.PortType = dstPoint.portType;
+                    }
+                    else
+                    {
+                        MessageBox.Show("AddLink 失败");
+                    }
                 }
                 
             }

@@ -179,6 +179,29 @@
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
+  
+  <!--大于16通道-->
+  <Grid x:Name="g_OtherPathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Path Fill="Red" Stroke="Black"
+          Data="{StaticResource OnePathRRU}"
+          Stretch="Fill"
+          IsHitTestVisible="False" Grid.Row="0"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Width="20" Height="10" Margin="0,0,21,0"></TextBlock>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.5,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
 
   <!--双通道-->
   <Grid x:Name="g_TwoPathRRU">
@@ -424,6 +447,24 @@
               Stretch="Fill"
               IsHitTestVisible="False" Width="10"/>
     <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 0, 0, 10"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.5,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+
+  <!--超过8通道 天线阵-->
+  <Grid x:Name="g_OtherAntenna">
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource SignalAntenna}"
+              Stretch="Fill"
+              IsHitTestVisible="False" Width="10"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,5" Width="20" Height="10"></TextBlock>
     <TextBlock FontSize="8" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0, 0, 0, 10"></TextBlock>
     <s:DesignerItem.ConnectorDecoratorTemplate>
       <ControlTemplate>

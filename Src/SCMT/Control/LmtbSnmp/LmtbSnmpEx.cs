@@ -448,6 +448,7 @@ namespace LmtbSnmp
 			}
 
 			lmtPdu.setReqMsgType((int)PduType.Set);
+			lmtPdu.m_SourceIp = strIpAddr;
 
 			var pdu = new Pdu();
 			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
@@ -617,7 +618,7 @@ namespace LmtbSnmp
 
 				var vb = new Vb(new Oid(strTmpOid));
 
-				var strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, strTmpOid);
+				var strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(strRemoteIp, strTmpOid);
 
 				SnmpHelper.SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
 
@@ -754,7 +755,7 @@ namespace LmtbSnmp
 				var strValue = vb.Value.ToString();
 
 				// TODO
-				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Type; //vb.GetType();
+				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type;//vb.Type; //vb.GetType();
 
 				// 如果是getbulk响应返回的SNMP_SYNTAX_ENDOFMIBVIEW，则不处理这个vb，继续
 				if (lmtVb.SnmpSyntax == SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW)
