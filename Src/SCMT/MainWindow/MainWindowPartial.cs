@@ -29,26 +29,26 @@ namespace SCMTMainWindow
 				return;
 			}
 
-            string strIP = NodeBControl.GetInstance().GetNodeIpByFriendlyName(me.Header);
-            if(null == strIP || string.Empty == strIP)
-            {
-                MessageBox.Show("无法通过友好名获取IP地址");
-                return;
-            }
+			string strIP = NodeBControl.GetInstance().GetNodeIpByFriendlyName(me.Header);
+			if(string.IsNullOrEmpty(strIP))
+			{
+				MessageBox.Show("无法通过友好名获取IP地址");
+				return;
+			}
 
 			// 对话框
 			var nodebDlg = new ModifyFriendlyName(me.Header);
 			nodebDlg.ShowDialog();
 
-            if(!nodebDlg.bOK)
-            {
-                return;
-            }
+			if(!nodebDlg.bOK)
+			{
+				return;
+			}
 
-            if(NodeBControl.GetInstance().ModifyElementFriendlyName(strIP, nodebDlg.strNewFriendlyName))
-            {
-                me.Header = nodebDlg.strNewFriendlyName;
-            }
+			if(NodeBControl.GetInstance().ModifyElementFriendlyName(strIP, nodebDlg.strNewFriendlyName))
+			{
+				me.Header = nodebDlg.strNewFriendlyName;
+			}
 		}
 
 		/// <summary>
@@ -64,29 +64,29 @@ namespace SCMTMainWindow
 				return;
 			}
 
-            string strIP = NodeBControl.GetInstance().GetNodeIpByFriendlyName(me.Header);
-            if (null == strIP || string.Empty == strIP)
-            {
-                MessageBox.Show("无法通过友好名获取IP地址");
-                return;
-            }
+			string strIP = NodeBControl.GetInstance().GetNodeIpByFriendlyName(me.Header);
+			if (string.IsNullOrEmpty(strIP))
+			{
+				MessageBox.Show("无法通过友好名获取IP地址");
+				return;
+			}
 
-            var nodeDlg = new ModifyIPAddr(strIP);
-            nodeDlg.ShowDialog();
-            if(!nodeDlg.bOK)
-            {
-                return;
-            }
+			var nodeDlg = new ModifyIPAddr(strIP);
+			nodeDlg.ShowDialog();
+			if(!nodeDlg.bOK)
+			{
+				return;
+			}
 
-            try
-            {
-                NodeBControl.GetInstance().ModifyElementIPAddr(nodeDlg.strNewIPAddr, me.Header);
-            }
-            catch(CustomException err)
-            {
-                MessageBox.Show(err.ToString());
-            }
-        }
+			try
+			{
+				NodeBControl.GetInstance().ModifyElementIPAddr(nodeDlg.strNewIPAddr, me.Header);
+			}
+			catch(CustomException err)
+			{
+				MessageBox.Show(err.ToString());
+			}
+		}
 
 		/// 基站节点右键菜单：删除，响应函数
 		private void DeleteStationMenu_Click(object sender, RoutedEventArgs e)
@@ -193,6 +193,12 @@ namespace SCMTMainWindow
 				TRANSDIRECTION.TRANS_UPLOAD);
 			fto.IpAddr = targetIp;
 			FileTransTaskMgr.SendTransFileTask(targetIp, fto, ref taskId, ref reqId);
+		}
+
+
+		private void AboutUsMenu_Click(object sender, RoutedEventArgs e)
+		{
+			MessageBox.Show("大唐移动通信北京研发中心软件平台部工具组全体2018全心力作！", "关于我们");
 		}
 
 
