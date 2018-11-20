@@ -46,7 +46,8 @@ namespace SCMTMainWindow
 
         public override void SelectionCellChanged(object SelectionObj)
         {
-        }
+			Console.WriteLine("Editing Callback");
+		}
     }
 
     /// <summary>
@@ -114,6 +115,19 @@ namespace SCMTMainWindow
                 }
             }
         }
+
+		/// <summary>
+		/// 设置ComboBox值
+		/// </summary>
+		/// <param name="val"></param>
+		public void SetComboBoxValue(int val)
+		{
+			if (m_AllContent.ContainsKey(val))
+			{
+				this.m_CurrentValue = val;
+				this.m_Content = this.m_AllContent[val];
+			}
+		}
     }
 
     public class DataGridCell_MIB_MouseEventArgs

@@ -244,14 +244,19 @@ namespace LinkPath
 
 		/// <summary>
 		/// 执行一条类型为Set的同步操作命令
+		/// 说明：
+		/// 1.根据cmdName获取oid列表
+		/// 2.使用oid到Mib表中获取节点的英文名称和数据类型
+		/// 3.根据英文名称在name2Value中获取节点的值
+		/// 4.根据以上信息组装VB进行Set操作
 		/// </summary>
 		/// <param name="cmdName">命令名</param>
 		/// <param name="requestId"></param>
-		/// <param name="name2Value">命令对应的MIB及其值</param>
+		/// <param name="name2Value">MIB节点英文名称及其值</param>
 		/// <param name="strIndex">索引</param>
 		/// <param name="strIpAddr">目标基站IP地址</param>
 		/// <param name="lmtPdu"></param>
-		/// <param name="isPrint"></param>
+		/// <param name="isPrint">是否在控制台中打印消息</param>
 		/// <param name="needCheck"></param>
 		/// <param name="timeOut"></param>
 		/// <returns></returns>
@@ -289,6 +294,48 @@ namespace LinkPath
 			return CmdSetSync(cmdName, out reqId, name2Value, strIndex, targetIp, ref pdu);
 		}
 
+		/// <summary>
+		/// 执行一条类型为Set的同步操作命令
+		/// 说明：
+		/// 提供给MIb DataGrid更新参数用，因为新工具没有按老工具的套路走，无法获取cmdName
+		/// </summary>
+		/// <param name="setVbs">参数CDTLmtbVb</param>
+		/// <param name="requestId"></param>
+		/// <param name="strIpAddr">目标基站IP地址</param>
+		/// <param name="lmtPdu"></param>
+		/// <param name="isPrint">是否在控制台中打印消息</param>
+		/// <param name="needCheck"></param>
+		/// <param name="timeOut"></param>
+		/// <returns></returns>
+		public static int VbsSetSync(List<CDTLmtbVb> setVbs, out long requestId, string strIpAddr
+			, ref CDTLmtbPdu lmtPdu, bool isPrint = true, bool needCheck = false, long timeOut = 0)
+		{
+			requestId = 0;
+
+			if (null == lmtPdu)
+			{
+				lmtPdu = new CDTLmtbPdu();
+			}
+
+			lmtPdu.Clear();
+
+			foreach (CDTLmtbVb lmtVb in setVbs)
+			{
+				lmtPdu.AddVb(lmtVb);
+            }
+
+			lmtPdu.m_bIsNeedPrint = isPrint;
+			lmtPdu.SetSyncId(true);
+
+			var lmtbSnmpEx = DTLinkPathMgr.GetInstance().GetSnmpByIp(strIpAddr);
+			var rs = lmtbSnmpEx.SnmpSetSync(lmtPdu, out requestId, strIpAddr, timeOut);
+			if (rs != 0)
+			{
+				Log.Error("执行lmtbSnmpEx.SnmpSetSync()方法错误");
+			}
+
+			return rs;
+		}
 
 		/// <summary>
 		/// 执行一条类型为Set的异步操作命令
