@@ -285,8 +285,11 @@ namespace SCMTMainWindow.View
 			        return;
 		        }
 
-				// 成功，查询本地小区的状态，然后设置对应的颜色
-			}
+                // 成功，查询本地小区的状态，然后设置对应的颜色
+                Rectangle rect = targetRect.Children[0] as Rectangle;
+                var varStatus = NPCellOperator.GetLcStatus(nCellNumber, targetIp);
+                SetCellColor(rect, varStatus);
+            }
 		}
 
         /// <summary>
@@ -306,13 +309,20 @@ namespace SCMTMainWindow.View
 				if (null == targetIp)
 				{
 					MessageBox.Show("尚未选中基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
 				}
 
 		        if (!NPCellOperator.SetCellActiveTrigger(nCellNumber, targetIp, CellOperType.deactive))
-		        {
-			        // 去激活小区失败
-		        }
-	        }
+                {
+                    MessageBox.Show("取消失败");
+                    return;
+                }
+
+                Rectangle rect = targetRect.Children[0] as Rectangle;
+                var varStatus = NPCellOperator.GetLcStatus(nCellNumber, targetIp);
+                SetCellColor(rect, varStatus);
+                this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+            }
 		}
 
         /// <summary>
@@ -341,17 +351,24 @@ namespace SCMTMainWindow.View
 		        ContextMenu test = obj.Parent as ContextMenu;
 		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
 		        Rectangle rect = targetRect.Children[0] as Rectangle;
-		        rect.Fill = new SolidColorBrush(Colors.Red);
 
 		        int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
 		        if (!NPCellOperator.CancelLcPlanOp(nCellNumber))
 		        {
-			        // 取消失败
+                    MessageBox.Show("取消失败");
+                    return;
 		        }
 
-				// 取消成功，查询本地小区的状态，并设置颜色
-
-		        this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+                // 取消成功，查询本地小区的状态，并设置颜色
+                string strIP = CSEnbHelper.GetCurEnbAddr();
+                if (strIP == null || strIP == "")
+                {
+                    MessageBox.Show("未选择基站");
+                    return;
+                }
+                var varStatus = NPCellOperator.GetLcStatus(nCellNumber, strIP);
+                SetCellColor(rect, varStatus);
+                this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
 	        }
         }
 
@@ -400,6 +417,30 @@ namespace SCMTMainWindow.View
                 {
                     this.MyDesigner.g_cellPlaning.Add(nCellNumber);
                 }
+            }
+        }
+
+        private void SetCellColor(Rectangle rect, LcStatus cellStatus)
+        {
+            switch (cellStatus)
+            {
+                case LcStatus.UnPlan:
+                    rect.Fill = new SolidColorBrush(Colors.Red);
+                    break;
+                case LcStatus.Planning:
+                    rect.Fill = new SolidColorBrush(Colors.LightGreen);
+                    break;
+                case LcStatus.LcUnBuilded:
+                    rect.Fill = new SolidColorBrush(Colors.Yellow);
+                    break;
+                case LcStatus.LcBuilded:
+                    rect.Fill = new SolidColorBrush(Colors.Blue);
+                    break;
+                case LcStatus.CellBuilded:
+                    rect.Fill = new SolidColorBrush(Colors.LightBlue);
+                    break;
+                default:
+                    break;
             }
         }
 
