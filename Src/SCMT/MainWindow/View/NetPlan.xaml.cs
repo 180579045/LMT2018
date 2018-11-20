@@ -267,21 +267,53 @@ namespace SCMTMainWindow.View
         private void DeleteLocalCell_Click(object sender, RoutedEventArgs e)
         {
             MenuItem obj = sender as MenuItem;
-            ContextMenu test = obj.Parent as ContextMenu;
-            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-        }
+	        if (obj != null)
+	        {
+		        ContextMenu test = obj.Parent as ContextMenu;
+		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+		        int nCellNumber = nrRectCanvas.Children.IndexOf(targetRect);
+
+		        var targetIp = CSEnbHelper.GetCurEnbAddr();
+		        if (null == targetIp)
+		        {
+			        MessageBox.Show("尚未选中基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+		        }
+
+		        if (!NPCellOperator.DelLocalCell(nCellNumber, targetIp))
+		        {
+			        MessageBox.Show("删除本地小区失败", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+			        return;
+		        }
+
+				// 成功，查询本地小区的状态，然后设置对应的颜色
+			}
+		}
 
         /// <summary>
-        /// 激活小区
+        /// 去激活小区
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ActiveCell_Click(object sender, RoutedEventArgs e)
         {
             MenuItem obj = sender as MenuItem;
-            ContextMenu test = obj.Parent as ContextMenu;
-            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-        }
+	        if (obj != null)
+	        {
+		        ContextMenu test = obj.Parent as ContextMenu;
+		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+		        int nCellNumber = nrRectCanvas.Children.IndexOf(targetRect);
+				var targetIp = CSEnbHelper.GetCurEnbAddr();
+				if (null == targetIp)
+				{
+					MessageBox.Show("尚未选中基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+				}
+
+		        if (!NPCellOperator.SetCellActiveTrigger(nCellNumber, targetIp, CellOperType.deactive))
+		        {
+			        // 去激活小区失败
+		        }
+	        }
+		}
 
         /// <summary>
         /// RRU 功率修改
@@ -304,13 +336,23 @@ namespace SCMTMainWindow.View
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             MenuItem obj = sender as MenuItem;
-            ContextMenu test = obj.Parent as ContextMenu;
-            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-            Rectangle rect = targetRect.Children[0] as Rectangle;
-            rect.Fill = new SolidColorBrush(Colors.Red);
+	        if (obj != null)
+	        {
+		        ContextMenu test = obj.Parent as ContextMenu;
+		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+		        Rectangle rect = targetRect.Children[0] as Rectangle;
+		        rect.Fill = new SolidColorBrush(Colors.Red);
 
-            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
-            this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+		        int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
+		        if (!NPCellOperator.CancelLcPlanOp(nCellNumber))
+		        {
+			        // 取消失败
+		        }
+
+				// 取消成功，查询本地小区的状态，并设置颜色
+
+		        this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+	        }
         }
 
         /// <summary>
@@ -323,13 +365,17 @@ namespace SCMTMainWindow.View
             MenuItem obj = sender as MenuItem;
             ContextMenu test = obj.Parent as ContextMenu;
             Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-            Rectangle rect = targetRect.Children[0] as Rectangle;
 
+			int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
 
+	        if (!NPCellOperator.DelLcNetPlan(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
+	        {
+		        return;
+	        }
 
-            rect.Fill = new SolidColorBrush(Colors.Red);
+			Rectangle rect = targetRect.Children[0] as Rectangle;
+			rect.Fill = new SolidColorBrush(Colors.Red);
 
-            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
             this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
         }
 

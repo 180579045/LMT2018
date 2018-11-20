@@ -142,6 +142,8 @@ namespace LinkPath
 				return -1;
 			}
 
+			//todo houshangling
+
 			// TODO: 方便观察消息，生产环境时需去掉
 			ShowLogHelper.Show($"Trap消息，TrapType:{intTrapType}", lmtPdu.m_SourceIp
 				, InfoTypeEnum.ENB_OTHER_INFO_IMPORT);
@@ -376,7 +378,7 @@ namespace LinkPath
 		/// </summary>
 		/// <param name="idToTable"></param>
 		/// <param name="lmtPdu"></param>
-		private void DealSuccResponsePDU(IDToTableStruct idToTable, CDTLmtbPdu lmtPdu)
+		private static void DealSuccResponsePDU(IDToTableStruct idToTable, CDTLmtbPdu lmtPdu)
 		{
 			// 保活命令下发的信息不需要打印
 			if (idToTable.strCmdName.Equals(CommStructs.EPC_KEEPALIVE_SNMPFUNCNAME))
@@ -417,9 +419,8 @@ namespace LinkPath
 				var strName = "";
 				var strDesc = "";
 				var strUnitName = "";
-				if (lmtPdu.m_bIsNeedPrint
-						&& !CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid
-							, lmtVb.Value, out strName, out strDesc, out strUnitName))
+				if (lmtPdu.m_bIsNeedPrint &&
+					!CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
 				{
 					Log.Error($"GetInfoByOID调用不成功:OID = {lmtVb.Oid}");
 					continue;
@@ -605,7 +606,7 @@ namespace LinkPath
 			strValue = strValue.Replace('/', '\\');
 			strValue = strValue.Trim();
 
-			// 件是否存在
+			// 文件是否存在
 			if (FilePathHelper.FileExists(strValue) != true)
 			{
 				Log.Error($"上传的文件{strValue}不存在!");
@@ -616,9 +617,10 @@ namespace LinkPath
 			if (26 == uploadFileType)
 			{
 				var strUploadFilePath = strValue;
+				strUploadFilePath = strUploadFilePath.Replace("\\", "\\\\");
 				// 发布消息
 				PublishHelper.PublishMsg(TopicHelper.LoadLmdtzToVersionDb
-					, $"{{\"SourceIp\" : \"{lmtPdu.m_SourceIp}\", \"UploadFilePath\" :\"{strUploadFilePath}\" }}");
+					, $"{{\"TargetIp\" : \"{lmtPdu.m_SourceIp}\", \"UploadFilePath\" :\"{strUploadFilePath}\" }}");
 
 				return;
 			}
@@ -654,7 +656,7 @@ namespace LinkPath
 				// 让数据同步模块解析一致性文件
 				// 发布消息
 				PublishHelper.PublishMsg(TopicHelper.ParseDataConFile
-					, $"{{\"SourceIp\" : \"{lmtPdu.m_SourceIp}\", \"UpdatePath\" : \"{strUpLoadPath}\"}}");
+					, $"{{\"TargetIp\" : \"{lmtPdu.m_SourceIp}\", \"UpdatePath\" : \"{strUpLoadPath}\"}}");
 
 				return;
 			}
@@ -2013,15 +2015,14 @@ namespace LinkPath
 			var strMibName = mibLeaf.childNameMib;
 
 			// 查询是否有该类型的Trap
-			var trapTypeInfo = Database.GetInstance().GetTrapInfo();
-			var strTrapId = trapTypeInfo[strMibName]["TrapID"];
-			if (string.IsNullOrEmpty(strTrapId))
+			var nTrapId = Database.GetInstance().GetTrapInfoByMibName(strMibName);
+			if (-1 == nTrapId)
 			{
 				Log.Error("数据库中没有找到相应的Trap类型信息!");
 				return false;
 			}
 
-			intTrapType = Convert.ToInt32(strTrapId);
+			intTrapType = nTrapId;
 
 			return true;
 		}

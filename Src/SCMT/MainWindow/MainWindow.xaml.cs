@@ -1958,6 +1958,9 @@ namespace SCMTMainWindow
 		private async void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
 		{
 			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
+
+			return;		// todo 下面的流程不执行
+
 			var ip = netAddr.TargetIp;
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
