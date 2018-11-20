@@ -357,14 +357,23 @@ namespace CfgFileOperation
             // 处理 每行的告警内容
             for (int i = 1; i <= arryB.Length; i++)//
             {
+                string stralmNo = "";
                 var almNo = arryB[i, 1];
                 if (almNo == null)//没有告警号，则结束
                     break;
-                if (almNo.ToString().Contains("*"))//带* 是tds使用的
-                    continue;
+                stralmNo = almNo.ToString();
+                if (stralmNo.Contains("*"))//带* 是tds使用的
+                {
+                    stralmNo = almNo.ToString().TrimEnd('*');
+                    if (stralmNo == "")
+                    {
+                        continue;
+                    }
+                }
+
 
                 Dictionary<string, string> alarmExVal = new Dictionary<string, string>();
-                alarmExVal.Add("AlaNumber", GetCellValueToString(arryB[i, 1]));//alarmCauseNo = alarmRow[("AlaNumber")].ToString();//告警编号
+                alarmExVal.Add("AlaNumber", stralmNo);// GetCellValueToString(arryB[i, 1]));//alarmCauseNo = alarmRow[("AlaNumber")].ToString();//告警编号
                 alarmExVal.Add("IsReportToOMCR", GetCellValueToString(arryY[i, 1]));
                 alarmExVal.Add("AlaDegree", GetCellValueToString(arryJ[i, 1]));
                 alarmExVal.Add("AlaType", GetCellValueToString(arryI[i, 1]));
@@ -372,7 +381,7 @@ namespace CfgFileOperation
                 alarmExVal.Add("ItfNProtocolCauseNo", GetCellValueToString(arryX[i, 1]));
                 alarmExVal.Add("IsFault", GetCellValueToString(arryD[i, 1]));
                 alarmExVal.Add("AlaSubtoPrimaryNumber", GetCellValueToString(arryG[i, 1]));
-                alarmExVal.Add("ClearDeditheringInterval", "");// GetCellValueToString(arryAC[i, 1]));
+                alarmExVal.Add("ClearDeditheringInterval", GetCellValueToString(arryAC[i, 1]));
                 alarmExVal.Add("CreateDeditheringInterval", GetCellValueToString(arryAF[i, 1]));
                 alarmExVal.Add("CompressionInterval", GetCellValueToString(arryAD[i, 1]));
                 alarmExVal.Add("CompressionRepetitions", GetCellValueToString(arryAE[i, 1]));

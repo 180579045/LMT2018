@@ -257,6 +257,7 @@ namespace LmtbSnmp
 				return null;
 			}
 
+			var value = strValue.Replace(" ", "");
 			var retData = GetMibNodeInfoByName(mibName, targetIp);
 
 			if (null == retData)
@@ -311,6 +312,8 @@ namespace LmtbSnmp
 			var omType = mibLeaf.OMType;
 			var asnType = mibLeaf.ASNType;
 
+			strValue = strValue.Replace(" ", "");
+
 			if (omType.Equals("u32") || omType.Equals("s32"))
 			{
 				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
@@ -321,13 +324,14 @@ namespace LmtbSnmp
 			}
 			else if (omType.Equals("u32[]"))
 			{
-
+				return ConvertU32ArrayToString(strValue);
 			}
 			else if (omType.Equals("s32[]"))
 			{
 				// oid类型
 				if (asnType.Equals("notification-type", StringComparison.OrdinalIgnoreCase) ||
-					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase))
+					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase) ||
+					asnType.Equals("VariablePointer", StringComparison.OrdinalIgnoreCase))
 				{
 
 				}
@@ -528,6 +532,44 @@ namespace LmtbSnmp
 		}
 
 		/// <summary>
+		/// 转换u32数组类型数据到字符串，中间用,隔开
+		/// 基站传过来的是0000000100000005这样的字符串
+		/// </summary>
+		/// <param name="strValue"></param>
+		/// <returns></returns>
+		public static dynamic ConvertU32ArrayToString(string strValue)
+		{
+			if (string.IsNullOrEmpty(strValue))
+				return "";
+
+			var retValue = "";
+			int data;
+			for (var i = 0; i < strValue.Length;)
+			{
+				var leftValue = strValue.Substring(i);
+				if (leftValue.Length <= 8)
+				{
+					if (int.TryParse(leftValue, out data))
+					{
+						retValue += $",{data}";
+						break;
+					}
+				}
+				else
+				{
+					var tmp = leftValue.Substring(0, 8);
+					if (int.TryParse(tmp, out data))
+					{
+						retValue += $",{data}";
+					}
+					i += 8;
+				}
+			}
+
+			return retValue.Trim(',');
+		}
+
+		/// <summary>
 		/// 获取Mib节点的数据类型，以便在前端区分显示;
 		/// 一共分为四种类型，分别是：字符类型、enum枚举类型、Bit类型、时间类型;
 		/// </summary>
@@ -569,7 +611,15 @@ namespace LmtbSnmp
 			// 对数字有取值范围的枚举类型;
 			else if (omType.Equals("u32[]") || omType.Equals("s32[]"))
 			{
-				return DataGrid_CellDataType.enumType;
+				if (asnType.Equals("VariablePointer") ||
+					asnType.Equals("notification-type", StringComparison.OrdinalIgnoreCase) ||
+					asnType.Equals("OBJECT IDENTIFIER", StringComparison.OrdinalIgnoreCase) ||
+					asnType.Equals("OID", StringComparison.OrdinalIgnoreCase))
+				{
+					return DataGrid_CellDataType.OID;
+				}
+
+				return DataGrid_CellDataType.Array;
 			}
 			// 枚举类型;
 			else if (omType.Equals("enum"))
@@ -727,6 +777,8 @@ namespace LmtbSnmp
 		enumType = 0,                                  // MIB中的枚举类型;
 		bitType = 1,                                   // MIB中的BIT类型;
 		DateTime = 2,                                  // MIB中的时间类型;
-		RegularType = 3                                // MIB中的字符串、INT等类型;
+		RegularType = 3,                                // MIB中的字符串、INT等类型;
+		OID,											// OID类型
+		Array,
 	}
 }

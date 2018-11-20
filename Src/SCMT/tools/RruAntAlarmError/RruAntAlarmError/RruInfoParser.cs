@@ -806,8 +806,8 @@ namespace RruAntAlarmError
             //JObject jsonData = new JObject { { "rruTypeInfo", jsonTypeSerial }, { "rruTypePortInfo", jsonPortSerial } };
             JObject jsonData = new JObject { { "rruTypeInfo", rruTypeJArray }, { "rruTypePortInfo", rruTypePortJArray } };
             JsonFile jsonFile = new JsonFile();
-            jsonFile.WriteFile(@".\output\component_RruType.json", jsonData.ToString());
-            Log.Info("======parse " + fileName + "into output\\component_RruType.json ok");
+            jsonFile.WriteFile(@".\output\NetPlanElement_RruType.json", jsonData.ToString());
+            Log.Info("======parse " + fileName + "into output\\NetPlanElement_RruType.json ok");
             return true;
         }
 

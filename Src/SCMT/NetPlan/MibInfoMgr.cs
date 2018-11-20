@@ -1673,6 +1673,10 @@ namespace NetPlan
 			var lcAttr2 = mapAttributes["netSetRRUPortSubtoLocalCellId2"];
 			var lcAttr3 = mapAttributes["netSetRRUPortSubtoLocalCellId3"];
 			var lcAttr4 = mapAttributes["netSetRRUPortSubtoLocalCellId4"];
+			lcAttr1.SetLatestValue("-1");
+			lcAttr2.SetLatestValue("-1");
+			lcAttr3.SetLatestValue("-1");
+			lcAttr4.SetLatestValue("-1");
 
 			// 先设置为-1。todo 处于本地小区未建状态的LC是否可以挪动，待确定是否存在问题
 			Func<MibLeafNodeInfo, string, bool> SetLcIdCfg = (attribute, newLcId) =>

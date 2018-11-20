@@ -46,6 +46,7 @@ namespace SCMTMainWindow.View
 
         //选中时的边框显示
         private Polygon rect = new Polygon();
+        private Polygon rectForCell = new Polygon();
 
         //初始化连接
         private int nSizeChangedNo = 0;
@@ -120,7 +121,42 @@ namespace SCMTMainWindow.View
                     newGrid.MouseRightButtonDown += NewGrid_MouseRightButtonDown;
                 }
             }
+
+            rectForCell.Stroke = new LinearGradientBrush(Colors.Black, Colors.LightSkyBlue, 30.0);
+            rectForCell.StrokeThickness = 3;
+            rectForCell.Points.Add(new Point(2, 2));
+            rectForCell.Points.Add(new Point(38, 2));
+            rectForCell.Points.Add(new Point(38, 38));
+            rectForCell.Points.Add(new Point(2, 38));
             this.nrRectCanvas.Visibility = Visibility.Hidden;
+            this.nrRectCanvas.MouseLeftButtonDown += NrRectCanvas_MouseLeftButtonDown;
+        }
+
+        private void NrRectCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (nrRectCanvas != null && nrRectCanvas.Children.Count > 0)
+            {
+                Point pt = e.GetPosition(nrRectCanvas);
+
+                if (!nrRectCanvas.Children.Contains(rectForCell))
+                {
+                    nrRectCanvas.Children.Add(rectForCell);
+                }
+
+                //鼠标的点击位置在板卡范围内
+                if (pt.X > 0 && pt.X < 12 * 40 && pt.Y > 0 && pt.Y < 3 * 40)
+                {
+                    int nRectLeft = (int)pt.X / 40;
+                    int nRectTop = (int)pt.Y / 40;
+
+                    Canvas.SetLeft(rectForCell, nRectLeft * 40);
+                    Canvas.SetTop(rectForCell, nRectTop * 40);
+                }
+                else
+                {
+                    nrRectCanvas.Children.Remove(rectForCell);
+                }
+            }
         }
 
         /// <summary>
@@ -231,21 +267,63 @@ namespace SCMTMainWindow.View
         private void DeleteLocalCell_Click(object sender, RoutedEventArgs e)
         {
             MenuItem obj = sender as MenuItem;
-            ContextMenu test = obj.Parent as ContextMenu;
-            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-        }
+	        if (obj != null)
+	        {
+		        ContextMenu test = obj.Parent as ContextMenu;
+		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+		        int nCellNumber = nrRectCanvas.Children.IndexOf(targetRect);
+
+		        var targetIp = CSEnbHelper.GetCurEnbAddr();
+		        if (null == targetIp)
+		        {
+			        MessageBox.Show("尚未选中基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+		        }
+
+		        if (!NPCellOperator.DelLocalCell(nCellNumber, targetIp))
+		        {
+			        MessageBox.Show("删除本地小区失败", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+			        return;
+		        }
+
+                // 成功，查询本地小区的状态，然后设置对应的颜色
+                Rectangle rect = targetRect.Children[0] as Rectangle;
+                var varStatus = NPCellOperator.GetLcStatus(nCellNumber, targetIp);
+                SetCellColor(rect, varStatus);
+            }
+		}
 
         /// <summary>
-        /// 激活小区
+        /// 去激活小区
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ActiveCell_Click(object sender, RoutedEventArgs e)
         {
             MenuItem obj = sender as MenuItem;
-            ContextMenu test = obj.Parent as ContextMenu;
-            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-        }
+	        if (obj != null)
+	        {
+		        ContextMenu test = obj.Parent as ContextMenu;
+		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+		        int nCellNumber = nrRectCanvas.Children.IndexOf(targetRect);
+				var targetIp = CSEnbHelper.GetCurEnbAddr();
+				if (null == targetIp)
+				{
+					MessageBox.Show("尚未选中基站", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+				}
+
+		        if (!NPCellOperator.SetCellActiveTrigger(nCellNumber, targetIp, CellOperType.deactive))
+                {
+                    MessageBox.Show("取消失败");
+                    return;
+                }
+
+                Rectangle rect = targetRect.Children[0] as Rectangle;
+                var varStatus = NPCellOperator.GetLcStatus(nCellNumber, targetIp);
+                SetCellColor(rect, varStatus);
+                this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+            }
+		}
 
         /// <summary>
         /// RRU 功率修改
@@ -268,13 +346,30 @@ namespace SCMTMainWindow.View
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             MenuItem obj = sender as MenuItem;
-            ContextMenu test = obj.Parent as ContextMenu;
-            Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-            Rectangle rect = targetRect.Children[0] as Rectangle;
-            rect.Fill = new SolidColorBrush(Colors.Red);
+	        if (obj != null)
+	        {
+		        ContextMenu test = obj.Parent as ContextMenu;
+		        Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+		        Rectangle rect = targetRect.Children[0] as Rectangle;
 
-            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
-            this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+		        int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
+		        if (!NPCellOperator.CancelLcPlanOp(nCellNumber))
+		        {
+                    MessageBox.Show("取消失败");
+                    return;
+		        }
+
+                // 取消成功，查询本地小区的状态，并设置颜色
+                string strIP = CSEnbHelper.GetCurEnbAddr();
+                if (strIP == null || strIP == "")
+                {
+                    MessageBox.Show("未选择基站");
+                    return;
+                }
+                var varStatus = NPCellOperator.GetLcStatus(nCellNumber, strIP);
+                SetCellColor(rect, varStatus);
+                this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+	        }
         }
 
         /// <summary>
@@ -287,13 +382,17 @@ namespace SCMTMainWindow.View
             MenuItem obj = sender as MenuItem;
             ContextMenu test = obj.Parent as ContextMenu;
             Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
-            Rectangle rect = targetRect.Children[0] as Rectangle;
 
+			int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
 
+	        if (!NPCellOperator.DelLcNetPlan(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
+	        {
+		        return;
+	        }
 
-            rect.Fill = new SolidColorBrush(Colors.Red);
+			Rectangle rect = targetRect.Children[0] as Rectangle;
+			rect.Fill = new SolidColorBrush(Colors.Red);
 
-            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
             this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
         }
 
@@ -318,6 +417,30 @@ namespace SCMTMainWindow.View
                 {
                     this.MyDesigner.g_cellPlaning.Add(nCellNumber);
                 }
+            }
+        }
+
+        private void SetCellColor(Rectangle rect, LcStatus cellStatus)
+        {
+            switch (cellStatus)
+            {
+                case LcStatus.UnPlan:
+                    rect.Fill = new SolidColorBrush(Colors.Red);
+                    break;
+                case LcStatus.Planning:
+                    rect.Fill = new SolidColorBrush(Colors.LightGreen);
+                    break;
+                case LcStatus.LcUnBuilded:
+                    rect.Fill = new SolidColorBrush(Colors.Yellow);
+                    break;
+                case LcStatus.LcBuilded:
+                    rect.Fill = new SolidColorBrush(Colors.Blue);
+                    break;
+                case LcStatus.CellBuilded:
+                    rect.Fill = new SolidColorBrush(Colors.LightBlue);
+                    break;
+                default:
+                    break;
             }
         }
 
