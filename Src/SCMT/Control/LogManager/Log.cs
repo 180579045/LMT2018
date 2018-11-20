@@ -20,7 +20,7 @@ namespace LogManager
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			log.Error($"{filePath} {memeberName} {lineNumber} Error", ex);
+			log.Error($"{memeberName} {lineNumber} Error", ex);
 		}
 
 		//严重错误
@@ -29,7 +29,7 @@ namespace LogManager
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			log.Fatal($"{filePath} {memeberName} {lineNumber} Fatal", ex);
+			log.Fatal($"{memeberName} {lineNumber} Fatal", ex);
 		}
 
 		#endregion static void WriteLog(Exception ex)
@@ -47,7 +47,7 @@ namespace LogManager
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			log.Debug($"{filePath} {memeberName} {lineNumber} {msg}");
+			log.Debug($"{memeberName} {lineNumber} {msg}");
 		}
 
 		//一般信息
@@ -56,7 +56,7 @@ namespace LogManager
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			log.Info($"{filePath} {memeberName} {lineNumber} {msg}");
+			log.Info($"{memeberName} {lineNumber} {msg}");
 		}
 
 		public static void Warn(string msg,
@@ -64,7 +64,7 @@ namespace LogManager
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			log.Warn($"{filePath} {memeberName} {lineNumber} {msg}");
+			log.Warn($"{memeberName} {lineNumber} {msg}");
 		}
 
 		public static void Error(string msg,
@@ -72,7 +72,7 @@ namespace LogManager
 			[CallerLineNumber] int lineNumber = 0,
 			[CallerMemberName] string memeberName = null)
 		{
-			log.Error($"{filePath} {memeberName} {lineNumber} {msg}");
+			log.Error($"{memeberName} {lineNumber} {msg}");
 		}
 
 		public static void SetLogFileName(string strFileName)
