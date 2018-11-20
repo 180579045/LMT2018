@@ -130,6 +130,37 @@ namespace SCMTMainWindow.View
             rectForCell.Points.Add(new Point(2, 38));
             this.nrRectCanvas.Visibility = Visibility.Hidden;
             this.nrRectCanvas.MouseLeftButtonDown += NrRectCanvas_MouseLeftButtonDown;
+            this.nrRectCanvas.MouseRightButtonDown += NrRectCanvas_MouseRightButtonDown;
+        }
+
+        private void NrRectCanvas_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (nrRectCanvas != null && nrRectCanvas.Children.Count > 0)
+            {
+                Point pt = e.GetPosition(nrRectCanvas);
+
+                if (!nrRectCanvas.Children.Contains(rectForCell))
+                {
+                    nrRectCanvas.Children.Add(rectForCell);
+                }
+
+                //鼠标的点击位置在板卡范围内
+                if (pt.X > 0 && pt.X < 12 * 40 && pt.Y > 0 && pt.Y < 3 * 40)
+                {
+                    int nRectLeft = (int)pt.X / 40;
+                    int nRectTop = (int)pt.Y / 40;
+
+                    Canvas.SetLeft(rectForCell, nRectLeft * 40);
+                    Canvas.SetTop(rectForCell, nRectTop * 40);
+
+                    int nCellID = nRectTop * 12 + nRectLeft;
+                    SetCellProperty(nCellID);
+                }
+                else
+                {
+                    nrRectCanvas.Children.Remove(rectForCell);
+                }
+            }
         }
 
         private void NrRectCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -151,12 +182,21 @@ namespace SCMTMainWindow.View
 
                     Canvas.SetLeft(rectForCell, nRectLeft * 40);
                     Canvas.SetTop(rectForCell, nRectTop * 40);
+                    int nCellID = nRectTop * 12 + nRectLeft;
+                    SetCellProperty(nCellID);
                 }
                 else
                 {
                     nrRectCanvas.Children.Remove(rectForCell);
                 }
             }
+        }
+
+        private void SetCellProperty(int nCellID)
+        {            
+            var devAttr = MibInfoMgr.GetInstance().GetDevAttributeInfo($".{ nCellID }", EnumDevType.nrNetLc);
+            MyDesigner.CreateGirdForNetInfo("小区"+nCellID, devAttr);
+            MyDesigner.g_nowDevAttr = devAttr;
         }
 
         /// <summary>
@@ -2478,16 +2518,6 @@ namespace SCMTMainWindow.View
             cellStatusGrid.Children.Add(notBelongCellRect);
             Grid.SetRow(notBelongCellRect, 14);
             Grid.SetColumn(notBelongCellRect, 1);
-
-        }
-
-        private void MyDesigner_Loaded(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void MyDesigner_LayoutUpdated(object sender, EventArgs e)
-        {
 
         }
     }
