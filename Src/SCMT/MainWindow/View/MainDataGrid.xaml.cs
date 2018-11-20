@@ -17,6 +17,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UICore.Controls.Metro;
 using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
 
 namespace SCMTMainWindow.View
 {
@@ -262,8 +263,12 @@ namespace SCMTMainWindow.View
             }
         }
 
-        private MetroContextMenu dataGridMenu = new MetroContextMenu();
-        
+        private MetroContextMenu dataGridMenu;
+        /// <summary>
+        /// 保存属性节点信息
+        /// </summary>
+        private List<CmdMibInfo> listCmdMibInfo;
+ 
         /// <summary>
         /// 根据选择的节点树，显示相应的右键菜单
         /// </summary>
@@ -271,80 +276,119 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void DynamicDataGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            string MenuHeaderName = (m_ColumnModel.TableProperty as MibTable).nameCh;
-            string MemuChildHeaderName = "";
+            if (m_ColumnModel == null)
+                return;
+
+            MibTable table = (m_ColumnModel.TableProperty as MibTable);
+            if (table == null)
+                return;
+
+            string menuName = table.nameCh;
+            CmdInfoList cmdList = new CmdInfoList();
+            if (!cmdList.GeneratedCmdInfoList())
+                return;
+
+            if (listCmdMibInfo != null && listCmdMibInfo.Count > 0)
+                listCmdMibInfo.Clear();
+            listCmdMibInfo = cmdList.GetCmdsByTblName(table.nameMib);
+            if (listCmdMibInfo.Count == 0)
+                return;
+
             // 右键菜单的添加
-            var menu = new MetroContextMenu();
+            dataGridMenu = new MetroContextMenu();
 
-            var menuItem = new MetroMenuItem();
-            menuItem.Header = "添加命令";
-            menuItem.Click += AddMenuItem_Click;
-            menuItem.IsEnabled = true;
+            var menuItemAdd= new MetroMenuItem();
+            menuItemAdd.Header = "添加命令";
+            menuItemAdd.Click += MenuItem_Click;
+            menuItemAdd.IsEnabled = true;
+            dataGridMenu.Items.Add(menuItemAdd);
 
-            var menuChildItem = new MetroMenuItem();
-            menuChildItem.Header = "增加" + MemuChildHeaderName;
-            menuChildItem.Click += AddMenuChildItem_Click;
-            menuChildItem.IsEnabled = true;
+            var menuItemModify = new MetroMenuItem();
+            menuItemModify.Header = "修改" + menuName;
+            menuItemModify.Click += MenuItem_Click; ;
+            menuItemModify.IsEnabled = true;
+            dataGridMenu.Items.Add(menuItemModify);
 
-            menuItem.Items.Add(menuChildItem);
-            menu.Items.Add(menuItem);
+            var menuItemQuery = new MetroMenuItem();
+            menuItemQuery.Header = "查询" + menuName;
+            menuItemQuery.Click += MenuItem_Click; ;
+            menuItemQuery.IsEnabled = true;
+            dataGridMenu.Items.Add(menuItemQuery);
 
-            menuItem = new MetroMenuItem();
-            menuItem.Header = "修改" + MenuHeaderName;
-            menuItem.Click += ModifyMenuItem_Click; ;
-            menuItem.IsEnabled = true;
+            foreach (CmdMibInfo mibinfo in listCmdMibInfo)
+            {
+                if(mibinfo.m_cmdDesc.Contains("增加"))
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuItem_Click;
+                    menuChildItem.IsEnabled = true;
 
-            menuChildItem = new MetroMenuItem();
-            menuChildItem.Header = "修改" + MemuChildHeaderName;
-            menuChildItem.Click += ModifyMenuChildItem_Click;
-            menuChildItem.IsEnabled = true;
+                    menuItemAdd.Items.Add(menuChildItem);                 
+                }
 
-            menuItem.Items.Add(menuChildItem);
-            menu.Items.Add(menuItem);
+                if(mibinfo.m_cmdDesc.Contains("修改"))
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuItem_Click;
+                    menuChildItem.IsEnabled = true;
 
-            menuItem = new MetroMenuItem();
-            menuItem.Header = "查询" + MenuHeaderName;
-            menuItem.Click += GetMenuItem_Click; ;
-            menuItem.IsEnabled = true;
-            menuChildItem = new MetroMenuItem();
-            menuChildItem.Header = "查询" + MemuChildHeaderName;
-            menuChildItem.Click += GetMenuChildItem_Click;
-            menuChildItem.IsEnabled = true;
+                    menuItemModify.Items.Add(menuChildItem);                    
+                }
 
-            menuItem.Items.Add(menuChildItem);
-            menu.Items.Add(menuItem);
+                if(mibinfo.m_cmdDesc.Contains("查询"))
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuItem_Click;
+                    menuChildItem.IsEnabled = true;
 
-            this.ContextMenu = menu;
+                    menuItemQuery.Items.Add(menuChildItem);                  
+                }
+
+                if(mibinfo.m_cmdDesc.Contains("删除"))
+                {
+
+                }
+            }
+
+            this.ContextMenu = dataGridMenu;
         }
 
-        private void GetMenuChildItem_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
+        /// <summary>
+        /// 保存当前命令的属性节点信息
+        /// </summary>
+        private CmdMibInfo cmdMibInfo = new CmdMibInfo();
+        /// <summary>
+        /// 保存索引节点信息
+        /// </summary>
+        private List<MibLeaf> listIndexInfo = new List<MibLeaf>();
 
-        private void ModifyMenuChildItem_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            
-        }
+            if (null == dataGridMenu)
+                return;
 
-        private void AddMenuChildItem_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
+            var menu = sender as MenuItem;
+            if (null == menu)
+                return;
 
-        private void GetMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void ModifyMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
-        private void AddMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            
+            foreach (CmdMibInfo info in listCmdMibInfo)
+            {
+                if(info.m_cmdDesc.Equals(menu.Header))
+                {
+                    MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                    paraGrid.InitParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable));
+                    paraGrid.ShowDialog();
+                    
+                    if (!paraGrid.bOK)
+                    {
+                        return;
+                    }
+                    break;
+                }
+            }
         }
     }
 }

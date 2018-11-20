@@ -31,7 +31,7 @@ namespace SCMTMainWindow.Component.ViewModel
         /// </summary>
         public List<Tuple<string, string, object>> PropertyList { get; set; }
         /// <summary>
-        /// 用于保存当前点击节点对应MibTable，便于根据表明进行添加，查询，修改等操作
+        /// 用于保存当前点击节点对应MibTable，便于根据表进行添加，查询，修改等操作
         /// </summary>
 
         public object TableProperty = new object();
@@ -103,7 +103,7 @@ namespace SCMTMainWindow.Component.ViewModel
                 }
 
             }
-
+            //添加Mib表信息，用于右键菜单显示
             if (binder.Name == "AddTableProperty" && binder.CallInfo.ArgumentCount == 1)
             {
                 string name = (args[0] as MibTable).nameCh;
@@ -119,6 +119,61 @@ namespace SCMTMainWindow.Component.ViewModel
 
                 result = value;
                 return true;
+            }
+
+            //添加右键增删改查信息
+            if (binder.Name == "AddParaProperty" && binder.CallInfo.ArgumentCount == 3)
+            {
+                string name = args[0] as string;
+                if (name == null || Properties.ContainsKey(name))
+                { 
+                    result = null;
+                    return false;
+                }
+                // 向属性列表添加属性及其值;
+                object value = args[1];
+                Properties.Add(name, value);
+
+                // 添加列名与属性列表的映射关系;
+                string column_name = args[2] as string;
+                ColName_Property.Add(column_name, name);
+
+                PropertyList.Add(new Tuple<string, string, object>(name, column_name, value));
+
+                result = value;
+                return true;
+            }
+
+            // 右键菜单StartEditing事件，判断应该使用那个属性操作;
+            if (binder.Name == "JudgeParaPropertyName_StartEditing" && binder.CallInfo.ArgumentCount == 1)
+            {
+                string columnname = args[0] as string;
+                if (columnname == null)
+                {
+                    result = null;
+                    return false;
+                }
+
+                // 在当前列名于属性列表中查找，看是否有匹配项;
+                if (ColName_Property.ContainsKey(columnname))
+                {
+                    string key = ColName_Property[columnname];
+                    // 如果存在对应得属性;
+                    if (Properties.ContainsKey(key))
+                    {
+                        object property = Properties[key];
+                        (property as GridCell).EditingCallback();
+                        result = property;
+                        return true;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Can not find the right property");
+                    result = null;
+                    return false;
+                }
+
             }
 
             return base.TryInvokeMember(binder, args, out result);
