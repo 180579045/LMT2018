@@ -18,6 +18,7 @@ using System.Windows.Markup;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using LmtbSnmp;
 
 namespace SCMTMainWindow.View
 {
@@ -180,7 +181,8 @@ namespace SCMTMainWindow.View
             //将右键菜单列表内容转换成与基本信息列表格式相同结构
             dynamic model = new DyDataGrid_MIBModel();
             string value;
-            foreach(DyDataGrid_MIBModel mm in datalist)
+            string strPreOid = SnmpToDatabase.GetMibPrefix();
+            foreach (DyDataGrid_MIBModel mm in datalist)
             {
                 var cell = mm.Properties["ParaValue"] as GridCell;
                 if (cell.cellDataType == LmtbSnmp.DataGrid_CellDataType.enumType)
@@ -194,7 +196,7 @@ namespace SCMTMainWindow.View
                 else
                     value = cell.m_Content;
 
-                var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, cell.oid, CSEnbHelper.GetCurEnbAddr());
+                var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strPreOid + cell.oid, CSEnbHelper.GetCurEnbAddr());
 
                 model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);
             }
