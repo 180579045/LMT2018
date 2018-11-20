@@ -273,7 +273,7 @@ namespace SCMTMainWindow.View
 			{
 				return;
 			}
-			return;
+
             // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
             // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
             if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
