@@ -46,6 +46,7 @@ namespace SCMTMainWindow.View
 
         //选中时的边框显示
         private Polygon rect = new Polygon();
+        private Polygon rectForCell = new Polygon();
 
         //初始化连接
         private int nSizeChangedNo = 0;
@@ -120,7 +121,42 @@ namespace SCMTMainWindow.View
                     newGrid.MouseRightButtonDown += NewGrid_MouseRightButtonDown;
                 }
             }
+
+            rectForCell.Stroke = new LinearGradientBrush(Colors.Black, Colors.LightSkyBlue, 30.0);
+            rectForCell.StrokeThickness = 3;
+            rectForCell.Points.Add(new Point(2, 2));
+            rectForCell.Points.Add(new Point(38, 2));
+            rectForCell.Points.Add(new Point(38, 38));
+            rectForCell.Points.Add(new Point(2, 38));
             this.nrRectCanvas.Visibility = Visibility.Hidden;
+            this.nrRectCanvas.MouseLeftButtonDown += NrRectCanvas_MouseLeftButtonDown;
+        }
+
+        private void NrRectCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (nrRectCanvas != null && nrRectCanvas.Children.Count > 0)
+            {
+                Point pt = e.GetPosition(nrRectCanvas);
+
+                if (!nrRectCanvas.Children.Contains(rectForCell))
+                {
+                    nrRectCanvas.Children.Add(rectForCell);
+                }
+
+                //鼠标的点击位置在板卡范围内
+                if (pt.X > 0 && pt.X < 12 * 40 && pt.Y > 0 && pt.Y < 3 * 40)
+                {
+                    int nRectLeft = (int)pt.X / 40;
+                    int nRectTop = (int)pt.Y / 40;
+
+                    Canvas.SetLeft(rectForCell, nRectLeft * 40);
+                    Canvas.SetTop(rectForCell, nRectTop * 40);
+                }
+                else
+                {
+                    nrRectCanvas.Children.Remove(rectForCell);
+                }
+            }
         }
 
         /// <summary>
