@@ -185,11 +185,11 @@ namespace MIBDataParser
 
 		/// <summary>
 		/// 获取所有的trap 类型
-		/// Dictionary<string, Dictionary<string, string>> ; Dictionary<每个TrapOid_ENB5216, 其他信息Dictionary(TrapID,TrapOid,TrapTypeDes)>
-		/// Dictionary<string, string> : Dictionary({ TrapID:value},{TrapOid:value},{TrapTypeDes:value})
 		/// </summary>
 		/// <returns>10组trap</returns>
-		Dictionary<string, Dictionary<string, string>> GetTrapInfo();
+		List<TrapTypeDef> GetTrapInfo();
+
+		int GetTrapInfoByMibName(string strMibName);
 
 		/* 为 cfg 操作模块提供相关接口 */
 		/// <summary>
@@ -199,7 +199,7 @@ namespace MIBDataParser
 		/// <param name=strFileToDirectory>解压释放目录</param>
 		/// <param name=err></param>
 		/// <returns></returns>
-        /// bool cfgUnzipDtz(string strFileToUnzip, string strFileToDirectory, out string err);
+		/// bool cfgUnzipDtz(string strFileToUnzip, string strFileToDirectory, out string err);
 
 		/// <summary>
 		/// 通过 sql 语句获取 数据
