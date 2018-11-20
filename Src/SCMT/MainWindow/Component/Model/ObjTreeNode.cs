@@ -56,9 +56,7 @@ namespace SCMTMainWindow
 
 		protected Dictionary<string, string> oid_en { get; set; }      // oid与英文名对应关系;
 
-		protected ObservableCollection<DyDataGrid_MIBModel>
-			contentlist
-		{ get; set; }                                  // 用来保存内容;
+		protected ObservableCollection<DyDataGrid_MIBModel> contentlist { get; set; }            // 用来保存内容;
 
 		public static MainWindow main { get; set; }                    // 保存与之对应的主窗口;
 
@@ -399,6 +397,15 @@ namespace SCMTMainWindow
 				Console.WriteLine(ex);
 			}
 
+			// 需要提前去掉假MIB的数量，否则如果一张表的后几项是假MIB，这张表将无法呈现数据
+			foreach (var iter in ret.childList)
+			{
+				if (iter.isMib != 1)
+				{
+					ChildCount--;
+				}
+			}
+
 			// 遍历所有子节点，组SNMP的GetNext命令的一行OID集合;
 			foreach (var iter in ret.childList)
 			{
@@ -409,7 +416,7 @@ namespace SCMTMainWindow
 					// 如果不是真MIB，不参与查询;
 					if (iter.isMib != 1)
 					{
-						ChildCount--;
+						//ChildCount--;
 						continue;
 					}
 
@@ -421,6 +428,9 @@ namespace SCMTMainWindow
 
 					// 通过GetNext查询单个节点数据;
 					var msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
+
+					// todo 此处需要设置为异步查询，否则查询某些节点时，UI卡死
+
 					msg.GetNextRequestWhenStop(ReceiveResBySingleNode, NotifyMainUpdateDataGrid, oidlist);
 				}
 				else
@@ -557,7 +567,7 @@ namespace SCMTMainWindow
 
 					// 通过GetNext查询单个节点数据;
 					var msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
-					msg.GetNextRequestWhenStop(new AsyncCallback(ReceiveResBySingleNode), new AsyncCallback(NotifyMainUpdateDataGrid), oidlist);
+					msg.GetNextRequestWhenStop(ReceiveResBySingleNode, NotifyMainUpdateDataGrid, oidlist);
 				}
 				else
 				{
