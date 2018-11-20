@@ -36,6 +36,20 @@ namespace MIBDataParser.JSONDataMgr
 		}
 	}
 
+	public class TrapTypeDef
+	{
+		public string MibName { get; }
+		public int TrapID { get; }
+		public string TrapDesc { get; }
+
+		public TrapTypeDef(string strMibName, int nTrapId, string strDesc)
+		{
+			MibName = strMibName;
+			TrapID = nTrapId;
+			TrapDesc = strDesc;
+		}
+	}
+
 	/// <summary>
 	/// 数据库操作相关的类
 	/// C# sealed修饰符表示密封用于类时，表示该类不能再被继承
@@ -399,21 +413,55 @@ namespace MIBDataParser.JSONDataMgr
 		/// 现有10种。
 		/// </summary>
 		/// <returns></returns>
-		public Dictionary<string, Dictionary<string, string>> GetTrapInfo()
+		public List<TrapTypeDef> GetTrapInfo()
 		{
-			var allTrapInfo = new Dictionary<string, Dictionary<string, string>>() {
-				{ "alarmNotify", new Dictionary<string, string>() {{ "TrapID","24"},{ "TrapOid","alarmTrap"},{ "TrapTypeDes","alarmTraps"}}},
-				{ "anrNotification", new Dictionary<string, string>() {{ "TrapID","200"},{ "TrapOid", "anrNotification" },{ "TrapTypeDes", "anrNotification" } }},
-				{ "alterationNofication", new Dictionary<string, string>() {{ "TrapID","21"},{ "TrapOid", "configChgTrap" },{ "TrapTypeDes", "eventConfigChgTraps" } }},
-				{ "eventGeneralEventTrap", new Dictionary<string, string>() {{ "TrapID","20"},{ "TrapOid", "eventGeneralEventTrap" },{ "TrapTypeDes", "eventGeneralEventTraps" } }},
-				{ "eventSynchronizationTrap", new Dictionary<string, string>() {{ "TrapID","26"},{ "TrapOid", "eventSynchronizationTrap" },{ "TrapTypeDes", "eventSynchronizationTrap" } }},
-				{ "fileTransNotification", new Dictionary<string, string>() {{ "TrapID","23"},{ "TrapOid", "fileTransTrap" },{ "TrapTypeDes", "eventFTPResultTraps" } }},
-				{ "maintenceStateNotify", new Dictionary<string, string>() {{ "TrapID","203"},{ "TrapOid", "maintenceStateNotify" },{ "TrapTypeDes", "maintenceStateNotify" } }},
-				{ "managementRequestTrap", new Dictionary<string, string>() {{ "TrapID","22"},{ "TrapOid", "managementRequestTrap" },{ "TrapTypeDes", "eventManagementRequestTraps" } }},
-				{ "mroNotification", new Dictionary<string, string>() {{ "TrapID","201"},{ "TrapOid", "mroNotification" },{ "TrapTypeDes", "mroNotification" } }},
-				{ "transactionResultNotification", new Dictionary<string, string>() {{ "TrapID","25"},{ "TrapOid", "transactionResultTrap" },{ "TrapTypeDes", "transactionResultTraps" } }},
-			};
-			return allTrapInfo;
+			var trapInfoList = new List<TrapTypeDef>();
+			var trap = new TrapTypeDef("alarmNotify", 24, "告警Trap");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("anrNotification", 200, "ANR事件");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("alterationNofication", 21, "通用事件Trap");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("eventGeneralEventTrap", 20, "通用事件Trap");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("eventSynchronizationTrap", 26, "数据同步事件通知");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("fileTransNotification", 23, "文件传输结果通知");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("maintenceStateNotify", 203, "工程状态通知");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("managementRequestTrap", 22, "管理请求通知");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("mroNotification", 201, "MRO事件通知");
+			trapInfoList.Add(trap);
+
+			trap = new TrapTypeDef("transactionResultNotification", 25, "事务结果通知");
+			trapInfoList.Add(trap);
+
+			return trapInfoList;
+		}
+
+		public int GetTrapInfoByMibName(string strMibName)
+		{
+			var til = GetTrapInfo();
+
+			foreach (var item in til)
+			{
+				if (item.MibName == strMibName)
+				{
+					return item.TrapID;
+				}
+			}
+
+			return -1;
 		}
 
 		#endregion
