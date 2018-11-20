@@ -413,7 +413,7 @@ namespace SCMTMainWindow.View
 
             if (!this.MyDesigner.g_cellPlaning.Contains(nCellNumber))
             {
-                if (NPCellOperator.SetNetPlanSwitch(true, nCellNumber, CSEnbHelper.GetCurEnbAddr()))
+                if (NPCellOperator.AddNewNrLc(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
                 {
                     this.MyDesigner.g_cellPlaning.Add(nCellNumber);
                 }
@@ -942,14 +942,14 @@ namespace SCMTMainWindow.View
                         break;
                     case LcStatus.Planning:
                         rect.Fill = new SolidColorBrush(Colors.LightGreen);
-                        if (!this.MyDesigner.g_cellPlaning.Contains(i))
-                        {
-                            if (NPCellOperator.SetNetPlanSwitch(true, i, CSEnbHelper.GetCurEnbAddr()))
-                            {
-                                this.MyDesigner.g_cellPlaning.Add(i);
-                            }
-                        }
-                        break;
+      //                  if (!this.MyDesigner.g_cellPlaning.Contains(i))
+						//{
+						//	if (NPCellOperator.SetNetPlanSwitch(true, i, CSEnbHelper.GetCurEnbAddr()))
+						//	{
+						//		this.MyDesigner.g_cellPlaning.Add(i);
+						//	}
+						//}
+						break;
                     case LcStatus.LcUnBuilded:
                         rect.Fill = new SolidColorBrush(Colors.Yellow);
                         break;
