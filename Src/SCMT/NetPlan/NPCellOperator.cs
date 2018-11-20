@@ -347,6 +347,13 @@ namespace NetPlan
 				return false;
 			}
 
+			// 打开本地小区的布配开关
+			if (!SetNetPlanSwitch(true, nLocalCellId, targetIp))
+			{
+				Log.Error($"删除本地小区{nLocalCellId}网规信息失败，原因：打开小区布配开关失败");
+				return false;
+			}
+
 			// 统一处理方式，从enb中的查到的信息也不立即下发
 			// 删除本地小区网规信息
 			if (!MibInfoMgr.GetInstance().DelDev($".{nLocalCellId}", EnumDevType.nrNetLc))
@@ -386,6 +393,23 @@ namespace NetPlan
 			var lcStatus = GetLcStatus(int.Parse(strLcId), targetIp);
 
 			return (lcStatus != LcStatus.Planning);
+		}
+
+		/// <summary>
+		/// 取消本地小区规划
+		/// 后台需要做的操作：1.关闭布配开关；2.设置本地小区之前的状态
+		/// </summary>
+		/// <param name="nLcId"></param>
+		/// <returns></returns>
+		public static bool CancelLcPlanOp(int nLcId)
+		{
+			var lcStatus = GetLcStatus(nLcId, CSEnbHelper.GetCurEnbAddr());
+			if (lcStatus != LcStatus.Planning)
+			{
+				return false;
+			}
+
+			return SetNetPlanSwitch(false, nLcId, CSEnbHelper.GetCurEnbAddr());
 		}
 	}
 
