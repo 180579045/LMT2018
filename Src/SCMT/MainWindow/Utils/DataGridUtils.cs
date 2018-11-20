@@ -171,6 +171,46 @@ namespace SCMTMainWindow.Utils
 			return true;
 		}
 
+
+		/// <summary>
+		/// 根据DataGrid的行数据生成Mib英文名称与值的对应关系
+		/// </summary>
+		/// <param name="lineData">DataGrid行数据</param>
+		/// <param name="enName2Value">英文名称与值对应关系</param>
+		/// <returns></returns>
+		public static bool MakeEnName2Value(Dictionary<string, object> lineData, ref Dictionary<string, string> enName2Value)
+		{
+			if (null == enName2Value)
+			{
+				enName2Value = new Dictionary<string, string>();
+			}
+
+			// Mib英文名称
+			string mibNameEn = null;
+			// Mib节点值
+			string mibValue = null;
+			foreach (KeyValuePair<string, object> item in lineData)
+			{
+				mibNameEn = item.Key;
+
+				// Mib值
+				if (typeof(DataGrid_Cell_MIB_ENUM) == item.Value.GetType()) // ComboBox
+				{
+					DataGrid_Cell_MIB_ENUM mibEnum = (DataGrid_Cell_MIB_ENUM)item.Value;
+					mibValue = mibEnum.m_CurrentValue.ToString();
+				}
+				else if (typeof(DataGrid_Cell_MIB) == item.Value.GetType()) // TextBox
+				{
+					DataGrid_Cell_MIB mibText = (DataGrid_Cell_MIB)item.Value;
+					mibValue = mibText.m_Content;
+				}
+
+				enName2Value.Add(mibNameEn, mibValue);
+			}
+
+			return true;
+		}
+
 		/// <summary>
 		/// 获取选中单元格的的Mib oid和英文名称
 		/// </summary>

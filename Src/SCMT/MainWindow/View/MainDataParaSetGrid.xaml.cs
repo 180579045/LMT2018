@@ -19,6 +19,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using LmtbSnmp;
+using SCMTMainWindow.Utils;
+using LogManager;
+using LinkPath;
 
 namespace SCMTMainWindow.View
 {
@@ -173,6 +176,7 @@ namespace SCMTMainWindow.View
 
         private void BtnOK_Click(object sender, RoutedEventArgs e)
         {
+			string strMsg;
             bOK = true;
             //获取右键菜单列表内容
             ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
@@ -200,14 +204,49 @@ namespace SCMTMainWindow.View
 
                 model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);
             }
-            //像基站下发添加/修改/查询指令
+
+			// 像基站下发添加指令
+			// Mib英文名称与值的对应关系
+			Dictionary<string, string> enName2Value = new Dictionary<string, string>();
+			// 根据DataGrid行数据组装Mib英文名称与值的对应关系
+			if (false == DataGridUtils.MakeEnName2Value(((DyDataGrid_MIBModel)model).Properties, ref enName2Value))
+			{
+				strMsg = "DataGridUtils.MakeEnName2Value()方法执行错误！";
+				Log.Error(strMsg);
+				MessageBox.Show("添加参数失败！");
+				return;
+			}
+
+			// 组装Vb列表
+			List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
+			if (false == DataGridUtils.MakeSnmpVbs(model, enName2Value, ref setVbs, out strMsg))
+			{
+				Log.Error(strMsg);
+				return;
+			}
+
+			// SNMP Set
+			long requestId;
+			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+			// 发送SNMP Set命令
+			int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
+			if (res != 0)
+			{
+				strMsg = string.Format("CDTCmdExecuteMgr.VbsSetSync()方法调用失败，EnbIp:{0}", CSEnbHelper.GetCurEnbAddr());
+				Log.Error(strMsg);
+				return;
+			}
+
+			MessageBox.Show("参数添加成功！");
+
+			// 修改/查询指令
 
 
-            //下发指令成功后更新基本信息列表
-            //m_MainDataGrid
+			//下发指令成功后更新基本信息列表
+			//m_MainDataGrid
 
 
-            this.Close();
+			this.Close();
         }
 
         private void BtnCancle_Click(object sender, RoutedEventArgs e)

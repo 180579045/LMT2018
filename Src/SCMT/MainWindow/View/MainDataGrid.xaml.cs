@@ -218,7 +218,7 @@ namespace SCMTMainWindow.View
 			}
 
 			enName2Value.Add(mibNameEn, strVal);
-			// 组装Vb
+			// 组装Vb列表
 			List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
 			if (false == DataGridUtils.MakeSnmpVbs(lineDataPro, enName2Value, ref setVbs, out strMsg))
 			{
