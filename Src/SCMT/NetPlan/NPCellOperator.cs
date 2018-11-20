@@ -409,7 +409,35 @@ namespace NetPlan
 				return false;
 			}
 
-			return SetNetPlanSwitch(false, nLcId, CSEnbHelper.GetCurEnbAddr());
+			// 关闭布配开关
+			if (!SetNetPlanSwitch(false, nLcId, CSEnbHelper.GetCurEnbAddr()))
+			{
+				return false;
+			}
+
+			// 删掉本地小区信息
+			//if (!MibInfoMgr.GetInstance().DelDev($".{nLcId}", EnumDevType.nrNetLc))
+			//{
+			//	return false;
+			//}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 右键菜单：进行小区规划响应函数
+		/// </summary>
+		/// <param name="nLcId"></param>
+		/// <param name="strTargetIp"></param>
+		/// <returns></returns>
+		public static bool AddNewNrLc(int nLcId, string strTargetIp)
+		{
+			if (!SetNetPlanSwitch(true, nLcId, strTargetIp))
+			{
+				return false;
+			}
+
+			return null != MibInfoMgr.GetInstance().AddNewLocalCell(nLcId);
 		}
 	}
 
