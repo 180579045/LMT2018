@@ -278,6 +278,11 @@ namespace SCMTMainWindow.View
                 strName = "g_FourPathRRU";
                 RRUSize = new Size(160, 70);
             }
+            else if (nMaxRRUPath == 6)
+            {
+                strName = "g_SixPathRRU";
+                RRUSize = new Size(210, 70);
+            }
             else if (nMaxRRUPath == 8)
             {
                 strName = "g_EightPathRRU";
@@ -468,7 +473,7 @@ namespace SCMTMainWindow.View
             }
 
             AntType antInfo = dlg.currentSelectedAntType;         //RRU的最大通道数
-            int nRRUNumber = 1;           //需要添加的RRU的数量
+            int nRRUNumber = dlg.nAntNo;           //需要添加的RRU的数量
             string strXAML = string.Empty;                                        //解析xml文件
             Size newSize;                                                                  //根据不同的通道数，确定不同的RRU的大小
             string strRRUName = "No:";
