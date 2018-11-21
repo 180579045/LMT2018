@@ -150,6 +150,8 @@ namespace SCMTMainWindow.View
                     //将 to_other 的连接点设置为 确定的连接
                     sourceConnector.PortType = srcPoint.portType;
                     sinkConnector.PortType = dstPoint.portType;
+                    this.sourceConnector.PortType = srcPoint.portType;
+                    this.hitConnector.PortType = dstPoint.portType;
                 }
                 else
                 {
@@ -165,6 +167,8 @@ namespace SCMTMainWindow.View
                         //将 to_other 的连接点设置为 确定的连接
                         sourceConnector.PortType = srcPoint.portType;
                         sinkConnector.PortType = dstPoint.portType;
+                        newConnection.Source.PortType = srcPoint.portType;
+                        newConnection.Sink.PortType = dstPoint.portType;
                     }
                     else
                     {
