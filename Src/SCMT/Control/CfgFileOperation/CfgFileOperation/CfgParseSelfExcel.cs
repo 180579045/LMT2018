@@ -83,6 +83,10 @@ namespace CfgFileOperation
                 string NodeName = GetCellValue(ColVals, currentLine, "NodeName");   //叶子名
                 string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue"); //叶子值
                 strCurTableName = SetCurTableName(TableName, strCurTableName);      //更新表名
+                //if (strCurTableName == "drxQciCfgEntry")
+                //{
+                //    Console.WriteLine("...");
+                //}
                 strCurIndex = SetCurIndex(Index, strCurIndex);                      //更新索引
                 
                 if (!WriteValueToBuffer(cfgOp.m_mapTableInfo[strCurTableName],      //更新节点值

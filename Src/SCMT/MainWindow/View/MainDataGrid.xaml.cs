@@ -26,6 +26,7 @@ using System.Windows.Shapes;
 using UICore.Controls.Metro;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
+using System.Collections.ObjectModel;
 
 namespace SCMTMainWindow.View
 {
@@ -61,6 +62,7 @@ namespace SCMTMainWindow.View
                         var column = new DataGridTextColumn
                         {
                             Header = iter.Item2,
+                            IsReadOnly = true,
                             Binding = new Binding(iter.Item1 + ".m_Content")
                         };
                         
@@ -94,6 +96,7 @@ namespace SCMTMainWindow.View
                         column.CellTemplate = TextBlockTemplate;                         // 将单元格的显示形式赋值;
                         column.CellEditingTemplate = ComboBoxTemplate;                   // 将单元格的编辑形式赋值;
                         column.Width = 230;                                              // 设置显示宽度;
+                        column.IsReadOnly = true;
 
                         this.DynamicDataGrid.Columns.Add(column);
                     }
@@ -115,6 +118,7 @@ namespace SCMTMainWindow.View
                         column.Header = iter.Item2;                               // 填写列名称;
                         column.CellTemplate = template;                           // 将单元格的显示形式赋值;
                         column.Width = 230;                                       // 设置显示宽度;
+                        column.IsReadOnly = true;
 
                         this.DynamicDataGrid.Columns.Add(column);
                     }
@@ -125,6 +129,8 @@ namespace SCMTMainWindow.View
                 }
             }
         }
+
+        private DyDataGrid_MIBModel m_selectDataGrid;
 
         /// <summary>
         /// 动态表构造函数;
@@ -139,15 +145,13 @@ namespace SCMTMainWindow.View
             this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;              // 捕获鼠标事件，用于判断用户拖拽事件;
             this.DynamicDataGrid.LostFocus += DynamicDataGrid_LostFocus;                          // 单元格失去焦点事件;
             this.DynamicDataGrid.MouseRightButtonDown += DynamicDataGrid_MouseRightButtonDown;    //鼠标右键按下弹出右键菜单
-        }       
-        
-
-		/// <summary>
-		/// 单元格失去焦点事件
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void DynamicDataGrid_LostFocus(object sender, RoutedEventArgs e)
+        }
+        /// <summary>
+        /// 单元格失去焦点事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DynamicDataGrid_LostFocus(object sender, RoutedEventArgs e)
 		{
 			// 目前只处理ComboBox和TextBox
 			if (typeof(ComboBox) != e.OriginalSource.GetType()
@@ -272,9 +276,17 @@ namespace SCMTMainWindow.View
 
         private void DynamicDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-			// 如果SelectedIndex是-1，则表明是初始化过程中调用的;
-			// 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
-			if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
+            //注释掉原来对基本信息列表的编辑操作
+            /*// 只处理ComboBox
+
+           // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
+            // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
+            if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
+            {
+                return;
+            }
+			if (typeof(ComboBox) != e.OriginalSource.GetType())
+
 			{
 				return;
 			}
@@ -297,9 +309,15 @@ namespace SCMTMainWindow.View
 			catch
 			{
 
+
 			}
 
 		}
+        */
+
+            //获取选择的行数据,目前只能单选，多选后续添加
+            m_selectDataGrid = (DyDataGrid_MIBModel)this.DynamicDataGrid.SelectedItem;
+        }
 		
         /// <summary>
         /// 鼠标移动事件;
@@ -422,16 +440,22 @@ namespace SCMTMainWindow.View
             dataGridMenu.Items.Add(menuItemAdd);
 
             var menuItemModify = new MetroMenuItem();
-            menuItemModify.Header = "修改" + menuName;
+            menuItemModify.Header = "修改 " + menuName;
             menuItemModify.Click += MenuItem_Click; ;
             menuItemModify.IsEnabled = true;
             dataGridMenu.Items.Add(menuItemModify);
 
             var menuItemQuery = new MetroMenuItem();
-            menuItemQuery.Header = "查询" + menuName;
+            menuItemQuery.Header = "查询 " + menuName;
             menuItemQuery.Click += MenuItem_Click; ;
             menuItemQuery.IsEnabled = true;
             dataGridMenu.Items.Add(menuItemQuery);
+
+            var menuItemDelete = new MetroMenuItem();
+            menuItemDelete.Header = "删除 " + menuName;
+            menuItemDelete.Click += MenuItem_Click; ;
+            menuItemDelete.IsEnabled = true;
+            dataGridMenu.Items.Add(menuItemDelete);
 
             foreach (CmdMibInfo mibinfo in listCmdMibInfo)
             {
@@ -464,11 +488,6 @@ namespace SCMTMainWindow.View
 
                     menuItemQuery.Items.Add(menuChildItem);                  
                 }
-
-                if(mibinfo.m_cmdDesc.Contains("删除"))
-                {
-
-                }
             }
 
             this.ContextMenu = dataGridMenu;
@@ -492,19 +511,40 @@ namespace SCMTMainWindow.View
             if (null == menu)
                 return;
 
-            foreach (CmdMibInfo info in listCmdMibInfo)
+            if (menu.Header.ToString().Contains("增加"))
             {
-                if(info.m_cmdDesc.Equals(menu.Header))
+                foreach (CmdMibInfo info in listCmdMibInfo)
                 {
-                    MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-                    paraGrid.InitParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable));
-                    paraGrid.ShowDialog();
-                    
-                    if (!paraGrid.bOK)
+                    if (info.m_cmdDesc.Equals(menu.Header))
                     {
-                        return;
+                        MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                        paraGrid.InitAddParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable));
+                        paraGrid.ShowDialog();
+
+                        if (!paraGrid.bOK)
+                        {
+                            return;
+                        }
+                        break;
                     }
-                    break;
+                }
+            }
+            else if (menu.Header.ToString().Contains("修改") && !menu.Header.ToString().Contains("修改 " + (m_ColumnModel.TableProperty as MibTable).nameCh))
+            {
+                MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                paraGrid.InitModifyParaSetGrid(m_selectDataGrid);
+                paraGrid.ShowDialog();
+
+                if (!paraGrid.bOK)
+                {
+                    return;
+                }
+            }
+            else if(menu.Header.ToString().Contains("删除"))
+            {
+                if(m_selectDataGrid != null)
+                {
+
                 }
             }
         }

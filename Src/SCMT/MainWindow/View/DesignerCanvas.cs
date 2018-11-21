@@ -580,6 +580,11 @@ namespace SCMTMainWindow.View
                 strName = "g_FourPathAntenna";
                 RRUSize = new Size(70, 40);
             }
+            else if (nMaxRRUPath == 6)
+            {
+                strName = "g_SixPathAntenna";
+                RRUSize = new Size(110, 40);
+            }
             else if (nMaxRRUPath == 8)
             {
                 strName = "g_EightPathAntenna";
