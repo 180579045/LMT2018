@@ -75,9 +75,18 @@ namespace LinkPath
 			// 消息类型转换
 			Log.Info($"msg.Topic = {msg.Topic}");
 
-			var lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
-			OnResponse(lmtPdu);
-		}
+			try
+			{
+				var lmtPdu = SerializeHelper.DeserializeWithBinary<CDTLmtbPdu>(msg.Data);
+				OnResponse(lmtPdu);
+
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw ex;
+			}
+        }
 
 		/// <summary>
 		/// 调用OnTrap方法

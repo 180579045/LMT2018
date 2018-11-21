@@ -47,37 +47,38 @@ namespace LmtbSnmp
 				return GenerateBitsTypeDesc(strInMibValue, strMibValList, out strReValue);
 			}
 
-			strReValue = SnmpToDatabase.ConvertValueToString(mibNodeInfo, strInMibValue);
+			// TODO 类型为Unsigned32Array时，下面的方法会异常
+			//strReValue = SnmpToDatabase.ConvertValueToString(mibNodeInfo, strInMibValue);
 			// todo 此处没有处理从描述转为值的情况
 
 			// 根据mib值获取描述或根据描述获取mib值
 			// TODO: 看不懂原来的逻辑。。。。先按照"0:本地文件/1:远端文件"格式解析
-			//if (!string.IsNullOrEmpty(strMibValList))
-			//{
-			//	var keyValList = strMibValList.Split('/');
-			//	foreach (var item in keyValList)
-			//	{
-			//		var keyVal = item.Split(':');
-			//		if (keyVal.Length < 2) continue;
+			if (!string.IsNullOrEmpty(strMibValList))
+			{
+				var keyValList = strMibValList.Split('/');
+				foreach (var item in keyValList)
+				{
+					var keyVal = item.Split(':');
+					if (keyVal.Length < 2) continue;
 
-			//		if (bValueToDesc) //值翻译为描述
-			//		{
-			//			if (string.Equals(strMibValue, keyVal[0], StringComparison.OrdinalIgnoreCase))
-			//			{
-			//				strReValue = keyVal[1];
-			//				break;
-			//			}
-			//		}
-			//		else // 描述翻译为值
-			//		{
-			//			if (string.Equals(strMibValue, keyVal[1], StringComparison.OrdinalIgnoreCase))
-			//			{
-			//				strReValue = keyVal[0];
-			//				break;
-			//			}
-			//		}
-			//	}
-			//}
+					if (bValueToDesc) //值翻译为描述
+					{
+						if (string.Equals(strMibValue, keyVal[0], StringComparison.OrdinalIgnoreCase))
+						{
+							strReValue = keyVal[1];
+							break;
+						}
+					}
+					else // 描述翻译为值
+					{
+						if (string.Equals(strMibValue, keyVal[1], StringComparison.OrdinalIgnoreCase))
+						{
+							strReValue = keyVal[0];
+							break;
+						}
+					}
+				}
+			}
 
 			// 如果没有获取到，将mib值返回
 			if (string.IsNullOrEmpty(strReValue))

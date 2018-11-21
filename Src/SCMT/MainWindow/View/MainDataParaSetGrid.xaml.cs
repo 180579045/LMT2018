@@ -225,7 +225,9 @@ namespace SCMTMainWindow.View
             dynamic model = new DyDataGrid_MIBModel();
             string value;
             string strPreOid = SnmpToDatabase.GetMibPrefix();
-            foreach (DyDataGrid_MIBModel mm in datalist)
+			// 索引
+			string strIndex = ".0";
+			foreach (DyDataGrid_MIBModel mm in datalist)
             {
                 var cell = mm.Properties["ParaValue"] as GridCell;
                 if (cell.cellDataType == LmtbSnmp.DataGrid_CellDataType.enumType)
@@ -239,7 +241,23 @@ namespace SCMTMainWindow.View
                 else
                     value = cell.m_Content;
 
-                var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strPreOid + cell.oid, CSEnbHelper.GetCurEnbAddr());
+				// 获取Mib节点属性
+				MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(cell.MibName_EN, CSEnbHelper.GetCurEnbAddr());
+				if (null == mibLeaf)
+				{
+					strMsg = "无法获取Mib节点信息！";
+					Log.Error(strMsg);
+					MessageBox.Show(strMsg);
+					return;
+				}
+				// 获取索引节点
+				if ("True".Equals(mibLeaf.IsIndex))
+				{
+					strIndex = "." + value;
+					continue;
+                }
+
+				var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strPreOid + cell.oid + strIndex, CSEnbHelper.GetCurEnbAddr());
 
                 model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);
             }
