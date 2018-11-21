@@ -148,6 +148,20 @@
       <LineGeometry StartPoint="60,40" EndPoint="60, 25"></LineGeometry>
       <LineGeometry StartPoint="0,25" EndPoint="60, 25"></LineGeometry>
     </GeometryGroup>
+    
+    <!--六通道天线-->
+    <GeometryGroup x:Key="SixPathAntenna">
+      <LineGeometry StartPoint="45,0" EndPoint="50,8"></LineGeometry>
+      <LineGeometry StartPoint="55,0" EndPoint="50,8"></LineGeometry>
+      <LineGeometry StartPoint="50,0" EndPoint="50, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="0, 25"></LineGeometry>
+      <LineGeometry StartPoint="20,40" EndPoint="20, 25"></LineGeometry>
+      <LineGeometry StartPoint="40,40" EndPoint="40, 25"></LineGeometry>
+      <LineGeometry StartPoint="60,40" EndPoint="60, 25"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="80, 25"></LineGeometry>
+      <LineGeometry StartPoint="100,40" EndPoint="100, 25"></LineGeometry>
+      <LineGeometry StartPoint="0,25" EndPoint="100, 25"></LineGeometry>
+    </GeometryGroup>
 
     <!--八通道天线-->
     <GeometryGroup x:Key="EightPathAntenna">
@@ -562,7 +576,33 @@
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
   </Grid>
-
+<!--八通道 天线阵-->
+  <Grid x:Name="g_SixPathAntenna" Width="110">
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource SixPathAntenna}"
+              Stretch="Fill"
+              IsHitTestVisible="False" Width="100" HorizontalAlignment="Right"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="5,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="23,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="43,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="63,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="83,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="103,0,0,5" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="10" Text="Antenna" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="20, 0, 0, 10"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.09,1" ID="ant_to_rru-1" DevType="ant" PortNo="1" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.272,1" ID="ant_to_rru-2" DevType="ant" PortNo="2" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.455,1" ID="ant_to_rru-3" DevType="ant" PortNo="3" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.636,1" ID="ant_to_rru-4" DevType="ant" PortNo="4" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="0.818,1" ID="ant_to_rru-5" DevType="ant" PortNo="5" PortType="ant_to_rru"/>
+          <s:Connector Orientation="Bottom" c:RelativePositionPanel.RelativePosition="1,1" ID="ant_to_rru-6" DevType="ant" PortNo="6" PortType="ant_to_rru"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+  
   <!--八通道 天线阵-->
   <Grid x:Name="g_EightPathAntenna" Width="150">
     <Path Fill="Yellow" Stroke="Black"

@@ -10,6 +10,10 @@ namespace NetPlan.DevLink
 {
 	public sealed class LinkBoardRhub : NetPlanLinkBase
 	{
+		public LinkBoardRhub() : base()
+		{
+			m_irRecordType = EnumDevType.board_rru;
+		}
 		#region 虚函数重载
 
 		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
@@ -64,7 +68,7 @@ namespace NetPlan.DevLink
 
 			mapMibInfo[EnumDevType.rhub].Remove(m_rhubDev);
 			mapMibInfo[EnumDevType.rhub].Add(rhubClone);
-
+		
 			// todo rhub级联的情况暂不支持
 
 			return true;
@@ -114,9 +118,13 @@ namespace NetPlan.DevLink
 					mapMibInfo[EnumDevType.rru].Remove(pico);
 				}
 
+				var linkrp = new LinkRhubPico();
 				foreach (var pico in newPicoList)
 				{
 					mapMibInfo[EnumDevType.rru].Add(pico);
+
+					// 板卡和rhub连接成功后，才能增加netEthPlanEntry表记录，因为需要bbu的架框槽信息
+					linkrp.AddEthPlanRecord(rhubClone, pico, mapMibInfo);
 				}
 			}
 
@@ -229,11 +237,27 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
+
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		{
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return null;
+			}
+
+			return GetDevAttributeInfo(m_strIrRecodeIndex, m_irRecordType);
+		}
+
+
 		private bool ResetBoardInfoInRhub(DevAttributeInfo rhub, int nRhubPort)
 		{
 			var bbi = new BoardBaseInfo();
 			return SetBoardBaseInfoInRhub(bbi, rhub) && SetOfpLinkInfoInRhub(rhub, -1);
 		}
+
+
 
 		/// <summary>
 		/// 设置rhub设备和board相关的属性
@@ -377,6 +401,8 @@ namespace NetPlan.DevLink
 
 		private int m_nBoardPort;
 		private int m_nRhubPort;
+
+		private EnumDevType m_irRecordType;
 
 		#endregion
 	}

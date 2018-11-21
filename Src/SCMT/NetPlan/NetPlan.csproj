@@ -60,6 +60,7 @@
     <Compile Include="MibLeafNodeInfo.cs" />
     <Compile Include="NetDev\NetDevAnt.cs" />
     <Compile Include="NetDev\NetDevBase.cs" />
+    <Compile Include="NetDev\NetDevRru.cs" />
     <Compile Include="NetPlanTemplateInfo.cs" />
     <Compile Include="NetPlanLinkMgr.cs" />
     <Compile Include="NPCellOperator.cs" />

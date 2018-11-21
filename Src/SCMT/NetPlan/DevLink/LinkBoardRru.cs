@@ -10,6 +10,11 @@ namespace NetPlan.DevLink
 	// 专门处理board与rru之间的连接
 	public class LinkBoardRru : NetPlanLinkBase
 	{
+		public LinkBoardRru() : base()
+		{
+			m_irRecordType = EnumDevType.board_rru;
+		}
+
 		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
@@ -76,6 +81,18 @@ namespace NetPlan.DevLink
 			// todo RRU级联的情况
 
 			return true;
+		}
+
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		{
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return null;
+			}
+
+			return GetDevAttributeInfo(m_irRecordIndex, m_irRecordType);
 		}
 
 		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
@@ -178,6 +195,7 @@ namespace NetPlan.DevLink
 		private DevAttributeInfo m_rruDev;
 		private int m_nBoardPort;
 		private int m_nRruPort;
+		private EnumDevType m_irRecordType;
 
 		#endregion
 
