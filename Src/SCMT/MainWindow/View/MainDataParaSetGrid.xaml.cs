@@ -55,6 +55,45 @@ namespace SCMTMainWindow.View
             this.DynamicParaSetGrid.BeginningEdit += DynamicParaSetGrid_BeginningEdit;
             this.DynamicParaSetGrid.MouseMove += DynamicParaSetGrid_MouseMove;
             this.DynamicParaSetGrid.GotMouseCapture += DynamicParaSetGrid_GotMouseCapture;
+            this.DynamicParaSetGrid.LostFocus += DynamicParaSetGrid_LostFocus;
+        }
+
+        private void DynamicParaSetGrid_LostFocus(object sender, RoutedEventArgs e)
+        {          
+            if (typeof(TextBox) != e.OriginalSource.GetType())
+            {
+                return;
+            }
+            string cellValue = "";
+
+            DataGrid dataGrid = (DataGrid)sender;
+            // 行Model
+            DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
+
+            // TextBox
+            if (typeof(TextBox) == e.OriginalSource.GetType())
+            {
+                cellValue = (e.OriginalSource as TextBox).Text;
+                //用于处理参数值列(目前是第2列)单元格内容为字符串时，修改后对列表的显示
+                if (mibModel.PropertyList[1].Item3 is DataGrid_Cell_MIB)
+                {
+                    var ff = mibModel.PropertyList[1].Item3 as DataGrid_Cell_MIB;
+                    if (!string.IsNullOrWhiteSpace(cellValue))
+                        ff.m_Content = cellValue;
+                }
+                else if (mibModel.PropertyList[1].Item3 is DataGrid_Cell_MIB_ENUM)
+                {
+                    var ff = mibModel.PropertyList[1].Item3 as DataGrid_Cell_MIB_ENUM;
+                    if (!string.IsNullOrWhiteSpace(cellValue))
+                    {
+                        int eindex = cellValue.LastIndexOf(',');
+                        int sindex = cellValue.LastIndexOf('[');
+                        string vv = cellValue.Substring(sindex + 1, eindex - 1).Trim();
+                        ff.m_CurrentValue = int.Parse(vv);
+                    }
+                        
+                }
+            }         
         }
 
         private void DynamicParaSetGrid_GotMouseCapture(object sender, MouseEventArgs e)
@@ -310,7 +349,7 @@ namespace SCMTMainWindow.View
 
                             if (devalue.Equals("6"))
                             {
-                                devalue = mapKv.FirstOrDefault(q => q.Value == "行有效").Key.ToString();
+                                devalue = "4";
                             }
                         }
 
@@ -325,7 +364,7 @@ namespace SCMTMainWindow.View
                         // 在这里要区分DataGrid要显示的数据类型;
                         var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
 
-                        model.AddParaProperty("ParaValue", dgm, "参数值");
+                        model.AddParaProperty("ParaValue", dgm, "参数值");                        
 
                         model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
                         {
@@ -343,6 +382,7 @@ namespace SCMTMainWindow.View
                             MibName_EN = mibLeaf.childNameMib
                         }, "单位");
 
+                        
 
                         // 将这个整行数据填入List;
                         if (model.Properties.Count != 0)
@@ -408,26 +448,14 @@ namespace SCMTMainWindow.View
             set
             {
                 m_ParaModel = value;
-                this.DynamicParaSetGrid.Columns.Clear();
+                this.DynamicParaSetGrid.Columns.Clear();        
 
                 // 获取所有列信息，并将列信息填充到DataGrid当中;
                 foreach (var iter in m_ParaModel.PropertyList)
                 {
-                    // 显示字符类型的数据结构;
-                    if (iter.Item3 is DataGrid_Cell_MIB)
+                    if (iter.Item1.Equals("ParaValue"))
                     {
-                        // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
-                        var column = new DataGridTextColumn
-                        {
-                            Header = iter.Item2,
-                            Binding = new Binding(iter.Item1 + ".m_Content")
-                        };
 
-                        this.DynamicParaSetGrid.Columns.Add(column);
-                    }
-                    // 显示枚举类型的数据结构，在单元格内呈现一个ComboBox下拉框;
-                    else if (iter.Item3 is DataGrid_Cell_MIB_ENUM)
-                    {
                         DataGridTemplateColumn column = new DataGridTemplateColumn();
                         DataTemplate TextBlockTemplate = new DataTemplate();
                         DataTemplate ComboBoxTemplate = new DataTemplate();
@@ -443,7 +471,7 @@ namespace SCMTMainWindow.View
                            @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
                                             xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
                                             xmlns:model='clr-namespace:WPF.Model'>
-                                <ComboBox ItemsSource='{Binding " + iter.Item1 + @".m_AllContent}' SelectedIndex='0'/>
+                                <ComboBox IsEditable='True' IsReadOnly='False' ItemsSource='{Binding " + iter.Item1 + @".m_AllContent}' SelectedIndex='0'/>
                              </DataTemplate>";
 
                         TextBlockTemplate = XamlReader.Parse(textblock_xaml) as DataTemplate;
@@ -456,30 +484,16 @@ namespace SCMTMainWindow.View
 
                         this.DynamicParaSetGrid.Columns.Add(column);
                     }
-                    else if (iter.Item3 is System.Collections.Generic.List<string>)
-                    {
-                        DataGridTemplateColumn column = new DataGridTemplateColumn();                   // 单元格是一个template;
-                        DataTemplate template = new DataTemplate();                                     // 用一个DataTemplate类型填充;
-                        ComboBox box = new ComboBox();
-
-                        string xaml1 =
-                            @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-                                            xmlns:model='clr-namespace:WPF.Model'>
-                                <ComboBox ItemsSource='{Binding " + iter.Item1 + @"}' SelectedIndex='0'/>
-                            </DataTemplate>";
-
-                        template = XamlReader.Parse(xaml1) as DataTemplate;
-
-                        column.Header = iter.Item2;                               // 填写列名称;
-                        column.CellTemplate = template;                           // 将单元格的显示形式赋值;
-                        column.Width = 230;                                       // 设置显示宽度;
-
-                        this.DynamicParaSetGrid.Columns.Add(column);
-                    }
                     else
                     {
+                        // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
+                        var column = new DataGridTextColumn
+                        {
+                            Header = iter.Item2,
+                            Binding = new Binding(iter.Item1 + ".m_Content")
+                        };
 
+                        this.DynamicParaSetGrid.Columns.Add(column);
                     }
                 }
             }

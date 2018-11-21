@@ -650,6 +650,13 @@ namespace NetPlan
 					var log = $"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败";
 					Log.Error(log);
 					NPLastErrorHelper.SetLastError(log);
+
+					if (EnumDevType.nrNetLc == devType && !NPCellOperator.SetNetPlanSwitch(false, item.m_strOidIndex, targetIp))
+					{
+						Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
+						NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
+					}
+
 					return false;
 				}
 
