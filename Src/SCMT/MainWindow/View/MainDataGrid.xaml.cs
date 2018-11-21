@@ -431,12 +431,6 @@ namespace SCMTMainWindow.View
             menuItemQuery.IsEnabled = true;
             dataGridMenu.Items.Add(menuItemQuery);
 
-            var menuItemDelete = new MetroMenuItem();
-            menuItemDelete.Header = "删除 " + menuName;
-            menuItemDelete.Click += MenuItem_Click; ;
-            menuItemDelete.IsEnabled = true;
-            dataGridMenu.Items.Add(menuItemDelete);
-
             foreach (CmdMibInfo mibinfo in listCmdMibInfo)
             {
                 if(mibinfo.m_cmdDesc.Contains("增加"))
@@ -468,6 +462,15 @@ namespace SCMTMainWindow.View
 
                     menuItemQuery.Items.Add(menuChildItem);                  
                 }
+
+                if(mibinfo.m_cmdDesc.Contains("删除"))
+                {
+                    var menuItemDelete = new MetroMenuItem();
+                    menuItemDelete.Header = mibinfo.m_cmdDesc;
+                    menuItemDelete.Click += MenuItem_Click; ;
+                    menuItemDelete.IsEnabled = true;
+                    dataGridMenu.Items.Add(menuItemDelete);
+                }            
             }
 
             this.ContextMenu = dataGridMenu;
@@ -522,11 +525,40 @@ namespace SCMTMainWindow.View
             }
             else if(menu.Header.ToString().Contains("删除"))
             {
-                if(m_selectDataGrid != null)
+                foreach (CmdMibInfo info in listCmdMibInfo)
                 {
+                    if (info.m_cmdDesc.Equals(menu.Header))
+                    {
+                        if (m_selectDataGrid == null)
+                            return;
+                        MibLeaf leaf = GetRowStatusInfo(info);
+                        if (leaf == null)
+                            return;
+                        //添加删除指令
 
+                        break;
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// 获取行状态信息，用于右键删除指令
+        /// </summary>
+        /// <returns></returns>
+        private MibLeaf GetRowStatusInfo(CmdMibInfo info)
+        {
+            MibLeaf mibLeaf = null;
+            foreach (string oid in info.m_leaflist)
+            {
+                mibLeaf = Database.GetInstance().GetMibDataByOid(oid, CSEnbHelper.GetCurEnbAddr());
+                if(mibLeaf.ASNType.Equals("RowStatus"))
+                {
+                    return mibLeaf;
+                }
+            }
+
+            return mibLeaf;
         }
     }
 }
