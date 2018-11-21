@@ -225,16 +225,13 @@ namespace SCMTMainWindow.View
             ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
             datalist = (ObservableCollection < DyDataGrid_MIBModel >)this.DynamicParaSetGrid.DataContext;
 
-			if (m_bisModify)
-			{
-
-			}
             //将右键菜单列表内容转换成与基本信息列表格式相同结构
             dynamic model = new DyDataGrid_MIBModel();
             string value;
             string strPreOid = SnmpToDatabase.GetMibPrefix();
 			// 索引
 			string strIndex = "";
+			string strFullOid = "";
 			foreach (DyDataGrid_MIBModel mm in datalist)
             {
                 var cell = mm.Properties["ParaValue"] as GridCell;
@@ -265,7 +262,16 @@ namespace SCMTMainWindow.View
 					continue;
                 }
 
-				var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strPreOid + cell.oid + strIndex, CSEnbHelper.GetCurEnbAddr());
+				if(!cell.oid.Contains(strPreOid))
+				{
+					strFullOid = strPreOid + cell.oid + strIndex;
+                }else
+				{
+					strFullOid = cell.oid + strIndex;
+                }
+
+
+				var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strFullOid, CSEnbHelper.GetCurEnbAddr());
 
                 model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);
             }
@@ -313,10 +319,15 @@ namespace SCMTMainWindow.View
 				return;
 			}
 
-			MessageBox.Show("参数添加成功！");
+			if (m_bisModify)
+			{
+				MessageBox.Show("参数修改成功！");
 
-			// 修改/查询指令
-
+			}
+			else
+			{
+				MessageBox.Show("参数添加成功！");
+			}
 
 			//下发指令成功后更新基本信息列表
 			//m_MainDataGrid
