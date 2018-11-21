@@ -380,11 +380,20 @@ namespace NetPlan
 		public DevAttributeInfo AddNewLocalCell(int nLocalCellId)
 		{
 			const EnumDevType type = EnumDevType.nrNetLc;
-			var dev = GenerateNewDev(type, nLocalCellId);
+
+			var dev = GetDevAttributeInfo($".{nLocalCellId}", type);
 			if (null == dev)
 			{
-				Log.Error($"生成本地小区{nLocalCellId}的属性失败");
-				return null;
+				dev = GenerateNewDev(type, nLocalCellId);
+				if (null == dev)
+				{
+					Log.Error($"生成本地小区{nLocalCellId}的属性失败");
+					return null;
+				}
+				Log.Debug($"生成本地小区{nLocalCellId}属性信息成功");
+			}
+			{
+				Log.Debug($"本地小区{nLocalCellId}已经存在不需要重新生成");
 			}
 
 			return !MoveDevFromWaitDelToModifyMap(type, dev, dev.m_strOidIndex) ? null : dev;
