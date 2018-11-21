@@ -2228,6 +2228,11 @@ namespace SCMTMainWindow.View
             MyDesigner.Children.Clear();
         }
 
+        public void NetPlanClean()
+        {
+            MibInfoMgr.GetInstance().Clear();
+        }
+
         #region 网规模板列表相关操作
         /// <summary>
         /// 保存网规模板文件路径和文件名

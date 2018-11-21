@@ -248,13 +248,12 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="网络规划" Style="{StaticResource TabItemStyle}">
+                <TabItem Header="网络规划" Style="{StaticResource TabItemStyle}" GotFocus="TabItem_GotFocus">
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled">
-                            <ViewModel:NetPlanModel/>
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled" Name="netPlanScrollView">
                         </ScrollViewer>
                     </Grid>
                 </TabItem>

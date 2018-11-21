@@ -764,7 +764,7 @@ namespace SCMTMainWindow.View
             Border bord = grp.Parent as Border;
             Popup targetPop = bord.Parent as Popup;
 
-            if (g_listCellIDForFast == null || g_listCellIDForFast.Count <= 0)
+            if (g_listCellIDForFast == null )
             {
                 targetPop.IsOpen = false;
                 return;
@@ -814,9 +814,61 @@ namespace SCMTMainWindow.View
                     strText += item.cellId + ",";
                 }
 
-                targetItem.Text = strText.TrimEnd(',');
+                if(strText == "")
+                {
+                    targetItem.Text = "-";
+                }
+                else
+                {
+                    targetItem.Text = strText.TrimEnd(',');
+                }
             }
             targetPop.IsOpen = false;
+        }
+
+        /// <summary>
+        /// 重置按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            for (int i = 1; i <= g_nRRUPort; i++)
+            {
+                TextBlock targetItem = g_allCellTextBlock[i];
+
+                List<CellAndState> listToRemove = new List<CellAndState>();
+
+                //先判断是否有需要移除的选项
+                foreach (var item in g_allRRUToCellInfo[i.ToString()].CellIdList)
+                {
+                    if (!item.bIsFixed)
+                    {
+                        listToRemove.Add(item);
+                    }
+                }
+
+                if (listToRemove.Count > 0)
+                {
+                    foreach (var item in listToRemove)
+                        g_allRRUToCellInfo[i.ToString()].CellIdList.Remove(item);
+                }
+
+                string strText = string.Empty;
+                foreach (var item in g_allRRUToCellInfo[i.ToString()].CellIdList)
+                {
+                    strText += item.cellId + ",";
+                }
+
+                if (strText == "")
+                {
+                    targetItem.Text = "-";
+                }
+                else
+                {
+                    targetItem.Text = strText.TrimEnd(',');
+                }
+            }
         }
     }
 }
