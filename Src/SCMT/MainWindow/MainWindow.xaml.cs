@@ -1935,8 +1935,11 @@ namespace SCMTMainWindow
 
 			// 文件管理按钮禁用，文件管理窗口关闭
 			CloseFileMgrDlg(fname);
+            //关闭网规界面
+            NetPlanClose();
 
-			Dispatcher.Invoke(() =>
+
+            Dispatcher.Invoke(() =>
 			{
 				ExpanderBaseInfo.IsEnabled = false;
 				ExpanderBaseInfo.IsExpanded = false;
@@ -2066,5 +2069,31 @@ namespace SCMTMainWindow
 			Pane.Children.Add(sub);
 			sub.Float();
 		}
-	}
+
+        private bool bInitNetPlan = false;
+        private View.NetPlan g_NetPlan;
+        /// <summary>
+        /// 切换到网规界面的时候
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TabItem_GotFocus(object sender, RoutedEventArgs e)
+        {
+            //netPlanScrollView
+            if(!bInitNetPlan)
+            {
+                bInitNetPlan = true;
+                g_NetPlan = new View.NetPlan();
+                netPlanScrollView.Content = g_NetPlan;
+            }
+        }
+
+        private void NetPlanClose()
+        {
+            bInitNetPlan = false;
+            g_NetPlan.NetPlanClean();            
+            g_NetPlan = null;
+            GC.Collect();
+        }
+    }
 }
