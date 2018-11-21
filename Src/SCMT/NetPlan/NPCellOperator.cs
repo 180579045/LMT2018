@@ -416,10 +416,10 @@ namespace NetPlan
 			}
 
 			// 删掉本地小区信息
-			//if (!MibInfoMgr.GetInstance().DelDev($".{nLcId}", EnumDevType.nrNetLc))
-			//{
-			//	return false;
-			//}
+			if (!MibInfoMgr.GetInstance().DelDev($".{nLcId}", EnumDevType.nrNetLc))
+			{
+				return false;
+			}
 
 			return true;
 		}
