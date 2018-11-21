@@ -33,7 +33,7 @@ namespace CommonUtility
 		/// <returns></returns>
 		public static string ParseMibUnit(string strMibDesc)
 		{
-			Log.Debug(string.Format("strMibDesc = {0}", strMibDesc));
+			//Log.Debug(string.Format("strMibDesc = {0}", strMibDesc));
 
 			string strUnit = "";
 			if (string.IsNullOrEmpty(strMibDesc))

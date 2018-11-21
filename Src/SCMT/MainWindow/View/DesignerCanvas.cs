@@ -24,7 +24,7 @@ namespace SCMTMainWindow.View
         private Point? rubberbandSelectionStartPoint = null;
 
         //规划中的小区
-        public List<int> g_cellPlaning = new List<int>();
+        //public List<int> g_cellPlaning = new List<int>();
 
         //private Dictionary<string, int> dicRRU = new Dictionary<string, int>();
         public int nRRUNo = -1;
@@ -314,7 +314,28 @@ namespace SCMTMainWindow.View
         public void NewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             DesignerItem targetItem = sender as DesignerItem;
-            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, g_cellPlaning, targetItem.DevIndex);
+            //获取当前基站的IP地址
+            string strIP = CSEnbHelper.GetCurEnbAddr();
+
+            if (strIP == null || strIP == "")
+            {
+                MessageBox.Show("未选择基站  InitCellStatus");
+                return;
+            }
+
+            List<int> cellInPlaning = new List<int>();
+            for (int i = 0; i < 36; i++)
+            {
+                var cellStatus = NPCellOperator.GetLcStatus(i, strIP);
+                if (cellStatus == LcStatus.Planning)
+                {
+                    if (!cellInPlaning.Contains(i))
+                    {
+                        cellInPlaning.Add(i);
+                    }
+                }
+            }
+            RRUpoint2Cell dlg = new RRUpoint2Cell(targetItem.NPathNumber, cellInPlaning, targetItem.DevIndex);
             dlg.ShowDialog();
         }
 
