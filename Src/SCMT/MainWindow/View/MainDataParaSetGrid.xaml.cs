@@ -35,6 +35,10 @@ namespace SCMTMainWindow.View
         /// 保存索引节点信息
         /// </summary>
         private List<MibLeaf> listIndexInfo = new List<MibLeaf>();
+        /// <summary>
+        /// false为添加指令，true为修改指令
+        /// </summary>
+        private bool m_bisModify = false;
 
         public bool bOK = false;
         /// <summary>
@@ -263,6 +267,7 @@ namespace SCMTMainWindow.View
         public void InitAddParaSetGrid(CmdMibInfo mibInfo, MibTable table)
         {
             cmdMibInfo = mibInfo;
+            m_bisModify = false;
 
             listIndexInfo.Clear();
             foreach (MibLeaf leaf in table.childList)
@@ -406,12 +411,22 @@ namespace SCMTMainWindow.View
         /// 根据基本信息列表选择的行填充信息，对于填充第一条数据信息(后续添加)
         /// </summary>
         /// <param name="model"></param>
-        public bool InitModifyParaSetGrid(DyDataGrid_MIBModel mibModel)
+        public bool InitModifyParaSetGrid(CmdMibInfo mibInfo, DyDataGrid_MIBModel mibModel)
         {
-            if (mibModel == null)
+            if (mibModel == null || mibInfo == null)
                 return false;
+
+            cmdMibInfo = mibInfo;
+            m_bisModify = true;
+            this.Title = mibInfo.m_cmdDesc;
+            listIndexInfo.Clear();
+
             int i = 0;
             ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
+            Dictionary<string, string> temdic = new Dictionary<string, string>();//保存当前选中行的信息，key为nameMib，value为值
+         
+            if (cmdMibInfo == null)
+                return false;
 
             foreach (var iter in mibModel.Properties)
             {
@@ -419,74 +434,18 @@ namespace SCMTMainWindow.View
                 if (iter.Key.Equals("indexlist"))
                     continue;
 
-                if(iter.Value is DataGrid_Cell_MIB)
+                if (iter.Value is DataGrid_Cell_MIB)
                 {
                     var cellGrid = iter.Value as DataGrid_Cell_MIB;
-                    
+
                     MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(iter.Key, CSEnbHelper.GetCurEnbAddr());
 
                     if (mibLeaf == null)
                         continue;
 
-                    string devalue = cellGrid.m_Content;
-                    //对行状态默认值为无效行时，改变为有效
-                    if (mibLeaf.childNameCh.Contains("行状态"))
-                    {
-                        var mapKv = MibStringHelper.SplitManageValue(mibLeaf.managerValueRange);
-
-                        if (devalue.Equals("6"))
-                        {
-                            devalue = "4";
-                        }
-                    }
-
-                    model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = mibLeaf.childNameCh,
-                        oid = mibLeaf.childOid,
-                        MibName_CN = mibLeaf.childNameCh,
-                        MibName_EN = mibLeaf.childNameMib
-                    }, "参数名称");
-
-                    // 在这里要区分DataGrid要显示的数据类型;
-                    var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
-
-                    model.AddParaProperty("ParaValue", dgm, "参数值");
-
-                    model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = mibLeaf.managerValueRange,
-                        oid = mibLeaf.childOid,
-                        MibName_CN = mibLeaf.childNameCh,
-                        MibName_EN = mibLeaf.childNameMib
-                    }, "取值范围");
-
-                    model.AddParaProperty("ParaUnit", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = mibLeaf.unit,
-                        oid = mibLeaf.childOid,
-                        MibName_CN = mibLeaf.childNameCh,
-                        MibName_EN = mibLeaf.childNameMib
-                    }, "单位");
-
-
-
-                    // 将这个整行数据填入List;
-                    if (model.Properties.Count != 0)
-                    {
-                        // 向单元格内添加内容;
-                        datalist.Add(model);
-                        i++;
-                    }
-
-                    // 最终全部收集完成后，为控件赋值;
-                    if (i == datalist.Count)
-                    {
-                        this.ParaDataModel = model;
-                        this.DynamicParaSetGrid.DataContext = datalist;
-                    }
+                    temdic.Add(mibLeaf.childNameMib, cellGrid.m_Content);
                 }
-                else if(iter.Value is DataGrid_Cell_MIB_ENUM)
+                else if (iter.Value is DataGrid_Cell_MIB_ENUM)
                 {
                     var cellGrid = iter.Value as DataGrid_Cell_MIB_ENUM;
 
@@ -494,65 +453,72 @@ namespace SCMTMainWindow.View
                     if (mibLeaf == null)
                         continue;
 
-                    string devalue = cellGrid.m_CurrentValue.ToString();
-                    //对行状态默认值为无效行时，改变为有效
-                    if (mibLeaf.childNameCh.Contains("行状态"))
-                    {
-                        var mapKv = MibStringHelper.SplitManageValue(mibLeaf.managerValueRange);
+                    temdic.Add(mibLeaf.childNameMib, cellGrid.m_CurrentValue.ToString());
+                }
+            }
 
-                        if (devalue.Equals("6"))
+            if (cmdMibInfo.m_cmdDesc.Equals(this.Title))
+            {
+                if (cmdMibInfo.m_leaflist.Count > 0)
+                {
+                    //属性节点
+                    foreach (string oid in cmdMibInfo.m_leaflist)
+                    {
+                        MibLeaf mibLeaf = Database.GetInstance().GetMibDataByOid(oid, CSEnbHelper.GetCurEnbAddr());
+                        dynamic model = new DyDataGrid_MIBModel();
+                        string devalue = null;
+                        if (temdic.ContainsKey(mibLeaf.childNameMib))
+                            devalue = temdic[mibLeaf.childNameMib];
+                        else
+                            devalue = ConvertValidValue(mibLeaf);
+
+                        model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
                         {
-                            devalue = "4";
+                            m_Content = mibLeaf.childNameCh,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "参数名称");
+
+                        // 在这里要区分DataGrid要显示的数据类型;
+                        var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
+
+                        model.AddParaProperty("ParaValue", dgm, "参数值");
+
+                        model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
+                        {
+                            m_Content = mibLeaf.managerValueRange,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "取值范围");
+
+                        model.AddParaProperty("ParaUnit", new DataGrid_Cell_MIB()
+                        {
+                            m_Content = mibLeaf.unit,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "单位");
+
+                        // 将这个整行数据填入List;
+                        if (model.Properties.Count != 0)
+                        {
+                            // 向单元格内添加内容;
+                            datalist.Add(model);
+                            i++;
+                        }
+
+                        // 最终全部收集完成后，为控件赋值;
+                        if (i == datalist.Count)
+                        {
+                            this.ParaDataModel = model;
+                            this.DynamicParaSetGrid.DataContext = datalist;
                         }
                     }
-
-                    model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = mibLeaf.childNameCh,
-                        oid = mibLeaf.childOid,
-                        MibName_CN = mibLeaf.childNameCh,
-                        MibName_EN = mibLeaf.childNameMib
-                    }, "参数名称");
-
-                    // 在这里要区分DataGrid要显示的数据类型;
-                    var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
-
-                    model.AddParaProperty("ParaValue", dgm, "参数值");
-
-                    model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = mibLeaf.managerValueRange,
-                        oid = mibLeaf.childOid,
-                        MibName_CN = mibLeaf.childNameCh,
-                        MibName_EN = mibLeaf.childNameMib
-                    }, "取值范围");
-
-                    model.AddParaProperty("ParaUnit", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = mibLeaf.unit,
-                        oid = mibLeaf.childOid,
-                        MibName_CN = mibLeaf.childNameCh,
-                        MibName_EN = mibLeaf.childNameMib
-                    }, "单位");
-
-
-
-                    // 将这个整行数据填入List;
-                    if (model.Properties.Count != 0)
-                    {
-                        // 向单元格内添加内容;
-                        datalist.Add(model);
-                        i++;
-                    }
-
-                    // 最终全部收集完成后，为控件赋值;
-                    if (i == datalist.Count)
-                    {
-                        this.ParaDataModel = model;
-                        this.DynamicParaSetGrid.DataContext = datalist;
-                    }
-                }              
+                }
             }
+           
             return true;
         }
         /// <summary>

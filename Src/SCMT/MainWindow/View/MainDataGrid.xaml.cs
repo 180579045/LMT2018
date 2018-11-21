@@ -512,15 +512,22 @@ namespace SCMTMainWindow.View
                     }
                 }
             }
-            else if (menu.Header.ToString().Contains("修改") && !menu.Header.ToString().Contains("修改 " + (m_ColumnModel.TableProperty as MibTable).nameCh))
+            else if (menu.Header.ToString().Contains("修改"))
             {
-                MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-                paraGrid.InitModifyParaSetGrid(m_selectDataGrid);
-                paraGrid.ShowDialog();
-
-                if (!paraGrid.bOK)
+                foreach (CmdMibInfo info in listCmdMibInfo)
                 {
-                    return;
+                    if (info.m_cmdDesc.Equals(menu.Header))
+                    {
+                        MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                        paraGrid.InitModifyParaSetGrid(info,m_selectDataGrid);
+                        paraGrid.ShowDialog();
+
+                        if (!paraGrid.bOK)
+                        {
+                            return;
+                        }
+                        break;
+                    }
                 }
             }
             else if(menu.Header.ToString().Contains("删除"))
