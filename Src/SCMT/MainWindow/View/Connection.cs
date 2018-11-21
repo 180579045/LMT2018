@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetPlan;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
@@ -262,6 +263,18 @@ namespace SCMTMainWindow.View
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
             if (designer != null)
             {
+                LinkEndpoint srcPoint = new LinkEndpoint();
+                srcPoint.devType = this.source.DevType;
+                srcPoint.strDevIndex = this.source.DevIndex;
+                srcPoint.nPortNo = this.source.PortNo;
+                srcPoint.portType = this.source.PortType;
+
+                LinkEndpoint dstPoint = new LinkEndpoint();
+                dstPoint.devType = this.sink.DevType;
+                dstPoint.strDevIndex = this.sink.DevIndex;
+                dstPoint.nPortNo = this.sink.PortNo;
+                dstPoint.portType = this.sink.PortType;
+
                 if ((Keyboard.Modifiers & (ModifierKeys.Shift | ModifierKeys.Control)) != ModifierKeys.None)
                     if (this.IsSelected)
                     {
@@ -270,10 +283,25 @@ namespace SCMTMainWindow.View
                     else
                     {
                         designer.SelectionService.AddToSelection(this);
+                        //选中的时候切换属性的显示
+                        var devAttr = MibInfoMgr.GetInstance().GetLinkAttri(srcPoint, dstPoint);
+                        designer.CreateGirdForNetInfo("连接", devAttr);
+                        if (devAttr != null && devAttr.m_strOidIndex != null)
+                        {
+                            designer.CreateGirdForNetInfo("连接" + devAttr.m_strOidIndex, devAttr);
+                            designer.g_nowDevAttr = devAttr;
+                        }
                     }
                 else if (!this.IsSelected)
                 {
                     designer.SelectionService.SelectItem(this);
+                    //选中的时候切换属性的显示
+                    var devAttr = MibInfoMgr.GetInstance().GetLinkAttri(srcPoint, dstPoint);
+                    if(devAttr != null && devAttr.m_strOidIndex != null)
+                    {
+                        designer.CreateGirdForNetInfo("连接"+devAttr.m_strOidIndex, devAttr);
+                        designer.g_nowDevAttr = devAttr;
+                    }
                 }
 
                 //this.Focus();
