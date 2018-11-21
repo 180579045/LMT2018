@@ -1628,7 +1628,7 @@ namespace NetPlan
 					}
 					else
 					{
-						bCellFix = NPCellOperator.IsFixedLc(cellId1);
+						bCellFix = NPCellOperator.IsFixedLc(cellId);
 						mapLcStauts.Add(cellId, bCellFix);
 					}
 					rtc.CellIdList.Add(new CellAndState { cellId = cellId, bIsFixed = bCellFix });
