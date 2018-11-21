@@ -152,6 +152,7 @@ namespace NetPlan
 		/// <returns></returns>
 		private static void WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
 		{
+			Log.Debug($"开始遍历查询{entryList.Count()}个表信息");
 			{
 				// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 				foreach (var entry in entryList)
@@ -159,12 +160,14 @@ namespace NetPlan
 					// 判断是否要进行查询。InitQuery配置为false，表示初始化时不需要进行查询
 					if (null != entry.InitQuery && entry.InitQuery.Equals("false"))
 					{
+						Log.Debug($"表{entry.MibEntry}被设置为初始化时不需要查询");
 						continue;
 					}
 
 					var getCmdList = entry.Get;
 					if (getCmdList.Count == 0)
 					{
+						Log.Debug($"表{entry.MibEntry}的Get命令数量为0");
 						continue;
 					}
 
@@ -172,12 +175,15 @@ namespace NetPlan
 					var devType = DevTypeHelper.GetDevTypeFromEntryName(entry.MibEntry);
 					if (devType == EnumDevType.unknown)
 					{
+						Log.Error($"表{entry.MibEntry}对应的设备类型未定义");
 						continue;
 					}
 
 					// 同一个mib入口下可能有多个get命令，这些命令查询的结果要进行合并处理，因为同属于一张表，只不过每次查询了不同的部分
 					foreach (var cmd in getCmdList)
 					{
+						Log.Debug($"开始查询表{entry.MibEntry}的{cmd}命令");
+
 						var oneCmdMibInfo = new List<DevAttributeInfo>();
 						if (!ExecuteNetPlanCmd(cmd, ref oneCmdMibInfo, devType))
 						{
@@ -185,6 +191,7 @@ namespace NetPlan
 							continue;
 							//return false;
 						}
+
 						MergeSameEntryData(ref temp, oneCmdMibInfo);
 					}
 
