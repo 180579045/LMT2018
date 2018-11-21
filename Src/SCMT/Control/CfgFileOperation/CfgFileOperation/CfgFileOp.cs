@@ -76,34 +76,32 @@ namespace CfgFileOperation
             CreateCfgFile(paths);
 
             //2. lm.mdb 以每行为单位加载, reclist使用 
-            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
-            
+            //m_mibTreeMem = new CfgParseDBMibTreeToMemory();
+            //m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
+
             ////3. RRU信息
             //m_rruExcel = new CfgParseRruExcel();
             //m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
 
             //4. 天线信息
-            m_antennaExcel = new CfgParseAntennaExcel();
-            m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
-
-            
+            //m_antennaExcel = new CfgParseAntennaExcel();
+            //m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
 
             //5. reclist 
-            m_reclistExcel = new CfgParseReclistExcel();
-            m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
+            //m_reclistExcel = new CfgParseReclistExcel();
+            //m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
 
             //6. 自定义 (init, patch)
             m_selfExcel = new CfgParseSelfExcel();
             m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "init", this);
-            m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
+            //m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
 
             //7. 开始生成 init.cfg, patch_ex.cfg
             // 创建init.cfg
             SaveFile_eNB("init.cfg");
             //创建patch_ex.cfg
-            CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
-            SaveFilePdg_eNB("patch_ex.cfg");
+            //CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
+            //SaveFilePdg_eNB("patch_ex.cfg");
         }
         /// <summary>
         /// lm.mdb 更新加载数据，整理成表和表实例的结构
@@ -388,8 +386,12 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            if (strTableName == "antennaBfScanWeightEntry")
-                Console.WriteLine("1111");
+            //if (strTableName == "mdtConfigManagement")
+            //    Console.WriteLine("1111");
+            //else if (strTableName == "nrCellCfgEntry")
+            //    Console.WriteLine("1111");
+            //else if (strTableName == "mdtConfigManagement")
+            //    Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
             //if (df.Tables[0].Rows.Count > 0)
@@ -1248,6 +1250,11 @@ namespace CfgFileOperation
             for (int k = TableDimen; k < tableOp.m_LeafNodes.Count; k++)
             {
                 var mibNode = tableOp.m_LeafNodes[k].m_struMibNode;
+                string mibName = mibNode.strMibName;
+                if (String.Equals(mibName, "nrCellCfgPdcchDmrsPower"))
+                {
+                    Console.WriteLine("nrCellCfgPdcchDmrsPower");
+                }
                 string strIndexOMType2 = mibNode.strOMType;
                 ushort typeSize2 = tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen;//typeSize
                 string asnType2 = mibNode.strMibSyntax;//asnType
@@ -1426,7 +1433,8 @@ namespace CfgFileOperation
             string defaultVal = "";
             for (int i = StartNo; i < TableDimen; i++)
             {
-                defaultVal += indexValue[i].ToString();//=0//defaultVal.Format("%d", indexValue[i]);
+                //defaultVal += indexValue[i].ToString();//=0//defaultVal.Format("%d", indexValue[i]);
+                defaultVal = indexValue[i].ToString();
                 string strIndexOMType = tableOp.m_LeafNodes[i].m_struMibNode.strOMType;// pStruIndexInfo[i].strIndexOMType;
                 string strValList = "";
                 string strAsnType = "";
@@ -1445,6 +1453,7 @@ namespace CfgFileOperation
         /// <param name="strAsnType"></param>
         public void WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
         {
+            int posStartF = bytePosL[0];
             if (null == byteArray)
                 return;
             else if (String.Empty == value.Trim(' '))
@@ -1488,22 +1497,27 @@ namespace CfgFileOperation
             }
             else if (OMType == "u32[]")
             {
+                int posStart = bytePosL[0];
                 if (value.Contains("×") != false)
                 {
-                    value = "";
-                    bytePosL[0] += strLen;
+                    value = "0";
+                    //bytePosL[0] += strLen;
                 }
-                else
-                    getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
+                //else松懈
+                getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
+                if (bytePosL[0] - posStart < strLen)
+                    bytePosL[0] = posStart + strLen;
             }
             else if (OMType == "enum")   //enum,转换成u32
             {
                 if (("×" == value))
-                    value = "";
+                    value = "0";
                 SetValueToByteArray(byteArray, bytePosL, (uint)getEnumValue(value));
             }
             else if (OMType == "s32[]")   //Oid
             {
+                if (("×" == value))
+                    value = "0";
                 OM_OBJ_ID_T tmpOID = new OM_OBJ_ID_T(value);// OM_OBJ_ID_T(value);
                 SetValueToByteArray(byteArray, bytePosL, tmpOID.StruToByteArray());
             }
@@ -1512,10 +1526,11 @@ namespace CfgFileOperation
                 value = value.Replace("\"", "");//value = value.Trim("\"");
                 if (("×" == value))
                     value = "";
-                byte[] mybyte = Encoding.Unicode.GetBytes(value);
+                sbyte[] sbArray = (sbyte[])((Array)System.Text.Encoding.Default.GetBytes(value));
+                //byte[] mybyte = Encoding.Unicode.GetBytes(value);
                 byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
-                string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
-                SetValueToByteArray(byteArray, bytePosL, mybyte2);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
+                //string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
+                SetValueToByteArray(byteArray, bytePosL, sbArray);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
                 if (mybyte2.Length < strLen)
                     bytePosL[0] += strLen - mybyte2.Length;
 
@@ -1571,7 +1586,7 @@ namespace CfgFileOperation
                 {
                     value = value.Replace("\"", "");
                     if (("×" == value))
-                        value = "";
+                        value = "0";
                     if (String.Compare(strAsnType, "DateAndTime", true) == 0)
                         GetDateAndTimeTypeValue(byteArray, bytePosL, value);
                     else
@@ -1609,6 +1624,9 @@ namespace CfgFileOperation
                     omValue = (uint)int.Parse(value);
                 SetValueToByteArray(byteArray, bytePosL, omValue);
             }
+
+            if (bytePosL[0] - posStartF < strLen)
+                bytePosL[0] = posStartF + strLen;
         }
         /// <summary>
         /// 类型转换为byte[]
@@ -1675,7 +1693,7 @@ namespace CfgFileOperation
         {
             string strCurrentValue = strInput.Trim('{').Trim('}');
             int arrayNum = new StruCfgFileFieldInfo().GetDeckNum(strCurrentValue, ",");// GetDeckNum(strCurrentValue, ',');
-            SetValueToByteArray(byteArray, bytePosL, (ushort )arrayNum);//memcpy(pszOut, &arrayNum, sizeof(int));//nBytesNum += 4;
+            SetValueToByteArray(byteArray, bytePosL, (int)arrayNum);//memcpy(pszOut, &arrayNum, sizeof(int));//nBytesNum += 4;
             int iPos = 0;// strCurrentValue.IndexOf(',');
             if ((iPos = strCurrentValue.IndexOf(',')) > 0)
             {
@@ -1725,6 +1743,8 @@ namespace CfgFileOperation
                 }
                 strEach = GetNextDeck(strValList1, "/", out strValList1);//
             }
+
+            //
             string strInputValue1 = strInputValue;
             strEach = GetNextDeck(strInputValue1, "/", out strInputValue1);// '/');
             while (String.Empty != strEach)
@@ -1739,9 +1759,11 @@ namespace CfgFileOperation
                 {
                     strCurValueDesc = strEach;
                 }
+                // mapDesc2Value 主要给 rru excel 中的赋值方式使用
+                // mib 中的赋值，直接使用了bits变int得方式：例如(int)7=(2进制)0111，即第0,1,2位有效的意思。
                 if (!mapDesc2Value.ContainsKey(strCurValueDesc))// 不存在
                 {
-                    outValue = 0;//"参数取值列表中不存在%s"
+                    outValue = uint.Parse(strCurValueDesc);//"参数取值列表中不存在%s"
                     return false;
                 }
                 setOutValue.Add((uint)(mapDesc2Value[strCurValueDesc]));
