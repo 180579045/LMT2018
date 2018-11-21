@@ -507,6 +507,7 @@ namespace SCMTMainWindow.View
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
+
             if (null == dataGridMenu)
                 return;
 
@@ -514,6 +515,7 @@ namespace SCMTMainWindow.View
             if (null == menu)
                 return;
 
+			string strMsg = null;
             if (menu.Header.ToString().Contains("增加"))
             {
                 foreach (CmdMibInfo info in listCmdMibInfo)
@@ -554,9 +556,47 @@ namespace SCMTMainWindow.View
                         MibLeaf leaf = GetRowStatusInfo(info);
                         if (leaf == null)
                             return;
-                        //添加删除指令
+						//添加删除指令
+						// TODO 临时方案
+						string strOidPrefix = SnmpToDatabase.GetMibPrefix();
+						// 获取索引
+						string strIndex = null;
+						DataGridUtils.GetMibIndex(m_selectDataGrid.Properties, out strIndex);
+						
 
-                        break;
+						// 组装Vb列表
+						List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
+						// 组装Vb
+						CDTLmtbVb lmtVb = new CDTLmtbVb();
+						lmtVb.Oid = strOidPrefix + leaf.childOid + strIndex;
+						lmtVb.Value = "6";
+						lmtVb.SnmpSyntax = LmtbSnmpEx.GetSyntax(leaf.mibSyntax);
+						setVbs.Add(lmtVb);
+
+						// SNMP Set
+						long requestId;
+						CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+						// 发送SNMP Set命令
+						int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
+						if (res != 0)
+						{
+							strMsg = string.Format("参数删除失败，EnbIP:{0}", CSEnbHelper.GetCurEnbAddr());
+							Log.Error(strMsg);
+							MessageBox.Show(strMsg);
+							return;
+						}
+						// 判读SNMP响应结果
+						if (lmtPdu.m_LastErrorStatus != 0)
+						{
+							strMsg = string.Format("参数删除失败，错误信息:{0}", lmtPdu.m_LastErrorStatus);
+							Log.Error(strMsg);
+							MessageBox.Show(strMsg);
+							return;
+						}
+
+						MessageBox.Show("参数删除成功！");
+
+						break;
                     }
                 }
             }
