@@ -9,7 +9,6 @@ using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using NetPlan.DevLink;
-using NetPlan.NetDev;
 using SCMTOperationCore.Elements;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -154,7 +153,7 @@ namespace NetPlan
 		public DevAttributeInfo AddNewAnt(int nIndex, string strVerdorName, string strAntTypeName)
 		{
 			const EnumDevType type = EnumDevType.ant;
-			var ant = GeneralNewDev(type, nIndex);
+			var ant = GenerateNewDev(type, nIndex);
 			if (null == ant)
 			{
 				return null;
@@ -211,7 +210,7 @@ namespace NetPlan
 			}
 
 			const EnumDevType type = EnumDevType.board;
-			var dev = GeneralNewDev(type, slot);
+			var dev = GenerateNewDev(type, slot);
 			if (null == dev)
 			{
 				Log.Error($"生成新设备属性失败，可能已经存在相同索引相同类型的设备");
@@ -255,7 +254,7 @@ namespace NetPlan
 			var rruList = new List<DevAttributeInfo>();
 			foreach (var seqIndex in seqIndexList)
 			{
-				var newRru = GeneralNewDev(type, seqIndex);
+				var newRru = GenerateNewDev(type, seqIndex);
 				if (null == newRru)
 				{
 					Log.Error($"根据RRU编号{seqIndex}生成新设备失败");
@@ -356,7 +355,7 @@ namespace NetPlan
 		public DevAttributeInfo AddNewLocalCell(int nLocalCellId)
 		{
 			const EnumDevType type = EnumDevType.nrNetLc;
-			var dev = GeneralNewDev(type, nLocalCellId);
+			var dev = GenerateNewDev(type, nLocalCellId);
 			if (null == dev)
 			{
 				Log.Error($"生成本地小区{nLocalCellId}的属性失败");
@@ -703,33 +702,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 下发天线阵的权重、耦合系数和波束扫描信息
-		/// 天线阵的这3个信息都是新加的，实时生成的
-		/// </summary>
-		/// <returns></returns>
-		public bool DistributeAntWcbInfo()
-		{
-			lock (_syncObj)
-			{
-				m_mapAntWcb.Clear();
-				if (!GeneralAllAntWCBDev())
-				{
-					return false;
-				}
-
-				// todo 下发之前先调用删除命令删除对应的信息
-				if (!DistributeData(EnumDevType.antWeight, m_mapAntWcb) ||
-					!DistributeData(EnumDevType.antCoup, m_mapAntWcb) ||
-					!DistributeData(EnumDevType.antBfScan, m_mapAntWcb))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-
-		/// <summary>
 		/// 根据rru设备的索引获取该RRU每个通道上配置的本地小区配置信息
 		/// </summary>
 		/// <param name="strIndex"></param>
@@ -983,7 +955,6 @@ namespace NetPlan
 			lock (_syncObj)
 			{
 				m_mapAllMibData.Clear();
-				m_mapAntWcb.Clear();
 				m_linkMgr.Clear();
 			}
 		}
@@ -1018,69 +989,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 生成天线阵权重、耦合系数、波束扫描信息
-		/// </summary>
-		/// <returns></returns>
-		private bool GeneralAllAntWCBDev()
-		{
-			if (!m_mapAllMibData.ContainsKey(EnumDevType.ant))
-			{
-				return false;
-			}
-
-			var antList = m_mapAllMibData[EnumDevType.ant];     // 因为是先下发的天线阵信息，如果有删除的天线阵，或者修改的天线阵（编号相同，但其他信息都不同）信息，这里无法区分 todo
-			if (null == antList || 0 == antList.Count)
-			{
-				return false;
-			}
-
-			var mapKv = new Dictionary<string, string>
-			{
-				["netAntArrayTypeIndex"] = null,
-				["netAntArrayVendorIndex"] = null
-			};
-
-			foreach (var ant in antList)
-			{
-				if (!GetNeedUpdateValue(ant, mapKv))
-				{
-					Log.Error($"查询索引为{ant.m_strOidIndex}天线阵的厂家和类型索引失败，不下发该天线阵的权重信息");
-					continue;
-				}
-
-				var strAntNo = ant.m_strOidIndex.TrimStart('.');
-
-				var vi = mapKv["netAntArrayVendorIndex"];
-				var ti = mapKv["netAntArrayTypeIndex"];
-				var antWeight = NPEAntHelper.GetInstance().GetAntWeightByNo(vi, ti);
-				if (null != antWeight)
-				{
-					// 生成权重信息
-					GeneralAntWeigthDev(antWeight, strAntNo);
-				}
-				else
-				{
-					Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵权重信息失败");
-				}
-
-				// 生成耦合系数
-				var antCoupling = NPEAntHelper.GetInstance().GetCouplingByAntVendorAndType(vi, ti);
-				if (null != antCoupling)
-				{
-					GeneralAntCoupling(antCoupling, strAntNo);
-				}
-				else
-				{
-					Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵耦合系数信息失败");
-				}
-
-				// todo 波束宽度扫描信息后续添加
-			}
-
-			return true;
-		}
-
-		/// <summary>
 		/// 查询指定设备的多个字段值
 		/// </summary>
 		/// <param name="dev">设备属性</param>
@@ -1104,101 +1012,12 @@ namespace NetPlan
 			return true;
 		}
 
-		/// <summary>
-		/// 生成天线阵权重
-		/// </summary>
-		/// <param name="aw"></param>
-		/// <param name="strAntNo"></param>
-		/// <returns></returns>
-		private void GeneralAntWeigthDev(AntWeight aw, string strAntNo)
-		{
-			var witList = aw.antArrayMultWeight;
-
-			foreach (var item in witList)
-			{
-				var fb = item.antennaWeightMultFrequencyBand;
-				var gi = item.antennaWeightMultAntGrpIndex;
-				var si = item.antennaWeightMultAntStatusIndex;
-				var idx = $".{strAntNo}.{fb}.{gi}.{si}";
-				var dev = new DevAttributeInfo(EnumDevType.antWeight, idx);
-				if (dev.m_mapAttributes.Count == 0)
-				{
-					continue;
-				}
-
-				dev.SetFieldOriginValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntVerHalfPowerBeamWidth", item.antennaWeightMultAntVerHalfPowerBeamWidth.ToString());
-
-				dynamic amplitudeValue;
-				dynamic phaseValue;
-
-				for (var i = 0; i < 8; i++)
-				{
-					var amp = $"antennaWeightMultAntAmplitude{i}";
-					var pha = $"antennaWeightMultAntPhase{i}";
-					if (!UtilityHelper.GetFieldValueOfType<Weight>(item, amp, out amplitudeValue) ||
-						!UtilityHelper.GetFieldValueOfType<Weight>(item, pha, out phaseValue))
-					{
-						break;
-					}
-
-					dev.SetFieldOriginValue(amp, amplitudeValue.ToString());
-					dev.SetFieldOriginValue(pha, phaseValue.ToString());
-				}
-
-				AddDevToMap(m_mapAntWcb, EnumDevType.antWeight, dev);
-			}
-		}
-
-		/// <summary>
-		/// 生成天线阵的耦合系数
-		/// </summary>
-		/// <param name="coupCoe"></param>
-		/// <param name="strAnoNo"></param>
-		private void GeneralAntCoupling(AntCoupCoe coupCoe, string strAnoNo)
-		{
-			var coupList = coupCoe.antArrayCouplingCoeffctInfo;
-
-			foreach (var item in coupList)
-			{
-				var fb = item.antCouplCoeffFreq;
-				var gi = item.antCouplCoeffAntGrpIndex;
-				var idx = $".{strAnoNo}.{fb}.{gi}";
-
-				var dev = new DevAttributeInfo(EnumDevType.antCoup, idx);
-				if (dev.m_mapAttributes.Count == 0)
-				{
-					continue;
-				}
-
-				dynamic amplitudeValue;
-				dynamic phaseValue;
-
-				for (var i = 0; i < 8; i++)
-				{
-					var amp = $"antCouplCoeffAmplitude{i}";
-					var pha = $"antCouplCoeffPhase{i}";
-					if (!UtilityHelper.GetFieldValueOfType<Weight>(item, amp, out amplitudeValue) ||
-						!UtilityHelper.GetFieldValueOfType<Weight>(item, pha, out phaseValue))
-					{
-						break;
-					}
-
-					dev.SetFieldOriginValue(amp, amplitudeValue.ToString());
-					dev.SetFieldOriginValue(pha, phaseValue.ToString());
-				}
-
-				AddDevToMap(m_mapAntWcb, EnumDevType.antCoup, dev);
-			}
-		}
-
 		#endregion 公共接口
 
 		#region 私有接口
 
 		private MibInfoMgr()
 		{
-			m_mapAntWcb = new MAP_DEVTYPE_DEVATTRI();
 			m_mapAllMibData = new MAP_DEVTYPE_DEVATTRI();
 			m_linkMgr = new NetPlanLinkMgr();
 		}
@@ -1309,7 +1128,7 @@ namespace NetPlan
 		/// <param name="type"></param>
 		/// <param name="lastIndexValue"></param>
 		/// <returns></returns>
-		private DevAttributeInfo GeneralNewDev(EnumDevType type, int lastIndexValue)
+		private DevAttributeInfo GenerateNewDev(EnumDevType type, int lastIndexValue)
 		{
 			var dev = new DevAttributeInfo(type, lastIndexValue);
 			if (dev.m_mapAttributes.Count == 0)
@@ -1353,7 +1172,7 @@ namespace NetPlan
 		/// <param name="gmv"></param>
 		/// <param name="strRs">行状态的值：4，6</param>
 		/// <returns></returns>
-		public static Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
+		public static Dictionary<string, string> GenerateName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
 		{
 			if (null == devInfo || null == listColumns)
 			{
@@ -1515,7 +1334,7 @@ namespace NetPlan
 				var cmdName = kv.Key;
 				var mibLeafList = kv.Value;
 
-				var name2Value = GeneralName2ValueMap(devAttribute, mibLeafList, gmv, strRs);
+				var name2Value = GenerateName2ValueMap(devAttribute, mibLeafList, gmv, strRs);
 				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, devAttribute.m_strOidIndex, targetIp);
 				if (0 != ret)
 				{
@@ -1850,8 +1669,6 @@ namespace NetPlan
 		// 保存所有的网规MIB数据。开始保存的是从设备中查询回来的信息，如果对这些信息进行了修改、删除，就从这个数据结构中移动到对应的结构中
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
 		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
-
-		private MAP_DEVTYPE_DEVATTRI m_mapAntWcb;           // 天线阵的weight, couple, bfscan信息
 
 		private readonly NetPlanLinkMgr m_linkMgr;
 

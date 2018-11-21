@@ -114,9 +114,13 @@ namespace NetPlan.DevLink
 					mapMibInfo[EnumDevType.rru].Remove(pico);
 				}
 
+				var linkrp = new LinkRhubPico();
 				foreach (var pico in newPicoList)
 				{
 					mapMibInfo[EnumDevType.rru].Add(pico);
+
+					// 板卡和rhub连接成功后，才能增加netEthPlanEntry表记录，因为需要bbu的架框槽信息
+					linkrp.AddEthPlanRecord(rhubClone, pico, mapMibInfo);
 				}
 			}
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 /// <summary>
 /// 网规设备相关
 /// </summary>
-namespace NetPlan.NetDev
+namespace NetPlan
 {
 	internal class NetDevBase
 	{

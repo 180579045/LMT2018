@@ -158,7 +158,8 @@ ParseBoardToRhub:
 			// 解析pico和ant之间的连接
 			if (!ParsePicoToAntLink(rruList, antList, rruAntCfgList))
 			{
-				
+				Log.Error("解析pico到天线阵之间的连接失败");
+				return false;
 			}
 
 			return true;

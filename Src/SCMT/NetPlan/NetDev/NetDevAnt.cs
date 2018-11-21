@@ -10,7 +10,7 @@ using LogManager;
 /// <summary>
 /// 天线阵设备
 /// </summary>
-namespace NetPlan.NetDev
+namespace NetPlan
 {
 	internal class NetDevAnt : NetDevBase
 	{

@@ -342,5 +342,10 @@ namespace NetPlan.DevLink
 			strSlotNo = slot;
 			strRackNo = rack;
 		}
+
+		public string GetBoardIndex()
+		{
+			return $".{strRackNo}.{strShelfNo}.{strSlotNo}";
+		}
 	}
 }
