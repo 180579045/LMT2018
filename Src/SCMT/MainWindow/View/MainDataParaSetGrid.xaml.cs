@@ -495,8 +495,8 @@ namespace SCMTMainWindow.View
 
             int i = 0;
             ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
-            Dictionary<string, string> temdic = new Dictionary<string, string>();//保存当前选中行的信息，key为nameMib，value为值
-         
+            Dictionary<string, string> temdicValue = new Dictionary<string, string>();//保存当前选中行的信息，key为nameMib，value为值
+            Dictionary<string, string> temdicOid = new Dictionary<string, string>();//保存当前选中行的信息，key为nameMib，value为Oid
             if (cmdMibInfo == null)
                 return false;
 
@@ -506,26 +506,24 @@ namespace SCMTMainWindow.View
                 if (iter.Key.Equals("indexlist"))
                     continue;
 
+                MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(iter.Key, CSEnbHelper.GetCurEnbAddr());
+
+                if (mibLeaf == null)
+                    continue;
+
                 if (iter.Value is DataGrid_Cell_MIB)
                 {
                     var cellGrid = iter.Value as DataGrid_Cell_MIB;
 
-                    MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(iter.Key, CSEnbHelper.GetCurEnbAddr());
-
-                    if (mibLeaf == null)
-                        continue;
-
-                    temdic.Add(mibLeaf.childNameMib, cellGrid.m_Content);
+                    temdicValue.Add(mibLeaf.childNameMib, cellGrid.m_Content);
+                    temdicOid.Add(mibLeaf.childNameMib, cellGrid.oid);
                 }
                 else if (iter.Value is DataGrid_Cell_MIB_ENUM)
                 {
                     var cellGrid = iter.Value as DataGrid_Cell_MIB_ENUM;
 
-                    MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(iter.Key, CSEnbHelper.GetCurEnbAddr());
-                    if (mibLeaf == null)
-                        continue;
-
-                    temdic.Add(mibLeaf.childNameMib, cellGrid.m_CurrentValue.ToString());
+                    temdicValue.Add(mibLeaf.childNameMib, cellGrid.m_CurrentValue.ToString());
+                    temdicOid.Add(mibLeaf.childNameMib, cellGrid.oid);
                 }
             }
 
@@ -539,28 +537,34 @@ namespace SCMTMainWindow.View
                         MibLeaf mibLeaf = Database.GetInstance().GetMibDataByOid(oid, CSEnbHelper.GetCurEnbAddr());
                         dynamic model = new DyDataGrid_MIBModel();
                         string devalue = null;
-                        if (temdic.ContainsKey(mibLeaf.childNameMib))
-                            devalue = temdic[mibLeaf.childNameMib];
+                        string stroid = null;
+                        if (temdicValue.ContainsKey(mibLeaf.childNameMib))
+                            devalue = temdicValue[mibLeaf.childNameMib];
                         else
                             devalue = ConvertValidValue(mibLeaf);
+
+                        if (temdicOid.ContainsKey(mibLeaf.childNameMib))
+                            stroid = temdicOid[mibLeaf.childNameMib];
+                        else
+                            stroid = mibLeaf.childOid;
 
                         model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
                         {
                             m_Content = mibLeaf.childNameCh,
-                            oid = mibLeaf.childOid,
+                            oid = stroid,
                             MibName_CN = mibLeaf.childNameCh,
                             MibName_EN = mibLeaf.childNameMib
                         }, "参数名称");
 
                         // 在这里要区分DataGrid要显示的数据类型;
-                        var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, mibLeaf.childOid, CSEnbHelper.GetCurEnbAddr());
+                        var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, devalue, stroid, CSEnbHelper.GetCurEnbAddr());
 
                         model.AddParaProperty("ParaValue", dgm, "参数值");
 
                         model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
                         {
                             m_Content = mibLeaf.managerValueRange,
-                            oid = mibLeaf.childOid,
+                            oid = stroid,
                             MibName_CN = mibLeaf.childNameCh,
                             MibName_EN = mibLeaf.childNameMib
                         }, "取值范围");
@@ -568,7 +572,7 @@ namespace SCMTMainWindow.View
                         model.AddParaProperty("ParaUnit", new DataGrid_Cell_MIB()
                         {
                             m_Content = mibLeaf.unit,
-                            oid = mibLeaf.childOid,
+                            oid = stroid,
                             MibName_CN = mibLeaf.childNameCh,
                             MibName_EN = mibLeaf.childNameMib
                         }, "单位");
