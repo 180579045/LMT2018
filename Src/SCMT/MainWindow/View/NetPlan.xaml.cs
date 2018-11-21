@@ -65,6 +65,8 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
+            this.leftList.SelectedContentIndex = 1;
+
             //画小区
             DrawNrRect();
 
@@ -1598,6 +1600,8 @@ namespace SCMTMainWindow.View
                                         Canvas.SetZIndex(newConnection, MyDesigner.Children.Count);
                                         MyDesigner.Children.Add(newConnection);
                                         ResetItemPosition(strDevName, linkBoardToDev.m_srcEndPoint.strDevIndex);
+                                        newConnection.Source.PortType = linkBoardToDev.m_srcEndPoint.portType;
+                                        newConnection.Sink.PortType = linkBoardToDev.m_dstEndPoint.portType;
                                     }
                                     else
                                     {

@@ -90,7 +90,7 @@
             <avalondock:LayoutRoot>
                 <avalondock:LayoutPanel>
                     <avalondock:LayoutPanel>
-                        <avalondock:LayoutAnchorablePane>
+                        <avalondock:LayoutAnchorablePane x:Name="leftList">
                             <avalondock:LayoutAnchorable x:Name="LeftView" Title="模板列表">
                                 <Grid>
                                     <ListView Name="TemplateFileList" SelectionMode="Single" ItemContainerStyle="{StaticResource TemplateListViewItemStyle}" 
