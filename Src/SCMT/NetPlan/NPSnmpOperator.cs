@@ -220,8 +220,9 @@ namespace NetPlan
 		/// 布配网规数据到设备中
 		/// todo 开启一个线程，否则可能会卡死
 		/// </summary>
+		/// <param name="bDlAntWcb">是否下发天线阵的权重、耦合系数和波束扫描信息</param>
 		/// <returns></returns>
-		public static bool DistributeNetPlanData()
+		public static bool DistributeNetPlanData(bool bDlAntWcb)
 		{
 			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
 			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
@@ -243,7 +244,7 @@ namespace NetPlan
 				return false;
 			}
 
-			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.ant);
+			result = MibInfoMgr.GetInstance().DistributeNetPlanAntToEnb(bDlAntWcb);
 			if (!result)
 			{
 				return false;
@@ -256,13 +257,6 @@ namespace NetPlan
 			}
 
 			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.rhub_prru);    // 以太口规划信息
-			if (!result)
-			{
-				return false;
-			}
-
-			// 天线权值
-			result = MibInfoMgr.GetInstance().DistributeAntWcbInfo();
 			if (!result)
 			{
 				return false;

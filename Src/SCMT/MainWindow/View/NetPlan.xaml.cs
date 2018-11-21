@@ -453,7 +453,7 @@ namespace SCMTMainWindow.View
 
             if (!this.MyDesigner.g_cellPlaning.Contains(nCellNumber))
             {
-                if (NPCellOperator.SetNetPlanSwitch(true, nCellNumber, CSEnbHelper.GetCurEnbAddr()))
+                if (NPCellOperator.AddNewNrLc(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
                 {
                     this.MyDesigner.g_cellPlaning.Add(nCellNumber);
                 }
@@ -982,14 +982,14 @@ namespace SCMTMainWindow.View
                         break;
                     case LcStatus.Planning:
                         rect.Fill = new SolidColorBrush(Colors.LightGreen);
-                        if (!this.MyDesigner.g_cellPlaning.Contains(i))
-                        {
-                            if (NPCellOperator.SetNetPlanSwitch(true, i, CSEnbHelper.GetCurEnbAddr()))
-                            {
-                                this.MyDesigner.g_cellPlaning.Add(i);
-                            }
-                        }
-                        break;
+      //                  if (!this.MyDesigner.g_cellPlaning.Contains(i))
+						//{
+						//	if (NPCellOperator.SetNetPlanSwitch(true, i, CSEnbHelper.GetCurEnbAddr()))
+						//	{
+						//		this.MyDesigner.g_cellPlaning.Add(i);
+						//	}
+						//}
+						break;
                     case LcStatus.LcUnBuilded:
                         rect.Fill = new SolidColorBrush(Colors.Yellow);
                         break;
@@ -2091,10 +2091,19 @@ namespace SCMTMainWindow.View
         {
             //handle click event
 
-            if(!NPSnmpOperator.DistributeNetPlanData())
-            {
-                MessageBox.Show("Faild");
-            }
+	        var choice = MessageBox.Show("是否同步下发天线阵权重信息？\r\n注意：同步下发天线阵权重信息耗时较长。", "网络规划", MessageBoxButton.YesNoCancel,
+		        MessageBoxImage.Warning);
+	        if (choice == MessageBoxResult.Cancel)
+	        {
+		        return;
+	        }
+
+	        var bDlWcb = (choice == MessageBoxResult.Yes);
+	        if (!NPSnmpOperator.DistributeNetPlanData(bDlWcb))
+	        {
+		        MessageBox.Show("下发网络规划信息失败", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
+	        }
+
         }
         /// <summary>
         /// 
@@ -2217,6 +2226,11 @@ namespace SCMTMainWindow.View
         {
             MyDesigner.g_AllDevInfo.Clear();
             MyDesigner.Children.Clear();
+        }
+
+        public void NetPlanClean()
+        {
+            MibInfoMgr.GetInstance().Clear();
         }
 
         #region 网规模板列表相关操作

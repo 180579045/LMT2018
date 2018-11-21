@@ -27,6 +27,18 @@
     {
       "number": 6,
       "elementName": "一体化基站"
+    },
+    {
+      "number": 100,
+      "elementName": "板卡与RRU连接"
+    },
+    {
+      "number": 101,
+      "elementName": "板卡与rHUB连接"
+    },
+    {
+      "number": 102,
+      "elementName": "以太口连接"
     }
   ],
   "shelfEquipment": [
@@ -278,8 +290,8 @@
       "supportEquipType": 5,
       "supportConnectElement": [
         {
-          "value": 2,
-		  "desc" : ""
+          "value": "2",
+          "desc": ""
         }
       ],
       "irOfpNum": 3,
@@ -332,12 +344,12 @@
       "supportEquipType": 5,
       "supportConnectElement": [
         {
-          "value": 2,
-		  "desc" : ""
+          "value": "2",
+          "desc": ""
         },
         {
-          "value": 4,
-		  "desc" : ""
+          "value": "4",
+          "desc": ""
         }
       ],
       "irOfpNum": 6,
@@ -471,12 +483,12 @@
       "supportEquipType": 5,
       "supportConnectElement": [
         {
-          "value": 2,
-		  "desc" : ""
+          "value": "2",
+          "desc": ""
         },
         {
-          "value": 4,
-		  "desc" : ""
+          "value": "4",
+          "desc": ""
         }
       ],
       "irOfpNum": 6,
@@ -592,8 +604,8 @@
       "supportEquipType": 5,
       "supportConnectElement": [
         {
-          "value": 2,
-		  "desc" : ""
+          "value": "2",
+          "desc": ""
         }
       ],
       "irOfpNum": 6,
@@ -661,12 +673,12 @@
       "supportEquipType": 10,
       "supportConnectElement": [
         {
-          "value": 2,
-		  "desc" : ""
+          "value": "2",
+          "desc": ""
         },
         {
-          "value": 4,
-		  "desc" : ""
+          "value": "4",
+          "desc": ""
         }
       ],
       "irOfpNum": 8,
@@ -807,6 +819,37 @@
         {
           "value": "2",
           "desc": "mbps5000|5G"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "rHubType": "pRHB3112V3",
+      "friendlyUIName": "rHUB3.0",
+      "irOfpNum": 4,
+      "irOfpPortTransSpeed": [
+        {
+          "value": "4",
+          "desc": "mbps25000|25G"
+        }
+      ],
+      "ethPortRNum": 8,
+      "ethPortTransSpeed": [
+        {
+          "value": "0",
+          "desc": "mbps1250|1.25G"
+        },
+        {
+          "value": "1",
+          "desc": "mbps2500|2.5G"
+        },
+        {
+          "value": "2",
+          "desc": "mbps5000|5G"
+        },
+        {
+          "value": "3",
+          "desc": "mbps10000|10G"
         }
       ]
     }

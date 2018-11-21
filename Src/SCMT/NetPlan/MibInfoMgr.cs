@@ -9,6 +9,7 @@ using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using NetPlan.DevLink;
+using NetPlan.NetDev;
 using SCMTOperationCore.Elements;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -17,7 +18,7 @@ namespace NetPlan
 	// MIB信息管理类，单例
 	public class MibInfoMgr : Singleton<MibInfoMgr>
 	{
-		private delegate string GetMibValue(string strOriginValue, string strLatestValue);
+		public delegate string GetMibValue(string strOriginValue, string strLatestValue);
 
 		#region 公共接口
 
@@ -598,7 +599,7 @@ namespace NetPlan
 		/// 下发网规信息
 		/// </summary>
 		/// <returns></returns>
-		private bool DistributeData(EnumDevType devType, MAP_DEVTYPE_DEVATTRI mapDataSource)
+		private bool DistributeData(EnumDevType devType, MAP_DEVTYPE_DEVATTRI mapDataSource, bool bDlAntWcb = false)
 		{
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
@@ -606,64 +607,81 @@ namespace NetPlan
 				throw new CustomException("下发网规参数失败，尚未选中基站");
 			}
 
+			if (!mapDataSource.ContainsKey(devType) || mapDataSource[devType].Count <= 0) return true;
+
+			var mibList = mapDataSource[devType];
+			var waitRmList = new List<DevAttributeInfo>();
+
+			foreach (var item in mibList)
 			{
-				if (!mapDataSource.ContainsKey(devType) || mapDataSource[devType].Count <= 0) return true;
-
-				var mibList = mapDataSource[devType];
-				var waitRmList = new List<DevAttributeInfo>();
-
-				foreach (var item in mibList)
+				if (devType == EnumDevType.ant)
 				{
-					if (RecordDataType.Original == item.m_recordType)
+					var drDev = new NetDevAnt();
+					if (!drDev.DistributeDevToEnb(item, bDlAntWcb))
 					{
-						continue;
-					}
-
-					var cmdType = EnumSnmpCmdType.Invalid;
-					if (RecordDataType.NewAdd == item.m_recordType)
-					{
-						cmdType = EnumSnmpCmdType.Add;
-					}
-					else if (RecordDataType.Modified == item.m_recordType)
-					{
-						cmdType = EnumSnmpCmdType.Set;
-					}
-					else if (RecordDataType.WaitDel == item.m_recordType)
-					{
-						cmdType = EnumSnmpCmdType.Del;
-					}
-
-					if (!DistributeSnmpData(item, cmdType, targetIp))
-					{
-						var log = $"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败";
-						Log.Error(log);
-						NPLastErrorHelper.SetLastError(log);
+						Log.Error($"下发索引为{item.m_strOidIndex}的RRU天线权重信息失败");
 						return false;
 					}
+				}
 
-					if (EnumSnmpCmdType.Del == cmdType)
-					{
-						waitRmList.Add(item);       // 如果是要删除的设备，参数下发后，直接删除内存中的数据
-					}
-					else
-					{
-						item.m_recordType = RecordDataType.Original;    // 下发成功的都设置为原始数据
-					}
+				if (RecordDataType.Original == item.m_recordType)
+				{
+					continue;
+				}
 
-					Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
+				var cmdType = EnumSnmpCmdType.Invalid;
+				if (RecordDataType.NewAdd == item.m_recordType)
+				{
+					cmdType = EnumSnmpCmdType.Add;
+				}
+				else if (RecordDataType.Modified == item.m_recordType)
+				{
+					cmdType = EnumSnmpCmdType.Set;
+				}
+				else if (RecordDataType.WaitDel == item.m_recordType)
+				{
+					cmdType = EnumSnmpCmdType.Del;
+				}
+
+				// todo 本地小区参数下发前，需要先检查布配开关的状态
+
+				if (!DistributeSnmpData(item, cmdType, targetIp))
+				{
+					var log = $"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败";
+					Log.Error(log);
+					NPLastErrorHelper.SetLastError(log);
 
 					if (EnumDevType.nrNetLc == devType && !NPCellOperator.SetNetPlanSwitch(false, item.m_strOidIndex, targetIp))
 					{
 						Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
 						NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
-						return false; // TODO 此处返回，已经下发的删除的本地小区网规信息存在不一致的问题
 					}
+
+					return false;
 				}
 
-				foreach (var wrmDev in waitRmList)
+				if (EnumSnmpCmdType.Del == cmdType)
 				{
-					mibList.Remove(wrmDev);
+					waitRmList.Add(item);       // 如果是要删除的设备，参数下发后，直接删除内存中的数据
 				}
+				else
+				{
+					item.m_recordType = RecordDataType.Original;    // 下发成功的都设置为原始数据
+				}
+
+				Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
+
+				if (EnumDevType.nrNetLc == devType && !NPCellOperator.SetNetPlanSwitch(false, item.m_strOidIndex, targetIp))
+				{
+					Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
+					NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
+					return false; // TODO 此处返回，已经下发的删除的本地小区网规信息存在不一致的问题
+				}
+			}
+
+			foreach (var wrmDev in waitRmList)
+			{
+				mibList.Remove(wrmDev);
 			}
 
 			return true;
@@ -677,6 +695,11 @@ namespace NetPlan
 		public bool DistributeNetPlanInfoToEnb(EnumDevType devType)
 		{
 			return DistributeData(devType, m_mapAllMibData);
+		}
+
+		public bool DistributeNetPlanAntToEnb(bool bDlAntWcb)
+		{
+			return DistributeData(EnumDevType.ant, m_mapAllMibData, bDlAntWcb);
 		}
 
 		/// <summary>
@@ -694,6 +717,7 @@ namespace NetPlan
 					return false;
 				}
 
+				// todo 下发之前先调用删除命令删除对应的信息
 				if (!DistributeData(EnumDevType.antWeight, m_mapAntWcb) ||
 					!DistributeData(EnumDevType.antCoup, m_mapAntWcb) ||
 					!DistributeData(EnumDevType.antBfScan, m_mapAntWcb))
@@ -725,6 +749,9 @@ namespace NetPlan
 				return retMap;
 			}
 
+			// 保存此次遍历中小区的状态，防止多次重复查找
+			var mapLcStatus = new Dictionary<string, bool>();
+
 			// 遍历rru通道信息
 			foreach (var pathInfo in rruPathInfoList)
 			{
@@ -739,7 +766,7 @@ namespace NetPlan
 					AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, rai);
 				}
 
-				GetRruPortToCellInfo(rai, pathInfo, ref retMap);
+				GetRruPortToCellInfo(rai, pathInfo, ref retMap, ref mapLcStatus);
 			}
 
 			return retMap;
@@ -1001,7 +1028,7 @@ namespace NetPlan
 				return false;
 			}
 
-			var antList = m_mapAllMibData[EnumDevType.ant];
+			var antList = m_mapAllMibData[EnumDevType.ant];     // 因为是先下发的天线阵信息，如果有删除的天线阵，或者修改的天线阵（编号相同，但其他信息都不同）信息，这里无法区分 todo
 			if (null == antList || 0 == antList.Count)
 			{
 				return false;
@@ -1060,7 +1087,7 @@ namespace NetPlan
 		/// <param name="mapFieldAndValue">多个字段。key:字段名，value:字段值</param>
 		/// <param name="bConvertToDigital">枚举值是否转换为数字</param>
 		/// <returns>全部查询成功，返回true；其他情况返回false</returns>
-		private static bool GetNeedUpdateValue(DevAttributeInfo dev, IDictionary<string, string> mapFieldAndValue, bool bConvertToDigital = true)
+		public static bool GetNeedUpdateValue(DevAttributeInfo dev, IDictionary<string, string> mapFieldAndValue, bool bConvertToDigital = true)
 		{
 			for (var i = 0; i < mapFieldAndValue.Count; i++)
 			{
@@ -1326,7 +1353,7 @@ namespace NetPlan
 		/// <param name="gmv"></param>
 		/// <param name="strRs">行状态的值：4，6</param>
 		/// <returns></returns>
-		private static Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
+		public static Dictionary<string, string> GeneralName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
 		{
 			if (null == devInfo || null == listColumns)
 			{
@@ -1374,7 +1401,7 @@ namespace NetPlan
 		/// <param name="strOriginValue"></param>
 		/// <param name="strLatestValue"></param>
 		/// <returns></returns>
-		private string GetLatestValue(string strOriginValue, string strLatestValue)
+		private static string GetLatestValue(string strOriginValue, string strLatestValue)
 		{
 			if (string.IsNullOrEmpty(strOriginValue))
 			{
@@ -1438,7 +1465,7 @@ namespace NetPlan
 		/// <param name="cmdType"></param>
 		/// <param name="targetIp"></param>
 		/// <returns></returns>
-		private bool DistributeSnmpData(DevAttributeInfo devAttribute, EnumSnmpCmdType cmdType, string targetIp)
+		public static bool DistributeSnmpData(DevAttributeInfo devAttribute, EnumSnmpCmdType cmdType, string targetIp)
 		{
 			if (string.IsNullOrEmpty(targetIp))
 			{
@@ -1547,7 +1574,9 @@ namespace NetPlan
 		/// <param name="rpi"></param>
 		/// <param name="mapResult"></param>
 		/// <param name="bCellFix"></param>
-		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, ref Dictionary<string, NPRruToCellInfo> mapResult)
+		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, 
+			ref Dictionary<string, NPRruToCellInfo> mapResult,
+			ref Dictionary<string, bool> mapLcStauts)
 		{
 			var rtc = new NPRruToCellInfo();
 			var supportTx = rpi.rruTypePortNotMibRxTxStatus;
@@ -1568,7 +1597,6 @@ namespace NetPlan
 				if (rtc.SupportTxRxStatus.Count > 0)
 				{
 					rtc.RealTRx = rtc.SupportTxRxStatus.Last();
-
 				}
 			}
 			else
@@ -1579,9 +1607,16 @@ namespace NetPlan
 			var cellId1 = GetEnumStringByMibName(mapAttri, "netSetRRUPortSubtoLocalCellId");
 			if (null != cellId1 && -1 != int.Parse(cellId1))
 			{
-				//var attObj = mapAttri["netSetRRUPortSubtoLocalCellId"];
-				//bCellFix = (attObj.m_attRecordType != RecordDataType.NewAdd);
-				var bCellFix = NPCellOperator.IsFixedLc(cellId1);
+				bool bCellFix;
+				if (mapLcStauts.ContainsKey(cellId1))
+				{
+					bCellFix = mapLcStauts[cellId1];
+				}
+				else
+				{
+					bCellFix = NPCellOperator.IsFixedLc(cellId1);
+					mapLcStauts.Add(cellId1, bCellFix);
+				}
 				rtc.CellIdList.Add(new CellAndState { cellId = cellId1, bIsFixed = bCellFix });
 			}
 
@@ -1593,8 +1628,16 @@ namespace NetPlan
 				var cellId = GetEnumStringByMibName(mapAttri, mibName);
 				if (null != cellId && "-1" != cellId)
 				{
-					var bCellFix = NPCellOperator.IsFixedLc(cellId);
-
+					bool bCellFix;
+					if (mapLcStauts.ContainsKey(cellId))
+					{
+						bCellFix = mapLcStauts[cellId];
+					}
+					else
+					{
+						bCellFix = NPCellOperator.IsFixedLc(cellId);
+						mapLcStauts.Add(cellId, bCellFix);
+					}
 					rtc.CellIdList.Add(new CellAndState { cellId = cellId, bIsFixed = bCellFix });
 				}
 			}
