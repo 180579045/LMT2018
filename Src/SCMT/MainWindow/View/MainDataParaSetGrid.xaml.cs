@@ -225,12 +225,16 @@ namespace SCMTMainWindow.View
             ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
             datalist = (ObservableCollection < DyDataGrid_MIBModel >)this.DynamicParaSetGrid.DataContext;
 
+			if (m_bisModify)
+			{
+
+			}
             //将右键菜单列表内容转换成与基本信息列表格式相同结构
             dynamic model = new DyDataGrid_MIBModel();
             string value;
             string strPreOid = SnmpToDatabase.GetMibPrefix();
 			// 索引
-			string strIndex = ".0";
+			string strIndex = "";
 			foreach (DyDataGrid_MIBModel mm in datalist)
             {
                 var cell = mm.Properties["ParaValue"] as GridCell;
@@ -255,7 +259,7 @@ namespace SCMTMainWindow.View
 					return;
 				}
 				// 获取索引节点
-				if ("True".Equals(mibLeaf.IsIndex))
+				if ("True".Equals(mibLeaf.IsIndex) && !m_bisModify)// 只有添加时才获取索引
 				{
 					strIndex = "." + value;
 					continue;
