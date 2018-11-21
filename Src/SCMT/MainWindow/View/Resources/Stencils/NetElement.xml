@@ -31,6 +31,18 @@
       <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
       <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
     </GeometryGroup>
+    <!--六通道RRU-->
+    <GeometryGroup x:Key="SixPathRRU">
+      <RectangleGeometry Rect="10,20, 70, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="20,20" EndPoint="20,0"></LineGeometry>
+      <LineGeometry StartPoint="30,20" EndPoint="30,0"></LineGeometry>
+      <LineGeometry StartPoint="40,20" EndPoint="40,0"></LineGeometry>
+      <LineGeometry StartPoint="50,20" EndPoint="50,0"></LineGeometry>
+      <LineGeometry StartPoint="60,20" EndPoint="60,0"></LineGeometry>
+      <LineGeometry StartPoint="70,20" EndPoint="70,0"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="90,40" EndPoint="80, 40"></LineGeometry>
+    </GeometryGroup>
     <!--八通道RRU-->
     <GeometryGroup x:Key="EightPathRRU">
       <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
@@ -250,6 +262,39 @@
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.437,0" ID="rru_to_ant-2" DevType="rru" PortNo="2" PortType="rru_to_ant"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.562,0" ID="rru_to_ant-3" DevType="rru" PortNo="3" PortType="rru_to_ant"/>
           <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.687,0" ID="rru_to_ant-4" DevType="rru" PortNo="4" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <!--六通道-->
+  <Grid x:Name="g_SixPathRRU">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Path Fill="Red" Stroke="Black"
+              Data="{StaticResource SixPathRRU}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="42,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="65,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="88,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="111,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="134,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="157,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock Grid.Row="1" FontSize="10" Text="RRU" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.222,0" ID="rru_to_ant-1" DevType="rru" PortNo="1" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.333,0" ID="rru_to_ant-2" DevType="rru" PortNo="2" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.444,0" ID="rru_to_ant-3" DevType="rru" PortNo="3" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.555,0" ID="rru_to_ant-4" DevType="rru" PortNo="4" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.666,0" ID="rru_to_ant-5" DevType="rru" PortNo="5" PortType="rru_to_ant"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.777,0" ID="rru_to_ant-6" DevType="rru" PortNo="6" PortType="rru_to_ant"/>
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.476" ID="rru_to_other-1" DevType="rru" PortNo="1" PortType="rru_to_other"/>
           <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.476" ID="rru_to_other-2" DevType="rru" PortNo="2" PortType="rru_to_other"/>
         </c:RelativePositionPanel>
