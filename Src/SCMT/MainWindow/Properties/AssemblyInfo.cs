@@ -7,11 +7,11 @@ using System.Windows;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("LMTMainWindow")]
+[assembly: AssemblyTitle("SCMT")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("大唐移动通信设备有限公司")]
-[assembly: AssemblyProduct("LMTMainWindow")]
+[assembly: AssemblyProduct("SCMT")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
