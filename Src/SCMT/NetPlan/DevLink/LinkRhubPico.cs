@@ -243,7 +243,7 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(m_rhubDev);
+			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(rhubDev);
 			if ("-1" == boardSlot)
 			{
 				Log.Error($"从索引为{rhubDev.m_strOidIndex}的rhub设备中查询连接bbu端口号返回-1");
@@ -251,11 +251,12 @@ namespace NetPlan.DevLink
 			}
 
 			var bbuIdx = $".0.0.{boardSlot}";
+			mapOriginData = mapAllData;
 
 			foreach (var item in mapPicoToRhub)
 			{
-				var ridx = $"{bbuIdx}.{item.Value.strDevIndex.Trim('.')}.{item.Key}";
-				if (!RecordNotExistInAdd(ridx, EnumDevType.rhub_prru))
+				var ridx = $"{bbuIdx}.{item.Value.strDevIndex.Trim('.')}.{item.Value.nPortNo}";
+				if (RecordExistInDel(ridx, EnumDevType.rhub_prru))
 				{
 					Log.Error($"索引为{ridx}类型为rhub_prru的记录已经存在");
 					continue;
