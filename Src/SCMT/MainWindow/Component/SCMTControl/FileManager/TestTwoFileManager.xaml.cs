@@ -642,7 +642,7 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
                 return;
             }
 
-            var localPath = dropFileInfo.FilePath + dropFileInfo.FileName;
+            var localPath = dropFileInfo.FilePath +"\\"+ dropFileInfo.FileName;
             var dstPath = enbSelectedItem.DirInfo;
             var enbPath = lvENBFileInfo.SelectedItem as FileInfoEnb;
             if (null != enbPath)

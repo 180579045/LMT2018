@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CommonUtility;
@@ -65,40 +66,73 @@ namespace FileManager.FileHandler
 			List<string> nbArray = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
-				nbArray.Add(GetSwPackVersion($".1.{i}"));
-				if(_bDetailFlag)
-				{
-					nbArray.Add(GetSwPackVersionDetail($".1.{i}"));
+			    string ver = GetSwPackVersion($".1.{i}");
+			    if (!string.IsNullOrEmpty(ver))
+			    {
+			        nbArray.Add(GetSwPackVersion($".1.{i}"));
+                }
+                if (_bDetailFlag)
+                {
+                    ver = GetSwPackVersionDetail($".1.{i}");
+                    if (!string.IsNullOrEmpty(ver))
+                    {
+                        nbArray.Add(ver);
+                    }
 				}
 			}
 
 			List<string> nbArrayCP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
-				nbArrayCP.Add(GetSwPackVersion($".2.{i}"));
+			    string ver = GetSwPackVersion($".2.{i}");
+			    if (!string.IsNullOrEmpty(ver))
+			    {
+			        nbArrayCP.Add(ver);
+                }
+			    
 				if (_bDetailFlag)
 				{
-					nbArray.Add(GetSwPackVersionDetail($".2.{i}"));
+				    ver = GetSwPackVersionDetail($".2.{i}");
+				    if (!string.IsNullOrEmpty(ver))
+				    {
+				        nbArray.Add(ver);
+                    }                     
 				}
 			}
 
 			List<string> nbArrayHP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
-				nbArrayHP.Add(GetSwPackVersion($".3.{i}"));
+			    string ver = GetSwPackVersion($".3.{i}");
+			    if (!string.IsNullOrEmpty(ver))
+			    {
+			        nbArrayHP.Add(ver);
+                }                 
 				if (_bDetailFlag)
 				{
-					nbArray.Add(GetSwPackVersionDetail($".3.{i}"));
+				    ver = GetSwPackVersionDetail($".3.{i}");
+				    if (!string.IsNullOrEmpty(ver))
+				    {
+				        nbArray.Add(ver);
+                    }           
 				}
 			}
 
 			List<string> wsArray = new List<string>();
 			for (var i = 1; i < 3; i++)
 			{
-				wsArray.Add(GetPeripheralVersion($".1.1.{i}"));
+			    string ver = GetPeripheralVersion($".1.1.{i}");
+			    if (!string.IsNullOrEmpty(ver))
+			    {
+			        wsArray.Add(ver);
+                }           
 				if (_bDetailFlag)
 				{
-					nbArray.Add(GetPeripheralVersionDetail($".1.1.{i}"));
+				    ver = GetPeripheralVersionDetail($".1.1.{i}");
+				    if (!string.IsNullOrEmpty(ver))
+				    {
+				        nbArray.Add(ver);
+                    }	    
 				}
 			}
 
@@ -267,9 +301,23 @@ namespace FileManager.FileHandler
 				return false;
 			}
 
+		    Func<string, string> getRealString = (originValue) =>
+		    {
+		        int pos = originValue.IndexOf("\0");
+		        if (-1 == pos)
+		        {
+		            return originValue;
+		        }
+		        else
+		        {
+		            return originValue.Substring(0, pos);
+
+		        }
+		    };
+
 			swPackInfo.csSWPackName = Path.GetFileName(dtzFilePath);
-			swPackInfo.csSWPackRelayVersion = new string(headinfo.u8ZipFileRelayVersion).Trim('\0').ToUpper();
-			swPackInfo.csSWPackVersion = new string(headinfo.u8ZipFileBigVersion).Trim('\0');
+			swPackInfo.csSWPackRelayVersion = getRealString(new string(headinfo.u8ZipFileRelayVersion)).ToUpper();
+			swPackInfo.csSWPackVersion = getRealString(new string(headinfo.u8ZipFileBigVersion));
 
 			if (swPackInfo.csSWPackRelayVersion.Equals(FileTransMacro.INVALID_RelayVersion))     //非补丁文件
 			{
