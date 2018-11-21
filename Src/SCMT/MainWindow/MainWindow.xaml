@@ -51,15 +51,14 @@
 
             <!-- 菜单栏 -->
             <Metro:MetroTitleMenuItem Header="">
-                <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
+                <!-- <Metro:MetroMenuItem Header="工具箱" Icon="Resources/titleMuenIcon.png" />
                 <Metro:MetroMenuItem Header="打开" Icon="Resources/titleMuenIcon.png" Click="OpenClick" />
                 <Metro:MetroMenuItem Header="设置" Icon="Resources/titleMuenIcon.png">
                     <Metro:MetroMenuItem Header="快捷键" Click="MetroMenuItem_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
                     <Metro:MetroMenuItem Header="跟踪设置" Click="MetroMenuItem_Click_1" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>
-                    <!--<Metro:MetroMenuItem Header="启动流程图" Click="Flow_Click" Icon="Resources/titleMuenIcon.png"></Metro:MetroMenuItem>-->
-                </Metro:MetroMenuItem>
+                </Metro:MetroMenuItem> -->
                 <Metro:MetroMenuItem Header="帮助" Icon="Resources/titleMuenIcon.png">
-                    <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png"/>
+                    <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png" Click="AboutUsMenu_Click" />
                     <Metro:MetroMenuItem Header="使用帮助" Icon="Resources/titleMuenIcon.png"/>
                     <Metro:MetroMenuItem Header="反馈问题" Icon="Resources/titleMuenIcon.png"/>
                 </Metro:MetroMenuItem>
@@ -249,13 +248,12 @@
 
                     </Grid>
                 </TabItem>
-                <TabItem Header="网络规划" Style="{StaticResource TabItemStyle}">
+                <TabItem Header="网络规划" Style="{StaticResource TabItemStyle}" GotFocus="TabItem_GotFocus">
                     <Grid Margin="0,0,0,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled">
-                            <ViewModel:NetPlanModel/>
+                        <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Disabled" Name="netPlanScrollView">
                         </ScrollViewer>
                     </Grid>
                 </TabItem>

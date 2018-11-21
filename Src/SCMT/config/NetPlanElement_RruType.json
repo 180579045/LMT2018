@@ -5563,6 +5563,71 @@
           ]
         }
       ]
+    },
+    {
+      "rruTypeManufacturerIndex": 4,
+      "rruTypeNotMibManufacturerName": "datang|大唐",
+      "rruTypeIndex": 129,
+      "rruTypeName": "pRU5226",
+      "rruTypeMaxAntPathNum": 6,
+      "rruTypeMaxTxPower": 6144,
+      "rruTypeBandWidth": 300,
+      "rruTypeFiberLength": [
+        {
+          "value": "2",
+          "desc": "twenty|20km"
+        }
+      ],
+      "rruTypeIrCompressMode": [
+        {
+          "value": "2",
+          "desc": "compress|压缩"
+        }
+      ],
+      "rruTypeSupportCellWorkMode": [
+        {
+          "value": "1",
+          "desc": "lte|LTE TDD"
+        }
+      ],
+      "rruTypeFamilyName": "",
+      "rruTypeNotMibMaxePortNo": 6,
+      "rruTypeNotMibSupportNetWorkMode": [
+        {
+          "value": "1",
+          "desc": "normal|正常模式"
+        },
+        {
+          "value": "3",
+          "desc": "backup|主备模式"
+        },
+        {
+          "value": "4",
+          "desc": "shared|负荷分担模式"
+        }
+      ],
+      "rruTypeNotMibIrRate": [
+        {
+          "value": "3",
+          "desc": "mbps10000|10G"
+        }
+      ],
+      "rruTypeNotMibIrBand": [
+        {
+          "value": "2",
+          "desc": "compress|压缩",
+          "bandwidth": [
+            {
+              "value": "4",
+              "desc": "val100M|100MHz"
+            },
+            {
+              "value": "3",
+              "desc": "val20M|20MHz"
+            }
+          ]
+        }
+      ]
     }
   ],
   "rruTypePortInfo": [
@@ -22864,6 +22929,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -22890,6 +22963,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -22918,6 +22999,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -22944,6 +23033,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -22972,6 +23069,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -22998,6 +23103,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23026,6 +23139,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23052,6 +23173,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23080,6 +23209,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23106,6 +23243,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23134,6 +23279,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23160,6 +23313,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23188,6 +23349,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23214,6 +23383,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23242,6 +23419,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23268,6 +23453,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23296,6 +23489,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23322,6 +23523,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23350,6 +23559,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23376,6 +23593,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23404,6 +23629,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23430,6 +23663,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23458,6 +23699,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23484,6 +23733,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23512,6 +23769,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23538,6 +23803,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23566,6 +23839,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23592,6 +23873,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23620,6 +23909,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23646,6 +23943,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23674,6 +23979,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23700,6 +24013,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23728,6 +24049,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23754,6 +24083,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23782,6 +24119,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23808,6 +24153,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23836,6 +24189,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23862,6 +24223,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23890,6 +24259,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23916,6 +24293,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23944,6 +24329,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -23970,6 +24363,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -23998,6 +24399,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24024,6 +24433,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24052,6 +24469,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24078,6 +24503,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24106,6 +24539,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24132,6 +24573,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24160,6 +24609,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24186,6 +24643,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24214,6 +24679,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24240,6 +24713,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24268,6 +24749,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24294,6 +24783,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24322,6 +24819,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24348,6 +24853,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24376,6 +24889,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24402,6 +24923,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24430,6 +24959,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24456,6 +24993,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24484,6 +25029,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24510,6 +25063,14 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
@@ -24538,6 +25099,14 @@
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
         {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"
         }
@@ -24564,6 +25133,224 @@
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 8448,
       "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 129,
+      "rruTypePortNo": 1,
+      "rruTypePortPathNo": 1,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "4096",
+          "desc": "n78|N78频段(3300-3800)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 300,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 6144,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 129,
+      "rruTypePortNo": 2,
+      "rruTypePortPathNo": 2,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "4096",
+          "desc": "n78|N78频段(3300-3800)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 300,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 6144,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 129,
+      "rruTypePortNo": 3,
+      "rruTypePortPathNo": 3,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "4096",
+          "desc": "n78|N78频段(3300-3800)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 300,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 6144,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 129,
+      "rruTypePortNo": 4,
+      "rruTypePortPathNo": 4,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "4096",
+          "desc": "n78|N78频段(3300-3800)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 300,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 6144,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 129,
+      "rruTypePortNo": 5,
+      "rruTypePortPathNo": 5,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "4",
+          "desc": "e|E频段(2300-2400)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 70,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 6144,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 129,
+      "rruTypePortNo": 6,
+      "rruTypePortPathNo": 6,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "4",
+          "desc": "e|E频段(2300-2400)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 70,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 6144,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
         {
           "value": "3",
           "desc": "rxAndTx|接收发送均有效"

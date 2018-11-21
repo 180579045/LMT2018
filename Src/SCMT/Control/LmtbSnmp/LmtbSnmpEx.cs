@@ -754,8 +754,8 @@ namespace LmtbSnmp
 
 				var strValue = vb.Value.ToString();
 
-				// TODO
-				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type;//vb.Type; //vb.GetType();
+				// TODO 如果换成vb.Value.Type会导致无法断开连接的错误
+				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Type;//vb.Type; //vb.GetType();
 
 				// 如果是getbulk响应返回的SNMP_SYNTAX_ENDOFMIBVIEW，则不处理这个vb，继续
 				if (lmtVb.SnmpSyntax == SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW)

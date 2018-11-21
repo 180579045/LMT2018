@@ -16,7 +16,7 @@
 
         <Label Width="60" HorizontalAlignment="Left">LTE小区</Label>
         <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="90 0 0 0" Click="Button_Click_2">快速配置</Button>
-        <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="180 0 0 0">重置</Button>
+        <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="180 0 0 0" Click="Button_Click_3">重置</Button>
         
         <!--标题而已-->
         <Grid ShowGridLines="False" Margin="5" Grid.Row="1" Height="30">

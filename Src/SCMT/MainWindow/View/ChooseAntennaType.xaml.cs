@@ -27,6 +27,7 @@ namespace SCMTMainWindow.View
         private Dictionary<string, List<AntType>> allAntInfo = new Dictionary<string, List<AntType>>();
         public AntType currentSelectedAntType;
         private int nMaxAntNum = 0;
+        public int nAntNo = 1;
         public bool bOK = false;
 
         public ChooseAntennaType()
@@ -49,6 +50,7 @@ namespace SCMTMainWindow.View
             string strInfo = File.ReadAllText(".\\Component\\Configration\\RRUPropertyConfig.json");
             Dictionary<string, int> obj = JsonConvert.DeserializeObject<Dictionary<string, int>>(strInfo);
             nMaxAntNum = obj["AntMaxNumber"];
+            txtAntennaNumber.Text = "1";
         }
 
         /// <summary>
@@ -108,16 +110,18 @@ namespace SCMTMainWindow.View
             {
                 string strNumber = this.txtAntennaNumber.Text;
 
-                int num = int.Parse(strNumber);
+                nAntNo = int.Parse(strNumber);
 
-                if (num > nMaxAntNum || num < 0)
+                if (nAntNo > nMaxAntNum || nAntNo < 0)
                 {
                     string strText = string.Format("最大支持 {0} 个网元", nMaxAntNum);
+                    txtAntennaNumber.Text = "1";
                     MessageBox.Show(strText);
                 }
             }
             catch
             {
+                txtAntennaNumber.Text = "1";
                 MessageBox.Show("请输入数字");
             }
     }
