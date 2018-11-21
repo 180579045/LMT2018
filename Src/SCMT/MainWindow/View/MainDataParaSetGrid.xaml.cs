@@ -206,10 +206,12 @@ namespace SCMTMainWindow.View
             }
 
 			// 像基站下发添加指令
+			// 行数据
+			Dictionary<string, object> lineData = ((DyDataGrid_MIBModel)model).Properties;
 			// Mib英文名称与值的对应关系
 			Dictionary<string, string> enName2Value = new Dictionary<string, string>();
 			// 根据DataGrid行数据组装Mib英文名称与值的对应关系
-			if (false == DataGridUtils.MakeEnName2Value(((DyDataGrid_MIBModel)model).Properties, ref enName2Value))
+			if (false == DataGridUtils.MakeEnName2Value(lineData, ref enName2Value))
 			{
 				strMsg = "DataGridUtils.MakeEnName2Value()方法执行错误！";
 				Log.Error(strMsg);
@@ -219,7 +221,7 @@ namespace SCMTMainWindow.View
 
 			// 组装Vb列表
 			List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
-			if (false == DataGridUtils.MakeSnmpVbs(model, enName2Value, ref setVbs, out strMsg))
+			if (false == DataGridUtils.MakeSnmpVbs(lineData, enName2Value, ref setVbs, out strMsg))
 			{
 				Log.Error(strMsg);
 				return;
@@ -232,8 +234,17 @@ namespace SCMTMainWindow.View
 			int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
 			if (res != 0)
 			{
-				strMsg = string.Format("CDTCmdExecuteMgr.VbsSetSync()方法调用失败，EnbIp:{0}", CSEnbHelper.GetCurEnbAddr());
+				strMsg = string.Format("参数配置失败，EnbIP:{0}", CSEnbHelper.GetCurEnbAddr());
 				Log.Error(strMsg);
+				MessageBox.Show(strMsg);
+				return;
+			}
+			// 判读SNMP响应结果
+			if (lmtPdu.m_LastErrorStatus != 0 )
+			{
+				strMsg = string.Format("参数配置失败，错误信息:{0}", lmtPdu.m_LastErrorStatus);
+				Log.Error(strMsg);
+				MessageBox.Show(strMsg);
 				return;
 			}
 
@@ -349,7 +360,7 @@ namespace SCMTMainWindow.View
 
                             if (devalue.Equals("6"))
                             {
-                                devalue = mapKv.FirstOrDefault(q => q.Value == "行有效").Key.ToString();
+                                devalue = "4";
                             }
                         }
 

@@ -272,26 +272,34 @@ namespace SCMTMainWindow.View
 
         private void DynamicDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-			// 只处理ComboBox
-			if (typeof(ComboBox) != e.OriginalSource.GetType())
+			// 如果SelectedIndex是-1，则表明是初始化过程中调用的;
+			// 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
+			if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
 			{
 				return;
 			}
+			else
+			{
+				try
+				{
+					(sender as DataGrid).SelectedCells[0].Item.GetType();
+				}
+				catch (Exception ex)
+				{
+					return;
+				}
+			}
+			try
+			{
+				((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
+					(sender as DataGrid).SelectedCells[0].Column.Header.ToString(), (e.OriginalSource as ComboBox).SelectedItem);
+			}
+			catch
+			{
 
-            // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
-            // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
-            if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
-            {
-                return;
-            }
-				
-			 
-			((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
-				(sender as DataGrid).SelectedCells[0].Column.Header.ToString(), (e.OriginalSource as ComboBox).SelectedItem);
-			
-           
+			}
 
-        }
+		}
 		
         /// <summary>
         /// 鼠标移动事件;

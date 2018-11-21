@@ -411,6 +411,8 @@ namespace LmtbSnmp
 
 		/// <summary>
 		/// 同步Set操作
+		/// 说明：
+		/// 方法返回值为0只代表SNMP消息下发成功，具体SNMP命令的执行结果还要根据SNMP响应状态码来判断
 		/// </summary>
 		/// <param name="lmtPdu"></param>
 		/// <param name="requestId"></param>
@@ -461,12 +463,12 @@ namespace LmtbSnmp
 				return -1;
 			}
 
-			if (0 != result.Pdu.ErrorStatus)
+/*			if (0 != result.Pdu.ErrorStatus)
 			{
 				SnmpErrDescHelper.SetLastErrorCode(result.Pdu.ErrorStatus);
 				return 2;
 			}
-
+*/
 			rs = SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false);
 
 			// Snmp Set Response处理
