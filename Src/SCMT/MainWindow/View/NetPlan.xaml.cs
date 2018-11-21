@@ -363,7 +363,6 @@ namespace SCMTMainWindow.View
                 Rectangle rect = targetRect.Children[0] as Rectangle;
                 var varStatus = NPCellOperator.GetLcStatus(nCellNumber, targetIp);
                 SetCellColor(rect, varStatus);
-                this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
             }
 		}
 
@@ -410,7 +409,6 @@ namespace SCMTMainWindow.View
                 }
                 var varStatus = NPCellOperator.GetLcStatus(nCellNumber, strIP);
                 SetCellColor(rect, varStatus);
-                this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
 	        }
         }
 
@@ -424,18 +422,25 @@ namespace SCMTMainWindow.View
             MenuItem obj = sender as MenuItem;
             ContextMenu test = obj.Parent as ContextMenu;
             Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
+            Rectangle rect = targetRect.Children[0] as Rectangle;
 
-			int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
+            int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
 
 	        if (!NPCellOperator.DelLcNetPlan(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
 	        {
+                MessageBox.Show("删除本地小区命令执行失败");
 		        return;
-	        }
+            }
 
-			Rectangle rect = targetRect.Children[0] as Rectangle;
-			rect.Fill = new SolidColorBrush(Colors.Red);
-
-            this.MyDesigner.g_cellPlaning.Remove(nCellNumber);
+            // 成功，查询本地小区的状态，并设置颜色
+            string strIP = CSEnbHelper.GetCurEnbAddr();
+            if (strIP == null || strIP == "")
+            {
+                MessageBox.Show("未选择基站");
+                return;
+            }
+            var varStatus = NPCellOperator.GetLcStatus(nCellNumber, strIP);
+            SetCellColor(rect, varStatus);
         }
 
         /// <summary>
@@ -449,17 +454,24 @@ namespace SCMTMainWindow.View
             ContextMenu test = obj.Parent as ContextMenu;
             Grid targetRect = ContextMenuService.GetPlacementTarget(test) as Grid;
             Rectangle rect = targetRect.Children[0] as Rectangle;
-            rect.Fill = new SolidColorBrush(Colors.LightGreen);
 
             int nCellNumber = this.nrRectCanvas.Children.IndexOf(targetRect);
 
-            if (!this.MyDesigner.g_cellPlaning.Contains(nCellNumber))
+            if (!NPCellOperator.AddNewNrLc(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
             {
-                if (NPCellOperator.AddNewNrLc(nCellNumber, CSEnbHelper.GetCurEnbAddr()))
-                {
-                    this.MyDesigner.g_cellPlaning.Add(nCellNumber);
-                }
+                MessageBox.Show("进行小区规划命令执行失败");
+                return;
             }
+
+            // 成功，查询本地小区的状态，并设置颜色
+            string strIP = CSEnbHelper.GetCurEnbAddr();
+            if (strIP == null || strIP == "")
+            {
+                MessageBox.Show("未选择基站");
+                return;
+            }
+            var varStatus = NPCellOperator.GetLcStatus(nCellNumber, strIP);
+            SetCellColor(rect, varStatus);
         }
 
         private void SetCellColor(Rectangle rect, LcStatus cellStatus)
@@ -970,7 +982,7 @@ namespace SCMTMainWindow.View
                 return;
             }
 
-            for(int i = 0; i < this.nrRectCanvas.Children.Count; i++)
+            for(int i = 0; i < 36; i++)
             {
                 Grid targetGrid = this.nrRectCanvas.Children[i] as Grid;
                 Rectangle rect = targetGrid.Children[0] as Rectangle;
@@ -984,14 +996,7 @@ namespace SCMTMainWindow.View
                         break;
                     case LcStatus.Planning:
                         rect.Fill = new SolidColorBrush(Colors.LightGreen);
-      //                  if (!this.MyDesigner.g_cellPlaning.Contains(i))
-						//{
-						//	if (NPCellOperator.SetNetPlanSwitch(true, i, CSEnbHelper.GetCurEnbAddr()))
-						//	{
-						//		this.MyDesigner.g_cellPlaning.Add(i);
-						//	}
-						//}
-						break;
+                        break;
                     case LcStatus.LcUnBuilded:
                         rect.Fill = new SolidColorBrush(Colors.Yellow);
                         break;
@@ -2106,7 +2111,12 @@ namespace SCMTMainWindow.View
 	        if (!NPSnmpOperator.DistributeNetPlanData(bDlWcb))
 	        {
 		        MessageBox.Show("下发网络规划信息失败", "网络规划", MessageBoxButton.OK, MessageBoxImage.Error);
-	        }
+            }
+            else
+            {
+                InitCellStatus();
+                MessageBox.Show("下发成功");
+            }
 
         }
         /// <summary>

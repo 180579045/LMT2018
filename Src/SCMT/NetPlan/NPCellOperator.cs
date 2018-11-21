@@ -128,6 +128,8 @@ namespace NetPlan
 			const string cmd = "GetNRNetwokPlanControlSwitch";
 			const string mibName = "nrNetLocalCellCtrlConfigSwitch";
 
+			Log.Debug($"本地小区{strIndexTemp}的布配开关在内存中不存在，开始从基站中查询...");
+
 			var value = CommLinkPath.GetMibValueFromCmdExeResult(strIndex, cmd, mibName, targetIp);
 			if (null == value)
 			{
@@ -142,6 +144,8 @@ namespace NetPlan
 				Log.Error($"保存本地小区{strIndex.Trim('.')}布配开关到内存失败");
 				return -1;
 			}
+
+			Log.Debug($"从基站中查询到本地小区{strIndexTemp}的布配开关为{value}");
 
 			return int.Parse(value);
 		}
