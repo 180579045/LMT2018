@@ -74,6 +74,31 @@ namespace NetPlan
 			return GetNeedUpdateValue(dev, strAttriName); ;
 		}
 
+
+		public DevAttributeInfo GetLinkAttri(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
+		{
+			var lt = EnumDevType.unknown;
+			if (!GetLinkTypeBySrcDstEnd(srcEndpoint, dstEndpoint, ref lt))
+			{
+				Log.Error("获取连接类型失败");
+				return null;
+			}
+
+			var wlink = new WholeLink(srcEndpoint, dstEndpoint);
+			var handler = LinkFactory.CreateLinkHandler(lt);
+			if (null == handler)
+			{
+				Log.Error($"连接类型{lt.ToString()}尚未提供支持");
+				return null;
+			}
+
+			lock (_syncObj)
+			{
+				return handler.GetRecord(wlink, m_mapAllMibData);
+			}
+		}
+
+
 		/// <summary>
 		/// 解析连接
 		/// </summary>

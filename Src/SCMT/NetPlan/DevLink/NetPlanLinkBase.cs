@@ -30,6 +30,12 @@ namespace NetPlan.DevLink
 			throw new NotImplementedException();
 		}
 
+
+		public virtual DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		{
+			return null;
+		}
+
 		#endregion
 
 		#region 基类公共接口

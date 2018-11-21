@@ -11,6 +11,11 @@ namespace NetPlan.DevLink
 {
 	public sealed class LinkRhubPico : NetPlanLinkBase
 	{
+		public LinkRhubPico() : base()
+		{
+			m_ethRecordType = EnumDevType.rhub_prru;
+		}
+
 		#region 虚函数区
 
 		public override bool AddLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
@@ -158,6 +163,37 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
+
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		{
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return null;
+			}
+
+			if (HasConnectedToBoard(m_rhubDev))
+			{
+				var bbi = GetBoardInfoFromRhub(RecordExistInDel);
+				if (null == bbi)
+				{
+					return null;
+				}
+
+				// m_strEthRecordIndex只有在rhub已经连接过板卡后才会生成
+				if (null == m_strEthRecordIndex)
+				{
+					Log.Error("未能解析出eth record index");
+					return null;
+				}
+
+				return GetDevAttributeInfo(m_strEthRecordIndex, m_ethRecordType);
+			}
+
+			return null;
+		}
+
 		private BoardBaseInfo GetBoardInfoFromRhub(IsRecordExist checkExist)
 		{
 			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(m_rhubDev);
@@ -279,6 +315,8 @@ namespace NetPlan.DevLink
 		private DevAttributeInfo m_picoDev;
 		private DevAttributeInfo m_rhubDev;
 		private string m_strEthRecordIndex;
+
+		private EnumDevType m_ethRecordType;
 
 		#endregion
 	}
