@@ -112,6 +112,7 @@ namespace SCMTMainWindow
                         + "(" + selectionNo.Key + ")，进行相关操作,Oid is " + this.oid);
 
                     this.m_Content = selectionNo.Value;
+                    this.m_CurrentValue = selectionNo.Key;
                 }
             }
         }

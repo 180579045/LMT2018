@@ -60,8 +60,6 @@ namespace SCMTMainWindow.View
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
             this.DynamicParaSetGrid.SelectionChanged += DynamicParaSetGrid_SelectionChanged;
             this.DynamicParaSetGrid.BeginningEdit += DynamicParaSetGrid_BeginningEdit;
-            this.DynamicParaSetGrid.MouseMove += DynamicParaSetGrid_MouseMove;
-            this.DynamicParaSetGrid.GotMouseCapture += DynamicParaSetGrid_GotMouseCapture;
             this.DynamicParaSetGrid.LostFocus += DynamicParaSetGrid_LostFocus;
         }
 
@@ -74,6 +72,11 @@ namespace SCMTMainWindow.View
             string cellValue = "";
 
             DataGrid dataGrid = (DataGrid)sender;
+
+            if (!dataGrid.CurrentCell.Item.GetType().ToString().Equals("DyDataGrid_MIBModel"))
+            {
+                return;
+            }
             // 行Model
             DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
 
@@ -88,89 +91,7 @@ namespace SCMTMainWindow.View
                     if (!string.IsNullOrWhiteSpace(cellValue))
                         ff.m_Content = cellValue;
                 }
-                else if (mibModel.PropertyList[1].Item3 is DataGrid_Cell_MIB_ENUM)
-                {
-                    var ff = mibModel.PropertyList[1].Item3 as DataGrid_Cell_MIB_ENUM;
-                    if (!string.IsNullOrWhiteSpace(cellValue))
-                    {
-                        int eindex = cellValue.LastIndexOf(',');
-                        int sindex = cellValue.LastIndexOf('[');
-                        string vv = cellValue.Substring(sindex + 1, eindex - 1).Trim();
-                        ff.m_CurrentValue = int.Parse(vv);
-                    }
-                        
-                }
             }         
-        }
-
-        private void DynamicParaSetGrid_GotMouseCapture(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if ((e.OriginalSource as DataGrid).Items.CurrentItem is DyDataGrid_MIBModel)
-                {
-                    DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
-
-                    foreach (var iter in (e.OriginalSource as DataGrid).SelectedCells)
-                    {
-                        Console.WriteLine("User Selected:" + iter.Item.GetType() + "and Header is" + iter.Column.Header);
-                        SelectedIter = iter.Item as DyDataGrid_MIBModel;
-
-                        DataGrid item = e.OriginalSource as DataGrid;
-
-                        // 在MouseMove事件当中可以添加鼠标拖拽事件;
-                        if (e.LeftButton == MouseButtonState.Pressed)
-                        {
-                            DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
-                            {
-                                HeaderName = iter.Column.Header.ToString(),
-                                SelectedCell = SelectedIter
-                            }, DragDropEffects.Copy);
-                        }
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
-        }
-
-        private void DynamicParaSetGrid_MouseMove(object sender, MouseEventArgs e)
-        {
-            try
-            {
-                if (e.OriginalSource is DataGridCell)
-                {
-                    Debug.WriteLine("MouseMove;函数参数e反馈的实体是单元格内数据内容:" +
-                        ((e.OriginalSource as DataGridCell).Column).Header);
-
-                    DyDataGrid_MIBModel SelectedIter = new DyDataGrid_MIBModel();
-
-                    foreach (var iter in (e.Source as DataGrid).SelectedCells)
-                    {
-                        Console.WriteLine("User Selected:" + iter.Item.GetType());
-                        SelectedIter = iter.Item as DyDataGrid_MIBModel;
-                    }
-
-                    DataGridCell item = e.OriginalSource as DataGridCell;
-
-                    // 在MouseMove事件当中可以添加鼠标拖拽事件;
-                    if (e.MiddleButton == MouseButtonState.Pressed)
-                    {
-                        DragDropEffects myDropEffect = DragDrop.DoDragDrop(item, new DataGridCell_MIB_MouseEventArgs()
-                        {
-                            HeaderName = (e.OriginalSource as DataGridCell).Column.Header.ToString(),
-                            SelectedCell = SelectedIter
-                        }, DragDropEffects.Copy);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("MouseMove Exception" + ex);
-            }
         }
 
         private void DynamicParaSetGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
@@ -190,8 +111,7 @@ namespace SCMTMainWindow.View
         private void DynamicParaSetGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
-            // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
-            if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
+            if (((e.OriginalSource as ComboBox).SelectedIndex == -1))
             {
                 return;
             }
