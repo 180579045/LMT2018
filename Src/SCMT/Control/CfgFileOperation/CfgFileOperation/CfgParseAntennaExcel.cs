@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CfgFileOpStruct;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,8 @@ namespace CfgFileOperation
         /// 保存每条告警内容的内存
         /// </summary>
         private List<Dictionary<string, string>> AntennaIndexBS = null; //波束扫描原始值 的数据
+
+        List<AntArrayBfScanAntWeightTabStru> vectAntArrayBfScanInfo = null;
         /// <summary>
         /// 72个列 sheet = "波束扫描原始值"
         /// </summary>
@@ -27,15 +30,23 @@ namespace CfgFileOperation
         public CfgParseAntennaExcel()
         {
             //
-            AntennaIndexBS = new List<Dictionary<string, string>>();
+            string which = "new";
+            if (String.Equals(which, "new"))
+            {
+                vectAntArrayBfScanInfo = new List<AntArrayBfScanAntWeightTabStru>();
+            }
+            else
+            {
+                AntennaIndexBS = new List<Dictionary<string, string>>();
+            }
             //
             ColsInfoBS = new Dictionary<string, string>() {//72个
-            {"antIndex", "A"},	     // 天线编号:
-            {"antVendorName", "B"},	 // 天线厂家名称:
-            {"antMode", "C"},      // 天线型号:
-            {"horBeamScanning", "D"}, // 水平方向波束个数:
+            {"antIndex", "A"},	      // 天线编号:
+            {"antVendorName", "B"},	  // 天线厂家名称:      antBfScanVendor //天线阵厂商索引 第一维索引值
+            {"antMode", "C"},         // 天线型号:          antBfScanMode
+            {"horBeamScanning", "D"}, // 水平方向波束个数:  antBfScanHorNum
             {"horDowntiltAngle", "E"},// 水平方向数字下倾角:(单位o)	
-            {"verBeamScanning", "F"}, // 垂直方向波束个数:
+            {"verBeamScanning", "F"}, // 垂直方向波束个数:  antBfScanVerNum
             {"verDowntiltAngle", "G"},// 垂直方向数字下倾角:(单位o)	
             {"antLossFlag", "H"},     // 有损无损:（0：无损/1:有损）	
             {"antBfScanAmplitude0", "I"},// 天线1 幅度 V
@@ -135,7 +146,8 @@ namespace CfgFileOperation
             { }
             else if (String.Equals("波束扫描原始值", strSheet))
             {
-                ProcessingAntennaExcelBS(wks);
+                //ProcessingAntennaExcelBS(wks);
+                ProcessingAntennaExcelToStrList(wks);
             }
             //Console.WriteLine("ProcessingAntennaExcelBS : END..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
         }
@@ -146,6 +158,52 @@ namespace CfgFileOperation
         public List<Dictionary<string, string>> GetBeamScanData()
         {
             return AntennaIndexBS;
+        }
+        /// <summary>
+        /// 处理"波束扫描原始值"的内容
+        /// </summary>
+        /// <param name="FilePath"></param>
+        private void ProcessingAntennaExcelToStrList(Excel.Worksheet wks)
+        {
+            if ((wks == null) || (vectAntArrayBfScanInfo == null))
+                return;
+
+            int rowCount = wks.UsedRange.Rows.Count;                  // 获取行数
+
+            // 获取所有sheet 每col的数据
+            Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
+            foreach (var colName in ColsInfoBS.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
+            {
+                object[,] arry = (object[,])wks.Cells.get_Range(ColsInfoBS[colName] + "1", ColsInfoBS[colName] + rowCount).Value2;
+                ColVals.Add(colName, arry);
+            }
+
+            // 处理每行的内容
+            // 先处理第一行(即从 line=2开始)
+            Dictionary<string, string> PreInfo = new Dictionary<string, string>();//当下一行有cell为null时，用来获取上一行的数据填充
+            int currentLine = 2;
+            foreach (var colNameEn in ColsInfoBS.Keys)
+            {
+                object[,] arry = ColVals[colNameEn];
+                string cellVal = GetCellValueToStringBeamScan(arry[currentLine, 1], ColsInfoBS[colNameEn], "");
+                PreInfo.Add(colNameEn, cellVal);
+            }
+            vectAntArrayBfScanInfo.Add(new AntArrayBfScanAntWeightTabStru(PreInfo));
+            AntennaIndexBS.Add(PreInfo);
+            //
+            for (currentLine = 3; currentLine < rowCount + 1; currentLine++)
+            {
+                Dictionary<string, string> CurInfo = new Dictionary<string, string>();//处理当前数据
+                foreach (var colNameEn in ColsInfoBS.Keys)
+                {
+                    object[,] arry = ColVals[colNameEn];
+                    string cellVal = GetCellValueToStringBeamScan(arry[currentLine, 1], ColsInfoBS[colNameEn], PreInfo[colNameEn]);
+                    CurInfo.Add(colNameEn, cellVal);
+                }
+                PreInfo = CurInfo;
+                AntennaIndexBS.Add(CurInfo);
+            }
+
         }
 
         /// <summary>

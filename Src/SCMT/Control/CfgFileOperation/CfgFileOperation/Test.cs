@@ -25,7 +25,7 @@ namespace CfgFileOperation
             BinaryWriter bw= new BinaryWriter(fs);
             Test test = new Test();
 
-            test.TestBeyondCompareMain(bw);
+            //test.TestBeyondCompareMain(bw);
             fs.Close();
             //test.testForCreatePatchAndInit();
 
@@ -40,7 +40,7 @@ namespace CfgFileOperation
 
             //test.testForReadExcelRruType();
 
-            //test.testForReadExcelAnnt();
+            test.testForReadExcelAnnt();
 
             //test.testForOpReadExcelForCfg();
 
@@ -288,12 +288,19 @@ namespace CfgFileOperation
                 ///1.StruCfgFileTblInfo:44 字节，表内容头;
                 ///2.StruCfgFileFieldInfo[u16FieldNum]:60 字节* u16FieldNum，每个叶子的内容介绍;
                 ///3.u16RecLen(Stru) * u32RecNum(个数):每个实例内容(大小为u16RecLen) * 实例数.
-                if (String.Equals(table, "netLocalCellRruPowerEntry"))
+                //if (!String.Equals(table, "netLocalCellRruPowerEntry"))
                 {
-                    bw.Write("netLocalCellRruPowerEntry continue.\n");
-                    Console.WriteLine("netLocalCellRruPowerEntry continue");
-                    continue;
-                }//sscUuExternBitmap
+                    //bw.Write("netLocalCellRruPowerEntry continue.\n");
+                    //Console.WriteLine("netLocalCellRruPowerEntry continue");
+                    //continue;
+                }
+                //Console.WriteLine("netLocalCellRruPowerEntry start, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
+                //if (String.Equals(table, "rruTypeEntry"))
+                //{
+                //    //bw.Write("netLocalCellRruPowerEntry continue.\n");
+                //    Console.WriteLine(" rruTypeEntry debug");
+                //    //continue;
+                //}//sscUuExternBitmap
                 // 获取tableInfo表块介绍
                 offsetYs = YsTableNamePosDict[table];
                 ysTblInfo = TestGetTableHeadInfo(YSFilePath, offsetYs);
@@ -342,6 +349,8 @@ namespace CfgFileOperation
                         re = false;
                     }
                 }
+
+                //Console.WriteLine("netLocalCellRruPowerEntry end, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
             }
             return re;
         }
@@ -351,37 +360,59 @@ namespace CfgFileOperation
             //通过 索引的顺序，来判断每个实例是否相同
             bool re = true;
             // 1. 获取 索引节点的内容()
-            List<string> indexLeafsName = TestGetIndexNames(tableName);
-            if (indexLeafsName == null)
-            {
-                bw.Write(String.Format("TalName=({0})有问题 或者 没有叶子节点.\n", tableName));
-                Console.WriteLine(String.Format("TalName=({0})有问题 或者 没有叶子节点.", tableName));//不相同，有问题
-                re = false;
-                return re;
-            }
+            //List<string> indexLeafsName = TestGetIndexNames(tableName);
+            //if (indexLeafsName == null)
+            //{
+            //    bw.Write(String.Format("TalName=({0})有问题 或者 没有叶子节点.\n", tableName));
+            //    Console.WriteLine(String.Format("TalName=({0})有问题 或者 没有叶子节点.", tableName));//不相同，有问题
+            //    re = false;
+            //    return re;
+            //}
+            List<StruCfgFileFieldInfo> indexLeafsInfo = TestGetIndexLeafInfo(tableName, LeafHead);
+
             // 2. 获取索引排列
             // 索引比较：索引内容是否都相同
-            if (!TestIsSameIndexList(indexLeafsName, u32RecNum, LeafHead, InstsAList, InstsBList))
+            //if (!TestIsSameIndexList(indexLeafsName, u32RecNum, LeafHead, InstsAList, InstsBList))
+            //{
+            //    re = false;
+            //    bw.Write(String.Format("TalName=({0}) insts index head not all some.\n", tableName));
+            //    Console.WriteLine(String.Format("TalName=({0}) insts index head not all some.", tableName));//不相同，有问题
+            //    return re;
+            //}
+            //Console.WriteLine("TestIsSameIndexList2 start, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
+
+            if (!TestIsSameIndexList2(indexLeafsInfo, u32RecNum, InstsAList, InstsBList))
             {
                 re = false;
                 bw.Write(String.Format("TalName=({0}) insts index head not all some.\n", tableName));
                 Console.WriteLine(String.Format("TalName=({0}) insts index head not all some.", tableName));//不相同，有问题
                 return re;
             }
+            //Console.WriteLine("TestIsSameIndexList2 end, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
 
+            //Console.WriteLine(String.Format("TalName=({0}) insts index headall some.", tableName));
             // 3. 比较
             // 根据同一索引，判断实例内容
             Dictionary<string, byte[]> indexAInsts;
             Dictionary<string, byte[]> indexBInsts;
-            if (indexLeafsName.Count == 0)
+            if (indexLeafsInfo.Count == 0)
             {
                 indexAInsts = new Dictionary<string, byte[]>() { { "0", InstsAList[0] } };
                 indexBInsts = new Dictionary<string, byte[]>() { { "0", InstsBList[0] } };
             }
             else
             {
-                indexAInsts = TestGetIndexInsts(indexLeafsName, u32RecNum, LeafHead, InstsAList);
-                indexBInsts = TestGetIndexInsts(indexLeafsName, u32RecNum, LeafHead, InstsBList);
+                //indexAInsts = TestGetIndexInsts(indexLeafsName, u32RecNum, LeafHead, InstsAList);
+                //indexBInsts = TestGetIndexInsts(indexLeafsName, u32RecNum, LeafHead, InstsBList);
+
+                indexAInsts = TestGetIndexInsts2(indexLeafsInfo, u32RecNum, LeafHead, InstsAList);
+                indexBInsts = TestGetIndexInsts2(indexLeafsInfo, u32RecNum, LeafHead, InstsBList);
+                if (indexAInsts.Count != indexBInsts.Count)
+                {
+                    bw.Write(String.Format("tableName={0}, insts not all same.\n", tableName));
+                    Console.WriteLine(String.Format("tableName={0}, insts not all same.", tableName));
+                    return false;
+                }
             }
             // 依索引比较内容
             if (indexAInsts.Count == 0)//a,b都为0
@@ -392,10 +423,6 @@ namespace CfgFileOperation
                     Console.WriteLine(String.Format("tableName={0}, insts not all same.", tableName));
                     re = false;
                 }
-                //else
-                //{
-                //    Console.WriteLine(String.Format("tableName={0}, insts all 0.", tableName));
-                //}
             }
             else if (!TestInstsInfoList(bw, tableName, LeafHead, indexAInsts, indexBInsts))
             {
@@ -409,6 +436,26 @@ namespace CfgFileOperation
             List<string> indexListA = TestGetAllIndex(indexLeafsName, u32RecNum, LeafHead, InstsListA);
             List<string> indexListB = TestGetAllIndex(indexLeafsName, u32RecNum, LeafHead, InstsListB);
             return TestIsAllIndexSame(indexListA, indexListB);
+        }
+        bool TestIsSameIndexList2(List<StruCfgFileFieldInfo> indexLeafsInfo, int u32RecNum,  List<byte[]> InstsListA, List<byte[]> InstsListB)
+        {
+            //Console.WriteLine("TestGetAllIndex2 start, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
+
+            List<string> indexListA = TestGetAllIndex2(indexLeafsInfo, u32RecNum, InstsListA);
+            //Console.WriteLine("TestGetAllIndex2 end, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
+
+            List<string> indexListB = TestGetAllIndex2(indexLeafsInfo, u32RecNum,  InstsListB);
+            if(indexListA.Count != indexListB.Count)
+            {
+                return false;
+            }
+            //List<int> list3 = indexListB.Except(indexListA).ToList();
+            IEnumerable<string> intersect = indexListB.Except(indexListA);
+            if (intersect.LongCount() != 0)
+            {
+                return false;
+            }
+            return true;// TestIsAllIndexSame(indexListA, indexListB);
         }
         bool TestIsAllIndexSame(List<string> indexListA, List<string> indexListB)
         {
@@ -517,6 +564,77 @@ namespace CfgFileOperation
             }
             return index;
         }
+        List<string> TestGetAllIndex2(List<StruCfgFileFieldInfo> indexLeafsInfo, int u32RecNum,List<byte[]> InstsList)
+        {
+            //Dictionary<string, byte[]> indexInsts = new Dictionary<string, byte[]>();
+            List<string> index = new List<string>();
+            StruCfgFileFieldInfo FieldH;
+            ushort u16FieldOffset;       /* 字段相对记录头偏移量*/
+            ushort u16FieldLen;          /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
+            byte u8FieldType;            /* 字段类型 */
+            byte[] emtpyArray = new byte[InstsList[0].LongCount()];
+            emtpyArray.Initialize();
+            if (indexLeafsInfo.Count == 0)
+            {
+                if (InstsList.Count != 1)
+                {
+                    Console.WriteLine("rrrerr");
+                }
+                else
+                    index.Add("255");
+            }
+            else
+            {
+                for (int instNo = u32RecNum - 1; instNo >= 0; instNo--)
+                //foreach (var inst in InstsList)                
+                {
+                    byte[] inst = InstsList[instNo];
+                    if (TestIsByteListSame(emtpyArray, inst))
+                    {
+                        continue;// 结束
+                    }
+                    string strIndex = "";
+                    int indexNum = 0;
+                    foreach (var LeafHead in indexLeafsInfo)
+                    {
+                        FieldH = LeafHead;
+                        u16FieldOffset = FieldH.u16FieldOffset;       /* 字段相对记录头偏移量*/
+                        u16FieldLen = FieldH.u16FieldLen;             /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
+
+                        // 索引
+                        byte[] InA = inst.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();
+                        uint uIndexNum = GetBytesValToUint(InA);
+                        strIndex += uIndexNum.ToString() + ".";
+
+                    }
+                    strIndex = strIndex.TrimEnd('.');
+                    if ("" == strIndex)
+                    {
+                        Console.WriteLine("Error.");
+                    }
+                    else
+                    {
+                        //if (-1 != index.FindIndex(e => String.Equals(e, strIndex)))
+                        //{
+                        //    if (TestIsByteListSame(emtpyArray, inst))
+                        //    {
+                        //        continue;// 结束
+                        //    }
+                        //    else
+                        //    {
+                        //        //Console.WriteLine(String.Format("have same index({0}), but info not same", strIndex));
+                        //    }
+                        //}
+                        //else
+                        {
+                            index.Add(strIndex);
+                        }
+                    }
+                }
+            }
+            return index;
+        }
+
         /// <summary>
         /// 比较索引
         /// </summary>
@@ -568,15 +686,33 @@ namespace CfgFileOperation
         bool TestInstsInfoList(BinaryWriter bw, string tableName, Dictionary<string, StruCfgFileFieldInfo> LeafHead, Dictionary<string, byte[]> indexAInsts, Dictionary<string, byte[]> indexBInsts)
         {
             bool re = true;
+            Console.WriteLine(String.Format("TalName=({0}) insts byc.", tableName));
+            //List<byte[]> instInfoA = indexAInsts.Values.ToList();
+            //List<byte[]> instInfoB = indexBInsts.Values.ToList();
+            //IEnumerable<byte[]> intersect = instInfoA.Except(instInfoB);
+
+            //if (intersect.LongCount() == 0)
+            //{
+            //    return re;
+            //}
+
             foreach (var strIndex in indexAInsts.Keys)
             {
+                //if (strIndex.EndsWith("34.1"))
+                //{
+                //    Console.WriteLine(".0");
+                //}
+                //if (strIndex.EndsWith(".1"))
+                //{
+                //    Console.WriteLine(".1");
+                //}
                 byte[] instA = indexAInsts[strIndex];
                 byte[] instB = indexBInsts[strIndex];
-                if (!TestIsSameInst(bw, tableName, LeafHead, instA, instB))
+                if (!TestIsSameInst(strIndex, bw, tableName, LeafHead, instA, instB))
                 {
                     re = false;
-                    bw.Write(String.Format("table({0}),index({1}) inst info no same。\n", tableName, strIndex));
-                    Console.WriteLine(String.Format("table({0}),index({1}) inst info no same。",tableName, strIndex));
+                    bw.Write(String.Format("({0}),index({1}) inst info no same。\n", tableName, strIndex));
+                    Console.WriteLine(String.Format("({0}),index({1}) inst info no same。",tableName, strIndex));
                     //break;
                 }
             }
@@ -661,6 +797,83 @@ namespace CfgFileOperation
             return indexInsts;
         }
 
+        Dictionary<string, byte[]> TestGetIndexInsts2(List<StruCfgFileFieldInfo> indexLeafsInfo, int u32RecNum, Dictionary<string, StruCfgFileFieldInfo> LeafHead, List<byte[]> InstsList)
+        {
+            Dictionary<string, byte[]> indexInsts = new Dictionary<string, byte[]>();
+            StruCfgFileFieldInfo FieldH;
+            ushort u16FieldOffset;       /* 字段相对记录头偏移量*/
+            ushort u16FieldLen;          /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
+            byte u8FieldType;            /* 字段类型 */
+            byte[] emtpyArray = new byte[InstsList[0].LongCount()];
+            emtpyArray.Initialize();
+            if (indexLeafsInfo.Count == 0)
+            {
+                if (InstsList.Count != 1)
+                {
+                    Console.WriteLine("rrrerr");
+                }
+                else
+                {
+                    indexInsts.Add("255", InstsList[0]);
+                }
+
+            }
+            else
+            {
+                foreach (var inst in InstsList)
+                {
+                    string strIndex = "";
+                    int indexNum = 0;
+
+
+                    foreach (StruCfgFileFieldInfo LeafHeads in indexLeafsInfo)
+                    {
+                        //FieldH = LeafHead;//[leaf];
+                        u16FieldOffset = LeafHeads.u16FieldOffset;       /* 字段相对记录头偏移量*/
+                        u16FieldLen = LeafHeads.u16FieldLen;             /* 字段长度（"MIBVal_AllList"的长度） 单位：字节 */
+                        
+                        // 索引
+                        byte[] InA = inst.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();
+                        uint uIndexNum = GetBytesValToUint(InA);
+                        strIndex += uIndexNum.ToString() + ".";
+
+                    }
+                    strIndex = strIndex.TrimEnd('.');
+                    if ("" == strIndex)
+                    {
+                        Console.WriteLine("Error.");
+                    }
+                    else
+                    {
+                        //if (-1 != indexInsts.Keys.ToList().FindIndex(e => String.Equals(e, strIndex)))
+                        //{
+                        if (TestIsByteListSame(emtpyArray, inst))
+                        {
+                            continue;// 结束
+                        }
+                        //    else
+                        //    {
+                        //        Console.WriteLine(String.Format("have same index({0}), but info not same", strIndex));
+                        //    }
+                        //}
+                        //else
+                        {
+                            try
+                            {
+                                indexInsts.Add(strIndex, inst);
+                            }
+                            catch
+                            {
+                                continue;
+                            }
+                            //indexInsts.Add(strIndex, inst);
+                        }
+                    }
+                }
+            }
+            return indexInsts;
+        }
+
         /// <summary>
         /// 表索引
         /// </summary>
@@ -708,6 +921,60 @@ namespace CfgFileOperation
                 }
             }
             return indexLeafsName;
+        }
+        List<StruCfgFileFieldInfo> TestGetIndexLeafInfo(string table, Dictionary<string, StruCfgFileFieldInfo> LeafHead)
+        {
+            List<StruCfgFileFieldInfo> indexLeafsInfo = new List<StruCfgFileFieldInfo>();
+            List<string> indexLeafsName = new List<string>();
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\5GCfg\\";
+            string dataMdbPath = "lm.mdb";//1.数据库
+
+            // 表内容
+            string strSQL = String.Format(
+                "select * from MibTree where MIBName='{0}' and DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine", table);
+            DataSet TableMibdateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL);
+            DataRow TableRow = TableMibdateSet.Tables[0].Rows[0];
+            string strTableName = TableRow["MIBName"].ToString().Trim(' ');
+            if (!String.Equals(strTableName, table))
+            {
+                Console.WriteLine(String.Format("inputTalName=({0}),getMdbTalName=({1})不相同，有问题.", table, strTableName));//不相同，有问题
+                return null;
+            }
+            string tableOid = TableRow["OID"].ToString();//做叶子的父节点oid
+
+            // 叶子节点
+            string strSQL2 = String.Format(
+                "select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", tableOid);
+            DataSet MibLeafsDateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL2);
+            int childcount = MibLeafsDateSet.Tables[0].Rows.Count;
+            if (childcount == 0)
+            {
+                Console.WriteLine(String.Format("TalName=({0}),没有叶子节点.", strTableName));//不相同，有问题
+                return null;
+            }
+            //int tableIndexNum = 0;// 索引个数
+            string strleafName = "";
+            for (int loop = 0; loop < MibLeafsDateSet.Tables[0].Rows.Count; loop++)//在表之间循环
+            {
+                DataRow leafRow = MibLeafsDateSet.Tables[0].Rows[loop];
+                if ((bool)leafRow["IsIndex"])//是否为索引??????? col=39
+                {
+                    strleafName = leafRow["MIBName"].ToString();
+                    //tableIndexNum++;
+                    indexLeafsName.Add(strleafName);
+                }
+            }
+            foreach (string leaf in LeafHead.Keys)
+            {
+                //StruCfgFileFieldInfo FieldH = LeafHead[leaf];
+                if (-1 != indexLeafsName.FindIndex(e => String.Equals(e, leaf)))// 是否是索引
+                {
+                    // 索引
+                    indexLeafsInfo.Add(LeafHead[leaf]);
+                }
+            }
+            
+            return indexLeafsInfo;
         }
         public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
         {
@@ -758,7 +1025,7 @@ namespace CfgFileOperation
             {
                 instA = InstsAList[instNo];//实例
                 instB = InstsBList[instNo];
-                if (!TestIsSameInst(bw,tableName, LeafHead, instA, instB))
+                if (!TestIsSameInst(instNo.ToString(), bw,tableName, LeafHead, instA, instB))
                 {
                     re = false;
                     bw.Write(String.Format("table({0}), instNo({1}) info no same.\n", tableName));
@@ -799,7 +1066,7 @@ namespace CfgFileOperation
                 instA = AlarmNoAndInfoA[alno];//实例
                 instB = AlarmNoAndInfoB[alno];
                 //
-                if (!TestIsSameInst(bw, tableName, LeafHead, instA, instB))
+                if (!TestIsSameInst(alno.ToString(), bw, tableName, LeafHead, instA, instB))
                 {
                     re = false;
                     Console.WriteLine(String.Format("table({0}), alarmNo({1}) info no same", tableName, alno));
@@ -939,7 +1206,7 @@ namespace CfgFileOperation
             }
             return alarmNoAndInfo;
         }
-        bool TestIsSameInst(BinaryWriter bw, string tableName, Dictionary<string, StruCfgFileFieldInfo> LeafHead, byte[] instA, byte[] instB)
+        bool TestIsSameInst(string strIndex, BinaryWriter bw, string tableName, Dictionary<string, StruCfgFileFieldInfo> LeafHead, byte[] instA, byte[] instB)
         {
             bool re = true;
             StruCfgFileFieldInfo FieldH;
@@ -952,7 +1219,7 @@ namespace CfgFileOperation
             {
                 foreach (string leafName in LeafHead.Keys)
                 {
-                    //if (String.Equals(leafName, "nrMacUpAlgorithmUlFlowCtrlSwitch"))
+                    //if (String.Equals(leafName, "nrUlPwrCtrlSrsPcAdjustmentStateConfig"))
                     //{
                     //    Console.WriteLine("3324324324");
                     //}
@@ -962,14 +1229,14 @@ namespace CfgFileOperation
                     u8FieldType = FieldH.u8FieldType;             /* 字段类型 */
 
                     byte[] InA = instA.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();
-                    byte[] InB = instB.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();
+                    byte[] InB = instB.Skip(u16FieldOffset).Take(u16FieldLen).ToArray();                   
                     if (!BytesCompare_Base64(InA, InB))
                     {
                         re = false;
-                        bw.Write(String.Format("table({0}),leafName({1}) no same.\n",
-                            tableName, leafName));
-                        Console.WriteLine(String.Format("table({0}),leafName({1}) no same",
-                            tableName, leafName));//, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
+                        string inAstr = BitConverter.ToString(InA);
+                        string inBstr = BitConverter.ToString(InB);
+                        bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) no same.\n", tableName, leafName, strIndex, inAstr, inBstr));
+                        Console.WriteLine(String.Format("table({0}),index({2}),leafName({1}),info:a.({3}),b.({4}).", tableName, leafName, strIndex, inAstr, inBstr));//, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
                         //break;
                     }
                 }

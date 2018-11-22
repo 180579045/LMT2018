@@ -386,8 +386,8 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            //if (strTableName == "mdtConfigManagement")
-            //    Console.WriteLine("1111");
+            if (strTableName == "antennaBfScanWeightEntry")
+                Console.WriteLine("1111");
             //else if (strTableName == "nrCellCfgEntry")
             //    Console.WriteLine("1111");
             //else if (strTableName == "mdtConfigManagement")
@@ -402,7 +402,7 @@ namespace CfgFileOperation
             {
                 tableOp = new CfgTableOp();
                 CreatCfgFile_leafsInfo( MibdateSet, tableOp);                                 // 计算 buflen
-                if (isAlarmTable(strTableName))                                               // 是否是告警,是否为RRUType表和RRUTypePort和antennaArrayTypeTable表
+                if (isSpecialTable(strTableName))                                               // 是否是告警,是否为RRUType表和RRUTypePort和antennaArrayTypeTable表
                     CreateSpecialTalbe(row, tableOp, MibdateSet, paths);                      //告警信息从告警表获取
                 else
                     RecordInstanceMain(tableOp, isDyTable, strTableContent);                  //实例信息
@@ -651,10 +651,10 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="strTableName"></param>
         /// <returns></returns>
-        private bool isAlarmTable(string strTableName)
+        private bool isSpecialTable(string strTableName)
         {
             List<string> SpecialTableArr = new List<string>() {
-                    "alarmCauseEntry","antennaArrayTypeEntry","rruTypeEntry" ,"rruTypePortEntry"};
+                    "alarmCauseEntry","antennaArrayTypeEntry","rruTypeEntry" ,"rruTypePortEntry","antennaBfScanWeightEntry"};
             if (SpecialTableArr.Exists(e => e.Equals(strTableName)))
                 return true;
             return false;
@@ -698,6 +698,15 @@ namespace CfgFileOperation
                 //DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
                 //SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
             }
+            else if (string.Equals("antennaBfScanWeightEntry", strTableName))
+            {
+
+            }
+        }
+        private void CreateSpecialTalbeAntennaBfScanByEx(DataRow tableRow, CfgTableOp tableOp, int leafNum)
+        {
+            List<RRuTypePortTabStru> rruPortL = m_rruExcel.GetRruTypePortInfoData();
+            SetBuffersInfoForRruTypePortByEx(tableRow, rruPortL, tableOp, leafNum);
         }
         /// <summary>
         /// 
