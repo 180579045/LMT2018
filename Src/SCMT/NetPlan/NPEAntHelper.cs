@@ -123,7 +123,12 @@ namespace NetPlan
 			return -1 == antNo ? null : GetAntWeightByNo(antNo);
 		}
 
-
+		/// <summary>
+		/// 根据厂家索引和类型索引获取耦合信息信息
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
 		public AntCoupCoe GetCouplingByAntVendorAndType(string strVendorIdx, string strTypeIdx)
 		{
 			var antNo = GetAntNoByVendorAndType(strVendorIdx, strTypeIdx);
@@ -144,6 +149,18 @@ namespace NetPlan
 			}
 
 			return coupList.FirstOrDefault(tmp => antNo == tmp.antArrayNotMibNumber);
+		}
+
+		/// <summary>
+		/// 根据厂家索引和天线阵索引获取天线阵信息
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		public AntType GetAntTypeByVendorAndTypeIdx(string strVendorIdx, string strTypeIdx)
+		{
+			var atList = _antInfo.antennaTypeTable;
+			return atList.FirstOrDefault(item => item.antArrayIndex.ToString() == strTypeIdx && item.antArrayVendor.ToString() == strVendorIdx);
 		}
 
 		#endregion
