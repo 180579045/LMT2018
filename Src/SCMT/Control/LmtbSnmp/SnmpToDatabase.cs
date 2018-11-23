@@ -699,6 +699,32 @@ namespace LmtbSnmp
 			return rsText;
 		}
 
+        public static bool GetReadAndWriteStatus(string mibName, string targetIp)
+        {
+            var retData = GetMibNodeInfoByName(mibName, targetIp);
+            if (null == retData)
+            {
+                Log.Error($"查询基站{targetIp}的{mibName}信息失败");
+                return false;
+            }
+
+            if (retData.IsIndex == "True")
+            {
+                return true;
+            }
+            else
+            {
+                if (retData.managerWriteAble.Contains('w') || retData.managerWriteAble.Contains('c'))
+                {
+                    if (retData.ASNType.Equals("RowStatus"))
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return true;
+            }
+        }
 		#endregion
 
 		#region 私有方法
