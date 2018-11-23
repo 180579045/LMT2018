@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using LogManager;
+using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan.DevLink
 {
@@ -15,7 +12,7 @@ namespace NetPlan.DevLink
 		{
 			mapOriginData = mapMibInfo;
 
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo, null))		// 这里传入null，因为rru和本地小区的关联也会添加rru_ant类型的记录，此处直接跳过不检查
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, null))     // 这里传入null，因为rru和本地小区的关联也会添加rru_ant类型的记录，此处直接跳过不检查
 			{
 				return false;
 			}
@@ -136,7 +133,25 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		#endregion
+		/// <summary>
+		/// 查询天线阵安装规划表中的一条记录
+		/// </summary>
+		/// <param name="wholeLink"></param>
+		/// <param name="mapMibInfo"></param>
+		/// <returns></returns>
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		{
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return null;
+			}
+
+			return GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
+		}
+
+		#endregion 公共接口区
 
 		#region 私有接口
 
@@ -148,7 +163,7 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		private bool SetRruLinkAntInfo(DevAttributeInfo record, string strValue)
 		{
-			var strAntNo = m_antDev.m_strOidIndex.Trim('.');;
+			var strAntNo = m_antDev.m_strOidIndex.Trim('.'); ;
 			var strPathNo = m_nAntPort.ToString();
 			if ("-1" == strValue)
 			{
@@ -156,12 +171,11 @@ namespace NetPlan.DevLink
 				strPathNo = "-1";
 			}
 
-			return  record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
+			return record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
 					record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", strPathNo);
 		}
 
-		#endregion
-
+		#endregion 私有接口
 
 		#region 私有数据区
 
@@ -172,6 +186,6 @@ namespace NetPlan.DevLink
 		private string m_strRruAntIndex;
 		private const EnumDevType m_recordType = EnumDevType.rru_ant; // todo 后面移动到基类中
 
-		#endregion
+		#endregion 私有数据区
 	}
 }

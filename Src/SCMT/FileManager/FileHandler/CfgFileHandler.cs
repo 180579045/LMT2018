@@ -12,11 +12,16 @@ using LinkPath;
 
 namespace FileManager.FileHandler
 {
-	using LinkPath;
-	using LmtbSnmp;
-	using MIBValMAP = Dictionary<string, string>;
-
-	public sealed class CfgFileHandler : BaseFileHandler
+    using LinkPath;
+    using LmtbSnmp;
+    using SCMTOperationCore.Elements;
+    using MIBValMAP = Dictionary<string, string>;
+    public enum DataModeEnum
+    {
+        BIG_ENDIAN = 0,
+        SMALL_ENDIAN = 2
+    };
+    public sealed class CfgFileHandler : BaseFileHandler
 	{
 		public CfgFileHandler(string ip) : base(ip)
 		{
@@ -136,6 +141,37 @@ namespace FileManager.FileHandler
 			return bResult;
 		}
 
+	    private bool GetDataBigOrSmallEndian(out DataModeEnum mode)
+	    {
+	        mode = DataModeEnum.BIG_ENDIAN;
+            //获取基站类型
+            var pdu = new CDTLmtbPdu();
+	        string cmdName = "GetEquipmentCommonInfo";
+	        string mibName = "equipNEType";
+	        string equipNETypeValue;
+	        long reqId = 0;
+	        var ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0", this.boardAddr, ref pdu);
+	        if (ret != 0 || pdu.m_LastErrorStatus != 0)
+	        {
+	            return false;
+	        }
+	        if (!pdu.GetValueByMibName(this.boardAddr, mibName, out equipNETypeValue, "0"))
+	        {
+	            return false;
+	        }
+	        uint dataBlockPos;
+	        if ((EnbTypeEnum)Convert.ToInt32(equipNETypeValue) == EnbTypeEnum.ENB_EMB6116)
+	        {
+                //5G基站为小端
+	            mode = DataModeEnum.SMALL_ENDIAN;
+            }
+	        else
+	        {
+	            mode = DataModeEnum.BIG_ENDIAN;
+
+	        }
+	        return true;
+	    }
 		// 从config/LeafCFGCheck.xml文件中解析需要校验的信息
 		// key:english name，value:中文描述
 		private MIBValMAP GetNeedCheckNodeFromXml()
@@ -185,8 +221,25 @@ namespace FileManager.FileHandler
 			}
 
 			OMIC_STRU_ICFile_Header header = (OMIC_STRU_ICFile_Header) SerializeHelper.BytesToStruct(headBytes, typeof(OMIC_STRU_ICFile_Header));
-			var dataBlockPos = SerializeHelper.ReverseFourBytesData(header.u32DataBlk_Location);
-			fs.Seek(dataBlockPos, SeekOrigin.Begin);
+		    uint dataBlockPos;
+		    DataModeEnum mode;
+            if(!GetDataBigOrSmallEndian(out mode))
+		    {
+		        Log.Error("查询设备型号参数失败！");
+		        fs.Close();
+                return false;
+		    }
+            if (mode == DataModeEnum.SMALL_ENDIAN)
+		    {
+                //5G基站为小端
+		        dataBlockPos = header.u32DataBlk_Location;
+		    }
+		    else
+		    {
+		        dataBlockPos = SerializeHelper.ReverseFourBytesData(header.u32DataBlk_Location);
+            }
+
+            fs.Seek(dataBlockPos, SeekOrigin.Begin);
 
 			var dataHeadBytes = new byte[DataHead.SizeOf()];
 			readLen = fs.Read(dataHeadBytes, 0, DataHead.SizeOf());
@@ -203,8 +256,16 @@ namespace FileManager.FileHandler
 				fs.Close();
 				throw new CustomException("该配置文件的数据头部信息校验失败");
 			}
-
-			var tableCount = SerializeHelper.ReverseFourBytesData(dataHeader.u32TableCnt);
+		    uint tableCount;
+            if (mode == DataModeEnum.SMALL_ENDIAN)
+		    {
+                //5G基站为小端
+		        tableCount = dataHeader.u32TableCnt;
+		    }
+		    else
+		    {
+		        tableCount = SerializeHelper.ReverseFourBytesData(dataHeader.u32TableCnt);
+            }
 			for (var i = 0; i < tableCount; i++)
 			{
 				fs.Seek(dataBlockPos + DataHead.SizeOf(), SeekOrigin.Begin);
@@ -220,7 +281,16 @@ namespace FileManager.FileHandler
 				}
 
 				var tableItemIdx = (OM_STRU_IcfIdxTableItem)SerializeHelper.BytesToStruct(tableItemIdxBytes, typeof(OM_STRU_IcfIdxTableItem));
-				var tableInitPos = SerializeHelper.ReverseFourBytesData(tableItemIdx.u32CurTblOffset);
+			    uint tableInitPos;
+			    if (mode == DataModeEnum.SMALL_ENDIAN)
+			    {
+                    //5G基站为小端
+			        tableInitPos = tableItemIdx.u32CurTblOffset;
+			    }
+			    else
+			    {
+			        tableInitPos = SerializeHelper.ReverseFourBytesData(tableItemIdx.u32CurTblOffset);
+                }
 				fs.Seek(tableInitPos, SeekOrigin.Begin);
 
 				var cfgTableInfoBytes = new byte[OM_STRU_CfgFile_TblInfo.SizeOf()];
@@ -240,7 +310,16 @@ namespace FileManager.FileHandler
 				else
 				{
 					var nFieldCount = SerializeHelper.ReverseUshort(cfgTableInfo.u16FieldNum);
-					var nRecordCount = SerializeHelper.ReverseFourBytesData(cfgTableInfo.u32RecNum);
+				    uint nRecordCount;
+				    if (mode == DataModeEnum.SMALL_ENDIAN)
+				    {
+                        //5G基站为小端
+				        nRecordCount = cfgTableInfo.u32RecNum;
+				    }
+				    else
+				    {
+				        nRecordCount = SerializeHelper.ReverseFourBytesData(cfgTableInfo.u32RecNum);
+                    }
 					var nRecordLen = SerializeHelper.ReverseUshort(cfgTableInfo.u16RecLen);
 					for (var k = 0; k < nFieldCount; k++)
 					{

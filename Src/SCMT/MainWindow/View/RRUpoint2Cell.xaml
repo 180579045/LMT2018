@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SCMTMainWindow.View"
-             mc:Ignorable="d" Title="RRU端口归属小区"
+             mc:Ignorable="d" Title="RRU端口归属小区配置"
              Height="500" Width="800" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
@@ -14,9 +14,9 @@
             <RowDefinition Height="30"></RowDefinition>
         </Grid.RowDefinitions>
 
-        <Label Width="60" HorizontalAlignment="Left">LTE小区</Label>
-        <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="90 0 0 0" Click="Button_Click_2">快速配置</Button>
-        <Button Width="60" Height="25" HorizontalAlignment="Left" Margin="180 0 0 0" Click="Button_Click_3">重置</Button>
+        <Label Width="60" HorizontalAlignment="Left">NR小区</Label>
+        <Button Grid.Row="0" Width="60" Height="25" HorizontalAlignment="Left" Margin="90 0 0 0" Click="Button_Click_2">快速配置</Button>
+        <Button Grid.Row="0" Width="60" Height="25" HorizontalAlignment="Left" Margin="180 0 0 0" Click="Button_Click_3">重置</Button>
         
         <!--标题而已-->
         <Grid ShowGridLines="False" Margin="5" Grid.Row="1" Height="30">
@@ -33,7 +33,7 @@
                 <Label  HorizontalAlignment="Center">端口号</Label>
             </Border>
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="1">
-                <Label  HorizontalAlignment="Center">LTE小区ID</Label>
+                <Label  HorizontalAlignment="Center">NR小区ID</Label>
             </Border>
             <Border BorderBrush="Gray" BorderThickness="2" Grid.Column="2">
                 <Label  HorizontalAlignment="Center">射频通道方向</Label>

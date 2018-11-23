@@ -39,9 +39,15 @@ namespace NetPlan
 					var cmdType = GetSnmCmdTypeFromWcbOpType(op);
 
 					// 生成该天线阵的wcb信息
-					if (!GenerateAntWcbInfo(ant))
+					var gret = GenerateAntWcbInfo(ant);
+					if (-1 == gret)
 					{
 						return false;
+					}
+
+					if (1 == gret)
+					{
+						return true;
 					}
 
 					// 下发天线阵的wcb信息
@@ -99,8 +105,12 @@ namespace NetPlan
 			return otype == ltype && ovendor == lvendor;
 		}
 
-
-		private bool GenerateAntWcbInfo(DevAttributeInfo ant)
+		/// <summary>
+		/// 生成天线阵的wcb信息
+		/// </summary>
+		/// <param name="ant"></param>
+		/// <returns>-1：异常错误，0：成功，1：用户放弃</returns>
+		private int GenerateAntWcbInfo(DevAttributeInfo ant)
 		{
 			var mapKv = new Dictionary<string, string>
 			{
@@ -111,13 +121,28 @@ namespace NetPlan
 			if (!MibInfoMgr.GetNeedUpdateValue(ant, mapKv))
 			{
 				Log.Error($"查询索引为{ant.m_strOidIndex}天线阵的厂家和类型索引失败，不下发该天线阵的权重信息");
-				return false;
+				return -1;
 			}
 
 			var strAntNo = ant.m_strOidIndex.TrimStart('.');
 
 			var vi = mapKv["netAntArrayVendorIndex"];
 			var ti = mapKv["netAntArrayTypeIndex"];
+
+			// 只有大于8通道的天线阵才执行下面的操作
+			var at = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(vi, ti);
+			if (null == at)
+			{
+				Log.Error($"根据厂家索引{vi}和天线阵类型索引{ti}获取天线阵器件库信息失败");
+				return -1;
+			}
+
+			if (at.antArrayNum < 8)
+			{
+				Log.Debug($"索引为{ant.m_strOidIndex}的天线阵通道数量小于8，不予下发天线阵权重信息");
+				return 1;
+			}
+
 			var antWeight = NPEAntHelper.GetInstance().GetAntWeightByNo(vi, ti);
 			if (null != antWeight)
 			{
@@ -127,7 +152,7 @@ namespace NetPlan
 			else
 			{
 				Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵权重信息失败");
-				return false;
+				return -1;
 			}
 
 			// 生成耦合系数
@@ -139,12 +164,12 @@ namespace NetPlan
 			else
 			{
 				Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵耦合系数信息失败");
-				return false;
+				return -1;
 			}
 
 			// todo 波束宽度扫描信息后续添加
 
-			return true;
+			return 0;
 		}
 
 

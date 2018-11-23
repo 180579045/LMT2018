@@ -1804,7 +1804,8 @@ namespace SCMTMainWindow
 
 			foreach (LayoutAnchorable item in listAvalon)
 			{
-				if (item.Title == strFriendName)
+                //为了在文件管理中增加说明本地or基站。。
+				if (item.Title.Contains(strFriendName + "  ") )
 				{
 					item.Show();
 					return;
@@ -1816,7 +1817,7 @@ namespace SCMTMainWindow
 			var sub = new LayoutAnchorable
 			{
 				Content = content,
-				Title = strFriendName,
+				Title = strFriendName + "     本地(左侧)  <-->  基站(右侧)",
 				FloatingHeight = 800,
 				FloatingWidth = 600,
 				CanHide = true,
@@ -1901,19 +1902,21 @@ namespace SCMTMainWindow
 
 			if (!result)
 			{
-				Log.Error($"数据库初始化失败，不再查询基站的电源信息");
+				Log.Error($"数据库初始化失败，不再查询基站的设备信息");
 				return;
 			}
 
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
-			var pcuSlot = GetPcuSlot(ip);
+		    st = GetEquipType(ip);
+            /*
+            var pcuSlot = GetPcuSlot(ip);
 			// 5G基站的电源插槽是4
 			if (4 == pcuSlot)
 			{
 				st = EnbTypeEnum.ENB_EMB6116;
 			}
-
+            */
 			NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
 		}
 
@@ -1952,32 +1955,31 @@ namespace SCMTMainWindow
 			CSEnbHelper.ClearCurEnbAddr(ip);
 		}
 
-		/// <summary>
-		/// 查询基站的电源信息，用于获取电源的插槽号
-		/// </summary>
-		/// <param name="targetIp"></param>
-		/// <returns></returns>
-		public int GetPcuSlot(string targetIp)
-		{
-			const string cmdName = "GetBoardInfo";
-			long reqId;
-			var pdu = new CDTLmtbPdu(cmdName);
-			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0.0.4", targetIp, ref pdu);
-			if (0 != ret)
-			{
-				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-				return 4;
-			}
-
-			string boardType;
-			if (!pdu.GetValueByMibName(targetIp, "boardHardwareType", out boardType))
-			{
-				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-				return 4;
-			}
-
-			return (boardType == "106" ? 4 : 8);
-		}
+	    /// <summary>
+	    /// 查询基站的电源信息，用于获取电源的插槽号
+	    /// </summary>
+	    /// <param name="targetIp"></param>
+	    /// <returns></returns>
+	    public EnbTypeEnum GetEquipType(string targetIp)
+	    {
+	        const string cmdName = "GetEquipmentCommonInfo";
+	        long reqId;
+	        var pdu = new CDTLmtbPdu(cmdName);
+	        int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0", targetIp, ref pdu);
+	        if (ret != 0 || pdu.m_LastErrorStatus != 0)
+	        {
+	            ShowLogHelper.Show("查询设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+	            return EnbTypeEnum.ENB_EMB6116;
+	        }
+	        string equipType;
+	        if (!pdu.GetValueByMibName(targetIp, "equipNEType", out equipType))
+	        {
+	            ShowLogHelper.Show("查询基站设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+	            return EnbTypeEnum.ENB_EMB6116;
+            }
+            Log.Info($"基站设备类型是"+ equipType); Convert.ToInt32(equipType);
+            return (EnbTypeEnum)Convert.ToInt32(equipType);
+	    }     
 
 		#endregion 订阅消息及处理
 

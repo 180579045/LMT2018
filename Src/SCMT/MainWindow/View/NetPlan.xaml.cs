@@ -607,24 +607,6 @@ namespace SCMTMainWindow.View
                 ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
                 dlg.ShowDialog();
 
-                //BoradDetailData bd = new BoradDetailData();
-                ////初始化弹框默认数据
-                //bd.setDefaultDate(soltNum);
-                ////实例化弹窗
-                //AddBoardWindow broadDetailWindos = new AddBoardWindow();
-                ////初始化弹窗
-                //broadDetailWindos.SetOperationData(bd);
-                ////展示弹窗
-                //broadDetailWindos.ShowDialog();
-
-                //if (!broadDetailWindos.isOk)
-                //{
-                //    return;
-                //}
-
-                //获取弹窗中设置的板卡名称
-                //string boardName = BroadName(broadDetailWindos.detaiData.Bt);
-
                 if (!dlg.bOK)
                 {
                     return;
@@ -693,6 +675,7 @@ namespace SCMTMainWindow.View
                     DesignerItem designerItem = new DesignerItem();
                     designerItem.ItemName = strIRName + "-" + i;
                     designerItem.DevIndex = newBoardInfo.m_strOidIndex;
+					designerItem.PortNo = i;
 
                     Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
                     Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -717,7 +700,15 @@ namespace SCMTMainWindow.View
 
                     MyDesigner.Children.Add(designerItem);
                     SetConnectorDecoratorTemplate(designerItem);
-                }
+					if (bHiddenLineConnector)
+					{
+						HiddenConnectorDecoratorTemplate(designerItem);
+					}
+					else
+					{
+						VisibilityConnectorDecoratorTemplate(designerItem);
+					}
+				}
             }
             else if (e.ClickCount == 1)                   //单击显示属性，每次切换的时候重新获取
             {
