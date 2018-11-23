@@ -240,6 +240,18 @@ ParseBoardToRhub:
 					continue;
 				}
 
+				var rruTypeIndex = MibInfoMgr.GetNeedUpdateValue(rru, "netRRUTypeIndex");
+				if (null == rruTypeIndex)
+				{
+					return false;
+				}
+
+				if (NPERruHelper.GetInstance().IsPicoDevice(int.Parse(rruTypeIndex)))
+				{
+					Log.Debug($"索引为{rru.m_strOidIndex}的RRU是pico，bbu与之没有连接关系");
+					continue;
+				}
+
 				// RRU最多有个4个光口连接板卡获取RRU
 				for (var i = 1; i < 5; i++)
 				{
@@ -989,14 +1001,7 @@ ParseBoardToRhub:
 			foreach (var rru in rruList)
 			{
 				var rruType = rru.GetFieldOriginValue("netRRUTypeIndex");
-				var rruStaticInfo = NPERruHelper.GetInstance().GetRruInfoByType(int.Parse(rruType));
-				if (string.IsNullOrEmpty(rruStaticInfo.rruTypeName))
-				{
-					continue;
-				}
-
-				// 类型名如果是p开头，就是pico设备
-				if (string.CompareOrdinal(rruStaticInfo.rruTypeName[0].ToString(), "p") != 0)
+				if (!NPERruHelper.GetInstance().IsPicoDevice(int.Parse(rruType)))
 				{
 					continue;
 				}
