@@ -416,10 +416,24 @@ namespace LmtbSnmp
 
 				// 2.分解取值范围
 				var mapKv = MibStringHelper.SplitManageValue(mvr);
+				var realValue = strValue;
+
+				if (strValue.Contains('|'))
+				{
+					// 3.处理strValue，有可能是hsctd|HSCTD板这种格式啊，泪奔~~~~，据说是为了支持中英文~~~ todo 目前先只使用|后面的值
+					var vsMap = MibStringHelper.SplitMibEnumString(strValue);
+					if (vsMap.Count != 1)
+					{
+						Log.Error($"老铁，你是认真的吗？值：{strValue}怎么匹配枚举值啊？？");
+						throw new ArgumentException(strValue);
+					}
+
+					realValue = vsMap.First().Value;
+				}
 
 				foreach (var kv in mapKv)
 				{
-					if (kv.Value == strValue)
+					if (kv.Value == realValue)
 					{
 						return kv.Key.ToString();
 					}
