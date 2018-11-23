@@ -68,8 +68,11 @@ namespace NetPlan.DevLink
 
 			mapMibInfo[EnumDevType.rhub].Remove(m_rhubDev);
 			mapMibInfo[EnumDevType.rhub].Add(rhubClone);
-		
+
 			// todo rhub级联的情况暂不支持
+
+			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"删除类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
 
 			return true;
 		}
@@ -137,6 +140,9 @@ namespace NetPlan.DevLink
 			mapMibInfo[EnumDevType.rhub].Add(rhubClone);
 
 			AddDevToMap(mapMibInfo, EnumDevType.board_rru, irRecord);
+
+			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"添加类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
 
 			return true;
 		}
@@ -276,8 +282,8 @@ namespace NetPlan.DevLink
 
 			if ("6" == rowstatus && dev.m_recordType != RecordDataType.NewAdd)
 			{
-				Log.Error($"RHUB{dev.m_strOidIndex}处于待删除状态，所有属性值无效");
-				return false;
+				Log.Error($"RHUB{dev.m_strOidIndex}行状态为：待删除");
+				//return false;
 			}
 
 			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessRackNo", bbi.strRackNo))

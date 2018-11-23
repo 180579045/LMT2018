@@ -46,6 +46,9 @@ namespace NetPlan.DevLink
 
 			// todo rru与board的最后一条连接删除时，才设置板类型等信息，先不做
 
+			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"删除类型为：{m_irRecordType.ToString()}，索引为：{oldRecord.m_strOidIndex}的记录成功");
+
 			return true;
 		}
 
@@ -79,6 +82,9 @@ namespace NetPlan.DevLink
 			AddDevToMap(mapMibInfo, EnumDevType.board_rru, irRecord);
 
 			// todo RRU级联的情况
+			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"添加类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
+
 
 			return true;
 		}

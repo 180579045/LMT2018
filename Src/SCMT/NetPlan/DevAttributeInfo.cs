@@ -493,6 +493,102 @@ namespace NetPlan
 		public string m_strDevVersion { get; }
 	}
 
+	/// <summary>
+	/// 无类型设备信息 todo 公共函数封装好
+	/// </summary>
+	public class DevAttributeBase
+	{
+		public string m_strOidIndex { get; private set; }      // 该条记录的索引，例如板卡索引：.0.0.2
+
+		// 所有的属性。key:field en name
+		public Dictionary<string, MibLeafNodeInfo> m_mapAttributes;
+
+		public string m_strEntryName;                   // 设备类型枚举值
+
+		public bool m_bIsScalar;                   // 设备是否是标量表
+
+		public RecordDataType m_recordType { get; set; }    // 记录类型
+
+		public DevAttributeBase(string strEntryName, string strIdx)
+		{
+			m_mapAttributes = new Dictionary<string, MibLeafNodeInfo>();
+
+			m_strOidIndex = strIdx;
+			m_strEntryName = strEntryName;
+			m_recordType = RecordDataType.NewAdd;
+
+			InitDevInfo();
+		}
+
+
+		protected void InitDevInfo()
+		{
+			var tbl = Database.GetInstance().GetMibDataByTableName(m_strEntryName, CSEnbHelper.GetCurEnbAddr());
+			if (null == tbl)
+			{
+				return;
+			}
+
+			var indexGrade = tbl.indexNum;
+			var attributes = NPECmdHelper.GetInstance().GetDevAttributesByEntryName(m_strEntryName);
+			if (null == attributes)
+			{
+				return;
+			}
+
+			m_mapAttributes = attributes;
+
+			// 还需要加上索引列
+			if (indexGrade > 0)
+			{
+				m_bIsScalar = false;
+				AddIndexColumnToAttributes(tbl.childList, indexGrade);
+			}
+
+			var attriList = m_mapAttributes.Values.ToList();
+			attriList.Sort(new MLNIComparer());
+
+			// 排序后需要重新设置属性
+			m_mapAttributes.Clear();
+			foreach (var item in attriList)
+			{
+				m_mapAttributes[item.mibAttri.childNameMib] = item;
+			}
+		}
+
+		/// <summary>
+		/// 属性中添加索引列
+		/// </summary>
+		/// <param name="childList"></param>
+		/// <param name="indexGrade"></param>
+		/// <returns></returns>
+		private bool AddIndexColumnToAttributes(List<MibLeaf> childList, int indexGrade)
+		{
+			for (var i = 1; i <= indexGrade; i++)
+			{
+				var indexColumn = childList.FirstOrDefault(childLeaf => i == childLeaf.childNo);
+				if (null == indexColumn)
+				{
+					Log.Error("查找信息失败");
+					return false;
+				}
+
+				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
+				var info = new MibLeafNodeInfo
+				{
+					m_strOriginValue = indexVale,
+					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
+					m_bVisible = true,
+					mibAttri = indexColumn
+				};
+
+				m_mapAttributes.Add(indexColumn.childNameMib, info);
+			}
+			return true;
+		}
+	}
+
+
 	// 连接的源端或者目的端
 	public class LinkEndpoint
 	{
@@ -507,6 +603,11 @@ namespace NetPlan
 			strDevIndex = null;
 			portType = EnumPortType.unknown;
 			nPortNo = -1;
+		}
+
+		public override string ToString()
+		{
+			return $"设备类型：{devType.ToString()},设备索引：{strDevIndex}，端口类型：{portType.ToString()}，端口号：{nPortNo}";
 		}
 	}
 
@@ -607,6 +708,12 @@ namespace NetPlan
 			}
 
 			return -1;
+		}
+
+
+		public override string ToString()
+		{
+			return $"源端信息：{m_srcEndPoint},目的端信息：{m_dstEndPoint}";
 		}
 	}
 }

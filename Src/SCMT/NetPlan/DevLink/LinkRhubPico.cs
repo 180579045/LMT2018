@@ -70,10 +70,14 @@ namespace NetPlan.DevLink
 
 				var newRecord = new DevAttributeInfo(EnumDevType.rhub_prru, m_strEthRecordIndex);
 				AddDevToMap(mapMibInfo, EnumDevType.rhub_prru, newRecord);
+
+				Log.Debug($"添加类型为：{m_ethRecordType.ToString()}，索引为：{newRecord.m_strOidIndex}的记录成功");
 			}
 
 			mapMibInfo[EnumDevType.rru].Remove(m_picoDev);
 			mapMibInfo[EnumDevType.rru].Add(picoClone);
+
+			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
 
 			return true;
 		}
@@ -109,6 +113,7 @@ namespace NetPlan.DevLink
 
 				var record = GetDevAttributeInfo(m_strEthRecordIndex, EnumDevType.rhub_prru);
 				MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.rhub_prru, record);
+				Log.Debug($"删除类型为：{m_ethRecordType.ToString()}，索引为：{record.m_strOidIndex}的记录成功");
 			}
 
 			if (RecordDataType.NewAdd != picoClone.m_recordType)
@@ -118,6 +123,8 @@ namespace NetPlan.DevLink
 
 			mapMibInfo[EnumDevType.rru].Remove(m_picoDev);
 			mapMibInfo[EnumDevType.rru].Add(picoClone);
+
+			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
 
 			return true;
 		}

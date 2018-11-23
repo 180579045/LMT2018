@@ -41,7 +41,12 @@ namespace NetPlan.DevLink
 				mapMibInfo[m_recordType].Remove(oldRecord);
 			}
 
-			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
+			AddDevToMap(mapMibInfo, m_recordType, newRecord);
+
+			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"添加类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
+
+			return true;
 		}
 
 		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
@@ -65,6 +70,9 @@ namespace NetPlan.DevLink
 			}
 
 			mapMibInfo[m_recordType].Remove(raLink);
+
+			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"删除类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
 
 			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
 		}
