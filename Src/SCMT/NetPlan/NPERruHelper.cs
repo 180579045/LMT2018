@@ -93,6 +93,20 @@ namespace NetPlan
 			return _npeRru.rruTypePortInfo.Where(portInfo => portInfo.rruTypePortManufacturerIndex == nVendorIdx && portInfo.rruTypePortIndex == nTypeIdx).ToList();
 		}
 
+		/// <summary>
+		/// 根据厂家索引和编号索引获取rru类型信息
+		/// </summary>
+		/// <param name="strTypeIdx"></param>
+		/// <param name="strVendorIdx"></param>
+		/// <returns></returns>
+		public RruInfo GetRruTypeInfoByTypeAndVendorIdx(string strTypeIdx, string strVendorIdx)
+		{
+			var nType = int.Parse(strTypeIdx);
+			var nVendor = int.Parse(strVendorIdx);
+
+			return _npeRru.rruTypeInfo.FirstOrDefault(item => item.rruTypeManufacturerIndex == nVendor && item.rruTypeIndex == nType);
+		}
+
 		#endregion
 
 		#region 私有方法
