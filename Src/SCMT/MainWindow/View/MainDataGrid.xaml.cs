@@ -565,12 +565,25 @@ namespace SCMTMainWindow.View
                         MibLeaf leaf = GetRowStatusInfo(info);
                         if (leaf == null)
                             return;
+
+						// 找到tbl信息
+	                    MibTable tblInfo;
+	                    string errMsg;
+	                    if (!Database.GetInstance().GetMibDataByTableName(info.m_tableName, out tblInfo,
+		                    CSEnbHelper.GetCurEnbAddr(), out errMsg))
+	                    {
+		                    MessageBox.Show($"根据表名{info.m_tableName}查找MIB表信息失败，请确认MIB版本是否匹配");
+							return;
+	                    }
+
+	                    var nIdxCount = tblInfo.indexNum;
+
 						//添加删除指令
 						// TODO 临时方案
 						string strOidPrefix = SnmpToDatabase.GetMibPrefix();
 						// 获取索引
 						string strIndex = null;
-						DataGridUtils.GetMibIndex(m_selectDataGrid.Properties, out strIndex);
+						DataGridUtils.GetMibIndex(m_selectDataGrid.Properties, nIdxCount, out strIndex);
 						
 
 						// 组装Vb列表

@@ -218,7 +218,7 @@ namespace SCMTMainWindow.Utils
 		/// <param name="lineData">DataGrid行数据</param>
 		/// <param name="enName2Value">英文名称与值对应关系</param>
 		/// <returns></returns>
-		public static bool GetMibIndex(Dictionary<string, object> lineData, out string strIndex)
+		public static bool GetMibIndex(Dictionary<string, object> lineData, int nIdxGrade, out string strIndex)
 		{
 			strIndex = "";
 
@@ -248,7 +248,14 @@ namespace SCMTMainWindow.Utils
 				if (!string.IsNullOrEmpty(oid))
 				{
 					// 截取最后一位索引
-					strIndex = oid.Substring(oid.LastIndexOf("."));
+					var idx = MibStringHelper.GetIndexValueByGrade(oid, nIdxGrade);
+					if (null == idx)
+					{
+						continue;
+					}
+
+					Log.Debug($"根据oid:{oid}截取出{nIdxGrade}维索引：{idx}");
+					strIndex = idx;
 				}
 			}
 
