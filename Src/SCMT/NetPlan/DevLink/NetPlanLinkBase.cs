@@ -59,7 +59,7 @@ namespace NetPlan.DevLink
 			if ("6" == rruRs && rru.m_recordType != RecordDataType.NewAdd)
 			{
 				Log.Error($"RRU{rru.m_strOidIndex}处于待删除状态，所有属性值无效");
-				return false;
+				//return false;
 			}
 
 			if (!rru.SetFieldLatestValue("netRRUAccessRackNo", bbi.strRackNo))
@@ -210,7 +210,7 @@ namespace NetPlan.DevLink
 			if ("6" == boardRs && board.m_recordType != RecordDataType.NewAdd)
 			{
 				Log.Error($"板卡{board.m_strOidIndex}处于待删除状态，所有属性值无效");
-				return null;
+				//return null;
 			}
 
 			var rackNo = MibInfoMgr.GetNeedUpdateValue(board, "netBoardRackNo");
