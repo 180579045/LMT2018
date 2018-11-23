@@ -55,29 +55,14 @@ namespace SCMTMainWindow.View
                 // 获取所有列信息，并将列信息填充到DataGrid当中;
                 foreach (var iter in m_ColumnModel.PropertyList)
                 {
-                    DataGridTemplateColumn column = new DataGridTemplateColumn();
-                    DataTemplate TextBlockTemplate = new DataTemplate();
-
-                    string textblock_xaml =
-                       @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
-                                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
-                                            xmlns:model='clr-namespace:WPF.Model'>
-                                <TextBlock Text='{Binding " + iter.Item1 + @".m_Content}'/>
-                            </DataTemplate>";
-
-                    TextBlockTemplate = XamlReader.Parse(textblock_xaml) as DataTemplate;
-
-                    column.Header = iter.Item2;                                      // 填写列名称;
-                    column.CellTemplate = TextBlockTemplate;                         // 将单元格的显示形式赋值;
-
-                    this.DynamicDataGrid.Columns.Add(column);
                     // 显示字符类型的数据结构;
-                    /*if (iter.Item3 is DataGrid_Cell_MIB)
+                    if (iter.Item3 is DataGrid_Cell_MIB)
                     {
                         // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
                         var column = new DataGridTextColumn
                         {
                             Header = iter.Item2,
+                            IsReadOnly = (iter.Item3 as DataGrid_Cell_MIB).m_bIsReadOnly,
                             Binding = new Binding(iter.Item1 + ".m_Content")
                         };
                         
@@ -111,6 +96,7 @@ namespace SCMTMainWindow.View
                         column.CellTemplate = TextBlockTemplate;                         // 将单元格的显示形式赋值;
                         column.CellEditingTemplate = ComboBoxTemplate;                   // 将单元格的编辑形式赋值;
                         column.Width = 230;                                              // 设置显示宽度;
+                        column.IsReadOnly = (iter.Item3 as DataGrid_Cell_MIB_ENUM).m_bIsReadOnly;
 
                         this.DynamicDataGrid.Columns.Add(column);
                     }
@@ -138,7 +124,7 @@ namespace SCMTMainWindow.View
                     else
                     {
 
-                    }*/
+                    }
                 }
             }
         }
@@ -153,7 +139,7 @@ namespace SCMTMainWindow.View
             InitializeComponent();
 
             this.DynamicDataGrid.MouseMove += DynamicDataGrid_MouseMove;                          // 鼠标移动到单元格位置上边的时候;
-            //this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
+            this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
             this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;            // 当用户的选择发生变化的时候(用在枚举、BIT类型修改完成后);
             this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;              // 捕获鼠标事件，用于判断用户拖拽事件;
             this.DynamicDataGrid.LostFocus += DynamicDataGrid_LostFocus;                          // 单元格失去焦点事件;
@@ -294,31 +280,28 @@ namespace SCMTMainWindow.View
 
         private void DynamicDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //注释掉原来对基本信息列表的编辑操作
-            /*// 只处理ComboBox
+            // 只处理ComboBox
 
-           // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
+            // 如果SelectedIndex是-1，则表明是初始化过程中调用的;
             // 如果RemovedItems.Count是0的话，则表明是第一次发生变化的时候被调用的;
-            if (((e.OriginalSource as ComboBox).SelectedIndex == -1) || (e.RemovedItems.Count == 0))
+            if (typeof(ComboBox) == e.OriginalSource.GetType())
+            {
+                if ((e.OriginalSource as ComboBox).SelectedIndex == -1)
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                if ((sender as DataGrid).SelectedCells[0].Item.GetType() != typeof(DyDataGrid_MIBModel))
+                    return;
+            }
+            catch (Exception ex)
             {
                 return;
             }
-			if (typeof(ComboBox) != e.OriginalSource.GetType())
 
-			{
-				return;
-			}
-			else
-			{
-				try
-				{
-					(sender as DataGrid).SelectedCells[0].Item.GetType();
-				}
-				catch (Exception ex)
-				{
-					return;
-				}
-			}
 			try
 			{
 				((sender as DataGrid).SelectedCells[0].Item as DyDataGrid_MIBModel).JudgePropertyName_ChangeSelection(
@@ -328,7 +311,9 @@ namespace SCMTMainWindow.View
 			{
 
 
-			}*/
+			}
+            
+            //m_selectDataGrid = (DyDataGrid_MIBModel)(sender as DataGrid).SelectedCells[0].Item;
         }
 		
         /// <summary>

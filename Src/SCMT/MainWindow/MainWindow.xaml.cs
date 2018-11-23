@@ -1543,7 +1543,8 @@ namespace SCMTMainWindow
 					{
 						m_Content = null,
 						oid = null,
-						MibName_CN = "实例描述",
+                        m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib, CSEnbHelper.GetCurEnbAddr()),
+                        MibName_CN = "实例描述",
 						MibName_EN = "indexlist"
 					}, "实例描述");
 				}
@@ -1553,6 +1554,7 @@ namespace SCMTMainWindow
 					{
 						m_Content = null,
 						oid = null,
+                        m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib,CSEnbHelper.GetCurEnbAddr()),
 						MibName_CN = leaf.childNameCh,
 						MibName_EN = leaf.childNameMib
 					}, leaf.childNameCh);
@@ -1652,14 +1654,15 @@ namespace SCMTMainWindow
 						IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
 					}
 
-					// 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
-					// 参数一：属性名称;
-					// 参数二：单元格实例;
-					// 参数三：单元格列中文名称;
-					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
-					{
-						m_Content = IndexContent,
-						oid = IndexOIDPre + ".",
+                    // 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
+                    // 参数一：属性名称;
+                    // 参数二：单元格实例;
+                    // 参数三：单元格列中文名称;
+                    model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+                    {
+                        m_Content = IndexContent,
+                        oid = IndexOIDPre + ".",
+                        m_bIsReadOnly = true,
 						MibName_CN = "实例描述",
 						MibName_EN = "indexlist"
 					}, "实例描述");
