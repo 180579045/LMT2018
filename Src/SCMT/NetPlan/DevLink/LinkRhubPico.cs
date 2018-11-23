@@ -55,6 +55,12 @@ namespace NetPlan.DevLink
 					return false;
 				}
 
+				if (!SetIrPortInfoInPico(m_rhubDev, picoClone, m_nPicoPort))
+				{
+					Log.Error($"设置pico的接入板光口号和接入级数失败");
+					return false;
+				}
+
 				// m_strEthRecordIndex只有在rhub已经连接过板卡后才会生成
 				if (null == m_strEthRecordIndex)
 				{
@@ -261,6 +267,36 @@ namespace NetPlan.DevLink
 				   MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", nHubNo.ToString());
 		}
 
+		private static bool SetIrPortInfoInPico(DevAttributeInfo hubdev, DevAttributeInfo picoDev, int nPicoIrPort)
+		{
+			// 从hub设备中找到任何一个光口连接的板卡光口号
+			for (int i = 1; i < 5; i++)
+			{
+				var mibName = $"netRHUBOfp{i}AccessOfpPortNo";
+				var value = MibInfoMgr.GetNeedUpdateValue(hubdev, mibName);
+				if (null == value || "-1" == value)
+				{
+					continue;
+				}
+
+				mibName = $"netRHUBOfp{i}AccessLinePosition";
+				var apos = MibInfoMgr.GetNeedUpdateValue(hubdev, mibName);
+				if (null == apos || "-1" == apos)
+				{
+					continue;
+				}
+
+				var picoSlotMib = $"netRRUOfp{nPicoIrPort}AccessOfpPortNo";
+				var picoAposMib = $"netRRUOfp{nPicoIrPort}AccessLinePosition";
+				picoDev.SetFieldLatestValue(picoSlotMib, value);
+				picoDev.SetFieldLatestValue(picoAposMib, apos);
+				break;
+			}
+
+			return true;
+		}
+
+
 		/// <summary>
 		/// 增加rhub到pico之间的连接以太网连接
 		/// </summary>
@@ -300,7 +336,8 @@ namespace NetPlan.DevLink
 
 				var newRecord = new DevAttributeInfo(EnumDevType.rhub_prru, ridx);
 				AddDevToMap(mapAllData, EnumDevType.rhub_prru, newRecord);
-				Log.Debug($"索引为{ridx}类型为rhub_prru的记录已经存在");
+
+				SetIrPortInfoInPico(rhubDev, picoDev, item.Key);
 			}
 
 			return true;
