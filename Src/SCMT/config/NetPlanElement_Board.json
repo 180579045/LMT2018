@@ -59,11 +59,11 @@
           "supportBoardType": [
             {
               "value": "178",
-              "desc": "SCTE板"
+              "desc": "scte|SCTE板"
             },
             {
               "value": "240",
-              "desc": "SCTF板"
+              "desc": "sctf|SCTF板"
             }
           ]
         },
@@ -72,19 +72,19 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "BPOG板"
+              "desc": "bpog|BPOG板"
             },
             {
               "value": "177",
-              "desc": "BPOH板"
+              "desc": "bpoh|BPOH板"
             },
             {
               "value": "241",
-              "desc": "BPOI板"
+              "desc": "bpoi|BPOI板"
             },
             {
               "value": "243",
-              "desc": "BPOK板"
+              "desc": "bpok|BPOK板"
             }
           ]
         },
@@ -93,15 +93,15 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "BPOG板"
+              "desc": "bpog|BPOG板"
             },
             {
               "value": "177",
-              "desc": "BPOH板"
+              "desc": "bpoh|BPOH板"
             },
             {
               "value": "241",
-              "desc": "BPOI板"
+              "desc": "bpoi|BPOI板"
             }
           ]
         },
@@ -110,19 +110,19 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "BPOG板"
+              "desc": "bpog|BPOG板"
             },
             {
               "value": "177",
-              "desc": "BPOH板"
+              "desc": "bpoh|BPOH板"
             },
             {
               "value": "241",
-              "desc": "BPOI板"
+              "desc": "bpoi|BPOI板"
             },
             {
               "value": "243",
-              "desc": "BPOK板"
+              "desc": "bpok|BPOK板"
             }
           ]
         },
@@ -131,15 +131,15 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "BPOG板"
+              "desc": "bpog|BPOG板"
             },
             {
               "value": "177",
-              "desc": "BPOH板"
+              "desc": "bpoh|BPOH板"
             },
             {
               "value": "241",
-              "desc": "BPOI板"
+              "desc": "bpoi|BPOI板"
             }
           ]
         },
@@ -148,19 +148,19 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "BPOG板"
+              "desc": "bpog|BPOG板"
             },
             {
               "value": "177",
-              "desc": "BPOH板"
+              "desc": "bpoh|BPOH板"
             },
             {
               "value": "241",
-              "desc": "BPOI板"
+              "desc": "bpoi|BPOI板"
             },
             {
               "value": "243",
-              "desc": "BPOK板"
+              "desc": "bpok|BPOK板"
             }
           ]
         },
@@ -169,15 +169,15 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "BPOG板"
+              "desc": "bpog|BPOG板"
             },
             {
               "value": "177",
-              "desc": "BPOH板"
+              "desc": "bpoh|BPOH板"
             },
             {
               "value": "241",
-              "desc": "BPOI板"
+              "desc": "bpoi|BPOI板"
             }
           ]
         }
@@ -196,7 +196,7 @@
           "supportBoardType": [
             {
               "value": "23",
-              "desc": "HSCTD板"
+              "desc": "hsctd|HSCTD板"
             }
           ]
         },
@@ -205,7 +205,7 @@
           "supportBoardType": [
             {
               "value": "23",
-              "desc": "HSCTD板"
+              "desc": "hsctd|HSCTD板"
             }
           ]
         },
@@ -230,7 +230,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "HBPOD板"
+              "desc": "hbpod|HBPOD板"
             }
           ]
         },
@@ -239,7 +239,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "HBPOD板"
+              "desc": "hbpod|HBPOD板"
             }
           ]
         },
@@ -248,7 +248,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "HBPOD板"
+              "desc": "hbpod|HBPOD板"
             }
           ]
         },
@@ -257,7 +257,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "HBPOD板"
+              "desc": "hbpod|HBPOD板"
             }
           ]
         },
@@ -266,7 +266,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "HBPOD板"
+              "desc": "hbpod|HBPOD板"
             }
           ]
         },
@@ -275,7 +275,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "HBPOD板"
+              "desc": "hbpod|HBPOD板"
             }
           ]
         }
@@ -286,7 +286,7 @@
     {
       "number": 0,
       "boardType": 143,
-      "boardTypeName": "BPOG板",
+      "boardTypeName": "bpog|BPOG板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -340,7 +340,7 @@
     {
       "number": 1,
       "boardType": 177,
-      "boardTypeName": "BPOH板",
+      "boardTypeName": "bpoh|BPOH板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -461,7 +461,7 @@
     {
       "number": 2,
       "boardType": 178,
-      "boardTypeName": "SCTE板",
+      "boardTypeName": "scte|SCTE板",
       "supportEquipType": 5,
       "supportConnectElement": [],
       "irOfpNum": 0,
@@ -470,7 +470,7 @@
     {
       "number": 3,
       "boardType": 240,
-      "boardTypeName": "SCTF板",
+      "boardTypeName": "sctf|SCTF板",
       "supportEquipType": 5,
       "supportConnectElement": [],
       "irOfpNum": 0,
@@ -479,7 +479,7 @@
     {
       "number": 4,
       "boardType": 241,
-      "boardTypeName": "BPOI板",
+      "boardTypeName": "bpoi|BPOI板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -600,7 +600,7 @@
     {
       "number": 5,
       "boardType": 243,
-      "boardTypeName": "BPOK板",
+      "boardTypeName": "bpok|BPOK板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -669,7 +669,7 @@
     {
       "number": 6,
       "boardType": 22,
-      "boardTypeName": "HBPOD板",
+      "boardTypeName": "hbpod|HBPOD板",
       "supportEquipType": 10,
       "supportConnectElement": [
         {
@@ -760,7 +760,7 @@
     {
       "number": 7,
       "boardType": 23,
-      "boardTypeName": "HSCTD板",
+      "boardTypeName": "hsctd|HSCTD板",
       "supportEquipType": 10,
       "supportConnectElement": [],
       "irOfpNum": 0,
@@ -826,7 +826,7 @@
       "number": 2,
       "rHubType": "pRHB3112V3",
       "friendlyUIName": "rHUB3.0",
-      "irOfpNum": 4,
+      "irOfpNum": 6,
       "irOfpPortTransSpeed": [
         {
           "value": "4",
@@ -835,18 +835,6 @@
       ],
       "ethPortRNum": 8,
       "ethPortTransSpeed": [
-        {
-          "value": "0",
-          "desc": "mbps1250|1.25G"
-        },
-        {
-          "value": "1",
-          "desc": "mbps2500|2.5G"
-        },
-        {
-          "value": "2",
-          "desc": "mbps5000|5G"
-        },
         {
           "value": "3",
           "desc": "mbps10000|10G"

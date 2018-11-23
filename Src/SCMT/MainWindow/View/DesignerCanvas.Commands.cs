@@ -910,7 +910,11 @@ namespace SCMTMainWindow.View
         {
             foreach (Connection connection in SelectionService.CurrentSelection.OfType<Connection>())
             {
-                DeleteConnection(connection);
+                if(!DeleteConnection(connection))
+				{
+					MessageBox.Show("删除链接失败");
+					return;
+				}
             }
 
             foreach (DesignerItem item in SelectionService.CurrentSelection.OfType<DesignerItem>())
@@ -920,17 +924,26 @@ namespace SCMTMainWindow.View
                 List<Connector> connectors = new List<Connector>();
                 GetConnectors(cd, connectors);
 
-                foreach (Connector connector in connectors)
-                {
-                    foreach (Connection con in connector.Connections)
-                    {
-                        DeleteConnection(con);
-                    }
-                }
-                this.Children.Remove(item);
+				foreach (Connector connector in connectors)
+				{
+					List<Connection> listConnectionToDelete = new List<Connection>();
+					foreach (Connection con in connector.Connections)
+					{
+						listConnectionToDelete.Add(con);
+					}
 
-                //从全局 list 中删除相关的项
-                Grid grid = item.Content as Grid;
+					for (int i = 0; i < listConnectionToDelete.Count; i++)
+					{
+						if (!DeleteConnection(listConnectionToDelete[i]))
+						{
+							MessageBox.Show("删除链接失败");
+							return;
+						}
+					}
+				}
+
+				//从全局 list 中删除相关的项
+				Grid grid = item.Content as Grid;
                 TextBlock text = grid.Children[1] as TextBlock;
 
                 if(MibInfoMgr.GetInstance().DelDev(item.DevIndex, item.DevType))
@@ -951,7 +964,9 @@ namespace SCMTMainWindow.View
                             this.gridProperty.Children.Clear();
                         }
                     }
-                }                
+
+					this.Children.Remove(item);
+				}                
             }
 
             SelectionService.ClearSelection();
@@ -1037,6 +1052,8 @@ namespace SCMTMainWindow.View
 
             if (MibInfoMgr.GetInstance().DelLink(srcPort, dstPort))
             {
+				connection.Source.Connections.Remove(connection);
+				connection.Sink.Connections.Remove(connection);
                 this.Children.Remove(connection);
                 return true;
             }

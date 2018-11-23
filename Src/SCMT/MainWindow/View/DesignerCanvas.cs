@@ -459,8 +459,13 @@ namespace SCMTMainWindow.View
             {
                 strName = "g_TwoPathRHUB";
                 RRUSize = new Size(260, 70);
-            }
-            else
+			}
+			else if (nMaxRRUPath == 6)
+			{
+				strName = "g_SixPathRHUB";
+				RRUSize = new Size(260, 70);
+			}
+			else
             {
                 strName = "g_SingleRHUB";
                 RRUSize = new Size(260, 70);

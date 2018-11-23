@@ -118,6 +118,25 @@
       <LineGeometry StartPoint="0,50" EndPoint="10,50"></LineGeometry>
       <LineGeometry StartPoint="80,50" EndPoint="70, 50"></LineGeometry>
     </GeometryGroup>
+    
+    <!--双通道rHUBarb-->
+    <GeometryGroup x:Key="SixPathRHUB">
+      <RectangleGeometry Rect="10,20, 60, 40"></RectangleGeometry>
+      <LineGeometry StartPoint="16.66,20" EndPoint="16.66,0"></LineGeometry>
+      <LineGeometry StartPoint="23.33,20" EndPoint="23.33,0"></LineGeometry>
+      <LineGeometry StartPoint="29.99,20" EndPoint="29.99,0"></LineGeometry>
+      <LineGeometry StartPoint="36.66,20" EndPoint="36.66,0"></LineGeometry>
+      <LineGeometry StartPoint="43.33,20" EndPoint="43.33,0"></LineGeometry>
+      <LineGeometry StartPoint="49.99,20" EndPoint="49.99,0"></LineGeometry>
+      <LineGeometry StartPoint="56.66,20" EndPoint="56.66,0"></LineGeometry>
+      <LineGeometry StartPoint="63.33,20" EndPoint="63.33,0"></LineGeometry>
+      <LineGeometry StartPoint="0,22" EndPoint="10,22"></LineGeometry>
+      <LineGeometry StartPoint="80,22" EndPoint="70, 22"></LineGeometry>
+      <LineGeometry StartPoint="0,40" EndPoint="10,40"></LineGeometry>
+      <LineGeometry StartPoint="80,40" EndPoint="70, 40"></LineGeometry>
+      <LineGeometry StartPoint="0,58" EndPoint="10,58"></LineGeometry>
+      <LineGeometry StartPoint="80,58" EndPoint="70, 58"></LineGeometry>
+    </GeometryGroup>
 
     <!--*******************************************************************-->
     <!--单通道天线-->
@@ -494,6 +513,47 @@
           <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.595" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
           <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.357" DevType="rhub" PortNo="3" PortType="rhub_to_other"/>
           <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.595" DevType="rhub" PortNo="4" PortType="rhub_to_other"/>
+        </c:RelativePositionPanel>
+      </ControlTemplate>
+    </s:DesignerItem.ConnectorDecoratorTemplate>
+  </Grid>
+
+  <!--六通道rHUB-->
+  <Grid x:Name="g_SixPathRHUB">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="50"></RowDefinition>
+      <RowDefinition Height="20"></RowDefinition>
+    </Grid.RowDefinitions>
+    <Path Fill="Yellow" Stroke="Black"
+              Data="{StaticResource SixPathRHUB}"
+              Stretch="Fill"
+              IsHitTestVisible="False"/>
+    <TextBlock FontSize="8" Text="0" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,155,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,115,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="2" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,73,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="3" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,5,25,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="4" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="17,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="5" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="57,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="6" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="102,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock FontSize="8" Text="7" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="150,5,0,0" Width="10" Height="10"></TextBlock>
+    <TextBlock Grid.Row="1" FontSize="10" Text="rHUB" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0"></TextBlock>
+    <s:DesignerItem.ConnectorDecoratorTemplate>
+      <ControlTemplate>
+        <c:RelativePositionPanel Margin="-4">
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.208,0" DevType="rhub" PortNo="0" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.291,0" DevType="rhub" PortNo="1" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.374,0" DevType="rhub" PortNo="2" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.458,0" DevType="rhub" PortNo="3" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.541,0" DevType="rhub" PortNo="4" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.624,0" DevType="rhub" PortNo="5" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.707,0" DevType="rhub" PortNo="6" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Top" c:RelativePositionPanel.RelativePosition="0.791,0" DevType="rhub" PortNo="7" PortType="rhub_to_pico"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.261" DevType="rhub" PortNo="1" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.466" DevType="rhub" PortNo="2" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Left" c:RelativePositionPanel.RelativePosition="0,0.725" DevType="rhub" PortNo="3" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.261" DevType="rhub" PortNo="4" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.466" DevType="rhub" PortNo="5" PortType="rhub_to_other"/>
+          <s:Connector Orientation="Right" c:RelativePositionPanel.RelativePosition="1,0.725" DevType="rhub" PortNo="6" PortType="rhub_to_other"/>
         </c:RelativePositionPanel>
       </ControlTemplate>
     </s:DesignerItem.ConnectorDecoratorTemplate>
