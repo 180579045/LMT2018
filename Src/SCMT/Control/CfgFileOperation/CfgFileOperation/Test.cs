@@ -25,7 +25,7 @@ namespace CfgFileOperation
             BinaryWriter bw= new BinaryWriter(fs);
             Test test = new Test();
 
-            //test.TestBeyondCompareMain(bw);
+            test.TestBeyondCompareMain(bw);
             fs.Close();
             //test.testForCreatePatchAndInit();
 
@@ -40,7 +40,7 @@ namespace CfgFileOperation
 
             //test.testForReadExcelRruType();
 
-            test.testForReadExcelAnnt();
+            //test.testForReadExcelAnnt();
 
             //test.testForOpReadExcelForCfg();
 
@@ -288,11 +288,11 @@ namespace CfgFileOperation
                 ///1.StruCfgFileTblInfo:44 字节，表内容头;
                 ///2.StruCfgFileFieldInfo[u16FieldNum]:60 字节* u16FieldNum，每个叶子的内容介绍;
                 ///3.u16RecLen(Stru) * u32RecNum(个数):每个实例内容(大小为u16RecLen) * 实例数.
-                //if (!String.Equals(table, "netLocalCellRruPowerEntry"))
+                if (!String.Equals(table, "antennaBfScanWeightEntry"))
                 {
-                    //bw.Write("netLocalCellRruPowerEntry continue.\n");
-                    //Console.WriteLine("netLocalCellRruPowerEntry continue");
-                    //continue;
+                    //bw.Write("antennaBfScanWeightEntry continue.\n");
+                    //Console.WriteLine("antennaBfScanWeightEntry continue");
+                    continue;
                 }
                 //Console.WriteLine("netLocalCellRruPowerEntry start, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
                 //if (String.Equals(table, "rruTypeEntry"))
@@ -455,6 +455,28 @@ namespace CfgFileOperation
             {
                 return false;
             }
+
+
+            //CfgParseAntennaExcel dd = new CfgParseAntennaExcel();
+            //string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
+            //string sheetName = "波束扫描原始值";
+
+            //string dataBasePath = "D:\\公司资料\\80patch\\";
+            //string dataMdbPath = "LMTDBENODEB70_qyx.mdb";//1.数据库
+
+            //dd.ProcessingAlarmMdb(dataBasePath + dataMdbPath);
+            //dd.ProcessingAntennaExcel(excelPath, sheetName, 1000);
+            //dd.BeyondCompMdbAndExcel();
+
+
+
+
+            //IEnumerable<string> intersect2 = indexListB.Except(dd.indexLMdb);
+            //if (intersect.LongCount() != 0)
+            //{
+            //    return false;
+            //}
+
             return true;// TestIsAllIndexSame(indexListA, indexListB);
         }
         bool TestIsAllIndexSame(List<string> indexListA, List<string> indexListB)
@@ -1646,8 +1668,15 @@ namespace CfgFileOperation
             CfgParseAntennaExcel dd = new CfgParseAntennaExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
             string sheetName = "波束扫描原始值";
-            dd.ProcessingAntennaExcel(excelPath, sheetName);
-            List<Dictionary<string, string>> data = dd.GetBeamScanData();
+
+            string dataBasePath = "D:\\公司资料\\80patch\\";
+            string dataMdbPath = "LMTDBENODEB70_qyx.mdb";//1.数据库
+
+            dd.ProcessingAlarmMdb(dataBasePath+ dataMdbPath);
+
+            dd.ProcessingAntennaExcel(excelPath, sheetName,1000);
+            dd.BeyondCompMdbAndExcel();
+            //List<Dictionary<string, string>> data = dd.GetBeamScanData();
         }
 
         void testForOpReadExcelForCfg()
