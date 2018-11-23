@@ -39,8 +39,6 @@ namespace CfgFileOperation
             FileStream fs = new FileStream("alarmBugWriteBuf.txt", FileMode.Create);
             //实例化BinaryWriter
             BinaryWriter bw = new BinaryWriter(fs);
-            
-            
 
             List<byte> bugbuff = new List<byte>();
             foreach (var mdb in vectAlarmInfoMdb)

@@ -70,7 +70,7 @@ namespace CfgFileOperation
 
             //4. 天线信息
             m_antennaExcel = new CfgParseAntennaExcel();
-            m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
+            //m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
 
             //1. lm.mdb 更新加载数据，整理成表和表实例的结构
             CreateCfgFile(paths);
@@ -700,13 +700,22 @@ namespace CfgFileOperation
             }
             else if (string.Equals("antennaBfScanWeightEntry", strTableName))
             {
-
+                CreateSpecialTalbeAntennaBfScanByEx(tableRow, tableOp, paths["Antenna"], leafNum);
             }
         }
-        private void CreateSpecialTalbeAntennaBfScanByEx(DataRow tableRow, CfgTableOp tableOp, int leafNum)
+        /// <summary>
+        /// (从excel获取)antennaBfScanWeightEntry 天线阵波束扫描天线权值参数表(行)
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="strFileToDirectory"></param>
+        /// <param name="leafNum"></param>
+        private void CreateSpecialTalbeAntennaBfScanByEx(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)
         {
-            List<RRuTypePortTabStru> rruPortL = m_rruExcel.GetRruTypePortInfoData();
-            SetBuffersInfoForRruTypePortByEx(tableRow, rruPortL, tableOp, leafNum);
+            int iTableNum = int.Parse(tableRow["TableContent"].ToString());// 设置动态表的容量;
+            m_antennaExcel.ProcessingAntennaExcel(strFileToDirectory, "波束扫描原始值", iTableNum);
+            List<AntArrayBfScanAntWeightTabStru> vectAntArrayBfScanInfo = m_antennaExcel.vectAntArrayBfScanInfo;
+            SetBuffersInfoForAntennaBfScanWeightByEx( tableRow, vectAntArrayBfScanInfo, tableOp, leafNum);
         }
         /// <summary>
         /// 
@@ -999,7 +1008,6 @@ namespace CfgFileOperation
             }
             Console.WriteLine(tableOp.get_m_cfgInsts_num());
         }
-
         private void SetBuffersInfoForAlarmCauseExcel(DataRow tableRow, List<StruAlarmInfo> vectAlarmInfo, CfgTableOp tableOp, int leafNum)
         {
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
@@ -1129,12 +1137,6 @@ namespace CfgFileOperation
         {
             //int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
             int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
-            //List<RRuTypeTabStru> vectRRUTypeInfo = new List<RRuTypeTabStru>();
-            //for (int loop = 0; loop < rruTypeCount - 1; loop++)
-            //{
-            //    if (loop == nTableNum) break;
-            //    vectRRUTypeInfo.Add(new RRuTypeTabStru(rruTypedateSet.Tables[0].Rows[loop], rruTypedateSet));
-            //}
 
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
             int TableDimen = tableOp.m_tabDimen;// 索引数量
@@ -1199,6 +1201,193 @@ namespace CfgFileOperation
             }
         }
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableRow"></param>
+        /// <param name="vectAntArrayBfScanInfo"></param>
+        /// <param name="tableOp"></param>
+        /// <param name="leafNum"></param>
+        private void SetBuffersInfoForAntennaBfScanWeightByEx(DataRow tableRow, List<AntArrayBfScanAntWeightTabStru> vectAntArrayBfScanInfo, CfgTableOp tableOp, int leafNum)
+        {
+            //int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
+            int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
+
+            int nVecSize = vectAntArrayBfScanInfo.Count;
+            ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
+            var m_struIndex = tableOp.m_struIndex.m_struIndex;
+
+            int cfgInstsNum = 0;//填写的实例个数
+            List<string> vectExitInstIndex = new List<string>();
+            bool IsFirst = true;//是否第二次重新
+            for (int index0 = 0; index0 < m_struIndex[0].indexNum; index0++)
+            {
+                for (int index1 = 0; index1 < m_struIndex[1].indexNum; index1++)
+                {
+                    for (int index2 = 0; index2 < m_struIndex[2].indexNum; index2++)
+                    {
+                        for (int index3 = 0; index3 < m_struIndex[3].indexNum; index3++)
+                        {
+                            for (int index4 = 0; index4 < m_struIndex[4].indexNum; index4++)
+                            {
+                                // 实例个数 等于 表容量时；
+                                if (cfgInstsNum == nTableNum)
+                                {
+                                    return;
+                                }
+                                // 实例个数 大于 excel表中数据时
+                                if (cfgInstsNum > nVecSize)
+                                {
+                                    if (IsFirst)
+                                    {
+                                        index1 = 0;//从新开始判断实例索引是否已经使用
+                                        index0 = 0;//如果实例索引已经存在则继续组织下一索引
+                                        index2 = 0;
+                                        index3 = 0;
+                                        IsFirst = false;
+                                    }
+                                }
+
+                                if (!WriteToBufferByAntennaBf(bufLens, vectExitInstIndex, cfgInstsNum, tableOp, leafNum, vectAntArrayBfScanInfo))
+                                    continue;
+
+                                cfgInstsNum++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private void SetBuffersInfoForAntennaBfScanWeightByEx2(DataRow tableRow, List<AntArrayBfScanAntWeightTabStru> vectAntArrayBfScanInfo, CfgTableOp tableOp, int leafNum)
+        {
+            //int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
+            int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
+
+            int nVecSize = vectAntArrayBfScanInfo.Count;
+            ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
+            var m_struIndex = tableOp.m_struIndex.m_struIndex;
+
+            int cfgInstsNum = 0;//填写的实例个数
+            List<string> vectExitInstIndex = new List<string>();
+            bool IsFirst = true;
+            for ( int index0 = 0; index0 < m_struIndex[0].indexNum; index0++)
+            {
+                for ( int index1 = 0; index1 < m_struIndex[1].indexNum; index1++)
+                {
+                    for ( int index2 = 0; index2 < m_struIndex[2].indexNum; index2++)
+                    {
+                        for ( int index3 = 0; index3 < m_struIndex[3].indexNum; index3++)
+                        {
+                            for ( int index4 = 0; index4 < m_struIndex[4].indexNum; index4++)
+                            {
+                                if (cfgInstsNum == nTableNum)
+                                {
+                                    return;
+                                }
+
+                                List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
+                                string stInstIndex = "";
+                                if (cfgInstsNum < nVecSize)
+                                {
+                                    AntArrayBfScanAntWeightTabStru pAntArrayBfScanInfo = vectAntArrayBfScanInfo[cfgInstsNum];
+                                    for (int indexNo = 0; indexNo < 5; indexNo++)
+                                    {
+                                        string strIndexName = tableOp.m_LeafNodes[indexNo].m_struMibNode.strMibName;
+                                        string strIndex = pAntArrayBfScanInfo.GetAntArrayBfScanLeafValue(strIndexName);
+                                        stInstIndex += String.Format(".{0}", strIndex);
+                                    }
+
+                                    List<int> bytePosL = new List<int>() { 0 };
+                                    for (int ileafNum = 0; ileafNum < leafNum; ileafNum++)
+                                    {
+                                        var mibNode = tableOp.m_LeafNodes[ileafNum];
+                                        string strCurrentValue = pAntArrayBfScanInfo.GetAntArrayBfScanLeafValue(mibNode.m_struMibNode.strMibName);
+                                        int typeSize = (int)mibNode.m_struFieldInfo.u16FieldLen;
+                                        WriteToBuffer(BuffArrL, strCurrentValue, bytePosL, mibNode.m_struMibNode.strOMType, typeSize, mibNode.m_struMibNode.strMIBVal_AllList, mibNode.m_struMibNode.strMibSyntax);
+                                    }
+                                    vectExitInstIndex.Add(stInstIndex);
+                                }
+                                else
+                                {
+                                    if (IsFirst)
+                                    {
+                                        index1 = 0;//从新开始判断实例索引是否已经使用
+                                        index0 = 0;//如果实例索引已经存在则继续组织下一索引
+                                        index2 = 0;
+                                        index3 = 0;
+                                        IsFirst = false;
+                                    }
+                                    //stInstIndex.Format(".%d.%d.%d",index0,index1,index2);
+                                    stInstIndex = ".0.0.0.0.0";//.Format(".%d.%d.%d.%d.%d", 0, 0, 0, 0, 0);
+                                    if (vectExitInstIndex.FindIndex(e => e.Equals(stInstIndex)) != -1) //不存在：返回-1，存在：返回位置。
+                                        continue;
+
+                                    List<int> bytePosL = new List<int>() { 0 };
+                                    for (int k = 0; k < 5; k++)
+                                    {
+                                        var LeafNode = tableOp.m_LeafNodes[k];
+                                        WriteToBuffer(BuffArrL, "0", bytePosL, LeafNode.m_struMibNode.strOMType, LeafNode.m_struFieldInfo.u16FieldLen, "", LeafNode.m_struMibNode.strMibSyntax);
+                                    }
+                                    for (int k = 5; k < leafNum - 1; k++)
+                                    {
+                                        WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
+                                            tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
+                                    }
+                                }
+                                cfgInstsNum++;
+                                tableOp.m_cfgInsts_add(stInstIndex, BuffArrL[0]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        bool WriteToBufferByAntennaBf(ushort bufLens, List<string> vectExitInstIndex, int cfgInstsNum, CfgTableOp tableOp, int leafNum, List<AntArrayBfScanAntWeightTabStru> vectAntArrayBfScanInfo)
+        {
+            //ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
+            List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
+            string stInstIndex = "";
+            if (cfgInstsNum < vectAntArrayBfScanInfo.Count)
+            {
+                AntArrayBfScanAntWeightTabStru pAntArrayBfScanInfo = vectAntArrayBfScanInfo[cfgInstsNum];
+                for (int indexNo = 0; indexNo < 5; indexNo++)
+                {
+                    string strIndexName = tableOp.m_LeafNodes[indexNo].m_struMibNode.strMibName;
+                    string strIndex = pAntArrayBfScanInfo.GetAntArrayBfScanLeafValue(strIndexName);
+                    stInstIndex += String.Format(".{0}", strIndex);
+                }
+
+                List<int> bytePosL = new List<int>() { 0 };
+                for (int ileafNum = 0; ileafNum < leafNum; ileafNum++)
+                {
+                    var mibNode = tableOp.m_LeafNodes[ileafNum];
+                    string strCurrentValue = pAntArrayBfScanInfo.GetAntArrayBfScanLeafValue(mibNode.m_struMibNode.strMibName);
+                    int typeSize = (int)mibNode.m_struFieldInfo.u16FieldLen;
+                    WriteToBuffer(BuffArrL, strCurrentValue, bytePosL, mibNode.m_struMibNode.strOMType, typeSize, mibNode.m_struMibNode.strMIBVal_AllList, mibNode.m_struMibNode.strMibSyntax);
+                }
+                vectExitInstIndex.Add(stInstIndex);
+            }
+            else
+            {
+                stInstIndex = ".0.0.0.0.0";//.Format(".%d.%d.%d.%d.%d", 0, 0, 0, 0, 0);
+                if (vectExitInstIndex.FindIndex(e => e.Equals(stInstIndex)) != -1) //不存在：返回-1，存在：返回位置。
+                    return false;
+
+                List<int> bytePosL = new List<int>() { 0 };
+                for (int k = 0; k < 5; k++)
+                {
+                    var LeafNode = tableOp.m_LeafNodes[k];
+                    WriteToBuffer(BuffArrL, "0", bytePosL, LeafNode.m_struMibNode.strOMType, LeafNode.m_struFieldInfo.u16FieldLen, "", LeafNode.m_struMibNode.strMibSyntax);
+                }
+                for (int k = 5; k < leafNum - 1; k++)
+                {
+                    WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
+                        tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
+                }
+            }
+            tableOp.m_cfgInsts_add(stInstIndex, BuffArrL[0]);
+            return true;
+        }
+        /// <summary>
         /// "alarmCauseEntry" 的实例处理 —— 特殊处理
         /// </summary>
         /// <param name="BuffArrL"></param>
@@ -1260,10 +1449,10 @@ namespace CfgFileOperation
             {
                 var mibNode = tableOp.m_LeafNodes[k].m_struMibNode;
                 string mibName = mibNode.strMibName;
-                if (String.Equals(mibName, "nrCellCfgPdcchDmrsPower"))
-                {
-                    Console.WriteLine("nrCellCfgPdcchDmrsPower");
-                }
+                //if (String.Equals(mibName, "nrCellCfgPdcchDmrsPower"))
+                //{
+                //    Console.WriteLine("nrCellCfgPdcchDmrsPower");
+                //}
                 string strIndexOMType2 = mibNode.strOMType;
                 ushort typeSize2 = tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen;//typeSize
                 string asnType2 = mibNode.strMibSyntax;//asnType
