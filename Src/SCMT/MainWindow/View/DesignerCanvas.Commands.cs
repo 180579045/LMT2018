@@ -910,7 +910,11 @@ namespace SCMTMainWindow.View
         {
             foreach (Connection connection in SelectionService.CurrentSelection.OfType<Connection>())
             {
-                DeleteConnection(connection);
+                if(!DeleteConnection(connection))
+				{
+					MessageBox.Show("删除链接失败");
+					return;
+				}
             }
 
             foreach (DesignerItem item in SelectionService.CurrentSelection.OfType<DesignerItem>())
@@ -922,12 +926,21 @@ namespace SCMTMainWindow.View
 
                 foreach (Connector connector in connectors)
                 {
+					List<Connection> listConnectionToDelete = new List<Connection>();
                     foreach (Connection con in connector.Connections)
-                    {
-                        DeleteConnection(con);
-                    }
+					{
+						if (!DeleteConnection(con))
+						{
+							MessageBox.Show("删除链接失败");
+							return;
+						}
+					}
+
+					for(int i = 0; i < listConnectionToDelete.Count; i++)
+					{
+						DeleteConnection(listConnectionToDelete[i]);
+					}
                 }
-                this.Children.Remove(item);
 
                 //从全局 list 中删除相关的项
                 Grid grid = item.Content as Grid;
@@ -951,7 +964,9 @@ namespace SCMTMainWindow.View
                             this.gridProperty.Children.Clear();
                         }
                     }
-                }                
+
+					this.Children.Remove(item);
+				}                
             }
 
             SelectionService.ClearSelection();
@@ -1037,6 +1052,8 @@ namespace SCMTMainWindow.View
 
             if (MibInfoMgr.GetInstance().DelLink(srcPort, dstPort))
             {
+				connection.Source.Connections.Remove(connection);
+				connection.Sink.Connections.Remove(connection);
                 this.Children.Remove(connection);
                 return true;
             }
