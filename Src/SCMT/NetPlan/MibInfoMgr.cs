@@ -392,6 +392,7 @@ namespace NetPlan
 				}
 				Log.Debug($"生成本地小区{nLocalCellId}属性信息成功");
 			}
+			else
 			{
 				Log.Debug($"本地小区{nLocalCellId}已经存在不需要重新生成");
 			}
@@ -727,7 +728,10 @@ namespace NetPlan
 		/// <returns></returns>
 		public bool DistributeNetPlanInfoToEnb(EnumDevType devType)
 		{
-			return DistributeData(devType, m_mapAllMibData);
+			Log.Debug($"开始下发类型 {devType.ToString()} 的规划信息");
+			var result = DistributeData(devType, m_mapAllMibData);
+			Log.Debug($"类型 {devType.ToString()} 的规划信息下发完成，结果为：{result}");
+			return result;
 		}
 
 		public bool DistributeNetPlanAntToEnb(bool bDlAntWcb)
@@ -826,9 +830,7 @@ namespace NetPlan
 						}
 						else
 						{
-							var mapAttri = dev.m_mapAttributes;
-
-							SetRruAntSettingTableInfo(mapAttri, kv.Value);
+							SetRruAntSettingTableInfo(dev, kv.Value);
 
 							if (dev.m_recordType != RecordDataType.NewAdd)
 							{
@@ -860,7 +862,7 @@ namespace NetPlan
 		{
 			var strIndex = $".{strRruNo.Trim('.')}.{strPort}";
 			var newDev = new DevAttributeInfo(EnumDevType.rru_ant, strIndex);
-			return !SetRruAntSettingTableInfo(newDev.m_mapAttributes, lcInfo) ? null : newDev;
+			return !SetRruAntSettingTableInfo(newDev, lcInfo) ? null : newDev;
 		}
 
 		/// <summary>
@@ -1009,17 +1011,6 @@ namespace NetPlan
 			}
 
 			return "-1";
-		}
-
-		/// <summary>
-		/// 根据ID查询NR本地小区网规信息
-		/// </summary>
-		/// <param name="strLcID"></param>
-		/// <returns></returns>
-		public DevAttributeInfo GetNrNetLcInfoByID(string strLcID)
-		{
-			const EnumDevType type = EnumDevType.nrNetLc;
-			return GetDevAttributeInfo(strLcID, type);
 		}
 
 		/// <summary>
@@ -1372,16 +1363,7 @@ namespace NetPlan
 				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, devAttribute.m_strOidIndex, targetIp);
 				if (0 != ret)
 				{
-					if (2 == ret)
-					{
-						var desc = SnmpErrDescHelper.GetLastErrorDesc();
-						Log.Error($"下发命令{cmdName}失败，原因：{desc}");
-					}
-					else
-					{
-						Log.Error($"下发命令{cmdName}失败");
-					}
-
+					Log.Error($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
 					return false;       // TODO 一个设备信息下发失败是要结束整个过程吗？
 				}
 			}
@@ -1553,22 +1535,22 @@ namespace NetPlan
 		/// <summary>
 		/// 设置天线阵安装规划表的信息。修改时使用
 		/// </summary>
-		/// <param name="mapAttributes"></param>
+		/// <param name="dev"></param>
 		/// <param name="lcInfo"></param>
 		/// <returns></returns>
-		private static bool SetRruAntSettingTableInfo(IReadOnlyDictionary<string, MibLeafNodeInfo> mapAttributes, NPRruToCellInfo lcInfo)
+		private static bool SetRruAntSettingTableInfo(DevAttributeInfo dev, NPRruToCellInfo lcInfo)
 		{
-			if (mapAttributes.ContainsKey("netSetRRUPortTxRxStatus"))
+			if (dev.m_mapAttributes.ContainsKey("netSetRRUPortTxRxStatus"))
 			{
-				var tempAtrri = mapAttributes["netSetRRUPortTxRxStatus"];
+				var tempAtrri = dev.m_mapAttributes["netSetRRUPortTxRxStatus"];
 				tempAtrri.SetLatestValue(lcInfo.RealTRx);
 			}
 
 			var lcIdList = lcInfo.CellIdList;
-			var lcAttr1 = mapAttributes["netSetRRUPortSubtoLocalCellId"];
-			var lcAttr2 = mapAttributes["netSetRRUPortSubtoLocalCellId2"];
-			var lcAttr3 = mapAttributes["netSetRRUPortSubtoLocalCellId3"];
-			var lcAttr4 = mapAttributes["netSetRRUPortSubtoLocalCellId4"];
+			var lcAttr1 = dev.m_mapAttributes["netSetRRUPortSubtoLocalCellId"];
+			var lcAttr2 = dev.m_mapAttributes["netSetRRUPortSubtoLocalCellId2"];
+			var lcAttr3 = dev.m_mapAttributes["netSetRRUPortSubtoLocalCellId3"];
+			var lcAttr4 = dev.m_mapAttributes["netSetRRUPortSubtoLocalCellId4"];
 			lcAttr1.SetLatestValue("-1");
 			lcAttr2.SetLatestValue("-1");
 			lcAttr3.SetLatestValue("-1");
