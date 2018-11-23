@@ -55,14 +55,29 @@ namespace SCMTMainWindow.View
                 // 获取所有列信息，并将列信息填充到DataGrid当中;
                 foreach (var iter in m_ColumnModel.PropertyList)
                 {
+                    DataGridTemplateColumn column = new DataGridTemplateColumn();
+                    DataTemplate TextBlockTemplate = new DataTemplate();
+
+                    string textblock_xaml =
+                       @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+                                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+                                            xmlns:model='clr-namespace:WPF.Model'>
+                                <TextBlock Text='{Binding " + iter.Item1 + @".m_Content}'/>
+                            </DataTemplate>";
+
+                    TextBlockTemplate = XamlReader.Parse(textblock_xaml) as DataTemplate;
+
+                    column.Header = iter.Item2;                                      // 填写列名称;
+                    column.CellTemplate = TextBlockTemplate;                         // 将单元格的显示形式赋值;
+
+                    this.DynamicDataGrid.Columns.Add(column);
                     // 显示字符类型的数据结构;
-                    if (iter.Item3 is DataGrid_Cell_MIB)
+                    /*if (iter.Item3 is DataGrid_Cell_MIB)
                     {
                         // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
                         var column = new DataGridTextColumn
                         {
                             Header = iter.Item2,
-                            IsReadOnly = true,
                             Binding = new Binding(iter.Item1 + ".m_Content")
                         };
                         
@@ -96,7 +111,6 @@ namespace SCMTMainWindow.View
                         column.CellTemplate = TextBlockTemplate;                         // 将单元格的显示形式赋值;
                         column.CellEditingTemplate = ComboBoxTemplate;                   // 将单元格的编辑形式赋值;
                         column.Width = 230;                                              // 设置显示宽度;
-                        column.IsReadOnly = true;
 
                         this.DynamicDataGrid.Columns.Add(column);
                     }
@@ -118,14 +132,13 @@ namespace SCMTMainWindow.View
                         column.Header = iter.Item2;                               // 填写列名称;
                         column.CellTemplate = template;                           // 将单元格的显示形式赋值;
                         column.Width = 230;                                       // 设置显示宽度;
-                        column.IsReadOnly = true;
 
                         this.DynamicDataGrid.Columns.Add(column);
                     }
                     else
                     {
 
-                    }
+                    }*/
                 }
             }
         }
@@ -140,12 +153,13 @@ namespace SCMTMainWindow.View
             InitializeComponent();
 
             this.DynamicDataGrid.MouseMove += DynamicDataGrid_MouseMove;                          // 鼠标移动到单元格位置上边的时候;
-            this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
+            //this.DynamicDataGrid.BeginningEdit += DynamicDataGrid_BeginningEdit;                  // 当表格发生正在编辑的状态;
             this.DynamicDataGrid.SelectionChanged += DynamicDataGrid_SelectionChanged;            // 当用户的选择发生变化的时候(用在枚举、BIT类型修改完成后);
             this.DynamicDataGrid.GotMouseCapture += DynamicDataGrid_GotMouseCapture;              // 捕获鼠标事件，用于判断用户拖拽事件;
             this.DynamicDataGrid.LostFocus += DynamicDataGrid_LostFocus;                          // 单元格失去焦点事件;
             this.DynamicDataGrid.MouseRightButtonDown += DynamicDataGrid_MouseRightButtonDown;    //鼠标右键按下弹出右键菜单
         }
+
         /// <summary>
         /// 单元格失去焦点事件
         /// </summary>
@@ -196,6 +210,10 @@ namespace SCMTMainWindow.View
 
 			DataGrid dataGrid = (DataGrid)sender;
 			// 行Model
+            if(!dataGrid.CurrentCell.Item.GetType().ToString().Equals("DyDataGrid_MIBModel"))
+            {
+                return;
+            }
 			DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
 			// 行数据
 			Dictionary<string, object>  lineDataPro = mibModel.Properties;
@@ -310,13 +328,7 @@ namespace SCMTMainWindow.View
 			{
 
 
-			}
-
-		}
-        */
-
-            //获取选择的行数据,目前只能单选，多选后续添加
-            m_selectDataGrid = (DyDataGrid_MIBModel)this.DynamicDataGrid.SelectedItem;
+			}*/
         }
 		
         /// <summary>
@@ -412,6 +424,10 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void DynamicDataGrid_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
+            //获取选择的行数据,目前只能单选，多选后续添加
+           if((sender as DataGrid).CurrentItem is DyDataGrid_MIBModel)
+                m_selectDataGrid = (DyDataGrid_MIBModel)(sender as DataGrid).CurrentItem ;
+
             if (m_ColumnModel == null)
                 return;
 
@@ -626,6 +642,11 @@ namespace SCMTMainWindow.View
             }
 
             return mibLeaf;
+        }
+
+        private int GetDataGridMaxIndex()
+        {
+            return 0;
         }
     }
 }

@@ -1377,7 +1377,9 @@ namespace CfgFileOpStruct
         }
     }
 
-
+    /// <summary>
+    /// 告警相关结构体题
+    /// </summary>
     struct StruAlarmInfo
     {
         public string alarmCauseNo;
@@ -2075,4 +2077,91 @@ namespace CfgFileOpStruct
             rruTypePortSupportFBandTdsCarrierNum = "";
         }
     }
+
+    struct AntArrayBfScanAntWeightTabStru
+    {
+        //public AntArrayBfScanAntWeightTabStru(string s)
+        //{
+        //    antArrayBfScanAntWeightVendorIndex = "0";
+        //    antArrayBfScanAntWeightTypeIndex = "0";
+        //    antArrayBfScanAntWeightIndex = "0";
+        //    antArrayBfScanAntWeightBFScanGrpNo = "0";
+        //    antArrayBfScanAntWeightAntGrpNo = "0";
+        //    antArrayBfScanAntWeightRowStatus = "6";
+        //    antArrayBfScanAntWeightAmplitude0 = "0";
+        //    antArrayBfScanAntWeightPhase0 = "0";
+        //    antArrayBfScanAntWeightAmplitude1 = "0";
+        //    antArrayBfScanAntWeightPhase1 = "0";
+        //    antArrayBfScanAntWeightAmplitude2 = "0";
+        //    antArrayBfScanAntWeightPhase2 = "0";
+        //    antArrayBfScanAntWeightAmplitude3 = "0";
+        //    antArrayBfScanAntWeightPhase3 = "0";
+        //    antArrayBfScanAntWeightAmplitude4 = "0";
+        //    antArrayBfScanAntWeightPhase4 = "0";
+        //    antArrayBfScanAntWeightAmplitude5 = "0";
+        //    antArrayBfScanAntWeightPhase5 = "0";
+        //    antArrayBfScanAntWeightAmplitude6 = "0";
+        //    antArrayBfScanAntWeightPhase6 = "0";
+        //    antArrayBfScanAntWeightAmplitude7 = "0";
+        //    antArrayBfScanAntWeightPhase7 = "0";
+        //    antArrayBfScanAntWeightHorizonNum = "0";
+        //    antArrayBfScanAntWeightVerticalNum = "0";
+        //}
+
+        public string antArrayBfScanAntWeightVendorIndex;
+        public string antArrayBfScanAntWeightTypeIndex;
+        public string antArrayBfScanAntWeightIndex;
+        public string antArrayBfScanAntWeightBFScanGrpNo;
+        public string antArrayBfScanAntWeightAntGrpNo;
+        public string antArrayBfScanAntWeightRowStatus;
+        public string antArrayBfScanAntWeightAmplitude0;
+        public string antArrayBfScanAntWeightPhase0;
+        public string antArrayBfScanAntWeightAmplitude1;
+        public string antArrayBfScanAntWeightPhase1;
+        public string antArrayBfScanAntWeightAmplitude2;
+        public string antArrayBfScanAntWeightPhase2;
+        public string antArrayBfScanAntWeightAmplitude3;
+        public string antArrayBfScanAntWeightPhase3;
+        public string antArrayBfScanAntWeightAmplitude4;
+        public string antArrayBfScanAntWeightPhase4;
+        public string antArrayBfScanAntWeightAmplitude5;
+        public string antArrayBfScanAntWeightPhase5;
+        public string antArrayBfScanAntWeightAmplitude6;
+        public string antArrayBfScanAntWeightPhase6;
+        public string antArrayBfScanAntWeightAmplitude7;
+        public string antArrayBfScanAntWeightPhase7;
+        public string antArrayBfScanAntWeightHorizonNum;
+        public string antArrayBfScanAntWeightVerticalNum;
+
+        public AntArrayBfScanAntWeightTabStru(Dictionary<string, string> AntArrayBfInfo)
+        {
+            antArrayBfScanAntWeightVendorIndex = "0";
+            antArrayBfScanAntWeightTypeIndex = "0";
+            antArrayBfScanAntWeightIndex = "0";
+            antArrayBfScanAntWeightBFScanGrpNo = "0";
+            antArrayBfScanAntWeightAntGrpNo = "0";
+            antArrayBfScanAntWeightRowStatus = "6";
+
+            antArrayBfScanAntWeightAmplitude0 = "0";
+            antArrayBfScanAntWeightPhase0 = "0";
+            antArrayBfScanAntWeightAmplitude1 = "0";
+            antArrayBfScanAntWeightPhase1 = "0";
+            antArrayBfScanAntWeightAmplitude2 = "0";
+            antArrayBfScanAntWeightPhase2 = "0";
+            antArrayBfScanAntWeightAmplitude3 = "0";
+            antArrayBfScanAntWeightPhase3 = "0";
+            antArrayBfScanAntWeightAmplitude4 = "0";
+            antArrayBfScanAntWeightPhase4 = "0";
+            antArrayBfScanAntWeightAmplitude5 = "0";
+            antArrayBfScanAntWeightPhase5 = "0";
+            antArrayBfScanAntWeightAmplitude6 = "0";
+            antArrayBfScanAntWeightPhase6 = "0";
+            antArrayBfScanAntWeightAmplitude7 = "0";
+            antArrayBfScanAntWeightPhase7 = "0";
+
+            antArrayBfScanAntWeightHorizonNum = "0";
+            antArrayBfScanAntWeightVerticalNum = "0";
+        }
+    }
+
 }
