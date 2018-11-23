@@ -244,7 +244,7 @@ ParseBoardToRhub:
 				for (var i = 1; i < 5; i++)
 				{
 					if (!HandleRruOfpLinkInfo(i, rru, boardDevList, irOptList))
-						return false;
+						continue;
 				}
 			}
 
@@ -309,7 +309,7 @@ ParseBoardToRhub:
 			};
 
 			// todo 此处board到rhub设备的连接类型设置为board_rru，校验功能是否会检查
-			AddLinkToList(boardEndpoint, rruEndPoint, EnumDevType.board_rru);
+			AddLinkToList(boardEndpoint, rruEndPoint, EnumDevType.board_rhub);
 			return true;
 		}
 
