@@ -259,7 +259,7 @@ namespace LinkPath
 		/// <param name="isPrint">是否在控制台中打印消息</param>
 		/// <param name="needCheck"></param>
 		/// <param name="timeOut"></param>
-		/// <returns></returns>
+		/// <returns>返回errorstatus值</returns>
 		public static int CmdSetSync(string cmdName, out long requestId, Dictionary<string,string> name2Value
 			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
 			, bool needCheck = false, long timeOut = 0)
@@ -284,7 +284,12 @@ namespace LinkPath
 				Log.Error("执行lmtbSnmpEx.SnmpSetSync()方法错误");
 			}
 
-			return rs;
+			if (lmtPdu.m_LastErrorStatus != 0)
+			{
+				Log.Error($"命令：{cmdName} 索引：{strIndex} 执行失败，Es：{lmtPdu.m_LastErrorStatus}");
+			}
+
+			return (int)lmtPdu.m_LastErrorStatus;
 		}
 
 		public static int CmdSetSync(string cmdName, Dictionary<string, string> name2Value, string strIndex, string targetIp)
