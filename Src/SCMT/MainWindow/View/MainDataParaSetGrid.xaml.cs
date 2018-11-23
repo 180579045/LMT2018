@@ -38,6 +38,8 @@ namespace SCMTMainWindow.View
         /// 保存索引节点信息
         /// </summary>
         private List<MibLeaf> listIndexInfo = new List<MibLeaf>();
+
+        private MibTable m_MibTable;
         /// <summary>
         /// false为添加指令，true为修改指令
         /// </summary>
@@ -73,7 +75,7 @@ namespace SCMTMainWindow.View
 
             DataGrid dataGrid = (DataGrid)sender;
 
-            if (!dataGrid.CurrentCell.Item.GetType().ToString().Equals("DyDataGrid_MIBModel"))
+            if (!(dataGrid.CurrentCell.Item is DyDataGrid_MIBModel))
             {
                 return;
             }
@@ -249,9 +251,8 @@ namespace SCMTMainWindow.View
 				MessageBox.Show("参数添加成功！");
 			}
 
-			//下发指令成功后更新基本信息列表
-			//m_MainDataGrid
-
+            //下发指令成功后更新基本信息列表
+            m_MainDataGrid.RefreshDataGrid(lmtPdu);
 
 			this.Close();
         }
@@ -271,6 +272,7 @@ namespace SCMTMainWindow.View
         {
             cmdMibInfo = mibInfo;
             m_bisModify = false;
+            m_MibTable = table;
 
             listIndexInfo.Clear();
             foreach (MibLeaf leaf in table.childList)
@@ -414,12 +416,13 @@ namespace SCMTMainWindow.View
         /// 根据基本信息列表选择的行填充信息，对于填充第一条数据信息(后续添加)
         /// </summary>
         /// <param name="model"></param>
-        public bool InitModifyParaSetGrid(CmdMibInfo mibInfo, DyDataGrid_MIBModel mibModel)
+        public bool InitModifyParaSetGrid(CmdMibInfo mibInfo, DyDataGrid_MIBModel mibModel, MibTable table)
         {
             if (mibModel == null || mibInfo == null)
                 return false;
 
             cmdMibInfo = mibInfo;
+            m_MibTable = table;
             m_bisModify = true;
             this.Title = mibInfo.m_cmdDesc;
             listIndexInfo.Clear();
