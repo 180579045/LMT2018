@@ -73,7 +73,7 @@ namespace SCMTMainWindow.View
 
             DataGrid dataGrid = (DataGrid)sender;
 
-            if (!dataGrid.CurrentCell.Item.GetType().ToString().Equals("DyDataGrid_MIBModel"))
+            if (!(dataGrid.CurrentCell.Item is DyDataGrid_MIBModel))
             {
                 return;
             }

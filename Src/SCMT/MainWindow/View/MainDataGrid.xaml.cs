@@ -195,12 +195,13 @@ namespace SCMTMainWindow.View
 
 
 			DataGrid dataGrid = (DataGrid)sender;
-			// 行Model
-            if(!dataGrid.CurrentCell.Item.GetType().ToString().Equals("DyDataGrid_MIBModel"))
+            // 行Model
+            if (!(dataGrid.CurrentCell.Item is DyDataGrid_MIBModel))
             {
                 return;
             }
-			DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
+
+            DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
 			// 行数据
 			Dictionary<string, object>  lineDataPro = mibModel.Properties;
 
