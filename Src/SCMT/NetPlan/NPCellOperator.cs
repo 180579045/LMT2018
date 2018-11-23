@@ -13,10 +13,7 @@ namespace NetPlan
 	public static class NPCellOperator
 	{
 		/// <summary>
-		/// 设置网元布配控制开关状态
-		/// 布配开关的特殊性：在最后点击下发网规参数时才关闭，所以此处立即下发到基站
-		/// 最后下发网规信息时，可以直接下发本地小区相关的参数，不需要先打开布配开关，再下发参数
-		/// 调用时机：1.右键菜单：进行小区规划 点击事件；2.下发小区参数后调用，关闭布配开关
+		/// 设置网元布配控制开关状态，不下发到基站，没有什么意义
 		/// </summary>
 		/// <param name="bOpen">true:打开开关，false:关闭开关</param>
 		/// <param name="nLcNo">本地小区编号</param>
@@ -31,29 +28,29 @@ namespace NetPlan
 
 			var strIndexTemp = $".{nLcNo}";
 
-			const string cmd = "SetNRNetwokPlanControlSwitch";
+			//const string cmd = "SetNRNetwokPlanControlSwitch";
 			const string mibName = "nrNetLocalCellCtrlConfigSwitch";
 
 			var dValue = (bOpen ? "1" : "0");
-			var name2Value = new DIC_DOUBLE_STR { [mibName] = dValue };
+			//var name2Value = new DIC_DOUBLE_STR { [mibName] = dValue };
 
-			long reqId;
-			var pdu = new CDTLmtbPdu();
-			var ret = CDTCmdExecuteMgr.CmdSetSync(cmd, out reqId, name2Value, strIndexTemp, targetIp, ref pdu);
-			if (0 != ret)
-			{
-				if (2 == ret)
-				{
-					var desc = SnmpErrDescHelper.GetLastErrorDesc();
-					Log.Error($"下发本地小区布配开关命令{cmd}失败，原因：{desc}");
-				}
-				else
-				{
-					Log.Error($"下发本地小区布配开关命令{cmd}失败");
-				}
+			//long reqId;
+			//var pdu = new CDTLmtbPdu();
+			//var ret = CDTCmdExecuteMgr.CmdSetSync(cmd, out reqId, name2Value, strIndexTemp, targetIp, ref pdu);
+			//if (0 != ret)
+			//{
+			//	if (2 == ret)
+			//	{
+			//		var desc = SnmpErrDescHelper.GetLastErrorDesc();
+			//		Log.Error($"下发本地小区布配开关命令{cmd}失败，原因：{desc}");
+			//	}
+			//	else
+			//	{
+			//		Log.Error($"下发本地小区布配开关命令{cmd}失败");
+			//	}
 
-				return false;
-			}
+			//	return false;
+			//}
 
 			const EnumDevType devType = EnumDevType.nrNetLcCtr;
 
@@ -67,12 +64,12 @@ namespace NetPlan
 				dev.m_recordType = RecordDataType.Original;
 				MibInfoMgr.GetInstance().AddDevMibInfo(devType, dev);
 
-				Log.Debug($"增加本地小区{nLcNo}布配开关为{{bOpen ? \"打开\" : \"关闭\"}}");
+				Log.Debug($"增加本地小区{nLcNo}布配开关为：{{bOpen ? \"打开\" : \"关闭\"}}");
 			}
 			else
 			{
 				MibInfoMgr.GetInstance().SetDevAttributeValue($".{nLcNo}", mibName, dValue, devType);
-				Log.Debug($"修改本地小区{nLcNo}布配开关为{{bOpen ? \"打开\" : \"关闭\"}}");
+				Log.Debug($"修改本地小区{nLcNo}布配开关为：{{bOpen ? \"打开\" : \"关闭\"}}");
 			}
 
 			return true;
@@ -266,61 +263,53 @@ namespace NetPlan
 				return LcStatus.Planning;
 			}
 
-			// 当布配开关关闭时，需要实时查询本地小区和小区信息。涉及到行状态，且删除小区和本地小区时都下发到基站，内存中没有对应的数据
-			var enbType = EnbTypeEnum.ENB_EMB6116;
-			if (EnbTypeEnum.ENB_EMB6116 == enbType)
+			// 查询nrNetLcDev是否存在，如果不存在说明基站中肯定没有这个实例，且没有规划过
+			var lcDev = MibInfoMgr.GetInstance().GetDevAttributeInfo(cellIndex, EnumDevType.nrNetLc);
+			if (null == lcDev)
 			{
-				var cellOperaStatus = CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetNRCellInfo", "nrCellOperationalState", targetIp);
-				if ("0" == cellOperaStatus)
-				{
-					Log.Debug($"本地小区{nCellId}当前状态为：小区已建");
-					return LcStatus.CellBuilded;
-				}
-
-				var mapMibToValue = new DIC_DOUBLE_STR
-				{
-					{"nrLocalCellOperationalState", null}, {"nrLocalCellRowStatus", null}
-				};
-				var bSuc =
-					CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetLocalNRCellInfo", ref mapMibToValue, targetIp);
-				if (bSuc)	// 如果查询本地小区信息成功
-				{
-					//Log.Error($"命令 GetLocalNRCellInfo 执行失败，原因：{SnmpErrDescHelper.GetLastErrorDesc()}。");
-					//if (342 == SnmpErrDescHelper.GetLastErrorCode())
-					//{
-					//	return LcStatus.UnPlan;
-					//}
-					//return LcStatus.Disabled;
-
-					if ("0" == mapMibToValue["nrLocalCellOperationalState"])
-					{
-						Log.Debug($"本地小区{nCellId}当前状态为：本地小区已建");
-						return LcStatus.LcBuilded;
-					}
-
-					if ("4" == mapMibToValue["nrLocalCellRowStatus"])
-					{
-						Log.Debug($"本地小区{nCellId}当前状态为：本地小区未建");
-						return LcStatus.LcUnBuilded;
-					}
-				}
-
-				// 查询网规的本地小区信息
-				var nnLc = MibInfoMgr.GetInstance().GetNrNetLcInfoByID(cellIndex);
-				if (null != nnLc)
-				{
-					var nlcrs = MibInfoMgr.GetNeedUpdateValue(nnLc, "nrNetLocalCellRowStatus");
-					if ("4" != nlcrs)
-					{
-						return LcStatus.UnPlan;
-					}
-					return LcStatus.LcUnBuilded;
-				}
-
+				Log.Debug($"索引为{nCellId}的本地小区实例不存在，状态为未规划");
 				return LcStatus.UnPlan;
 			}
 
-			return LcStatus.Disabled;
+			// 如果devLc已经存在，判断是否为newAdd.
+			// 原因：如果是newadd的lc，说明基站中肯定没有这个实例，肯定不会存在小区已建和本地小区已建、未建这个3种状态
+			// 那么只有两种可能：规划中，和未规划。前面判断布配开关状态已经去掉了规划中状态，就只剩下未规划状态
+			if (RecordDataType.NewAdd == lcDev.m_recordType)
+			{
+				return LcStatus.UnPlan;
+			}
+
+			// 不是Newadd，说明基站中有此实例，需要实时查询
+			// 当布配开关关闭时，需要实时查询本地小区和小区信息。涉及到行状态，且删除小区和本地小区时都下发到基站，内存中没有对应的数据
+			var cellOperaStatus = CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetNRCellInfo", "nrCellOperationalState", targetIp);
+			if ("0" == cellOperaStatus)
+			{
+				Log.Debug($"本地小区{nCellId}当前状态为：小区已建");
+				return LcStatus.CellBuilded;
+			}
+
+			var mapMibToValue = new DIC_DOUBLE_STR
+				{
+					{"nrLocalCellOperationalState", null}, {"nrLocalCellRowStatus", null}
+				};
+			var bSuc =
+				CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetLocalNRCellInfo", ref mapMibToValue, targetIp);
+			if (bSuc)   // 如果查询本地小区信息成功
+			{
+				if ("0" == mapMibToValue["nrLocalCellOperationalState"])
+				{
+					Log.Debug($"本地小区{nCellId}当前状态为：本地小区已建");
+					return LcStatus.LcBuilded;
+				}
+
+				if ("4" == mapMibToValue["nrLocalCellRowStatus"])
+				{
+					Log.Debug($"本地小区{nCellId}当前状态为：本地小区未建");
+					return LcStatus.LcUnBuilded;
+				}
+			}
+
+			return LcStatus.UnPlan;
 		}
 
 		/// <summary>
@@ -347,16 +336,23 @@ namespace NetPlan
 			var lcState = GetLcStatus(nLocalCellId, targetIp);
 			if (LcStatus.LcUnBuilded != lcState)
 			{
-				Log.Error($"删除本地小区{nLocalCellId}网规信息失败，本地小区状态：{lcState.ToString()}");
+				Log.Error($"删除本地小区{nLocalCellId}网规信息失败，本地小区状态：{lcState.ToString()},只有本地小区未建状态才能删除");
+				return false;
+			}
+
+			// 设置本地小区相关的天线安装规划表信息
+			if (!MibInfoMgr.GetInstance().ResetRelateLcIdInNetRruAntSettingTblByLcId(nLocalCellId))
+			{
+				Log.Error($"设置本地小区{nLocalCellId}相关的天线安装规划表信息失败");
 				return false;
 			}
 
 			// 打开本地小区的布配开关
-			if (!SetNetPlanSwitch(true, nLocalCellId, targetIp))
-			{
-				Log.Error($"删除本地小区{nLocalCellId}网规信息失败，原因：打开小区布配开关失败");
-				return false;
-			}
+			//if (!SetNetPlanSwitch(true, nLocalCellId, targetIp))
+			//{
+			//	Log.Error($"删除本地小区{nLocalCellId}网规信息失败，原因：打开小区布配开关失败");
+			//	return false;
+			//}
 
 			// 统一处理方式，从enb中的查到的信息也不立即下发
 			// 删除本地小区网规信息
@@ -366,10 +362,10 @@ namespace NetPlan
 				return false;
 			}
 
-			// 设置本地小区相关的天线安装规划表信息
-			if (!MibInfoMgr.GetInstance().ResetRelateLcIdInNetRruAntSettingTblByLcId(nLocalCellId))
+			// 直接关闭本地小区布配开关
+			if (!SetNetPlanSwitch(false, nLocalCellId, targetIp))
 			{
-				Log.Error($"设置本地小区{nLocalCellId}相关的天线安装规划表信息失败");
+				Log.Error($"删除本地小区{nLocalCellId}网规信息失败，原因：关闭小区布配开关失败");
 				return false;
 			}
 
@@ -383,6 +379,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool IsFixedLc(string strLcId)
 		{
+			return false;
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
 			{
@@ -400,8 +397,9 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 取消本地小区规划
-		/// 后台需要做的操作：1.关闭布配开关；2.设置本地小区之前的状态
+		/// 取消本地小区规划。本地小区状态变化：规划中-->未规划
+		/// todo 后台需要做的操作：1.关闭布配开关；2.设置本地小区之前的状态
+		/// todo 需要原子性保证？
 		/// </summary>
 		/// <param name="nLcId"></param>
 		/// <returns></returns>
@@ -410,18 +408,28 @@ namespace NetPlan
 			var lcStatus = GetLcStatus(nLcId, CSEnbHelper.GetCurEnbAddr());
 			if (lcStatus != LcStatus.Planning)
 			{
-				return false;
-			}
-
-			// 关闭布配开关
-			if (!SetNetPlanSwitch(false, nLcId, CSEnbHelper.GetCurEnbAddr()))
-			{
+				Log.Error($"本地小区{nLcId}的状态为{lcStatus.ToString()}，不能执行取消规划操作。");
 				return false;
 			}
 
 			// 删掉本地小区信息
 			if (!MibInfoMgr.GetInstance().DelDev($".{nLcId}", EnumDevType.nrNetLc))
 			{
+				Log.Error($"删除本地小区{nLcId}的属性信息失败");
+				return false;
+			}
+
+			// 重置天线安装规划表中相关的记录
+			if (!MibInfoMgr.GetInstance().ResetRelateLcIdInNetRruAntSettingTblByLcId(nLcId))
+			{
+				Log.Error($"删除本地小区{nLcId}后，重置天线阵安装规划表中的信息失败");
+				return false;
+			}
+
+			// 关闭布配开关 todo 此处开关关闭，下发本地小区信息时，需要判断开关的状态，如果为关闭需要先打开。后续优化流程
+			if (!SetNetPlanSwitch(false, nLcId, CSEnbHelper.GetCurEnbAddr()))
+			{
+				Log.Error($"本地小区{nLcId}的布配开关关闭失败");
 				return false;
 			}
 
