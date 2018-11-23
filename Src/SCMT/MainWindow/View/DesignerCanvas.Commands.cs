@@ -924,26 +924,26 @@ namespace SCMTMainWindow.View
                 List<Connector> connectors = new List<Connector>();
                 GetConnectors(cd, connectors);
 
-                foreach (Connector connector in connectors)
-                {
+				foreach (Connector connector in connectors)
+				{
 					List<Connection> listConnectionToDelete = new List<Connection>();
-                    foreach (Connection con in connector.Connections)
+					foreach (Connection con in connector.Connections)
 					{
-						if (!DeleteConnection(con))
+						listConnectionToDelete.Add(con);
+					}
+
+					for (int i = 0; i < listConnectionToDelete.Count; i++)
+					{
+						if (!DeleteConnection(listConnectionToDelete[i]))
 						{
 							MessageBox.Show("删除链接失败");
 							return;
 						}
 					}
+				}
 
-					for(int i = 0; i < listConnectionToDelete.Count; i++)
-					{
-						DeleteConnection(listConnectionToDelete[i]);
-					}
-                }
-
-                //从全局 list 中删除相关的项
-                Grid grid = item.Content as Grid;
+				//从全局 list 中删除相关的项
+				Grid grid = item.Content as Grid;
                 TextBlock text = grid.Children[1] as TextBlock;
 
                 if(MibInfoMgr.GetInstance().DelDev(item.DevIndex, item.DevType))
