@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using LinkPath;
 using LogManager;
 
 
@@ -118,7 +119,7 @@ namespace NetPlan
 				["netAntArrayVendorIndex"] = null
 			};
 
-			if (!MibInfoMgr.GetNeedUpdateValue(ant, mapKv))
+			if (!ant.GetNeedUpdateValue(mapKv))
 			{
 				Log.Error($"查询索引为{ant.m_strOidIndex}天线阵的厂家和类型索引失败，不下发该天线阵的权重信息");
 				return -1;
@@ -147,7 +148,7 @@ namespace NetPlan
 			if (null != antWeight)
 			{
 				// 生成权重信息
-				GeneralAntWeigthDev(antWeight, strAntNo);
+				GenerateAntWeigthDev(antWeight, strAntNo);
 			}
 			else
 			{
@@ -159,7 +160,7 @@ namespace NetPlan
 			var antCoupling = NPEAntHelper.GetInstance().GetCouplingByAntVendorAndType(vi, ti);
 			if (null != antCoupling)
 			{
-				GeneralAntCoupling(antCoupling, strAntNo);
+				GenerateAntCoupling(antCoupling, strAntNo);
 			}
 			else
 			{
@@ -179,7 +180,7 @@ namespace NetPlan
 		/// <param name="aw"></param>
 		/// <param name="strAntNo"></param>
 		/// <returns></returns>
-		private void GeneralAntWeigthDev(AntWeight aw, string strAntNo)
+		private void GenerateAntWeigthDev(AntWeight aw, string strAntNo)
 		{
 			var witList = aw.antArrayMultWeight;
 
@@ -225,7 +226,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="coupCoe"></param>
 		/// <param name="strAnoNo"></param>
-		private void GeneralAntCoupling(AntCoupCoe coupCoe, string strAnoNo)
+		private void GenerateAntCoupling(AntCoupCoe coupCoe, string strAnoNo)
 		{
 			var coupList = coupCoe.antArrayCouplingCoeffctInfo;
 
@@ -305,6 +306,80 @@ namespace NetPlan
 				   m_antBfScanList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp));
 		}
 
+		/// <summary>
+		/// 下发天线器件库信息
+		/// </summary>
+		/// <param name="ant"></param>
+		private bool DistributeAntTypeInfo(DevAttributeInfo ant)
+		{
+			var strVendor = GetAntVendorIdx(ant);
+			var strType = GetAntTypeIdx(ant);
+			if (string.IsNullOrEmpty(strVendor)|| string.IsNullOrEmpty(strType))
+			{
+				Log.Error($"索引为{ant.m_strOidIndex}的天线阵信息查找厂家索引和类型索引失败");
+				return false;
+			}
+
+			if (IsExistAntType(strVendor, strType))
+			{
+				Log.Debug($"已经存在索引为.{strVendor}.{strType}的天线阵器件实例，无需下发天线阵器件库信息");
+				return true;
+			}
+
+			var antStaticInfo = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(strVendor, strType);
+			if (null == antStaticInfo)
+			{
+				Log.Error($"查找厂家索引为{strVendor}、类型索引为{strType}的天线阵器件库信息失败");
+				return false;
+			}
+
+			var dev = GenerateAntTypeDev(antStaticInfo);
+			if (null == dev)
+			{
+				Log.Error("生成天线阵类型实例失败");
+				return false;
+			}
+
+			// todo 下发信息到基站
+
+			return true;
+		}
+
+
+		private bool IsExistAntType(string strVendorIdx, string strTypeIdx)
+		{
+			var idx = $".{strVendorIdx}.{strTypeIdx}";
+			var rs = CommLinkPath.GetMibValueFromCmdExeResult(idx, "GetAntennaArrayTypeInfo", "antArrayRowStatus",
+				CSEnbHelper.GetCurEnbAddr());
+			return "4" == rs;
+		}
+
+		private string GetAntVendorIdx(DevAttributeInfo ant)
+		{
+			return ant.GetNeedUpdateValue("netAntArrayVendorIndex");
+		}
+
+		private string GetAntTypeIdx(DevAttributeInfo ant)
+		{
+			return ant.GetNeedUpdateValue("netAntArrayTypeIndex");
+		}
+
+		private DevAttributeBase GenerateAntTypeDev(AntType at)
+		{
+			var idx = $".{at.antArrayVendor}.{at.antArrayIndex}";
+			var dev = new DevAttributeBase("antennaArrayTypeEntry", idx);
+			if (dev.m_mapAttributes.Count == 0)
+			{
+				return null;
+			}
+
+			dev.SetFieldOriginValue("antArrayModelName", at.antArrayModelName);
+			dev.SetFieldOriginValue("antArrayType", CalculateBitsValue(at.antArrayType).ToString());
+			dev.SetFieldOriginValue("antArrayNum", at.antArrayNum.ToString());
+			dev.SetFieldOriginValue("antArrayDistance", at.antArrayDistance.ToString());
+
+			return dev;
+		}
 
 		#region 私有数据区
 
