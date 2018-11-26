@@ -38,6 +38,7 @@ namespace SCMTMainWindow.View
 		/// false为添加指令，true为修改指令
 		/// </summary>
 		private bool m_bisModify = false;
+        private int m_ModifyIndexGrade = 0;
 
 		public bool bOK = false;
 
@@ -180,7 +181,7 @@ namespace SCMTMainWindow.View
 					continue;
 				}
 
-				if (!cell.oid.Contains(strPreOid))
+                if (!cell.oid.Contains(strPreOid))
 				{
 					strFullOid = strPreOid + cell.oid + strIndex;
 				}
@@ -246,8 +247,10 @@ namespace SCMTMainWindow.View
 				MessageBox.Show("参数添加成功！");
 			}
 
-			//下发指令成功后更新基本信息列表
-			m_MainDataGrid.RefreshDataGrid(lmtPdu, indexGrade);
+            //下发指令成功后更新基本信息列表
+            if (m_bisModify)
+                indexGrade = m_ModifyIndexGrade;
+            m_MainDataGrid.RefreshDataGrid(lmtPdu, indexGrade);
 
 			this.Close();
 		}
@@ -419,8 +422,18 @@ namespace SCMTMainWindow.View
 			m_bisModify = true;
 			this.Title = mibInfo.m_cmdDesc;
 			listIndexInfo.Clear();
+            m_ModifyIndexGrade = 0;
 
-			int i = 0;
+            foreach (MibLeaf leaf in table.childList)
+            {
+                if (leaf.IsIndex.Equals("True"))
+                {
+                    listIndexInfo.Add(leaf);
+                    m_ModifyIndexGrade++;
+                }                    
+            }
+
+            int i = 0;
 			ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
 			Dictionary<string, string> temdicValue = new Dictionary<string, string>();//保存当前选中行的信息，key为nameMib，value为值
 			Dictionary<string, string> temdicOid = new Dictionary<string, string>();//保存当前选中行的信息，key为nameMib，value为Oid
@@ -465,15 +478,15 @@ namespace SCMTMainWindow.View
 						dynamic model = new DyDataGrid_MIBModel();
 						string devalue = null;
 						string stroid = null;
-						if (temdicValue.ContainsKey(mibLeaf.childNameMib))
-							devalue = temdicValue[mibLeaf.childNameMib];
-						else
-							devalue = ConvertValidValue(mibLeaf);
+                        if (temdicValue.ContainsKey(mibLeaf.childNameMib))
+                            devalue = temdicValue[mibLeaf.childNameMib];
+                        else
+                            continue;
 
 						if (temdicOid.ContainsKey(mibLeaf.childNameMib))
 							stroid = temdicOid[mibLeaf.childNameMib];
 						else
-							stroid = mibLeaf.childOid;
+                            continue; ;
 
 						model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
 						{
