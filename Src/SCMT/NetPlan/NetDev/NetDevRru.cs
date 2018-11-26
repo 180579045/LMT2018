@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CommonUtility;
+using LinkPath;
 using LogManager;
 
 namespace NetPlan
 {
-	internal class NetDevRru : NetDevBase
+	internal sealed class NetDevRru : NetDevBase
 	{
 		/// <summary>
 		/// 从pico中查询连接的rhub的编号和端口号
@@ -17,7 +16,7 @@ namespace NetPlan
 		public static Dictionary<int, LinkEndpoint> GetLinkedRhubInfoFromPico(DevAttributeInfo picoDev)
 		{
 			var rhubNoMib = "netRRUHubNo";
-			var rhubNo = MibInfoMgr.GetNeedUpdateValue(picoDev, rhubNoMib);
+			var rhubNo = picoDev.GetNeedUpdateValue(rhubNoMib);
 			if (null == rhubNo || "-1" == rhubNo)
 			{
 				Log.Debug($"索引为{picoDev.m_strOidIndex}pico设备尚未连接到rhub，请确认是否存在错误");
@@ -29,7 +28,7 @@ namespace NetPlan
 			for (var i = 1; i <= 2; i++)        // todo pico设备按两个端口算，如果MIB有修改，需要进行处理
 			{
 				var rhubEthMib = $"netRRUOfp{i}AccessEthernetPort";
-				var rhubEthNo = MibInfoMgr.GetNeedUpdateValue(picoDev, rhubEthMib);
+				var rhubEthNo = picoDev.GetNeedUpdateValue(rhubEthMib);
 				if (null == rhubEthNo || "-1" == rhubEthNo)
 				{
 					continue;
@@ -55,5 +54,167 @@ namespace NetPlan
 
 			return epMap;
 		}
+
+		// todo 下发rruTypeEntry和rruTypePortEntry
+
+		#region 器件库信息处理
+
+		/// <summary>
+		/// 根据rru的信息生成和该rru相关的器件库信息
+		/// </summary>
+		/// <param name="rru"></param>
+		/// <returns></returns>
+		public DevAttributeBase DistributeRruTypeInfo(DevAttributeInfo rru)
+		{
+			var strVendor = GetRruVendorIdx(rru);
+			var strType = GetRruTypeIdx(rru);
+			if (string.IsNullOrEmpty(strVendor) || string.IsNullOrEmpty(strType))
+			{
+				return null;
+			}
+
+			if (IsExistRruType(strVendor, strType))
+			{
+				// todo 基站中已经存在该器件库信息，不再需要下发
+			}
+
+			var rruStaticInfo = NPERruHelper.GetInstance().GetRruTypeInfoByTypeAndVendorIdx(strType, strVendor);
+			if (null == rruStaticInfo)
+			{
+				Log.Error($"根据厂家编号{strVendor}和类型编号{strType}查询RRU器件库信息失败");
+				return null;
+			}
+
+			var newRruType = GenerateRruTypeDev(rruStaticInfo);
+			// 下发参数
+
+			return newRruType;
+		}
+
+		public bool DistributeRruPortTypeInfo(DevAttributeInfo rru)
+		{
+			var strVendor = GetRruVendorIdx(rru);
+			var strType = GetRruTypeIdx(rru);
+			if (string.IsNullOrEmpty(strVendor) || string.IsNullOrEmpty(strType))
+			{
+				return false;
+			}
+
+			if (IsExistRruPortType(strVendor, strType))
+			{
+				// todo 已经存在器件库信息，不再下发
+			}
+
+			var rpiList = NPERruHelper.GetInstance().GetRruPathInfoByTypeAndVendor(int.Parse(strType), int.Parse(strVendor));
+			var rpiDevList = GenerateRruPortTypeDev(rpiList);
+
+			// 下发参数
+
+			return true;
+		}
+
+		/// <summary>
+		/// 查询rru设备的厂家编号
+		/// </summary>
+		/// <param name="rru"></param>
+		/// <returns></returns>
+		private string GetRruVendorIdx(DevAttributeInfo rru)
+		{
+			return rru.GetNeedUpdateValue("netRRUManufacturerIndex");
+		}
+
+		private string GetRruTypeIdx(DevAttributeInfo rru)
+		{
+			return rru.GetNeedUpdateValue("netRRUTypeIndex");
+		}
+
+		/// <summary>
+		/// 判断给定厂家编号和类型编号的rru器件库实例是否存在
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		private static bool IsExistRruType(string strVendorIdx, string strTypeIdx)
+		{
+			var idx = $".{strVendorIdx}.{strTypeIdx}";
+			var rs = CommLinkPath.GetMibValueFromCmdExeResult(idx, "GetRRUTypeInfo", "rruTypeRowStatus", CSEnbHelper.GetCurEnbAddr());
+			return ("4" == rs);
+		}
+
+		/// <summary>
+		/// 判断是否存在rru端口器件信息。todo 只判定一个端口的信息
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		private static bool IsExistRruPortType(string strVendorIdx, string strTypeIdx, int nPortNo = 1)
+		{
+			var idx = $".{strVendorIdx}.{strTypeIdx}.{nPortNo}";
+			var rs = CommLinkPath.GetMibValueFromCmdExeResult(idx, "GetRRUTypePortInfo", "rruTypePortRowStatus",
+				CSEnbHelper.GetCurEnbAddr());
+			return ("4" == rs);
+		}
+
+		/// <summary>
+		/// 生成一个rru类型实例，准备下发
+		/// </summary>
+		/// <param name="ri"></param>
+		/// <returns></returns>
+		private static DevAttributeBase GenerateRruTypeDev(RruInfo ri)
+		{
+			var idx = $".{ri.rruTypeManufacturerIndex}.{ri.rruTypeIndex}";
+			var newRruType = new DevAttributeBase("rruTypeEntry", idx);
+			if (newRruType.m_mapAttributes.Count == 0)
+			{
+				return null;
+			}
+
+			newRruType.SetFieldOriginValue("rruTypeName", ri.rruTypeName);
+			newRruType.SetFieldOriginValue("rruTypeMaxAntPathNum", ri.rruTypeMaxAntPathNum.ToString());
+			newRruType.SetFieldOriginValue("rruTypeMaxTxPower", ri.rruTypeMaxTxPower.ToString());
+			newRruType.SetFieldOriginValue("rruTypeBandWidth", ri.rruTypeBandWidth.ToString());
+			newRruType.SetFieldOriginValue("rruTypeFiberLength", CalculateBitsValue(ri.rruTypeFiberLength).ToString());
+			newRruType.SetFieldOriginValue("rruTypeIrCompressMode", CalculateBitsValue(ri.rruTypeIrCompressMode).ToString());
+			newRruType.SetFieldOriginValue("rruTypeSupportCellWorkMode", CalculateBitsValue(ri.rruTypeSupportCellWorkMode).ToString());
+
+			return newRruType;
+		}
+
+		/// <summary>
+		/// 生成一个rru端口类型实例
+		/// </summary>
+		/// <param name="rpi"></param>
+		/// <returns></returns>
+		private static List<DevAttributeBase> GenerateRruPortTypeDev(IEnumerable<RruPortInfo> rpiList)
+		{
+			var ndabList = new List<DevAttributeBase>();
+			foreach (var rpi in rpiList)
+			{
+				var idx = $".{rpi.rruTypePortManufacturerIndex}.{rpi.rruTypePortIndex}.{rpi.rruTypePortNo}";
+				var newRpt = new DevAttributeBase("rruTypePortEntry", idx);
+				if (newRpt.m_mapAttributes.Count == 0)
+				{
+					continue;
+				}
+
+				newRpt.SetFieldOriginValue("rruTypePortPathNo", rpi.rruTypePortPathNo.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortSupportFreqBand", CalculateBitsValue(rpi.rruTypePortSupportFreqBand).ToString());
+				newRpt.SetFieldOriginValue("rruTypePortSupportFreqBandWidth", rpi.rruTypePortSupportFreqBandWidth.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortSupportAbandTdsCarrierNum", rpi.rruTypePortSupportAbandTdsCarrierNum.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortSupportFBandTdsCarrierNum", rpi.rruTypePortSupportFBandTdsCarrierNum.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortCalAIqTxNom", rpi.rruTypePortCalAIqTxNom.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortCalAIqRxNom", rpi.rruTypePortCalAIqRxNom.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortCalPoutTxNom", rpi.rruTypePortCalPoutTxNom.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortCalPinRxNom", rpi.rruTypePortCalPinRxNom.ToString());
+				newRpt.SetFieldOriginValue("rruTypePortAntMaxPower", rpi.rruTypePortAntMaxPower.ToString());
+
+				ndabList.Add(newRpt);
+			}
+
+			return ndabList;
+		}
+
+
+		#endregion 器件库信息处理
 	}
 }
