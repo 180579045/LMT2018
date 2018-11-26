@@ -962,6 +962,10 @@ namespace SCMTMainWindow.View
                         if (textName.Text == text.Text)
                         {
                             this.gridProperty.Children.Clear();
+							if(this.noteTB != null)
+							{
+								this.noteTB.Text = "";
+							}
                         }
                     }
 
