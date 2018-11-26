@@ -416,13 +416,9 @@ namespace SCMTMainWindow.View
 				return;
 
 			string menuName = table.nameCh;
-			CmdInfoList cmdList = new CmdInfoList();
-			if (!cmdList.GeneratedCmdInfoList())
-				return;
 
-			if (listCmdMibInfo != null && listCmdMibInfo.Count > 0)
-				listCmdMibInfo.Clear();
-			listCmdMibInfo = cmdList.GetCmdsByTblName(table.nameMib);
+			listCmdMibInfo?.Clear();
+			listCmdMibInfo = Database.GetInstance().GetCmdsInfoByEntryName(table.nameMib, CSEnbHelper.GetCurEnbAddr());
 			if (listCmdMibInfo.Count == 0)
 				return;
 
