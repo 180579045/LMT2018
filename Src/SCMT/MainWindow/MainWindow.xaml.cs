@@ -1892,7 +1892,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-			var result = await InitDataBase();
+			var result = await InitDataBase();		// todo lm.dtz文件不存在时，这里抛出异常
 
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
