@@ -16,6 +16,7 @@ using MIBDataParser.JSONDataMgr;
 using SCMTMainWindow.Component.ViewModel;
 using SCMTMainWindow.Utils;
 using UICore.Controls.Metro;
+using DataBaseUtil;
 
 namespace SCMTMainWindow.View
 {
@@ -161,6 +162,7 @@ namespace SCMTMainWindow.View
 			// 英文与值的对应关系
 			Dictionary<string, string> enName2Value = new Dictionary<string, string>();
 
+			var bIsCombobox = false;
 			// ComboBox
 			if (typeof(ComboBox) == e.OriginalSource.GetType())
 			{
@@ -173,7 +175,8 @@ namespace SCMTMainWindow.View
 				// 获取ComboBox的值
 				KeyValuePair<int, string> keyVal = (KeyValuePair<int, string>)cbx.SelectedItem;
 				strVal = keyVal.Key.ToString();
-			}
+				bIsCombobox = true;
+            }
 
 			// TextBox
 			if (typeof(TextBox) == e.OriginalSource.GetType())
@@ -194,8 +197,8 @@ namespace SCMTMainWindow.View
 			// 行数据
 			Dictionary<string, object> lineDataPro = mibModel.Properties;
 
-			// 获取当前表格的Mib英文名和oid
-			if (false == DataGridUtils.GetOidAndEnName(dataGrid.CurrentCell, out oid, out mibNameEn))
+			// 只判断textbox的值是否修改。 todo combobox控件存在问题，没有存储原始值，无法判断值是否被修改了
+			if (!DataGridUtils.GetOidAndEnName(dataGrid.CurrentCell, out oid, out mibNameEn))
 			{
 				strMsg = string.Format("无法获取Mib英文名称错误，oid:{0}", oid);
 				Log.Error(strMsg);
@@ -210,7 +213,7 @@ namespace SCMTMainWindow.View
 			}
 
 			// 判断值是否有变化
-			if (false == DataGridUtils.IsValueChanged(lineDataPro, mibNameEn, strVal))
+			if (!bIsCombobox &&  !DataGridUtils.IsValueChanged(lineDataPro, mibNameEn, strVal))
 			{
 				return;
 			}
@@ -233,6 +236,13 @@ namespace SCMTMainWindow.View
 			{
 				strMsg = string.Format("CDTCmdExecuteMgr.VbsSetSync()方法调用失败，EnbIp:{0}", CSEnbHelper.GetCurEnbAddr());
 				Log.Error(strMsg);
+				return;
+			}
+
+			var es = lmtPdu.m_LastErrorStatus;
+			if (0 != es)
+			{
+				MessageBox.Show($"参数修改失败，错误码：{es}，错误描述：{SnmpErrDescHelper.GetErrDescById((int)es)}");
 				return;
 			}
 

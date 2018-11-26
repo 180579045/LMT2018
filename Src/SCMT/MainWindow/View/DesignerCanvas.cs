@@ -43,6 +43,7 @@ namespace SCMTMainWindow.View
         public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
         //保存界面上的属性表格
         public Grid gridProperty;
+		public TextBlock noteTB;
 
         private SelectionService selectionService;
         internal SelectionService SelectionService
@@ -742,6 +743,7 @@ namespace SCMTMainWindow.View
                 TextBlock txtName = new TextBlock();
                 txtName.Margin = new Thickness(1);
                 txtName.Text = item.Value.mibAttri.childNameCh;
+				txtName.MouseLeftButtonDown += TxtName_MouseLeftButtonDown;
                 grid.Children.Add(txtName);
                 Grid.SetColumn(txtName, 0);
                 Grid.SetRow(txtName, nRow + 1);
@@ -815,7 +817,7 @@ namespace SCMTMainWindow.View
             {
                 Grid.SetRowSpan(gridSplit, mibInfo.m_mapAttributes.Count);
             }
-
+			
             Grid ucTest = GetRootElement<Grid>(this, "MainGrid");
 
             if (ucTest != null)
@@ -829,12 +831,35 @@ namespace SCMTMainWindow.View
             }
         }
 
-        /// <summary>
-        /// 文本框得到焦点的时候，保存当前的属性值
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TxtValue_GotFocus(object sender, RoutedEventArgs e)
+		private void TxtName_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			TextBlock targetTB = sender as TextBlock;
+
+			Grid ucTest = GetRootElement<Grid>(this, "MainGrid");
+
+			if (ucTest != null)
+			{
+				noteTB = GetChildrenElement<TextBlock>(ucTest, "noteText");
+				if (noteTB != null)
+				{
+					noteTB.Text = "";
+					foreach (var item in g_nowDevAttr.m_mapAttributes)
+					{
+						if (item.Value.mibAttri.childNameCh == targetTB.Text)
+						{
+							noteTB.Text = item.Value.mibAttri.childNameCh + "\n" + item.Value.mibAttri.detailDesc;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// 文本框得到焦点的时候，保存当前的属性值
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void TxtValue_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox targetText = sender as TextBox;
             strOldAttr = targetText.Text;

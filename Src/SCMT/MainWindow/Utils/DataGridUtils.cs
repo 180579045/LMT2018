@@ -158,6 +158,11 @@ namespace SCMTMainWindow.Utils
 					return false;
 				}
 
+				if (reData.ASNType == "RowStatus")
+				{
+					continue;
+				}
+
 				// 组装Vb
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
 				lmtVb.Oid = oid;
