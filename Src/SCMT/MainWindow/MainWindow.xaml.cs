@@ -1590,7 +1590,9 @@ namespace SCMTMainWindow
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
-			int RealIndexCount = IndexCount;                         // 真实的索引维度;
+            Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+
+            int RealIndexCount = IndexCount;                         // 真实的索引维度;
 
 			if (IndexCount == 0)                                     // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
@@ -1611,7 +1613,7 @@ namespace SCMTMainWindow
 				AddPropertyForEmptyTbl(ref model, mibTable);
 
 				Main_Dynamic_DataGrid.ColumnModel = model;
-				Main_Dynamic_DataGrid.DataContext = contentlist;
+				Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = contentlist;
 				return;
 			}
 
@@ -1732,7 +1734,7 @@ namespace SCMTMainWindow
 				if (itemCount == contentlist.Count)
 				{
 					Main_Dynamic_DataGrid.ColumnModel = model;
-					Main_Dynamic_DataGrid.DataContext = contentlist;
+					Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = contentlist;
 				}
 			}
 			// 增加表量表索引的列名;

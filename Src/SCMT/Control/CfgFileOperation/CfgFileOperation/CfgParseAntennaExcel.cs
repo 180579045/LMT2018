@@ -76,7 +76,7 @@ namespace CfgFileOperation
             {"antBfScanAmplitude24", "AG"},//
             {"antBfScanAmplitude25", "AH"},//
             {"antBfScanAmplitude26", "AI"},//
-            {"antBfScanAmplitude27", "AG"},//
+            {"antBfScanAmplitude27", "AJ"},//
             {"antBfScanAmplitude28", "AK"},//
             {"antBfScanAmplitude29", "AL"},//
             {"antBfScanAmplitude30", "AM"},//
@@ -102,7 +102,7 @@ namespace CfgFileOperation
             {"antBfScanPhase18",  "BG"},//
             {"antBfScanPhase19",  "BH"},//
             {"antBfScanPhase20",  "BI"},//
-            {"antBfScanPhase21",  "BG"},//
+            {"antBfScanPhase21",  "BJ"},//
             {"antBfScanPhase22",  "BK"},//
             {"antBfScanPhase23",  "BL"},//
             {"antBfScanPhase24",  "BM"},//
@@ -288,7 +288,7 @@ namespace CfgFileOperation
             else if (String.Equals("波束扫描原始值", strSheet))
             {
                 ProcessingAntennaExcelBS(wks);     // 类似 mdb 存储解析excel的内容
-                ProcessingAntennaExcelToStrList(nTableNum); // 把存储内容 再次解析成 struct 的格式
+                ProcessingAntennaExcelToStrList2(nTableNum); // 把存储内容 再次解析成 struct 的格式
             }
 
             excelOp = null;
@@ -319,20 +319,16 @@ namespace CfgFileOperation
             string strHorNum = "";         //水平波束个数
             string strVerNum = "";         //垂直波束个数
 
-            string strVendorTypekey = "";  //厂家-类型key
-            string strBfKey = "";          //水平波束个数-垂直波束个数key
-            int nBfTotal = 0;
-
-            string index1 = "";
-            string index2 = "";
-            string index3 = "";
-            string index4 = "";
-            string index5 = "";
+            // 1.同一 ("天线阵厂商索引" + "波束扫描组合数"), 排列组合("水平波束个数" + "垂直波束个数") 。
+            // 1.1 同一 ("天线阵厂商索引" + "波束扫描组合数") 为key 的 波束扫描组合 nBfScanIndex=0,初始化。
+            string strVendorTypekey = "";           // 本次的组合："天线阵厂商索引" + "波束扫描组合数" = key
+            string m_strCurrentVendorTypekey = "";  // 上次的组合："天线阵厂商索引" + "波束扫描组合数" = key
+            // 1.2 同一 ("天线阵厂商索引" + "波束扫描组合数") 下，计算("水平波束个数" + "垂直波束个数") 组合，nBfScanIndex++.
+            string strBfKey = "";                   // 本次的组合："水平波束个数" + "垂直波束个数" = key
+            string m_strBfKey = "";                 // 上次的组合：
+            int nBfTotal = 0;                       // 循环次数  ：int "水平波束个数" + "垂直波束个数" = count
 
             List<string> indexStrList = new List<string>();
-            //bool re = true;
-            string m_strCurrentVendorTypekey = "";
-            string m_strBfKey = "";
             AntArrayBfScanAntWeightTabStru pAntArrayBfScanInfo;
             foreach ( var recordset in AntennaIndexBS)
             {
@@ -366,15 +362,15 @@ namespace CfgFileOperation
                         {
                             pAntArrayBfScanInfo = GetAntArrayBfStru(recordset, nBfScanIndex, nBfGroup, nBfTimes);
 
-                            index1 = strAntArrayVendor;
-                            index2 = strAntArrayType;
-                            index3 = nBfScanIndex.ToString();
-                            index4 = nBfGroup.ToString();
-                            index5 = nBfTimes.ToString();
+                            string index1 = strAntArrayVendor;
+                            string index2 = strAntArrayType;
+                            string index3 = nBfScanIndex.ToString();
+                            string index4 = nBfGroup.ToString();
+                            string index5 = nBfTimes.ToString();
                             //if (nBfScanIndex == 1 && nBfGroup == 3 && nBfTimes == 3)
-                            {
-                                //Console.WriteLine("");
-                            }
+                            //{
+                            //    Console.WriteLine("");
+                            //}
                             string indexStr = String.Format("{0}.{1}.{2}.{3}.{4}", index1, index2, index3, index4, index5);
                             indexStrList.Add(indexStr);
                             vectAntArrayBfScanInfo.Add(pAntArrayBfScanInfo);
@@ -384,6 +380,139 @@ namespace CfgFileOperation
                     nBfScanIndex++;
                 }
                 
+            }
+        }
+
+        private void ProcessingAntennaExcelToStrList2(int nTableNum)
+        {
+            if ((AntennaIndexBS.Count == 0) || (vectAntArrayBfScanInfo == null))
+                return;
+
+            string strAntArrayVendor = ""; //天线阵厂商索引 第一维索引值
+            string strAntArrayType = "";   //天线阵型号索引 第二维索引值
+            int nBfScanIndex = 0;          //波束扫描组合数 第三维索引:
+            int nBfTotal = 0;              //波束扫描组合数 第四维索引: Max=count("水平波束个数" + "垂直波束个数" )
+            string strHorNum = "";         //水平波束个数
+            string strVerNum = "";         //垂直波束个数
+
+            // 1.同一 ("天线阵厂商索引" + "波束扫描组合数"), 排列组合("水平波束个数" + "垂直波束个数") 。
+            // 1.1 同一 ("天线阵厂商索引" + "波束扫描组合数") 为key 的 波束扫描组合 nBfScanIndex=0,初始化。
+            string m_strCurrentVendorTypekey = "";  // 上次的组合："天线阵厂商索引" + "波束扫描组合数" = key
+            // 1.2 同一 ("天线阵厂商索引" + "波束扫描组合数") 下，计算("水平波束个数" + "垂直波束个数") 组合，nBfScanIndex++.
+            string m_strBfKey = "";                 // 上次的组合：
+            foreach (var recordset in AntennaIndexBS)
+            {
+                if (vectAntArrayBfScanInfo.Count == nTableNum)// mib 中的 表容量 ！！
+                {
+                    break;
+                }
+
+                strAntArrayVendor = recordset["antVendorName"];//天线阵厂商索引 第一维索引值                
+                strAntArrayType = recordset["antMode"];//天线阵型号索引 第二维索引值                
+                strHorNum = recordset["horBeamScanning"];//水平波束个数               
+                strVerNum = recordset["verBeamScanning"];//垂直波束个数
+
+                ////厂家-类型key 不同替换
+                //if (true != String.Equals((strAntArrayVendor + "-" + strAntArrayType), m_strCurrentVendorTypekey))
+                //{
+                //    m_strCurrentVendorTypekey = (strAntArrayVendor + "-" + strAntArrayType);
+                //    nBfScanIndex = 0; //重置为0初始化第3维索引
+                //}
+
+                ////计算第3维和第4维索引
+                //if (true != String.Equals((strHorNum + "-" + strVerNum), m_strBfKey))
+                //{
+                //    m_strBfKey = strHorNum + "-" + strVerNum;//水平波束个数-垂直波束个数key
+                //    nBfTotal = 0;// 初始化第4维索引
+                //}
+                //else
+                //{
+                //    nBfTotal += 1;
+                //    if (nBfTotal > (int.Parse(strHorNum) + int.Parse(strVerNum)))
+                //    {
+                //        nBfScanIndex++;//下一种bf组合
+                //        continue;
+                //    }
+                //}
+                if (!GetIndex3AndIndex4Value(recordset, nBfScanIndex, nBfTotal, m_strCurrentVendorTypekey, m_strBfKey, out nBfScanIndex, out nBfTotal))
+                {
+                    m_strCurrentVendorTypekey = (strAntArrayVendor + "-" + strAntArrayType);
+                    m_strBfKey = strHorNum + "-" + strVerNum;//水平波束个数-垂直波束个数key
+                    continue;
+                }
+                m_strCurrentVendorTypekey = (strAntArrayVendor + "-" + strAntArrayType);
+                m_strBfKey = strHorNum + "-" + strVerNum;//水平波束个数-垂直波束个数key
+
+                // 每行变成 4个结构
+                GetIndex5AntArrayBfStru(recordset, strAntArrayVendor, strAntArrayType, nBfScanIndex, nBfTotal);
+            }
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="recordset"></param>
+        /// <param name="nBfScanIndex">index3</param>
+        /// <param name="nBfTotal">index4</param>
+        /// <param name="m_strCurrentVendorTypekey"></param>
+        /// <param name="m_strBfKey"></param>
+        /// <param name="index3"></param>
+        /// <param name="index4"></param>
+        /// <returns></returns>
+        bool GetIndex3AndIndex4Value(Dictionary<string, string> recordset, int nBfScanIndex, int nBfTotal, string m_strCurrentVendorTypekey, string m_strBfKey, out int index3, out int index4 )
+        {
+            //index3 = 0;
+            //index4 = 0;
+            bool re = true;
+            string strAntArrayVendor = recordset["antVendorName"]; //天线阵厂商索引 第一维索引值
+            string strAntArrayType = recordset["antMode"];   //天线阵型号索引 第二维索引值
+            string strHorNum = recordset["horBeamScanning"];         //水平波束个数
+            string strVerNum = recordset["verBeamScanning"];         //垂直波束个数
+
+            if (true == String.Equals(m_strBfKey, "") && true == String.Equals(m_strCurrentVendorTypekey, ""))
+            {
+                nBfScanIndex = 0;
+                nBfTotal = 0;
+            }
+
+            //厂家-类型key 不同替换
+            if (true != String.Equals((strAntArrayVendor + "-" + strAntArrayType), m_strCurrentVendorTypekey) && !String.Equals(m_strCurrentVendorTypekey, ""))
+            {
+                //m_strCurrentVendorTypekey = (strAntArrayVendor + "-" + strAntArrayType);
+                nBfScanIndex = 0; //重置为0初始化第3维索引
+                m_strBfKey = "";
+                nBfTotal = 0;
+            }
+            else
+            {
+                //计算第3维和第4维索引
+                if (true != String.Equals((strHorNum + "-" + strVerNum), m_strBfKey) && !String.Equals(m_strBfKey, ""))
+                {
+                    nBfScanIndex++;
+                    //m_strBfKey = strHorNum + "-" + strVerNum;//水平波束个数-垂直波束个数key
+                    nBfTotal = 0;// 初始化第4维索引
+                }
+                else if (!String.Equals(m_strBfKey, ""))
+                {
+                    nBfTotal += 1;
+                }
+                if (nBfTotal >= (int.Parse(strHorNum) + int.Parse(strVerNum)))
+                {
+                    nBfScanIndex++;//下一种bf组合
+                    re = false;
+                }
+            }
+            index3 = nBfScanIndex;
+            index4 = nBfTotal;
+            return re;
+        }
+
+        void GetIndex5AntArrayBfStru(Dictionary<string, string> recordset, string index1, string index2, int index3, int index4 )
+        {
+            AntArrayBfScanAntWeightTabStru pAntArrayBfScanInfo;
+            for (int index5 = 0; index5 < 4; index5++)
+            {
+                pAntArrayBfScanInfo = GetAntArrayBfStru(recordset, index3, index4, index5);
+                vectAntArrayBfScanInfo.Add(pAntArrayBfScanInfo);
             }
         }
 
@@ -399,17 +528,13 @@ namespace CfgFileOperation
         {
             AntArrayBfScanAntWeightTabStru pAntArrayBfScanInfo = new AntArrayBfScanAntWeightTabStru();
 
-            string strAntArrayVendor = recordset["antVendorName"];//天线阵厂商索引 第一维索引值
-            string strAntArrayType = recordset["antMode"];//天线阵型号索引 第二维索引值  
-            string strHorNum = recordset["horBeamScanning"];//水平波束个数               
-            string strVerNum = recordset["verBeamScanning"];//垂直波束个数
             string strAmplitude = "antBfScanAmplitude";
             string strPhase = "antBfScanPhase";
             
             //天线阵厂商索引 第一维索引值
-            pAntArrayBfScanInfo.antArrayBfScanAntWeightVendorIndex = strAntArrayVendor;
+            pAntArrayBfScanInfo.antArrayBfScanAntWeightVendorIndex = recordset["antVendorName"];
             //天线阵型号索引 第二维索引值
-            pAntArrayBfScanInfo.antArrayBfScanAntWeightTypeIndex = strAntArrayType;
+            pAntArrayBfScanInfo.antArrayBfScanAntWeightTypeIndex = recordset["antMode"];
             //波束扫描组合数 第三维索引
             pAntArrayBfScanInfo.antArrayBfScanAntWeightIndex = nBfScanIndex.ToString();
             //波束扫描每种组合的波束个数 第四维索引
@@ -418,9 +543,8 @@ namespace CfgFileOperation
             pAntArrayBfScanInfo.antArrayBfScanAntWeightAntGrpNo = nBfTimes.ToString();
 
             pAntArrayBfScanInfo.antArrayBfScanAntWeightRowStatus = "4";
-            pAntArrayBfScanInfo.antArrayBfScanAntWeightHorizonNum = strHorNum;
-            pAntArrayBfScanInfo.antArrayBfScanAntWeightVerticalNum = strVerNum;
 
+            //天线1~8幅度Amplitude;天线1~8相位Phase.
             string strAmpPhaNum = (nBfTimes * 8 + 0).ToString();
             pAntArrayBfScanInfo.antArrayBfScanAntWeightAmplitude0 = recordset[(strAmplitude + strAmpPhaNum)];
             pAntArrayBfScanInfo.antArrayBfScanAntWeightPhase0 = recordset[(strPhase + strAmpPhaNum)];
@@ -453,6 +577,12 @@ namespace CfgFileOperation
             pAntArrayBfScanInfo.antArrayBfScanAntWeightAmplitude7 = recordset[(strAmplitude + strAmpPhaNum)];
             pAntArrayBfScanInfo.antArrayBfScanAntWeightPhase7 = recordset[(strPhase + strAmpPhaNum)];
 
+            pAntArrayBfScanInfo.antArrayBfScanAntWeightHorizonNum = recordset["horBeamScanning"];//水平波束个数 
+            pAntArrayBfScanInfo.antArrayBfScanAntWeightVerticalNum = recordset["verBeamScanning"];//垂直波束个数
+
+            pAntArrayBfScanInfo.antArrayBfScanAntWeightHorizonDowntiltAngle = recordset["horDowntiltAngle"]; // 水平方向数字下倾角:(单位o)
+            pAntArrayBfScanInfo.antArrayBfScanAntWeightVerticalDowntiltAngle = recordset["verDowntiltAngle"];// 垂直方向数字下倾角:(单位o)
+            pAntArrayBfScanInfo.antArrayBfScanWeightIsLossFlag = recordset["antLossFlag"];                   // 有损无损:（0：无损/1:有损）
             return pAntArrayBfScanInfo;
         }
         /// <summary>
@@ -470,6 +600,10 @@ namespace CfgFileOperation
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
             foreach (var colName in ColsInfoBS.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
             {
+                //if (String.Equals(colName, "antBfScanPhase21"))
+                //{
+                //    Console.WriteLine("===");
+                //}
                 object[,] arry = (object[,])wks.Cells.get_Range(ColsInfoBS[colName] + "1", ColsInfoBS[colName] + rowCount).Value2;
                 ColVals.Add(colName, arry);
             }

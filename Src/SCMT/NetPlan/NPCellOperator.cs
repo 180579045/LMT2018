@@ -19,39 +19,13 @@ namespace NetPlan
 		/// <param name="nLcNo">本地小区编号</param>
 		/// <param name="targetIp">目标基站地址</param>
 		/// <returns>true:设置成功,false:设置失败</returns>
-		public static bool SetNetPlanSwitch(bool bOpen, int nLcNo, string targetIp)
+		public static bool SetNetPlanSwitch(bool bOpen, int nLcNo)
 		{
-			if (string.IsNullOrEmpty(targetIp))
-			{
-				throw new CustomException("设置网规开关功能传入参数错误");
-			}
-
 			var strIndexTemp = $".{nLcNo}";
 
-			//const string cmd = "SetNRNetwokPlanControlSwitch";
 			const string mibName = "nrNetLocalCellCtrlConfigSwitch";
 
 			var dValue = (bOpen ? "1" : "0");
-			//var name2Value = new DIC_DOUBLE_STR { [mibName] = dValue };
-
-			//long reqId;
-			//var pdu = new CDTLmtbPdu();
-			//var ret = CDTCmdExecuteMgr.CmdSetSync(cmd, out reqId, name2Value, strIndexTemp, targetIp, ref pdu);
-			//if (0 != ret)
-			//{
-			//	if (2 == ret)
-			//	{
-			//		var desc = SnmpErrDescHelper.GetLastErrorDesc();
-			//		Log.Error($"下发本地小区布配开关命令{cmd}失败，原因：{desc}");
-			//	}
-			//	else
-			//	{
-			//		Log.Error($"下发本地小区布配开关命令{cmd}失败");
-			//	}
-
-			//	return false;
-			//}
-
 			const EnumDevType devType = EnumDevType.nrNetLcCtr;
 
 			// 修改内存中的数据，如果不存在，就添加
@@ -75,7 +49,7 @@ namespace NetPlan
 			return true;
 		}
 
-		public static bool SetNetPlanSwitch(bool bOpen, string strLcIndex, string targetIp)
+		public static bool SetNetPlanSwitch(bool bOpen, string strLcIndex)
 		{
 			if (string.IsNullOrEmpty(strLcIndex))
 			{
@@ -90,7 +64,34 @@ namespace NetPlan
 				return false;
 			}
 
-			return SetNetPlanSwitch(bOpen, nLcNo, targetIp);
+			return SetNetPlanSwitch(bOpen, nLcNo);
+		}
+
+		/// <summary>
+		/// 发送布配开关到基站中
+		/// </summary>
+		/// <param name="bOpen"></param>
+		/// <param name="strLcIndex"></param>
+		/// <param name="targetIp"></param>
+		/// <returns></returns>
+		public static bool SendNetPlanSwitchToEnb(bool bOpen, string strLcIndex, string targetIp)
+		{
+			const string cmd = "SetNRNetwokPlanControlSwitch";
+			const string mibName = "nrNetLocalCellCtrlConfigSwitch";
+
+			var dValue = (bOpen ? "1" : "0");
+			var name2Value = new DIC_DOUBLE_STR { [mibName] = dValue };
+
+			long reqId;
+			var pdu = new CDTLmtbPdu();
+			var ret = CDTCmdExecuteMgr.CmdSetSync(cmd, out reqId, name2Value, strLcIndex, targetIp, ref pdu);
+			if (0 != ret)
+			{
+				Log.Error($"下发本地小区布配开关命令{cmd}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+				return false;
+			}
+
+			return SetNetPlanSwitch(bOpen, strLcIndex);
 		}
 
 		/// <summary>
@@ -112,13 +113,10 @@ namespace NetPlan
 
 			// 先从内存中获取，如果没有找到再下发命令进行查询
 			var ctrlDev = MibInfoMgr.GetInstance().GetDevAttributeInfo(strIndexTemp, EnumDevType.nrNetLcCtr);
-			if (null != ctrlDev)
+			var ctrlValue = ctrlDev?.GetNeedUpdateValue("nrNetLocalCellCtrlConfigSwitch");
+			if (ctrlValue != null)
 			{
-				var ctrlValue = MibInfoMgr.GetDevAttributeValue(ctrlDev, "nrNetLocalCellCtrlConfigSwitch");
-				if (null != ctrlValue)
-				{
-					return int.Parse(ctrlValue);
-				}
+				return int.Parse(ctrlValue);
 			}
 
 			// 在内存中没有找到数据，就从基站中实时查询
@@ -363,7 +361,7 @@ namespace NetPlan
 			}
 
 			// 直接关闭本地小区布配开关
-			if (!SetNetPlanSwitch(false, nLocalCellId, targetIp))
+			if (!SetNetPlanSwitch(false, nLocalCellId))
 			{
 				Log.Error($"删除本地小区{nLocalCellId}网规信息失败，原因：关闭小区布配开关失败");
 				return false;
@@ -426,8 +424,8 @@ namespace NetPlan
 				return false;
 			}
 
-			// 关闭布配开关 todo 此处开关关闭，下发本地小区信息时，需要判断开关的状态，如果为关闭需要先打开。后续优化流程
-			if (!SetNetPlanSwitch(false, nLcId, CSEnbHelper.GetCurEnbAddr()))
+			// 关闭布配开关
+			if (!SetNetPlanSwitch(false, nLcId))
 			{
 				Log.Error($"本地小区{nLcId}的布配开关关闭失败");
 				return false;
@@ -444,7 +442,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool AddNewNrLc(int nLcId, string strTargetIp)
 		{
-			if (!SetNetPlanSwitch(true, nLcId, strTargetIp))
+			if (!SetNetPlanSwitch(true, nLcId))
 			{
 				return false;
 			}

@@ -2161,147 +2161,18 @@ namespace CfgFileOpStruct
         /// 垂直波束个数
         /// </summary>
         public string antArrayBfScanAntWeightVerticalNum;
-
-        public AntArrayBfScanAntWeightTabStru(Dictionary<string, string> AntArrayBfInfo)
-        {
-            int nRecord = 0;
-            string strAntArrayVendor = "";//天线阵厂商索引 第一维索引值
-            string strAntArrayType = "";   //天线阵型号索引 第二维索引值
-            int nBfScanIndex = 0;          //波束扫描组合数 第三维索引
-            string strHorNum = "";         //水平波束个数
-            string strVerNum = "";         //垂直波束个数
-
-            string strVendorTypekey = "";  //厂家-类型key
-            string strBfKey = "";          //水平波束个数-垂直波束个数key
-            int nBfTotal = 0;
-
-
-            //天线阵厂商索引 第一维索引值
-            strAntArrayVendor = AntArrayBfInfo[("antBfScanVendor")];
-            //天线阵型号索引 第二维索引值
-            strAntArrayType = AntArrayBfInfo[("antBfScanMode")];
-            //水平波束个数
-            strHorNum = AntArrayBfInfo[("antBfScanHorNum")];
-            //垂直波束个数
-            strVerNum = AntArrayBfInfo[("antBfScanVerNum")];
-
-            //厂家-类型key
-            strVendorTypekey = strAntArrayVendor + "-" + strAntArrayType;
-            //if (0 != strVendorTypekey.CompareNoCase(m_strCurrentVendorTypekey))
-            //{
-            //    m_strCurrentVendorTypekey = strVendorTypekey;
-            //    nBfScanIndex = 0; //重置为0
-            //}
-
-            //水平波束个数-垂直波束个数key
-            strBfKey = strHorNum + "-" + strVerNum;
-
-            //if (0 != strBfKey.CompareNoCase(m_strBfKey))
-            {
-                //m_strBfKey = strBfKey;
-                nBfTotal = int.Parse(strHorNum) + int.Parse(strVerNum);
-
-                for (int nBfGroup = 0; nBfGroup < nBfTotal; nBfGroup++)
-                {
-                    for (int nBfTimes = 0; nBfTimes < 4; nBfTimes++)
-                    {
-                        //AntArrayBfScanAntWeightTabStru* pAntArrayBfScanInfo = new AntArrayBfScanAntWeightTabStru;
-                        string strAmplitude = "antBfScanAmplitude";
-                        string strPhase = "antBfScanPhase";
-                        int nAmpPhaNum = 0;
-                        string strAmpPhaNum = "";
-                        //string strBfScanIndex = "";
-                        //string strBfGroup = "";
-                        string strBfTimes = "";
-
-                        //天线阵厂商索引 第一维索引值
-                        antArrayBfScanAntWeightVendorIndex = strAntArrayVendor;
-                        //天线阵型号索引 第二维索引值
-                        antArrayBfScanAntWeightTypeIndex = strAntArrayType;
-                        //波束扫描组合数 第三维索引
-                        antArrayBfScanAntWeightIndex = nBfScanIndex.ToString();
-                        //波束扫描每种组合的波束个数 第四维索引
-                        antArrayBfScanAntWeightBFScanGrpNo = nBfGroup.ToString();
-                        //波束扫描每个波束的倍数系数 第五维索引
-                        antArrayBfScanAntWeightAntGrpNo = nBfTimes.ToString();
-
-                        antArrayBfScanAntWeightRowStatus = "4";
-                        antArrayBfScanAntWeightHorizonNum = strHorNum;
-                        antArrayBfScanAntWeightVerticalNum = strVerNum;
-
-                        nAmpPhaNum = nBfTimes * 8 + 1;
-                        antArrayBfScanAntWeightAmplitude0 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase0 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 2;
-                        antArrayBfScanAntWeightAmplitude1 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase1 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 3;
-                        antArrayBfScanAntWeightAmplitude2 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase2 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 4;
-                        antArrayBfScanAntWeightAmplitude3 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase3 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 5;
-                        antArrayBfScanAntWeightAmplitude4 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase4 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 6;
-                        antArrayBfScanAntWeightAmplitude5 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase5 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 7;
-                        antArrayBfScanAntWeightAmplitude6 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase6 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nAmpPhaNum = nBfTimes * 8 + 8;
-                        antArrayBfScanAntWeightAmplitude7 = AntArrayBfInfo[(strAmplitude + nAmpPhaNum.ToString())];
-                        antArrayBfScanAntWeightPhase7 = AntArrayBfInfo[(strPhase + nAmpPhaNum.ToString())];
-
-                        nRecord++;
-                        //vectAntArrayBfScanInfo.push_back(pAntArrayBfScanInfo);
-                    }
-
-                    //下一行数据
-                    //recordset.MoveNext();
-                }
-            }
-
-            //下一种bf组合
-            nBfScanIndex++;
-            /////////////////////////////////
-
-            antArrayBfScanAntWeightVendorIndex = "0";
-            antArrayBfScanAntWeightTypeIndex = "0";
-            antArrayBfScanAntWeightIndex = "0";
-            antArrayBfScanAntWeightBFScanGrpNo = "0";
-            antArrayBfScanAntWeightAntGrpNo = "0";
-            antArrayBfScanAntWeightRowStatus = "6";
-
-            antArrayBfScanAntWeightHorizonNum = "0";
-            antArrayBfScanAntWeightVerticalNum = "0";
-
-            antArrayBfScanAntWeightAmplitude0 = "0";
-            antArrayBfScanAntWeightPhase0 = "0";
-            antArrayBfScanAntWeightAmplitude1 = "0";
-            antArrayBfScanAntWeightPhase1 = "0";
-            antArrayBfScanAntWeightAmplitude2 = "0";
-            antArrayBfScanAntWeightPhase2 = "0";
-            antArrayBfScanAntWeightAmplitude3 = "0";
-            antArrayBfScanAntWeightPhase3 = "0";
-            antArrayBfScanAntWeightAmplitude4 = "0";
-            antArrayBfScanAntWeightPhase4 = "0";
-            antArrayBfScanAntWeightAmplitude5 = "0";
-            antArrayBfScanAntWeightPhase5 = "0";
-            antArrayBfScanAntWeightAmplitude6 = "0";
-            antArrayBfScanAntWeightPhase6 = "0";
-            antArrayBfScanAntWeightAmplitude7 = "0";
-            antArrayBfScanAntWeightPhase7 = "0";   
-        }
-
+        /// <summary>
+        /// 水平方向数字下倾角
+        /// </summary>
+        public string antArrayBfScanAntWeightHorizonDowntiltAngle;
+        /// <summary>
+        /// 垂直方向数字下倾角
+        /// </summary>
+        public string antArrayBfScanAntWeightVerticalDowntiltAngle;
+        /// <summary>
+        /// 有损无损
+        /// </summary>
+        public string antArrayBfScanWeightIsLossFlag;
 
         public string GetAntArrayBfScanLeafValue(string FieldName)
         {
@@ -2331,10 +2202,12 @@ namespace CfgFileOpStruct
             {
                 ReturnValue = antArrayBfScanAntWeightRowStatus;
             }
+            //天线1幅度 1~8
             else if (FieldName.Contains("antennaBfScanWeightAmplitude0"))
             {
                 ReturnValue = antArrayBfScanAntWeightAmplitude0;
             }
+            //天线1相位 1~8
             else if (FieldName.Contains("antennaBfScanWeightPhase0"))
             {
                 ReturnValue = antArrayBfScanAntWeightPhase0;
@@ -2395,15 +2268,29 @@ namespace CfgFileOpStruct
             {
                 ReturnValue = antArrayBfScanAntWeightPhase7;
             }
+            //水平波束个数
             else if (FieldName.Contains("antennaBfScanWeightHorizonNum"))
             {
                 ReturnValue = antArrayBfScanAntWeightHorizonNum;
             }
+            //垂直波束个数 
             else if (FieldName.Contains("antennaBfScanWeightVerticalNum"))
             {
                 ReturnValue = antArrayBfScanAntWeightVerticalNum;
             }
-
+            //支持上下倾角及是否有损坏
+            else if (FieldName.Contains("antennaBfScanWeightHorizonDowntiltAngle"))
+            {
+                ReturnValue = antArrayBfScanAntWeightHorizonDowntiltAngle;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightVerticalDowntiltAngle"))
+            {
+                ReturnValue = antArrayBfScanAntWeightVerticalDowntiltAngle;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightIsLossFlag"))
+            {
+                ReturnValue = antArrayBfScanWeightIsLossFlag;
+            }
             return ReturnValue;
         }
     }

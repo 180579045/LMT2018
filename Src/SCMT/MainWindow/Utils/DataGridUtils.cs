@@ -236,6 +236,9 @@ namespace SCMTMainWindow.Utils
 			{
 				mibNameEn = item.Key;
 
+                if (mibNameEn.Equals("indexlist"))
+                    continue;
+
 				// Mib值
 				if (typeof(DataGrid_Cell_MIB_ENUM) == item.Value.GetType()) // ComboBox
 				{
@@ -377,7 +380,7 @@ namespace SCMTMainWindow.Utils
                     showInfo += leaf.childNameCh + index;
                 }
             }
-            oid = tbl.oid;
+            oid = SnmpToDatabase.GetMibPrefix() + tbl.oid;
 
             return true;
         }
