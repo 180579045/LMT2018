@@ -648,6 +648,7 @@ namespace NetPlan
 
 			foreach (var item in mibList)
 			{
+				// 天线阵的特殊处理
 				if (devType == EnumDevType.ant)
 				{
 					var drDev = new NetDevAnt();
@@ -655,6 +656,16 @@ namespace NetPlan
 					{
 						Log.Error($"下发索引为{item.m_strOidIndex}的RRU天线权重信息失败");
 						return false;
+					}
+				}
+
+				// 天线安装规划表的特殊处理
+				if (devType == EnumDevType.rru_ant)
+				{
+					if (LinkRruAnt.RruHasConnectToAnt(item))
+					{
+						Log.Error($"索引为{item.m_strOidIndex}的天线安装规划记录没有配置天线阵的信息，忽略不再下发");
+						continue;
 					}
 				}
 

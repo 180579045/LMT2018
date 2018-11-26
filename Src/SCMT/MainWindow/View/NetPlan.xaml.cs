@@ -1415,8 +1415,25 @@ namespace SCMTMainWindow.View
                     strrHUBType = "rhub1.0";
                 }
 
-                int nMaxRHUBPath = strrHUBType == "rhub1.0" ? 2 : 4;
+	            strrHUBType = strrHUBType.ToLower();
 
+				int nMaxRHUBPath = 2;
+	            switch (strrHUBType)
+				{
+					case "rhub1.0":
+						nMaxRHUBPath = 2;
+						break;
+					case "rhub2.0":
+						nMaxRHUBPath = 4;
+						break;
+					case "rhub3.0":
+						nMaxRHUBPath = 6;
+						break;
+					default:
+						nMaxRHUBPath = 2;
+						break;
+
+				}
                 DesignerItem newItem = new DesignerItem();
 
                 //从xml 中获取 rru 元素并创建

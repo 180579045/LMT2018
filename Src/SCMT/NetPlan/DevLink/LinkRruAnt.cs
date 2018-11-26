@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LogManager;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -157,6 +158,38 @@ namespace NetPlan.DevLink
 			}
 
 			return GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
+		}
+
+		/// <summary>
+		/// 判断天线阵安装规划表是否连接了天线阵，如果没有连接天线阵，则这个记录不下发
+		/// </summary>
+		/// <param name="record"></param>
+		/// <returns></returns>
+		public static bool RruHasConnectToAnt(DevAttributeInfo record)
+		{
+			if (null == record)
+			{
+				throw new ArgumentNullException();
+			}
+
+			if (record.m_enumDevType != EnumDevType.rru_ant)
+			{
+				return true;
+			}
+
+			var antNo = MibInfoMgr.GetNeedUpdateValue(record, "netSetRRUPortAntArrayNo");
+			var antPathNo = MibInfoMgr.GetNeedUpdateValue(record, "netSetRRUPortAntArrayPathNo");
+			if (null == antNo || "-1" == antNo)
+			{
+				return false;
+			}
+
+			if (null == antPathNo || "-1" == antPathNo)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		#endregion 公共接口区
