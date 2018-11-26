@@ -5,9 +5,7 @@ using System.Text;
 using CommonUtility;
 using DataBaseUtil;
 using LinkPath;
-using LmtbSnmp;
 using LogManager;
-using MIBDataParser;
 using NetPlan.DevLink;
 using SCMTOperationCore.Elements;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
@@ -64,17 +62,6 @@ namespace NetPlan
 			return null;
 		}
 
-		public static string GetDevAttributeValue(DevAttributeInfo dev, string strAttriName)
-		{
-			if (null == dev || string.IsNullOrEmpty(strAttriName))
-			{
-				throw new CustomException("传入参数无效");
-			}
-
-			return GetNeedUpdateValue(dev, strAttriName); ;
-		}
-
-
 		public DevAttributeInfo GetLinkAttri(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
 		{
 			var lt = EnumDevType.unknown;
@@ -97,7 +84,6 @@ namespace NetPlan
 				return handler.GetRecord(wlink, m_mapAllMibData);
 			}
 		}
-
 
 		/// <summary>
 		/// 解析连接
@@ -899,7 +885,7 @@ namespace NetPlan
 			}
 
 			// 得到RRU类型
-			var rruTypeIndex = GetNeedUpdateValue(rru, "netRRUTypeIndex");
+			var rruTypeIndex = rru.GetNeedUpdateValue("netRRUTypeIndex");
 			if (null == rruTypeIndex)
 			{
 				Log.Error($"查询索引为{strIndex}RRU的类型索引值失败");
@@ -907,7 +893,7 @@ namespace NetPlan
 			}
 
 			// 得到厂家索引
-			var rruVendorIndex = GetNeedUpdateValue(rru, "netRRUManufacturerIndex");
+			var rruVendorIndex = rru.GetNeedUpdateValue("netRRUManufacturerIndex");
 			if (null == rruVendorIndex)
 			{
 				Log.Error($"查询索引为{strIndex}RRU的厂家索引值失败");
@@ -1007,14 +993,14 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 获取RHUB设备连接的板卡的插槽号。遍历4个光口
+		/// 获取RHUB设备连接的板卡的插槽号。遍历4个光口.todo 移动到对应的设备中
 		/// </summary>
 		public static string GetRhubLinkToBoardSlotNo(DevAttributeInfo rhub)
 		{
 			for (var i = 1; i < 5; i++)
 			{
 				var mibName = (i == 1) ? "netRHUBAccessSlotNo" : $"netRHUBOfp{i}SlotNo";
-				var boardSlot = MibInfoMgr.GetNeedUpdateValue(rhub, mibName);
+				var boardSlot = rhub.GetNeedUpdateValue(mibName);
 				if (null != boardSlot && "-1" != boardSlot)
 				{
 					return boardSlot;
@@ -1022,30 +1008,6 @@ namespace NetPlan
 			}
 
 			return "-1";
-		}
-
-		/// <summary>
-		/// 查询指定设备的多个字段值
-		/// </summary>
-		/// <param name="dev">设备属性</param>
-		/// <param name="mapFieldAndValue">多个字段。key:字段名，value:字段值</param>
-		/// <param name="bConvertToDigital">枚举值是否转换为数字</param>
-		/// <returns>全部查询成功，返回true；其他情况返回false</returns>
-		public static bool GetNeedUpdateValue(DevAttributeInfo dev, IDictionary<string, string> mapFieldAndValue, bool bConvertToDigital = true)
-		{
-			for (var i = 0; i < mapFieldAndValue.Count; i++)
-			{
-				var kv = mapFieldAndValue.ElementAt(i);
-				var value = GetNeedUpdateValue(dev, kv.Key, bConvertToDigital);
-				if (null == value)
-				{
-					return false;
-				}
-
-				mapFieldAndValue[kv.Key] = value;
-			}
-
-			return true;
 		}
 
 		#endregion 公共接口
@@ -1201,56 +1163,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 根据listColumns中的每个元素，在devInfo中找到对应的值，组装成字典，用于下发
-		/// </summary>
-		/// <param name="devInfo"></param>
-		/// <param name="listColumns"></param>
-		/// <param name="gmv"></param>
-		/// <param name="strRs">行状态的值：4，6</param>
-		/// <returns></returns>
-		public static Dictionary<string, string> GenerateName2ValueMap(DevAttributeInfo devInfo, List<MibLeaf> listColumns, GetMibValue gmv, string strRs = "4")
-		{
-			if (null == devInfo || null == listColumns)
-			{
-				return null;
-			}
-
-			var n2v = new Dictionary<string, string>();
-			var absMap = devInfo.m_mapAttributes;
-
-			foreach (var leafInfo in listColumns)
-			{
-				var leafName = leafInfo.childNameMib;
-
-				// 行状态的值特殊处理
-				if (leafInfo.ASNType.Equals("RowStatus", StringComparison.OrdinalIgnoreCase))
-				{
-					n2v.Add(leafName, strRs);
-				}
-				else
-				{
-					if (!absMap.ContainsKey(leafName))
-					{
-						continue;
-					}
-
-					var mi = absMap[leafName];
-					var value = gmv?.Invoke(mi.m_strOriginValue, mi.m_strLatestValue);
-					if (null == value)
-					{
-						continue;
-					}
-
-					// value 有可能是枚举值等描述信息，需要翻转为snmp类型
-					var ret = SnmpToDatabase.ConvertStringToMibValue(leafInfo, value);
-					n2v.Add(leafName, ret);
-				}
-			}
-
-			return n2v;
-		}
-
-		/// <summary>
 		/// 获取最新值
 		/// </summary>
 		/// <param name="strOriginValue"></param>
@@ -1291,26 +1203,6 @@ namespace NetPlan
 			}
 
 			return strLatestValue;
-		}
-
-		public static string GetNeedUpdateValue(DevAttributeInfo dev, string strFieldName, bool bConvert = true)
-		{
-			if (null == dev || string.IsNullOrEmpty(strFieldName))
-			{
-				throw new ArgumentNullException(strFieldName);
-			}
-
-			var mapAttributes = dev.m_mapAttributes;
-			if (!mapAttributes.ContainsKey(strFieldName))
-			{
-				Log.Error($"索引为{dev.m_strOidIndex}的设备属性中不包含{strFieldName}字段");
-				return null;
-			}
-
-			var originValue = dev.GetFieldOriginValue(strFieldName, bConvert);
-			var latestValue = dev.GetFieldLatestValue(strFieldName, bConvert);
-
-			return GetNeedUpdateValue(originValue, latestValue);
 		}
 
 		/// <summary>
@@ -1370,7 +1262,7 @@ namespace NetPlan
 				var cmdName = kv.Key;
 				var mibLeafList = kv.Value;
 
-				var name2Value = GenerateName2ValueMap(devAttribute, mibLeafList, gmv, strRs);
+				var name2Value = devAttribute.GenerateName2ValueMap(mibLeafList, gmv, strRs);
 				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, devAttribute.m_strOidIndex, targetIp);
 				if (0 != ret)
 				{
@@ -1420,7 +1312,7 @@ namespace NetPlan
 		/// <param name="rpi"></param>
 		/// <param name="mapResult"></param>
 		/// <param name="bCellFix"></param>
-		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi, 
+		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi,
 			ref Dictionary<string, NPRruToCellInfo> mapResult,
 			ref Dictionary<string, bool> mapLcStauts)
 		{
@@ -1620,30 +1512,6 @@ namespace NetPlan
 			var link = new WholeLink(srcEndpoint, dstEndpoint);
 			linkType = link.GetLinkType();
 			return (linkType != EnumDevType.unknown);
-		}
-
-		// 设置设备指定字段值
-		public static bool SetDevAttributeValue(DevAttributeInfo dev, string strFieldName, string strValue)
-		{
-			if (null == dev || string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strValue))
-			{
-				throw new CustomException("属性值传入参数有误");
-			}
-
-			if (!dev.m_mapAttributes.ContainsKey(strFieldName))
-			{
-				Log.Error($"索引为{dev.m_strOidIndex}的设备中未找到{strFieldName}字段，无法设置字段值");
-				return false;
-			}
-
-			//dev.m_mapAttributes[strFieldName].SetLatestValue(strValue);
-			dev.SetFieldLatestValue(strFieldName, strValue);
-			if (dev.m_recordType != RecordDataType.NewAdd)
-			{
-				dev.m_recordType = RecordDataType.Modified;
-			}
-
-			return true;
 		}
 
 		/// <summary>

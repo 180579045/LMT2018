@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using CommonUtility;
 using LogManager;
 
 namespace NetPlan.DevLink
@@ -176,7 +171,6 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-
 		public override DevAttributeInfo GetRecord(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
@@ -225,7 +219,7 @@ namespace NetPlan.DevLink
 				return null;
 			}
 
-			var boardType = MibInfoMgr.GetNeedUpdateValue(board, "netBoardType");
+			var boardType = board.GetNeedUpdateValue("netBoardType");
 			if (null == boardType || "-1" == boardType)
 			{
 				Log.Error("rhub连接板卡的类型信息错误");
@@ -264,30 +258,30 @@ namespace NetPlan.DevLink
 			}
 
 			// 查询rhub设备是否已经建立到board的连接
-			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(rhub);		//todo 移动到rhub设备中
+			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(rhub);      //todo 移动到rhub设备中
 			return ("-1" != boardSlot);
 		}
 
 		private bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
 		{
-			return MibInfoMgr.SetDevAttributeValue(dev, $"netRRUOfp{m_nPicoPort}AccessEthernetPort", nEthPort.ToString()) && 
-				   MibInfoMgr.SetDevAttributeValue(dev, "netRRUHubNo", nHubNo.ToString());
+			return dev.SetDevAttributeValue($"netRRUOfp{m_nPicoPort}AccessEthernetPort", nEthPort.ToString()) &&
+				   dev.SetDevAttributeValue("netRRUHubNo", nHubNo.ToString());
 		}
 
 		private static bool SetIrPortInfoInPico(DevAttributeInfo hubdev, DevAttributeInfo picoDev, int nPicoIrPort)
 		{
 			// 从hub设备中找到任何一个光口连接的板卡光口号
-			for (int i = 1; i < 5; i++)
+			for (var i = 1; i < 5; i++)
 			{
 				var mibName = $"netRHUBOfp{i}AccessOfpPortNo";
-				var value = MibInfoMgr.GetNeedUpdateValue(hubdev, mibName);
+				var value = hubdev.GetNeedUpdateValue(mibName);
 				if (null == value || "-1" == value)
 				{
 					continue;
 				}
 
 				mibName = $"netRHUBOfp{i}AccessLinePosition";
-				var apos = MibInfoMgr.GetNeedUpdateValue(hubdev, mibName);
+				var apos = hubdev.GetNeedUpdateValue(mibName);
 				if (null == apos || "-1" == apos)
 				{
 					continue;
@@ -302,7 +296,6 @@ namespace NetPlan.DevLink
 
 			return true;
 		}
-
 
 		/// <summary>
 		/// 增加rhub到pico之间的连接以太网连接
@@ -350,8 +343,8 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		#endregion
-		
+		#endregion 虚函数区
+
 		#region 私有数据区
 
 		private int m_nPicoPort;
@@ -362,7 +355,6 @@ namespace NetPlan.DevLink
 
 		private EnumDevType m_ethRecordType;
 
-		#endregion
+		#endregion 私有数据区
 	}
-
 }

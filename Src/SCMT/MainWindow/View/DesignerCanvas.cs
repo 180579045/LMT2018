@@ -767,7 +767,7 @@ namespace SCMTMainWindow.View
                         Grid.SetColumn(cbValue, 2);
                         Grid.SetRow(cbValue, nRow + 1);
 
-                        var strItem = MibInfoMgr.GetNeedUpdateValue(mibInfo, item.Key, false);
+                        var strItem = mibInfo.GetNeedUpdateValue(item.Key, false);
                         if(strItem != null)
                         {
                             if (cbValue.Items.Contains(strItem))
@@ -791,7 +791,7 @@ namespace SCMTMainWindow.View
                         txtName.Margin = new Thickness(1);
                         txtName.Height = 25;
 
-                        var strItem2Text = MibInfoMgr.GetNeedUpdateValue(mibInfo, item.Key, false);
+                        var strItem2Text = mibInfo.GetNeedUpdateValue(item.Key, false);
                         if (strItem2Text != null)
                         {
                             txtValue.Text = strItem2Text;
@@ -889,7 +889,7 @@ namespace SCMTMainWindow.View
                             {
                                 if(strOldAttr != targetItem.Text)
                                 {
-                                    if(!MibInfoMgr.SetDevAttributeValue(g_nowDevAttr, item.Key, targetItem.Text))
+                                    if(!g_nowDevAttr.SetDevAttributeValue(item.Key, targetItem.Text))
                                     {
                                         MessageBox.Show("修改失败");
                                     }
@@ -926,7 +926,7 @@ namespace SCMTMainWindow.View
                         {
                             if (item.Value.mibAttri.childNameCh == targetText.Text)
                             {
-                                if (!MibInfoMgr.SetDevAttributeValue(g_nowDevAttr, item.Key, targetItem.SelectedItem.ToString()))
+                                if (!g_nowDevAttr.SetDevAttributeValue(item.Key, targetItem.SelectedItem.ToString()))
                                 {
                                     MessageBox.Show("修改失败");
                                 }

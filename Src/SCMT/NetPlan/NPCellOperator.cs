@@ -1,8 +1,6 @@
 ﻿using System;
 using CommonUtility;
-using DataBaseUtil;
 using LinkPath;
-using LmtbSnmp;
 using LogManager;
 using SCMTOperationCore.Elements;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
@@ -112,13 +110,10 @@ namespace NetPlan
 
 			// 先从内存中获取，如果没有找到再下发命令进行查询
 			var ctrlDev = MibInfoMgr.GetInstance().GetDevAttributeInfo(strIndexTemp, EnumDevType.nrNetLcCtr);
-			if (null != ctrlDev)
+			var ctrlValue = ctrlDev?.GetNeedUpdateValue("nrNetLocalCellCtrlConfigSwitch");
+			if (ctrlValue != null)
 			{
-				var ctrlValue = MibInfoMgr.GetDevAttributeValue(ctrlDev, "nrNetLocalCellCtrlConfigSwitch");
-				if (null != ctrlValue)
-				{
-					return int.Parse(ctrlValue);
-				}
+				return int.Parse(ctrlValue);
 			}
 
 			// 在内存中没有找到数据，就从基站中实时查询

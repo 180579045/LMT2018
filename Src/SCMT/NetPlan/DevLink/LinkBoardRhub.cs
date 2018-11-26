@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using LogManager;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -14,6 +10,7 @@ namespace NetPlan.DevLink
 		{
 			m_irRecordType = EnumDevType.board_rru;
 		}
+
 		#region 虚函数重载
 
 		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
@@ -147,7 +144,6 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-
 		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
 		{
 			var boardIndex = wholeLink.GetDevIndex(EnumDevType.board);
@@ -205,14 +201,14 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			var slotNo = MibInfoMgr.GetNeedUpdateValue(m_boardDev, "netBoardSlotNo");
+			var slotNo = m_boardDev.GetNeedUpdateValue("netBoardSlotNo");
 			if (null == slotNo)
 			{
 				Log.Error("获取板卡插槽号失败");
 				return false;
 			}
 
-			var boardType = MibInfoMgr.GetNeedUpdateValue(m_boardDev, "netBoardType");
+			var boardType = m_boardDev.GetNeedUpdateValue("netBoardType");
 			if (null == boardType)
 			{
 				Log.Error("获取板卡类型失败");
@@ -243,7 +239,6 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-
 		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
@@ -256,14 +251,11 @@ namespace NetPlan.DevLink
 			return GetDevAttributeInfo(m_strIrRecodeIndex, m_irRecordType);
 		}
 
-
 		private bool ResetBoardInfoInRhub(DevAttributeInfo rhub, int nRhubPort)
 		{
 			var bbi = new BoardBaseInfo();
 			return SetBoardBaseInfoInRhub(bbi, rhub) && SetOfpLinkInfoInRhub(rhub, -1);
 		}
-
-
 
 		/// <summary>
 		/// 设置rhub设备和board相关的属性
@@ -273,7 +265,7 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		private bool SetBoardBaseInfoInRhub(BoardBaseInfo bbi, DevAttributeInfo dev)
 		{
-			var rowstatus = MibInfoMgr.GetNeedUpdateValue(dev, "netRHUBRowStatus");
+			var rowstatus = dev.GetNeedUpdateValue("netRHUBRowStatus");
 			if (null == rowstatus)
 			{
 				Log.Error($"从RHUB{dev.m_strOidIndex}查询netRHUBRowStatus属性值失败");
@@ -286,19 +278,19 @@ namespace NetPlan.DevLink
 				//return false;
 			}
 
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessRackNo", bbi.strRackNo))
+			if (!dev.SetDevAttributeValue("netRHUBAccessRackNo", bbi.strRackNo))
 			{
 				return false;
 			}
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessShelfNo", bbi.strShelfNo))
+			if (!dev.SetDevAttributeValue("netRHUBAccessShelfNo", bbi.strShelfNo))
 			{
 				return false;
 			}
-			if (!MibInfoMgr.SetDevAttributeValue(dev, m_strSlotMibName, bbi.strSlotNo))
+			if (!dev.SetDevAttributeValue(m_strSlotMibName, bbi.strSlotNo))
 			{
 				return false;
 			}
-			if (!MibInfoMgr.SetDevAttributeValue(dev, "netRHUBAccessBoardType", bbi.strBoardCode))
+			if (!dev.SetDevAttributeValue("netRHUBAccessBoardType", bbi.strBoardCode))
 			{
 				return false;
 			}
@@ -308,21 +300,21 @@ namespace NetPlan.DevLink
 
 		private bool SetOfpLinkInfoInRhub(DevAttributeInfo rhub, int nBoardPort)
 		{
-			var workMode = MibInfoMgr.GetNeedUpdateValue(rhub, "netRHUBOfpWorkMode", false);
+			var workMode = rhub.GetNeedUpdateValue("netRHUBOfpWorkMode", false);
 			if (null == workMode)
 			{
 				Log.Error($"从rhub{rhub.m_strOidIndex}查询光口工作模式失败");
 				return false;
 			}
 
-			if (!MibInfoMgr.SetDevAttributeValue(rhub, m_strOfpMibName, nBoardPort.ToString()))
+			if (!rhub.SetDevAttributeValue(m_strOfpMibName, nBoardPort.ToString()))
 			{
 				return false;
 			}
 
 			var lp = -1 == nBoardPort ? "-1" : "1";
 
-			if (!MibInfoMgr.SetDevAttributeValue(rhub, m_strOfpLinePosMibName, lp))
+			if (!rhub.SetDevAttributeValue(m_strOfpLinePosMibName, lp))
 			{
 				return false;
 			}
@@ -351,7 +343,7 @@ namespace NetPlan.DevLink
 
 			foreach (var rru in rruList)
 			{
-				var rruTypeIndex = MibInfoMgr.GetNeedUpdateValue(rru, "netRRUTypeIndex");
+				var rruTypeIndex = rru.GetNeedUpdateValue("netRRUTypeIndex");
 				if (null == rruTypeIndex)
 				{
 					return false;
@@ -362,7 +354,7 @@ namespace NetPlan.DevLink
 					continue;
 				}
 
-				var rhubNoInPico = MibInfoMgr.GetNeedUpdateValue(rru, "netRRUHubNo");
+				var rhubNoInPico = rru.GetNeedUpdateValue("netRRUHubNo");
 				if (null == rhubNoInPico)
 				{
 					return false;
@@ -375,7 +367,7 @@ namespace NetPlan.DevLink
 				}
 
 				var picoClone = rru.DeepClone();
-				if (!SetBoardBaseInfoInRru(bbi, picoClone, 1))	// todo pico的端口硬编码
+				if (!SetBoardBaseInfoInRru(bbi, picoClone, 1))  // todo pico的端口硬编码
 				{
 					return false;
 				}
@@ -392,8 +384,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		#endregion
-
+		#endregion 虚函数重载
 
 		#region 私有数据区
 
@@ -410,6 +401,6 @@ namespace NetPlan.DevLink
 
 		private EnumDevType m_irRecordType;
 
-		#endregion
+		#endregion 私有数据区
 	}
 }
