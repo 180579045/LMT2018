@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -69,8 +70,7 @@ namespace NetPlan
 			var npMibEntryList = GetAllMibEntryAndCmds(enbType);
 
 			// 根据MIB入口名得到Get命令
-			var getCmdsList = (from entryObj in npMibEntryList where entryObj.MibEntry.Equals(strEntryName) select entryObj.Get).FirstOrDefault();
-
+			var getCmdsList = GetCmdList(strEntryName, EnumSnmpCmdType.Get);
 			if (null == getCmdsList)
 			{
 				Log.Error("未能获取到Get命令");
@@ -180,6 +180,32 @@ namespace NetPlan
 			}
 
 			return cmds;
+		}
+
+		/// <summary>
+		/// 根据表入口名获取对应命令。只能遍历数据库进行匹配
+		/// </summary>
+		/// <param name="strEntryName"></param>
+		/// <param name="cmdType"></param>
+		/// <param name="enbType"></param>
+		/// <returns></returns>
+		public List<string> GetCmdList(string strEntryName, EnumSnmpCmdType cmdType)
+		{
+			if (cmdType == EnumSnmpCmdType.Invalid)
+			{
+				return null;
+			}
+
+			var cmdList = Database.GetInstance().GetCmdsInfoByEntryName(strEntryName, CSEnbHelper.GetCurEnbAddr());
+			if (null == cmdList)
+			{
+				return null;
+			}
+
+			var cmdStr = cmdType.ToString();
+
+			// todo 此处判断条件是以xx开始，具有局限性
+			return cmdList.Select(cmi => cmi.m_cmdNameEn).Where(cmdName => cmdName.StartsWith(cmdStr, true, CultureInfo.CurrentCulture)).ToList();
 		}
 
 		/// <summary>

@@ -64,31 +64,43 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="rru"></param>
 		/// <returns></returns>
-		public DevAttributeBase DistributeRruTypeInfo(DevAttributeInfo rru)
+		public bool DistributeRruTypeInfo(DevAttributeInfo rru)
 		{
 			var strVendor = GetRruVendorIdx(rru);
 			var strType = GetRruTypeIdx(rru);
 			if (string.IsNullOrEmpty(strVendor) || string.IsNullOrEmpty(strType))
 			{
-				return null;
+				return false;
 			}
 
 			if (IsExistRruType(strVendor, strType))
 			{
-				// todo 基站中已经存在该器件库信息，不再需要下发
+				Log.Debug($"厂家编号为{strVendor}、类型索引为{strType}的RRU器件库信息已经存在，无需下发");
+				return true;
 			}
 
 			var rruStaticInfo = NPERruHelper.GetInstance().GetRruTypeInfoByTypeAndVendorIdx(strType, strVendor);
 			if (null == rruStaticInfo)
 			{
 				Log.Error($"根据厂家编号{strVendor}和类型编号{strType}查询RRU器件库信息失败");
-				return null;
+				return false;
 			}
 
 			var newRruType = GenerateRruTypeDev(rruStaticInfo);
-			// 下发参数
+			if (null == newRruType)
+			{
+				Log.Error("生成rru器件库信息失败");
+				return false;
+			}
 
-			return newRruType;
+			// 下发参数
+			if (!MibInfoMgr.DistributeSnmpData(newRruType, EnumSnmpCmdType.Add, CSEnbHelper.GetCurEnbAddr()))
+			{
+				Log.Error($"厂家编号为{strVendor}、类型索引为{strType}的RRU器件库信息下发失败");
+				return false;
+			}
+
+			return true;
 		}
 
 		public bool DistributeRruPortTypeInfo(DevAttributeInfo rru)
@@ -102,13 +114,28 @@ namespace NetPlan
 
 			if (IsExistRruPortType(strVendor, strType))
 			{
-				// todo 已经存在器件库信息，不再下发
+				Log.Debug($"根据厂家编号{strVendor}和类型编号{strType}查询RRU端口器件库信息失败");
+				return true;
 			}
 
 			var rpiList = NPERruHelper.GetInstance().GetRruPathInfoByTypeAndVendor(int.Parse(strType), int.Parse(strVendor));
 			var rpiDevList = GenerateRruPortTypeDev(rpiList);
+			if (null == rpiDevList || rpiDevList.Count == 0)
+			{
+				Log.Error($"厂家编号为{strVendor}、类型索引为{strType}的RRU端口器件库信息生成失败");
+				return false;
+			}
 
+			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			// 下发参数
+			foreach (var item in rpiDevList)
+			{
+				if (!MibInfoMgr.DistributeSnmpData(item, EnumSnmpCmdType.Add, targetIp))
+				{
+					Log.Error($"索引为{item.m_strOidIndex}的RRU端口器件库信息下发失败");
+					continue;	// todo 此处使用continue而不是return，是因为判断端口器件库信息是否存在时，只判断了端口1的信息，不能保证所有的信息都已经被删除
+				}
+			}
 
 			return true;
 		}

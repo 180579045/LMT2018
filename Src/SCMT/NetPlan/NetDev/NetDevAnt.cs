@@ -35,27 +35,26 @@ namespace NetPlan
 			if (bSendWcb)
 			{
 				var op = GetWcbOpType(ant);
-				if (AntWcbOpType.skip != op)
+				if (AntWcbOpType.skip == op) return true;
+
+				var cmdType = GetSnmCmdTypeFromWcbOpType(op);
+
+				// 生成该天线阵的wcb信息
+				var gret = GenerateAntWcbInfo(ant);
+				if (-1 == gret)
 				{
-					var cmdType = GetSnmCmdTypeFromWcbOpType(op);
+					return false;
+				}
 
-					// 生成该天线阵的wcb信息
-					var gret = GenerateAntWcbInfo(ant);
-					if (-1 == gret)
-					{
-						return false;
-					}
+				if (1 == gret)
+				{
+					return true;
+				}
 
-					if (1 == gret)
-					{
-						return true;
-					}
-
-					// 下发天线阵的wcb信息
-					if (!SendWcbInfoToEnb(cmdType))
-					{
-						return false;
-					}
+				// 下发天线阵的wcb信息
+				if (!SendWcbInfoToEnb(cmdType))
+				{
+					return false;
 				}
 			}
 
@@ -165,14 +164,13 @@ namespace NetPlan
 			else
 			{
 				Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵耦合系数信息失败");
-				return -1;
+				return 0;	// 只有部分天线阵才有耦合系数
 			}
 
 			// todo 波束宽度扫描信息后续添加
 
 			return 0;
 		}
-
 
 		/// <summary>
 		/// 生成天线阵权重
@@ -310,7 +308,7 @@ namespace NetPlan
 		/// 下发天线器件库信息
 		/// </summary>
 		/// <param name="ant"></param>
-		private bool DistributeAntTypeInfo(DevAttributeInfo ant)
+		public bool DistributeAntTypeInfo(DevAttributeInfo ant)
 		{
 			var strVendor = GetAntVendorIdx(ant);
 			var strType = GetAntTypeIdx(ant);
@@ -340,7 +338,12 @@ namespace NetPlan
 				return false;
 			}
 
-			// todo 下发信息到基站
+			// 下发信息到基站
+			if (!MibInfoMgr.DistributeSnmpData(dev, EnumSnmpCmdType.Add, CSEnbHelper.GetCurEnbAddr()))
+			{
+				Log.Error($"下发索引为{ant.m_strOidIndex}的天线阵的器件库信息失败");
+				return false;
+			}
 
 			return true;
 		}
