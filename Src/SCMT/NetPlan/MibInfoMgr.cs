@@ -196,6 +196,15 @@ namespace NetPlan
 				return null;
 			}
 
+			//var antType = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(strVendorNo, strAntTypeNo);
+			//if (null == antType)
+			//{
+			//	Log.Error($"根据天线阵的厂家索引{strVendorNo}和类型索引{strAntTypeNo}查询天线阵器件信息失败");
+			//	return null;
+			//}
+
+			//NetDevAnt.SetAntTypeInfo(ant, antType);
+
 			if (!MoveDevFromWaitDelToModifyMap(type, ant, ant.m_strOidIndex))
 			{
 				return null;
@@ -674,7 +683,7 @@ namespace NetPlan
 				// 天线安装规划表的特殊处理
 				if (devType == EnumDevType.rru_ant)
 				{
-					if (LinkRruAnt.RruHasConnectToAnt(item))
+					if (!LinkRruAnt.RruHasConnectToAnt(item))
 					{
 						Log.Error($"索引为{item.m_strOidIndex}的天线安装规划记录没有配置天线阵的信息，忽略不再下发");
 						continue;

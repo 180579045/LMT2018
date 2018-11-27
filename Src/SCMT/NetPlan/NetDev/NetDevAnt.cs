@@ -25,6 +25,28 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 在ant中填入天线阵的信息
+		/// </summary>
+		/// <param name="ant"></param>
+		/// <param name="at"></param>
+		/// <returns></returns>
+		public static bool SetAntTypeInfo(DevAttributeBase ant, AntType at)
+		{
+			ant.SetFieldOriginValue("netAntArrayVendorName", at.antArrayNotMibVendorName);
+			ant.SetFieldOriginValue("netAntArrayModel", at.antArrayModelName);
+
+			if (at.antArrayType.Count > 0)
+			{
+				ant.SetFieldOriginValue("netAntArrayType", at.antArrayType.First().value, true);
+			}
+
+			ant.SetFieldOriginValue("netAntArrayNum", at.antArrayNum);
+			ant.SetFieldOriginValue("netAntArrayDistance", at.antArrayDistance);
+
+			return true;
+		}
+
+		/// <summary>
 		/// 下发天线阵信息
 		/// </summary>
 		/// <param name="ant">天线阵设备</param>
@@ -312,7 +334,7 @@ namespace NetPlan
 		{
 			var strVendor = GetAntVendorIdx(ant);
 			var strType = GetAntTypeIdx(ant);
-			if (string.IsNullOrEmpty(strVendor)|| string.IsNullOrEmpty(strType))
+			if (String.IsNullOrEmpty(strVendor)|| String.IsNullOrEmpty(strType))
 			{
 				Log.Error($"索引为{ant.m_strOidIndex}的天线阵信息查找厂家索引和类型索引失败");
 				return false;
