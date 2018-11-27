@@ -242,7 +242,7 @@ namespace SCMTMainWindow.View
 			var es = lmtPdu.m_LastErrorStatus;
 			if (0 != es)
 			{
-				MessageBox.Show($"参数修改失败，错误码：{es}，错误描述：{SnmpErrDescHelper.GetErrDescById((int)es)}");
+				MessageBox.Show($"参数修改失败，错误码：{es}，错误描述：{SnmpErrDescHelper.GetErrDescById(es)}");
 				return;
 			}
 
@@ -714,11 +714,14 @@ namespace SCMTMainWindow.View
 				{
 					foreach (DyDataGrid_MIBModel mm in datalist)
 					{
-						var cell = mm.Properties["indexlist"] as DataGrid_Cell_MIB;
-						if (cell.m_Content.Equals((model.Properties["indexlist"] as DataGrid_Cell_MIB).m_Content))
+						if (mm.Properties.ContainsKey("indexlist"))
 						{
-							datalist.Remove(mm);
-							break;
+							var cell = mm.Properties["indexlist"] as DataGrid_Cell_MIB;
+							if (cell.m_Content.Equals((model.Properties["indexlist"] as DataGrid_Cell_MIB).m_Content))
+							{
+								datalist.Remove(mm);
+								break;
+							}
 						}
 					}
 				}
