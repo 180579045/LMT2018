@@ -193,9 +193,7 @@ namespace SCMTMainWindow.View
 				return;
 			}
 
-			DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;
-			// 行数据
-			Dictionary<string, object> lineDataPro = mibModel.Properties;
+			DyDataGrid_MIBModel mibModel = (DyDataGrid_MIBModel)dataGrid.CurrentCell.Item;		
 
 			// 只判断textbox的值是否修改。 todo combobox控件存在问题，没有存储原始值，无法判断值是否被修改了
 			if (!DataGridUtils.GetOidAndEnName(dataGrid.CurrentCell, out oid, out mibNameEn))
@@ -204,16 +202,38 @@ namespace SCMTMainWindow.View
 				Log.Error(strMsg);
 				return;
 			}
+            //根据修改的单元格重组单元格数据，而不是下发整行数据。
+            dynamic modifyModel = new DyDataGrid_MIBModel();
+            if (mibModel.Properties.ContainsKey(mibNameEn))
+            {
+                if (mibModel.Properties[mibNameEn] is DataGrid_Cell_MIB_ENUM)
+                {
+                    var iter = mibModel.Properties[mibNameEn] as DataGrid_Cell_MIB_ENUM;
 
-			if (string.IsNullOrEmpty(mibNameEn))
+                    var dgm = DataGridCellFactory.CreateGridCell(iter.MibName_EN, iter.MibName_CN, iter.m_CurrentValue.ToString(), iter.oid, CSEnbHelper.GetCurEnbAddr());
+                    modifyModel.AddProperty(iter.MibName_EN, dgm, iter.MibName_CN);
+                }
+                else if(mibModel.Properties[mibNameEn] is DataGrid_Cell_MIB)
+                {
+                    var iter = mibModel.Properties[mibNameEn] as DataGrid_Cell_MIB;
+
+                    var dgm = DataGridCellFactory.CreateGridCell(iter.MibName_EN, iter.MibName_CN, iter.m_Content, iter.oid, CSEnbHelper.GetCurEnbAddr());
+                    modifyModel.AddProperty(iter.MibName_EN, dgm, iter.MibName_CN);
+                }
+            } 
+
+            if (string.IsNullOrEmpty(mibNameEn))
 			{
 				strMsg = string.Format("无法获取Mib英文名称，oid:{0}", oid);
 				Log.Error(strMsg);
 				return;
 			}
 
-			// 判断值是否有变化
-			if (!bIsCombobox &&  !DataGridUtils.IsValueChanged(lineDataPro, mibNameEn, strVal))
+            // 单元格数据
+            Dictionary<string, object> lineDataPro = modifyModel.Properties;
+
+            // 判断值是否有变化
+            if (!bIsCombobox &&  !DataGridUtils.IsValueChanged(lineDataPro, mibNameEn, strVal))
 			{
 				return;
 			}
@@ -427,172 +447,191 @@ namespace SCMTMainWindow.View
 
 			var menuItemAdd = new MetroMenuItem();
 			menuItemAdd.Header = "添加命令";
-			menuItemAdd.Click += MenuItem_Click;
 			menuItemAdd.IsEnabled = true;
 			dataGridMenu.Items.Add(menuItemAdd);
 
 			var menuItemModify = new MetroMenuItem();
-			menuItemModify.Header = "修改 " + menuName;
-			menuItemModify.Click += MenuItem_Click; ;
+			menuItemModify.Header = "修改 " + menuName;;
 			menuItemModify.IsEnabled = true;
 			dataGridMenu.Items.Add(menuItemModify);
 
 			var menuItemQuery = new MetroMenuItem();
-			menuItemQuery.Header = "查询 " + menuName;
-			menuItemQuery.Click += MenuItem_Click; ;
+			menuItemQuery.Header = "查询 " + menuName;;
 			menuItemQuery.IsEnabled = true;
 			dataGridMenu.Items.Add(menuItemQuery);
 
 			foreach (CmdMibInfo mibinfo in listCmdMibInfo)
 			{
-                var menuChildItem = new MetroMenuItem();
-                menuChildItem.Header = mibinfo.m_cmdDesc;
-                menuChildItem.Click += MenuItem_Click;
-                menuChildItem.IsEnabled = true;
+                if (mibinfo.m_cmdType.Equals("1"))//增加
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuAddItem_Click; ;
+                    menuChildItem.IsEnabled = true;
 
-                if (mibinfo.m_cmdType.Equals("1"))
-					menuItemAdd.Items.Add(menuChildItem);
-				else if (mibinfo.m_cmdType.Equals("3") || mibinfo.m_cmdType.Equals("4"))
-					menuItemModify.Items.Add(menuChildItem);
-				else if (mibinfo.m_cmdType.Equals("0"))
-					menuItemQuery.Items.Add(menuChildItem);
-				else if (mibinfo.m_cmdType.Equals("2"))
-					dataGridMenu.Items.Add(menuChildItem);
+                    menuItemAdd.Items.Add(menuChildItem);
+                }
+				else if (mibinfo.m_cmdType.Equals("3") || mibinfo.m_cmdType.Equals("4"))//修改
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuModifyItem_Click;
+                    if(m_selectDataGrid == null)
+                        menuChildItem.IsEnabled = false;
+                    else
+                        menuChildItem.IsEnabled = true;
+                    menuItemModify.Items.Add(menuChildItem);
+                }					
+				else if (mibinfo.m_cmdType.Equals("0"))//查询
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuQueryItem_Click;
+                    menuChildItem.IsEnabled = true;
+                    menuItemQuery.Items.Add(menuChildItem);
+                }					
+				else if (mibinfo.m_cmdType.Equals("2"))//删除
+                {
+                    var menuChildItem = new MetroMenuItem();
+                    menuChildItem.Header = mibinfo.m_cmdDesc;
+                    menuChildItem.Click += MenuDeleteItem_Click;
+                    menuChildItem.IsEnabled = true;
+                    dataGridMenu.Items.Add(menuChildItem);
+                }					
 			}
 
 			this.ContextMenu = dataGridMenu;
 		}
 
-		/// <summary>
-		/// 保存当前命令的属性节点信息
-		/// </summary>
-		private CmdMibInfo cmdMibInfo = new CmdMibInfo();
+        /// <summary>
+        /// 保存当前命令的属性节点信息
+        /// </summary>
+        private CmdMibInfo cmdMibInfo = new CmdMibInfo();
 
 		/// <summary>
 		/// 保存索引节点信息
 		/// </summary>
 		private List<MibLeaf> listIndexInfo = new List<MibLeaf>();
+        private void MenuAddItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            if (null == menu)
+                return;
 
-		private void MenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			if (null == dataGridMenu)
-				return;
+            CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
+            if (info != null)
+            {
+                m_AddModifyDel = 1;
+                MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                paraGrid.InitAddParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable));
+                paraGrid.ShowDialog();
 
-			var menu = sender as MenuItem;
-			if (null == menu)
-				return;
+                if (!paraGrid.bOK)
+                {
+                    return;
+                }
+            }
+        }
 
-			string strMsg = null;
-			if (menu.Header.ToString().Contains("增加"))
-			{
-				foreach (CmdMibInfo info in listCmdMibInfo)
-				{
-					if (info.m_cmdDesc.Equals(menu.Header))
-					{
-						m_AddModifyDel = 1;
-						MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-						paraGrid.InitAddParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable));
-						paraGrid.ShowDialog();
+        private void MenuModifyItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            if (null == menu)
+                return;
 
-						if (!paraGrid.bOK)
-						{
-							return;
-						}
-						break;
-					}
-				}
-			}
-			else if (menu.Header.ToString().Contains("修改"))
-			{
-                foreach (CmdMibInfo info in listCmdMibInfo)
-				{
-					if (info.m_cmdDesc.Equals(menu.Header))
-					{
-						m_AddModifyDel = 2; 
+            CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
+            if (info != null)
+            {
+                m_AddModifyDel = 2;
 
-                        MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-						paraGrid.InitModifyParaSetGrid(info, m_selectDataGrid, (m_ColumnModel.TableProperty as MibTable));
-						paraGrid.ShowDialog();
+                MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                paraGrid.InitModifyParaSetGrid(info, m_selectDataGrid, (m_ColumnModel.TableProperty as MibTable));
+                paraGrid.ShowDialog();
 
-						if (!paraGrid.bOK)
-						{
-							return;
-						}
-						break;
-					}
-				}
-			}
-			else if (menu.Header.ToString().Contains("删除"))
-			{
-				foreach (CmdMibInfo info in listCmdMibInfo)
-				{
-					if (!info.m_cmdDesc.Equals(menu.Header)) continue;
+                if (!paraGrid.bOK)
+                {
+                    return;
+                }
+            }
+        }
+        private void MenuQueryItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            if (null == menu)
+                return;
+        }
 
-					m_AddModifyDel = 3;
-					if (m_selectDataGrid == null)
-						return;
+        private void MenuDeleteItem_Click(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as MenuItem;
+            if (null == menu)
+                return;
 
-					MibLeaf leaf = GetRowStatusInfo(info);
-					if (leaf == null)
-						return;
+            CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
+            if (info != null)
+            {
+                m_AddModifyDel = 3;
+                if (m_selectDataGrid == null)
+                    return;
 
-					// 找到tbl信息
-					MibTable tblInfo;
-					string errMsg;
-					if (!Database.GetInstance().GetMibDataByTableName(info.m_tableName, out tblInfo,
-						CSEnbHelper.GetCurEnbAddr(), out errMsg))
-					{
-						MessageBox.Show($"根据表名{info.m_tableName}查找MIB表信息失败，请确认MIB版本是否匹配");
-						return;
-					}
+                MibLeaf leaf = GetRowStatusInfo(info);
+                if (leaf == null)
+                    return;
 
-					var nIdxCount = tblInfo.indexNum;
+                // 找到tbl信息
+                MibTable tblInfo;
+                string errMsg;
+                if (!Database.GetInstance().GetMibDataByTableName(info.m_tableName, out tblInfo,
+                    CSEnbHelper.GetCurEnbAddr(), out errMsg))
+                {
+                    MessageBox.Show($"根据表名{info.m_tableName}查找MIB表信息失败，请确认MIB版本是否匹配");
+                    return;
+                }
 
-					//添加删除指令
-					// TODO 临时方案
-					string strOidPrefix = SnmpToDatabase.GetMibPrefix();
-					// 获取索引
-					string strIndex = null;
-					DataGridUtils.GetMibIndex(m_selectDataGrid.Properties, nIdxCount, out strIndex);
+                var nIdxCount = tblInfo.indexNum;
 
-					// 组装Vb列表
-					List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
-					// 组装Vb
-					CDTLmtbVb lmtVb = new CDTLmtbVb();
-					lmtVb.Oid = strOidPrefix + leaf.childOid + strIndex;
-					lmtVb.Value = "6";
-					lmtVb.SnmpSyntax = LmtbSnmpEx.GetSyntax(leaf.mibSyntax);
-					setVbs.Add(lmtVb);
+                //添加删除指令
+                string strMsg = null;
+                string strOidPrefix = SnmpToDatabase.GetMibPrefix();
+                // 获取索引
+                string strIndex = null;
+                DataGridUtils.GetMibIndex(m_selectDataGrid.Properties, nIdxCount, out strIndex);
 
-					// SNMP Set
-					long requestId;
-					CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
-					// 发送SNMP Set命令
-					int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
-					if (res != 0)
-					{
-						strMsg = string.Format("参数删除失败，EnbIP:{0}", CSEnbHelper.GetCurEnbAddr());
-						Log.Error(strMsg);
-						MessageBox.Show(strMsg);
-						return;
-					}
-					// 判读SNMP响应结果
-					if (lmtPdu.m_LastErrorStatus != 0)
-					{
-						strMsg = string.Format("参数删除失败，错误信息:{0}", lmtPdu.m_LastErrorStatus);
-						Log.Error(strMsg);
-						MessageBox.Show(strMsg);
-						return;
-					}
+                // 组装Vb列表
+                List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
+                // 组装Vb
+                CDTLmtbVb lmtVb = new CDTLmtbVb();
+                lmtVb.Oid = strOidPrefix + leaf.childOid + strIndex;
+                lmtVb.Value = "6";
+                lmtVb.SnmpSyntax = LmtbSnmpEx.GetSyntax(leaf.mibSyntax);
+                setVbs.Add(lmtVb);
 
-					MessageBox.Show("参数删除成功！");
+                // SNMP Set
+                long requestId;
+                CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+                // 发送SNMP Set命令
+                int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
+                if (res != 0)
+                {
+                    strMsg = string.Format("参数删除失败，EnbIP:{0}", CSEnbHelper.GetCurEnbAddr());
+                    Log.Error(strMsg);
+                    MessageBox.Show(strMsg);
+                    return;
+                }
+                // 判读SNMP响应结果
+                if (lmtPdu.m_LastErrorStatus != 0)
+                {
+                    strMsg = string.Format("参数删除失败，错误信息:{0}", lmtPdu.m_LastErrorStatus);
+                    Log.Error(strMsg);
+                    MessageBox.Show(strMsg);
+                    return;
+                }
 
-					RefreshDataGrid(lmtPdu, nIdxCount);
+                MessageBox.Show("参数删除成功！");
 
-					break;
-				}
-			}
-		}
+                RefreshDataGrid(lmtPdu, nIdxCount);
+            }
+        }
 
 		/// <summary>
 		/// 获取行状态信息，用于右键删除指令
