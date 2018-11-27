@@ -1888,6 +1888,10 @@ namespace CfgFileOpStruct
 
         public GetRruTypePortByNodeNameEn excelRead;
 
+        /// <summary>
+        /// 查询数据库mdb时，使用的初始化
+        /// </summary>
+        /// <param name="Row"></param>
         public RRuTypePortTabStru(DataRow Row)
         {
             excelRead = null;
@@ -1913,8 +1917,8 @@ namespace CfgFileOpStruct
             rruTypePortCalPoutTxNom = Row["rruTypePortCalPoutTxNom"].ToString();
             strRruTypePortAntMaxPower = Row["rruTypePortAntMaxPower"].ToString();
             //根据频段获取载波数（目前只支持A频段和F频段）
-            rruTypePortSupportAbandTdsCarrierNum = "";
-            rruTypePortSupportFBandTdsCarrierNum = "";
+            rruTypePortSupportAbandTdsCarrierNum = "0";
+            rruTypePortSupportFBandTdsCarrierNum = "0";
             // tds 相关内容不在支持
             GetCarrierNumByFreqBand(Row);// 填写 rruTypePortSupportAbandTdsCarrierNum 、 rruTypePortSupportFBandTdsCarrierNum
             //vectRRuTypePort.push_back(pRRuTypePort);
@@ -2025,6 +2029,7 @@ namespace CfgFileOpStruct
             {
                 ReturnValue = rruTypePortCalPoutTxNom;
             }
+            // tds
             else if (FieldName.Contains("rruTypePortSupportAbandTdsCarrierNum"))
             {
                 ReturnValue = rruTypePortSupportAbandTdsCarrierNum;
@@ -2049,7 +2054,6 @@ namespace CfgFileOpStruct
         /// </summary>
         /// <param name="RRuInfo"></param>
         public void RRuTypePortTabStruInit(Dictionary<string, string> RRuInfo)
-        //public RRuTypePortTabStru(Dictionary<string, string> RRuInfo)
         {
             //RRU生产厂家索引
             rruTypePortManufacturerIndex = excelRead(RRuInfo, "rruTypeManufacturerIndex");
@@ -2073,8 +2077,10 @@ namespace CfgFileOpStruct
             rruTypePortCalPoutTxNom = excelRead(RRuInfo, "rruTypePortCalPoutTxNom");
             strRruTypePortAntMaxPower = excelRead(RRuInfo, "rruTypePortAntMaxPower");
             //Tds不在支持  根据频段获取载波数（目前只支持A频段和F频段）
-            rruTypePortSupportAbandTdsCarrierNum = "";
-            rruTypePortSupportFBandTdsCarrierNum = "";
+
+            //根据频段获取载波数（目前只支持A频段和F频段）
+            rruTypePortSupportAbandTdsCarrierNum = excelRead(RRuInfo, "rruTypePortSupportAbandTdsCarrierNum"); 
+            rruTypePortSupportFBandTdsCarrierNum = excelRead(RRuInfo, "rruTypePortSupportFbandTdsCarrierNum"); 
         }
     }
 
