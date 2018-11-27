@@ -78,12 +78,12 @@ namespace DataBaseUtil
 			return snmpErrDesc;
 		}
 
-		public static string GetErrDescById(int nErrId)
+		public static string GetErrDescById(long nErrId)
 		{
 			var ed = GetErrDescById(nErrId.ToString());
 			if (null == ed)
 			{
-				return "unknown error";
+				return $"{nErrId}:unknown error";
 			}
 
 			return ed.errorChDesc;
