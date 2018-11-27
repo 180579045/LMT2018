@@ -294,20 +294,14 @@ namespace NetPlan
 				CommLinkPath.GetMibValueFromCmdExeResult(cellIndex, "GetLocalNRCellInfo", ref mapMibToValue, targetIp);
 			if (bSuc)   // 如果查询本地小区信息成功
 			{
-				if ("0" == mapMibToValue["nrLocalCellOperationalState"])
+				if ("2" != mapMibToValue["nrLocalCellOperationalState"] && "4" == mapMibToValue["nrLocalCellRowStatus"])
 				{
 					Log.Debug($"本地小区{nCellId}当前状态为：本地小区已建");
 					return LcStatus.LcBuilded;
 				}
-
-				if ("4" == mapMibToValue["nrLocalCellRowStatus"])
-				{
-					Log.Debug($"本地小区{nCellId}当前状态为：本地小区未建");
-					return LcStatus.LcUnBuilded;
-				}
 			}
 
-			return LcStatus.UnPlan;
+			return LcStatus.LcUnBuilded;
 		}
 
 		/// <summary>
