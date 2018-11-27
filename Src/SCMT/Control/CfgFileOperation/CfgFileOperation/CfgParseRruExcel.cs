@@ -185,6 +185,12 @@ namespace CfgFileOperation
             return vectRRUTypeInfo;
         }
 
+        /// <summary>
+        /// rruType
+        /// </summary>
+        /// <param name="RRuInfo"></param>
+        /// <param name="nodeNameEn"></param>
+        /// <returns></returns>
         string GetRruTypeString(Dictionary<string, string> RRuInfo, string nodeNameEn)
         {
             string reStr = "";
@@ -247,6 +253,12 @@ namespace CfgFileOperation
 
             foreach (var rru in RruInfo)
             {
+                string rruTypePortSupportFreqBand = rru["rruTypePortSupportFreqBand"];
+                //if (rruTypePortSupportFreqBand.Contains("F频段") || rruTypePortSupportFreqBand.Contains("A频段"))
+                //{
+                //    Console.WriteLine("F频段 or A频段");
+                //}
+
                 RRuTypePortTabStru rruType = new RRuTypePortTabStru();
                 rruType.excelRead = new GetRruTypePortByNodeNameEn(GetRruTypePortString);
                 rruType.RRuTypePortTabStruInit(rru);
@@ -255,6 +267,12 @@ namespace CfgFileOperation
 
             return RruTypePort;
         }
+        /// <summary>
+        /// rruTypePort
+        /// </summary>
+        /// <param name="RRuInfo"></param>
+        /// <param name="nodeNameEn"></param>
+        /// <returns></returns>
         string GetRruTypePortString(Dictionary<string, string> RRuInfo, string nodeNameEn)
         {
             string reStr = "";
@@ -277,7 +295,7 @@ namespace CfgFileOperation
                 reStr = RRuInfo["rruTypePortSupportFreqBandWidth"];
             //通道天线编号
             else if (String.Equals("rruTypePortPathNo", nodeNameEn))
-                reStr = RRuInfo["rruTypePortPathNo"]; 
+                reStr = RRuInfo["rruTypePortPathNo"];
             //行状态
             else if (String.Equals("rruTypePortRowStatus", nodeNameEn))
                 reStr = "4";
@@ -295,13 +313,70 @@ namespace CfgFileOperation
                 reStr = RRuInfo["rruTypePortAntMaxPower"];
             //根据频段获取载波数（目前只支持A频段和F频段）
             else if (String.Equals("rruTypePortSupportAbandTdsCarrierNum", nodeNameEn))
-                reStr = "";
-            else if (String.Equals("rruTypePortSupportFBandTdsCarrierNum", nodeNameEn))
-                reStr = "";
-
+            {
+                string strACarrierNum = "0";
+                string strFCarrierNum = "0";
+                string strCarrierNum = RRuInfo["rruTypeFrequencyRangCarrier"];
+                string strFreqBand = RRuInfo["rruTypePortSupportFreqBand"];
+                GetCarrierNumByFreqBandEx(strFreqBand, strCarrierNum, out strACarrierNum, out strFCarrierNum);
+                reStr = strACarrierNum;
+            }
+            else if (String.Equals("rruTypePortSupportFbandTdsCarrierNum", nodeNameEn))
+            {
+                string strACarrierNum = "0";
+                string strFCarrierNum = "0";
+                string strCarrierNum = RRuInfo["rruTypeFrequencyRangCarrier"];
+                string strFreqBand = RRuInfo["rruTypePortSupportFreqBand"];
+                GetCarrierNumByFreqBandEx(strFreqBand, strCarrierNum, out strACarrierNum, out strFCarrierNum);
+                reStr = strFCarrierNum;
+            }
             return reStr;
         }
+        void GetCarrierNumByFreqBandEx(string str_FreqBand, string str_CarrierNum, out string str_ACarrierNum, out string str_FCarrierNum)
+        {
+            string strFBand = "";
+            string strABand = "";
+            string strBand = "";
 
+            str_ACarrierNum = "0";
+            str_FCarrierNum = "0";
+
+            int iPos = str_FreqBand.IndexOf("/");
+            if (iPos > 0)
+            {
+                strFBand = str_FreqBand.Substring(0, iPos);
+                strABand = str_FreqBand.Substring(iPos+1);
+
+                strFBand = strFBand.Substring(0, strFBand.IndexOf("("));//Left(strFBand.Find("("));
+                strABand = strABand.Substring(0, strABand.IndexOf("("));// Left(strABand.Find("("));
+                //if (String.Equals(str_CarrierNum, "21/9"))
+                //{
+                //    Console.WriteLine("===");
+                //}
+
+                if (0 == String.Compare("F频段", strFBand, true))
+                {
+                    str_FCarrierNum = str_CarrierNum.Substring(0, str_CarrierNum.IndexOf("/"));// str_CarrierNum.Left(str_CarrierNum.Find("/"));
+                }
+                if (0 == String.Compare("A频段", strABand, true))
+                {
+                    str_ACarrierNum = str_CarrierNum.Substring(str_CarrierNum.IndexOf("/")+1);// str_CarrierNum.Right(str_CarrierNum.GetLength() - str_CarrierNum.Find("/") - 1);
+                }
+            }
+            else
+            {
+                strBand = str_FreqBand.Substring(0, str_FreqBand.IndexOf("("));
+
+                if (0 == String.Compare("F频段", strBand, true))//if (0 == strBand.CompareNoCase("F频段"))
+                {
+                    str_FCarrierNum = str_CarrierNum;
+                }
+                if (0 == String.Compare("A频段", strBand, true))//if (0 == strBand.CompareNoCase("A频段"))
+                {
+                    str_ACarrierNum = str_CarrierNum;
+                }
+            }
+        }
         /// <summary>
         /// 处理 cell 的内容;
         /// </summary>
