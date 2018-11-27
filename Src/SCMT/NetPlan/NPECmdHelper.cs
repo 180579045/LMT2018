@@ -196,6 +196,12 @@ namespace NetPlan
 				return null;
 			}
 
+			var devType = DevTypeHelper.GetDevTypeFromEntryName(strEntryName);
+			if (devType != EnumDevType.unknown)
+			{
+				return GetCmdList(devType, cmdType, EnbTypeEnum.ENB_EMB6116);
+			}
+
 			var cmdList = Database.GetInstance().GetCmdsInfoByEntryName(strEntryName, CSEnbHelper.GetCurEnbAddr());
 			if (null == cmdList)
 			{
@@ -207,6 +213,8 @@ namespace NetPlan
 			// todo 此处判断条件是以xx开始，具有局限性
 			return cmdList.Select(cmi => cmi.m_cmdNameEn).Where(cmdName => cmdName.StartsWith(cmdStr, true, CultureInfo.CurrentCulture)).ToList();
 		}
+
+
 
 		/// <summary>
 		/// 转换同类命令为MibLeaf
