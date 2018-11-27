@@ -40,6 +40,8 @@ namespace SCMTMainWindow.View
 		private bool m_bisModify = false;
         private int m_ModifyIndexGrade = 0;
 
+        //private bool m_bAllSelect = true;
+
 		public bool bOK = false;
 
 		/// <summary>
@@ -292,7 +294,7 @@ namespace SCMTMainWindow.View
 					foreach (MibLeaf mibLeaf in listIndexInfo)
 					{
 						dynamic model = new DyDataGrid_MIBModel();
-						model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
+                        model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
 						{
 							m_Content = mibLeaf.childNameCh,
 							oid = mibLeaf.childOid,
@@ -360,7 +362,7 @@ namespace SCMTMainWindow.View
 							}
 						}
 
-						model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
+                        model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
 						{
 							m_Content = mibLeaf.childNameCh,
 							oid = mibLeaf.childOid,
@@ -618,7 +620,37 @@ namespace SCMTMainWindow.View
 
 						this.DynamicParaSetGrid.Columns.Add(column);
 					}
-					else
+					/*else if(iter.Item1.Equals("ParaSelect"))
+                    {
+                        DataGridTemplateColumn column = new DataGridTemplateColumn();
+                        DataTemplate checkBoxHeaderTemplate = new DataTemplate();
+                        DataTemplate checkBoxTemplate = new DataTemplate();
+
+                        string checkBoxHeader_xaml =
+                           @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+                                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+                                            xmlns:model='clr-namespace:WPF.Model'>
+                                <CheckBox IsChecked='{Binding " + @"m_bAllSelect}'/>
+                            </DataTemplate>";
+
+                        string checkBox_xaml =
+                           @"<DataTemplate xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'
+                                            xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+                                            xmlns:model='clr-namespace:WPF.Model'>
+                                <CheckBox IsChecked='{Binding " + iter.Item1 + @".m_bIsSelected}'/>
+                            </DataTemplate>";
+
+                        checkBoxHeaderTemplate = XamlReader.Parse(checkBoxHeader_xaml) as DataTemplate;
+                        checkBoxTemplate = XamlReader.Parse(checkBox_xaml) as DataTemplate;
+
+                        //DataGridCheckBoxColumn column = new DataGridCheckBoxColumn();
+                        //column.HeaderTemplate = CheckBoxTemplate;
+                        column.HeaderTemplate = checkBoxHeaderTemplate;
+                        column.CellTemplate = checkBoxTemplate;
+
+                        this.DynamicParaSetGrid.Columns.Add(column);
+                    }*/
+                    else
 					{
 						// 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
 						var column = new DataGridTextColumn

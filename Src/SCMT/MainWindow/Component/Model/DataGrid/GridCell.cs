@@ -32,6 +32,8 @@ namespace SCMTMainWindow
         public string m_Content { get; set; }          // 该单元格内要显示的内容;
         public bool m_bIsReadOnly { get; set; } //单元格编辑状态，true只读，不可编辑，false可以编辑
 
+        public bool m_bIsSelected { get; set; }//选中状态
+
         public abstract void EditingCallback();                           // 单元格编辑事件;
         public abstract void CellDragawayCallback();                      // 单元格被拖拽事件;
         public abstract void MouseMoveOnCell();                           // 鼠标悬停在单元格;
