@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 using LogManager;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -30,13 +27,12 @@ namespace NetPlan.DevLink
 			throw new NotImplementedException();
 		}
 
-
 		public virtual DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
 		{
 			return null;
 		}
 
-		#endregion
+		#endregion 公共接口
 
 		#region 基类公共接口
 
@@ -49,7 +45,7 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		protected virtual bool SetBoardBaseInfoInRru(BoardBaseInfo bbi, DevAttributeInfo rru, int nRruIrPort)
 		{
-			var rruRs = MibInfoMgr.GetNeedUpdateValue(rru, "netRRURowStatus");
+			var rruRs = rru.GetNeedUpdateValue("netRRURowStatus");
 			if (null == rruRs)
 			{
 				Log.Error($"从RRU{rru.m_strOidIndex}查询netRRURowStatus属性值失败");
@@ -99,7 +95,7 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		protected virtual bool SetRruOfpInfo(DevAttributeInfo rru, int nRruIrPort, int nBoardIrPort)
 		{
-			var workMode = MibInfoMgr.GetNeedUpdateValue(rru, "netRRUOfpWorkMode", false);
+			var workMode = rru.GetNeedUpdateValue("netRRUOfpWorkMode", false);
 			if (null == workMode)
 			{
 				Log.Error($"从rru{rru.m_strOidIndex}查询netRRUOfpWorkMode属性值失败");
@@ -113,7 +109,7 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			var lp = -1 == nBoardIrPort ? "-1" : "1";	// 如果端口是-1，那就是删除连接，级数上设置为-1
+			var lp = -1 == nBoardIrPort ? "-1" : "1";   // 如果端口是-1，那就是删除连接，级数上设置为-1
 
 			var ofpLinePosMib = $"netRRUOfp{nRruIrPort}AccessLinePosition";
 			if (!rru.SetFieldLatestValue(ofpLinePosMib, lp))
@@ -192,7 +188,7 @@ namespace NetPlan.DevLink
 			}
 			else
 			{
-				var listDev = new List<DevAttributeInfo> {newDev};
+				var listDev = new List<DevAttributeInfo> { newDev };
 				mapData[type] = listDev;
 			}
 			return true;
@@ -200,7 +196,7 @@ namespace NetPlan.DevLink
 
 		protected static BoardBaseInfo GetBoardBaseInfo(DevAttributeInfo board)
 		{
-			var boardRs = MibInfoMgr.GetNeedUpdateValue(board, "netBoardRowStatus");
+			var boardRs = board.GetNeedUpdateValue("netBoardRowStatus");
 			if (null == boardRs)
 			{
 				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardRowStatus属性值失败");
@@ -213,28 +209,28 @@ namespace NetPlan.DevLink
 				//return null;
 			}
 
-			var rackNo = MibInfoMgr.GetNeedUpdateValue(board, "netBoardRackNo");
+			var rackNo = board.GetNeedUpdateValue("netBoardRackNo");
 			if (null == rackNo)
 			{
 				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardRackNo属性值失败");
 				return null;
 			}
 
-			var shelfNo = MibInfoMgr.GetNeedUpdateValue(board, "netBoardShelfNo");
+			var shelfNo = board.GetNeedUpdateValue("netBoardShelfNo");
 			if (null == shelfNo)
 			{
 				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardShelfNo属性值失败");
 				return null;
 			}
 
-			var slotNo = MibInfoMgr.GetNeedUpdateValue(board, "netBoardSlotNo");
+			var slotNo = board.GetNeedUpdateValue("netBoardSlotNo");
 			if (null == slotNo)
 			{
 				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardSlotNo属性值失败");
 				return null;
 			}
 
-			var boardType = MibInfoMgr.GetNeedUpdateValue(board, "netBoardType");
+			var boardType = board.GetNeedUpdateValue("netBoardType");
 			if (null == boardType)
 			{
 				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardType属性值失败");
@@ -315,7 +311,7 @@ namespace NetPlan.DevLink
 			}
 		}
 
-		#endregion
+		#endregion 基类公共接口
 
 		#region 私有数据区
 
@@ -323,7 +319,7 @@ namespace NetPlan.DevLink
 
 		public MAP_DEVTYPE_DEVATTRI mapOriginData;
 
-		#endregion
+		#endregion 私有数据区
 	}
 
 	public class BoardBaseInfo

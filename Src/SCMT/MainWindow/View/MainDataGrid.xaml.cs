@@ -242,7 +242,7 @@ namespace SCMTMainWindow.View
 			var es = lmtPdu.m_LastErrorStatus;
 			if (0 != es)
 			{
-				MessageBox.Show($"参数修改失败，错误码：{es}，错误描述：{SnmpErrDescHelper.GetErrDescById((int)es)}");
+				MessageBox.Show($"参数修改失败，错误码：{es}，错误描述：{SnmpErrDescHelper.GetErrDescById(es)}");
 				return;
 			}
 
@@ -416,13 +416,9 @@ namespace SCMTMainWindow.View
 				return;
 
 			string menuName = table.nameCh;
-			CmdInfoList cmdList = new CmdInfoList();
-			if (!cmdList.GeneratedCmdInfoList())
-				return;
 
-			if (listCmdMibInfo != null && listCmdMibInfo.Count > 0)
-				listCmdMibInfo.Clear();
-			listCmdMibInfo = cmdList.GetCmdsByTblName(table.nameMib);
+			listCmdMibInfo?.Clear();
+			listCmdMibInfo = Database.GetInstance().GetCmdsInfoByEntryName(table.nameMib, CSEnbHelper.GetCurEnbAddr());
 			if (listCmdMibInfo.Count == 0)
 				return;
 
@@ -755,16 +751,5 @@ namespace SCMTMainWindow.View
                 this.DynamicDataGrid.DataContext = datalist;
 			}
 		}
-
-        private void ModifyRefreshProcess(ref DyDataGrid_MIBModel model)
-        {
-            if (m_selectDataGrid == null)
-                return;
-
-            foreach(var iter in m_selectDataGrid.Properties)
-            {
-
-            }
-        }
 	}
 }

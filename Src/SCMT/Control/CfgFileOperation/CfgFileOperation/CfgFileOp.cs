@@ -59,50 +59,75 @@ namespace CfgFileOperation
         /// </summary>
         public void OnCreatePatchAndInitCfg(Dictionary<string, string> paths)
         {
-            //3. RRU信息
+            //public-1. RRU信息
             m_rruExcel = new CfgParseRruExcel();
             m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
 
-            //5. 告警信息
+            //public-2. 告警信息
             //在CreateCfgFile中就解析了
             m_alarmExcel = new CfgParseAlarmExecl();
             m_alarmExcel.ParseExcel(paths["Alarm"]);
 
-            //4. 天线信息
+            //public-3. 天线信息
             m_antennaExcel = new CfgParseAntennaExcel();
             //m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
 
-            //1. lm.mdb 更新加载数据，整理成表和表实例的结构
+            //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
             CreateCfgFile(paths);
 
-            //2. lm.mdb 以每行为单位加载, reclist使用 
-            //m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            //m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
-
-            ////3. RRU信息
-            //m_rruExcel = new CfgParseRruExcel();
-            //m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
-
-            //4. 天线信息
-            //m_antennaExcel = new CfgParseAntennaExcel();
-            //m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
-
-            //5. reclist 
-            //m_reclistExcel = new CfgParseReclistExcel();
-            //m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
-
-            //6. 自定义 (init, patch)
+            //init-1. 自定义 (init)
             m_selfExcel = new CfgParseSelfExcel();
             m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "init", this);
+
+            //init-2. 生成 init.cfg 文件
+            SaveFile_eNB("init.cfg");
+
+            //patch-1. lm.mdb 以每行为单位加载, reclist使用 
+            //m_mibTreeMem = new CfgParseDBMibTreeToMemory();
+            //m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
+            //patch-2. reclist 
+            //m_reclistExcel = new CfgParseReclistExcel();
+            //m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
+            //patch-3. 自定义 (patch)
             //m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
 
             //7. 开始生成 init.cfg, patch_ex.cfg
-            // 创建init.cfg
-            SaveFile_eNB("init.cfg");
-            //创建patch_ex.cfg
+            //patch-4. 创建patch_ex.cfg
             //CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
             //SaveFilePdg_eNB("patch_ex.cfg");
         }
+        void CreatCfg_public(Dictionary<string, string> paths)
+        {
+            //public-1. RRU信息
+            m_rruExcel = new CfgParseRruExcel();
+            m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
+
+            //public-2. 告警信息
+            //在CreateCfgFile中就解析了
+            m_alarmExcel = new CfgParseAlarmExecl();
+            m_alarmExcel.ParseExcel(paths["Alarm"]);
+
+            //public-3. 天线信息
+            m_antennaExcel = new CfgParseAntennaExcel();
+            //m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
+
+            //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
+            CreateCfgFile(paths);
+        }
+        void CreatCfg_init_cfg(Dictionary<string, string> paths)
+        {
+            //init-1. 自定义 (init)
+            m_selfExcel = new CfgParseSelfExcel();
+            m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "init", this);
+
+            //init-2. 生成 init.cfg 文件
+            SaveFile_eNB("init.cfg");
+        }
+        void CreatCfg_patch_ex_cfg()
+        {
+
+        }
+
         /// <summary>
         /// lm.mdb 更新加载数据，整理成表和表实例的结构
         /// </summary>
@@ -142,7 +167,12 @@ namespace CfgFileOperation
 
             /// 2.表实例
             foreach (var table in m_mapTableInfo.Values)//写入节点信息
+            {
+                string strTableName = table.m_strTableName;
+                //if (strTableName == "rruTypePortEntry")
+                //    Console.WriteLine("1111");
                 allBuff.AddRange(table.WriteTofile());
+            }
 
             CfgWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
@@ -386,7 +416,7 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            if (strTableName == "antennaBfScanWeightEntry")
+            if (strTableName == "rruTypePortEntry")
                 Console.WriteLine("1111");
             //else if (strTableName == "nrCellCfgEntry")
             //    Console.WriteLine("1111");
@@ -906,7 +936,7 @@ namespace CfgFileOperation
                             int ipos = strIndex1.IndexOf(":");//4:大唐  取数字
                             if (ipos > 0)
                             {
-                                string strTempIndex = strIndex1.Substring(ipos);
+                                string strTempIndex = strIndex1.Substring(0, ipos);
                                 strIndex1 = strTempIndex;
                             }
                             string strIndex2 = vectRRUTypePortInfo[i].GetRRuTypePortValue(mibNodesStruIndex[1].mibName);
@@ -918,7 +948,7 @@ namespace CfgFileOperation
                                 CfgFileLeafNodeOp mibNode = tableOp.m_LeafNodes[ileafNum];
                                 StruMibNode m_struMibNode = tableOp.m_LeafNodes[ileafNum].m_struMibNode;
                                 int typeSize = mibNode.m_struFieldInfo.u16FieldLen;//.typeSize;
-                                string strCurrentValue = vectRRUTypePortInfo[ileafNum].GetRRuTypePortValue(m_struMibNode.strMibName);
+                                string strCurrentValue = vectRRUTypePortInfo[i].GetRRuTypePortValue(m_struMibNode.strMibName);
                                 WriteToBuffer(BuffArrL, strCurrentValue, posL, m_struMibNode.strOMType, typeSize, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax);
                             }
                             vectExitInstIndex.Add(stInstIndex);

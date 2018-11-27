@@ -211,7 +211,7 @@
                                                 <ToolTip Style="{StaticResource DefaultToolTipStyle}" Content="清除网规 Ctrl+Alt+C" />
                                             </Button.ToolTip>
                                         </Button>
-                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource LineCommand}" CommandTarget="{Binding ElementName=MyDesigner}">
+                                        <Button Style="{StaticResource ToolBarButtonBaseStyle}" Margin="10,0,0,0" Command="{StaticResource LineCommand}" CommandTarget="{Binding ElementName=MyDesigner}" x:Name="btnLine">
                                             <Button.Content>
                                                 <Image Source="/SCMTMainWindow;component/Resources/line.png" ></Image>
                                             </Button.Content>

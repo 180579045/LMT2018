@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Markup;
 using CommonUtility;
+using DataBaseUtil;
 using LinkPath;
 using LmtbSnmp;
 using LogManager;
@@ -234,7 +235,7 @@ namespace SCMTMainWindow.View
 			// 判读SNMP响应结果
 			if (lmtPdu.m_LastErrorStatus != 0)
 			{
-				strMsg = string.Format("参数配置失败，错误信息:{0}", lmtPdu.m_LastErrorStatus);
+				strMsg = $"参数配置失败，错误信息:{SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus)}";
 				Log.Error(strMsg);
 				MessageBox.Show(strMsg);
 				return;

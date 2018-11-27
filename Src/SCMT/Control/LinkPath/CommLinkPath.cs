@@ -97,7 +97,7 @@ namespace LinkPath
 			var ec = ioPdu.m_LastErrorStatus;
 			if (0 != ec)
 			{
-				Log.Error($"命令：{strCmdName}执行失败，错误码：{ec}，描述：{SnmpErrDescHelper.GetErrDescById((int)ec)}");
+				Log.Error($"命令：{strCmdName}执行失败，错误码：{ec}，描述：{SnmpErrDescHelper.GetErrDescById(ec)}");
 				return false;
 			}
 

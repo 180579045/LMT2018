@@ -177,8 +177,8 @@ namespace NetPlan.DevLink
 				return true;
 			}
 
-			var antNo = MibInfoMgr.GetNeedUpdateValue(record, "netSetRRUPortAntArrayNo");
-			var antPathNo = MibInfoMgr.GetNeedUpdateValue(record, "netSetRRUPortAntArrayPathNo");
+			var antNo = record.GetNeedUpdateValue("netSetRRUPortAntArrayNo");
+			var antPathNo = record.GetNeedUpdateValue("netSetRRUPortAntArrayPathNo");
 			if (null == antNo || "-1" == antNo)
 			{
 				return false;
