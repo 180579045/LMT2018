@@ -1307,17 +1307,17 @@ namespace SCMTMainWindow.View
                     return;
                 }
 
-                //获取天线阵的通道数
-                int nPort;
-                try
-                {
-                    nPort = int.Parse(item.m_mapAttributes["netAntArrayNum"].m_strOriginValue);
-                }catch
-                {
-                    MessageBox.Show("获取天线阵通道数失败InitAntennaInfo");
-                    return;
-                }
+				//获取天线阵的通道数  修改为根据厂家索引和类型编号读取通道数
 
+				var antInfo = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(item.GetNeedUpdateValue("netAntArrayVendorIndex"), item.GetNeedUpdateValue("netAntArrayTypeIndex"));
+				
+				if(antInfo == null)
+				{
+					MessageBox.Show("获取天线阵通道数失败InitAntennaInfo");
+					return;
+				}
+
+				int nPort = antInfo.antArrayNum;
                 DesignerItem newItem = new DesignerItem();
 
                 //从xml 中获取 ant 元素并创建
@@ -2201,12 +2201,17 @@ namespace SCMTMainWindow.View
             {
                 VisibilityAllConnector();
                 bHiddenLineConnector = false;
+
+				Border targetBorder = this.btnLine.Template.FindName("Border", this.btnLine) as Border;
+				targetBorder.Background = new SolidColorBrush(Colors.Orange);
             }
             else
             {
                 DeleteAllItemConnector();
                 bHiddenLineConnector = true;
-            }
+				Border targetBorder = this.btnLine.Template.FindName("Border", this.btnLine) as Border;
+				targetBorder.Background = Brushes.Transparent;
+			}
         }
         private void ZoomIncreaseHandler(object sender, RoutedEventArgs e)
         {
