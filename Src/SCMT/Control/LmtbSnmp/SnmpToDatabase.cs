@@ -311,7 +311,6 @@ namespace LmtbSnmp
 		{
 			var omType = mibLeaf.OMType;
 			var asnType = mibLeaf.ASNType;
-
 			strValue = strValue.Replace(" ", "");
 
 			if (omType.Equals("u32") || omType.Equals("s32"))
@@ -328,6 +327,12 @@ namespace LmtbSnmp
 			}
 			else if (omType.Equals("u32[]"))
 			{
+				var defaultValue = mibLeaf.defaultValue;
+				if (defaultValue.StartsWith("{"))       // {0,0,0,0,0}  boardAlarmStatics对应的数据类型
+				{
+					return strValue;
+				}
+
 				return ConvertU32ArrayToString(strValue);
 			}
 			else if (omType.Equals("s32[]"))
