@@ -16,26 +16,15 @@ namespace NetPlan.Tests
 	{
 
 		[TestMethod()]
-		public void GetDevAttributesFromMibTest()
+		public async Task GetDevAttributesFromMibTest()
 		{
-			bool stop = false;
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					NPECmdHelper.GetInstance().GetDevAttributesFromMib("ant");
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
 
-					stop = true;
-				}
-			};
-
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
+			var dev = NPECmdHelper.GetInstance().GetDevAttributesFromMib("ant");
+			Assert.IsNull(dev);
 		}
 	}
 }

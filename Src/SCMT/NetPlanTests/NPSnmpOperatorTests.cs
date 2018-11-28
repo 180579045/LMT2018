@@ -16,74 +16,40 @@ namespace NetPlan.Tests
 	public class NPSnmpOperatorTests
 	{
 		[TestMethod()]
-		public void QueryNetBoardTest()
+		public async Task QueryNetBoardTest()
 		{
-			bool stop = false;
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					var boardInfoList = new List<DevAttributeInfo>();
-					var ret = NPSnmpOperator.ExecuteNetPlanCmd("GetNetBoard", ref boardInfoList, EnumDevType.board);
-					Assert.IsTrue(ret);
-					Assert.AreEqual(boardInfoList.Count, 2);
-					stop = true;
-				}
-			};
-
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
+			var boardInfoList = new List<DevAttributeInfo>();
+			var ret = NPSnmpOperator.ExecuteNetPlanCmd("GetNetBoard", ref boardInfoList, EnumDevType.board);
+			Assert.IsTrue(ret);
+			Assert.AreEqual(boardInfoList.Count, 2);
 		}
 
 		[TestMethod()]
-		public void InitNetPlanInfoTest()
+		public async Task InitNetPlanInfoTest()
 		{
-			bool stop = false;
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = async result =>
-			{
-				if (result)
-				{
-					var ret =NPSnmpOperator.InitNetPlanInfo();
-					Assert.IsTrue(ret);
-					stop = true;
-				}
-			};
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
 
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
+			var ret =NPSnmpOperator.InitNetPlanInfo();
+			Assert.IsTrue(ret);
 		}
 
 		[TestMethod()]
-		public void GetRealTimeBoardInfoTest()
+		public async Task GetRealTimeBoardInfoTest()
 		{
-			bool stop = false;
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					var ret = NPSnmpOperator.GetRealTimeBoardInfo();
-					Assert.IsNotNull(ret);
-					stop = true;
-				}
-			};
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
 
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
+			var ret = NPSnmpOperator.GetRealTimeBoardInfo();
+			Assert.IsNotNull(ret);
 		}
 	}
 }
