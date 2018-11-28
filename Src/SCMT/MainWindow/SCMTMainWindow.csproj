@@ -245,6 +245,9 @@
     <Compile Include="View\ChooseRRUType.xaml.cs">
       <DependentUpon>ChooseRRUType.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ConfigFileOperate.xaml.cs">
+      <DependentUpon>ConfigFileOperate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EditColumns.xaml.cs">
       <DependentUpon>EditColumns.xaml</DependentUpon>
     </Compile>
@@ -387,6 +390,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ChooseRRUType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ConfigFileOperate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
