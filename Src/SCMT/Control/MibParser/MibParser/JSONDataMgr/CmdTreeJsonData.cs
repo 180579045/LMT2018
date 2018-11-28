@@ -91,7 +91,8 @@ namespace MIBDataParser.JSONDataMgr
             {
                 leafInfo = new JObject();
                 string[] sASupVal = MIBList_supplement.Split('=');//默认值
-                leafInfo.Add(sASupVal[0], sASupVal[1]);
+                leafInfo.Add("oid", sASupVal[0]);
+                leafInfo.Add("value", sASupVal[1]);
             }
             return leafInfo;
         }

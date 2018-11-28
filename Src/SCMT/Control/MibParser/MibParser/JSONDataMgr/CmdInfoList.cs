@@ -9,15 +9,16 @@ namespace MIBDataParser.JSONDataMgr
 {
 	public class CmdInfoList
 	{
-		/// <summary>
-		/// key (string) : cmd English name
-		/// value (Dictionary): {
-		///     "TableName":.
-		///     "CmdType":
-		///     "CmdDesc":命令描述
-		///     "leafOIdList" (List):[oid_1,oid_2,...,oid_x]}
-		/// </summary>
-		private Dictionary<string, CmdMibInfo> cmdInfoNew;
+        /// <summary>
+        /// key (string) : cmd English name
+        /// value (Dictionary): {
+        ///     "TableName":.
+        ///     "CmdType":
+        ///     "CmdDesc":命令描述
+        ///     "leafOIdList" (List):[oid_1,oid_2,...,oid_x]}
+        ///     "leafOIdListDefault":{key:Oid,Value:DefaultVal}
+        /// </summary>
+        private Dictionary<string, CmdMibInfo> cmdInfoNew;
 
 		public bool GeneratedCmdInfoList()
 		{
