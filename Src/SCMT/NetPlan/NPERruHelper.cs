@@ -146,6 +146,10 @@ namespace NetPlan
 		private NPERru _npeRru;
 
 		#endregion
+	    public NPERru GetNPERru()
+	    {
+	        return _npeRru;
+	    }
 	}
 
 	public class NPERru
@@ -162,9 +166,9 @@ namespace NetPlan
 
 	public class IrBand
 	{
-		public string value;
-		public string desc;
-		public List<VD> bandwidth;
+		public string value { get; set; }
+        public string desc { get; set; }
+        public List<VD> bandwidth { get; set; }
 
 		public IrBand()
 		{
@@ -174,21 +178,21 @@ namespace NetPlan
 
 	public class RruInfo
 	{
-		public int rruTypeManufacturerIndex;
-		public string rruTypeNotMibManufacturerName;
-		public int rruTypeIndex;
-		public string rruTypeName;
-		public int rruTypeMaxAntPathNum;
-		public int rruTypeMaxTxPower;
-		public int rruTypeBandWidth;
-		public List<VD> rruTypeFiberLength;
-		public List<VD> rruTypeIrCompressMode;
-		public List<VD> rruTypeSupportCellWorkMode;
-		public string rruTypeFamilyName;
-		public int rruTypeNotMibMaxePortNo;
-		public List<VD> rruTypeNotMibSupportNetWorkMode;
-		public List<VD> rruTypeNotMibIrRate;
-		public List<IrBand> rruTypeNotMibIrBand;
+		public int rruTypeManufacturerIndex { get; set; }
+        public string rruTypeNotMibManufacturerName { get; set; }
+        public int rruTypeIndex { get; set; }
+        public string rruTypeName { get; set; }
+        public int rruTypeMaxAntPathNum { get; set; }
+        public int rruTypeMaxTxPower { get; set; }
+        public int rruTypeBandWidth { get; set; }
+        public List<VD> rruTypeFiberLength { get; set; }
+        public List<VD> rruTypeIrCompressMode { get; set; }
+        public List<VD> rruTypeSupportCellWorkMode { get; set; }
+        public string rruTypeFamilyName { get; set; }
+        public int rruTypeNotMibMaxePortNo { get; set; }
+        public List<VD> rruTypeNotMibSupportNetWorkMode { get; set; }
+        public List<VD> rruTypeNotMibIrRate { get; set; }
+        public List<IrBand> rruTypeNotMibIrBand { get; set; }
 
 		public RruInfo()
 		{
@@ -203,21 +207,21 @@ namespace NetPlan
 
 	public class RruPortInfo
 	{
-		public int rruTypePortManufacturerIndex;
-		public string rruTypePortNotMibManufacturerName;
-		public int rruTypePortIndex;
-		public int rruTypePortNo;
-		public int rruTypePortPathNo;
-		public List<VD> rruTypePortSupportFreqBand;
-		public int rruTypePortSupportFreqBandWidth;
-		public int rruTypePortSupportAbandTdsCarrierNum;
-		public int rruTypePortSupportFBandTdsCarrierNum;
-		public int rruTypePortCalAIqTxNom;
-		public int rruTypePortCalAIqRxNom;
-		public int rruTypePortCalPoutTxNom;
-		public int rruTypePortCalPinRxNom;
-		public int rruTypePortAntMaxPower;
-		public List<VD> rruTypePortNotMibRxTxStatus;
+		public int rruTypePortManufacturerIndex { get; set; }
+        public string rruTypePortNotMibManufacturerName { get; set; }
+        public int rruTypePortIndex { get; set; }
+        public int rruTypePortNo { get; set; }
+        public int rruTypePortPathNo { get; set; }
+        public List<VD> rruTypePortSupportFreqBand { get; set; }
+        public int rruTypePortSupportFreqBandWidth { get; set; }
+        public int rruTypePortSupportAbandTdsCarrierNum { get; set; }
+        public int rruTypePortSupportFBandTdsCarrierNum { get; set; }
+        public int rruTypePortCalAIqTxNom { get; set; }
+        public int rruTypePortCalAIqRxNom { get; set; }
+        public int rruTypePortCalPoutTxNom { get; set; }
+        public int rruTypePortCalPinRxNom { get; set; }
+        public int rruTypePortAntMaxPower { get; set; }
+        public List<VD> rruTypePortNotMibRxTxStatus { get; set; }
 
 		public RruPortInfo()
 		{

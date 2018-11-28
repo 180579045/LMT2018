@@ -1,0 +1,52 @@
+﻿<Window x:Class="SCMTMainWindow.View.ConfigFileOperate"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SCMTMainWindow.View"
+        mc:Ignorable="d"
+        Title="配置文件解析" Height="320" Width="500" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="2*"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Text="数据库文件 ：" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"></TextBlock>
+        <TextBlock Text="天 线 权 值 ：" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"></TextBlock>
+        <TextBlock Text="告 警 信 息 ：" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"></TextBlock>
+        <TextBlock Text="RRU  信 息 ：" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"></TextBlock>
+        <TextBlock Text="RecList文件：" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"></TextBlock>
+        <TextBlock Text="自定义文件 ：" Grid.Row="5" Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,5,0"></TextBlock>
+
+        <TextBox x:Name="tbDataBase" Height="25" Width="310" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"></TextBox>
+        <Button x:Name="btnDataBase" Height="25" Width="30" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Click="btnDataBase_Click">...</Button>
+
+        <TextBox x:Name="tbAntWeight" Height="25" Width="310" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"></TextBox>
+        <Button x:Name="btnAntWeight" Height="25" Width="30" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Click="btnAntWeight_Click">...</Button>
+
+        <TextBox x:Name="tbWarning" Height="25" Width="310" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"></TextBox>
+        <Button x:Name="btnWarning" Height="25" Width="30" Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Click="btnWarning_Click">...</Button>
+
+        <TextBox x:Name="tbRRUInfo" Height="25" Width="310" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"></TextBox>
+        <Button x:Name="btnRRUInfo" Height="25" Width="30" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Click="btnRRUInfo_Click">...</Button>
+
+        <TextBox x:Name="tbRecList" Height="25" Width="310" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"></TextBox>
+        <Button x:Name="btnRecList" Height="25" Width="30" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Click="btnRecList_Click">...</Button>
+
+        <TextBox x:Name="tbSelfDefine" Height="25" Width="310" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"></TextBox>
+        <Button x:Name="btnSelfDefine" Height="25" Width="30" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,20,0" Click="btnSelfDefine_Click">...</Button>
+
+        <Button x:Name="btnOK" Height="25" Width="60" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Left" Margin="180,0,0,0" VerticalAlignment="Center" Click="btnOK_Click">确定</Button>
+        <Button x:Name="btnCancel" Height="25" Width="60" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,67,0" VerticalAlignment="Center" Click="btnCancel_Click">取消</Button>
+    </Grid>
+</Window>

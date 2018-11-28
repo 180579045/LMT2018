@@ -34,7 +34,6 @@ namespace NetPlan
 
 
 		#region 公共接口
-
 		/// <summary>
 		/// 新增一个设备调用的构造函数
 		/// </summary>
