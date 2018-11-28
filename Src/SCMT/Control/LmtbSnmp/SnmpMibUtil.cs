@@ -417,6 +417,12 @@ namespace LmtbSnmp
 				int minute = bts[5]; // 分
 				int second = bts[6]; // 秒
 									 //int msecond = bts[7];
+				year = year > 9999 || year == 0 ? 2009 : year;
+				month = (byte)(month > 12 || month == 0 ? 1 : month);
+				day = (byte)(day > 31 || day == 0 ? 1 : day);
+				hour = (byte)(hour > 24 ? 0 : hour);
+				minute = (byte)(minute > 59 ? 0 : minute);
+				second = (byte)(second > 59 ? 0 : second);
 
 				DateTime dt = new DateTime(year, month, day, hour, minute, second);
 				strRes = dt.ToString("yyyy-MM-dd HH:mm:ss");
