@@ -1377,7 +1377,9 @@ namespace CfgFileOpStruct
         }
     }
 
-
+    /// <summary>
+    /// 告警相关结构体题
+    /// </summary>
     struct StruAlarmInfo
     {
         public string alarmCauseNo;
@@ -1886,6 +1888,10 @@ namespace CfgFileOpStruct
 
         public GetRruTypePortByNodeNameEn excelRead;
 
+        /// <summary>
+        /// 查询数据库mdb时，使用的初始化
+        /// </summary>
+        /// <param name="Row"></param>
         public RRuTypePortTabStru(DataRow Row)
         {
             excelRead = null;
@@ -1911,8 +1917,8 @@ namespace CfgFileOpStruct
             rruTypePortCalPoutTxNom = Row["rruTypePortCalPoutTxNom"].ToString();
             strRruTypePortAntMaxPower = Row["rruTypePortAntMaxPower"].ToString();
             //根据频段获取载波数（目前只支持A频段和F频段）
-            rruTypePortSupportAbandTdsCarrierNum = "";
-            rruTypePortSupportFBandTdsCarrierNum = "";
+            rruTypePortSupportAbandTdsCarrierNum = "0";
+            rruTypePortSupportFBandTdsCarrierNum = "0";
             // tds 相关内容不在支持
             GetCarrierNumByFreqBand(Row);// 填写 rruTypePortSupportAbandTdsCarrierNum 、 rruTypePortSupportFBandTdsCarrierNum
             //vectRRuTypePort.push_back(pRRuTypePort);
@@ -2023,6 +2029,7 @@ namespace CfgFileOpStruct
             {
                 ReturnValue = rruTypePortCalPoutTxNom;
             }
+            // tds
             else if (FieldName.Contains("rruTypePortSupportAbandTdsCarrierNum"))
             {
                 ReturnValue = rruTypePortSupportAbandTdsCarrierNum;
@@ -2047,7 +2054,6 @@ namespace CfgFileOpStruct
         /// </summary>
         /// <param name="RRuInfo"></param>
         public void RRuTypePortTabStruInit(Dictionary<string, string> RRuInfo)
-        //public RRuTypePortTabStru(Dictionary<string, string> RRuInfo)
         {
             //RRU生产厂家索引
             rruTypePortManufacturerIndex = excelRead(RRuInfo, "rruTypeManufacturerIndex");
@@ -2071,8 +2077,228 @@ namespace CfgFileOpStruct
             rruTypePortCalPoutTxNom = excelRead(RRuInfo, "rruTypePortCalPoutTxNom");
             strRruTypePortAntMaxPower = excelRead(RRuInfo, "rruTypePortAntMaxPower");
             //Tds不在支持  根据频段获取载波数（目前只支持A频段和F频段）
-            rruTypePortSupportAbandTdsCarrierNum = "";
-            rruTypePortSupportFBandTdsCarrierNum = "";
+
+            //根据频段获取载波数（目前只支持A频段和F频段）
+            rruTypePortSupportAbandTdsCarrierNum = excelRead(RRuInfo, "rruTypePortSupportAbandTdsCarrierNum"); 
+            rruTypePortSupportFBandTdsCarrierNum = excelRead(RRuInfo, "rruTypePortSupportFbandTdsCarrierNum"); 
         }
     }
+
+    struct AntArrayBfScanAntWeightTabStru
+    {
+        //public AntArrayBfScanAntWeightTabStru(string s)
+        //{
+        //    antArrayBfScanAntWeightVendorIndex = "0";
+        //    antArrayBfScanAntWeightTypeIndex = "0";
+        //    antArrayBfScanAntWeightIndex = "0";
+        //    antArrayBfScanAntWeightBFScanGrpNo = "0";
+        //    antArrayBfScanAntWeightAntGrpNo = "0";
+        //    antArrayBfScanAntWeightRowStatus = "6";
+        //    antArrayBfScanAntWeightAmplitude0 = "0";
+        //    antArrayBfScanAntWeightPhase0 = "0";
+        //    antArrayBfScanAntWeightAmplitude1 = "0";
+        //    antArrayBfScanAntWeightPhase1 = "0";
+        //    antArrayBfScanAntWeightAmplitude2 = "0";
+        //    antArrayBfScanAntWeightPhase2 = "0";
+        //    antArrayBfScanAntWeightAmplitude3 = "0";
+        //    antArrayBfScanAntWeightPhase3 = "0";
+        //    antArrayBfScanAntWeightAmplitude4 = "0";
+        //    antArrayBfScanAntWeightPhase4 = "0";
+        //    antArrayBfScanAntWeightAmplitude5 = "0";
+        //    antArrayBfScanAntWeightPhase5 = "0";
+        //    antArrayBfScanAntWeightAmplitude6 = "0";
+        //    antArrayBfScanAntWeightPhase6 = "0";
+        //    antArrayBfScanAntWeightAmplitude7 = "0";
+        //    antArrayBfScanAntWeightPhase7 = "0";
+        //    antArrayBfScanAntWeightHorizonNum = "0";
+        //    antArrayBfScanAntWeightVerticalNum = "0";
+        //}
+        /// <summary>
+        /// 天线阵厂家索引
+        /// </summary>
+        public string antArrayBfScanAntWeightVendorIndex;
+        /// <summary>
+        /// 天线阵型号索引
+        /// </summary>
+        public string antArrayBfScanAntWeightTypeIndex;
+        /// <summary>
+        /// 天线阵索引
+        /// </summary>
+        public string antArrayBfScanAntWeightIndex;
+        /// <summary>
+        /// 波束扫描组号
+        /// </summary>
+        public string antArrayBfScanAntWeightBFScanGrpNo;
+        /// <summary>
+        /// 天线组号
+        /// </summary>
+        public string antArrayBfScanAntWeightAntGrpNo;
+        /// <summary>
+        /// 天线阵波束扫描天线权值行状态
+        /// </summary>
+        public string antArrayBfScanAntWeightRowStatus;
+        /// <summary>
+        /// 天线1幅度
+        /// </summary>
+        public string antArrayBfScanAntWeightAmplitude0;
+        /// <summary>
+        /// 天线1相位
+        /// </summary>
+        public string antArrayBfScanAntWeightPhase0;
+        public string antArrayBfScanAntWeightAmplitude1;
+        public string antArrayBfScanAntWeightPhase1;
+        public string antArrayBfScanAntWeightAmplitude2;
+        public string antArrayBfScanAntWeightPhase2;
+        public string antArrayBfScanAntWeightAmplitude3;
+        public string antArrayBfScanAntWeightPhase3;
+        public string antArrayBfScanAntWeightAmplitude4;
+        public string antArrayBfScanAntWeightPhase4;
+        public string antArrayBfScanAntWeightAmplitude5;
+        public string antArrayBfScanAntWeightPhase5;
+        public string antArrayBfScanAntWeightAmplitude6;
+        public string antArrayBfScanAntWeightPhase6;
+        public string antArrayBfScanAntWeightAmplitude7;
+        public string antArrayBfScanAntWeightPhase7;
+        /// <summary>
+        /// 水平波束个数
+        /// </summary>
+        public string antArrayBfScanAntWeightHorizonNum;
+        /// <summary>
+        /// 垂直波束个数
+        /// </summary>
+        public string antArrayBfScanAntWeightVerticalNum;
+        /// <summary>
+        /// 水平方向数字下倾角
+        /// </summary>
+        public string antArrayBfScanAntWeightHorizonDowntiltAngle;
+        /// <summary>
+        /// 垂直方向数字下倾角
+        /// </summary>
+        public string antArrayBfScanAntWeightVerticalDowntiltAngle;
+        /// <summary>
+        /// 有损无损
+        /// </summary>
+        public string antArrayBfScanWeightIsLossFlag;
+
+        public string GetAntArrayBfScanLeafValue(string FieldName)
+        {
+            string ReturnValue = "";
+
+            if (FieldName.Contains("antennaBfScanWeightVendorIndex"))
+            {
+                ReturnValue = antArrayBfScanAntWeightVendorIndex;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightTypeIndex"))
+            {
+                ReturnValue = antArrayBfScanAntWeightTypeIndex;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightIndex"))
+            {
+                ReturnValue = antArrayBfScanAntWeightIndex;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightBFScanGrpNo"))
+            {
+                ReturnValue = antArrayBfScanAntWeightBFScanGrpNo;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAntGrpNo"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAntGrpNo;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightRowStatus"))
+            {
+                ReturnValue = antArrayBfScanAntWeightRowStatus;
+            }
+            //天线1幅度 1~8
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude0"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude0;
+            }
+            //天线1相位 1~8
+            else if (FieldName.Contains("antennaBfScanWeightPhase0"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase0;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude1"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude1;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase1"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase1;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude2"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude2;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase2"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase2;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude3"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude3;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase3"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase3;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude4"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude4;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase4"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase4;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude5"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude5;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase5"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase5;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude6"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude6;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase6"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase6;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightAmplitude7"))
+            {
+                ReturnValue = antArrayBfScanAntWeightAmplitude7;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightPhase7"))
+            {
+                ReturnValue = antArrayBfScanAntWeightPhase7;
+            }
+            //水平波束个数
+            else if (FieldName.Contains("antennaBfScanWeightHorizonNum"))
+            {
+                ReturnValue = antArrayBfScanAntWeightHorizonNum;
+            }
+            //垂直波束个数 
+            else if (FieldName.Contains("antennaBfScanWeightVerticalNum"))
+            {
+                ReturnValue = antArrayBfScanAntWeightVerticalNum;
+            }
+            //支持上下倾角及是否有损坏
+            else if (FieldName.Contains("antennaBfScanWeightHorizonDowntiltAngle"))
+            {
+                ReturnValue = antArrayBfScanAntWeightHorizonDowntiltAngle;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightVerticalDowntiltAngle"))
+            {
+                ReturnValue = antArrayBfScanAntWeightVerticalDowntiltAngle;
+            }
+            else if (FieldName.Contains("antennaBfScanWeightIsLossFlag"))
+            {
+                ReturnValue = antArrayBfScanWeightIsLossFlag;
+            }
+            return ReturnValue;
+        }
+    }
+
 }

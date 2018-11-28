@@ -746,7 +746,7 @@ namespace LmtbSnmp
 			{
 				var cDTLmtbVb = lmtPdu.GetVbByIndexEx(i);
 
-				strTmpOid = cDTLmtbVb.Oid;
+				strTmpOid = cDTLmtbVb.Oid;	// todo 存在问题：当oid最后索引是0..35这种值时，出现崩溃
 				strSyntaxType = cDTLmtbVb.SnmpSyntax;
 				strValue = cDTLmtbVb.Value;
 

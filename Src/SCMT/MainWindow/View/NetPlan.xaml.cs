@@ -28,6 +28,10 @@ using NetPlan;
 using SCMTOperationCore.Control;
 using SCMTOperationCore;
 
+using System.Threading;
+using System.Security.Permissions;
+using System.Windows.Threading;
+
 namespace SCMTMainWindow.View
 {
     /// <summary>
@@ -75,10 +79,6 @@ namespace SCMTMainWindow.View
 
             CreateTemplateList();
 
-            for (int i = 0; i < boardRow * boardColumn; i++)
-            {
-                allBoardToDev.Add(i, 0);
-            }
 
         }
 
@@ -570,7 +570,13 @@ namespace SCMTMainWindow.View
             rect.Points.Add(new Point(238, 2));
             rect.Points.Add(new Point(238, 38));
             rect.Points.Add(new Point(2, 38));
-        }
+
+			allBoardToDev.Clear();
+            for (int i = 0; i < boardRow * boardColumn; i++)
+			{
+				allBoardToDev.Add(i, 0);
+			}
+		}
 
         /// <summary>
         /// 板卡左键按下，需要判断双击还是单击，双击的时候，进行板卡的添加，单击的时候切换属性和选择
@@ -606,24 +612,6 @@ namespace SCMTMainWindow.View
 
                 ChooseBoardType dlg = new ChooseBoardType(listBoardInfo);
                 dlg.ShowDialog();
-
-                //BoradDetailData bd = new BoradDetailData();
-                ////初始化弹框默认数据
-                //bd.setDefaultDate(soltNum);
-                ////实例化弹窗
-                //AddBoardWindow broadDetailWindos = new AddBoardWindow();
-                ////初始化弹窗
-                //broadDetailWindos.SetOperationData(bd);
-                ////展示弹窗
-                //broadDetailWindos.ShowDialog();
-
-                //if (!broadDetailWindos.isOk)
-                //{
-                //    return;
-                //}
-
-                //获取弹窗中设置的板卡名称
-                //string boardName = BroadName(broadDetailWindos.detaiData.Bt);
 
                 if (!dlg.bOK)
                 {
@@ -693,6 +681,7 @@ namespace SCMTMainWindow.View
                     DesignerItem designerItem = new DesignerItem();
                     designerItem.ItemName = strIRName + "-" + i;
                     designerItem.DevIndex = newBoardInfo.m_strOidIndex;
+					designerItem.PortNo = i;
 
                     Uri strUri = new Uri("pack://application:,,,/View/Resources/Stencils/NetElement.xml");
                     Stream stream = Application.GetResourceStream(strUri).Stream;
@@ -717,7 +706,15 @@ namespace SCMTMainWindow.View
 
                     MyDesigner.Children.Add(designerItem);
                     SetConnectorDecoratorTemplate(designerItem);
-                }
+					if (bHiddenLineConnector)
+					{
+						HiddenConnectorDecoratorTemplate(designerItem);
+					}
+					else
+					{
+						VisibilityConnectorDecoratorTemplate(designerItem);
+					}
+				}
             }
             else if (e.ClickCount == 1)                   //单击显示属性，每次切换的时候重新获取
             {
@@ -1310,17 +1307,17 @@ namespace SCMTMainWindow.View
                     return;
                 }
 
-                //获取天线阵的通道数
-                int nPort;
-                try
-                {
-                    nPort = int.Parse(item.m_mapAttributes["netAntArrayNum"].m_strOriginValue);
-                }catch
-                {
-                    MessageBox.Show("获取天线阵通道数失败InitAntennaInfo");
-                    return;
-                }
+				//获取天线阵的通道数  修改为根据厂家索引和类型编号读取通道数
 
+				var antInfo = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(item.GetNeedUpdateValue("netAntArrayVendorIndex"), item.GetNeedUpdateValue("netAntArrayTypeIndex"));
+				
+				if(antInfo == null)
+				{
+					MessageBox.Show("获取天线阵通道数失败InitAntennaInfo");
+					return;
+				}
+
+				int nPort = antInfo.antArrayNum;
                 DesignerItem newItem = new DesignerItem();
 
                 //从xml 中获取 ant 元素并创建
@@ -1424,8 +1421,25 @@ namespace SCMTMainWindow.View
                     strrHUBType = "rhub1.0";
                 }
 
-                int nMaxRHUBPath = strrHUBType == "rhub1.0" ? 2 : 4;
+	            strrHUBType = strrHUBType.ToLower();
 
+				int nMaxRHUBPath = 2;
+	            switch (strrHUBType)
+				{
+					case "rhub1.0":
+						nMaxRHUBPath = 2;
+						break;
+					case "rhub2.0":
+						nMaxRHUBPath = 4;
+						break;
+					case "rhub3.0":
+						nMaxRHUBPath = 6;
+						break;
+					default:
+						nMaxRHUBPath = 2;
+						break;
+
+				}
                 DesignerItem newItem = new DesignerItem();
 
                 //从xml 中获取 rru 元素并创建
@@ -1544,9 +1558,9 @@ namespace SCMTMainWindow.View
                         {
                             dstConnector = FindDevConnector(strName, linkBoardToDev.m_dstEndPoint.nPortNo, EnumPortType.rru_to_other);
                             if (dstConnector == null)
-                            {
-                                MessageBox.Show("没有找到 m_dstEndPoint InitBoardToDev");
-                                return;
+							{
+								MessageBox.Show("没有找到 m_dstEndPoint InitBoardToDev");
+								return;
                             }
                             strDevName = strName;
                             break;
@@ -1562,10 +1576,10 @@ namespace SCMTMainWindow.View
                         {
                             dstConnector = FindDevConnector(strName, linkBoardToDev.m_dstEndPoint.nPortNo, EnumPortType.rhub_to_other);
                             if (dstConnector == null)
-                            {
-                                MessageBox.Show("没有找到 m_dstEndPoint InitBoardToDev");
-                                return;
-                            }
+							{
+								MessageBox.Show("没有找到 m_dstEndPoint InitBoardToDev");
+								return;
+							}
                             strDevName = strName;
                             break;
                         }
@@ -2126,8 +2140,25 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void RefreshHandler(object sender, RoutedEventArgs e)
         {
-            //handle click event
-            MessageBox.Show("ggggggggggggg");
+			//handle click event
+			if(MyDesigner.Children.Count != 0)
+				MyDesigner.Children.Clear();
+			MyDesigner.g_AllDevInfo.Clear();
+			MyDesigner.g_nowDevAttr = null;
+			MyDesigner.nAntennaNo = -1;
+			MyDesigner.nrHUBNo = 199;
+			MyDesigner.nRRUNo = -1;
+			
+			//MyDesigner = null;
+			//GC.Collect();
+
+			//MyDesigner = new DesignerCanvas();
+			CreateMainBoard();
+			InitNetPlan();
+
+			DispatcherHelper.DoEvents();
+			
+			InitAllConnection();
         }
         private void ClearHandler(object sender, RoutedEventArgs e)
         {
@@ -2170,12 +2201,17 @@ namespace SCMTMainWindow.View
             {
                 VisibilityAllConnector();
                 bHiddenLineConnector = false;
+
+				Border targetBorder = this.btnLine.Template.FindName("Border", this.btnLine) as Border;
+				targetBorder.Background = new SolidColorBrush(Colors.Orange);
             }
             else
             {
                 DeleteAllItemConnector();
                 bHiddenLineConnector = true;
-            }
+				Border targetBorder = this.btnLine.Template.FindName("Border", this.btnLine) as Border;
+				targetBorder.Background = Brushes.Transparent;
+			}
         }
         private void ZoomIncreaseHandler(object sender, RoutedEventArgs e)
         {
@@ -2561,4 +2597,21 @@ namespace SCMTMainWindow.View
 
         }
     }
+
+	public static class DispatcherHelper
+	{
+		[SecurityPermissionAttribute(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
+		public static void DoEvents()
+		{
+			DispatcherFrame frame = new DispatcherFrame();
+			Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new DispatcherOperationCallback(ExitFrames), frame);
+			try { Dispatcher.PushFrame(frame); }
+			catch (InvalidOperationException) { }
+		}
+		private static object ExitFrames(object frame)
+		{
+			((DispatcherFrame)frame).Continue = false;
+			return null;
+		}
+	} 
 }

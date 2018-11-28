@@ -201,6 +201,7 @@
 			// 
 			// IDOK
 			// 
+			this.IDOK.DialogResult = System.Windows.Forms.DialogResult.OK;
 			this.IDOK.Location = new System.Drawing.Point(125, 349);
 			this.IDOK.Name = "IDOK";
 			this.IDOK.Size = new System.Drawing.Size(75, 23);
@@ -211,6 +212,7 @@
 			// 
 			// IDCANCEL
 			// 
+			this.IDCANCEL.DialogResult = System.Windows.Forms.DialogResult.Cancel;
 			this.IDCANCEL.Location = new System.Drawing.Point(267, 349);
 			this.IDCANCEL.Name = "IDCANCEL";
 			this.IDCANCEL.Size = new System.Drawing.Size(75, 23);

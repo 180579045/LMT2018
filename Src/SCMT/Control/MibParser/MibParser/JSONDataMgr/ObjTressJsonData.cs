@@ -219,7 +219,7 @@ namespace MIBDataParser.JSONDataMgr
             JArray objJArray = new JArray();
 
             int id_n = 1;
-            for (int loop = 0; loop < dataInput.Tables[0].Rows.Count - 1; loop++)
+            for (int loop = 0; loop < dataInput.Tables[0].Rows.Count; loop++)
             {
                 DataRow row = dataInput.Tables[0].Rows[loop];
                 // 去重

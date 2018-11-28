@@ -24,6 +24,7 @@ using UICore.Controls.Metro;
 using LinkPath;
 using CommonUtility;
 using LogManager;
+using System.Windows.Media;
 
 namespace SCMTMainWindow
 {
@@ -33,6 +34,8 @@ namespace SCMTMainWindow
 	/// </summary>
 	public abstract class ObjNode
 	{
+		public MetroExpander selectedItem;
+
 		public string version { get; set; }                            // 对象树版本号;
 
 		public int ObjID { get; set; }                                 // 节点ID;
@@ -267,6 +270,47 @@ namespace SCMTMainWindow
 			SubObj_Lsit = new List<ObjNode>();
 		}
 
+		private void SetExpanderBackGround(MetroExpander expander)
+		{
+			expander.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+			if (expander != null && expander.Children != null && expander.Children.Count > 0)
+			{
+				foreach (var item in expander.Children)
+				{
+					if (item.GetType() == typeof(MetroExpander))
+					{
+						var targetItem = item as MetroExpander;
+						SetExpanderBackGround(targetItem);
+					}
+				}
+			}
+		}
+
+		private void GetRoot(MetroExpander expander)
+		{
+			//expander.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+			if (expander.Header == "双模基站")
+			{
+				//return;
+				SetExpanderBackGround(expander);
+			}
+			else
+			{
+				var parentItem = expander.Parent;
+				if(parentItem.GetType() == typeof(StackPanel))
+				{
+					StackPanel item = parentItem as StackPanel;
+					MetroExpander ppItem = item.Parent as MetroExpander;
+					GetRoot(ppItem);
+
+				}else if(parentItem.GetType() == typeof(MetroExpander))
+				{
+					MetroExpander item = parentItem as MetroExpander;
+					GetRoot(item);
+                }
+			}
+		}
+
 		/// <summary>
 		/// 点击枝节点时;
 		/// 1、在右侧列表中更新叶子节点;
@@ -282,6 +326,12 @@ namespace SCMTMainWindow
 			if (items != null)
 			{
 				items.SubExpender.Children.Clear();
+
+				//Add By Mayi  修改选中节点的背景色
+				//if(selectedItem != null)
+					GetRoot(items);
+				items.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+				
 
 				// 将叶子节点加入右侧容器;
 				var node = items.obj_type as ObjNode;
@@ -634,6 +684,21 @@ namespace SCMTMainWindow
 			GetNextResList.Clear();
 			ObjParentOID = String.Empty;
 			nodeMibTable = new MibTable();
+
+			if(item.Parent.GetType() == typeof(StackPanel))
+			{
+				StackPanel parentItem = item.Parent as StackPanel;
+
+				foreach(var subItem in parentItem.Children)
+				{
+					if(subItem.GetType() == typeof(MetroExpander))
+					{
+						var targetItem = subItem as MetroExpander;
+						targetItem.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+					}
+				}
+			}
+			item.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
 
 			// 目前可以获取到节点对应的中文名以及对应的表名;
 			Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " + this.ObjTableName);

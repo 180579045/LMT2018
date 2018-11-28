@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CommonUtility;
-using LogManager;
-using LmtbSnmp;
 using LinkPath;
+using LmtbSnmp;
+using LogManager;
 
 namespace FileManager.FileHandler
 {
@@ -15,7 +14,6 @@ namespace FileManager.FileHandler
 	{
 		public DtzFileHandler(string ip) : base(ip)
 		{
-
 		}
 
 		/// <summary>
@@ -40,25 +38,25 @@ namespace FileManager.FileHandler
 			_bDetailFlag = IsExistVerDetailNode(boardAddr);
 
 			//查询所有的软件包详细信息
-			var runningSwPackVer = GetRunningSwPackVer(".1");		// 软件包版本
+			var runningSwPackVer = GetRunningSwPackVer(".1");       // 软件包版本
 			if (_bDetailFlag)
 			{
 				var runningSwPackVerDetail = GetRunningSwPackVerDetail(".1");
 			}
 
-			var runningSwPackVerCP = GetRunningSwPackVer(".2");		// 冷补丁版本
+			var runningSwPackVerCP = GetRunningSwPackVer(".2");     // 冷补丁版本
 			if (_bDetailFlag)
 			{
 				var runningSwPackVerCPDetail = GetRunningSwPackVerDetail(".2");
 			}
 
-			var runningSwPackVerHP = GetRunningSwPackVer(".3");		// 热补丁版本
+			var runningSwPackVerHP = GetRunningSwPackVer(".3");     // 热补丁版本
 			if (_bDetailFlag)
 			{
 				var runningSwPackVerHPDetail = GetRunningSwPackVerDetail(".3");
 			}
-			var PPRunningVer = GetRunningPeripheralVer(".1.1");		// 外设版本
-			if(_bDetailFlag)
+			var PPRunningVer = GetRunningPeripheralVer(".1.1");     // 外设版本
+			if (_bDetailFlag)
 			{
 				var PPRunningVerDetail = GetRunningPeripheraVerDetail(".1.1");
 			}
@@ -66,73 +64,73 @@ namespace FileManager.FileHandler
 			List<string> nbArray = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
-			    string ver = GetSwPackVersion($".1.{i}");
-			    if (!string.IsNullOrEmpty(ver))
-			    {
-			        nbArray.Add(GetSwPackVersion($".1.{i}"));
-                }
-                if (_bDetailFlag)
-                {
-                    ver = GetSwPackVersionDetail($".1.{i}");
-                    if (!string.IsNullOrEmpty(ver))
-                    {
-                        nbArray.Add(ver);
-                    }
+				string ver = GetSwPackVersion($".1.{i}");
+				if (!string.IsNullOrEmpty(ver))
+				{
+					nbArray.Add(GetSwPackVersion($".1.{i}"));
+				}
+				if (_bDetailFlag)
+				{
+					ver = GetSwPackVersionDetail($".1.{i}");
+					if (!string.IsNullOrEmpty(ver))
+					{
+						nbArray.Add(ver);
+					}
 				}
 			}
 
 			List<string> nbArrayCP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
-			    string ver = GetSwPackVersion($".2.{i}");
-			    if (!string.IsNullOrEmpty(ver))
-			    {
-			        nbArrayCP.Add(ver);
-                }
-			    
+				string ver = GetSwPackVersion($".2.{i}");
+				if (!string.IsNullOrEmpty(ver))
+				{
+					nbArrayCP.Add(ver);
+				}
+
 				if (_bDetailFlag)
 				{
-				    ver = GetSwPackVersionDetail($".2.{i}");
-				    if (!string.IsNullOrEmpty(ver))
-				    {
-				        nbArray.Add(ver);
-                    }                     
+					ver = GetSwPackVersionDetail($".2.{i}");
+					if (!string.IsNullOrEmpty(ver))
+					{
+						nbArray.Add(ver);
+					}
 				}
 			}
 
 			List<string> nbArrayHP = new List<string>();
 			for (var i = 1; i < 5; i++)
 			{
-			    string ver = GetSwPackVersion($".3.{i}");
-			    if (!string.IsNullOrEmpty(ver))
-			    {
-			        nbArrayHP.Add(ver);
-                }                 
+				string ver = GetSwPackVersion($".3.{i}");
+				if (!string.IsNullOrEmpty(ver))
+				{
+					nbArrayHP.Add(ver);
+				}
 				if (_bDetailFlag)
 				{
-				    ver = GetSwPackVersionDetail($".3.{i}");
-				    if (!string.IsNullOrEmpty(ver))
-				    {
-				        nbArray.Add(ver);
-                    }           
+					ver = GetSwPackVersionDetail($".3.{i}");
+					if (!string.IsNullOrEmpty(ver))
+					{
+						nbArray.Add(ver);
+					}
 				}
 			}
 
 			List<string> wsArray = new List<string>();
 			for (var i = 1; i < 3; i++)
 			{
-			    string ver = GetPeripheralVersion($".1.1.{i}");
-			    if (!string.IsNullOrEmpty(ver))
-			    {
-			        wsArray.Add(ver);
-                }           
+				string ver = GetPeripheralVersion($".1.1.{i}");
+				if (!string.IsNullOrEmpty(ver))
+				{
+					wsArray.Add(ver);
+				}
 				if (_bDetailFlag)
 				{
-				    ver = GetPeripheralVersionDetail($".1.1.{i}");
-				    if (!string.IsNullOrEmpty(ver))
-				    {
-				        nbArray.Add(ver);
-                    }	    
+					ver = GetPeripheralVersionDetail($".1.1.{i}");
+					if (!string.IsNullOrEmpty(ver))
+					{
+						nbArray.Add(ver);
+					}
 				}
 			}
 
@@ -152,13 +150,9 @@ namespace FileManager.FileHandler
 			{
 				if (FileTransMacro.INVALID_RelayVersion == csRelayVersion)
 				{
-					foreach (var itemVer in nbArray)
+					if (nbArray.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
 					{
-						if (itemVer.Equals(head.csSWPackVersion))		// 判断基站中的软件版本和本地的升级包版本
-						{
-							bTipForceFlag = true;
-							break;
-						}
+						bTipForceFlag = true;
 					}
 
 					if (runningSwPackVer.Equals(head.csSWPackVersion))
@@ -174,13 +168,9 @@ namespace FileManager.FileHandler
 						throw new CustomException("冷补丁依赖的版本与running目录下运行的主设备版本不符合，请选择正确的冷补丁包！");
 					}
 
-					foreach (var itemVer in nbArrayCP)
+					if (nbArrayCP.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
 					{
-						if (itemVer.Equals(head.csSWPackVersion))
-						{
-							bTipForceFlag = true;
-							break;
-						}
+						bTipForceFlag = true;
 					}
 
 					if (runningSwPackVerCP.Equals(head.csSWPackVersion))
@@ -196,13 +186,9 @@ namespace FileManager.FileHandler
 						throw new CustomException("热补丁依赖的版本与running目录下运行的主设备版本不符合，请选择正确的热补丁包！");
 					}
 
-					foreach (var itemVer in nbArrayHP)
+					if (nbArrayHP.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
 					{
-						if (itemVer.Equals(head.csSWPackVersion))
-						{
-							bTipForceFlag = true;
-							break;
-						}
+						bTipForceFlag = true;
 					}
 
 					if (runningSwPackVerHP.Equals(head.csSWPackVersion))
@@ -216,21 +202,18 @@ namespace FileManager.FileHandler
 					if (DialogResult.OK != MessageBox.Show("要升级软件包版本与目前基站内的软件包版本相同，是否强制下载？", "强制下载确认",
 							MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
 					{
-						bTipForceFlag = false;
+						return ExecuteResult.UserCancel;
 					}
+					bTipForceFlag = true;
 				}
 			}
 			else if (head.csSWPackRelayVersion.ToLower().Equals("null"))
 			{
 				if (FileTransMacro.INVALID_RelayVersion == csRelayVersion)
 				{
-					foreach (var itemVer in wsArray)
+					if (wsArray.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
 					{
-						if (itemVer.Equals(head.csSWPackVersion))
-						{
-							bTipForceFlag = true;
-							break;
-						}
+						bTipForceFlag = true;
 					}
 
 					if (PPRunningVer.Equals(head.csSWPackVersion))
@@ -240,17 +223,18 @@ namespace FileManager.FileHandler
 
 					if (bTipForceFlag)
 					{
-						if ( DialogResult.OK != MessageBox.Show("要升级外设软件包版本与目前基站内外设的软件包版本相同，是否强制下载？", "强制下载确认",
-								MessageBoxButtons.OKCancel, MessageBoxIcon.Question) )
+						if (DialogResult.OK != MessageBox.Show("要升级外设软件包版本与目前基站内外设的软件包版本相同，是否强制下载？", "强制下载确认",
+								MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
 						{
-							bTipForceFlag = false;
+							return ExecuteResult.UserCancel;
 						}
+						bTipForceFlag = true;
 					}
 				}
 			}
 
 			// 弹出对话框，确定一些信息后组装命令并下发
-			C5216SwPackDlConfirmDlg confirmDlg = new C5216SwPackDlConfirmDlg
+			var confirmDlg = new C5216SwPackDlConfirmDlg
 			{
 				DtzFilePath = Path.GetDirectoryName(srcFileFullName),
 				ForceDlFlag = bTipForceFlag,
@@ -266,10 +250,10 @@ namespace FileManager.FileHandler
 					throw new CustomException("命令执行失败");
 				}
 			}
-			//else
-			//{
-			//    return ExecuteResult.UserCancel;
-			//}
+			else
+			{
+				return ExecuteResult.UserCancel;
+			}
 
 			var swPackInfo = new CSWPackPlanProcInfoMgr();
 			swPackInfo.SetInfo(confirmDlg.GetDlProcInfo());
@@ -278,7 +262,6 @@ namespace FileManager.FileHandler
 
 			return ExecuteResult.UpgradeFinish;
 		}
-
 
 		#region 私有方法
 
@@ -301,19 +284,11 @@ namespace FileManager.FileHandler
 				return false;
 			}
 
-		    Func<string, string> getRealString = (originValue) =>
-		    {
-		        int pos = originValue.IndexOf("\0");
-		        if (-1 == pos)
-		        {
-		            return originValue;
-		        }
-		        else
-		        {
-		            return originValue.Substring(0, pos);
-
-		        }
-		    };
+			Func<string, string> getRealString = (originValue) =>
+			{
+				var pos = originValue.IndexOf("\0", StringComparison.Ordinal);
+				return -1 == pos ? originValue : originValue.Substring(0, pos);
+			};
 
 			swPackInfo.csSWPackName = Path.GetFileName(dtzFilePath);
 			swPackInfo.csSWPackRelayVersion = getRealString(new string(headinfo.u8ZipFileRelayVersion)).ToUpper();
@@ -327,8 +302,8 @@ namespace FileManager.FileHandler
 				var zipFileType = headinfo.u8ZipFileType;
 				if ((FileTransMacro.SI_ZIPFILETYPE_SOFT == zipFileType) || (FileTransMacro.SI_ZIPFILETYPE_FIRM == zipFileType))
 				{
-					swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE;		//基站软件包
-					swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK;		//主设备软件
+					swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE;     //基站软件包
+					swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK;       //主设备软件
 					swPackInfo.csSWPackTypeName = "主设备软件";
 				}
 				else if (FileTransMacro.SI_ZIPFILETYPE_RRU == zipFileType)
@@ -375,26 +350,26 @@ namespace FileManager.FileHandler
 			else
 			{
 				//冷热补丁都属于基站软件包
-				swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE;	//基站软件包
-				swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK;	//主设备软件
+				swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE; //基站软件包
+				swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK;   //主设备软件
 
 				if (FileTransMacro.SI_ZIPPATCHTYPE_RRUCOLD == headinfo.u8ZipPatchType)
 				{
-					swPackInfo.nSWPackType = FileTransMacro.PERIP_SWPACK_RRU;			//冷补丁
+					swPackInfo.nSWPackType = FileTransMacro.PERIP_SWPACK_RRU;           //冷补丁
 					swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_PERIPHERAL_TYPE;
 					swPackInfo.csSWPackTypeName = "RRU冷补丁";
 				}
 				else if (FileTransMacro.SI_ZIPPATCHTYPE_HOT == headinfo.u8ZipPatchType)
 				{
 					//增加对主设备冷热补丁的支持
-					swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK_HOTPATCH;		//热补丁
+					swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK_HOTPATCH;      //热补丁
 					swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE;
 					swPackInfo.csSWPackTypeName = "主设备热补丁";
 				}
 				else if (FileTransMacro.SI_ZIPPATCHTYPE_COMMON == headinfo.u8ZipPatchType)
 				{
-					swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK_BBU_COLDPATCH;	//bbu冷补丁
-					swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE;				//软件包大类型设为主设备软件
+					swPackInfo.nSWPackType = FileTransMacro.EQUIP_SWPACK_BBU_COLDPATCH; //bbu冷补丁
+					swPackInfo.nSWEqpType = FileTransMacro.SWPACK_ENB_TYPE;             //软件包大类型设为主设备软件
 					swPackInfo.csSWPackTypeName = "BBU冷补丁";
 				}
 			}
@@ -427,8 +402,7 @@ namespace FileManager.FileHandler
 			var mibName = "swPackRunningVersion";
 
 			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-			
-        }
+		}
 
 		/// <summary>
 		/// 查询running sw pack version。index=.1;.2;.3  详细版本信息
@@ -450,7 +424,7 @@ namespace FileManager.FileHandler
 			var mibName = "peripheralPackRunningVersion";
 
 			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
-			}
+		}
 
 		/// <summary>
 		/// 查询running 外设的详细版本号  index = 1.1
@@ -501,12 +475,12 @@ namespace FileManager.FileHandler
 			return CommLinkPath.GetMibValueFromCmdExeResult(index, cmdName, mibName, boardAddr);
 		}
 
-		#endregion
+		#endregion 私有方法
 
 		#region 私有属性
 
 		private bool _bDetailFlag;
 
-		#endregion
+		#endregion 私有属性
 	}
 }

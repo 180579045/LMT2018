@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LogManager;
+using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan.DevLink
 {
@@ -15,7 +13,7 @@ namespace NetPlan.DevLink
 		{
 			mapOriginData = mapMibInfo;
 
-			if (!CheckLinkIsValid(wholeLink, mapMibInfo, null))		// 这里传入null，因为rru和本地小区的关联也会添加rru_ant类型的记录，此处直接跳过不检查
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, null))     // 这里传入null，因为rru和本地小区的关联也会添加rru_ant类型的记录，此处直接跳过不检查
 			{
 				return false;
 			}
@@ -44,7 +42,12 @@ namespace NetPlan.DevLink
 				mapMibInfo[m_recordType].Remove(oldRecord);
 			}
 
-			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
+			AddDevToMap(mapMibInfo, m_recordType, newRecord);
+
+			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"添加类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
+
+			return true;
 		}
 
 		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
@@ -68,6 +71,9 @@ namespace NetPlan.DevLink
 			}
 
 			mapMibInfo[m_recordType].Remove(raLink);
+
+			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
+			Log.Debug($"删除类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
 
 			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
 		}
@@ -136,7 +142,57 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		#endregion
+		/// <summary>
+		/// 查询天线阵安装规划表中的一条记录
+		/// </summary>
+		/// <param name="wholeLink"></param>
+		/// <param name="mapMibInfo"></param>
+		/// <returns></returns>
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		{
+			mapOriginData = mapMibInfo;
+
+			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
+			{
+				return null;
+			}
+
+			return GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
+		}
+
+		/// <summary>
+		/// 判断天线阵安装规划表是否连接了天线阵，如果没有连接天线阵，则这个记录不下发
+		/// </summary>
+		/// <param name="record"></param>
+		/// <returns></returns>
+		public static bool RruHasConnectToAnt(DevAttributeInfo record)
+		{
+			if (null == record)
+			{
+				throw new ArgumentNullException();
+			}
+
+			if (record.m_enumDevType != EnumDevType.rru_ant)
+			{
+				return true;
+			}
+
+			var antNo = record.GetNeedUpdateValue("netSetRRUPortAntArrayNo");
+			var antPathNo = record.GetNeedUpdateValue("netSetRRUPortAntArrayPathNo");
+			if (null == antNo || "-1" == antNo)
+			{
+				return false;
+			}
+
+			if (null == antPathNo || "-1" == antPathNo)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		#endregion 公共接口区
 
 		#region 私有接口
 
@@ -148,7 +204,7 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		private bool SetRruLinkAntInfo(DevAttributeInfo record, string strValue)
 		{
-			var strAntNo = m_antDev.m_strOidIndex.Trim('.');;
+			var strAntNo = m_antDev.m_strOidIndex.Trim('.'); ;
 			var strPathNo = m_nAntPort.ToString();
 			if ("-1" == strValue)
 			{
@@ -156,12 +212,11 @@ namespace NetPlan.DevLink
 				strPathNo = "-1";
 			}
 
-			return  record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
+			return record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
 					record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", strPathNo);
 		}
 
-		#endregion
-
+		#endregion 私有接口
 
 		#region 私有数据区
 
@@ -172,6 +227,6 @@ namespace NetPlan.DevLink
 		private string m_strRruAntIndex;
 		private const EnumDevType m_recordType = EnumDevType.rru_ant; // todo 后面移动到基类中
 
-		#endregion
+		#endregion 私有数据区
 	}
 }

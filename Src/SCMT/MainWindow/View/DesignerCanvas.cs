@@ -43,6 +43,7 @@ namespace SCMTMainWindow.View
         public Dictionary<EnumDevType, Dictionary<string, string>> g_AllDevInfo = new Dictionary<EnumDevType, Dictionary<string, string>>();
         //保存界面上的属性表格
         public Grid gridProperty;
+		public TextBlock noteTB;
 
         private SelectionService selectionService;
         internal SelectionService SelectionService
@@ -459,8 +460,13 @@ namespace SCMTMainWindow.View
             {
                 strName = "g_TwoPathRHUB";
                 RRUSize = new Size(260, 70);
-            }
-            else
+			}
+			else if (nMaxRRUPath == 6)
+			{
+				strName = "g_SixPathRHUB";
+				RRUSize = new Size(260, 70);
+			}
+			else
             {
                 strName = "g_SingleRHUB";
                 RRUSize = new Size(260, 70);
@@ -737,6 +743,7 @@ namespace SCMTMainWindow.View
                 TextBlock txtName = new TextBlock();
                 txtName.Margin = new Thickness(1);
                 txtName.Text = item.Value.mibAttri.childNameCh;
+				txtName.MouseLeftButtonDown += TxtName_MouseLeftButtonDown;
                 grid.Children.Add(txtName);
                 Grid.SetColumn(txtName, 0);
                 Grid.SetRow(txtName, nRow + 1);
@@ -760,7 +767,7 @@ namespace SCMTMainWindow.View
                         Grid.SetColumn(cbValue, 2);
                         Grid.SetRow(cbValue, nRow + 1);
 
-                        var strItem = MibInfoMgr.GetNeedUpdateValue(mibInfo, item.Key, false);
+                        var strItem = mibInfo.GetNeedUpdateValue(item.Key, false);
                         if(strItem != null)
                         {
                             if (cbValue.Items.Contains(strItem))
@@ -784,7 +791,7 @@ namespace SCMTMainWindow.View
                         txtName.Margin = new Thickness(1);
                         txtName.Height = 25;
 
-                        var strItem2Text = MibInfoMgr.GetNeedUpdateValue(mibInfo, item.Key, false);
+                        var strItem2Text = mibInfo.GetNeedUpdateValue(item.Key, false);
                         if (strItem2Text != null)
                         {
                             txtValue.Text = strItem2Text;
@@ -810,7 +817,7 @@ namespace SCMTMainWindow.View
             {
                 Grid.SetRowSpan(gridSplit, mibInfo.m_mapAttributes.Count);
             }
-
+			
             Grid ucTest = GetRootElement<Grid>(this, "MainGrid");
 
             if (ucTest != null)
@@ -824,12 +831,35 @@ namespace SCMTMainWindow.View
             }
         }
 
-        /// <summary>
-        /// 文本框得到焦点的时候，保存当前的属性值
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void TxtValue_GotFocus(object sender, RoutedEventArgs e)
+		private void TxtName_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			TextBlock targetTB = sender as TextBlock;
+
+			Grid ucTest = GetRootElement<Grid>(this, "MainGrid");
+
+			if (ucTest != null)
+			{
+				noteTB = GetChildrenElement<TextBlock>(ucTest, "noteText");
+				if (noteTB != null)
+				{
+					noteTB.Text = "";
+					foreach (var item in g_nowDevAttr.m_mapAttributes)
+					{
+						if (item.Value.mibAttri.childNameCh == targetTB.Text)
+						{
+							noteTB.Text = item.Value.mibAttri.childNameCh + "\n" + item.Value.mibAttri.detailDesc;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// 文本框得到焦点的时候，保存当前的属性值
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void TxtValue_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox targetText = sender as TextBox;
             strOldAttr = targetText.Text;
@@ -859,7 +889,7 @@ namespace SCMTMainWindow.View
                             {
                                 if(strOldAttr != targetItem.Text)
                                 {
-                                    if(!MibInfoMgr.SetDevAttributeValue(g_nowDevAttr, item.Key, targetItem.Text))
+                                    if(!g_nowDevAttr.SetDevAttributeValue(item.Key, targetItem.Text))
                                     {
                                         MessageBox.Show("修改失败");
                                     }
@@ -896,7 +926,7 @@ namespace SCMTMainWindow.View
                         {
                             if (item.Value.mibAttri.childNameCh == targetText.Text)
                             {
-                                if (!MibInfoMgr.SetDevAttributeValue(g_nowDevAttr, item.Key, targetItem.SelectedItem.ToString()))
+                                if (!g_nowDevAttr.SetDevAttributeValue(item.Key, targetItem.SelectedItem.ToString()))
                                 {
                                     MessageBox.Show("修改失败");
                                 }

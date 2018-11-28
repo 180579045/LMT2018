@@ -81,7 +81,7 @@ namespace MIBDataParser.JSONDataMgr
             {
                 if (isFileExist(filePath, out outErr))
                 {
-                    File.Delete(filePath);
+                    File.Delete(filePath);		// todo 如果文件正在打开，删除失败，抛出异常，需要捕获
                 }
                 err += outErr;
             }

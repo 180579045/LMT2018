@@ -23,6 +23,7 @@ namespace SCMTMainWindow
                 {
                     m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     oid = oid,
+                    m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(MibName,targetIP),
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };
@@ -43,6 +44,7 @@ namespace SCMTMainWindow
                     m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     m_CurrentValue = int.Parse(value),
                     oid = oid,
+                    m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(MibName, targetIP),
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };
@@ -59,6 +61,7 @@ namespace SCMTMainWindow
 					//m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
 					m_Content = value,
 					oid = oid,
+                    m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(MibName, targetIP),
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };
@@ -73,6 +76,7 @@ namespace SCMTMainWindow
                 {
                     m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     oid = oid,
+                    m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(MibName, targetIP),
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };

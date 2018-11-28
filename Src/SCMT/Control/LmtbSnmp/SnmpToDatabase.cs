@@ -420,10 +420,24 @@ namespace LmtbSnmp
 
 				// 2.分解取值范围
 				var mapKv = MibStringHelper.SplitManageValue(mvr);
+				var realValue = strValue;
+
+				if (strValue.Contains('|'))
+				{
+					// 3.处理strValue，有可能是hsctd|HSCTD板这种格式啊，泪奔~~~~，据说是为了支持中英文~~~ todo 目前先只使用|后面的值
+					var vsMap = MibStringHelper.SplitMibEnumString(strValue);
+					if (vsMap.Count != 1)
+					{
+						Log.Error($"老铁，你是认真的吗？值：{strValue}怎么匹配枚举值啊？？");
+						throw new ArgumentException(strValue);
+					}
+
+					realValue = vsMap.First().Value;
+				}
 
 				foreach (var kv in mapKv)
 				{
-					if (kv.Value == strValue)
+					if (kv.Value == realValue)
 					{
 						return kv.Key.ToString();
 					}
@@ -703,6 +717,32 @@ namespace LmtbSnmp
 			return rsText;
 		}
 
+        public static bool GetReadAndWriteStatus(string mibName, string targetIp)
+        {
+            var retData = GetMibNodeInfoByName(mibName, targetIp);
+            if (null == retData)
+            {
+                Log.Error($"查询基站{targetIp}的{mibName}信息失败");
+                return false;
+            }
+
+            if (retData.IsIndex == "True")
+            {
+                return true;
+            }
+            else
+            {
+                if (retData.managerWriteAble.Contains('w') || retData.managerWriteAble.Contains('c'))
+                {
+                    if (retData.ASNType.Equals("RowStatus"))
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return true;
+            }
+        }
 		#endregion
 
 		#region 私有方法

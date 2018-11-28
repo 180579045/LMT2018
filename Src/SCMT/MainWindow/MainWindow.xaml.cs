@@ -1543,7 +1543,8 @@ namespace SCMTMainWindow
 					{
 						m_Content = null,
 						oid = null,
-						MibName_CN = "实例描述",
+                        m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib, CSEnbHelper.GetCurEnbAddr()),
+                        MibName_CN = "实例描述",
 						MibName_EN = "indexlist"
 					}, "实例描述");
 				}
@@ -1553,6 +1554,7 @@ namespace SCMTMainWindow
 					{
 						m_Content = null,
 						oid = null,
+                        m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib,CSEnbHelper.GetCurEnbAddr()),
 						MibName_CN = leaf.childNameCh,
 						MibName_EN = leaf.childNameMib
 					}, leaf.childNameCh);
@@ -1588,7 +1590,9 @@ namespace SCMTMainWindow
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
-			int RealIndexCount = IndexCount;                         // 真实的索引维度;
+            Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+
+            int RealIndexCount = IndexCount;                         // 真实的索引维度;
 
 			if (IndexCount == 0)                                     // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
@@ -1609,7 +1613,7 @@ namespace SCMTMainWindow
 				AddPropertyForEmptyTbl(ref model, mibTable);
 
 				Main_Dynamic_DataGrid.ColumnModel = model;
-				Main_Dynamic_DataGrid.DataContext = contentlist;
+				Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = contentlist;
 				return;
 			}
 
@@ -1652,14 +1656,15 @@ namespace SCMTMainWindow
 						IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
 					}
 
-					// 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
-					// 参数一：属性名称;
-					// 参数二：单元格实例;
-					// 参数三：单元格列中文名称;
-					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
-					{
-						m_Content = IndexContent,
-						oid = IndexOIDPre + ".",
+                    // 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
+                    // 参数一：属性名称;
+                    // 参数二：单元格实例;
+                    // 参数三：单元格列中文名称;
+                    model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+                    {
+                        m_Content = IndexContent,
+                        oid = IndexOIDPre + ".",
+                        m_bIsReadOnly = true,
 						MibName_CN = "实例描述",
 						MibName_EN = "indexlist"
 					}, "实例描述");
@@ -1729,7 +1734,7 @@ namespace SCMTMainWindow
 				if (itemCount == contentlist.Count)
 				{
 					Main_Dynamic_DataGrid.ColumnModel = model;
-					Main_Dynamic_DataGrid.DataContext = contentlist;
+					Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = contentlist;
 				}
 			}
 			// 增加表量表索引的列名;
@@ -1801,7 +1806,8 @@ namespace SCMTMainWindow
 
 			foreach (LayoutAnchorable item in listAvalon)
 			{
-				if (item.Title == strFriendName)
+                //为了在文件管理中增加说明本地or基站。。
+				if (item.Title.Contains(strFriendName + "  ") )
 				{
 					item.Show();
 					return;
@@ -1813,7 +1819,7 @@ namespace SCMTMainWindow
 			var sub = new LayoutAnchorable
 			{
 				Content = content,
-				Title = strFriendName,
+				Title = strFriendName + "     本地(左侧)  <-->  基站(右侧)",
 				FloatingHeight = 800,
 				FloatingWidth = 600,
 				CanHide = true,
@@ -1886,7 +1892,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-			var result = await InitDataBase();
+			var result = await InitDataBase();		// todo lm.dtz文件不存在时，这里抛出异常
 
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
@@ -1898,19 +1904,21 @@ namespace SCMTMainWindow
 
 			if (!result)
 			{
-				Log.Error($"数据库初始化失败，不再查询基站的电源信息");
+				Log.Error($"数据库初始化失败，不再查询基站的设备信息");
 				return;
 			}
 
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
-			var pcuSlot = GetPcuSlot(ip);
+		    st = GetEquipType(ip);
+            /*
+            var pcuSlot = GetPcuSlot(ip);
 			// 5G基站的电源插槽是4
 			if (4 == pcuSlot)
 			{
 				st = EnbTypeEnum.ENB_EMB6116;
 			}
-
+            */
 			NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
 		}
 
@@ -1949,32 +1957,31 @@ namespace SCMTMainWindow
 			CSEnbHelper.ClearCurEnbAddr(ip);
 		}
 
-		/// <summary>
-		/// 查询基站的电源信息，用于获取电源的插槽号
-		/// </summary>
-		/// <param name="targetIp"></param>
-		/// <returns></returns>
-		public int GetPcuSlot(string targetIp)
-		{
-			const string cmdName = "GetBoardInfo";
-			long reqId;
-			var pdu = new CDTLmtbPdu(cmdName);
-			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0.0.4", targetIp, ref pdu);
-			if (0 != ret)
-			{
-				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-				return 4;
-			}
-
-			string boardType;
-			if (!pdu.GetValueByMibName(targetIp, "boardHardwareType", out boardType))
-			{
-				ShowLogHelper.Show("查询基站电源信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-				return 4;
-			}
-
-			return (boardType == "106" ? 4 : 8);
-		}
+	    /// <summary>
+	    /// 查询基站的电源信息，用于获取电源的插槽号
+	    /// </summary>
+	    /// <param name="targetIp"></param>
+	    /// <returns></returns>
+	    public EnbTypeEnum GetEquipType(string targetIp)
+	    {
+	        const string cmdName = "GetEquipmentCommonInfo";
+	        long reqId;
+	        var pdu = new CDTLmtbPdu(cmdName);
+	        int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0", targetIp, ref pdu);
+	        if (ret != 0 || pdu.m_LastErrorStatus != 0)
+	        {
+	            ShowLogHelper.Show("查询设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+	            return EnbTypeEnum.ENB_EMB6116;
+	        }
+	        string equipType;
+	        if (!pdu.GetValueByMibName(targetIp, "equipNEType", out equipType))
+	        {
+	            ShowLogHelper.Show("查询基站设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+	            return EnbTypeEnum.ENB_EMB6116;
+            }
+            Log.Info($"基站设备类型是"+ equipType); Convert.ToInt32(equipType);
+            return (EnbTypeEnum)Convert.ToInt32(equipType);
+	    }     
 
 		#endregion 订阅消息及处理
 

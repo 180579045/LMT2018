@@ -408,6 +408,20 @@ namespace MIBDataParser.JSONDataMgr
 			return null;
 		}
 
+		public List<CmdMibInfo> GetCmdsInfoByEntryName(string strEntryName, string targetIp)
+		{
+			lock (_syncLock)
+			{
+				if (!ipToCmdInfoMap.ContainsKey(targetIp))
+				{
+					return null;
+				}
+
+				var cmdInstance = ipToCmdInfoMap[targetIp];
+				return cmdInstance?.GetCmdsByTblName(strEntryName);
+			}
+		}
+
 		/// <summary>
 		/// 提供Trap所有类型的查找
 		/// 现有10种。

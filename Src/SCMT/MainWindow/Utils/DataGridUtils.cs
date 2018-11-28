@@ -158,6 +158,11 @@ namespace SCMTMainWindow.Utils
 					return false;
 				}
 
+				if (reData.ASNType == "RowStatus")
+				{
+					continue;
+				}
+
 				// 组装Vb
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
 				lmtVb.Oid = oid;
@@ -218,7 +223,7 @@ namespace SCMTMainWindow.Utils
 		/// <param name="lineData">DataGrid行数据</param>
 		/// <param name="enName2Value">英文名称与值对应关系</param>
 		/// <returns></returns>
-		public static bool GetMibIndex(Dictionary<string, object> lineData, out string strIndex)
+		public static bool GetMibIndex(Dictionary<string, object> lineData, int nIdxGrade, out string strIndex)
 		{
 			strIndex = "";
 
@@ -230,6 +235,9 @@ namespace SCMTMainWindow.Utils
 			foreach (KeyValuePair<string, object> item in lineData)
 			{
 				mibNameEn = item.Key;
+
+                if (mibNameEn.Equals("indexlist"))
+                    continue;
 
 				// Mib值
 				if (typeof(DataGrid_Cell_MIB_ENUM) == item.Value.GetType()) // ComboBox
@@ -248,7 +256,14 @@ namespace SCMTMainWindow.Utils
 				if (!string.IsNullOrEmpty(oid))
 				{
 					// 截取最后一位索引
-					strIndex = oid.Substring(oid.LastIndexOf("."));
+					var idx = MibStringHelper.GetIndexValueByGrade(oid, nIdxGrade);
+					if (null == idx)
+					{
+						continue;
+					}
+
+					Log.Debug($"根据oid:{oid}截取出{nIdxGrade}维索引：{idx}");
+					strIndex = idx;
 				}
 			}
 
@@ -344,5 +359,66 @@ namespace SCMTMainWindow.Utils
 			return false;
 		}
 
-	}
+        /// <summary>
+        /// 右键菜单添加修改删除时根据返回的结果获取索引节点显示信息
+        /// </summary>
+        /// <param name="pdu"></param>
+        /// <returns></returns>
+        public static bool GetIndexNodeInfoFromLmtbPdu(CDTLmtbPdu lmtPdu, MibTable tbl, ref string oid, ref string showInfo)
+        {
+            string index = "";
+            if (!GetIndexFromLmtbPdu(lmtPdu, ref index))
+                return false;
+
+            if (tbl == null)
+                return false;
+
+            foreach (MibLeaf leaf in tbl.childList)
+            {
+                if (leaf.IsIndex.Equals("True"))
+                {
+                    showInfo += leaf.childNameCh + index;
+                }
+            }
+            oid = SnmpToDatabase.GetMibPrefix() + tbl.oid;
+
+            return true;
+        }
+        /// <summary>
+        /// 获取添加修改删除的索引号
+        /// </summary>
+        /// <param name="lmtPdu"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static bool GetIndexFromLmtbPdu(CDTLmtbPdu lmtPdu, ref string index)
+        {
+            var strOidPrefix = SnmpToDatabase.GetMibPrefix();
+            var lmtVbCount = lmtPdu.VbCount();
+            // 根据Vb 中的OID 获取 MibOid
+            string strMibOid;
+            if (lmtPdu.VbCount() > 0)
+            {
+                var lmtVb = lmtPdu.GetVbByIndexEx(0);
+                var strVbOid = lmtVb?.Oid;
+                if (string.IsNullOrEmpty(strVbOid))
+                {
+                    return false;
+                }
+
+                // 去掉前缀
+                strMibOid = strVbOid.Replace(strOidPrefix, "");
+
+                // 去掉最后一位索引
+                var nindex = strMibOid.LastIndexOf('.');
+                if (nindex >= strMibOid.Length)
+                {
+                    return false;
+                }
+                index = strMibOid.Substring(nindex + 1);
+            }
+
+            return true;
+        }
+
+    }
 }

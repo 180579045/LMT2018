@@ -82,7 +82,7 @@ namespace NetPlan
 				}
 			}
 
-ParseRruToAnt:
+			ParseRruToAnt:
 
 			List<DevAttributeInfo> antList = null;
 			List<DevAttributeInfo> rruAntCfgList = null;
@@ -118,7 +118,7 @@ ParseRruToAnt:
 				return false;
 			}
 
-ParseBoardToRhub:
+			ParseBoardToRhub:
 
 			// 解析board与rhub之间的连接
 			if (!mapMibInfo.ContainsKey(EnumDevType.rhub))
@@ -213,8 +213,7 @@ ParseBoardToRhub:
 			}
 		}
 
-		#endregion
-
+		#endregion 公共接口
 
 		#region 私有方法
 
@@ -240,11 +239,23 @@ ParseBoardToRhub:
 					continue;
 				}
 
+				var rruTypeIndex = rru.GetNeedUpdateValue("netRRUTypeIndex");
+				if (null == rruTypeIndex)
+				{
+					return false;
+				}
+
+				if (NPERruHelper.GetInstance().IsPicoDevice(int.Parse(rruTypeIndex)))
+				{
+					Log.Debug($"索引为{rru.m_strOidIndex}的RRU是pico，bbu与之没有连接关系");
+					continue;
+				}
+
 				// RRU最多有个4个光口连接板卡获取RRU
 				for (var i = 1; i < 5; i++)
 				{
 					if (!HandleRruOfpLinkInfo(i, rru, boardDevList, irOptList))
-						return false;
+						continue;
 				}
 			}
 
@@ -309,7 +320,7 @@ ParseBoardToRhub:
 			};
 
 			// todo 此处board到rhub设备的连接类型设置为board_rru，校验功能是否会检查
-			AddLinkToList(boardEndpoint, rruEndPoint, EnumDevType.board_rru);
+			AddLinkToList(boardEndpoint, rruEndPoint, EnumDevType.board_rhub);
 			return true;
 		}
 
@@ -354,14 +365,14 @@ ParseBoardToRhub:
 			}
 
 			// 上一级rru的连接板卡的光口号与rru之间的级联的光口号的关系没有确定的关系
-			var prevRruDownLinePort = -1;	// 上级rru的下联口
+			var prevRruDownLinePort = -1;   // 上级rru的下联口
 			if (1 == prevRruInfo.nRruIrPort)
 			{
-				prevRruDownLinePort = 2;	// rru在级联模式下，必然区分上联口和下联口。上联口只能是1。TODO rru是否有4个光口的？
-				// todo 当前5GIII的AAU设备是4个光口，1主3辅，尚不支持级联模式，后来人要注意(2018.11.2,houshangling)
+				prevRruDownLinePort = 2;    // rru在级联模式下，必然区分上联口和下联口。上联口只能是1。TODO rru是否有4个光口的？
+											// todo 当前5GIII的AAU设备是4个光口，1主3辅，尚不支持级联模式，后来人要注意(2018.11.2,houshangling)
 			}
 
-			var nextRruUpLinePort = curRruInfo.nRruIrPort;		// 上联口
+			var nextRruUpLinePort = curRruInfo.nRruIrPort;      // 上联口
 																// rru级联必然是上级rru的下联口连接到下级rru的上联口
 
 			var prevEndpoint = new LinkEndpoint
@@ -545,8 +556,8 @@ ParseBoardToRhub:
 		}
 
 		// 处理rru光口连接的信息
-		private bool HandleRruOfpLinkInfo(int nOfpIndex, DevAttributeInfo rru, 
-			IEnumerable<DevAttributeInfo> boardDevList, 
+		private bool HandleRruOfpLinkInfo(int nOfpIndex, DevAttributeInfo rru,
+			IEnumerable<DevAttributeInfo> boardDevList,
 			IEnumerable<DevAttributeInfo> irOptList)
 		{
 			// 取出rru编号、接入板卡的信息
@@ -562,7 +573,7 @@ ParseBoardToRhub:
 			var workMode = rru.GetFieldOriginValue("netRRUOfpWorkMode");
 
 			var slotNoMib = "netRRUAccessSlotNo";
-			
+
 			if (nOfpIndex > 1)
 			{
 				slotNoMib = $"netRRUOfp{nOfpIndex}SlotNo";
@@ -614,7 +625,7 @@ ParseBoardToRhub:
 			}
 
 			var accessPos = rru.GetFieldOriginValue(accessPosMibName);
-			if ("-1" == accessPos)	// 非级联，接入级数为1
+			if ("-1" == accessPos)  // 非级联，接入级数为1
 			{
 				Log.Error($"索引为{rruIndex}的RRU光口{nOfpIndex}连接对端光口{remoteOfPort}，但接入级数为-1，无效信息");
 				return false;
@@ -699,7 +710,7 @@ ParseBoardToRhub:
 				return false;
 			}
 
-			foreach (var ra in rruAntCfgList)	// todo 这样子做连接很多啊，需要优化
+			foreach (var ra in rruAntCfgList)   // todo 这样子做连接很多啊，需要优化
 			{
 				var rruNo = ra.GetFieldOriginValue("netSetRRUNo");
 				var rruIndex = $".{rruNo}";
@@ -746,7 +757,7 @@ ParseBoardToRhub:
 				//Log.Debug($"生成索引为{rruIndex}的rru通道{rruPathNo}到索引为{antIndex}的ant通道{antPathNo}连接成功");
 			}
 
-			return true;		// 如果中间有break调用，这里就会返回false
+			return true;        // 如果中间有break调用，这里就会返回false
 		}
 
 		/// <summary>
@@ -809,7 +820,7 @@ ParseBoardToRhub:
 			// 级联模式才会有接入级数>1的情况
 			var workMode = rhub.GetFieldOriginValue("netRHUBOfpWorkMode");
 
-			var slotNoMib = "netRHUBAccessSlotNo";		// 光口接入的槽位号
+			var slotNoMib = "netRHUBAccessSlotNo";      // 光口接入的槽位号
 			if (nOfpIndex > 1)
 			{
 				slotNoMib = $"netRHUBOfp{nOfpIndex}SlotNo";
@@ -904,14 +915,14 @@ ParseBoardToRhub:
 					return false;
 				}
 
-				if ("2" == workMode || "5" == workMode)		// 级联；负荷分担 + 级联
+				if ("2" == workMode || "5" == workMode)     // 级联；负荷分担 + 级联
 				{
 					AddElementToParsedRruList(parsedRhub);
 				}
 				return true;
 			}
 
-			if ("2" != workMode && "5" != workMode)		// 级联；负荷分担+级联
+			if ("2" != workMode && "5" != workMode)     // 级联；负荷分担+级联
 			{
 				Log.Error($"索引为{hubIndex}的RHUB工作模式为{workMode}，光口级联级数错误");
 				return false;
@@ -989,14 +1000,7 @@ ParseBoardToRhub:
 			foreach (var rru in rruList)
 			{
 				var rruType = rru.GetFieldOriginValue("netRRUTypeIndex");
-				var rruStaticInfo = NPERruHelper.GetInstance().GetRruInfoByType(int.Parse(rruType));
-				if (string.IsNullOrEmpty(rruStaticInfo.rruTypeName))
-				{
-					continue;
-				}
-
-				// 类型名如果是p开头，就是pico设备
-				if (string.CompareOrdinal(rruStaticInfo.rruTypeName[0].ToString(), "p") != 0)
+				if (!NPERruHelper.GetInstance().IsPicoDevice(int.Parse(rruType)))
 				{
 					continue;
 				}
@@ -1128,20 +1132,19 @@ ParseBoardToRhub:
 			return true;
 		}
 
-		#endregion
-
+		#endregion 私有方法
 
 		#region 私有数据区
 
 		private Dictionary<EnumDevType, List<WholeLink>> m_mapLinks;
 
-		private List<ParsedRruInfo> m_listParsedRru;		// 所有的工作模式为级联的rru信息
+		private List<ParsedRruInfo> m_listParsedRru;        // 所有的工作模式为级联的rru信息
 
-		private List<ParsedRruInfo> m_listWaitPrevRru;		// 等待上一级的rru
+		private List<ParsedRruInfo> m_listWaitPrevRru;      // 等待上一级的rru
 
 		private readonly object m_syncObj = new object();
 
-		#endregion
+		#endregion 私有数据区
 	}
 
 	internal class ParsedRruInfo
@@ -1163,17 +1166,17 @@ ParseBoardToRhub:
 				return false;
 			}
 
-			if (strBoardIndex != wanntedRruInfo.strBoardIndex)		// 先比对所连板卡是否相同
+			if (strBoardIndex != wanntedRruInfo.strBoardIndex)      // 先比对所连板卡是否相同
 			{
 				return false;
 			}
 
-			if (nBoardIrPort != wanntedRruInfo.nBoardIrPort)		// 比对连接板卡的光口号是否相同
+			if (nBoardIrPort != wanntedRruInfo.nBoardIrPort)        // 比对连接板卡的光口号是否相同
 			{
 				return false;
 			}
 
-			return nCurLinePos == (wanntedRruInfo.nCurLinePos + 1);		// 比对级数是否差1
+			return nCurLinePos == (wanntedRruInfo.nCurLinePos + 1);     // 比对级数是否差1
 		}
 	}
 }

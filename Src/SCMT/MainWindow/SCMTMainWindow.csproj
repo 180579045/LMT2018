@@ -627,6 +627,10 @@
       <Project>{8c99c928-f64f-4a49-9018-abddabc73a1a}</Project>
       <Name>BaseStationConInfo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\DataBaseUtil\DataBaseUtil.csproj">
+      <Project>{45fbffcf-17f9-4649-bffd-8894acd01aff}</Project>
+      <Name>DataBaseUtil</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\LinkPath\LinkPath.csproj">
       <Project>{f3cae40a-a1d7-4a0b-80da-a09dde0b8ef5}</Project>
       <Name>LinkPath</Name>
