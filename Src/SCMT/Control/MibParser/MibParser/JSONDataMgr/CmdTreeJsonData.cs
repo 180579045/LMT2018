@@ -36,7 +36,7 @@ namespace MIBDataParser.JSONDataMgr
             return;
         }
         /// <summary>
-        /// 修改 cmd.json 中"leafOIdList"字段的数据结构
+        /// cmd.json 中增加新的字段:"leafOIdSupplementList"的数据结构
         /// </summary>
         /// <param name="CmdDateSet"></param>
         public void CmdParseDataSetVersion2(DataSet CmdDateSet)
@@ -56,7 +56,9 @@ namespace MIBDataParser.JSONDataMgr
                 cmdInfo.Add("TableName", row["HostTableName"].ToString());
                 cmdInfo.Add("CmdType", row["CmdType"].ToString());
                 cmdInfo.Add("CmdDesc", row["CmdDesc"].ToString());
-                cmdInfo.Add("leafOIdList", ReLeafListInfoVersion2(row));
+                cmdInfo.Add("leafOIdList", ReLeafListInfo(row["MIBList"].ToString()));
+                cmdInfo.Add("leafOIdListDefault", ReLeafListInfoVersion2(row));
+                //cmdInfo.Add("leafOIdList", ReLeafListInfoVersion2(row));
 
                 cmdInfoList.Add(row["CmdName"].ToString(), cmdInfo);
             }
@@ -83,17 +85,13 @@ namespace MIBDataParser.JSONDataMgr
         /// <returns></returns>
         JObject ReLeafListInfoVersion2(DataRow row)
         {
-            string[] sASupVal = row["MIBList_supplement"].ToString().Split('=');//默认值
-            string[] sArray = row["MIBList"].ToString().Split('|').Distinct().ToArray();//去重
-            JObject leafInfo = new JObject();
-            foreach (var s in sArray)
+            JObject leafInfo = null;
+            string MIBList_supplement = row["MIBList_supplement"].ToString();
+            if (string.Empty != MIBList_supplement)
             {
-                try
-                {
-                    string supVal = s.Equals(sASupVal[0]) ? sASupVal[1] : "NULL";
-                    leafInfo.Add(s, supVal);
-                }
-                catch{}
+                leafInfo = new JObject();
+                string[] sASupVal = MIBList_supplement.Split('=');//默认值
+                leafInfo.Add(sASupVal[0], sASupVal[1]);
             }
             return leafInfo;
         }
