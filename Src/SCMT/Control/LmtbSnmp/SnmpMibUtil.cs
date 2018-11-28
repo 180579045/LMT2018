@@ -410,7 +410,7 @@ namespace LmtbSnmp
 				byte[] bts = v.ToArray();
 
 				//获取时间;
-				var year = bts[0] * 256 + bts[1]; // 前两个字节为年份
+				int year = bts[0] * 256 + bts[1]; // 前两个字节为年份
 				int month = bts[2];  // 月
 				int day = bts[3];    // 日
 				int hour = bts[4];   // 时
