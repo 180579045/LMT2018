@@ -2102,5 +2102,16 @@ namespace SCMTMainWindow
 				GC.Collect();
 			}
 		}
+
+		/// <summary>
+		/// 配置文件解析工具
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnConfigFileOperate_Click(object sender, RoutedEventArgs e)
+		{
+			View.ConfigFileOperate dlgConfigFile = new View.ConfigFileOperate();
+			dlgConfigFile.ShowDialog();
+		}
 	}
 }
