@@ -120,7 +120,10 @@ namespace SCMTMainWindow.View
 
 		private DyDataGrid_MIBModel m_selectDataGrid;
 
-		private int m_AddModifyDel = 1; //1为添加，2为修改，3为删除
+        /// <summary>
+        /// 0为查询，1为添加，2为删除，3为修改
+        /// </summary>
+		private int m_operType = 0;
 
 		/// <summary>
 		/// 动态表构造函数;
@@ -519,11 +522,12 @@ namespace SCMTMainWindow.View
                 return;
 
             CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
+
             if (info != null)
             {
-                m_AddModifyDel = 1;
+                m_operType = 1;
                 MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-                paraGrid.InitAddParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable));
+                paraGrid.InitAddParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable), m_operType);
                 paraGrid.ShowDialog();
 
                 if (!paraGrid.bOK)
@@ -542,10 +546,10 @@ namespace SCMTMainWindow.View
             CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
             if (info != null)
             {
-                m_AddModifyDel = 2;
+                m_operType = 3;
 
                 MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-                paraGrid.InitModifyParaSetGrid(info, m_selectDataGrid, (m_ColumnModel.TableProperty as MibTable));
+                paraGrid.InitModifyParaSetGrid(info, m_selectDataGrid, (m_ColumnModel.TableProperty as MibTable), m_operType);
                 paraGrid.ShowDialog();
 
                 if (!paraGrid.bOK)
@@ -559,6 +563,38 @@ namespace SCMTMainWindow.View
             var menu = sender as MenuItem;
             if (null == menu)
                 return;
+
+            MibTable tbl = (m_ColumnModel.TableProperty as MibTable);            
+
+            CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
+            if (info != null && tbl != null)
+            {
+                m_operType = 0;
+
+                Dictionary<string, string> dicMibToValue = new Dictionary<string, string>();
+                Dictionary<string, string> dicMibToOid = new Dictionary<string, string>();
+                GetChildMibInfo(info, ref dicMibToValue,ref dicMibToOid);
+
+                //无索引节点，不弹出窗口，直接下发查询指令
+                if (tbl.indexNum == 0)
+                {
+                    if(CommLinkPath.GetMibValueFromCmdExeResult(".0", info.m_cmdNameEn, ref dicMibToValue, CSEnbHelper.GetCurEnbAddr()))
+                    {
+                        QuerySuccessRefreshDataGrid(dicMibToValue, dicMibToOid, 0 , "");
+                    }                       
+                }
+                else if (tbl.indexNum > 0)//弹出包含索引节点的窗口
+                {
+                    MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                    paraGrid.InitQueryParaSetGrid(info, tbl, m_operType);
+                    paraGrid.ShowDialog();
+
+                    if (!paraGrid.bOK)
+                    {
+                        return;
+                    }
+                }              
+            }          
         }
 
         private void MenuDeleteItem_Click(object sender, RoutedEventArgs e)
@@ -570,7 +606,7 @@ namespace SCMTMainWindow.View
             CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
             if (info != null)
             {
-                m_AddModifyDel = 3;
+                m_operType = 2;
                 if (m_selectDataGrid == null)
                     return;
 
@@ -631,6 +667,112 @@ namespace SCMTMainWindow.View
 
                 RefreshDataGrid(lmtPdu, nIdxCount);
             }
+        }
+        /// <summary>
+        /// 查询时，获取查询包含的命令
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="dicMibToValue"></param>
+        /// <param name="dicMibToOid"></param>
+        public void GetChildMibInfo(CmdMibInfo info, ref Dictionary<string,string> dicMibToValue, ref Dictionary<string, string> dicMibToOid)
+        {
+            MibTable tbl = (m_ColumnModel.TableProperty as MibTable);
+            var childlist = tbl.childList;
+
+            if(dicMibToValue == null)
+                dicMibToValue = new Dictionary<string, string>();
+            if(dicMibToOid == null)
+                dicMibToOid = new Dictionary<string, string>();
+
+            foreach (string oid in info.m_leaflist)
+            {
+                MibLeaf leaf = childlist.Find(p => p.childOid.Equals(oid));
+                if (leaf != null)
+                {
+                    dicMibToValue.Add(leaf.childNameMib, null);
+                    dicMibToOid.Add(leaf.childNameMib, leaf.childOid);
+                }
+            }
+        }
+        /// <summary>
+        /// 查询成功刷新列表
+        /// </summary>
+        /// <param name="dicMibToValue"></param>
+        /// <param name="indexNum"></param>
+        public void QuerySuccessRefreshDataGrid(Dictionary<string, string> dicMibToValue, Dictionary<string, string> dicMibToOid, int indexNum, string strdes)
+        {
+            //获取列表内容
+            ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
+            datalist = (ObservableCollection<DyDataGrid_MIBModel>)this.DynamicDataGrid.DataContext;
+            int count = 0;
+
+            foreach (string key in dicMibToValue.Keys)
+            {
+                string value = dicMibToValue[key];
+                if (value == null)
+                    continue;
+
+                if (indexNum == 0)
+                {
+                    string oid = SnmpToDatabase.GetMibPrefix() + dicMibToOid[key] + ".0";
+
+                    foreach (DyDataGrid_MIBModel mm in datalist)
+                    {
+                        if (mm.Properties.ContainsKey(key))
+                        {
+                            if (mm.Properties[key] is DataGrid_Cell_MIB)
+                            {
+                                var iter = mm.Properties[key] as DataGrid_Cell_MIB;
+                                if (iter.oid.Equals(oid))
+                                    iter.m_Content = SnmpToDatabase.ConvertSnmpValueToString(key, value, CSEnbHelper.GetCurEnbAddr()) as string;
+                            }
+                            else if (mm.Properties[key] is DataGrid_Cell_MIB_ENUM)
+                            {
+                                var iter = mm.Properties[key] as DataGrid_Cell_MIB_ENUM;
+                                if (iter.oid.Equals(oid))
+                                {
+                                    iter.m_CurrentValue = int.Parse(value);
+                                    iter.m_Content = SnmpToDatabase.ConvertSnmpValueToString(key, value, CSEnbHelper.GetCurEnbAddr()) as string;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (indexNum > 0)
+                {
+                    foreach (DyDataGrid_MIBModel mm in datalist)
+                    {
+                        //根据查询的索引内容查询列表中是否存在，存在直接修改，不存在则添加
+                        if(mm.Properties.ContainsKey("indexlist"))
+                        {
+                            if (!(mm.Properties["indexlist"] as DataGrid_Cell_MIB).m_Content.Equals(strdes))
+                                continue;
+                        }
+
+                        count++;
+
+                        if (mm.Properties.ContainsKey(key))
+                        {
+                            if (mm.Properties[key] is DataGrid_Cell_MIB)
+                            {
+                                var iter = mm.Properties[key] as DataGrid_Cell_MIB;
+                                iter.m_Content = SnmpToDatabase.ConvertSnmpValueToString(key, value, CSEnbHelper.GetCurEnbAddr()) as string;
+                            }
+                            else if (mm.Properties[key] is DataGrid_Cell_MIB_ENUM)
+                            {
+                                var iter = mm.Properties[key] as DataGrid_Cell_MIB_ENUM;
+                                iter.m_CurrentValue = int.Parse(value);
+                                iter.m_Content = SnmpToDatabase.ConvertSnmpValueToString(key, value, CSEnbHelper.GetCurEnbAddr()) as string;
+                            }
+                        }
+                    }
+                }
+            }
+
+            this.DynamicDataGrid.DataContext = null;
+            //if(count == 0)
+
+            this.DynamicDataGrid.DataContext = datalist;
         }
 
 		/// <summary>
@@ -711,12 +853,12 @@ namespace SCMTMainWindow.View
 
 				if (mibLeaf.IsIndex.Equals("False"))
 				{
-                    if (m_AddModifyDel == 1)
+                    if (m_operType == 1)
                     {
                         var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, lmtVb.Value, lmtVb.Oid, CSEnbHelper.GetCurEnbAddr());
                         model.AddProperty(mibLeaf.childNameMib, dgm, mibLeaf.childNameCh);
                     }
-                    else if (m_AddModifyDel == 2)//修改直接更新值
+                    else if (m_operType == 3)//修改直接更新值
                     {
                         foreach (DyDataGrid_MIBModel mm in datalist)
                         {
@@ -762,7 +904,7 @@ namespace SCMTMainWindow.View
 
 			if (model != null)
 			{
-                if (m_AddModifyDel == 3)//删除
+                if (m_operType == 2)//删除
 				{
                     foreach (DyDataGrid_MIBModel mm in datalist)
                     {
@@ -783,7 +925,7 @@ namespace SCMTMainWindow.View
                     }                 				
 				}
 
-				if (m_AddModifyDel == 1)
+				if (m_operType == 1)
 					datalist.Add(model);
 
                 this.DynamicDataGrid.DataContext = null;
