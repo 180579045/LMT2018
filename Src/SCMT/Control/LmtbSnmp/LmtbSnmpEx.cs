@@ -90,14 +90,14 @@ namespace LmtbSnmp
 		/// <returns></returns>
 		public int SnmpLibStartUp(string commnuity, string destIpAddr)
 		{
-			//       Log.Debug("========== SnmpLibStartUp() Start ==========");
+			// Log.Debug("========== SnmpLibStartUp() Start ==========");
 
 			// ipv4
 			CreateSnmpSession(commnuity, destIpAddr, false);
 
 			// TODO: ipv6
 
-			//       Log.Debug("========== SnmpLibStartUp() End ==========");
+			// Log.Debug("========== SnmpLibStartUp() End ==========");
 
 			return 0;
 		}
@@ -236,8 +236,11 @@ namespace LmtbSnmp
 					{
 						logMsg =
 							$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
-						//                       Log.Debug(logMsg);
-						results.Add(vb.Oid.ToString(), vb.Value.ToString());
+						// 根据Mib类型转换为可显示字符串
+						string strValue = null;
+						SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
+
+						results.Add(vb.Oid.ToString(), strValue);
 					}
 					status = true;
 				}
@@ -394,8 +397,12 @@ namespace LmtbSnmp
 					{
 						//logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
 						//	, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
-						//                       Log.Debug(logMsg);
-						result.Add(vb.Oid.ToString(), vb.Value.ToString());
+						// Log.Debug(logMsg);
+						// 根据Mib类型转换为可显示字符串
+						string strValue = null;
+						SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
+
+						result.Add(vb.Oid.ToString(), strValue);
 					}
 					status = true;
 				}
@@ -476,7 +483,7 @@ namespace LmtbSnmp
 				{
 					foreach (var vb in ReqResult.Pdu.VbList)
 					{
-						// 转换为Mib类型
+						// 根据Mib类型转换为可显示字符串
 						string strValue = null;
 						SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
 
