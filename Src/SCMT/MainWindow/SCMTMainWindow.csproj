@@ -245,6 +245,9 @@
     <Compile Include="View\ChooseRRUType.xaml.cs">
       <DependentUpon>ChooseRRUType.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ConfigFileOperate.xaml.cs">
+      <DependentUpon>ConfigFileOperate.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\EditColumns.xaml.cs">
       <DependentUpon>EditColumns.xaml</DependentUpon>
     </Compile>
@@ -387,6 +390,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ChooseRRUType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ConfigFileOperate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -752,7 +759,8 @@ xcopy /I /E /F /Y $(SolutionDir)UI\Chart\* "$(TargetDir)"
 xcopy /I /E /F /Y $(ProjectDir)Component\Configration\HotKey.json "$(TargetDir)"
 xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ftp\* "$(TargetDir)tools\"
 xcopy /I /E /F /Y $(SolutionDir)config\* "$(TargetDir)config\"
-xcopy /I /E /F /Y $(ProjectDir)Data\*.json "$(TargetDir)Data\"</PostBuildEvent>
+xcopy /I /E /F /Y $(ProjectDir)Data\*.json "$(TargetDir)Data\"
+xcopy /I /E /F /Y $(ProjectDir)Component\SCMTControl\FlowChart.xml "$(TargetDir)config\"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

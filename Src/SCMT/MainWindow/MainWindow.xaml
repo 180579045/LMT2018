@@ -317,8 +317,24 @@
 
                             <Metro:MetroMenuTabItem Header="通用"  Height="40" VerticalAlignment="Top">
                                 <Grid>
-
-                                </Grid>
+                                        <Metro:MetroScrollViewer>
+                                            <Metro:MetroWaterfallFlow x:Name="common" ListWidth="300">
+                                                <Grid>
+                                                    <Metro:MetroGroupBox Header="配置文件解析">
+                                                        <Grid>
+                                                            <StackPanel>
+                                                            <Button x:Name="btnConfigFileOperate" Click="btnConfigFileOperate_Click">
+                                                                <Button.Content>
+                                                                    <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                                </Button.Content>
+                                                            </Button>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                </Metro:MetroGroupBox>
+                                            </Grid>
+                                        </Metro:MetroWaterfallFlow>
+                                        </Metro:MetroScrollViewer>
+                                    </Grid>
                             </Metro:MetroMenuTabItem>
 
                             <Metro:MetroMenuTabItem Header="日志解析"  Height="40" VerticalAlignment="Top">
