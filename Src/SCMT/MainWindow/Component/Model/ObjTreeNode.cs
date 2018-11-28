@@ -740,26 +740,20 @@ namespace SCMTMainWindow
 				return;
 			}
 
-			CmdMibInfo getCmdMibInfo = null;
+			// 组装GentNext 的Oid列表
+			List<string> getNextOidList = new List<string>();
+			//CmdMibInfo getCmdMibInfo = null;
             foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
 				if ("0".Equals(cmdItem.m_cmdType)) // 查询
 				{
-					getCmdMibInfo = cmdItem;
-					break;
+					foreach (string oid in cmdItem.m_leaflist)
+					{
+						getNextOidList.Add(prev_oid + oid);
+					}
                 }
 			}
-			if (null == getCmdMibInfo)
-			{
-				return;
-			}
 
-			// 组装GentNext 的Oid列表
-			List<string>  getNextOidList = new List<string>();
-			foreach (string oid in getCmdMibInfo.m_leaflist)
-			{
-				getNextOidList.Add(prev_oid + oid);
-            }
 			
 			
 			

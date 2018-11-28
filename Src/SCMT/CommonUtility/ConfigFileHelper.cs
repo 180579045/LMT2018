@@ -17,6 +17,7 @@ namespace CommonUtility
 		public const string NetPlanCmdJson = @"config/NetPlanElement_MibCmd.json";
 		public const string NetPlanAntJson = @"config/NetPlanElement_AntennaInfo.json";
 		public const string DisabledEditMibJson = @"config/DisableEditMib.json";
+		public const string FlowChartXml = @"config/FlowChart.xml";
 
 		/// <summary>
 		/// 获取配置文件AppConfig.json中Ftp的路径

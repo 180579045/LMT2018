@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 //using CommonUtility;
 using Newtonsoft.Json.Linq;
-
+using System.Linq;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -15,10 +15,13 @@ namespace MIBDataParser.JSONDataMgr
 		public string m_cmdType { get; } //命令类型
 		public string m_cmdDesc { get; } //命令描述
 		public List<string> m_leaflist { get; } // 命令节点oid
+        public Dictionary<string, string> m_leafDefault { get; }//默认值获取{key:Oid,Value:DefaultVal}
 
-		public CmdMibInfo(JObject value, string cmdNameEn)
+
+        public CmdMibInfo(JObject value, string cmdNameEn)
 		{
-			this.m_cmdNameEn = cmdNameEn;
+
+            this.m_cmdNameEn = cmdNameEn;
 			this.m_tableName = value["TableName"].ToString();
 			this.m_cmdType = value["CmdType"].ToString();
 			this.m_cmdDesc = value["CmdDesc"].ToString();
@@ -28,7 +31,17 @@ namespace MIBDataParser.JSONDataMgr
 			{
 				m_leaflist.Add(leaf.ToString());
 			}
-		}
+            if (value["leafOIdListDefault"].ToList().Count() == 2)
+            {
+                var leafDefault = value["leafOIdListDefault"].ToList();
+
+                string oid = leafDefault[0].ToList()[0].ToString();
+                string val = leafDefault[1].ToList()[0].ToString();
+                this.m_leafDefault = new Dictionary<string, string>();
+
+                this.m_leafDefault.Add(oid, val);
+            }
+        }
 
 		public CmdMibInfo()
 		{
