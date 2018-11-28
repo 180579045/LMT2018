@@ -410,13 +410,22 @@ namespace LmtbSnmp
 				byte[] bts = v.ToArray();
 
 				//获取时间;
-				var year = bts[0] * 256 + bts[1]; // 前两个字节为年份
+				int year = bts[0] * 256 + bts[1]; // 前两个字节为年份
 				int month = bts[2];  // 月
 				int day = bts[3];    // 日
 				int hour = bts[4];   // 时
 				int minute = bts[5]; // 分
 				int second = bts[6]; // 秒
-									 //int msecond = bts[7];
+				//int msecond = bts[7];
+				if (year == 0 || month == 0 || day == 0) // 处理参数全为0的情况
+				{
+					year = 2009;
+					month = 1;
+					day = 1;
+					hour = 0;
+					minute = 0;
+					second = 53;
+                }
 
 				DateTime dt = new DateTime(year, month, day, hour, minute, second);
 				strRes = dt.ToString("yyyy-MM-dd HH:mm:ss");
