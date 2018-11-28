@@ -12,6 +12,10 @@ namespace MIBDataParser.JSONDataMgr
         {
             return this.cmdJObject.ToString();
         }
+        /// <summary>
+        /// cmd.json中每个命令的数据结构
+        /// </summary>
+        /// <param name="CmdDateSet"></param>
         public void CmdParseDataSet(DataSet CmdDateSet)
         {
             JObject cmdInfoList = new JObject();
@@ -31,6 +35,10 @@ namespace MIBDataParser.JSONDataMgr
             this.cmdJObject = cmdInfoList;
             return;
         }
+        /// <summary>
+        /// 修改 cmd.json 中"leafOIdList"字段的数据结构
+        /// </summary>
+        /// <param name="CmdDateSet"></param>
         public void CmdParseDataSetVersion2(DataSet CmdDateSet)
         {
             JObject cmdInfoList = new JObject();
@@ -55,7 +63,11 @@ namespace MIBDataParser.JSONDataMgr
             this.cmdJObject = cmdInfoList;
             return;
         }
-
+        /// <summary>
+        /// 节点的oid列表
+        /// </summary>
+        /// <param name="strleaflist"></param>
+        /// <returns></returns>
         JArray ReLeafListInfo(string strleaflist)
         {
             JArray leafJArray = new JArray();
@@ -64,32 +76,24 @@ namespace MIBDataParser.JSONDataMgr
                 leafJArray.Add(s);
             return leafJArray;
         }
-
+        /// <summary>
+        /// 节点的oid和其默认值的键值对
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
         JObject ReLeafListInfoVersion2(DataRow row)
         {
-            string MIBList_supplement = row["MIBList_supplement"].ToString();
-            string strleaflist = row["MIBList"].ToString();
+            string[] sASupVal = row["MIBList_supplement"].ToString().Split('=');//默认值
+            string[] sArray = row["MIBList"].ToString().Split('|').Distinct().ToArray();//去重
             JObject leafInfo = new JObject();
-            string[] sArray = strleaflist.Split('|').Distinct().ToArray();
-            //sArray.Distinct().ToList()
-            string[] sArrayVal = MIBList_supplement.Split('=');
             foreach (var s in sArray)
             {
-                if (s.Equals(sArrayVal[0]))
+                try
                 {
-                    leafInfo.Add(s, sArrayVal[1]);
+                    string supVal = s.Equals(sASupVal[0]) ? sASupVal[1] : "NULL";
+                    leafInfo.Add(s, supVal);
                 }
-                else
-                {
-                    try {
-                        leafInfo.Add(s, "NULL");
-                    }
-                    catch
-                    {
-                        int abc = 1;
-                    }
-                    
-                }
+                catch{}
             }
             return leafInfo;
         }
