@@ -222,9 +222,10 @@ namespace MIBDataParser.JSONDataMgr
 			string sqlContent = "select * from CmdTree order by CmdID";
 			DataSet dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
 			CmdTreeJsonData cmdJsonDatat = new CmdTreeJsonData();
-			cmdJsonDatat.CmdParseDataSet(dataSet);
+            //cmdJsonDatat.CmdParseDataSet(dataSet);
+            cmdJsonDatat.CmdParseDataSetVersion2(dataSet);
 
-			JsonFile jsonObjFile = new JsonFile();
+            JsonFile jsonObjFile = new JsonFile();
 			//jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
 			jsonObjFile.WriteFile(_jsonFilePath + "cmd.json", cmdJsonDatat.GetStringObjTreeJson());
 			this.cmdTreeInfo = cmdJsonDatat.GetStringObjTreeJson();
