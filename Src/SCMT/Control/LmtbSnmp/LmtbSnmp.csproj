@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="CDTObjectRef.cs" />
     <Compile Include="CDTSnmpPdu.cs" />
-    <Compile Include="CommSnmpFuns.cs" />
     <Compile Include="IDTObjectRefInterface.cs" />
     <Compile Include="ILmtbSnmp.cs" />
     <Compile Include="LmtbSnmpEx.cs" />
@@ -54,6 +53,7 @@
     <Compile Include="SnmpControl.cs" />
     <Compile Include="SnmpHelper.cs" />
     <Compile Include="SnmpMessage.cs" />
+    <Compile Include="SnmpMibUtil.cs" />
     <Compile Include="SnmpToDatabase.cs" />
     <Compile Include="TrapHelper.cs" />
     <Compile Include="TrapMessage.cs" />

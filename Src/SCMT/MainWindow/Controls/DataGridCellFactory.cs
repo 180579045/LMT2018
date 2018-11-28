@@ -12,8 +12,9 @@ namespace SCMTMainWindow
         public static GridCell CreateGridCell(string MibName, string MibNameCN, string ContentValue, string oid, string targetIP)
         {
 			// 如果是字符串类型的单元格;
-			var value = ContentValue.Replace(" ", "");
-			var dataType = SnmpToDatabase.GetMibNodeDataType(MibName, targetIP);
+			// var value = ContentValue.Replace(" ", ""); // 不能随意替换空格，如日期
+			var value = ContentValue;
+            var dataType = SnmpToDatabase.GetMibNodeDataType(MibName, targetIP);
 			if (dataType == DataGrid_CellDataType.RegularType || 
 				dataType == DataGrid_CellDataType.OID ||
 				dataType == DataGrid_CellDataType.Array)
@@ -54,8 +55,10 @@ namespace SCMTMainWindow
             {
                 var dgm = new DataGrid_Cell_MIB()
                 {
-                    m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
-                    oid = oid,
+					// 获取SNMP参数时日期类型已经转换为标准格式
+					//m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
+					m_Content = value,
+					oid = oid,
                     MibName_CN = MibNameCN,
                     MibName_EN = MibName
                 };

@@ -410,6 +410,138 @@ namespace LmtbSnmp
 		}
 
 		/// <summary>
+		/// GetNextRequest
+		/// 说明：
+		/// Mib节点的值已经进行了转换,如：日期->2018-11-01 10:20:05；IP->192.168.5.1
+		/// </summary>
+		/// <param name="strIpAddr">Enb ip,目前是每个基站生成一个实例，索引IP没有到，先保留以便后期变更</param>
+		/// <param name="reqOidList">要请求的oid列表</param>
+		/// <param name="oidValue">请求结果，oid与值对应关系</param>
+		/// <param name="lastOidList">返回最新的oid列表，方便循环查找使用</param>
+		/// <param name="timeout"></param>
+		/// <returns>
+		/// FALSE:错误；TRUE:检索到数据或检索结束
+		/// 是否获取到数据要根据oidValue.count()判断，而不是函数的返回值来判断
+		/// </returns>
+		public bool GetNextRequest(string strIpAddr, List<string> reqOidList, out Dictionary<string, string> oidValue
+			,out List<string> lastOidList, long timeout)
+		{
+			// 是否获取到数据要根据oidValue.count()判断，而不是函数的返回值来判断
+
+			oidValue = new Dictionary<string, string>();
+			lastOidList = new List<string>();
+
+			var status = false;
+			string logMsg;
+
+			if (string.IsNullOrEmpty(strIpAddr))
+			{
+				Log.Error("strIpAddr is null");
+				return false;
+			}
+			if (reqOidList == null)
+			{
+				Log.Error("参数reqOidList为空");
+				return false;
+			}
+
+			var snmp = m_SnmpSync;
+			if (null == snmp)
+			{
+				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
+				Log.Error(logMsg);
+				return false;
+			}
+
+			Pdu pdu;
+			PacketQueryPdu(reqOidList, out pdu);
+
+			var ReqResult = (SnmpV2Packet)snmp.GetNextRequest(pdu);
+
+			if (null != ReqResult)
+			{
+				if (ReqResult.Pdu.ErrorStatus != 0)
+				{
+					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
+//					Log.Error(logMsg);
+					status = false;
+
+					// SNMP响应为endOfMibView，检索结束
+					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
+					{
+						status = true;
+					}
+				}
+				else
+				{
+					foreach (var vb in ReqResult.Pdu.VbList)
+					{
+						// 转换为Mib类型
+						string strValue = null;
+						SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
+
+						// 查询结果
+						oidValue.Add(vb.Oid.ToString(), strValue);
+						// 返回最新的oid，方便循环调用时作为入参使用
+						lastOidList.Add(vb.Oid.ToString());
+					}
+					status = true;
+				}
+			}
+			else
+			{
+				Log.Error("SNMP GetNextRequest请求错误");
+				return false;
+			}
+
+			return status;
+		}
+
+		/// <summary>
+		/// 使用GetNext循环获取一个表的数据
+		/// </summary>
+		/// <param name="IpAddr">enb IP，目前没有使用，暂时保留防止以后变更</param>
+		/// <param name="oidList">查询Oid列表</param>
+		/// <param name="oidValueTable">查询结果，二维表结构，一个Dictionary是一行数据</param>
+		/// <returns>
+		/// False:发生错误；True:未发生错误；
+		/// 是否获取到数据要根据oidValueTable.count()判断，而不是函数的返回值来判断
+		/// </returns>
+		public bool SnmpGetNextLoop(string strIpAddr, List<string> oidList, out List<Dictionary<string, string>> oidValueTable)
+		{
+			oidValueTable = new List<Dictionary<string, string>>();
+			if (oidList == null)
+			{
+				return false;
+			}
+			List<string> oidListTmp = new List<string>(oidList);
+
+			// 请求返回的最新oid
+			List<string> lastOidValue = new List<string>();
+			// 一行数据
+			Dictionary<string, string> oidValueLine = null;
+			// 循环获取每一行数据，直至结束
+			while(true)
+			{
+				GetNextRequest(strIpAddr, oidListTmp, out oidValueLine, out lastOidValue, 10);
+                if (oidValueLine.Count() > 0) // 数据存在
+				{
+					// 查询结果
+					oidValueTable.Add(oidValueLine);
+					// 新的Oid
+					oidListTmp = new List<string>(lastOidValue);
+				}
+				else // 获取结束
+				{
+					break;
+				}
+			}
+
+			return true;
+		}
+
+
+		/// <summary>
 		/// 同步Set操作
 		/// 说明：
 		/// 方法返回值为0只代表SNMP消息下发成功，具体SNMP命令的执行结果还要根据SNMP响应状态码来判断
@@ -620,9 +752,10 @@ namespace LmtbSnmp
 
 				var vb = new Vb(new Oid(strTmpOid));
 
-				var strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(strRemoteIp, strTmpOid);
+				var strNodeType = SnmpMibUtil.GetNodeTypeByOIDInCache(strRemoteIp, strTmpOid);
 
-				SnmpHelper.SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
+				// 组装SNMP协议的VB
+				SnmpMibUtil.SetVbValue(ref vb, strSyntaxType, strValue, strNodeType);
 
 				// TODO
 
@@ -651,7 +784,7 @@ namespace LmtbSnmp
 			var appendInfo = new stru_LmtbPduAppendInfo { m_bIsSync = !isAsync };
 
 			var logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
-			Log.Debug(logMsg);
+//			Log.Debug(logMsg);
 
 			// 判断响应消息类型
 			if (pdu.Type != PduType.V2Trap) // 非Trap消息
@@ -745,14 +878,11 @@ namespace LmtbSnmp
 			{
 				logMsg =
 					$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
-				Log.Debug(logMsg);
+				//Log.Debug(logMsg);
 
 				var lmtVb = new CDTLmtbVb();
 
 				lmtVb.Oid = vb.Oid.ToString();
-
-				// 值是否需要SetVbValue()处理
-				var isNeedPostDispose = true;
 
 				var strValue = vb.Value.ToString();
 
@@ -766,53 +896,12 @@ namespace LmtbSnmp
 					continue;
 				}
 
-				if (SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS == lmtVb.SnmpSyntax)
-				{
-					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
-					var strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, lmtVb.Oid);
-					// strNodeType = "DateandTime";
-
-					if (string.Equals("DateandTime", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = SnmpHelper.SnmpDateTime2String((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("inetaddress", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						var ipAddr = new IpAddress((OctetString)vb.Value);
-						strValue = ipAddr.ToString();
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("MacAddress", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = ((OctetString)vb.Value).ToMACAddressString();
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("Unsigned32Array", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = SnmpHelper.OctetStrToU32Array((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("Integer32Array", strNodeType, StringComparison.OrdinalIgnoreCase)
-						|| "".Equals(strNodeType))
-					{
-						strValue = SnmpHelper.OctetStrToS32Array((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("MncMccType", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = SnmpHelper.OctetStr2MncMccTypeStr((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-				}
-
-				if (isNeedPostDispose)// 需要再处理
-				{
-					SnmpHelper.GetVbValue(vb, ref strValue);
-				}
+				// 将SNMP节点值转换为可以显示的文本字符串
+				SnmpMibUtil.ConvertSnmpVal2MibStr(target.Address.ToString(), vb, out strValue);
 
 				lmtVb.Value = strValue;
 				lmtPdu.AddVb(lmtVb);
+
 			} // end foreach
 
 			//如果得到的LmtbPdu对象里的vb个数为0，说明是是getbulk响应，并且没有任何实例
@@ -909,7 +998,8 @@ namespace LmtbSnmp
 			{
 				var vb = new Vb(new Oid(lmtbVb.Oid));
 
-				SnmpHelper.SetVbValue(ref vb, lmtbVb.SnmpSyntax, lmtbVb.Value);
+				// 组装SNMP协议的VB
+				SnmpMibUtil.SetVbValue(ref vb, lmtbVb.SnmpSyntax, lmtbVb.Value);
 
 				setPdu.VbList.Add(vb);
 			}

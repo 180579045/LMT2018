@@ -325,7 +325,7 @@ namespace LinkPath
 					lmtPdu.GetVbByIndex(idx, ref lmtVb);
 					string strUnitName;
 					string strDesc;
-					if (!CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value
+					if (!SnmpMibUtil.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value
 						, out strName, out strDesc, out strUnitName))
 					{
 						Log.Error($"GetInfoByOID调用不成功,:OID = {lmtVb.Oid}");
@@ -429,7 +429,7 @@ namespace LinkPath
 				var strDesc = "";
 				var strUnitName = "";
 				if (lmtPdu.m_bIsNeedPrint &&
-					!CommSnmpFuns.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
+					!SnmpMibUtil.GetInfoByOID(lmtPdu.m_SourceIp, lmtVb.Oid, lmtVb.Value, out strName, out strDesc, out strUnitName))
 				{
 					Log.Error($"GetInfoByOID调用不成功:OID = {lmtVb.Oid}");
 					continue;
@@ -793,7 +793,7 @@ namespace LinkPath
 					{
 						// 根据Mib值获取其描述
 
-						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue))
+						if (!SnmpMibUtil.TranslateMibValue(strNodeBIp, "fileTransNotiIndicator", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -806,7 +806,7 @@ namespace LinkPath
 					if (!string.IsNullOrEmpty(strValue))
 					{
 						// 根据Mib值获取其描述
-						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue))
+						if (!SnmpMibUtil.TranslateMibValue(strNodeBIp, "fileTransNotiResult", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -818,7 +818,7 @@ namespace LinkPath
 						lmtPdu.GetValueByMibName(strNodeBIp, "fileTransNotiErrorCode", out strValue);
 						if (!string.IsNullOrEmpty(strValue))
 						{
-							if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue))
+							if (!SnmpMibUtil.TranslateMibValue(strNodeBIp, "fileTransNotiErrorCode", strValue, out strReValue))
 							{
 								return false;
 							}
@@ -836,7 +836,7 @@ namespace LinkPath
 					var strGeneralEventType = strValue;
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue))
+						if (!SnmpMibUtil.TranslateMibValue(strNodeBIp, "eventGeneralEventType", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -847,7 +847,7 @@ namespace LinkPath
 					lmtPdu.GetValueByMibName(strNodeBIp, "eventGeneralEventResult", out strValue);
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						if (!CommSnmpFuns.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue))
+						if (!SnmpMibUtil.TranslateMibValue(strNodeBIp, "eventGeneralEventResult", strValue, out strReValue))
 						{
 							return false;
 						}
@@ -1017,7 +1017,7 @@ namespace LinkPath
 					continue;
 				}
 
-				var mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
+				var mibLeaf = SnmpMibUtil.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
 				if (null == mibLeaf)
 				{
 					continue;
@@ -1031,7 +1031,7 @@ namespace LinkPath
 					// LONG类型值转换显示
 					if ("LONG".Equals(strAsnTyep) && !string.IsNullOrEmpty(mibLeaf.managerValueRange))
 					{
-						CommSnmpFuns.TranslateMibValue(mibLeaf.managerValueRange, strValue, out strReValue);
+						SnmpMibUtil.TranslateMibValue(mibLeaf.managerValueRange, strValue, out strReValue);
 					}
 				}
 
@@ -1071,7 +1071,7 @@ namespace LinkPath
 					continue;
 				}
 
-				var mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
+				var mibLeaf = SnmpMibUtil.GetMibNodeInfoByOID(lmtPdu.m_SourceIp, strMibOid);
 				if (null == mibLeaf)
 				{
 					continue;
@@ -1085,7 +1085,7 @@ namespace LinkPath
 					// LONG类型值转换显示
 					if ("LONG".Equals(strAsnTyep) && !string.IsNullOrEmpty(mibLeaf.managerValueRange))
 					{
-						CommSnmpFuns.TranslateMibValue(mibLeaf.managerValueRange, strValue, out strReValue);
+						SnmpMibUtil.TranslateMibValue(mibLeaf.managerValueRange, strValue, out strReValue);
 					}
 				}
 
@@ -1156,7 +1156,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "fcNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strNeIp, "fcNotiNEType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "fcNotiNEType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strReValue};";
 			}
 
@@ -1164,7 +1164,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "fcNotiType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strNeIp, "fcNotiType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "fcNotiType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.DIS_FC_EVENT_TYPE}{strReValue};";
 			}
 
@@ -1196,7 +1196,7 @@ namespace LinkPath
 					string strValueDesc;
 					string strUnitName;
 					// 根据OID取出相关信息
-					if (!CommSnmpFuns.GetInfoByOID(
+					if (!SnmpMibUtil.GetInfoByOID(
 						strNeIp, strOid, strVbValue, out strName, out strValueDesc, out strUnitName))
 					{
 						Log.Error($"GetInfoByOID()方法返回错误，oid:{strOid}");
@@ -1236,7 +1236,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "mroNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strNeIp, "mroNotiNEType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "mroNotiNEType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strReValue};";
 			}
 
@@ -1244,7 +1244,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "mroNotiType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strNeIp, "mroNotiType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "mroNotiType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.DIS_MRO_EVENT_TYPE}{strReValue};";
 			}
 
@@ -1276,7 +1276,7 @@ namespace LinkPath
 					string strValueDesc;
 					string strUnitName;
 					// 根据OID取出相关信息
-					if (!CommSnmpFuns.GetInfoByOID(
+					if (!SnmpMibUtil.GetInfoByOID(
 						strNeIp, strOid, strVbValue, out strName, out strValueDesc, out strUnitName))
 					{
 						Log.Error($"GetInfoByOID()方法返回错误，oid:{strOid}");
@@ -1315,7 +1315,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "anrNotiNEType", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiNEType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "anrNotiNEType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_NETYPE}{strReValue};";
 			}
 
@@ -1325,7 +1325,7 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				strAnrNotiType = strValue;
-				CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "anrNotiType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_ANR_EVENT_TYPE}{strReValue};";
 			}
 
@@ -1352,7 +1352,7 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				strAdjCellNetType = strValue;
-				CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiAdjCellNetType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "anrNotiAdjCellNetType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_ANR_NOTI_ADJ_CELL_NET_TYPE}{strReValue};";
 			}
 
@@ -1385,7 +1385,7 @@ namespace LinkPath
 				lmtPdu.GetValueByMibName(strNeIp, "anrNotiResult", out strValue);
 				if (!string.IsNullOrEmpty(strValue))
 				{
-					CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiResult", strValue, out strReValue);
+					SnmpMibUtil.TranslateMibValue(strNeIp, "anrNotiResult", strValue, out strReValue);
 					strDesc = $"{strDesc}{CommString.DIS_EVNET_RESULT}{strReValue};";
 				}
 
@@ -1395,7 +1395,7 @@ namespace LinkPath
 					lmtPdu.GetValueByMibName(strNeIp, "anrNotiFailReason", out strValue);
 					if (!string.IsNullOrEmpty(strValue))
 					{
-						CommSnmpFuns.TranslateMibValue(strNeIp, "anrNotiFailReason", strValue, out strReValue);
+						SnmpMibUtil.TranslateMibValue(strNeIp, "anrNotiFailReason", strValue, out strReValue);
 						strDesc = $"{strDesc}{CommString.DIS_EVENT_FAIL_RSULT}{strReValue};";
 					}
 				}
@@ -1428,7 +1428,7 @@ namespace LinkPath
 			lmtPdu.GetValueByMibName(strNeIp, "eventSynchronizationNEID", out strValue);
 			if (!string.IsNullOrEmpty(strValue))
 			{
-				CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationNEID", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "eventSynchronizationNEID", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_NEID}{strReValue};";
 			}
 
@@ -1445,7 +1445,7 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strFileType))
 			{
 				strValue = strFileType;
-				CommSnmpFuns.TranslateMibValue(strNeIp, "eventSynchronizationType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strNeIp, "eventSynchronizationType", strValue, out strReValue);
 				strDesc = $"{strDesc}{CommString.IDS_SYNCFILETYPE}{strReValue};";
 			}
 
@@ -1534,7 +1534,7 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				string strReValue;
-				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue);
+				SnmpMibUtil.TranslateMibValue(strIpAddr, "transactionResultNotiNEType", strValue, out strReValue);
 				sbReVal.Append("网元类型:").Append(strReValue).Append("; ");
 			}
 
@@ -1544,7 +1544,7 @@ namespace LinkPath
 			if (!string.IsNullOrEmpty(strValue))
 			{
 				string strTmpVal;
-				CommSnmpFuns.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal);
+				SnmpMibUtil.TranslateMibValue(strIpAddr, "transactionResultNotiResult", strValue, out strTmpVal);
 				if ("1".Equals(strValue)) //失败
 				{
 					bTransSuccess = false;
@@ -2014,7 +2014,7 @@ namespace LinkPath
 			}
 
 			// 根据oid获取Mib节点信息
-			var mibLeaf = CommSnmpFuns.GetMibNodeInfoByOID(strIpAddr, strSubTrapOid);
+			var mibLeaf = SnmpMibUtil.GetMibNodeInfoByOID(strIpAddr, strSubTrapOid);
 			if (null == mibLeaf)
 			{
 				Log.Error($"无法获取Mib节点信息，Oid:{strSubTrapOid}");

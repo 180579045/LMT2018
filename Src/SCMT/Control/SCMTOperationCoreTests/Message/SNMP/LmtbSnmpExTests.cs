@@ -270,12 +270,12 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 			string strDateTime = "2018-06-13 08:01:45";
 
 
-			byte[] bytes = SnmpHelper.SnmpStrDateTime2Bytes(strDateTime);
+			byte[] bytes = SnmpMibUtil.SnmpStrDateTime2Bytes(strDateTime);
 
 
 			OctetString t = new OctetString(bytes);
 
-			string strDt = SnmpHelper.SnmpDateTime2String(t);
+			string strDt = SnmpMibUtil.SnmpDateTime2String(t);
 
 			Debug.WriteLine("----");
 		}
@@ -285,7 +285,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		{
 			// 1.3.6.1.4.1.5105.100.1.2.1.1.1.5.3: ac1bf5c6  172.27.245.198
 			string strIpAddr = "172.27.245.198";
-			byte[] bytes = SnmpHelper.SnmpStrIpAddr2Bytes(strIpAddr);
+			byte[] bytes = SnmpMibUtil.SnmpStrIpAddr2Bytes(strIpAddr);
 
 			OctetString otString = new OctetString(bytes);
 
@@ -299,7 +299,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		{
 			// 001ea859a85b
 			string strMacAddr = "001ea859a85b";
-			byte[] bytes = SnmpHelper.StrHex2Bytes(strMacAddr);
+			byte[] bytes = SnmpMibUtil.StrHex2Bytes(strMacAddr);
 
 			OctetString o1 = new OctetString(bytes);
 
@@ -318,7 +318,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		{
 			string strU32Array = @"{123}";
 
-			byte[] bytes = SnmpHelper.Unsigned32Array2Bytes(strU32Array);
+			byte[] bytes = SnmpMibUtil.Unsigned32Array2Bytes(strU32Array);
 
 
 			OctetString o = new OctetString(bytes);
@@ -332,7 +332,7 @@ namespace SCMTOperationCore.Message.SNMP.Tests
 		{
 			string plmn = "00";
 
-			byte[] bytes = SnmpHelper.MncMccType2Bytes(plmn);
+			byte[] bytes = SnmpMibUtil.MncMccType2Bytes(plmn);
 
 			Debug.WriteLine("------------");
 		}

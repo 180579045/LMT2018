@@ -319,8 +319,12 @@ namespace LmtbSnmp
 				if (asnType.Equals("bits", StringComparison.OrdinalIgnoreCase))
 				{
 					// BITS类型的，需要转换
-					return ConvertBitsToString(mibLeaf.managerValueRange, strValue);
-				}
+					// TODO: ConvertBitsToString方法转换bits有问题
+					//return ConvertBitsToString(mibLeaf.managerValueRange, strValue);
+					string strDesVal = null;
+					SnmpMibUtil.GenerateBitsTypeDesc(strValue, mibLeaf.managerValueRange, out strDesVal);
+					return strDesVal;
+                }
 			}
 			else if (omType.Equals("u32[]"))
 			{

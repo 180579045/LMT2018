@@ -471,51 +471,8 @@ namespace LmtbSnmp
 					continue;
 				}
 
-				if (SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS == lmtVb.SnmpSyntax)
-				{
-					/*对于像inetipAddress和DateandTime需要做一下特殊处理，把内存值转换为显示文本*/
-					// 获取Mib节点类型
-					string strNodeType = CommSnmpFuns.GetNodeTypeByOIDInCache(lmtPdu.m_SourceIp, lmtVb.Oid);
-					// strNodeType = "DateandTime";
-
-					if (string.Equals("DateandTime", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = SnmpHelper.SnmpDateTime2String((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("inetaddress", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						IpAddress ipAddr = new IpAddress((OctetString)vb.Value);
-						strValue = ipAddr.ToString();
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("MacAddress", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = ((OctetString)vb.Value).ToMACAddressString();
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("Unsigned32Array", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = SnmpHelper.OctetStrToU32Array((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("Integer32Array", strNodeType, StringComparison.OrdinalIgnoreCase)
-						|| "".Equals(strNodeType))
-					{
-						strValue = SnmpHelper.OctetStrToS32Array((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-					else if (string.Equals("MncMccType", strNodeType, StringComparison.OrdinalIgnoreCase))
-					{
-						strValue = SnmpHelper.OctetStr2MncMccTypeStr((OctetString)vb.Value);
-						isNeedPostDispose = false;
-					}
-				}
-
-				if (isNeedPostDispose)// 需要再处理
-				{
-					SnmpHelper.GetVbValue(vb, ref strValue);
-				}
+				// 将SNMP节点值转换为可显示的文本字符串
+				SnmpMibUtil.ConvertSnmpVal2MibStr(iPEndPort.Address.ToString(), vb, out strValue);
 
 				lmtVb.Value = strValue;
 				lmtPdu.AddVb(lmtVb);
