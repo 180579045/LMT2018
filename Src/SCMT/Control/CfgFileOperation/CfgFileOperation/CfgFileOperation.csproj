@@ -61,12 +61,17 @@
     <Compile Include="CfgTableOpTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CfgParseAlarmExecl.cs" />
+    <Compile Include="TestCfgForInitAndPatch.cs" />
     <Compile Include="TestStruDataHead.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\LogManager\LogManager.csproj">
+      <Project>{B42DA179-3976-44A1-A54F-0B5E0046DDBC}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\MibParser\MibParser\MIBDataParser.csproj">
       <Project>{fcfd2bd9-9d15-4dd5-af74-fde4a0cbe9b0}</Project>
       <Name>MIBDataParser</Name>

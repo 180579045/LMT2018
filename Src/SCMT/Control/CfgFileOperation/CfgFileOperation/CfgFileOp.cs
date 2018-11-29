@@ -57,14 +57,48 @@ namespace CfgFileOperation
         /// <summary>
         /// 创建 init.cfg path_ex.cfg
         /// </summary>
-        public void OnCreatePatchAndInitCfg(Dictionary<string, string> paths)
+        public bool CreatePatchAndInitCfg(Dictionary<string, string> paths)
+        {
+            string err;
+            // 校验文件地址
+            if (!IsAllPathValid(paths, out err))
+            {
+                Console.WriteLine(String.Format("{0}, 不能生成init和patch", err));
+                return false;
+            }
+            //public RRU信息、告警信息、天线信息、lm.mdb
+            if (!CreatCfg_public(paths))
+            {
+                Console.WriteLine(String.Format("生成公共数据部分失败！"));
+                return false;
+            }
+            // 自定义(init)、 生成 init.cfg 文件 
+            if (!CreatCfg_init_cfg(paths))
+            {
+                Console.WriteLine(String.Format("生成init.cfg失败！"));
+                return false;
+            }
+            // lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
+            if (!CreatCfg_patch_ex_cfg(paths))
+            {
+                Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// 创建 init.cfg path_ex.cfg
+        /// </summary>
+        public bool CreatePatchAndInitCfgTest(Dictionary<string, string> paths)
         {
             string err;
             if (!IsAllPathValid(paths, out err))
             {
-                return;
+                Console.WriteLine(String.Format(", 不能生成init和patch",err));
+                return false;
             }
-
+            
             //public-1. RRU信息
             m_rruExcel = new CfgParseRruExcel();
             m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
@@ -86,7 +120,7 @@ namespace CfgFileOperation
             m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "init", this);
 
             //init-2. 生成 init.cfg 文件
-            SaveFile_eNB("init.cfg");
+            SaveFile_eNB(paths["OutDir"] + "init.cfg");
 
             //patch-1. lm.mdb 以每行为单位加载, reclist使用 
             //m_mibTreeMem = new CfgParseDBMibTreeToMemory();
@@ -101,8 +135,9 @@ namespace CfgFileOperation
             //patch-4. 创建patch_ex.cfg
             //CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
             //SaveFilePdg_eNB("patch_ex.cfg");
-        }
 
+            return true;
+        }
         /// <summary>
         /// 验证每个文件是否存在
         /// </summary>
@@ -117,14 +152,45 @@ namespace CfgFileOperation
                 err = paths["DataMdb"] + " 文件不存在！";
                 return false;
             }
+            if (!File.Exists(paths["Antenna"]))
+            {
+                err = paths["Antenna"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["Alarm"]))
+            {
+                err = paths["Alarm"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["RruInfo"]))
+            {
+                err = paths["RruInfo"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["Reclist"]))
+            {
+                err = paths["Reclist"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["SelfDef"]))
+            {
+                err = paths["SelfDef"] + " 文件不存在！";
+                return false;
+            }
+            if (!Directory.Exists(paths["OutDir"]))//文件夹
+            {
+                //Directory.Delete(paths["OutDir"], true);//删除文件夹以及文件夹中的子目录，文件    
+                //Directory.CreateDirectory(paths["OutDir"]);//如果不存在就创建file文件夹
+                err = paths["OutDir"] + " 文件夹不存在！";
+                return false;
+            }
             return true;
         }
-
         /// <summary>
         /// 主要生成整体的数据结构
         /// </summary>
         /// <param name="paths"></param>
-        void CreatCfg_public(Dictionary<string, string> paths)
+        bool CreatCfg_public(Dictionary<string, string> paths)
         {
             //public-1. RRU信息
             m_rruExcel = new CfgParseRruExcel();
@@ -137,43 +203,45 @@ namespace CfgFileOperation
 
             //public-3. 天线信息
             m_antennaExcel = new CfgParseAntennaExcel();
-            //m_antennaExcel.ProcessingAntennaExcel(paths["Antenna"], "波束扫描原始值");
 
             //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
             CreateCfgFile(paths);
+            return true;
         }
         /// <summary>
         /// 根据init_cfg特性, 对表和实例进行修改
         /// </summary>
         /// <param name="paths"></param>
-        void CreatCfg_init_cfg(Dictionary<string, string> paths)
+        bool CreatCfg_init_cfg(Dictionary<string, string> paths)
         {
             //init-1. 自定义 (init)
             m_selfExcel = new CfgParseSelfExcel();
             m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "init", this);
 
             //init-2. 生成 init.cfg 文件
-            SaveFile_eNB("init.cfg");
+            SaveFile_eNB(paths["OutDir"] + "init.cfg");
+            return true;
         }
         /// <summary>
         /// 根据patch_ex特性, 对表和实例进行修改
         /// </summary>
         /// <param name="paths"></param>
-        void CreatCfg_patch_ex_cfg(Dictionary<string, string> paths)
+        bool CreatCfg_patch_ex_cfg(Dictionary<string, string> paths)
         {
             //patch-1. lm.mdb 以每行为单位加载, reclist使用 
-            //m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            //m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
+            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
+            m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
             //patch-2. reclist 
-            //m_reclistExcel = new CfgParseReclistExcel();
-            //m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
+            m_reclistExcel = new CfgParseReclistExcel();
+            m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
             //patch-3. 自定义 (patch)
-            //m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
+            m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
 
             //7. 开始生成 init.cfg, patch_ex.cfg
             //patch-4. 创建patch_ex.cfg
-            //CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
-            //SaveFilePdg_eNB("patch_ex.cfg");
+            CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
+            SaveFilePdg_eNB(paths["OutDir"] + "patch_ex.cfg");
+            return true;
         }
 
         /// <summary>
@@ -464,11 +532,7 @@ namespace CfgFileOperation
         private uint CreatCfgFile_tabInfo(DataRow row, CfgTableOp tableOp, Dictionary<string, string> paths, uint TableOffset)//string strFileToDirectory, DataSet MibdateSet)
         {
             string strTableName = row["MIBName"].ToString();
-            if (strTableName == "rruTypePortEntry")
-                Console.WriteLine("1111");
-            //else if (strTableName == "nrCellCfgEntry")
-            //    Console.WriteLine("1111");
-            //else if (strTableName == "mdtConfigManagement")
+            //if (strTableName == "rruTypePortEntry")
             //    Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表

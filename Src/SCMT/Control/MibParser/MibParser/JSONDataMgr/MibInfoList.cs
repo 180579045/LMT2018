@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Threading;
 using CommonUtility;
+using LogManager;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -118,11 +119,17 @@ namespace MIBDataParser.JSONDataMgr
 			oidToMib = new Dictionary<string, MibLeaf>();
 			mibsWithSameName = new Dictionary<string, List<MibLeaf>>();
 
+            string err = "";
 			var jsonfilepath = ReadIniFile.IniReadValue(
-				ReadIniFile.GetIniFilePath("JsonDataMgr.ini"), "JsonFileInfo", "jsonfilepath");
+				ReadIniFile.GetIniFilePath("JsonDataMgr.ini", out err), "JsonFileInfo", "jsonfilepath");
 
 			try
 			{
+                if (String.Empty == jsonfilepath)
+                {
+                    Log.Error("GeneratedMibInfoList err: IniReadValue err.");
+                    return false;
+                }
 				var mibJsonFilePath = jsonfilepath + "mib.json";
 				var mibJsonContent = FileRdWrHelper.GetFileContent(mibJsonFilePath, Encoding.GetEncoding("gb2312"));
 				mibTree = JsonHelper.SerializeJsonToObject<MibTree>(mibJsonContent);
