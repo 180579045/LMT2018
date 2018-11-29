@@ -36,9 +36,9 @@ namespace SCMTMainWindow.View
 		private MibTable m_MibTable;
 
 		/// <summary>
-		/// false为添加指令，true为修改指令
+		/// 0为查询指令，1为增加，2为删除，3为修改指令
 		/// </summary>
-		private bool m_bisModify = false;
+		private int m_operType = 0;
         private int m_ModifyIndexGrade = 0;
 
         //private bool m_bAllSelect = true;
@@ -145,115 +145,169 @@ namespace SCMTMainWindow.View
 			ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
 			datalist = (ObservableCollection<DyDataGrid_MIBModel>)this.DynamicParaSetGrid.DataContext;
 
-			//将右键菜单列表内容转换成与基本信息列表格式相同结构
-			dynamic model = new DyDataGrid_MIBModel();
-			string value;
-			string strPreOid = SnmpToDatabase.GetMibPrefix();
-			// 索引
-			string strIndex = "";
-			string strFullOid = "";
-			var indexGrade = 0;
-			foreach (DyDataGrid_MIBModel mm in datalist)
-			{
-				var cell = mm.Properties["ParaValue"] as GridCell;
-				if (cell.cellDataType == LmtbSnmp.DataGrid_CellDataType.enumType)
-				{
-					var emnuCell = cell as DataGrid_Cell_MIB_ENUM;
-					if (emnuCell != null)
-						value = emnuCell.m_CurrentValue.ToString();
-					else
-						value = cell.m_Content;
-				}
-				else
-					value = cell.m_Content;
+            if (m_operType != 0)//添加修改
+            {
+                //将右键菜单列表内容转换成与基本信息列表格式相同结构
+                dynamic model = new DyDataGrid_MIBModel();
+                string value;
+                string strPreOid = SnmpToDatabase.GetMibPrefix();
+                // 索引
+                string strIndex = "";
+                string strFullOid = "";
+                var indexGrade = 0;
+                foreach (DyDataGrid_MIBModel mm in datalist)
+                {
+                    var cell = mm.Properties["ParaValue"] as GridCell;
+                    if (cell.cellDataType == LmtbSnmp.DataGrid_CellDataType.enumType)
+                    {
+                        var emnuCell = cell as DataGrid_Cell_MIB_ENUM;
+                        if (emnuCell != null)
+                            value = emnuCell.m_CurrentValue.ToString();
+                        else
+                            value = cell.m_Content;
+                    }
+                    else
+                        value = cell.m_Content;
 
-				// 获取Mib节点属性
-				MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(cell.MibName_EN, CSEnbHelper.GetCurEnbAddr());
-				if (null == mibLeaf)
-				{
-					strMsg = "无法获取Mib节点信息！";
-					Log.Error(strMsg);
-					MessageBox.Show(strMsg);
-					return;
-				}
-				// 获取索引节点
-				if ("True".Equals(mibLeaf.IsIndex) && !m_bisModify) // 只有添加时才获取索引
-				{
-					strIndex += "." + value;
-					indexGrade++;
-					continue;
-				}
+                    // 获取Mib节点属性
+                    MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(cell.MibName_EN, CSEnbHelper.GetCurEnbAddr());
+                    if (null == mibLeaf)
+                    {
+                        strMsg = "无法获取Mib节点信息！";
+                        Log.Error(strMsg);
+                        MessageBox.Show(strMsg);
+                        return;
+                    }
+                    // 获取索引节点
+                    if ("True".Equals(mibLeaf.IsIndex) && m_operType == 1) // 只有添加时才获取索引
+                    {
+                        strIndex += "." + value;
+                        indexGrade++;
+                        continue;
+                    }
 
-                if (!cell.oid.Contains(strPreOid))
-				{
-					strFullOid = strPreOid + cell.oid + strIndex;
-				}
-				else
-				{
-					strFullOid = cell.oid + strIndex;
-				}
+                    if (!cell.oid.Contains(strPreOid))
+                    {
+                        strFullOid = strPreOid + cell.oid + strIndex;
+                    }
+                    else
+                    {
+                        strFullOid = cell.oid + strIndex;
+                    }
 
-				var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strFullOid, CSEnbHelper.GetCurEnbAddr());
+                    var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strFullOid, CSEnbHelper.GetCurEnbAddr());
 
-				model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);
-			}
+                    model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);
+                }
 
-			// 像基站下发添加指令
-			// 行数据
-			Dictionary<string, object> lineData = ((DyDataGrid_MIBModel)model).Properties;
-			// Mib英文名称与值的对应关系
-			Dictionary<string, string> enName2Value = new Dictionary<string, string>();
-			// 根据DataGrid行数据组装Mib英文名称与值的对应关系
-			if (false == DataGridUtils.MakeEnName2Value(lineData, ref enName2Value))
-			{
-				strMsg = "DataGridUtils.MakeEnName2Value()方法执行错误！";
-				Log.Error(strMsg);
-				MessageBox.Show("添加参数失败！");
-				return;
-			}
+                // 像基站下发添加指令
+                // 行数据
+                Dictionary<string, object> lineData = ((DyDataGrid_MIBModel)model).Properties;
+                // Mib英文名称与值的对应关系
+                Dictionary<string, string> enName2Value = new Dictionary<string, string>();
+                // 根据DataGrid行数据组装Mib英文名称与值的对应关系
+                if (false == DataGridUtils.MakeEnName2Value(lineData, ref enName2Value))
+                {
+                    strMsg = "DataGridUtils.MakeEnName2Value()方法执行错误！";
+                    Log.Error(strMsg);
+                    MessageBox.Show("添加参数失败！");
+                    return;
+                }
 
-			// 组装Vb列表
-			List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
-			if (false == DataGridUtils.MakeSnmpVbs(lineData, enName2Value, ref setVbs, out strMsg))
-			{
-				Log.Error(strMsg);
-				return;
-			}
+                // 组装Vb列表
+                List<CDTLmtbVb> setVbs = new List<CDTLmtbVb>();
+                if (false == DataGridUtils.MakeSnmpVbs(lineData, enName2Value, ref setVbs, out strMsg))
+                {
+                    Log.Error(strMsg);
+                    return;
+                }
 
-			// SNMP Set
-			long requestId;
-			CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
-			// 发送SNMP Set命令
-			int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
-			if (res != 0)
-			{
-				strMsg = string.Format("参数配置失败，EnbIP:{0}", CSEnbHelper.GetCurEnbAddr());
-				Log.Error(strMsg);
-				MessageBox.Show(strMsg);
-				return;
-			}
-			// 判读SNMP响应结果
-			if (lmtPdu.m_LastErrorStatus != 0)
-			{
-				strMsg = $"参数配置失败，错误信息:{SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus)}";
-				Log.Error(strMsg);
-				MessageBox.Show(strMsg);
-				return;
-			}
+                // SNMP Set
+                long requestId;
+                CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
+                // 发送SNMP Set命令
+                int res = CDTCmdExecuteMgr.VbsSetSync(setVbs, out requestId, CSEnbHelper.GetCurEnbAddr(), ref lmtPdu, true);
+                if (res != 0)
+                {
+                    strMsg = string.Format("参数配置失败，EnbIP:{0}", CSEnbHelper.GetCurEnbAddr());
+                    Log.Error(strMsg);
+                    MessageBox.Show(strMsg);
+                    return;
+                }
+                // 判读SNMP响应结果
+                if (lmtPdu.m_LastErrorStatus != 0)
+                {
+                    strMsg = $"参数配置失败，错误信息:{SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus)}";
+                    Log.Error(strMsg);
+                    MessageBox.Show(strMsg);
+                    return;
+                }
 
-			if (m_bisModify)
-			{
-				MessageBox.Show("参数修改成功！");
-			}
-			else
-			{
-				MessageBox.Show("参数添加成功！");
-			}
+                if (m_operType == 3)
+                {
+                    MessageBox.Show("参数修改成功！");
+                }
+                else if (m_operType == 1)
+                {
+                    MessageBox.Show("参数添加成功！");
+                }
 
-            //下发指令成功后更新基本信息列表
-            if (m_bisModify)
-                indexGrade = m_ModifyIndexGrade;
-            m_MainDataGrid.RefreshDataGrid(lmtPdu, indexGrade);
+                //下发指令成功后更新基本信息列表
+                if (m_operType == 3)
+                    indexGrade = m_ModifyIndexGrade;
+                m_MainDataGrid.RefreshDataGrid(lmtPdu, indexGrade);
+            }
+            else//查询
+            {
+                string value;
+                string strindex = "";
+                string indexDes = "";
+                Dictionary<string, string> dicMibToValue = new Dictionary<string, string>();
+                Dictionary<string, string> dicMibToOid = new Dictionary<string, string>();
+                Dictionary<int, string> dicNoToValue = new Dictionary<int, string>();
+                Dictionary<int, string> dicNoToDes = new Dictionary<int, string>();
+
+                m_MainDataGrid.GetChildMibInfo(cmdMibInfo, ref dicMibToValue, ref dicMibToOid);
+
+                //获取查询的索引信息，进行组合
+                foreach (DyDataGrid_MIBModel mm in datalist)
+                {
+                    var cell = mm.Properties["ParaValue"] as GridCell;
+                    if (cell.cellDataType == LmtbSnmp.DataGrid_CellDataType.enumType)
+                    {
+                        var emnuCell = cell as DataGrid_Cell_MIB_ENUM;
+                        if (emnuCell != null)
+                            value = emnuCell.m_CurrentValue.ToString();
+                        else
+                            value = cell.m_Content;
+                    }
+                    else
+                        value = cell.m_Content;
+
+                    // 获取Mib节点属性
+                    MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(cell.MibName_EN, CSEnbHelper.GetCurEnbAddr());
+                    if (null == mibLeaf)
+                    {
+                        return;
+                    }
+                    dicNoToValue.Add(mibLeaf.childNo, value);
+                    dicNoToDes.Add(mibLeaf.childNo, mibLeaf.childNameCh);
+                }
+
+                List<int> q = (from d in dicNoToValue orderby d.Key select d.Key).ToList();//根据索引号排序
+
+                foreach (int key in q)
+                {
+                    strindex += "." + dicNoToValue[key];
+                    indexDes += dicNoToDes[key] + dicNoToValue[key];
+                }
+
+                //下发查询指令
+                if (CommLinkPath.GetMibValueFromCmdExeResult(strindex, cmdMibInfo.m_cmdNameEn, ref dicMibToValue, CSEnbHelper.GetCurEnbAddr()))
+                {
+                    m_MainDataGrid.QuerySuccessRefreshDataGrid(dicMibToValue, dicMibToOid, q.Count, indexDes);
+                }
+            }
 
 			this.Close();
 		}
@@ -268,10 +322,10 @@ namespace SCMTMainWindow.View
 		{
 		}
 
-		public void InitAddParaSetGrid(CmdMibInfo mibInfo, MibTable table)
+		public void InitAddParaSetGrid(CmdMibInfo mibInfo, MibTable table, int operType)
 		{
 			cmdMibInfo = mibInfo;
-			m_bisModify = false;
+            m_operType = operType;
 			m_MibTable = table;
 
 			listIndexInfo.Clear();
@@ -415,15 +469,15 @@ namespace SCMTMainWindow.View
 		/// 根据基本信息列表选择的行填充信息，对于填充第一条数据信息(后续添加)
 		/// </summary>
 		/// <param name="model"></param>
-		public bool InitModifyParaSetGrid(CmdMibInfo mibInfo, DyDataGrid_MIBModel mibModel, MibTable table)
+		public bool InitModifyParaSetGrid(CmdMibInfo mibInfo, DyDataGrid_MIBModel mibModel, MibTable table, int operType)
 		{
 			if (mibModel == null || mibInfo == null)
 				return false;
 
 			cmdMibInfo = mibInfo;
 			m_MibTable = table;
-			m_bisModify = true;
-			this.Title = mibInfo.m_cmdDesc;
+            m_operType = operType;
+            this.Title = mibInfo.m_cmdDesc;
 			listIndexInfo.Clear();
             m_ModifyIndexGrade = 0;
 
@@ -540,6 +594,83 @@ namespace SCMTMainWindow.View
 
 			return true;
 		}
+
+        public void InitQueryParaSetGrid(CmdMibInfo mibInfo, MibTable table, int operType)
+        {
+            cmdMibInfo = mibInfo;
+            m_operType = operType;
+            m_MibTable = table;
+
+            listIndexInfo.Clear();
+            foreach (MibLeaf leaf in table.childList)
+            {
+                if (leaf.IsIndex.Equals("True"))
+                    listIndexInfo.Add(leaf);
+            }
+
+            this.Title = mibInfo.m_cmdDesc;
+            int i = 0;
+            ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
+            if (cmdMibInfo == null)
+                return;
+
+            if (cmdMibInfo.m_cmdDesc.Equals(this.Title))
+            {
+                if (listIndexInfo.Count > 0)
+                {
+                    //索引节点
+                    foreach (MibLeaf mibLeaf in listIndexInfo)
+                    {
+                        dynamic model = new DyDataGrid_MIBModel();
+                        model.AddParaProperty("ParaName", new DataGrid_Cell_MIB()
+                        {
+                            m_Content = mibLeaf.childNameCh,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "参数名称");
+
+                        model.AddParaProperty("ParaValue", new DataGrid_Cell_MIB()
+                        {
+                            m_Content = mibLeaf.defaultValue,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "参数值");
+
+                        model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
+                        {
+                            m_Content = mibLeaf.managerValueRange,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "取值范围");
+
+                        model.AddParaProperty("Unit", new DataGrid_Cell_MIB()
+                        {
+                            m_Content = mibLeaf.unit,
+                            oid = mibLeaf.childOid,
+                            MibName_CN = mibLeaf.childNameCh,
+                            MibName_EN = mibLeaf.childNameMib
+                        }, "单位");
+
+                        // 将这个整行数据填入List;
+                        if (model.Properties.Count != 0)
+                        {
+                            // 向单元格内添加内容;
+                            datalist.Add(model);
+                            i++;
+                        }
+                        // 最终全部收集完成后，为控件赋值;
+                        if (i == datalist.Count)
+                        {
+                            this.ParaDataModel = model;
+                            this.DynamicParaSetGrid.DataContext = datalist;
+                        }
+                    }
+                }
+            }
+        }
 
 		/// <summary>
 		/// 对无效的值"X",根据取值范围进行转换

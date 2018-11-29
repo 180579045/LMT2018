@@ -187,14 +187,19 @@ namespace NetPlan
 
 		private readonly WholeAntInfo _antInfo;
 
+	    public WholeAntInfo GetAntInfo()
+	    {
+	        return _antInfo;
+	    }
 
-		/// <summary>
-		/// 根据厂家索引和类型索引获取天线阵编号
-		/// </summary>
-		/// <param name="strVendorIdx"></param>
-		/// <param name="strTypeIdx"></param>
-		/// <returns></returns>
-		private int GetAntNoByVendorAndType(string strVendorIdx, string strTypeIdx)
+
+        /// <summary>
+        /// 根据厂家索引和类型索引获取天线阵编号
+        /// </summary>
+        /// <param name="strVendorIdx"></param>
+        /// <param name="strTypeIdx"></param>
+        /// <returns></returns>
+        private int GetAntNoByVendorAndType(string strVendorIdx, string strTypeIdx)
 		{
 			var nVIdx = int.Parse(strVendorIdx);
 			var nTIdx = int.Parse(strTypeIdx);
@@ -234,20 +239,20 @@ namespace NetPlan
 	/// </summary>
 	public class AntType
 	{
-		public int antArrayNotMibNumber;
-		public int antArrayVendor;					// 厂家索引
-		public string antArrayNotMibVendorName;		// 厂家文本描述
-		public int antArrayIndex;					// 天线阵型号索引
-		public string antArrayModelName;			// 天线阵型号
-		public int antArrayNum;						// 天线阵根数
-		public int antArrayDistance;				// 天线阵距离
-		public List<VD> antArrayType;				// 天线阵形状
-		public List<VD> antArrayNotMibAntLossFlag;
-		public List<VD> netAntArrayNotMibHalfPowerBeamWidth;
+		public int antArrayNotMibNumber { get; set; }
+        public int antArrayVendor { get; set; }                 // 厂家索引
+        public string antArrayNotMibVendorName { get; set; }    // 厂家文本描述
+        public int antArrayIndex { get; set; }                  // 天线阵型号索引
+        public string antArrayModelName { get; set; }           // 天线阵型号
+        public int antArrayNum { get; set; }                    // 天线阵根数
+        public int antArrayDistance { get; set; }               // 天线阵距离
+        public List<VD> antArrayType { get; set; }              // 天线阵形状
+        public List<VD> antArrayNotMibAntLossFlag { get; set; }
+        public List<VD> netAntArrayNotMibHalfPowerBeamWidth { get; set; }
 
-		public string antInfoDesc;					// 天线阵信息简述
+        public string antInfoDesc { get; set; }                 // 天线阵信息简述
 
-		public AntType()
+        public AntType()
 		{
 			antArrayType = new List<VD>();
 			antArrayNotMibAntLossFlag = new List<VD>();
@@ -282,10 +287,10 @@ namespace NetPlan
 	/// </summary>
 	public class AntWeight
 	{
-		public int antArrayNotMibNumber;
-		public List<Weight> antArrayMultWeight;
+		public int antArrayNotMibNumber { get; set; }
+        public List<Weight> antArrayMultWeight { get; set; }
 
-		public AntWeight()
+        public AntWeight()
 		{
 			antArrayMultWeight = new List<Weight>();
 		}
@@ -323,8 +328,8 @@ namespace NetPlan
 	/// </summary>
 	public struct Weight
 	{
-		public int antennaWeightMultFrequencyBand;
-		public int antennaWeightMultAntGrpIndex;
+		public int antennaWeightMultFrequencyBand { get; set; }
+        public int antennaWeightMultAntGrpIndex;
 		public int antennaWeightMultAntStatusIndex;
 		public string antennaWeightMultNotMibAntStatus;
 		public int antennaWeightMultAntHalfPowerBeamWidth;
