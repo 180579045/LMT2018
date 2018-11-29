@@ -443,6 +443,7 @@ namespace CfgFileOpStruct
             //    return FALSE;
             //}
         }
+        public byte Getu8HiDeviceType(){ return u8HiDeviceType; }
         /// <summary>
         /// u8MiDeviceType : TD/LTE/5G的文件
         /// </summary>
@@ -451,6 +452,7 @@ namespace CfgFileOpStruct
         {
             u8MiDeviceType = typeValue;// new MacroDefinition().LTE_DEVICE;
         }
+        public byte Getu8MiDeviceType() { return u8MiDeviceType; }
         /// <summary>
         /// u16LoDevType : 计算大小端
         /// </summary>
@@ -464,6 +466,7 @@ namespace CfgFileOpStruct
             //*(((char*)(&tempType)) + 1) = LoDeviceType % 256;
             u16LoDevType = BitConverter.ToUInt16(tempType, 0);
         }
+        public ushort Getu16LoDevType(){return u16LoDevType;}
         /// <summary>
         /// u32IcFileVer : 初配文件版本：用来标志当前文件的大版本(版本为1,2)
         /// </summary>
@@ -481,6 +484,7 @@ namespace CfgFileOpStruct
                 u32IcFileVer = new MacroDefinition().CFG_VERSION_2;
             }
         }
+        public uint Getu32IcFileVer() { return u32IcFileVer; }
         /// <summary>
         /// strMibVersion="5.65.3.6" => u32PublicMibVer = 5;u32MainMibVer = 65;u32SubMibVer = 3;u32ReserveVer = 6;
         /// </summary>
@@ -524,6 +528,8 @@ namespace CfgFileOpStruct
                 u8LastMotifyDate = new byte[20];
             StringToByteArray(str, u8LastMotifyDate);
         }
+        public byte[] Getu8LastMotifyDate() { return u8LastMotifyDate; }
+
         /// <summary>
         /// u8IcFileDesc : [256]文件描述 （"初配文件"）
         /// </summary>
@@ -537,6 +543,7 @@ namespace CfgFileOpStruct
             //Buffer.BlockCopy(byteArray, 0, u8IcFileDesc, 0, byteArray.Length);
             StringChToByteArray(str, u8IcFileDesc);
         }
+        public byte[] Getu8IcFileDesc() { return u8IcFileDesc; }
         /// <summary>
         /// s8DataFmtVer : [12] 数据文件版本（与对应的MIB版本相同）
         /// </summary>
@@ -546,6 +553,188 @@ namespace CfgFileOpStruct
             if (u8LastMotifyDate == null)
                 s8DataFmtVer = new sbyte[12];
             StringToSByteArray(str, s8DataFmtVer);
+        }
+        public sbyte[] Gets8DataFmtVer() { return s8DataFmtVer; }
+        /*********************        功能函数(解析文件读取的字符串)***************************/
+        public void ParseFileReadBytes(byte[] byteArray)
+        {
+            int startPos = 0;// 开始pos
+            int lenSize = 0;
+            byte[] bData;
+            //-> u8VerifyStr  1 * 4:Byte[4][4]文件头的校验字段 "ICF"
+            startPos = 0;
+            lenSize = 4;
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u8VerifyStr = GetBytesValueToParmBytes(bData);
+            string stru8VerifyStr = System.Text.Encoding.Default.GetString(u8VerifyStr).TrimEnd('\0');
+            // ->u8HiDeviceType   1 * 1:byte Nodeb基站类型（1 版 = 0、2版 = 2、3版超级基站 = 1）
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u8HiDeviceType);
+            u8HiDeviceType = byteArray[startPos];
+            //-> u8MiDeviceType; 1 * 1:byte TD = 0 / LTE = 1 / 5G = 2的文件
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u8MiDeviceType);
+            u8MiDeviceType = byteArray[startPos];
+            //->u16LoDevType; 2 * 1:ushort 计算大小端 700拆分成 0xbc和0x02组合
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u16LoDevType);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u16LoDevType = GetBytesValToUshort(bData);
+            //->u32IcFileVer 4 * 1:uint 初配文件版本：用来标志当前文件的大版本 = 1,2
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32IcFileVer);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32IcFileVer = GetBytesValToUint(bData);// 版本1:=1;版本2:=10
+            //->u32ReserveVer; 4 * 1:uint 初配文件小版本：用来区分相同大版本下的因取值不同造成的差异，现在这里是最小版本(版本号"5_65_3_6", 截取6)
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32ReserveVer);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32ReserveVer = GetBytesValToUint(bData);
+            //->u32DataBlk_Location; 4 * 1:uint 数据块起始位置 默认956
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32DataBlk_Location);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32DataBlk_Location = GetBytesValToUint(bData);
+            //->u8LastMotifyDate[20]; 1 * 20:byte[20][20] 文件最新修改的日期, 按字符串存放 
+            startPos += lenSize;
+            lenSize = 20;
+            u8LastMotifyDate = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            string stru8LastMotifyDate = System.Text.Encoding.Default.GetString(u8LastMotifyDate).TrimEnd('\0');
+            //u8LastMotifyDate = OxbytesToString(bData);
+
+            //-> u32IcFile_HeaderVer; 4 * 1:uint 初配文件头版本，用于记录不同的文件头格式、版本
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32IcFile_HeaderVer);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32IcFile_HeaderVer = GetBytesValToUint(bData);
+            //->u32PublicMibVer; 4 * 1:uint 公共Mib版本号(版本号"5_65_3_6", 截取5)
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32PublicMibVer);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32PublicMibVer = GetBytesValToUint(bData);
+            //-> u32MainMibVer; 4 * 1:uint Mib主版本号(版本号"5_65_3_6", 截取65)
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32MainMibVer);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32MainMibVer = GetBytesValToUint(bData);
+            //-> u32SubMibVer; 4 * 1:uint Mib辅助版本号(版本号"5_65_3_6", 截取3)
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32SubMibVer);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32SubMibVer = GetBytesValToUint(bData);
+            //-> u32IcFile_HeaderLength; 4 * 1:uint 初配文件头部长度 
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32IcFile_HeaderLength);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32IcFile_HeaderLength = GetBytesValToUint(bData);
+            //-> u8IcFileDesc[256]    1 * 256:byte[256][256] 文件描述 “初配文件”
+            startPos += lenSize;
+            lenSize = 256;
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u8IcFileDesc = bData;
+            string stru8IcFileDesc = System.Text.Encoding.Default.GetString(u8IcFileDesc.Skip(0).Take(9).ToArray());
+            //-> u32RevDatType; 4 * 1:uint 保留段数据类别 (1: 文件描述) 
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32RevDatType);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32RevDatType = GetBytesValToUint(bData);
+            //-> u32IcfFileType; 4 * 1:uint 初配文件类别（1:NB,2:RRS） 2005 - 12 - 22
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32IcfFileType);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32IcfFileType = GetBytesValToUint(bData);
+            //->u32IcfFileProperty; 4 * 1:uint 初配文件属性（0:正式文件; 1:补充文件）
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32IcfFileProperty);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32IcfFileProperty = GetBytesValToUint(bData);
+            //-> u32DevType; 4 * 1:uint 设备类型(1:超级基站; 2:紧凑型小基站)
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u32DevType);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u32DevType = GetBytesValToUint(bData);
+            //-> u16NeType    2 * 1:ushort 数据文件所属网元类型
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u16NeType);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u16NeType = GetBytesValToUshort(bData);
+            //-> u8Pading[2]  1 * 2:byte[2][2]
+            startPos += lenSize;
+            lenSize = 2;
+            //-> s8DataFmtVer[12] 1 * 2:sbyte[12][12] 数据文件版本（与对应的MIB版本相同）  
+            startPos += lenSize;
+            lenSize = 12;
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            s8DataFmtVer = GetBytesValToSBytes(bData);
+            string strs8DataFmtVer = Encoding.Default.GetString(bData).TrimEnd('\0');
+            //-> u8TblNum 1 * 1:byte 数据文件中表的个数  
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u8TblNum);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u8TblNum = bData[0];
+            //-> u8FileType   1 * 1:byte 配置文件类别(1, init.cfg:cfg,或dfg,2 patch_ex.cfg:pdg,)
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new StruCfgFileHeader().u8FileType);
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            u8FileType = bData[0];
+            //-> u8Pad1   1 * 1:byte 保留 
+            startPos += lenSize;
+            lenSize = 1;
+            //-> u8ReserveAreaType    1 * 1:byte 保留空间的含义 = 0
+            startPos += lenSize;
+            lenSize = 1;
+            //  ->u32TblOffset[150]    4 * 150:uint[150][150] 每个表的数据在文件中的起始位置（相对文件头）  
+            startPos += lenSize;
+            lenSize = Marshal.SizeOf(new int())*150;
+            bData = byteArray.Skip(startPos).Take(lenSize).ToArray();
+            //u32TblOffset = GetBytesValToSBytes(bData);
+            //-> Reserved[4]  1 * 4:byte[4][4] 保留字段
+
+        }
+        string OxbytesToString(byte[] bytes)
+        {
+            string hexString = string.Empty;
+            Array.Reverse((byte[])bytes);
+            if (bytes != null)
+            {
+                StringBuilder strB = new StringBuilder();
+
+                for (int i = 0; i < bytes.Length; i++)
+                {
+                    strB.Append(bytes[i].ToString("X2"));
+                }
+                hexString = strB.ToString();
+            }
+            return hexString;
+        }
+
+        uint GetBytesValToUint(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt32(OxbytesToString(bytes), 16);
+        }
+
+        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        {
+            byte[] re = new byte[] { };
+            Array.Reverse((byte[])bytes);
+            //Buffer.BlockCopy((byte[])bytes, 0, (byte[])re, 0, ((byte[])bytes).Length);
+            return bytes;
+        }
+
+        ushort GetBytesValToUshort(byte[] bytes)
+        {
+            Array.Reverse((byte[])bytes);
+            string reStr = OxbytesToString(bytes);
+            return Convert.ToUInt16(OxbytesToString(bytes), 16);
+        }
+
+        sbyte[] GetBytesValToSBytes(byte[] bytes)
+        {
+            sbyte[] objParm = new sbyte[bytes.Length];
+            Buffer.BlockCopy(bytes, 0, objParm, 0, bytes.Length);
+            return objParm;
         }
         /*********************        功能函数(私有)             ***************************/
         /// <summary>
@@ -697,12 +886,27 @@ namespace CfgFileOpStruct
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
     struct StruDataHead
     {
+        /// <summary>
+        /// 文件头的校验字段
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public byte[] u8VerifyStr;                       // [4] 文件头的校验字段 "BEG\0"
+        /// <summary>
+        /// reserved , =1 
+        /// </summary>
         public uint u32DatType;                          // reserved , =1 
+        /// <summary>
+        /// reserved , =1 
+        /// </summary>
         public uint u32DatVer;                           // reserved , =1 
+        /// <summary>
+        /// 表的数目,指示索引表中的向目个数
+        /// </summary>
         public uint u32TableCnt;                         // 表的数目,指示索引表中的向目个数
 
+        /// <summary>
+        /// 保留
+        /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public uint[] u32Reserved;                       // [2] 保留
 
@@ -752,12 +956,43 @@ namespace CfgFileOpStruct
             SetValueToByteArrayReverse(byteAL, bytePosL, u32Reserved);            //  
             return byteArray;
         }
-        /*********************        功能函数(变量赋值)             ***************************/
+        /*********************        功能函数(变量赋值)         ***************************/
         public void Setu8VerifyStr(string str= "BEG\0")
         {
             if (u8VerifyStr == null)
                 u8VerifyStr = new byte[4];
             StringToByteArray(str, u8VerifyStr);
+        }
+        /*********************        功能函数(把字符串解析成成员变量)**********************/
+        /// <summary>
+        /// 根据字符串依次解析头
+        /// </summary>
+        /// <param name="data"></param>
+        public void SetValueByBytes(byte[] data)
+        {
+            int fromOf = 0;
+            int lenSize = 0;
+            //
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new byte()) * 4;
+            byte[] bytes123 = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8VerifyStr = GetBytesValueToParmBytes(bytes123);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatType);
+            byte[] bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatType = GetBytesValToUint(bytes);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatVer);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatVer = GetBytesValToUint(bytes);
+
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32TableCnt);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32TableCnt = GetBytesValToUint(bytes);
         }
         /*********************        功能函数(私有)             ***************************/
         /// <summary>
@@ -869,34 +1104,7 @@ namespace CfgFileOpStruct
             }
         }
 
-        public void SetValueByBytes(byte[] data)
-        {
-            int fromOf = 0;
-            int lenSize = 0;
-            //
-            fromOf = 0;
-            lenSize = Marshal.SizeOf(new byte())*4;
-            byte[] bytes123 = data.Skip(fromOf).Take(lenSize).ToArray();
-            u8VerifyStr = GetBytesValueToParmBytes(bytes123);
-            //
-            fromOf += lenSize;
-            lenSize = Marshal.SizeOf(new StruDataHead().u32DatType);
-            byte[] bytes = data.Skip(fromOf).Take(lenSize).ToArray();
-            u32DatType = GetBytesValToUint(bytes);
-            //
-            fromOf += lenSize;
-            lenSize = Marshal.SizeOf(new StruDataHead().u32DatVer);
-            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
-            u32DatVer = GetBytesValToUint(bytes);
-
-            //
-            fromOf += lenSize;
-            lenSize = Marshal.SizeOf(new StruDataHead().u32TableCnt);
-            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
-            u32TableCnt = GetBytesValToUint(bytes);
-        }
-
-        string OxbytesToString(byte[] bytes)
+        private string OxbytesToString(byte[] bytes)
         {
             string hexString = string.Empty;
             Array.Reverse((byte[])bytes);
@@ -913,14 +1121,14 @@ namespace CfgFileOpStruct
             return hexString;
         }
 
-        uint GetBytesValToUint(byte[] bytes)
+        private uint GetBytesValToUint(byte[] bytes)
         {
             Array.Reverse((byte[])bytes);
             string reStr = OxbytesToString(bytes);
             return Convert.ToUInt32(OxbytesToString(bytes), 16);
         }
 
-        byte[] GetBytesValueToParmBytes(byte[] bytes)
+        private byte[] GetBytesValueToParmBytes(byte[] bytes)
         {
             byte[] re = new byte[] { };
             Array.Reverse((byte[])bytes);

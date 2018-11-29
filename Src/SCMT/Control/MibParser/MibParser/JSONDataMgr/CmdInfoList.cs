@@ -4,6 +4,7 @@ using System.Text;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
+using LogManager;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -25,7 +26,9 @@ namespace MIBDataParser.JSONDataMgr
 			dynamic cmdJson = new JsonFile().ReadJsonFileForJObject(getCmdJsonFilePath());
 			if (null == cmdJson)
 			{
-				return false;
+                Log.Error("Db init : GeneratedCmdInfoList err, cmdJson is null.");
+                //Log.Error("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                return false;
 			}
 
 			cmdInfoNew = new Dictionary<string, CmdMibInfo>();
@@ -96,9 +99,11 @@ namespace MIBDataParser.JSONDataMgr
 
 		private string getCmdJsonFilePath()
 		{
-			string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini");
+            string err = "";
+			string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini", out err);
 			if (string.IsNullOrEmpty(iniFilePath))
 			{
+                Log.Error(err);
 				return null;
 			}
 

@@ -75,6 +75,10 @@
       <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
       <Name>CommonUtility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LogManager\LogManager.csproj">
+      <Project>{B42DA179-3976-44A1-A54F-0B5E0046DDBC}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
