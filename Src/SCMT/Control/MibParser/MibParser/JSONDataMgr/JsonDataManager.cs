@@ -18,6 +18,7 @@ using System.Data;
 using CommonUtility;
 using System.IO;
 using System.Threading.Tasks;
+using LogManager;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -39,11 +40,13 @@ namespace MIBDataParser.JSONDataMgr
 
 		public JsonDataManager(string mibVersion)
 		{
-			// 配置文件获取
-			string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini");
+            // 配置文件获取
+            string err = "";
+			string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini", out err);
 			if (string.IsNullOrEmpty(iniFilePath))
 			{
-				Console.WriteLine("JsonDataMgr.ini不存在");
+                Log.Error("JsonDataMgr.ini不存在" + err);
+                Console.WriteLine("JsonDataMgr.ini不存在");
 				return;
 			}
 
@@ -83,7 +86,9 @@ namespace MIBDataParser.JSONDataMgr
 			isCmdJsonOK = false;
 			isJsonProtect = false;
 
-			Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            Log.Debug("Db init : Start to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+
+            Console.WriteLine("begin to parse mdb file, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			Thread[] threads = {
 				 new Thread(ConvertAccessDbToJsonMibTree),// "MibTree"
 				 //new Thread(new ThreadStart(ConvertAccessDbToJsonObjTree)),// "ObjTree"
@@ -128,7 +133,9 @@ namespace MIBDataParser.JSONDataMgr
 							}
 							catch (ThreadStateException e)
 							{
-								Console.WriteLine(e);
+                                Log.Error("Db init err: " + e);
+
+                                Console.WriteLine(e);
 							}
 						}
 					}

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 //using CommonUtility;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using LogManager;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -525,11 +526,14 @@ namespace MIBDataParser.JSONDataMgr
 		/// <param name="connectIp"> 标识数据的归属，查询要用 </param>
 		private bool DBInitDateBaseByIpConnect(object connectIp)
 		{
-			Console.WriteLine("Db init : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            Log.Debug("Db init : Start... ");
+            
+            Console.WriteLine("Db init : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			// 1. 解压lm.dtz
 			if (!DBInitZip(connectIp.ToString()))
 			{
-				Console.WriteLine("Db init : zip err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                Log.Error("Db init : zip err . ");
+                Console.WriteLine("Db init : zip err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 				//resultInitData(false);
 				return false;
 			}
@@ -539,7 +543,9 @@ namespace MIBDataParser.JSONDataMgr
 			var bSucceed = DBInitParseMdbToWriteJson();
 			if (!bSucceed.Result)
 			{
-				Console.WriteLine("Db init : writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                Log.Error("Db init : writejson err.");
+
+                Console.WriteLine("Db init : writejson err ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 				//resultInitData(false);
 				return false;
 			}
@@ -548,14 +554,18 @@ namespace MIBDataParser.JSONDataMgr
 			// 3. 解析json 文件
 			if (!DBInitParseJsonToMemory(connectIp.ToString()))
 			{
-				Console.WriteLine("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+                Log.Error("Db init : mib/cmd list err." );
+
+                Console.WriteLine("Db init : mib/cmd list err. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 				//resultInitData(false);
 				return false;
 			}
-			//Console.WriteLine("Db init : mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            //Console.WriteLine("Db init : mib/cmd list ok. ====, time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
-			// 4. 结果
-			Console.WriteLine("Db init : Ok..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            // 4. 结果
+            Log.Debug("Db init : Ok..." );
+
+            Console.WriteLine("Db init : Ok..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			//resultInitData(true);
 			return true;
 		}
@@ -567,8 +577,10 @@ namespace MIBDataParser.JSONDataMgr
 			UnzippedLmDtz unZip = new UnzippedLmDtz();
 			if (!unZip.UnZipFile(connectIp, out err))
 			{
-				//resultInitData(false);
-				Console.WriteLine("Err : DBInitZip fail, {0}", err);
+                //resultInitData(false);
+                Log.Error(String.Format("Db init Err : DBInitZip fail, connectIp({1}), ({0}),  ", err, connectIp));
+
+                Console.WriteLine("Err : DBInitZip fail, {0}", err);
 				return false;
 			}
 			return true;

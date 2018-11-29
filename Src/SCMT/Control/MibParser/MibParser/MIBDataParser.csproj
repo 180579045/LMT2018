@@ -75,12 +75,16 @@
       <Project>{adbbf476-fe90-4c17-b11b-b0af4a42fa5a}</Project>
       <Name>CommonUtility</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\LogManager\LogManager.csproj">
+      <Project>{B42DA179-3976-44A1-A54F-0B5E0046DDBC}</Project>
+      <Name>LogManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /I /E /F /Y $(ProjectDir)jsonfile\* "$(SolutionDir)MainWindow\bin\x86\Debug\Data\"
-xcopy /I /E /F /Y $(ProjectDir)JsonDataMgr.ini "$(SolutionDir)MainWindow\bin\x86\Debug\Config\"
-xcopy /I /E /F /Y $(ProjectDir)lmdtz\* "$(SolutionDir)MainWindow\bin\x86\Debug\Data\lmdtz\"</PostBuildEvent>
+    <PostBuildEvent>xcopy /I /E /F /Y $(ProjectDir)jsonfile\* "$(SolutionDir)MainWindow\bin\x86\$(ConfigurationName)\Data\"
+xcopy /I /E /F /Y $(ProjectDir)JsonDataMgr.ini "$(SolutionDir)MainWindow\bin\x86\$(ConfigurationName)\Config\"
+xcopy /I /E /F /Y $(ProjectDir)lmdtz\* "$(SolutionDir)MainWindow\bin\x86\$(ConfigurationName)\Data\lmdtz\"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

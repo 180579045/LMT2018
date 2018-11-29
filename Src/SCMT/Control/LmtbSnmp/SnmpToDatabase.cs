@@ -258,8 +258,8 @@ namespace LmtbSnmp
 			}
 
 			var value = strValue.Replace(" ", "");
-			var retData = GetMibNodeInfoByName(mibName, targetIp);
 
+			var retData = GetMibNodeInfoByName(mibName, targetIp);
 			if (null == retData)
 			{
 				return null;
@@ -327,8 +327,9 @@ namespace LmtbSnmp
 			}
 			else if (omType.Equals("u32[]"))
 			{
-				var defaultValue = mibLeaf.defaultValue;
-				if (defaultValue.StartsWith("{"))       // {0,0,0,0,0}  boardAlarmStatics对应的数据类型
+				//不能判读默认值，应该判读当前值
+				//var defaultValue = mibLeaf.defaultValue;
+				if (strValue.StartsWith("{"))       // {0,0,0,0,0}  boardAlarmStatics对应的数据类型
 				{
 					return strValue;
 				}
