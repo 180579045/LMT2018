@@ -15,152 +15,94 @@ namespace NetPlan.Tests
 	public class MibInfoMgrTests
 	{
 		[TestMethod()]
-		public void AddNewAntTest()
+		public async void AddNewAntTest()
 		{
-			bool stop = false;
+			// 初始化数据库
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					var ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
-					Assert.IsNotNull(ant);
-					ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
-					Assert.IsNull(ant);
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
 
-					stop = true;
-				}
-			};
+			var ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
+			Assert.IsNotNull(ant);
 
-			while (!stop)
+			ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
+			Assert.IsNull(ant);
+		}
+
+		[TestMethod()]
+		public async Task AddNewBoardTest()
+		{
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
+
+			var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTE", "LTE FDD", "CPRI");
+			Assert.IsNotNull(dev);
+			var delResult = MibInfoMgr.GetInstance().DelDev(dev.m_strOidIndex, EnumDevType.board);
+			Assert.IsTrue(delResult);
+		}
+
+		[TestMethod()]
+		public async Task SetDevAttributeValueTest()
+		{
+			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
+			var db = Database.GetInstance();
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
+
+			var ret = NPSnmpOperator.InitNetPlanInfo();
+			if (ret)
 			{
-				Thread.Sleep(1000);
+				var strIndex = ".0.0.1";
+				MibInfoMgr.GetInstance().SetDevAttributeValue(strIndex, "netBoardIrFrameType", "CPRI-HDLC", EnumDevType.board);
 			}
 		}
 
 		[TestMethod()]
-		public void AddNewBoardTest()
+		public async Task DistributeBoardInfoToEnbTest()
 		{
-			bool stop = false;
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTE", "LTE FDD", "CPRI");
-					Assert.IsNotNull(dev);
-					var delResult = MibInfoMgr.GetInstance().DelDev(dev.m_strOidIndex, EnumDevType.board);
-					Assert.IsTrue(delResult);
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
 
-					stop = true;
-				}
-			};
+			var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTF板", "LTE FDD", "CPRI");
+			Assert.IsNotNull(dev);
 
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
+			var ret = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board);
+			Assert.IsTrue(ret);
 		}
 
 		[TestMethod()]
-		public void SetDevAttributeValueTest()
+		public async Task SetNetLcInfoTest()
 		{
-			bool stop = false;
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
 			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = async result =>
-			{
-				if (result)
-				{
-					var ret = NPSnmpOperator.InitNetPlanInfo();
-					if (ret)
-					{
-						var strIndex = ".0.0.1";
-						MibInfoMgr.GetInstance().SetDevAttributeValue(strIndex, "netBoardIrFrameType", "CPRI-HDLC", EnumDevType.board);
-					}
+			var result = await db.initDatabase("172.27.245.92");
+			Assert.IsTrue(result);
 
-					stop = true;
-				}
-			};
+			var strRruNo = "10";
+			var lcInfoMap = new Dictionary<string, NPRruToCellInfo>();
+			var lcInfo = new NPRruToCellInfo();
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "0", bIsFixed = false });
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "1", bIsFixed = false });
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "2", bIsFixed = false });
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "4", bIsFixed = false });
+			lcInfoMap.Add("1", lcInfo);
 
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
-		}
+			var ret = MibInfoMgr.GetInstance().SetNetLcInfo(strRruNo, lcInfoMap);
+			Assert.IsTrue(ret);
 
-		[TestMethod()]
-		public void DistributeBoardInfoToEnbTest()
-		{
-			bool stop = false;
-			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
-			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					var dev = MibInfoMgr.GetInstance().AddNewBoard(1, "SCTF板", "LTE FDD", "CPRI");
-					Assert.IsNotNull(dev);
+			lcInfo = new NPRruToCellInfo();
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "6", bIsFixed = false });
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "7", bIsFixed = false });
+			lcInfo.CellIdList.Add(new CellAndState { cellId = "8", bIsFixed = false });
+			lcInfoMap["1"] = lcInfo;
 
-					var ret = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board);
-					Assert.IsTrue(ret);
-
-					stop = true;
-				}
-			};
-
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
-		}
-
-		[TestMethod()]
-		public void SetNetLcInfoTest()
-		{
-			bool stop = false;
-			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
-			var db = Database.GetInstance();
-			db.initDatabase("172.27.245.92");
-			db.resultInitData = result =>
-			{
-				if (result)
-				{
-					var strRruNo = "10";
-					var lcInfoMap = new Dictionary<string, NPRruToCellInfo>();
-					var lcInfo = new NPRruToCellInfo();
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "0", bIsFixed = false });
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "1", bIsFixed = false });
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "2", bIsFixed = false });
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "4", bIsFixed = false });
-					lcInfoMap.Add("1", lcInfo);
-
-					var ret = MibInfoMgr.GetInstance().SetNetLcInfo(strRruNo, lcInfoMap);
-					Assert.IsTrue(ret);
-
-					lcInfo = new NPRruToCellInfo();
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "6", bIsFixed = false });
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "7", bIsFixed = false });
-					lcInfo.CellIdList.Add(new CellAndState { cellId = "8", bIsFixed = false });
-					lcInfoMap["1"] = lcInfo;
-
-					ret = MibInfoMgr.GetInstance().SetNetLcInfo(strRruNo, lcInfoMap);
-					Assert.IsTrue(ret);
-
-					stop = true;
-				}
-			};
-
-			while (!stop)
-			{
-				Thread.Sleep(1000);
-			}
+			ret = MibInfoMgr.GetInstance().SetNetLcInfo(strRruNo, lcInfoMap);
+			Assert.IsTrue(ret);
 		}
 	}
 }

@@ -39,6 +39,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic.Core">
+      <HintPath>..\packages\Lib\System.Linq.Dynamic.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommCheckRuleHelper.cs" />
     <Compile Include="DevAttributeInfo.cs" />
     <Compile Include="DevLink\INetPlanLink.cs" />
     <Compile Include="DevLink\LinkBoardRhub.cs" />
@@ -69,12 +73,14 @@
     <Compile Include="NPDescHelper.cs" />
     <Compile Include="NPEAntHelper.cs" />
     <Compile Include="NPEBoardHelper.cs" />
+    <Compile Include="NPECheckRulesHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />
     <Compile Include="NPERruHelper.cs" />
     <Compile Include="NPLastErrorHelper.cs" />
     <Compile Include="NPRruToCellInfo.cs" />
     <Compile Include="NPSnmpOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReversePolishNotation.cs" />
     <Compile Include="UtilityHelper.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +109,9 @@
       <Name>SCMTOperationCore</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

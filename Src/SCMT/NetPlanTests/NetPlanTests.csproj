@@ -36,7 +36,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Linq.Dynamic.Core, Version=1.0.8.18, Culture=neutral, PublicKeyToken=0f07ec44de6ac832, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Lib\System.Linq.Dynamic.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -51,15 +56,18 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="CommCheckRuleHelperTests.cs" />
     <Compile Include="DevLink\LinkBoardRruTests.cs" />
     <Compile Include="MibInfoMgrTests.cs" />
     <Compile Include="NPCellOperatorTests.cs" />
     <Compile Include="NPEAntHelperTests.cs" />
     <Compile Include="NPEBoardHelperTests.cs" />
+    <Compile Include="NPECheckRulesHelperTests.cs" />
     <Compile Include="NPECmdHelperTests.cs" />
     <Compile Include="NPERruHelperTests.cs" />
     <Compile Include="NPSnmpOperatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReversePolishNotationTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonUtility\CommonUtility.csproj">
@@ -78,6 +86,9 @@
       <Project>{9E4E635C-D97A-42A9-AD58-2923C1803CA3}</Project>
       <Name>NetPlan</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

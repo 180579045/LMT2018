@@ -155,6 +155,12 @@ namespace NetPlan
 			return null;
 		}
 
+	    public NetPlanElement GetNetPlanBoardInfo()
+	    {
+	        return _netPlanBoardInfo;
+	    }
+
+
 		#endregion
 
 		#region 私有方法
@@ -239,7 +245,7 @@ namespace NetPlan
 	public class ShelfSlotInfo
 	{
 		public int slotIndex { get; set; }
-		public List<VD> supportBoardType;
+		public List<VD> supportBoardType { get; set; }
 
 		public ShelfSlotInfo()
 		{
@@ -249,13 +255,13 @@ namespace NetPlan
 
 	public class Shelf
 	{
-		public int number;
-		public int equipNEType;
-		public string equipNETypeName;
-		public int totalSlotNum;
-		public int supportPlanSlotNum;
-		public int columnsUI;
-		public List<ShelfSlotInfo> planSlotInfo;
+		public int number { get; set; }
+        public int equipNEType { get; set; }
+        public string equipNETypeName { get; set; }
+        public int totalSlotNum { get; set; }
+        public int supportPlanSlotNum { get; set; }
+        public int columnsUI { get; set; }
+        public List<ShelfSlotInfo> planSlotInfo { get; set; }
 
 		public Shelf()
 		{
@@ -269,8 +275,8 @@ namespace NetPlan
 
 	public class OfpPortInfo
 	{
-		public int ofpIndex;
-		public List<VD> irOfpPortTransSpeed;
+		public int ofpIndex { get; set; }
+        public List<VD> irOfpPortTransSpeed { get; set; }
 
 		public OfpPortInfo()
 		{
@@ -280,13 +286,13 @@ namespace NetPlan
 
 	public class BoardEquipment
 	{
-		public int number;
-		public int boardType;
-		public string boardTypeName;
-		public int supportEquipType;
-		public List<VD> supportConnectElement;
-		public int irOfpNum;
-		public List<OfpPortInfo> irOfpPortInfo;
+		public int number { get; set; }
+        public int boardType { get; set; }
+        public string boardTypeName { get; set; }
+        public int supportEquipType { get; set; }
+        public List<VD> supportConnectElement { get; set; }
+        public int irOfpNum { get; set; }
+        public List<OfpPortInfo> irOfpPortInfo { get; set; }
 
 		public BoardEquipment()
 		{
@@ -322,8 +328,8 @@ namespace NetPlan
 
 	public class NetPlanElementType
 	{
-		public int number;
-		public string elementName;
+		public int number { get; set; }
+        public string elementName { get; set; }
 	}
 
 	#endregion

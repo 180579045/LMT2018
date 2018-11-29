@@ -1,0 +1,97 @@
+{
+  versionId:"20181011.2.0",
+  "netBoardCheck":[
+    {
+      "id": 1, 
+      "desc" : "添加/修改板卡校验槽位是否支持板型", 
+      "property":"where cur.netBoardEntry.netBoardRowStatus == 4",
+      "exp":[
+          {
+              "round":"1"，
+              "rules":"from it in lib.shelfEquipment where it.equipNEType == this.equipType select it.planSlotInfo",
+              "outvar":"query1"
+          },{
+              "round":"2"，
+              "rules":"from it in query1 where it.slotIndex == cur.netBoardEntry.netBoardSlotNo select it.supportBoardType",
+              "outvar":"query2"
+          },{
+              "round":"3"，
+              "rules":"from it in query2  where it.value == cur.netBoardEntry.netBoardType select it",
+              "outvar":"query3"
+          },{
+              "round":"4"，
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          }],
+      "false_tip":"本槽位不支持规划此类型板卡"
+      },
+      {
+      "id": 1, 
+      "desc" : "修改板卡类型校验/删除规划板卡校验小区状态", 
+      "property":"where (cur.netBoardEntry.netBoardRowStatus == 4 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.netBoardRowStatus == 6 && old.netBoardEntry.netBoardRowStatus == 4)",
+      "exp":[
+          {
+              "round":"1"，
+              "rules":"from it in mib.baseBandwidthEntry 
+                       where it.baseBandwidthRackNo == cur.netBoardEntry.netBoardRackNo && it.baseBandwidthShelfNo == cur.netBoardEntry.netBoardShelfNo && it.baseBandwidthSlotNo == cur.netBoardEntry.netBoardSlotNo && it.baseBandwidthLcId != -1 && it.baseBandwidthEngagedState != 0
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2"，
+              "rules":"where query1.Count >= 1",
+              "outvar":""
+          }],
+       "false_tip":"该板卡上已经建立本地小区，不允许修改或者删除"
+    }],
+  "netRHUBcheck":[
+    {
+       "id": 3, 
+       "desc" : "RHUB校验是否连接板卡", 
+       "property":"where cur.netRHUBEntry.netRHUBRowStatus == 4",
+       "exp":[
+          {
+              "round":"1"，
+              "rules":"where cur.netRHUBEntry.netRHUBAccessRackNo != -1 && cur.netRHUBEntry.netRHUBAccessShelfNo != -1 && cur.netRHUBEntry.netRHUBAccessSlotNo != -1 ",
+              "outvar":""
+          }],
+       "false_tip":"该板卡未连接到板卡上"
+    },{
+       "id": 4, 
+       "desc" : "RHUB校验连接的板卡是否已经规划", 
+       "property":"where cur.netRHUBEntry.netRHUBRowStatus == 4",
+        "exp":[
+          {
+              "round":"1"，
+              "rules":"from it in this.netBoardEntry 
+                       where it.netBoardRackNo == cur.netRHUBEntry.netRHUBAccessRackNo && it.netBoardShelfNo == cur.netRHUBEntry.netRHUBAccessShelfNo && it.netBoardSlotNo == cur.netRHUBEntry.netRHUBAccessSlotNo && it.netBoardRowStatus == 4
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2"，
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"该RHUB上连接的板卡未规划"
+    },{
+       "id": 5, 
+       "desc" : "删除RHUB校验连接的RRU上是否有建立本地小区", 
+       "property":"where cur.netRHUBEntry.netRHUBRowStatus == 6 && old.netRHUBEntry.netRHUBRowStatus == 4",
+        "exp":[
+          {
+              "round":"1"，
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUHubNo == cur.netRHUBEntry.netRHUBNo 
+                       select it.netSetRRUNo",
+              "outvar":"query1"
+          },{
+              "round":"2"，
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where (query1 Contains it.netSetRRUNo) && it.netSetRRUPortWithAntennaRowStatus == 4 && netSetRRUPortSubtoLocalCellId != -1
+                       select it.netSetRRUNo",
+              "outvar":""
+          }],
+       "false_tip":"该RHUB上承载的本地小区已经建立不允许删除"
+    }
+  ],
+
+}
