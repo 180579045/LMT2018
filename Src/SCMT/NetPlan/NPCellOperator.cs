@@ -371,7 +371,6 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool IsFixedLc(string strLcId)
 		{
-			return false;
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
 			{
