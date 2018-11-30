@@ -127,12 +127,14 @@ namespace SCMTMainWindow
 			{
 				//NodeBControl.GetInstance().ConnectNodeb(target.Header);
 				ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress}", "SCMT");
-				node.Connect();
+				node.ConnectAsync();
 				ObjNode.main = this;
 				ChangeMenuHeader(node.NeAddress.ToString(), "连接基站", "取消连接");
 			}
 			else
 			{
+				ShowLogHelper.Show($"取消连接：{node.FriendlyName}-{node.NeAddress}", "SCMT");
+
 				node.DisConnect();
 				ChangeMenuHeader(node.NeAddress.ToString(), "取消连接", "连接基站");
 			}
@@ -157,6 +159,8 @@ namespace SCMTMainWindow
 			var dr = MessageBox.Show(tip, "断开连接", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
 			if (MessageBoxResult.Yes == dr)
 			{
+				ShowLogHelper.Show($"断开连接：{target.Header}", "SCMT");
+
 				NodeBControl.GetInstance().DisConnectNodeb(target.Header);
 			}
 		}
