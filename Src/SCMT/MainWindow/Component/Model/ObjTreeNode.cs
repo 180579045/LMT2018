@@ -721,6 +721,13 @@ namespace SCMTMainWindow
 			//根据表名获取该表内所有MIB节点;
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+
+            if (ret == null)
+            {
+                Log.Error("获取不到该节点的表信息");
+                return;
+            }               
+
 			nodeMibTable = ret;
 			if (ret == null)
 			{
