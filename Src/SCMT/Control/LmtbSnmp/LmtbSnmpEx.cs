@@ -467,17 +467,56 @@ namespace LmtbSnmp
 
 			if (null != ReqResult)
 			{
-				if (ReqResult.Pdu.ErrorStatus != 0)
+				if (ReqResult.Pdu.ErrorStatus != 0)// 状态码
 				{
 					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
 //					Log.Error(logMsg);
 					status = false;
-
-					// SNMP响应为endOfMibView，检索结束
-					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
+					// 状态码为106 下发报文中绑定变量个数不应大于60个，此时要返回
+					if (ReqResult.Pdu.ErrorStatus == 106)
 					{
-						status = true;
+
 					}
+					// 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
+					if (ReqResult.Pdu.ErrorIndex == 0)
+					{
+						foreach (var vb in ReqResult.Pdu.VbList)
+						{
+							// 如果返回的Oid与传入的Oid相等则说明有错误，要返回错误，避免造成死循环
+							if (reqOidList.Contains(vb.Oid.ToString()))
+							{
+								return false;
+							}
+							// 根据Mib类型转换为可显示字符串
+							string strValue = null;
+							SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
+
+							// 查询结果
+							oidValue.Add(vb.Oid.ToString(), strValue);
+							// 返回最新的oid，方便循环调用时作为入参使用
+							lastOidList.Add(vb.Oid.ToString());
+						}
+						return true;
+					}
+
+					if (ReqResult.Pdu.VbList.Count > 0)
+					{
+						// 第一个Vb的值
+						string firstVbVal = ReqResult.Pdu.VbList.ElementAt(0).Value.ToString();
+						// 只有状态码为13并且错误索引为1并且第一个vb的值为endOfMibView，才表示检索结束
+						if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable 
+							&& firstVbVal.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
+						{
+							return true;
+						}
+						else // 其他错误
+						{
+							logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", ReqResult.Pdu.ErrorIndex, firstVbVal);
+							Log.Error(logMsg);
+							return false;
+						}
+					}
+					
 				}
 				else
 				{

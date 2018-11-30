@@ -1706,7 +1706,8 @@ namespace SCMTMainWindow
 							Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter3.Value + " and Header is:" + oid_cn[temp_compare]);
 
 							// 在这里要区分DataGrid要显示的数据类型;
-							var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare], iter3.Value, iter3.Key, CSEnbHelper.GetCurEnbAddr());
+							var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare]
+								, iter3.Value, iter3.Key, CSEnbHelper.GetCurEnbAddr());
 
 							// 第一个参数：属性的名称——节点英文名称;
 							// 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
