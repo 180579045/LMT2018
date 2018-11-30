@@ -282,7 +282,7 @@ namespace SCMTOperationCore.Control
 		public bool ConnectNodeb(string friendlyName)
 		{
 			var et = GetNodeByFName(friendlyName) as NodeB;
-			et?.Connect();
+			et?.ConnectAsync();
 			return true;
 		}
 

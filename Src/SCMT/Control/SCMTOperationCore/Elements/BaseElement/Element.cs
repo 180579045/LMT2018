@@ -35,13 +35,13 @@ namespace SCMTOperationCore.Elements
 		public ushort NePort { get; set; }
 
 		//虚函数，在子类中override
-		public virtual void Connect()
+		public virtual async Task ConnectAsync()
 		{
 
 		}
 
 		//虚函数，在子类中override
-		public virtual void DisConnect()
+		public virtual async Task DisConnect()
 		{
 
 		}

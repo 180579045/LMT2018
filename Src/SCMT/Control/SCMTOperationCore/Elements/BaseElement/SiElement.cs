@@ -1,17 +1,14 @@
-﻿using System;
-using System.Diagnostics;
+﻿using LogManager;
+using MsgQueue;
+using SCMTOperationCore.Connection;
+using SCMTOperationCore.Connection.Tcp;
+using SCMTOperationCore.Elements.BaseElement;
+using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using CommonUtility;
-using LogManager;
-using MsgQueue;
-using SCMTOperationCore.Connection;
-using SCMTOperationCore.Connection.Tcp;
-using SCMTOperationCore.Elements.BaseElement;
-using SCMTOperationCore.Message.SI;
 using DataReceivedEventArgs = SCMTOperationCore.Connection.DataReceivedEventArgs;
 
 namespace SCMTOperationCore.Elements
@@ -22,6 +19,7 @@ namespace SCMTOperationCore.Elements
 	public class SiElement : Element, IElement
 	{
 		#region 构造、析构
+
 		/// <summary>
 		/// 构造函数。后面追加别的参数
 		/// </summary>
@@ -47,10 +45,12 @@ namespace SCMTOperationCore.Elements
 			DisConnect();
 		}
 
-		#endregion
+		#endregion 构造、析构
+
 		#region 公共接口
+
 		//连接网元。
-		public override void Connect()
+		public override async Task ConnectAsync()
 		{
 			try
 			{
@@ -63,43 +63,43 @@ namespace SCMTOperationCore.Elements
 						return;
 					}
 
-					DisConnect();
+					await DisConnect();
 				}
 
-				Task.Factory.StartNew(() => {
-					while(!IsCancelConnect() && !HasConnected())
+				await Task.Factory.StartNew(() =>
+				{
+					while (!IsCancelConnect() && !HasConnected())
 					{
 						try
 						{
 							if (!connection.Connect())
 							{
-								Log.Debug($"连接基站失败，100ms后重连...");
-								Task.Delay(1000);
+								Log.Debug("连接基站失败，1s后重连...");
+								Thread.Sleep(1000);
 							}
 						}
 						catch
 						{
 							// ignored
-							Thread.Sleep(100);
+							Thread.Sleep(1000);
 						}
 					}
 				});
-		//连接成功处理事件
+				//连接成功处理事件
 			}
-			catch (Exception e)		// 连接失败，会有异常抛出，需要处理
-		//连接断开处理事件
+			catch (Exception e)     // 连接失败，会有异常抛出，需要处理连接断开处理事件
 			{
 				Log.Error(e.Message);
 			}
 
-		//收到数据处理事件
+			//收到数据处理事件
 		}
 
 		//断开连接，在OnDisconnected中处理事件
-		public override void DisConnect()
+		public override async Task DisConnect()
 		{
 			SetCancelConnectFlag(true);
-			Task.Factory.StartNew(() => connection.Close());
+			await Task.Factory.StartNew(() => connection.Close());
 		}
 
 		//发送数据
@@ -113,7 +113,7 @@ namespace SCMTOperationCore.Elements
 					return true;
 				}
 			}
-			catch (Exception e)			//发送失败会throw异常，需要处理
+			catch (Exception e)         //发送失败会throw异常，需要处理
 			{
 				Console.WriteLine(e);
 				throw;
@@ -122,25 +122,29 @@ namespace SCMTOperationCore.Elements
 			return false;
 		}
 
-
 		public bool HasConnected()
 		{
 			return (ConnectState == ConnectionState.Connected);
 		}
 
-		#endregion
+		#endregion 公共接口
+
 		#region 私有方法
+
 		private void OnConnected(object sender, ConnectedEventArgs e)
 		{
 		}
+
 		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
 			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
 		}
+
 		private void OnDataReceived(object sender, DataReceivedEventArgs e)
 		{
 			dealer.DealSiMsg(e.Bytes);
 		}
+
 		private bool IsCancelConnect()
 		{
 			lock (_lockObj)
@@ -148,6 +152,7 @@ namespace SCMTOperationCore.Elements
 				return _cancelConnectFlag;
 			}
 		}
+
 		private void SetCancelConnectFlag(bool bCancel)
 		{
 			lock (_lockObj)
@@ -155,8 +160,11 @@ namespace SCMTOperationCore.Elements
 				_cancelConnectFlag = bCancel;
 			}
 		}
-		#endregion
+
+		#endregion 私有方法
+
 		#region 私有成员、属性
+
 		//---------------------------------属性区---------------------------------
 		public ConnectionState ConnectState => connection.State;
 
@@ -167,8 +175,7 @@ namespace SCMTOperationCore.Elements
 		private NetworkEndPoint _targetPoint;
 		private bool _cancelConnectFlag;
 		private static object _lockObj = new object();
-		#endregion
-	}
 
-	
+		#endregion 私有成员、属性
+	}
 }

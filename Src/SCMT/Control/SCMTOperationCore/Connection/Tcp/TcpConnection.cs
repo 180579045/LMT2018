@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Text;
 
 namespace SCMTOperationCore.Connection.Tcp
 {
@@ -17,12 +14,14 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// <summary>
 		///     The socket we're managing.
 		/// </summary>
-		Socket socket;
+		private Socket socket;
 
 		/// <summary>
 		///     Lock for the socket.
 		/// </summary>
-		Object socketLock = new Object();
+		private Object socketLock = new Object();
+
+		private IAsyncResult _result;
 
 		/// <summary>
 		///     Creates a TcpConnection from a given TCP Socket.
@@ -78,30 +77,62 @@ namespace SCMTOperationCore.Connection.Tcp
 		}
 
 		/// <inheritdoc />
-		public override bool Connect(byte[] bytes = null, int timeout = 200)
+		public override bool Connect(byte[] bytes = null, int timeout = 2000)
 		{
-			lock(socketLock)
+			lock (socketLock)
 			{
-				//Connect
-				State = ConnectionState.Connecting;
 
+				if (null != _result && !_result.IsCompleted)
+				{
+					return false;
+				}
+
+				if (null != _result && _result.IsCompleted)
+				{
+					try
+					{
+						socket.EndConnect(_result);
+					}
+					catch (Exception e)
+					{
+						Console.WriteLine($"{DateTime.Now.ToString()} 连接失败");
+					}
+					finally
+					{
+						_result.AsyncWaitHandle.Close();
+						_result = null;
+					}
+				}
+
+					State = ConnectionState.Connecting;
 				try
 				{
-					IAsyncResult result = socket.BeginConnect(RemoteEndPoint, null, null);
+					Console.WriteLine($"{DateTime.Now.ToString()} 开始连接....");
 
-					bool bSucceed = result.AsyncWaitHandle.WaitOne(timeout);
+					_result = socket.BeginConnect(RemoteEndPoint, null, null);
+					bool bSucceed = _result.AsyncWaitHandle.WaitOne(timeout);
 
 					if (bSucceed)
 					{
-						socket.EndConnect(result);
+						socket.EndConnect(_result);
 						HandleConnect();
 					}
 					else
 					{
 						//throw new HazelException($"Could not connect as an exception occured.\r\n");
-						Console.WriteLine($"Could not connect as an exception occured.\r\n");
+						Console.WriteLine("Could not connect as an exception occured.\r\n");
 						return false;
 					}
+				}
+				catch (InvalidOperationException e)
+				{
+					Console.WriteLine($"Could not connect as an exception occured.\r\n{e.Message}");
+					return false;
+				}
+				catch (SocketException e)
+				{
+					Console.WriteLine($"Could not connect as an exception occured.\r\n{e.Message}");
+					return false;
 				}
 				catch (Exception e)
 				{
@@ -137,7 +168,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// <remarks>
 		///     <include file="DocInclude/common.xml" path="docs/item[@name='Connection_SendBytes_General']/*" />
 		///     <para>
-		///         The sendOption parameter is ignored by the TcpConnection as TCP only supports FragmentedReliable 
+		///         The sendOption parameter is ignored by the TcpConnection as TCP only supports FragmentedReliable
 		///         communication, specifying anything else will have no effect.
 		///     </para>
 		/// </remarks>
@@ -152,7 +183,7 @@ namespace SCMTOperationCore.Connection.Tcp
 			{
 				if (State != ConnectionState.Connected)
 					throw new InvalidOperationException("Could not send data as this Connection is not connected. Did you disconnect?");
-			
+
 				try
 				{
 					socket.BeginSend(bytes, 0, bytes.Length, SocketFlags.None, null, null);
@@ -173,9 +204,9 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// </summary>
 		/// <param name="bytes">The 4 header bytes read.</param>
 		/// <param name="callback">The callback to invoke when the body has been received.</param>
-		void HeaderReadCallback(byte[] bytes, Action<byte[]> callback)
+		private void HeaderReadCallback(byte[] bytes, Action<byte[]> callback)
 		{
-			//Get length 
+			//Get length
 			int length = GetLengthFromBytes(bytes);
 			Debug.WriteLine($"HeaderReadCallback:get bytes length:{length}");
 
@@ -194,7 +225,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		///     Callback for when a body has been read.
 		/// </summary>
 		/// <param name="bytes">The data bytes received by the connection.</param>
-		void BodyReadCallback(byte[] bytes)
+		private void BodyReadCallback(byte[] bytes)
 		{
 			//Begin receiving from the start
 
@@ -223,8 +254,8 @@ namespace SCMTOperationCore.Connection.Tcp
 			try
 			{
 				//StartWaitingForHeader(BodyReadCallback);
-				var state = new StateObject(50 * 1024, BodyReadCallback);	// TODO 此处先设置为接收50KB的数据
-				StartWaitingForChunk(state);		// 直接开始收数据，没有头信息
+				var state = new StateObject(50 * 1024, BodyReadCallback);   // TODO 此处先设置为接收50KB的数据
+				StartWaitingForChunk(state);        // 直接开始收数据，没有头信息
 			}
 			catch (Exception e)
 			{
@@ -262,7 +293,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		///     Starts this connections waiting for the header.
 		/// </summary>
 		/// <param name="callback">The callback to invoke when the body has been read.</param>
-		void StartWaitingForHeader(Action<byte[]> callback)
+		private void StartWaitingForHeader(Action<byte[]> callback)
 		{
 			StartWaitingForBytes(0, (bytes) => HeaderReadCallback(bytes, callback));
 		}
@@ -272,7 +303,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// </summary>
 		/// <param name="length">The number of bytes to receive.</param>
 		/// <param name="callback">The callback </param>
-		void StartWaitingForBytes(int length, Action<byte[]> callback)
+		private void StartWaitingForBytes(int length, Action<byte[]> callback)
 		{
 			StateObject state = new StateObject(length, callback);
 
@@ -283,7 +314,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		///     Waits for the next chunk of data from this socket.
 		/// </summary>
 		/// <param name="state">The StateObject for the receive operation.</param>
-		void StartWaitingForChunk(StateObject state)
+		private void StartWaitingForChunk(StateObject state)
 		{
 			lock (socketLock)
 			{
@@ -299,7 +330,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		///     Called when a chunk has been read.
 		/// </summary>
 		/// <param name="result"></param>
-		void ChunkReadCallback(IAsyncResult result)
+		private void ChunkReadCallback(IAsyncResult result)
 		{
 			int bytesReceived;
 
@@ -328,31 +359,31 @@ namespace SCMTOperationCore.Connection.Tcp
 			//Exit if receive nothing
 			if (bytesReceived == 0)
 			{
-				Debug.WriteLine($"ChunkReadCallback:recv nothing, disconnect");
+				Debug.WriteLine("ChunkReadCallback:recv nothing, disconnect");
 				HandleDisconnect();
 				return;
 			}
 
 			//If we need to receive more then wait for more, else process it.
-	//        if (state.totalBytesReceived < state.buffer.Length)
-	//        {
-				//Debug.WriteLine($"ChunkReadCallback:{state.totalBytesReceived} < {state.buffer.Length}, wait next ...");
-	//            try
-	//            {
-	//                StartWaitingForChunk(state);
-	//            }
-	//            catch (Exception e)
-	//            {
-	//                HandleDisconnect(new HazelException("An exception occured while initiating a chunk receive operation.", e));
-	//                return;
-	//            }
-	//        }
-	//        else
+			//        if (state.totalBytesReceived < state.buffer.Length)
+			//        {
+			//Debug.WriteLine($"ChunkReadCallback:{state.totalBytesReceived} < {state.buffer.Length}, wait next ...");
+			//            try
+			//            {
+			//                StartWaitingForChunk(state);
+			//            }
+			//            catch (Exception e)
+			//            {
+			//                HandleDisconnect(new HazelException("An exception occured while initiating a chunk receive operation.", e));
+			//                return;
+			//            }
+			//        }
+			//        else
 			{
 				Debug.WriteLine($"ChunkReadCallback:invoke callback, buffer length {state.buffer.Length}");
 				state.callback.Invoke(state.buffer.Take(bytesReceived).ToArray());
 				state.totalBytesReceived = 0;
-				state.buffer = new byte[state.buffer.Length];	// 重新申请空间，丢弃原来的数据
+				state.buffer = new byte[state.buffer.Length];   // 重新申请空间，丢弃原来的数据
 				try
 				{
 					StartWaitingForChunk(state);
@@ -360,7 +391,6 @@ namespace SCMTOperationCore.Connection.Tcp
 				catch (Exception e)
 				{
 					HandleDisconnect(new HazelException("An exception occured while initiating a chunk receive operation.", e));
-					return;
 				}
 			}
 		}
@@ -369,35 +399,47 @@ namespace SCMTOperationCore.Connection.Tcp
 		///     Called when the socket has been disconnected at the remote host.
 		/// </summary>
 		/// <param name="e">The exception if one was the cause.</param>
-		void HandleDisconnect(HazelException e = null)
+		private void HandleDisconnect(HazelException e = null)
 		{
-			bool invoke = false;
-
 			lock (socketLock)
 			{
 				//Only invoke the disconnected event if we're not already disconnecting
 				if (State != ConnectionState.NotConnected)
 				{
 					State = ConnectionState.NotConnected;
-					invoke = true;
+					InvokeDisconnected(e);
 				}
 
-			//Invoke event outide lock if need be
-			if (invoke)
-			{
-				InvokeDisconnected(e);
-
-					if (socket.Connected)
+				try
 				{
-
-						socket.Shutdown(SocketShutdown.Both);
+					socket.Shutdown(SocketShutdown.Both);
 					socket.Disconnect(true);
+				}
+				catch (Exception exception)
+				{
+					Console.WriteLine(exception);
+				}
+
+				if (null != _result)
+				{
+					try
+					{
+						socket.EndConnect(_result);
+					}
+					catch (Exception exception)
+					{
+						Console.WriteLine($"{DateTime.Now.ToString()} cancel connect ");
+					}
+					finally
+					{
+						_result.AsyncWaitHandle.Close();
+						_result = null;
 					}
 				}
 			}
 		}
 
-		void HandleConnect(HazelException e = null)
+		private void HandleConnect(HazelException e = null)
 		{
 			bool invoke = false;
 			lock (socketLock)
@@ -421,7 +463,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// </summary>
 		/// <param name="bytes">The source bytes.</param>
 		/// <returns>The new bytes.</returns>
-		static byte[] AppendLengthHeader(byte[] bytes)
+		private static byte[] AppendLengthHeader(byte[] bytes)
 		{
 			byte[] fullBytes = new byte[bytes.Length + 4];
 
@@ -442,7 +484,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// </summary>
 		/// <param name="bytes">The bytes received.</param>
 		/// <returns>The number of bytes.</returns>
-		static int GetLengthFromBytes(byte[] bytes)
+		private static int GetLengthFromBytes(byte[] bytes)
 		{
 			if (bytes.Length < 4)
 				throw new IndexOutOfRangeException("Not enough bytes passed to calculate length.");
@@ -472,6 +514,5 @@ namespace SCMTOperationCore.Connection.Tcp
 		{
 			HandleDisconnect();
 		}
-
 	}
 }
