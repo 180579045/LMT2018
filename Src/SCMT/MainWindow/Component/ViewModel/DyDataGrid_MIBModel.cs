@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Dynamic;
 using MIBDataParser;
+using System.Windows;
 
 namespace SCMTMainWindow.Component.ViewModel
 {
@@ -72,6 +73,13 @@ namespace SCMTMainWindow.Component.ViewModel
 
                 // 添加列名与属性列表的映射关系;
                 string column_name = args[2] as string;
+				// 检查是否有重复的中文列名
+				if (ColName_Property.ContainsKey(column_name))
+				{
+					MessageBox.Show(string.Format("存在相同的中文列名（{0}）", column_name));
+					result = null;
+					return false;
+				}
                 ColName_Property.Add(column_name, name);
 
                 PropertyList.Add(new Tuple<string, string, object>(name, column_name, value));

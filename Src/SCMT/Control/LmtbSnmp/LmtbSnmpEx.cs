@@ -472,12 +472,21 @@ namespace LmtbSnmp
 					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
 //					Log.Error(logMsg);
 					status = false;
+					// 状态码为106 下发报文中绑定变量个数不应大于60个，此时要返回
+					if (ReqResult.Pdu.ErrorStatus == 106)
+					{
 
+					}
 					// 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
 					if (ReqResult.Pdu.ErrorIndex == 0)
 					{
 						foreach (var vb in ReqResult.Pdu.VbList)
 						{
+							// 如果返回的Oid与传入的Oid相等则说明有错误，要返回错误，避免造成死循环
+							if (reqOidList.Contains(vb.Oid.ToString()))
+							{
+								return false;
+							}
 							// 根据Mib类型转换为可显示字符串
 							string strValue = null;
 							SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
@@ -494,7 +503,7 @@ namespace LmtbSnmp
 					{
 						// 第一个Vb的值
 						string firstVbVal = ReqResult.Pdu.VbList.ElementAt(0).Value.ToString();
-						// 只有状态码为13并且第一个vb的值为endOfMibView，才表示检索结束
+						// 只有状态码为13并且错误索引为1并且第一个vb的值为endOfMibView，才表示检索结束
 						if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable 
 							&& firstVbVal.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
 						{
