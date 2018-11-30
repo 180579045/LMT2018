@@ -688,6 +688,7 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		public override void ClickObjNode(object sender, EventArgs e)
 		{
+			string strMsg = "";
 			var item = sender as MetroExpander;
 			var node = item.obj_type as ObjNode;
 			var ret = new MibTable();
@@ -721,6 +722,13 @@ namespace SCMTMainWindow
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
 			nodeMibTable = ret;
+			if (ret == null)
+			{
+				strMsg = string.Format("使用Mib表名获取到的Mib表信息为空（Mib表名：{0}）", ObjTableName);
+                Log.Error(strMsg);
+				MessageBox.Show(strMsg);
+				return;
+			}
 
 			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
 			name_cn.Clear();
