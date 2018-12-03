@@ -386,13 +386,16 @@ namespace NetPlan
 					return null;
 				}
 				Log.Debug($"生成本地小区{nLocalCellId}属性信息成功");
+
+				AddDevToMap(m_mapAllMibData, type, dev);
 			}
 			else
 			{
 				Log.Debug($"本地小区{nLocalCellId}已经存在不需要重新生成");
+				dev.m_recordType = RecordDataType.Modified;
 			}
 
-			return !MoveDevFromWaitDelToModifyMap(type, dev, dev.m_strOidIndex) ? null : dev;
+			return dev;
 		}
 
 		/// <summary>
@@ -1128,7 +1131,7 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 根据devIndex在waitDel队列中查找，是否存在相同索引相同类型的设备，如果存在就从waitDel中删除，把新生成的设备加入到modify队列中
+		/// 调整设备属性
 		/// </summary>
 		/// <param name="type"></param>
 		/// <param name="newDev"></param>
@@ -1158,7 +1161,6 @@ namespace NetPlan
 
 						// 需要比对dev和newDev，把dev的值和newDev的信息合并到一起，并修改设备record类型为modify
 						newDev.AdjustOtherDevOriginValueToMyOrigin(dev);
-						newDev.m_recordType = RecordDataType.Modified;
 						AddDevToMap(m_mapAllMibData, type, newDev);
 					}
 
