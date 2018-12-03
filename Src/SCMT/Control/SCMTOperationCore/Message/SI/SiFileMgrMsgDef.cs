@@ -446,6 +446,9 @@ namespace SCMTOperationCore.Message.SI
 			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_hour);
 			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_minute);
 			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_second);
+
+			dosdt_year = dosdt_year > 9999 ? 2009 : dosdt_year;
+
 			return used;
 		}
 
