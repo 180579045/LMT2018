@@ -233,7 +233,7 @@ namespace NetPlan
 			var dev = GenerateNewDev(type, slot);
 			if (null == dev)
 			{
-				Log.Error($"生成新设备属性失败，可能已经存在相同索引相同类型的设备");
+				Log.Error("生成新设备属性失败，可能已经存在相同索引相同类型的设备");
 				return null;
 			}
 
@@ -285,7 +285,7 @@ namespace NetPlan
 					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
 				{
 					Log.Error("设置RRU参数netRRUTypeIndex、netRRUOfpWorkMode失败");
-					NPLastErrorHelper.SetLastError($"设置RRU工作模式失败");
+					NPLastErrorHelper.SetLastError("设置RRU工作模式失败");
 					return null;
 				}
 
@@ -310,59 +310,55 @@ namespace NetPlan
 		/// 5.只支持正常模式
 		/// 6.上联口编号1，2，连接接入板；下联口编号3，4，级联使用
 		/// </summary>
-		/// <param name="seqIndexList">要添加设备的索引列表</param>
+		/// <param name="nRhubNo">要添加设备的编号</param>
 		/// <param name="strDevVer">设备版本。rhub分1.0和2.0两个版本，用于UI绘图</param>
 		/// <param name="strWorkMode"></param>
 		/// <returns>null:添加rhub设备失败；</returns>
-		public List<RHubDevAttri> AddNewRhub(List<int> seqIndexList, string strDevVer, string strWorkMode)
+		public RHubDevAttri AddNewRhub(int nRhubNo, string strDevVer, string strWorkMode)
 		{
-			if (null == seqIndexList || string.IsNullOrEmpty(strWorkMode) ||
-				string.IsNullOrEmpty(strDevVer))
+			if (string.IsNullOrEmpty(strWorkMode) || string.IsNullOrEmpty(strDevVer))
 			{
-				Log.Error("传入rhub索引列表为null；工作模式为null或空");
+				Log.Error("传入rhub工作模式为null或空");
 				return null;
 			}
 
-			var type = EnumDevType.rhub;
-			var rhubList = new List<RHubDevAttri>();
-			foreach (var seqIndex in seqIndexList)
+			const EnumDevType type = EnumDevType.rhub;
+
+			var dev = new RHubDevAttri(nRhubNo, strDevVer);
+			if (dev.m_mapAttributes.Count == 0)
 			{
-				var dev = new RHubDevAttri(seqIndex, strDevVer);
-				if (dev.m_mapAttributes.Count == 0)
-				{
-					Log.Error($"编号为{seqIndex}的rhub设备属性数量为0");
-					return null;
-				}
-
-				var devIndex = dev.m_strOidIndex;
-				if (HasSameIndexDev(m_mapAllMibData, type, devIndex))
-				{
-					Log.Error($"已经存在编号为{seqIndex}的rhub设备，添加失败");
-					return null;
-				}
-				dev.m_recordType = RecordDataType.NewAdd;
-
-				if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
-				{
-					Log.Error("设置rhub参数netRHUBOfpWorkMode失败");
-					return null;
-				}
-
-				if (!dev.SetFieldOriginValue("netRHUBType", strDevVer))
-				{
-					Log.Error("设置rhub参数netRHUBType失败");
-					return null;
-				}
-
-				if (!MoveDevFromWaitDelToModifyMap(type, dev, devIndex))
-				{
-					return null;
-				}
-
-				Log.Debug($"编号为{seqIndex}的rhub设备添加成功");
-				rhubList.Add(dev);
+				Log.Error($"编号为{nRhubNo}的rhub设备属性数量为0");
+				return null;
 			}
-			return rhubList;
+
+			var devIndex = dev.m_strOidIndex;
+			if (HasSameIndexDev(m_mapAllMibData, type, devIndex))
+			{
+				Log.Error($"已经存在编号为{nRhubNo}的rhub设备，添加失败");
+				return null;
+			}
+			dev.m_recordType = RecordDataType.NewAdd;
+
+			if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
+			{
+				Log.Error("设置rhub参数netRHUBOfpWorkMode失败");
+				return null;
+			}
+
+			if (!dev.SetFieldOriginValue("netRHUBType", strDevVer))
+			{
+				Log.Error("设置rhub参数netRHUBType失败");
+				return null;
+			}
+
+			if (!MoveDevFromWaitDelToModifyMap(type, dev, devIndex))
+			{
+				return null;
+			}
+
+			Log.Debug($"编号为{nRhubNo}的rhub设备添加成功");
+
+			return dev;
 		}
 
 		/// <summary>
@@ -732,7 +728,7 @@ namespace NetPlan
 
 				if (item.m_recordType == RecordDataType.NewAdd)
 				{
-					/// 天线阵的后处理
+					// 天线阵的后处理
 					if (devType == EnumDevType.ant)
 					{
 						var drDev = new NetDevAnt();
@@ -922,9 +918,7 @@ namespace NetPlan
 		/// <returns></returns>
 		private IEnumerable<RruPortInfo> GetRruPortInfoByIndex(string strIndex)
 		{
-			int rruNo;
-
-			if (!int.TryParse(strIndex.Trim('.'), out rruNo))
+			if (!int.TryParse(strIndex.Trim('.'), out _))
 			{
 				Log.Error($"传入的{strIndex}存在非法字符");
 				return null;
@@ -1319,7 +1313,7 @@ namespace NetPlan
 		/// <param name="dev"></param>
 		/// <param name="rpi"></param>
 		/// <param name="mapResult"></param>
-		/// <param name="bCellFix"></param>
+		/// <param name="mapLcStauts"></param>
 		private static bool GetRruPortToCellInfo(DevAttributeInfo dev, RruPortInfo rpi,
 			ref Dictionary<string, NPRruToCellInfo> mapResult,
 			ref Dictionary<string, bool> mapLcStauts)

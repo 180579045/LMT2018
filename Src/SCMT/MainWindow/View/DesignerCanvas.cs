@@ -380,11 +380,9 @@ namespace SCMTMainWindow.View
                 newItem.ItemName = strrHUBFullName;
 
                 //添加 rHUB 的时候需要给基站下发，然后获取设备信息
-                List<int> listIndex = new List<int>();
-                listIndex.Add(nrHUBNo);
-                var devrHUBInfo = MibInfoMgr.GetInstance().AddNewRhub(listIndex, dlg.strrHUBType, dlg.strWorkModel);
+                var devrHUBInfo = MibInfoMgr.GetInstance().AddNewRhub(nrHUBNo, dlg.strrHUBType, dlg.strWorkModel);
 
-                if(devrHUBInfo == null || devrHUBInfo.Count == 0)
+                if(devrHUBInfo == null)
                 {
                     MessageBox.Show("MibInfoMgr.GetInstance().AddNewRhub 返回为空");
                     return false;
@@ -392,15 +390,15 @@ namespace SCMTMainWindow.View
 
                 if(g_AllDevInfo.ContainsKey(EnumDevType.rhub))
                 {
-                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo.m_strOidIndex);
                 }
                 else
                 {
                     g_AllDevInfo.Add(EnumDevType.rhub, new Dictionary<string, string>());
-                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo[0].m_strOidIndex);
+                    g_AllDevInfo[EnumDevType.rhub].Add(strrHUBFullName, devrHUBInfo.m_strOidIndex);
                 }
                 newItem.DevType = EnumDevType.rhub;
-                newItem.DevIndex = devrHUBInfo[0].m_strOidIndex;
+                newItem.DevIndex = devrHUBInfo.m_strOidIndex;
 
                 if (dragObject.DesiredSize.HasValue)
                 {
@@ -418,7 +416,7 @@ namespace SCMTMainWindow.View
                 this.SelectionService.SelectItem(newItem);
                 newItem.Focus();
 
-                CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo[0]);
+                CreateGirdForNetInfo(strrHUBFullName, devrHUBInfo);
 
                 //查看 NetPlan中，是否点击连接线
                 Grid ucTest = GetRootElement<Grid>(newItem, "MainGrid");
