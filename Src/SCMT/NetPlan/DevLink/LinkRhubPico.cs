@@ -26,7 +26,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != picoClone.m_recordType)
 			{
-				picoClone.m_recordType = RecordDataType.Modified;
+				picoClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			// 设置pico中连接rhub的信息
@@ -113,7 +113,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != picoClone.m_recordType)
 			{
-				picoClone.m_recordType = RecordDataType.Modified;
+				picoClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			mapMibInfo[EnumDevType.rru].Remove(m_picoDev);

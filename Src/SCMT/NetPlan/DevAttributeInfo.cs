@@ -45,6 +45,8 @@ namespace NetPlan
 			m_enumDevType = mEnumDevType;
 
 			InitDevInfo(mEnumDevType, devIndex);
+
+			SetFieldLatestValue(m_strRsMibName, "4");
 		}
 
 		/// <summary>
@@ -59,6 +61,8 @@ namespace NetPlan
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
 			InitDevInfo(mEnumDevType);
+
+			SetFieldLatestValue(m_strRsMibName, "4");
 		}
 
 		/// <summary>
@@ -159,7 +163,16 @@ namespace NetPlan
 				return;
 			}
 
+			var rsMl = tbl.GetRowStatusMibName();
+			if (null == rsMl)
+			{
+				return;
+			}
+
 			m_mapAttributes = attributes;
+			m_strRsMibName = rsMl.childNameMib;
+
+			AddRowStatusToAttributeMap(rsMl, "6");
 
 			// 还需要加上索引列
 			if (!m_bIsScalar)

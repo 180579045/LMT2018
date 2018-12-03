@@ -313,8 +313,8 @@ namespace NetPlan
 			{
 				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
 				mibAttri = mibLeaf,
-				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),      // 索引只读
-				m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
+				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),			// 索引只读
+				m_bVisible = !mibLeaf.IsRowStatus()					// 行状态不显示
 			};
 
 			return info;
@@ -351,7 +351,7 @@ namespace NetPlan
 				}
 			}
 
-			dev.m_recordType = RecordDataType.Original;
+			dev.SetDevRecordType(RecordDataType.Original);
 
 			return dev;
 		}
@@ -396,8 +396,8 @@ namespace NetPlan
 					{
 						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
-						m_bReadOnly = !childLeaf.IsEmpoweredModify(),      // 索引只读
-						m_bVisible = (childLeaf.ASNType != "RowStatus")   // 行状态不显示
+						m_bReadOnly = !childLeaf.IsEmpoweredModify(),		// 索引只读
+						m_bVisible = !childLeaf.IsRowStatus()				// 行状态不显示
 					};
 				}
 				else
@@ -415,7 +415,7 @@ namespace NetPlan
 				dev.m_mapAttributes[childLeaf.childNameMib] = info;
 			}
 
-			dev.m_recordType = RecordDataType.Original;
+			dev.SetDevRecordType(RecordDataType.Original);
 
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 

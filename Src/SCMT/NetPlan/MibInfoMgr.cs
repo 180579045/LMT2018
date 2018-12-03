@@ -337,7 +337,8 @@ namespace NetPlan
 				Log.Error($"已经存在编号为{nRhubNo}的rhub设备，添加失败");
 				return null;
 			}
-			dev.m_recordType = RecordDataType.NewAdd;
+
+			dev.SetDevRecordType(RecordDataType.NewAdd);
 
 			if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
 			{
@@ -386,7 +387,7 @@ namespace NetPlan
 			else
 			{
 				Log.Debug($"本地小区{nLocalCellId}已经存在不需要重新生成");
-				dev.m_recordType = RecordDataType.Modified;
+				dev.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			return dev;
@@ -409,7 +410,7 @@ namespace NetPlan
 				return null;
 			}
 
-			dev.m_recordType = RecordDataType.Original;
+			dev.SetDevRecordType(RecordDataType.Original);
 			lock (_syncObj)
 			{
 				AddDevToMap(m_mapAllMibData, type, dev);
@@ -615,7 +616,7 @@ namespace NetPlan
 				dev.SetFieldLatestValue(strFieldName, strValue);
 				if (RecordDataType.NewAdd != dev.m_recordType)
 				{
-					dev.m_recordType = RecordDataType.Modified;
+					dev.SetDevRecordType(RecordDataType.Modified);
 				}
 				return true;
 			}
@@ -746,7 +747,7 @@ namespace NetPlan
 				}
 				else
 				{
-					item.m_recordType = RecordDataType.Original;    // 下发成功的都设置为原始数据
+					item.SetDevRecordType(RecordDataType.Original);		// 下发成功的都设置为原始数据
 				}
 
 				Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
@@ -880,7 +881,7 @@ namespace NetPlan
 
 							if (dev.m_recordType != RecordDataType.NewAdd)
 							{
-								dev.m_recordType = RecordDataType.Modified;
+								dev.SetDevRecordType(RecordDataType.Modified);
 							}
 						}
 					}
@@ -1066,7 +1067,7 @@ namespace NetPlan
 			}
 			else
 			{
-				dai.m_recordType = RecordDataType.WaitDel;
+				dai.SetDevRecordType(RecordDataType.WaitDel);
 			}
 		}
 
@@ -1151,7 +1152,7 @@ namespace NetPlan
 				}
 			}
 
-			dev.m_recordType = RecordDataType.NewAdd;
+			dev.SetDevRecordType(RecordDataType.NewAdd);
 
 			return dev;
 		}
@@ -1523,7 +1524,7 @@ namespace NetPlan
 
 				if (RecordDataType.NewAdd != dev.m_recordType)
 				{
-					dev.m_recordType = RecordDataType.Modified;
+					dev.SetDevRecordType(RecordDataType.Modified);
 				}
 			}
 

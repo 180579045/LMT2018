@@ -35,7 +35,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != rruClone.m_recordType)
 			{
-				rruClone.m_recordType = RecordDataType.Modified;
+				rruClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			// 删除旧的连接记录
@@ -61,7 +61,8 @@ namespace NetPlan.DevLink
 			}
 
 			// 设置netRRUEntry表和netIROptPlanEntry表
-			var irRecord = new DevAttributeInfo(EnumDevType.board_rru, m_irRecordIndex) { m_recordType = RecordDataType.NewAdd };
+			var irRecord = new DevAttributeInfo(EnumDevType.board_rru, m_irRecordIndex);
+			irRecord.SetDevRecordType(RecordDataType.NewAdd);
 
 			// 所有的信息全部填在rruClone中，如果失败就直接return
 			var rruClone = m_rruDev.DeepClone();
@@ -72,7 +73,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != rruClone.m_recordType)
 			{
-				rruClone.m_recordType = RecordDataType.Modified;
+				rruClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			// 使用rruClone替代原来的rru，然后增加irRecord记录

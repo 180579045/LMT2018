@@ -36,7 +36,7 @@ namespace NetPlan
 				dev = new DevAttributeInfo(devType, strIndexTemp);
 				dev.SetFieldLatestValue(mibName, dValue);
 				dev.SetFieldOriginValue(mibName, dValue, true);
-				dev.m_recordType = RecordDataType.Original;
+				dev.SetDevRecordType(RecordDataType.Original);
 				MibInfoMgr.GetInstance().AddDevMibInfo(devType, dev);
 
 				Log.Debug($"增加本地小区{nLcNo}布配开关为：{tmp}");

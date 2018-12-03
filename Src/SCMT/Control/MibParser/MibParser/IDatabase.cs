@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MIBDataParser.JSONDataMgr;
 
@@ -35,6 +36,15 @@ namespace MIBDataParser
 		public MibTable()
 		{
 			childList = new List<MibLeaf>();
+		}
+
+		/// <summary>
+		/// 获取行状态的MIB名
+		/// </summary>
+		/// <returns></returns>
+		public MibLeaf GetRowStatusMibName()
+		{
+			return childList.FirstOrDefault(item => item.IsRowStatus());
 		}
 	}
 
@@ -92,6 +102,11 @@ namespace MIBDataParser
 				return false;
 
 			return !DisableEditMibHelper.IsDisabledEditMib(childNameMib);
+		}
+
+		public bool IsRowStatus()
+		{
+			return ASNType.Equals("RowStatus", StringComparison.OrdinalIgnoreCase);
 		}
 
 		#endregion
