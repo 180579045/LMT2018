@@ -405,13 +405,7 @@ namespace SCMTMainWindow
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
 			{
-				try
-				{
-				}
-				catch (Exception ex)
-				{
-					throw new CustomException("尚未选中要操作的基站");
-				}
+				throw new CustomException("尚未选中要操作的基站");
 			}
 
 			NodeB node = new NodeB(targetIp, "NodeB");
