@@ -343,7 +343,7 @@ namespace NetPlan
                 return true;
             }
             //中间变量，遍历元素it
-            if (name.StartsWith("it."))
+            if (name.StartsWith("it.") || name.Equals("it"))
             {
                 return true;
             }
@@ -357,7 +357,7 @@ namespace NetPlan
         public EnumResultType GetPropertyConditionValue(string property, DevAttributeInfo curRecord)
         {
             List<string> propertyNameList;
-            Dictionary<string, string> propertyValueDic = new Dictionary<string, string>();
+            Dictionary<string, object> propertyValueDic = new Dictionary<string, object>();
             CommCheckRuleHelper commCheckRule = new CommCheckRuleHelper();
             if (!CommCheckRuleHelper.GetParaByConditionalExp(property, out propertyNameList))
             {
@@ -956,13 +956,8 @@ namespace NetPlan
                 return paraRes;
             }
             //3.直接进行计算
-            Dictionary<string, string> paraValueStringDic = new Dictionary<string, string>();
-            foreach (var para in paraValueDic)
-            {
-                paraValueStringDic.Add(para.Key, para.Value.ToString());
-            }
             string result;
-            if (!CommCheckRuleHelper.CalculateConditionExpr(rules, paraValueStringDic, out result))
+            if (!CommCheckRuleHelper.CalculateConditionExpr(rules, paraValueDic, out result))
             {
                 Log.Warn("CalculateConditionExpr " + rules + " fail");
                 return EnumResultType.fail;

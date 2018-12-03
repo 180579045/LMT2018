@@ -1,4 +1,5 @@
 ﻿using CommonUtility;
+using LogManager;
 using MIBDataParser.JSONDataMgr;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetPlan;
@@ -19,6 +20,10 @@ namespace NetPlan.Tests
     [TestClass()]
     public class NPECheckRulesHelperTests
     {
+        public NPECheckRulesHelperTests()
+        {
+            Log.SetLogFileName("NPECheckRulesHelperTests.log");
+        }
         private async Task simConnectEnb()
         {
             CSEnbHelper.SetCurEnbAddr("172.27.245.92");
@@ -217,7 +222,7 @@ namespace NetPlan.Tests
             netAntInfo.Add(oneAnt);
 
             List<DevAttributeInfo> netRruAntInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneRruAnt = new DevAttributeInfo(EnumDevType.rru_ant, ".0.1");
+            DevAttributeInfo oneRruAnt = new DevAttributeInfo(EnumDevType.rru_ant, ".0.0");
             oneRruAnt.m_mapAttributes["netSetRRUPortWithAntennaRowStatus"].m_strLatestValue = 4.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortAntArrayNo"].m_strLatestValue = 1.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortAntArrayPathNo"].m_strLatestValue = 1.ToString();

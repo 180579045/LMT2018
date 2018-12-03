@@ -48,6 +48,8 @@ namespace NetPlan
                 case "/":
                 case "%":
                     return 8;
+                case "Contains":
+                    return 9;
                 default:
                     return -1;
             }
@@ -65,7 +67,8 @@ namespace NetPlan
             if ( (sign == "*" || sign == "/" || sign == "%")
                 || (sign == "+" ) || (sign == "<<" || sign == ">>")
                 || (sign == "<=" || sign == ">=") || (sign == "<" || sign == ">")
-                || (sign == "==" || sign == "!=") || (sign == "&&") || (sign == "||"))
+                || (sign == "==" || sign == "!=") || (sign == "&&") || (sign == "||")
+                || (sign == "Contains"))
             {
                 return true;
             }
@@ -84,7 +87,7 @@ namespace NetPlan
             length = 0;
             //只有网规模块使用，暂时不考虑-减号，主要是目前校验规则中有条件语句判断是否为-1，影响计算
             if ((sign == "(" || sign == ")") || (sign == "*" || sign == "/" || sign == "%")
-                || (sign == "+"))
+                || (sign == "+") || (sign == "Contains"))
             {
                 length = sign.Length;
                 return true;
@@ -112,7 +115,7 @@ namespace NetPlan
             else
                 return false;
         }
-        public static string CalculateSignExpr(string para1, string para2, string sign)
+        public static string CalculateSignExpr(object para1, object para2, string sign)
         {
             try
             {
@@ -147,19 +150,28 @@ namespace NetPlan
                     //以上都是整型的计算，下面有可能是字符串比较
                     case "==":
                         {
-                            int ret = String.Compare(para1, para2, StringComparison.OrdinalIgnoreCase);
-                            return 0 == ret ? true.ToString() : false.ToString();
-                        }
-                    case "!=":
-                        {
-                            int ret = string.Compare(para1, para2, StringComparison.OrdinalIgnoreCase);
-                            if (0 != ret)
+                            if (para1 is string && para2 is string)
                             {
-                                return true.ToString();
+                                int ret = String.Compare(para1.ToString(), para2.ToString(),
+                                    StringComparison.OrdinalIgnoreCase);
+                                return 0 == ret ? true.ToString() : false.ToString();
                             }
                             else
                             {
-                                return false.ToString();
+                                return null;
+                            }
+                        }
+                    case "!=":
+                        {
+                            if (para1 is string && para2 is string)
+                            {
+                                int ret = String.Compare(para1.ToString(), para2.ToString(),
+                                    StringComparison.OrdinalIgnoreCase);
+                                return 0 == ret ? false.ToString() : true.ToString();
+                            }
+                            else
+                            {
+                                return null;
                             }
                         }
                     case "&&":
@@ -189,6 +201,26 @@ namespace NetPlan
                                 return false.ToString();
                             }
                         }
+                    case "Contains":
+                    {
+                        if (para1 is List<string> && para2 is string)
+                        {
+                               
+                            IEnumerable list = para1 as IEnumerable;
+                            foreach (string tmp in list)
+                            {
+                                if (tmp.Equals(para2))
+                                {
+                                    return true.ToString();
+                                }
+                            }
+                            return false.ToString();
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
                     default:
                         return null;
                 }
@@ -446,9 +478,9 @@ namespace NetPlan
             return true;
         }
 
-        public static bool CalculatePolishExp(string expr, Dictionary<string, string> paraValueDic, out string exprResult)
+        public static bool CalculatePolishExp(string expr, Dictionary<string, object> paraValueDic, out string exprResult)
         {
-            Stack<string> dataValueStack = new Stack<string>();
+            Stack<object> dataValueStack = new Stack<object>();
             List<string> exprPolishList;
             exprResult = "";
             //携带关键词where的话，则把此去除
@@ -482,7 +514,7 @@ namespace NetPlan
                     //是操作数，则从字典中取值
                     if (paraValueDic.ContainsKey(keyWord))
                     {
-                        string dataValue;
+                        object dataValue;
                         if (!paraValueDic.TryGetValue(keyWord, out dataValue))
                         {
                             Log.Error("can't find value of " + keyWord + "in paraValueDic");
@@ -507,11 +539,16 @@ namespace NetPlan
                     var secondData = dataValueStack.Pop();
                     var firstData = dataValueStack.Pop();
                     //将操作数与操作符组合计算，并将最新计算的值放入栈中保存
-                    dataValueStack.Push(CalculateSignExpr(firstData, secondData, keyWord));
+                    string res = CalculateSignExpr(firstData, secondData, keyWord);
+                    if (string.IsNullOrEmpty(res))
+                    {
+                        return false;
+                    }
+                    dataValueStack.Push(res);
                 }
             }
             //栈顶元素就是计算的最终结果
-            exprResult = dataValueStack.Peek();
+            exprResult = dataValueStack.Peek().ToString();
             return true;
         }
     }
