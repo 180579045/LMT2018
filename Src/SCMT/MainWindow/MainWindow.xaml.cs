@@ -2091,6 +2091,10 @@ namespace SCMTMainWindow
 				g_NetPlan = new View.NetPlan();
 				netPlanScrollView.Content = g_NetPlan;
 			}
+			else
+			{
+				g_NetPlan.ShowAvalonPanel();
+			}
 		}
 
 		private void NetPlanClose()

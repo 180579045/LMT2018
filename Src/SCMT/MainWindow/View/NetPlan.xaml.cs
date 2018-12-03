@@ -2284,11 +2284,11 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LayoutAnchorable_Closed(object sender, EventArgs e)
-        {
-            MyDesigner.g_AllDevInfo.Clear();
-            MyDesigner.Children.Clear();
-        }
+        //private void LayoutAnchorable_Closed(object sender, EventArgs e)
+        //{
+        //    MyDesigner.g_AllDevInfo.Clear();
+        //    MyDesigner.Children.Clear();
+        //}
 
         public void NetPlanClean()
         {
@@ -2608,7 +2608,31 @@ namespace SCMTMainWindow.View
             Grid.SetColumn(notBelongCellRect, 1);
 
         }
-    }
+
+		public void ShowAvalonPanel()
+		{
+			if(this.CenterView.Children.Count == 0)
+			{
+				this.CenterView.Children.Add(this.netPlanCanvas);
+			}
+			if(!this.leftList.Children.Contains(this.LeftView))
+			{
+				this.leftList.Children.Add(this.LeftView);
+			}
+			if(!this.leftList.Children.Contains(this.netPlanElement))
+			{
+				this.leftList.Children.Add(this.netPlanElement);
+			}
+			if(!this.leftList.Children.Contains(this.netPlanTemplate))
+			{
+				this.leftList.Children.Add(this.netPlanTemplate);
+			}
+			if(!this.PropertyView.Children.Contains(this.netPlanProperty))
+			{
+				this.PropertyView.Children.Add(this.netPlanProperty);
+			}
+		}
+	}
 
 	public static class DispatcherHelper
 	{
