@@ -117,7 +117,7 @@ namespace NetPlan
 				var mli = attribute.Value;
 				if (oldAttriMap.ContainsKey(mibName))
 				{
-					mli.m_strOriginValue = mli.m_strLatestValue;
+					mli.m_strLatestValue = mli.m_strOriginValue;
 					mli.m_strOriginValue = oldAttriMap[mibName].m_strOriginValue;
 				}
 			}

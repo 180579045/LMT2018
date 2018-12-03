@@ -198,9 +198,13 @@ namespace SCMTMainWindow.View
         private void SetCellProperty(int nCellID)
         {            
             var devAttr = MibInfoMgr.GetInstance().GetDevAttributeInfo($".{ nCellID }", EnumDevType.nrNetLc);
-            MyDesigner.CreateGirdForNetInfo("小区"+nCellID, devAttr);
-            MyDesigner.g_nowDevAttr = devAttr;
-        }
+
+	        if (null != devAttr && devAttr.m_recordType != RecordDataType.WaitDel)
+	        {
+				MyDesigner.CreateGirdForNetInfo("小区" + nCellID, devAttr);
+				MyDesigner.g_nowDevAttr = devAttr;
+			}
+		}
 
         /// <summary>
         /// 小区右键点击时，弹出菜单

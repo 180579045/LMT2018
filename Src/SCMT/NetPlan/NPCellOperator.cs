@@ -27,6 +27,7 @@ namespace NetPlan
 
 			var dValue = (bOpen ? "1" : "0");
 			const EnumDevType devType = EnumDevType.nrNetLcCtr;
+			var tmp = bOpen ? "打开" : "关闭";
 
 			// 修改内存中的数据，如果不存在，就添加
 			var dev = MibInfoMgr.GetInstance().GetDevAttributeInfo(strIndexTemp, devType);
@@ -38,12 +39,12 @@ namespace NetPlan
 				dev.m_recordType = RecordDataType.Original;
 				MibInfoMgr.GetInstance().AddDevMibInfo(devType, dev);
 
-				Log.Debug($"增加本地小区{nLcNo}布配开关为：{{bOpen ? \"打开\" : \"关闭\"}}");
+				Log.Debug($"增加本地小区{nLcNo}布配开关为：{tmp}");
 			}
 			else
 			{
 				MibInfoMgr.GetInstance().SetDevAttributeValue($".{nLcNo}", mibName, dValue, devType);
-				Log.Debug($"修改本地小区{nLcNo}布配开关为：{{bOpen ? \"打开\" : \"关闭\"}}");
+				Log.Debug($"修改本地小区{nLcNo}布配开关为：{tmp}");
 			}
 
 			return true;
@@ -263,7 +264,7 @@ namespace NetPlan
 
 			// 查询nrNetLcDev是否存在，如果不存在说明基站中肯定没有这个实例，且没有规划过
 			var lcDev = MibInfoMgr.GetInstance().GetDevAttributeInfo(cellIndex, EnumDevType.nrNetLc);
-			if (null == lcDev)
+			if (null == lcDev || lcDev.m_recordType == RecordDataType.WaitDel)
 			{
 				Log.Debug($"索引为{nCellId}的本地小区实例不存在，状态为未规划");
 				return LcStatus.UnPlan;
@@ -325,6 +326,8 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool DelLcNetPlan(int nLocalCellId, string targetIp)
 		{
+			Log.Debug($"删除本地小区{nLocalCellId}网规信息");
+
 			var lcState = GetLcStatus(nLocalCellId, targetIp);
 			if (LcStatus.LcUnBuilded != lcState)
 			{
