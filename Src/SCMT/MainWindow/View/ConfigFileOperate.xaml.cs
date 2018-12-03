@@ -133,5 +133,25 @@ namespace SCMTMainWindow.View
 		{
 			this.Close();
 		}
+
+		/// <summary>
+		/// 生成路径选择
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void btnPathToSave_Click(object sender, RoutedEventArgs e)
+		{
+			System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
+			dlg.Description = "请选择配置文件的保存路径";
+			if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+			{
+				if(string.IsNullOrEmpty(dlg.SelectedPath))
+				{
+					MessageBox.Show("路径不能为空");
+					return;
+				}
+				this.tbPathToSave.Text = dlg.SelectedPath;
+			}
+		}
 	}
 }

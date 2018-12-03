@@ -398,7 +398,7 @@ namespace SCMTMainWindow.View
                 strText += item.cellId + ",";
             }
 
-            targetText.Text = strText.TrimEnd(',');
+            targetText.Text = string.IsNullOrEmpty(strText) ? "-" : strText.TrimEnd(',');
 
             targetPop.IsOpen = false;
         }
