@@ -22,13 +22,14 @@ namespace CfgFileOperation
         static void Main(string[] args)
         {
             TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
-            initPath.BeyondCompareInitCfgMain();
+            initPath.Main();
+            //initPath.BeyondCompareInitCfgMain();
             //Log.Error("解析板卡到rru的连接，信息缺失");
             //Test test = new Test();
 
             //test.TestBeyondCompareMain();
 
-            //test.testForCreatePatchAndInit();
+            new Test().testForCreatePatchAndInit();
 
             //test.TestReadOM_STRU_IcfIdxTableItem();
             //test.testForParseAlarmEx();
@@ -1546,7 +1547,8 @@ namespace CfgFileOperation
             string antennaExPath = "LTE_基站天线广播波束权值参数配置表_5G.xls";//2.天线信息
             string alarmExPath   = "eNB告警信息表.xls";//3.告警信息
             string rruInfoExPath = "RRU基本信息表.xls";//4.RRU信息
-            string reclistExPath = "RecList_V6.00.50.05.40.07.01.xls";//5.reclist
+            //string reclistExPath = "RecList_V6.00.50.05.40.07.01.xls";//5.
+            string reclistExPath = "5G NSA无线网络和业务参数标定手册_V1.00.03-华为版本.xls";//5.reclist
             string selfDefExPath = "自定义_初配数据文件_ENB_5G_00_00_05.xls";//6.自定义文件(init, patch)
 
             CfgOp cfgOp = new CfgOp();
@@ -1557,6 +1559,7 @@ namespace CfgFileOperation
                 { "RruInfo" ,dataBasePath+rruInfoExPath},
                 { "Reclist" ,dataBasePath+reclistExPath},
                 { "SelfDef" ,dataBasePath+selfDefExPath},
+                { "OutDir" , dataBasePath },
             };
             cfgOp.CreatePatchAndInitCfg(paths);
         }

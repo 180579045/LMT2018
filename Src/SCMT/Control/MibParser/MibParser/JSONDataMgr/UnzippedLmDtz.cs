@@ -179,7 +179,7 @@ namespace MIBDataParser.JSONDataMgr
             //3. 解压缩rar文件
             try
             {
-                string outfile = extractPath + "output\\lm.mdb";
+                string outfile = extractPath + "\\lm.mdb";
                 //var dte = Directory.Exists(outfile);
                 if (File.Exists(outfile))
                 {
@@ -322,7 +322,7 @@ namespace MIBDataParser.JSONDataMgr
         bool UzipRenameDirectoryAssisDeal(string destinationDirectoryName, out string err)
         {
             //return moveFile(destinationDirectoryName + "lm", destinationDirectoryName + "lm.mdb" , out err);
-            return moveFile(destinationDirectoryName + "/output/lm.mdb", destinationDirectoryName + "lm.mdb", out err);
+            return moveFile(destinationDirectoryName + "\\lm.mdb", destinationDirectoryName + "lm.mdb", out err);
         }
 
         /// <summary>
