@@ -21,15 +21,54 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
-            TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
-            initPath.Main();
+            Dictionary<string, string> path = null;
+            if (args.Count() != 0)
+            {
+                path = new Dictionary<string, string>();
+                foreach (var par in args)
+                {
+                    string par_str = par.ToString();
+                    int pos = par_str.IndexOf(':');
+                    if (pos != -1)
+                    {
+                        string key = par_str.Substring(0, pos);
+                        string val = par_str.Substring(pos + 1);
+                        path.Add(key, val);
+                    }
+                }
+                Dictionary<string, string> path2 = new Dictionary<string, string>();
+                if (path.ContainsKey("OutDir"))
+                {
+                    foreach (var key in path.Keys)
+                    {
+                        if (String.Equals("OutDir", key))
+                        {
+                            path2.Add(key, path[key]);
+                        }
+                        else
+                        {
+                            path2.Add(key, path["OutDir"] + path[key]);
+                        }
+                    }
+                }
+                path = path2;
+            }
+            
+            if (path != null)
+            {
+                new Test().testCmdlineCreateInitPatch(path);
+            }
+
+
+            //TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
+            //initPath.Main();
             //initPath.BeyondCompareInitCfgMain();
             //Log.Error("解析板卡到rru的连接，信息缺失");
             //Test test = new Test();
 
             //test.TestBeyondCompareMain();
 
-            new Test().testForCreatePatchAndInit();
+            //new Test().testForCreatePatchAndInit();
 
             //test.TestReadOM_STRU_IcfIdxTableItem();
             //test.testForParseAlarmEx();
@@ -1562,6 +1601,18 @@ namespace CfgFileOperation
                 { "OutDir" , dataBasePath },
             };
             cfgOp.CreatePatchAndInitCfg(paths);
+        }
+        /// <summary>
+        /// 命令行生成
+        /// </summary>
+        /// <param name="paths"></param>
+        void testCmdlineCreateInitPatch(Dictionary<string, string> paths)
+        {
+            foreach (var key in paths.Keys)
+            {
+                Console.WriteLine(String.Format("cmdline:key={0},val={1}",key,paths[key]));
+            }
+            new CfgOp().CreatePatchAndInitCfg(paths);
         }
 
         void testForParseAlarmEx()
