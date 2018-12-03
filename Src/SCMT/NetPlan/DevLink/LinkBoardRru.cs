@@ -35,7 +35,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != rruClone.m_recordType)
 			{
-				rruClone.m_recordType = RecordDataType.Modified;
+				rruClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			// 删除旧的连接记录
@@ -61,7 +61,8 @@ namespace NetPlan.DevLink
 			}
 
 			// 设置netRRUEntry表和netIROptPlanEntry表
-			var irRecord = new DevAttributeInfo(EnumDevType.board_rru, m_irRecordIndex) { m_recordType = RecordDataType.NewAdd };
+			var irRecord = new DevAttributeInfo(EnumDevType.board_rru, m_irRecordIndex);
+			irRecord.SetDevRecordType(RecordDataType.NewAdd);
 
 			// 所有的信息全部填在rruClone中，如果失败就直接return
 			var rruClone = m_rruDev.DeepClone();
@@ -72,7 +73,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != rruClone.m_recordType)
 			{
-				rruClone.m_recordType = RecordDataType.Modified;
+				rruClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			// 使用rruClone替代原来的rru，然后增加irRecord记录
@@ -167,8 +168,8 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		private bool SetRruToBoardInfo(DevAttributeInfo rruDev, int nRruPort, DevAttributeInfo boardDev, int nBoardPort)
 		{
-			if (null == rruDev || nRruPort < 0 || nRruPort > 4 ||
-				null == boardDev || nBoardPort < 0 || nBoardPort > 7)	// todo 注意硬编码
+			if (null == rruDev || nRruPort < 0 || nRruPort > MagicNum.RRU_TO_BBU_PORT_CNT - 1 ||
+				null == boardDev || nBoardPort < 0 || nBoardPort > MagicNum.BBU_IR_PORT_CNT - 1)
 			{
 				return false;
 			}

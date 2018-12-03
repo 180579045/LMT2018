@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommonUtility;
+﻿using CommonUtility;
 using LinkPath;
 using LogManager;
-
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// 天线阵设备
@@ -84,6 +81,87 @@ namespace NetPlan
 		}
 
 		/// <summary>
+		/// 下发天线器件库信息
+		/// </summary>
+		/// <param name="ant"></param>
+		public bool DistributeAntTypeInfo(DevAttributeInfo ant)
+		{
+			var strVendor = GetAntVendorIdx(ant);
+			var strType = GetAntTypeIdx(ant);
+			if (String.IsNullOrEmpty(strVendor) || String.IsNullOrEmpty(strType))
+			{
+				Log.Error($"索引为{ant.m_strOidIndex}的天线阵信息查找厂家索引和类型索引失败");
+				return false;
+			}
+
+			if (IsExistAntType(strVendor, strType))
+			{
+				Log.Debug($"已经存在索引为.{strVendor}.{strType}的天线阵器件实例，无需下发天线阵器件库信息");
+				return true;
+			}
+
+			var antStaticInfo = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(strVendor, strType);
+			if (null == antStaticInfo)
+			{
+				Log.Error($"查找厂家索引为{strVendor}、类型索引为{strType}的天线阵器件库信息失败");
+				return false;
+			}
+
+			var dev = GenerateAntTypeDev(antStaticInfo);
+			if (null == dev)
+			{
+				Log.Error("生成天线阵类型实例失败");
+				return false;
+			}
+
+			// 下发信息到基站
+			if (!MibInfoMgr.DistributeSnmpData(dev, EnumSnmpCmdType.Add, CSEnbHelper.GetCurEnbAddr()))
+			{
+				Log.Error($"下发索引为{ant.m_strOidIndex}的天线阵的器件库信息失败");
+				return false;
+			}
+
+			return true;
+		}
+
+		#region 私有方法区
+
+		private bool IsExistAntType(string strVendorIdx, string strTypeIdx)
+		{
+			var idx = $".{strVendorIdx}.{strTypeIdx}";
+			var rs = CommLinkPath.GetMibValueFromCmdExeResult(idx, "GetAntennaArrayTypeInfo", "antArrayRowStatus",
+				CSEnbHelper.GetCurEnbAddr());
+			return "4" == rs;
+		}
+
+		private string GetAntVendorIdx(DevAttributeInfo ant)
+		{
+			return ant.GetNeedUpdateValue("netAntArrayVendorIndex");
+		}
+
+		private string GetAntTypeIdx(DevAttributeInfo ant)
+		{
+			return ant.GetNeedUpdateValue("netAntArrayTypeIndex");
+		}
+
+		private DevAttributeBase GenerateAntTypeDev(AntType at)
+		{
+			var idx = $".{at.antArrayVendor}.{at.antArrayIndex}";
+			var dev = new DevAttributeBase("antennaArrayTypeEntry", idx);
+			if (dev.m_mapAttributes.Count == 0)
+			{
+				return null;
+			}
+
+			dev.SetFieldOriginValue("antArrayModelName", at.antArrayModelName);
+			dev.SetFieldOriginValue("antArrayType", CalculateBitsValue(at.antArrayType).ToString());
+			dev.SetFieldOriginValue("antArrayNum", at.antArrayNum.ToString());
+			dev.SetFieldOriginValue("antArrayDistance", at.antArrayDistance.ToString());
+
+			return dev;
+		}
+
+		/// <summary>
 		/// 根据天线阵的信息，判断wcb信息如果操作
 		/// ant状态为newadd，则直接调用AddAntennaWeightMultAntInfo命令
 		/// ant状态为original，直接跳过，不处理
@@ -98,10 +176,13 @@ namespace NetPlan
 			{
 				case RecordDataType.Original:
 					return AntWcbOpType.skip;
+
 				case RecordDataType.NewAdd:
 					return AntWcbOpType.only_add;
+
 				case RecordDataType.WaitDel:
 					return AntWcbOpType.only_del;
+
 				case RecordDataType.Modified:
 					if (!IsSameTypeAntWithPrevious(ant))
 					{
@@ -186,7 +267,7 @@ namespace NetPlan
 			else
 			{
 				Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵耦合系数信息失败");
-				return 0;	// 只有部分天线阵才有耦合系数
+				return 0;   // 只有部分天线阵才有耦合系数
 			}
 
 			// todo 波束宽度扫描信息后续添加
@@ -240,7 +321,6 @@ namespace NetPlan
 			}
 		}
 
-
 		/// <summary>
 		/// 生成天线阵的耦合系数
 		/// </summary>
@@ -283,7 +363,6 @@ namespace NetPlan
 			}
 		}
 
-
 		private bool SaveWcbDev(EnumDevType type, DevAttributeInfo dev)
 		{
 			List<DevAttributeInfo> refList = null;
@@ -292,12 +371,15 @@ namespace NetPlan
 				case EnumDevType.antWeight:
 					refList = m_antWeightList ?? new List<DevAttributeInfo>();
 					break;
+
 				case EnumDevType.antCoup:
 					refList = m_antCouplingList ?? new List<DevAttributeInfo>();
 					break;
+
 				case EnumDevType.antBfScan:
 					refList = m_antBfScanList ?? new List<DevAttributeInfo>();
 					break;
+
 				default:
 					throw new ArgumentOutOfRangeException(nameof(type), type, null);
 			}
@@ -322,89 +404,11 @@ namespace NetPlan
 			}
 
 			return m_antWeightList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp)) &&
-			       m_antCouplingList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp)) &&
+				   m_antCouplingList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp)) &&
 				   m_antBfScanList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp));
 		}
 
-		/// <summary>
-		/// 下发天线器件库信息
-		/// </summary>
-		/// <param name="ant"></param>
-		public bool DistributeAntTypeInfo(DevAttributeInfo ant)
-		{
-			var strVendor = GetAntVendorIdx(ant);
-			var strType = GetAntTypeIdx(ant);
-			if (String.IsNullOrEmpty(strVendor)|| String.IsNullOrEmpty(strType))
-			{
-				Log.Error($"索引为{ant.m_strOidIndex}的天线阵信息查找厂家索引和类型索引失败");
-				return false;
-			}
-
-			if (IsExistAntType(strVendor, strType))
-			{
-				Log.Debug($"已经存在索引为.{strVendor}.{strType}的天线阵器件实例，无需下发天线阵器件库信息");
-				return true;
-			}
-
-			var antStaticInfo = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(strVendor, strType);
-			if (null == antStaticInfo)
-			{
-				Log.Error($"查找厂家索引为{strVendor}、类型索引为{strType}的天线阵器件库信息失败");
-				return false;
-			}
-
-			var dev = GenerateAntTypeDev(antStaticInfo);
-			if (null == dev)
-			{
-				Log.Error("生成天线阵类型实例失败");
-				return false;
-			}
-
-			// 下发信息到基站
-			if (!MibInfoMgr.DistributeSnmpData(dev, EnumSnmpCmdType.Add, CSEnbHelper.GetCurEnbAddr()))
-			{
-				Log.Error($"下发索引为{ant.m_strOidIndex}的天线阵的器件库信息失败");
-				return false;
-			}
-
-			return true;
-		}
-
-
-		private bool IsExistAntType(string strVendorIdx, string strTypeIdx)
-		{
-			var idx = $".{strVendorIdx}.{strTypeIdx}";
-			var rs = CommLinkPath.GetMibValueFromCmdExeResult(idx, "GetAntennaArrayTypeInfo", "antArrayRowStatus",
-				CSEnbHelper.GetCurEnbAddr());
-			return "4" == rs;
-		}
-
-		private string GetAntVendorIdx(DevAttributeInfo ant)
-		{
-			return ant.GetNeedUpdateValue("netAntArrayVendorIndex");
-		}
-
-		private string GetAntTypeIdx(DevAttributeInfo ant)
-		{
-			return ant.GetNeedUpdateValue("netAntArrayTypeIndex");
-		}
-
-		private DevAttributeBase GenerateAntTypeDev(AntType at)
-		{
-			var idx = $".{at.antArrayVendor}.{at.antArrayIndex}";
-			var dev = new DevAttributeBase("antennaArrayTypeEntry", idx);
-			if (dev.m_mapAttributes.Count == 0)
-			{
-				return null;
-			}
-
-			dev.SetFieldOriginValue("antArrayModelName", at.antArrayModelName);
-			dev.SetFieldOriginValue("antArrayType", CalculateBitsValue(at.antArrayType).ToString());
-			dev.SetFieldOriginValue("antArrayNum", at.antArrayNum.ToString());
-			dev.SetFieldOriginValue("antArrayDistance", at.antArrayDistance.ToString());
-
-			return dev;
-		}
+		#endregion 私有方法区
 
 		#region 私有数据区
 
@@ -412,7 +416,7 @@ namespace NetPlan
 		private List<DevAttributeInfo> m_antCouplingList;
 		private List<DevAttributeInfo> m_antBfScanList;
 
-		#endregion
+		#endregion 私有数据区
 	}
 
 	internal enum AntWcbOpType
@@ -422,5 +426,4 @@ namespace NetPlan
 		only_del,
 		only_set,
 	}
-
 }

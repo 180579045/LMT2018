@@ -52,7 +52,7 @@ namespace NetPlan.Tests
 			var result = await db.initDatabase("172.27.245.92");
 			Assert.IsTrue(result);
 
-			var ret = NPSnmpOperator.InitNetPlanInfo();
+			var ret = await NPSnmpOperator.InitNetPlanInfo();
 			if (ret)
 			{
 				var strIndex = ".0.0.1";

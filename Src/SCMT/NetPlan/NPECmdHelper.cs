@@ -214,8 +214,6 @@ namespace NetPlan
 			return cmdList.Select(cmi => cmi.m_cmdNameEn).Where(cmdName => cmdName.StartsWith(cmdStr, true, CultureInfo.CurrentCulture)).ToList();
 		}
 
-
-
 		/// <summary>
 		/// 转换同类命令为MibLeaf
 		/// </summary>

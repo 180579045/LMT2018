@@ -405,13 +405,7 @@ namespace SCMTMainWindow
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
 			{
-				try
-				{
-				}
-				catch (Exception ex)
-				{
-					throw new CustomException("尚未选中要操作的基站");
-				}
+				throw new CustomException("尚未选中要操作的基站");
 			}
 
 			NodeB node = new NodeB(targetIp, "NodeB");
@@ -2090,6 +2084,10 @@ namespace SCMTMainWindow
 				bInitNetPlan = true;
 				g_NetPlan = new View.NetPlan();
 				netPlanScrollView.Content = g_NetPlan;
+			}
+			else
+			{
+				g_NetPlan.ShowAvalonPanel();
 			}
 		}
 
