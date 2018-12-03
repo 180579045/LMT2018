@@ -104,7 +104,6 @@ namespace NetPlan
 
 		/// <summary>
 		/// 获取板卡工作模式描述列表
-		/// TODO 这样不太好
 		/// </summary>
 		/// <returns></returns>
 		public static IEnumerable<string> GetBoardWorkMode()

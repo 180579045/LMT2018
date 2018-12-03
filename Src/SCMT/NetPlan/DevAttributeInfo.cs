@@ -39,7 +39,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="mEnumDevType">设备类型</param>
 		/// <param name="devIndex">设备的序号，用于生成索引</param>
-		public DevAttributeInfo(EnumDevType mEnumDevType, int devIndex, bool bIsScalar = false) : base()
+		public DevAttributeInfo(EnumDevType mEnumDevType, int devIndex, bool bIsScalar = false)
 		{
 			m_bIsScalar = bIsScalar;
 			m_enumDevType = mEnumDevType;
@@ -53,7 +53,7 @@ namespace NetPlan
 		/// <param name="mEnumDevType">设备类型</param>
 		/// <param name="strIndex">索引字符串</param>
 		/// <param name="bIsScalar">是否是标量</param>
-		public DevAttributeInfo(EnumDevType mEnumDevType, string strIndex, bool bIsScalar = false) : base()
+		public DevAttributeInfo(EnumDevType mEnumDevType, string strIndex, bool bIsScalar = false)
 		{
 			m_enumDevType = mEnumDevType;
 			m_strOidIndex = strIndex;

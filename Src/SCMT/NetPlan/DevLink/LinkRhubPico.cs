@@ -203,7 +203,7 @@ namespace NetPlan.DevLink
 
 		private BoardBaseInfo GetBoardInfoFromRhub(IsRecordExist checkExist)
 		{
-			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(m_rhubDev);
+			var boardSlot = NetDevRhub.GetRhubLinkToBoardSlotNo(m_rhubDev);
 			if (null == boardSlot)
 			{
 				Log.Error("从hub设备中查询连接的板卡插槽号失败");
@@ -258,7 +258,7 @@ namespace NetPlan.DevLink
 			}
 
 			// 查询rhub设备是否已经建立到board的连接
-			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(rhub);      //todo 移动到rhub设备中
+			var boardSlot = NetDevRhub.GetRhubLinkToBoardSlotNo(rhub);
 			return ("-1" != boardSlot);
 		}
 
@@ -315,7 +315,7 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
-			var boardSlot = MibInfoMgr.GetRhubLinkToBoardSlotNo(rhubDev);
+			var boardSlot = NetDevRhub.GetRhubLinkToBoardSlotNo(rhubDev);
 			if ("-1" == boardSlot)
 			{
 				Log.Error($"从索引为{rhubDev.m_strOidIndex}的rhub设备中查询连接bbu端口号返回-1");

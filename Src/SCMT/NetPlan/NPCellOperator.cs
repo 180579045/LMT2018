@@ -156,7 +156,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool SetCellActiveTrigger(int nCellId, string targetIp, CellOperType operType, int nDuration = 1)
 		{
-			if (string.IsNullOrEmpty(targetIp) || nCellId < 0 || nCellId > 35)
+			if (string.IsNullOrEmpty(targetIp) || nCellId < 0 || nCellId > MagicNum.LC_CNT - 1)
 			{
 				Log.Error("激活/去激活功能传入参数错误");
 				return false;
@@ -203,7 +203,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool DelLocalCell(int nLocalCellId, string targetIp)
 		{
-			if (string.IsNullOrEmpty(targetIp) || nLocalCellId < 0 || nLocalCellId > 35)
+			if (string.IsNullOrEmpty(targetIp) || nLocalCellId < 0 || nLocalCellId > MagicNum.LC_CNT - 1)
 			{
 				Log.Error("激活/去激活功能传入参数错误");
 				return false;
@@ -392,8 +392,6 @@ namespace NetPlan
 
 		/// <summary>
 		/// 取消本地小区规划。本地小区状态变化：规划中-->未规划
-		/// todo 后台需要做的操作：1.关闭布配开关；2.设置本地小区之前的状态
-		/// todo 需要原子性保证？
 		/// </summary>
 		/// <param name="nLcId"></param>
 		/// <returns></returns>

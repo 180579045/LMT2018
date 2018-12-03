@@ -266,7 +266,7 @@ namespace NetPlan
 			if (null == seqIndexList || string.IsNullOrEmpty(strWorkMode))
 			{
 				Log.Error("传入RRU索引列表为null；工作模式为null或空");
-				NPLastErrorHelper.SetLastError($"新增RRU失败，传入RRU索引列表或工作模式为空");
+				NPLastErrorHelper.SetLastError("新增RRU失败，传入RRU索引列表或工作模式为空");
 				return null;
 			}
 
@@ -288,8 +288,6 @@ namespace NetPlan
 					NPLastErrorHelper.SetLastError($"设置RRU工作模式失败");
 					return null;
 				}
-
-				// todo 根据天线类型在器件库中查询支持的拉远距离
 
 				if (!MoveDevFromWaitDelToModifyMap(type, newRru, newRru.m_strOidIndex))
 				{
@@ -968,40 +966,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 根据本地小区ID从天线安装规划表中查询对应的行
-		/// </summary>
-		/// <param name="nLcId"></param>
-		/// <returns></returns>
-		public List<DevAttributeInfo> GetRowFromRruAntSetTableByLcId(int nLcId)
-		{
-			if (nLcId < 0 || nLcId > 35)    // TODO 小区的数量先写死为36个
-			{
-				return null;
-			}
-
-			var retList = new List<DevAttributeInfo>();
-			var strLcId = nLcId.ToString();
-			const EnumDevType devType = EnumDevType.rru_ant;
-			lock (_syncObj)
-			{
-				if (!m_mapAllMibData.ContainsKey(devType)) return retList;
-
-				var devList = m_mapAllMibData[devType];
-				retList.AddRange(
-					from dai in devList
-					let lcId1 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId")
-					let lcId2 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId2")
-					let lcId3 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId3")
-					let lcId4 = GetEnumStringByMibName(dai.m_mapAttributes, "netSetRRUPortSubtoLocalCellId4")
-					where strLcId == lcId4 || strLcId == lcId1 || strLcId == lcId3 || strLcId == lcId2
-					select dai
-					);
-			}
-
-			return retList;
-		}
-
-		/// <summary>
 		/// 根据本地小区ID在天线阵安装规划表中找到CellId相同的信息，把CellId对应的属性设置为-1
 		/// </summary>
 		/// <param name="nLcId"></param>
@@ -1022,7 +986,7 @@ namespace NetPlan
 				if (null == devList)
 				{
 					Log.Error($"类型为{devType.ToString()}的信息为null");
-					return true;        // todo 是否合适？
+					return true;
 				}
 
 				// 需要遍历所有的天线阵安装规划表
@@ -1045,24 +1009,6 @@ namespace NetPlan
 				m_mapAllMibData.Clear();
 				m_linkMgr.Clear();
 			}
-		}
-
-		/// <summary>
-		/// 获取RHUB设备连接的板卡的插槽号。遍历4个光口.todo 移动到对应的设备中
-		/// </summary>
-		public static string GetRhubLinkToBoardSlotNo(DevAttributeInfo rhub)
-		{
-			for (var i = 1; i < 5; i++)
-			{
-				var mibName = (i == 1) ? "netRHUBAccessSlotNo" : $"netRHUBOfp{i}SlotNo";
-				var boardSlot = rhub.GetNeedUpdateValue(mibName);
-				if (null != boardSlot && "-1" != boardSlot)
-				{
-					return boardSlot;
-				}
-			}
-
-			return "-1";
 		}
 
 		#endregion 公共接口
@@ -1329,7 +1275,7 @@ namespace NetPlan
 				if (0 != ret)
 				{
 					Log.Error($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
-					return false;       // TODO 一个设备信息下发失败是要结束整个过程吗？
+					return false;
 				}
 			}
 
@@ -1469,35 +1415,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 根据本地小区ID和MIB节点名从netLocalCellTable表中查找对应的值
-		/// </summary>
-		/// <param name="nLcId"></param>
-		/// <param name="strMibName">mib名称</param>
-		/// <returns></returns>
-		private string GetValueFromNetLcTableByLcIdAndMibName(int nLcId, string strMibName)
-		{
-			if (nLcId < 0 || nLcId > 35)
-			{
-				Log.Error("传入的本地小区ID超出[0,35]范围");
-				return null;
-			}
-
-			const EnumDevType devType = EnumDevType.nrNetLc;
-
-			if (m_mapAllMibData.ContainsKey(devType))
-			{
-				var devList = m_mapAllMibData[devType];
-				var dev = GetSameIndexDev(devList, $".{nLcId}");
-				if (null != dev)
-				{
-					return GetEnumStringByMibName(dev.m_mapAttributes, strMibName);
-				}
-			}
-
-			return null;
-		}
-
-		/// <summary>
 		/// 设置天线阵安装规划表的信息。修改时使用
 		/// </summary>
 		/// <param name="dev"></param>
@@ -1590,7 +1507,7 @@ namespace NetPlan
 			}
 
 			var mapAttributes = dev.m_mapAttributes;
-			for (var j = 1; j <= 4; j++)        // todo rru设备光口数硬编码最大为4
+			for (var j = 1; j <= MagicNum.RRU_TO_BBU_PORT_CNT; j++)
 			{
 				var mibName = "netSetRRUPortSubtoLocalCellId";
 				if (j > 1)

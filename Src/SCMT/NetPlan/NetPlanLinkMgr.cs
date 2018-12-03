@@ -319,7 +319,6 @@ namespace NetPlan
 				portType = EnumPortType.rhub_to_bbu
 			};
 
-			// todo 此处board到rhub设备的连接类型设置为board_rru，校验功能是否会检查
 			AddLinkToList(boardEndpoint, rruEndPoint, EnumDevType.board_rhub);
 			return true;
 		}
@@ -689,7 +688,8 @@ namespace NetPlan
 		/// <param name="rruDevList">rru设备列表</param>
 		/// <param name="antDevList">天线阵设备列表</param>
 		/// <returns></returns>
-		private bool ParseRruToAntLinks(IReadOnlyCollection<DevAttributeInfo> rruAntCfgList, IReadOnlyCollection<DevAttributeInfo> rruDevList,
+		private bool ParseRruToAntLinks(IReadOnlyCollection<DevAttributeInfo> rruAntCfgList,
+			IReadOnlyCollection<DevAttributeInfo> rruDevList,
 			IReadOnlyCollection<DevAttributeInfo> antDevList)
 		{
 			// 遍历天线阵安装规划表
@@ -710,7 +710,7 @@ namespace NetPlan
 				return false;
 			}
 
-			foreach (var ra in rruAntCfgList)   // todo 这样子做连接很多啊，需要优化
+			foreach (var ra in rruAntCfgList)
 			{
 				var rruNo = ra.GetFieldOriginValue("netSetRRUNo");
 				var rruIndex = $".{rruNo}";
@@ -1035,7 +1035,7 @@ namespace NetPlan
 
 				var rackNo = hubDev.GetFieldOriginValue("netRHUBAccessRackNo");
 				var shelfNo = hubDev.GetFieldOriginValue("netRHUBAccessShelfNo");
-				var slotNo = MibInfoMgr.GetRhubLinkToBoardSlotNo(hubDev);
+				var slotNo = NetDevRhub.GetRhubLinkToBoardSlotNo(hubDev);
 				if ("-1" == slotNo)
 				{
 					Log.Debug($"索引为{picoToHubIndex}的RHUB设备没有连接到板卡");

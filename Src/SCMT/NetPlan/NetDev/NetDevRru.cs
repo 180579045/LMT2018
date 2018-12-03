@@ -25,7 +25,7 @@ namespace NetPlan
 
 			var epMap = new Dictionary<int, LinkEndpoint>();
 
-			for (var i = 1; i <= 2; i++)        // todo pico设备按两个端口算，如果MIB有修改，需要进行处理
+			for (var i = 1; i <= MagicNum.PICO_TO_RHUB_PORT_CNT; i++)
 			{
 				var rhubEthMib = $"netRRUOfp{i}AccessEthernetPort";
 				var rhubEthNo = picoDev.GetNeedUpdateValue(rhubEthMib);
@@ -34,8 +34,7 @@ namespace NetPlan
 					continue;
 				}
 
-				int rhubPort;
-				if (!int.TryParse(rhubEthNo, out rhubPort))
+				if (!int.TryParse(rhubEthNo, out var rhubPort))
 				{
 					Log.Error($"索引为{picoDev.m_strOidIndex}pico设备在端口{i}连接的rhub端口号配置错误，值：{rhubEthNo}");
 					continue;
@@ -54,8 +53,6 @@ namespace NetPlan
 
 			return epMap;
 		}
-
-		// todo 下发rruTypeEntry和rruTypePortEntry
 
 		#region 器件库信息处理
 
@@ -133,7 +130,7 @@ namespace NetPlan
 				if (!MibInfoMgr.DistributeSnmpData(item, EnumSnmpCmdType.Add, targetIp))
 				{
 					Log.Error($"索引为{item.m_strOidIndex}的RRU端口器件库信息下发失败");
-					continue;	// todo 此处使用continue而不是return，是因为判断端口器件库信息是否存在时，只判断了端口1的信息，不能保证所有的信息都已经被删除
+					continue;	// 此处使用continue而不是return，是因为判断端口器件库信息是否存在时，只判断了端口1的信息，不能保证所有的信息都已经被删除
 				}
 			}
 
@@ -243,5 +240,11 @@ namespace NetPlan
 
 
 		#endregion 器件库信息处理
+
+		#region 特殊处理流程
+
+		// 删除rru设备时，需要先下发天线阵安装规划
+
+		#endregion
 	}
 }

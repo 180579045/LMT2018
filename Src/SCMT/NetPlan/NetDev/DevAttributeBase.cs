@@ -383,7 +383,6 @@ namespace NetPlan
 		/// <returns></returns>
 		protected string GerenalDevOidIndex(int indexGrade, int devIndex)
 		{
-			// TODO 暂时先简单处理板卡，RRU，天线阵等设备的索引
 			if (m_bIsScalar)
 			{
 				return ".0";
