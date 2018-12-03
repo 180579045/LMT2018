@@ -40,19 +40,21 @@ namespace LmtbSnmp
 		{
 			strValue = null;
 			string strValTmp = null;
+			// Mib中的节点类型
+			string strNodeType = null;
 
 			if (string.IsNullOrEmpty(strIpAddr))
 			{
 				return false;
 			}
-
+			
 			// 值转换
 			switch (vb.Value.Type)
 			{
 				// DateandTime、inetaddress等在SNMP中都使用OctetString表示的，要特殊处理,把内存值转换为显示文本
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_OCTETS:
 					// 获取Mib中的节点类型
-					var strNodeType = GetNodeTypeByOIDInCache(strIpAddr, vb.Oid.ToString());
+					strNodeType = GetNodeTypeByOIDInCache(strIpAddr, vb.Oid.ToString());
 					//strNodeType = "InetAddress";
 					//strNodeType = "DateAndTime";
 					//strNodeType = "Unsigned32Array";
@@ -102,7 +104,36 @@ namespace LmtbSnmp
 					break;
 
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_INT:
-				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NULL:
+					if (string.Equals("null", vb.Value.ToString(), StringComparison.OrdinalIgnoreCase))
+					{
+						strValTmp = "0";
+					}
+					else
+					{
+						strValTmp = vb.Value.ToString();
+					}
+					break;
+
+				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_NULL: //状态码不为0时，vb.Value.Type为NULL
+					// 获取Mib中的节点类型
+					strNodeType = GetNodeTypeByOIDInCache(strIpAddr, vb.Oid.ToString());
+					if (!string.IsNullOrEmpty(strNodeType))
+					{
+						if (string.Equals("INTEGER", strNodeType, StringComparison.OrdinalIgnoreCase)
+							|| string.Equals("LONG", strNodeType, StringComparison.OrdinalIgnoreCase))
+						{
+							strValTmp = "0"; // 整型为NULL时取0
+
+						}
+						else
+						{
+							strValTmp = vb.Value.ToString();
+						}
+					}
+					else {
+						strValTmp = vb.Value.ToString();
+					}
+					break;
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_IPADDR:
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_TIMETICKS:
 				case (byte)SNMP_SYNTAX_TYPE.SNMP_SYNTAX_CNTR64:

@@ -9,6 +9,7 @@ using MIBDataParser.JSONDataMgr;
 using CfgFileOpStruct;
 using System.Data;
 using System.IO;
+using LogManager;
 
 namespace CfgFileOperation
 {
@@ -20,11 +21,14 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
-            Test test = new Test();
+            TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
+            initPath.BeyondCompareInitCfgMain();
+            //Log.Error("解析板卡到rru的连接，信息缺失");
+            //Test test = new Test();
 
-            test.TestBeyondCompareMain();
-            
-            test.testForCreatePatchAndInit();
+            //test.TestBeyondCompareMain();
+
+            //test.testForCreatePatchAndInit();
 
             //test.TestReadOM_STRU_IcfIdxTableItem();
             //test.testForParseAlarmEx();
@@ -1554,7 +1558,7 @@ namespace CfgFileOperation
                 { "Reclist" ,dataBasePath+reclistExPath},
                 { "SelfDef" ,dataBasePath+selfDefExPath},
             };
-            cfgOp.OnCreatePatchAndInitCfg(paths);
+            cfgOp.CreatePatchAndInitCfg(paths);
         }
 
         void testForParseAlarmEx()

@@ -66,7 +66,7 @@ namespace SiMsgParse.UnitTests
 		[TestMethod]
 		public void TestConnect()
 		{
-			neElement.Connect();
+			neElement.ConnectAsync();
 			Assert.AreEqual(ConnectionState.Connected, neElement.ConnectState);
 			Assert.IsTrue(neElement.HasConnected());
 			neElement.DisConnect();
@@ -75,7 +75,7 @@ namespace SiMsgParse.UnitTests
 		[TestMethod]
 		public void TestSendMsg()
 		{
-			neElement.Connect();
+			neElement.ConnectAsync();
 
 			SI_LMTENBSI_GetFileInfoReqMsg req = new SI_LMTENBSI_GetFileInfoReqMsg();
 			req.SetPath("c:\\windows");

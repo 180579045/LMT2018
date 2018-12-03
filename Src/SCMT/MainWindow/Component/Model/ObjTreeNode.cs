@@ -561,9 +561,10 @@ namespace SCMTMainWindow
 				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
 				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
 			}
-			// GetNext结果
+
+			// 数据的最终结果
 			List<Dictionary<string, string>> oidAndValTable = new List<Dictionary<string, string>>();
-			// 存放多次获取到的标量GetNext结果，即一行数据，因为标量只有一行
+			// 一行数据，因为一行数据可能是由多次GeNext的结果拼成的
 			Dictionary<string, string> oidAndValLine = new Dictionary<string, string>();
 
 			// 根据表名获取命令信息
@@ -584,85 +585,51 @@ namespace SCMTMainWindow
 			// 组装GentNext 的Oid列表
 			List<string> getNextOidList = new List<string>();
 
-			// 标量表GetNext时有一个nameMib对应多个GetCmd方法的情况，每个GetCmd只能单独执行一次GetNext，不能拼在一起执行
-			if (ret.indexNum == 0) // 标量表
+			// 无论是标量还是矢量表，每个GetCmd执行一次GetNext
+			foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
-				foreach (CmdMibInfo cmdItem in cmdMibInfoList)
+				if ("0".Equals(cmdItem.m_cmdType)) // Get命令
 				{
-					if ("0".Equals(cmdItem.m_cmdType)) // Get命令
+					// 每个GetCmd执行一次GetNext
+					try
 					{
-						// 每个Oid执行一次GetNext
-						try
-						{
-							getNextOidList.Clear();
-							foreach (string oid in cmdItem.m_leaflist)
-							{
-								getNextOidList.Add(prev_oid + oid);
-							}
-							// GetNext结果
-							List<Dictionary<string, string>> oidAndValTableTmp = null;
-							if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTableTmp))
-							{
-								Log.Error("执行SnmpGetNextLoop()方法错误！");
-								return;
-							}
-
-							foreach (Dictionary<string, string> oidVal in oidAndValTableTmp) // 其实就一条
-							{
-								// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
-								foreach (KeyValuePair<string, string> kv in oidVal)
-								{
-									oidAndValLine.Add(kv.Key, kv.Value);
-								}
-							}
-
-						}
-						catch (Exception ex)
-						{
-							throw ex;
-						}
-
-					}
-				}
-
-				if (oidAndValLine.Count > 0)
-				{
-					// 存储获取到的标量数据
-					oidAndValTable.Add(oidAndValLine);
-				}
-			}
-			else // 矢量表，一次GetNext可以传入多个Oid
-			{
-				getNextOidList.Clear();
-				//CmdMibInfo getCmdMibInfo = null;
-				foreach (CmdMibInfo cmdItem in cmdMibInfoList)
-				{
-					if ("0".Equals(cmdItem.m_cmdType)) // 查询
-					{
+						// 获取一个GetCmd命令中的Oid
+						getNextOidList.Clear();
 						foreach (string oid in cmdItem.m_leaflist)
 						{
 							getNextOidList.Add(prev_oid + oid);
 						}
-					}
-				}
+						// GetNext结果
+						List<Dictionary<string, string>> oidAndValTableTmp = null;
+						if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTableTmp))
+						{
+							Log.Error("执行SnmpGetNextLoop()方法错误！");
+							return;
+						}
 
-				try
-				{
-					if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTable))
+						// 循环每行
+						foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
+						{
+							// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
+							// 循环每列
+							foreach (KeyValuePair<string, string> kv in oidVal)
+							{
+								// 保存多次GetNext的结果
+								GetNextResList.Add(kv.Key, kv.Value);
+							}
+						}
+
+					}
+					catch (Exception ex)
 					{
-						Log.Error("执行SnmpGetNextLoop()方法错误！");
-						return;
+						throw ex;
 					}
 
 				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-
 			}
 
-			UpdataDataGrid(oidAndValTable);
+			// 更新DataGrid数据
+			UpdataDataGrid(GetNextResList);
 		}
 
 		/// <summary>
@@ -682,19 +649,9 @@ namespace SCMTMainWindow
 		}
 
 
-		private void UpdataDataGrid(List<Dictionary<string, string>> oidAndValTable)
+		private void UpdataDataGrid(Dictionary<string, string> getNextList)
 		{
-			// 为了不进行大的改动，转换为原来的数据结构
-			foreach (Dictionary<string, string>line in oidAndValTable)
-			{
-				foreach (KeyValuePair<string, string> item in line)
-				{
-					GetNextResList.Add(item.Key, item.Value);
-
-				}
-			}
-
-			main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
+			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
 		}
 
 		/// <summary>
@@ -731,6 +688,7 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		public override void ClickObjNode(object sender, EventArgs e)
 		{
+			string strMsg = "";
 			var item = sender as MetroExpander;
 			var node = item.obj_type as ObjNode;
 			var ret = new MibTable();
@@ -763,7 +721,21 @@ namespace SCMTMainWindow
 			//根据表名获取该表内所有MIB节点;
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+
+            if (ret == null)
+            {
+                Log.Error("获取不到该节点的表信息");
+                return;
+            }               
+
 			nodeMibTable = ret;
+			if (ret == null)
+			{
+				strMsg = string.Format("使用Mib表名获取到的Mib表信息为空（Mib表名：{0}）", ObjTableName);
+                Log.Error(strMsg);
+				MessageBox.Show(strMsg);
+				return;
+			}
 
 			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
 			name_cn.Clear();
@@ -798,9 +770,11 @@ namespace SCMTMainWindow
 				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
 				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
 			}
-			// GetNext结果
+
+
+			// 数据的最终结果
 			List<Dictionary<string, string>> oidAndValTable = new List<Dictionary<string, string>>();
-			// 存放多次获取到的标量GetNext结果，即一行数据，因为标量只有一行
+			// 一行数据，因为一行数据可能是由多次GeNext的结果拼成的
 			Dictionary<string, string> oidAndValLine = new Dictionary<string, string>();
 
 			// 根据表名获取命令信息
@@ -821,87 +795,55 @@ namespace SCMTMainWindow
 			// 组装GentNext 的Oid列表
 			List<string> getNextOidList = new List<string>();
 
-			// 标量表GetNext时一次只能传入一个Oid
-			if (ret.indexNum == 0) // 标量表
+			// 无论是标量还是矢量表，每个GetCmd执行一次GetNext
+			foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
-				foreach (CmdMibInfo cmdItem in cmdMibInfoList)
+				if ("0".Equals(cmdItem.m_cmdType)) // Get命令
 				{
-					if ("0".Equals(cmdItem.m_cmdType)) // Get命令
+					// 每个GetCmd执行一次GetNext
+					try
 					{
-						// 每个Oid执行一次GetNext
-						try
-						{
-							getNextOidList.Clear();
-							foreach (string oid in cmdItem.m_leaflist)
-							{
-                                getNextOidList.Add(prev_oid + oid);
-							}
-							// GetNext结果
-							List<Dictionary<string, string>> oidAndValTableTmp = null;
-							if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTableTmp))
-							{
-								Log.Error("执行SnmpGetNextLoop()方法错误！");
-								return;
-							}
-
-							foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
-							{
-								// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
-								foreach (KeyValuePair<string, string> kv in oidVal)
-								{
-									oidAndValLine.Add(kv.Key, kv.Value);
-                                }
-							}
-
-						}
-						catch (Exception ex)
-						{
-							throw ex;
-						}
-
-					}
-				}
-
-				if (oidAndValLine.Count > 0)
-				{
-					// 存储获取到的标量数据
-					oidAndValTable.Add(oidAndValLine);
-                }
-			}
-			else // 矢量表，一次GetNext可以传入多个Oid
-			{
-				getNextOidList.Clear();
-				//CmdMibInfo getCmdMibInfo = null;
-				foreach (CmdMibInfo cmdItem in cmdMibInfoList)
-				{
-					if ("0".Equals(cmdItem.m_cmdType)) // 查询
-					{
+						// 获取一个GetCmd命令中的Oid
+						getNextOidList.Clear();
 						foreach (string oid in cmdItem.m_leaflist)
 						{
 							getNextOidList.Add(prev_oid + oid);
 						}
-					}
-				}
+						// GetNext结果
+						List<Dictionary<string, string>> oidAndValTableTmp = null;
+						if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTableTmp))
+						{
+							Log.Error("执行SnmpGetNextLoop()方法错误！");
+							return;
+						}
 
-				try
-				{
-					if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTable))
+						// 循环每行
+						foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
+						{
+							// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
+							// 循环每列
+							foreach (KeyValuePair<string, string> kv in oidVal)
+							{
+								// 保存多次GetNext的结果
+								if (!GetNextResList.ContainsKey(kv.Key))
+								{
+									GetNextResList.Add(kv.Key, kv.Value);
+								}
+							}
+						}
+
+					}
+					catch (Exception ex)
 					{
-						Log.Error("执行SnmpGetNextLoop()方法错误！");
-						return;
+						throw ex;
 					}
 
 				}
-				catch (Exception ex)
-				{
-					throw ex;
-				}
-
 			}
 
-			// 更新DataGrid
-			UpdataDataGrid(oidAndValTable);
-			
+			// 更新DataGrid数据
+			UpdataDataGrid(GetNextResList);
+
 		}
 
 		/// <summary>
@@ -1023,20 +965,13 @@ namespace SCMTMainWindow
 			}
 		}
 
-
-		private void UpdataDataGrid(List<Dictionary<string, string>> oidAndValTable)
+		/// <summary>
+		/// 更新DataGrid数据
+		/// </summary>
+		/// <param name="getNextList"></param>
+		private void UpdataDataGrid(Dictionary<string, string> getNextList)
 		{
-			// 为了不进行大的改动，转换为原来的数据结构
-			foreach (Dictionary<string, string> line in oidAndValTable)
-			{
-				foreach (KeyValuePair<string, string> item in line)
-				{
-					GetNextResList.Add(item.Key, item.Value);
-
-				}
-			}
-
-			main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
+			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
 		}
 		/// <summary>
 		/// ReceiveResBySingleNode的GetNext函数收集完成之后，调用主界面更新DataGrid

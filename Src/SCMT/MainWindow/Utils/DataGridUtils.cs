@@ -87,7 +87,7 @@ namespace SCMTMainWindow.Utils
 		/// <param name="strErr"></param>
 		/// <returns></returns>
 		public static bool MakeSnmpVbs(Dictionary<string, object> lineData, Dictionary<string, string> enName2Value
-			, ref List<CDTLmtbVb> setVbs, out string strErr)
+			, ref List<CDTLmtbVb> setVbs, out string strErr, int cmdType)
 		{
 			strErr = "";
 
@@ -158,7 +158,7 @@ namespace SCMTMainWindow.Utils
 					return false;
 				}
 
-				if (reData.ASNType == "RowStatus")
+				if (reData.ASNType == "RowStatus" && (cmdType == 3 || cmdType == 4))
 				{
 					continue;
 				}

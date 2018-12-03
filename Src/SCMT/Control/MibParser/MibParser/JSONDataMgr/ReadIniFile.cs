@@ -16,6 +16,7 @@ using System.IO;
 using System.Text;
 using System.Runtime.InteropServices;
 using CommonUtility;
+using LogManager;
 
 namespace MIBDataParser.JSONDataMgr
 {
@@ -53,19 +54,25 @@ namespace MIBDataParser.JSONDataMgr
         /// <returns>上面key对应的keyValue</returns>
         public static string IniReadValue(string filePath, string Section, string Key)
         {
+            if (String.Empty == filePath)
+            {
+                Log.Error("err IniReadValue filePath is null.");
+                return "";
+            }
             StringBuilder temp = new StringBuilder(255);
             int i = GetPrivateProfileString(Section, Key, "", temp, 255, filePath);
             return temp.ToString();
         }
 
-        public static string GetIniFilePath(string inifilename)
+        public static string GetIniFilePath(string inifilename, out string err)
         {
             string currentPath = FilePathHelper.GetConfigPath();
             string getInitPath = currentPath + inifilename;
-
+            err = "";
             //是否存在
             if (!File.Exists(getInitPath))
             {
+                err = getInitPath + "不存在！";
                 return "";
             }
             return getInitPath;

@@ -28,7 +28,6 @@ namespace NetPlan.Tests
         private DevAttributeInfo SimAddRru(string index, int typeIndex, int slot, int OfpWorkMode)
         {
             DevAttributeInfo oneRru = new DevAttributeInfo(EnumDevType.rru, index);
-            oneRru.m_mapAttributes["netRRUNo"].m_strLatestValue = index.ToString();
             oneRru.m_mapAttributes["netRRURowStatus"].m_strLatestValue = 4.ToString();
             oneRru.m_mapAttributes["netRRUManufacturerIndex"].m_strLatestValue = 4.ToString();
             oneRru.m_mapAttributes["netRRUTypeIndex"].m_strLatestValue = typeIndex.ToString();
@@ -46,7 +45,6 @@ namespace NetPlan.Tests
             oneRru.m_mapAttributes["netRRUOfp2AccessEthernetPort"].m_strLatestValue = "-1";
             oneRru.m_mapAttributes["netRRUGsmSwitch"].m_strLatestValue = "0";
 
-            oneRru.m_mapAttributes["netRRUNo"].m_strOriginValue = index.ToString();
             oneRru.m_mapAttributes["netRRURowStatus"].m_strOriginValue = 6.ToString();
             oneRru.m_mapAttributes["netRRUManufacturerIndex"].m_strOriginValue = 4.ToString();
             oneRru.m_mapAttributes["netRRUTypeIndex"].m_strOriginValue = typeIndex.ToString();
@@ -69,17 +67,11 @@ namespace NetPlan.Tests
         private DevAttributeInfo SimAddBoard(string index, string typeIndex, string row)
         {
             DevAttributeInfo oneBoard = new DevAttributeInfo(EnumDevType.board, index);
-            oneBoard.m_mapAttributes["netBoardRackNo"].m_strLatestValue = "0";
-            oneBoard.m_mapAttributes["netBoardShelfNo"].m_strLatestValue = "0";
-            oneBoard.m_mapAttributes["netBoardSlotNo"].m_strLatestValue = index.ToString();
             oneBoard.m_mapAttributes["netBoardRowStatus"].m_strLatestValue = row;
             oneBoard.m_mapAttributes["netBoardType"].m_strLatestValue = typeIndex.ToString();
             oneBoard.m_mapAttributes["netBoardWorkMode"].m_strLatestValue = 2.ToString();
             oneBoard.m_mapAttributes["netBoardIrFrameType"].m_strLatestValue = 1.ToString();
 
-            oneBoard.m_mapAttributes["netBoardRackNo"].m_strOriginValue = "0";
-            oneBoard.m_mapAttributes["netBoardShelfNo"].m_strOriginValue = "0";
-            oneBoard.m_mapAttributes["netBoardSlotNo"].m_strOriginValue = index.ToString();
             oneBoard.m_mapAttributes["netBoardRowStatus"].m_strOriginValue = 6.ToString();
             oneBoard.m_mapAttributes["netBoardType"].m_strOriginValue = typeIndex.ToString();
             oneBoard.m_mapAttributes["netBoardWorkMode"].m_strOriginValue = 2.ToString();
@@ -89,8 +81,7 @@ namespace NetPlan.Tests
 
         private DevAttributeInfo SimAddAnt(string index, string typeIndex, string rowStatus)
         {
-            DevAttributeInfo oneAnt = new DevAttributeInfo(EnumDevType.ant, "1");
-            oneAnt.m_mapAttributes["netAntArrayNo"].m_strLatestValue = index;
+            DevAttributeInfo oneAnt = new DevAttributeInfo(EnumDevType.ant, index);
             oneAnt.m_mapAttributes["netAntArrayRowStatus"].m_strLatestValue = rowStatus.ToString();
             oneAnt.m_mapAttributes["netAntArrayVendorIndex"].m_strLatestValue = 17.ToString();
             oneAnt.m_mapAttributes["netAntArrayTypeIndex"].m_strLatestValue = typeIndex.ToString();
@@ -130,7 +121,7 @@ namespace NetPlan.Tests
 
         private DevAttributeInfo SimAddLcCtrl(string index)
         {
-            DevAttributeInfo oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, index.ToString());
+            DevAttributeInfo oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, index);
             oneNetLcCtr.m_mapAttributes["netPlanControlLcConfigSwitch"].m_strLatestValue = 0.ToString();
             return oneNetLcCtr;
         }
@@ -150,7 +141,6 @@ namespace NetPlan.Tests
             oneNetLc.m_mapAttributes["netLcCellCombineEnhancedSwitch"].m_strLatestValue = 0.ToString();
             oneNetLc.m_mapAttributes["netLcSdcFuncSwitch"].m_strLatestValue = 1.ToString();
 
-            oneNetLc.m_mapAttributes["netLcFrameType"].m_strOriginValue = 1.ToString();
             oneNetLc.m_mapAttributes["netLcRowStatus"].m_strOriginValue = 6.ToString();
             oneNetLc.m_mapAttributes["netLcFreqBand"].m_strOriginValue = band.ToString();
             oneNetLc.m_mapAttributes["netLcFreqBandWidth"].m_strOriginValue = width.ToString();
@@ -162,7 +152,6 @@ namespace NetPlan.Tests
             oneNetLc.m_mapAttributes["netLcFrameType"].m_strOriginValue = 1.ToString();
             oneNetLc.m_mapAttributes["netLcCellCombineEnhancedSwitch"].m_strOriginValue = 0.ToString();
             oneNetLc.m_mapAttributes["netLcSdcFuncSwitch"].m_strOriginValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcFrameType"].m_strOriginValue = 1.ToString();
             return oneNetLc;
         }
 
@@ -178,10 +167,7 @@ namespace NetPlan.Tests
         {
             MAP_DEVTYPE_DEVATTRI enbCurPlan = new MAP_DEVTYPE_DEVATTRI();
             //4槽位网规了RRU318FA，上面有两个小区1,2
-            DevAttributeInfo oneBoard = new DevAttributeInfo(EnumDevType.board, "4");
-            oneBoard.m_mapAttributes["netBoardRackNo"].m_strLatestValue = "0";
-            oneBoard.m_mapAttributes["netBoardShelfNo"].m_strLatestValue = "0";
-            oneBoard.m_mapAttributes["netBoardSlotNo"].m_strLatestValue = "4";
+            DevAttributeInfo oneBoard = new DevAttributeInfo(EnumDevType.board, ".0.0.4");
             oneBoard.m_mapAttributes["netBoardRowStatus"].m_strLatestValue = 4.ToString();
             oneBoard.m_mapAttributes["netBoardType"].m_strLatestValue = 241.ToString();
             oneBoard.m_mapAttributes["netBoardWorkMode"].m_strLatestValue = 2.ToString();
@@ -192,10 +178,7 @@ namespace NetPlan.Tests
             oneBoard.m_mapAttributes["netBoardIrFrameType"].m_strOriginValue = 2.ToString();
             List<DevAttributeInfo> netBoardInfo = new List<DevAttributeInfo>();
             netBoardInfo.Add(oneBoard);
-            oneBoard = new DevAttributeInfo(EnumDevType.board, "1");
-            oneBoard.m_mapAttributes["netBoardRackNo"].m_strLatestValue = "0";
-            oneBoard.m_mapAttributes["netBoardShelfNo"].m_strLatestValue = "0";
-            oneBoard.m_mapAttributes["netBoardSlotNo"].m_strLatestValue = "1";
+            oneBoard = new DevAttributeInfo(EnumDevType.board, ".0.0.1");
             oneBoard.m_mapAttributes["netBoardRowStatus"].m_strLatestValue = 4.ToString();
             oneBoard.m_mapAttributes["netBoardType"].m_strLatestValue = 173.ToString();
             oneBoard.m_mapAttributes["netBoardWorkMode"].m_strLatestValue = 2.ToString();
@@ -206,8 +189,7 @@ namespace NetPlan.Tests
             oneBoard.m_mapAttributes["netBoardIrFrameType"].m_strOriginValue = 2.ToString();
             netBoardInfo.Add(oneBoard);
 
-            DevAttributeInfo oneRru = new DevAttributeInfo(EnumDevType.rru, "0");
-            oneRru.m_mapAttributes["netRRUNo"].m_strLatestValue = "0";
+            DevAttributeInfo oneRru = new DevAttributeInfo(EnumDevType.rru, ".0");
             oneRru.m_mapAttributes["netRRURowStatus"].m_strLatestValue = 4.ToString();
             oneRru.m_mapAttributes["netRRUManufacturerIndex"].m_strLatestValue = 4.ToString();
             oneRru.m_mapAttributes["netRRUTypeIndex"].m_strLatestValue = 196.ToString();
@@ -226,8 +208,7 @@ namespace NetPlan.Tests
             List<DevAttributeInfo> netRruInfo = new List<DevAttributeInfo>();
             netRruInfo.Add(oneRru);
 
-            DevAttributeInfo oneAnt = new DevAttributeInfo(EnumDevType.ant, "1");
-            oneAnt.m_mapAttributes["netAntArrayNo"].m_strLatestValue = "1";
+            DevAttributeInfo oneAnt = new DevAttributeInfo(EnumDevType.ant, ".1");
             oneAnt.m_mapAttributes["netAntArrayRowStatus"].m_strLatestValue = 4.ToString();
             oneAnt.m_mapAttributes["netAntArrayVendorIndex"].m_strLatestValue = 17.ToString();
             oneAnt.m_mapAttributes["netAntArrayTypeIndex"].m_strLatestValue = 1.ToString();
@@ -236,7 +217,7 @@ namespace NetPlan.Tests
             netAntInfo.Add(oneAnt);
 
             List<DevAttributeInfo> netRruAntInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneRruAnt = new DevAttributeInfo(EnumDevType.rru_ant, "0.1");
+            DevAttributeInfo oneRruAnt = new DevAttributeInfo(EnumDevType.rru_ant, ".0.1");
             oneRruAnt.m_mapAttributes["netSetRRUPortWithAntennaRowStatus"].m_strLatestValue = 4.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortAntArrayNo"].m_strLatestValue = 1.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortAntArrayPathNo"].m_strLatestValue = 1.ToString();
@@ -244,7 +225,7 @@ namespace NetPlan.Tests
             oneRruAnt.m_mapAttributes["netSetRRUPortSubtoLocalCellId2"].m_strLatestValue = 2.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortTxRxStatus"].m_strLatestValue = 2.ToString();
             netRruAntInfo.Add(oneRruAnt);
-            oneRruAnt = new DevAttributeInfo(EnumDevType.rru_ant, "0.1");
+            oneRruAnt = new DevAttributeInfo(EnumDevType.rru_ant, ".0.1");
             oneRruAnt.m_mapAttributes["netSetRRUPortWithAntennaRowStatus"].m_strLatestValue = 4.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortAntArrayNo"].m_strLatestValue = 1.ToString();
             oneRruAnt.m_mapAttributes["netSetRRUPortAntArrayPathNo"].m_strLatestValue = 1.ToString();
@@ -254,33 +235,25 @@ namespace NetPlan.Tests
             netAntInfo.Add(oneAnt);
 
             List<DevAttributeInfo> netIrOfpInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneIrOfp = new DevAttributeInfo(EnumDevType.board_rru, "0.0.4.0");
-            oneIrOfp.m_mapAttributes["netIROfpPortRackNo"].m_strLatestValue = "0";
-            oneIrOfp.m_mapAttributes["netIROfpPortShelfNo"].m_strLatestValue = "0";
-            oneIrOfp.m_mapAttributes["netIROfpPortSlotNo"].m_strLatestValue = "4";
-            oneIrOfp.m_mapAttributes["netIROfpPortIndexOnBoard"].m_strLatestValue = "0";
+            DevAttributeInfo oneIrOfp = new DevAttributeInfo(EnumDevType.board_rru, ".0.0.4.0");
             oneIrOfp.m_mapAttributes["netIROfpPortRowStatus"].m_strLatestValue = 4.ToString();
             oneIrOfp.m_mapAttributes["netIROfpTransPlanSpeed"].m_strLatestValue = 3.ToString();
             netIrOfpInfo.Add(oneIrOfp);
-            oneIrOfp = new DevAttributeInfo(EnumDevType.board_rru, "0.0.4.3");
-            oneIrOfp.m_mapAttributes["netIROfpPortRackNo"].m_strLatestValue = "0";
-            oneIrOfp.m_mapAttributes["netIROfpPortShelfNo"].m_strLatestValue = "0";
-            oneIrOfp.m_mapAttributes["netIROfpPortSlotNo"].m_strLatestValue = "4";
-            oneIrOfp.m_mapAttributes["netIROfpPortIndexOnBoard"].m_strLatestValue = "3";
+            oneIrOfp = new DevAttributeInfo(EnumDevType.board_rru, ".0.0.4.3");
             oneIrOfp.m_mapAttributes["netIROfpPortRowStatus"].m_strLatestValue = 4.ToString();
             oneIrOfp.m_mapAttributes["netIROfpTransPlanSpeed"].m_strLatestValue = 3.ToString();
             netIrOfpInfo.Add(oneIrOfp);
 
             List<DevAttributeInfo> netLcCtrInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, "1");
+            DevAttributeInfo oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, ".1");
             oneNetLcCtr.m_mapAttributes["netPlanControlLcConfigSwitch"].m_strLatestValue = 0.ToString();
             netLcCtrInfo.Add(oneNetLcCtr);
-            oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, "2");
+            oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, ".2");
             oneNetLcCtr.m_mapAttributes["netPlanControlLcConfigSwitch"].m_strLatestValue = 0.ToString();
             netLcCtrInfo.Add(oneNetLcCtr);
 
             List<DevAttributeInfo> netLcInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneNetLc = new DevAttributeInfo(EnumDevType.netLc, "1");
+            DevAttributeInfo oneNetLc = new DevAttributeInfo(EnumDevType.netLc, ".1");
             oneNetLc.m_mapAttributes["netLcRowStatus"].m_strLatestValue = 4.ToString();
             oneNetLc.m_mapAttributes["netLcFreqBand"].m_strLatestValue = 8.ToString();
             oneNetLc.m_mapAttributes["netLcFreqBandWidth"].m_strLatestValue = 3.ToString();
@@ -294,7 +267,7 @@ namespace NetPlan.Tests
             oneNetLc.m_mapAttributes["netLcSdcFuncSwitch"].m_strLatestValue = 1.ToString();
             oneNetLc.m_mapAttributes["netLcFrameType"].m_strLatestValue = 1.ToString();
             netLcInfo.Add(oneNetLc);
-            oneNetLc = new DevAttributeInfo(EnumDevType.netLc, "2");
+            oneNetLc = new DevAttributeInfo(EnumDevType.netLc, ".2");
             oneNetLc.m_mapAttributes["netLcRowStatus"].m_strLatestValue = 4.ToString();
             oneNetLc.m_mapAttributes["netLcFreqBand"].m_strLatestValue = 8.ToString();
             oneNetLc.m_mapAttributes["netLcFreqBandWidth"].m_strLatestValue = 3.ToString();
@@ -358,7 +331,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void IsValidParaNameTest()
+        public async Task IsValidParaNameTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -380,13 +353,13 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void GetPropertyConditionValueTest()
+        public async Task GetPropertyConditionValueTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
             //校验前提校验
             string property = "where cur.netBoardEntry.netBoardRowStatus != old.netBoardEntry.netBoardRowStatus";
-            DevAttributeInfo curBoard = SimAddBoard("4", "241", "4");
+            DevAttributeInfo curBoard = SimAddBoard(".0.0.4", "241", "4");
             NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
             EnumResultType res = rulesHelper.GetPropertyConditionValue(property, curBoard);
             Assert.IsTrue(EnumResultType.success_true == res);
@@ -409,7 +382,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void MapQueryAndData4LayerTest()
+        public async Task MapQueryAndData4LayerTest()
         {
             await simConnectEnb();
             string preQueryName = "lib.boardEquipment.irOfpPortInfo.irOfpPortTransSpeed";
@@ -443,7 +416,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void MapLibQueryOfDataTypeTest()
+        public async Task MapLibQueryOfDataTypeTest()
         {
             await simConnectEnb();
             string preQueryName = "lib.rruTypeInfo";
@@ -480,7 +453,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void MapLibQueryOfDataTypeTest1()
+        public async Task MapLibQueryOfDataTypeTest1()
         {
             await simConnectEnb();
             Shelf shelf = new Shelf();
@@ -531,7 +504,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void GetQueryFatherNameTest()
+        public async Task GetQueryFatherNameTest()
         {
             await simConnectEnb();
             Shelf shelf = SimSetLibShelf(10, 12, "150,143,243");
@@ -581,7 +554,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void ConvertQueryValueTest()
+        public async Task ConvertQueryValueTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -640,7 +613,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void ConvertQueryValueTest1()
+        public async Task ConvertQueryValueTest1()
         {
             await simConnectEnb();
             //mib，this情况
@@ -684,7 +657,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void GetRoundParaValueTest()
+        public async Task GetRoundParaValueTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -728,7 +701,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void TakeRoundRulesConditionalResultTest()
+        public async Task TakeRoundRulesConditionalResultTest()
         {
             await simConnectEnb();
             //mib，this情况
@@ -776,7 +749,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void TakeRoundRulesConditionalResultTest1()
+        public async Task TakeRoundRulesConditionalResultTest1()
         {
             await simConnectEnb();
             //构造几种计算结果false的场景
@@ -803,7 +776,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void ConvertNameInWhereTest()
+        public async Task ConvertNameInWhereTest()
         {
             await simConnectEnb();
             //填写格式存在问题场景
@@ -826,7 +799,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void ConvertNameInWhereTest1()
+        public async Task ConvertNameInWhereTest1()
         {
             await simConnectEnb();
             string fromName = "mib.netBoardEntry";
@@ -915,7 +888,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void IsMibTableTest()
+        public async Task IsMibTableTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -952,7 +925,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void IsMibTableOfQueryNameTest()
+        public async Task IsMibTableOfQueryNameTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -985,7 +958,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void ConvertItNameInSelectTest()
+        public async Task ConvertItNameInSelectTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -1028,7 +1001,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void AddQueryDicNameTest()
+        public async Task AddQueryDicNameTest()
         {
             await simConnectEnb();
             //成功--原始UI数据,mib数据
@@ -1064,7 +1037,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void AddQueryDicNameTest1()
+        public async Task AddQueryDicNameTest1()
         {
             //select中会返回it.XX
             string outvar = "query1";
@@ -1119,7 +1092,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void AddQueryDicNameTest2()
+        public async Task AddQueryDicNameTest2()
         {
             await simConnectEnb();
             //查询集合为query变量
@@ -1160,7 +1133,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void AddQueryDicNameTest3()
+        public async Task AddQueryDicNameTest3()
         {
             await simConnectEnb();
             //outvar非法
@@ -1192,7 +1165,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void TakeRoundRulesQueryResultTest()
+        public async Task TakeRoundRulesQueryResultTest()
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
@@ -1236,7 +1209,7 @@ namespace NetPlan.Tests
 
 
         [TestMethod()]
-        public async void GetRoundCheckValueTest()
+        public async Task GetRoundCheckValueTest()
         {
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
             NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
@@ -1271,7 +1244,7 @@ namespace NetPlan.Tests
         }
 
         [TestMethod()]
-        public async void GetRoundCheckValueTest1()
+        public async Task GetRoundCheckValueTest1()
         {
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
             NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");

@@ -61,7 +61,7 @@ namespace MIBDataParser.JSONDataMgr
             }
             catch (Exception ex)
             {
-                err = ex.Message;//显示异常信息
+                err = "moveFile err:" + "sourceFileName:" + sourceFileName + " destFileName:" + destFileName +" ."+ ex.Message;//显示异常信息
                 return false;
             }
             return true;
@@ -75,17 +75,31 @@ namespace MIBDataParser.JSONDataMgr
         /// <returns></returns>
         public bool delFile(List<string> filePathList, out string err)
         {
+            bool re = true;
             err = "";
             string outErr = "";
             foreach (var filePath in filePathList)
             {
-                if (isFileExist(filePath, out outErr))
+                try
                 {
-                    File.Delete(filePath);		// todo 如果文件正在打开，删除失败，抛出异常，需要捕获
+                    if (isFileExist(filePath, out outErr))
+                    {
+                        File.Delete(filePath);      // todo 如果文件正在打开，删除失败，抛出异常，需要捕获
+                    }
+                    else
+                    {
+                        err += outErr;
+                    }
                 }
-                err += outErr;
+                catch
+                {
+                    err += "(del异常:" + filePath + ")";
+                    re = false;
+                }
             }
-            return true;
+            if (!re)
+                err = "删除文件 delFile err:" + err;
+            return re;
         }
 
         /// <summary>
@@ -104,7 +118,7 @@ namespace MIBDataParser.JSONDataMgr
             }
             catch (Exception ex)
             {
-                err = ex.Message;//显示异常信息
+                err = "decompressedFile 解压缩文件 err:" + " sourceFile:" + sourceFile + " destPath:" + destPath + ex.Message;//显示异常信息
                 return false;
             }
             return true;
@@ -130,10 +144,10 @@ namespace MIBDataParser.JSONDataMgr
 
             //1. 获取ini配置文件中的相关信息
             ReadIniFile iniFile = new ReadIniFile();
-            string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini");
+            string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini", out err);
             if (String.Empty == iniFilePath)
             {
-                err = "JsonDataMgr.ini找不到！";
+                err = err + "JsonDataMgr.ini找不到！";
                 return false;
             }
 
@@ -234,11 +248,11 @@ namespace MIBDataParser.JSONDataMgr
 
             //获取ini配置文件中的相关信息
             ReadIniFile iniFile = new ReadIniFile();
-            string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini");
+            string iniFilePath = ReadIniFile.GetIniFilePath("JsonDataMgr.ini", out err);
             // 1.校验
             if (String.Empty == iniFilePath)
             {
-                err = "JsonDataMgr.ini找不到！";
+                err = "JsonDataMgr.ini找不到！" + err;
                 return false;
             }
             

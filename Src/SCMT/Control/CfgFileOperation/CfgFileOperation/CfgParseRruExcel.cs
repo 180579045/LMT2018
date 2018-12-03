@@ -94,10 +94,8 @@ namespace CfgFileOperation
             if (wks == null)
                 return;
 
-            //Console.WriteLine("ProcessingAntennaExcelBS : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             // 处理所有数据
             ProcessingExcelRru(wks);
-            //Console.WriteLine("ProcessingAntennaExcelBS : END..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
         }
         /// <summary>
         /// 处理"波束扫描原始值"的内容
