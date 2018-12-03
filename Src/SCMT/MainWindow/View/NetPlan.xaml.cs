@@ -31,6 +31,7 @@ using SCMTOperationCore;
 using System.Threading;
 using System.Security.Permissions;
 using System.Windows.Threading;
+using System.Windows.Interop;
 
 namespace SCMTMainWindow.View
 {
@@ -62,6 +63,8 @@ namespace SCMTMainWindow.View
         //创建一个 dictionary 保存每个板卡对应连接的设备
         Dictionary<int, int> allBoardToDev = new Dictionary<int, int>();
 
+		InitWindows dlg = new InitWindows();
+
         /// <summary>
         /// 初始化函数
         /// </summary>
@@ -69,7 +72,7 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
-            this.leftList.SelectedContentIndex = 1;
+			this.leftList.SelectedContentIndex = 1;
 
             //画小区
             DrawNrRect();
@@ -78,8 +81,6 @@ namespace SCMTMainWindow.View
             CreateMainBoard();
 
             CreateTemplateList();
-
-
         }
 
 
@@ -928,12 +929,14 @@ namespace SCMTMainWindow.View
 		/// <summary>
 		/// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
 		/// </summary>
-		private bool InitNetPlan()
+		private async Task<bool> InitNetPlan()
 		{
 			//初始化是否成功
 			MibInfoMgr.GetInstance().Clear();
 
-			var initResult = NPSnmpOperator.InitNetPlanInfo();
+			var initResult = await NPSnmpOperator.InitNetPlanInfo();
+
+			dlg.Close();
 
 			// 剩下的工作全部推到UI线程中执行
 			if (initResult)
@@ -2074,6 +2077,8 @@ namespace SCMTMainWindow.View
             {
                 InitAllConnection();
                 DeleteAllItemConnector();
+								
+				//dlg.Close();
             }
         }
 
@@ -2264,7 +2269,14 @@ namespace SCMTMainWindow.View
             {
                 bInit = true;
                 InitNetPlan();
-            }
+
+				dlg.ShowDialog();
+				//HwndSource newWinHandler = HwndSource.FromDependencyObject(this) as HwndSource;
+				//if (newWinHandler != null)
+				//	new WindowInteropHelper(dlg) { Owner = newWinHandler.Handle };
+				//dlg.Show();
+				//this.IsEnabled = false;
+			}
         }
 
         /// <summary>

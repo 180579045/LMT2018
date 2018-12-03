@@ -8,6 +8,7 @@ using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Elements;
+using System.Threading.Tasks;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NetPlan
@@ -124,7 +125,7 @@ namespace NetPlan
 		/// 调用时机：连接基站后，第一次进入网规页面
 		/// </summary>
 		/// <returns></returns>
-		public static bool InitNetPlanInfo()
+		public static async Task<bool> InitNetPlanInfo()
 		{
 			var curEnbIP = CSEnbHelper.GetCurEnbAddr();
 			if (null == curEnbIP)
@@ -140,7 +141,7 @@ namespace NetPlan
 				return false;
 			}
 
-			WalkAllNetPlanMibEntry(mibEntryList);
+			await WalkAllNetPlanMibEntry(mibEntryList);
 
 			return true;
 		}
@@ -150,9 +151,10 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="entryList"></param>
 		/// <returns></returns>
-		private static void WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
+		private static Task WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
 		{
 			Log.Debug($"开始遍历查询{entryList.Count()}个表信息");
+			return Task.Run(() =>
 			{
 				// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 				foreach (var entry in entryList)
@@ -203,7 +205,7 @@ namespace NetPlan
 				}
 				// 所有设备信息保存完成后，解析连接信息
 				MibInfoMgr.GetInstance().ParseLinks();
-			}
+			});
 		}
 
 		/// <summary>

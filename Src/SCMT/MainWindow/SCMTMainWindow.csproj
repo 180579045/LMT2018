@@ -251,6 +251,9 @@
     <Compile Include="View\EditColumns.xaml.cs">
       <DependentUpon>EditColumns.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\InitWindows.xaml.cs">
+      <DependentUpon>InitWindows.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\MainDataGrid.xaml.cs">
       <DependentUpon>MainDataGrid.xaml</DependentUpon>
     </Compile>
@@ -398,6 +401,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\EditColumns.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\InitWindows.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
