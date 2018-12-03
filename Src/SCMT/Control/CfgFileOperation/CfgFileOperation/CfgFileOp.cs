@@ -72,13 +72,13 @@ namespace CfgFileOperation
                 Console.WriteLine(String.Format("生成公共数据部分失败！"));
                 return false;
             }
-            // 自定义(init)、 生成 init.cfg 文件 
+            // 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
             if (!CreatCfg_init_cfg(paths))
             {
                 Console.WriteLine(String.Format("生成init.cfg失败！"));
                 return false;
             }
-            // lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
+            // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
             if (!CreatCfg_patch_ex_cfg(paths))
             {
                 Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
@@ -334,10 +334,10 @@ namespace CfgFileOperation
             List<byte> allBuff = new List<byte>();
 
             // 文件头   : 序列化
-            allBuff.AddRange(m_eNB_pdgFile_Header.StruToByteArrayReverse());// 写入头文件
+            allBuff.AddRange(m_eNB_pdgFile_Header.StruToByteArray());// 写入头文件
 
             // 数据块头 : 序列化
-            allBuff.AddRange(m_dataheadInfo_PDG.StruToByteArrayReverse());  // 数据块的头
+            allBuff.AddRange(m_dataheadInfo_PDG.StruToByteArray());  // 数据块的头
 
             // 偏移块头 : 序列化
             foreach (var tabName in m_reclistExcel.GetVectPDGTabName())
@@ -345,7 +345,7 @@ namespace CfgFileOperation
                 if (!m_mapTableInfo.ContainsKey(tabName))
                     continue;
                 byte[] tableOffset = BitConverter.GetBytes((uint)m_mapTableInfo[tabName].GetTableOffsetPDG());
-                Array.Reverse(tableOffset);
+                //Array.Reverse(tableOffset);
                 allBuff.AddRange(tableOffset);
             }
 
@@ -398,7 +398,7 @@ namespace CfgFileOperation
             DataSet MibdateSet = CfgGetRecordByAccessDb(strDBName, strSQL);
             DataRow row = MibdateSet.Tables[0].Rows[0];
             string strMibVersion = row.ItemArray[1].ToString();//row["MibPublicVersion"].ToString();
-            m_eNB_pdgFile_Header = new StruCfgFileHeader("init");
+            m_eNB_pdgFile_Header = new StruCfgFileHeader("patch");
             m_eNB_pdgFile_Header.Setu8VerifyStr("ICF");
             m_eNB_pdgFile_Header.Setu8HiDeviceType(new MacroDefinition().NB_DEVICE);// 暂时
             m_eNB_pdgFile_Header.Setu8MiDeviceType(new MacroDefinition().LTE_DEVICE);// = LTE_DEVICE;

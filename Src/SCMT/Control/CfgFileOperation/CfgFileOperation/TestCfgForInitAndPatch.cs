@@ -14,12 +14,52 @@ namespace CfgFileOperation
     //
     class TestCfgForInitAndPatch
     {
+        public void Main()
+        {
+            BeyondComparePatchExCfgMain();
+
+            //BeyondCompareInitCfgMain();
+        }
+
+        public void BeyondComparePatchExCfgMain()
+        {
+            FileStream fs = new FileStream("BeyondCompareWritePatchBuf.txt", FileMode.Create);
+            //实例化BinaryWriter
+            BinaryWriter bw = new BinaryWriter(fs);
+            bw.Write("beyond compare two patch_ex.cfg.\n");
+
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
+            string YSFilePath = dataBasePath + "5GCfg\\patch_ex_qyx.cfg";
+            string NewFilePath = dataBasePath + "5GCfg\\patch_ex.cfg";
+
+            //1.文件头
+            if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
+            {
+                Console.WriteLine("file head info not all same.");
+                bw.Write("file head info not all same.\n");
+            }
+
+            // 比较 表名是否一致
+            if (!TestBeyondCompFileTableNameMain(bw, YSFilePath, NewFilePath))
+            {
+                Console.WriteLine("tables name not all same.");
+                bw.Write("tables name not all same.\n");
+            }
+
+
+            //清空缓冲区
+            bw.Flush();
+            //关闭流
+            bw.Close();
+            fs.Close();
+        }
+
         /// <summary>
         /// 校验 init.cfg 
         /// </summary>
         public void BeyondCompareInitCfgMain()
         {
-            FileStream fs = new FileStream("BeyondCompareWriteBuf.txt", FileMode.Create);
+            FileStream fs = new FileStream("BeyondCompareWriteInitBuf.txt", FileMode.Create);
             //实例化BinaryWriter
             BinaryWriter bw = new BinaryWriter(fs);
 
@@ -28,7 +68,11 @@ namespace CfgFileOperation
             string NewFilePath = dataBasePath + "init.cfg";
 
             // 文件的头比较
-            ByCpFileHeadInfo( YSFilePath, NewFilePath);
+            if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
+            {
+                Console.WriteLine("file head info not all same.");
+                bw.Write("file head info not all same.\n");
+            }
 
 
             // 比较 表名是否一致
@@ -58,14 +102,11 @@ namespace CfgFileOperation
         /// <param name="YSFilePath"></param>
         /// <param name="NewFilePath"></param>
         /// <returns></returns>
-        bool ByCpFileHeadInfo(string YSFilePath, string NewFilePath)
+        bool ByCpFileHeadInfo(BinaryWriter bw, string YSFilePath, string NewFilePath)
         {
-            bool re = true;
             StruCfgFileHeader YsFileHead = GetStruCfgFileHeaderInfo(YSFilePath);
             StruCfgFileHeader NewFileHead = GetStruCfgFileHeaderInfo(NewFilePath);
-
-
-            return re;
+            return IsSameStruCfgFileHeader(bw, YsFileHead, NewFileHead);
         }
         /// <summary>
         /// 解析文件头
@@ -80,127 +121,161 @@ namespace CfgFileOperation
             YsFileHead.ParseFileReadBytes(Ysdata);
             return YsFileHead;
         }
-        bool IsSameStruCfgFileHeader(StruCfgFileHeader HeadA, StruCfgFileHeader HeadB)
+        /// <summary>
+        /// 逐一对比 文件头 信息
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="HeadA"></param>
+        /// <param name="HeadB"></param>
+        /// <returns></returns>
+        bool IsSameStruCfgFileHeader(BinaryWriter bw, StruCfgFileHeader HeadA, StruCfgFileHeader HeadB)
         {
             bool re = true;
             // 只比较意义的字段
+            string bug = "";
 
+            object infoA;
+            object infoB;
             //Stru    956字节 文件头结构体
             //-> u8VerifyStr  1 * 4:Byte[4][4]文件头的校验字段 "ICF"
             if (!BytesCompare_Base64(HeadA.Getu8VerifyStr(), HeadB.Getu8VerifyStr()))
             {
+                bug += String.Format("u8VerifyStr 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             // ->u8HiDeviceType   1 * 1:byte Nodeb基站类型（1 版 = 0、2版 = 2、3版超级基站 = 1）
             if (HeadA.Getu8HiDeviceType() != HeadB.Getu8HiDeviceType())
             {
+                bug += String.Format("u8HiDeviceType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u8MiDeviceType; 1 * 1:byte TD = 0 / LTE = 1 / 5G = 2的文件
             if (HeadA.Getu8MiDeviceType() != HeadB.Getu8MiDeviceType())
             {
+                bug += String.Format("u8MiDeviceType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u16LoDevType; 2 * 1:ushort 计算大小端 700拆分成 0xbc和0x02组合
             if (HeadA.Getu16LoDevType() != HeadB.Getu16LoDevType())
             {
+                infoA = HeadA.Getu16LoDevType();
+                infoB = HeadB.Getu16LoDevType();
+
+                bug += String.Format("u16LoDevType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u32IcFileVer 4 * 1:uint 初配文件版本：用来标志当前文件的大版本 = 1,2
             if (HeadA.Getu32IcFileVer() != HeadB.Getu32IcFileVer())
             {
+                infoA = HeadA.Getu32IcFileVer();
+                infoB = HeadB.Getu32IcFileVer();
+                bug += String.Format("u32IcFileVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u32ReserveVer; 4 * 1:uint 初配文件小版本：用来区分相同大版本下的因取值不同造成的差异，现在这里是最小版本(版本号"5_65_3_6", 截取6)
             if (HeadA.u32ReserveVer != HeadB.u32ReserveVer)
             {
+                bug += String.Format("u32ReserveVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u32DataBlk_Location; 4 * 1:uint 数据块起始位置 默认956
             if (HeadA.u32DataBlk_Location != HeadB.u32DataBlk_Location)
             {
+                bug += String.Format("u32DataBlk_Location 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u8LastMotifyDate[20]; 1 * 20:byte[20]   [20] 文件最新修改的日期, 按字符串存放 
-            if (!BytesCompare_Base64(HeadA.Getu8LastMotifyDate(), HeadB.Getu8LastMotifyDate()))
-            {
-                re = false;
-                return re;
-            }
+            //if (!BytesCompare_Base64(HeadA.Getu8LastMotifyDate(), HeadB.Getu8LastMotifyDate()))
+            //{
+            //    bug += String.Format("u8LastMotifyDate 不同。\n");
+            //    re = false;
+            //    //return re;
+            //}
             //-> u32IcFile_HeaderVer; 4 * 1:uint 初配文件头版本，用于记录不同的文件头格式、版本
             if (HeadA.u32IcFile_HeaderVer != HeadB.u32IcFile_HeaderVer)
             {
+                bug += String.Format("u32IcFile_HeaderVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u32PublicMibVer; 4 * 1:uint 公共Mib版本号(版本号"5_65_3_6", 截取5)
             if (HeadA.u32PublicMibVer != HeadB.u32PublicMibVer)
             {
+                bug += String.Format("u32PublicMibVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u32MainMibVer; 4 * 1:uint Mib主版本号(版本号"5_65_3_6", 截取65)
             if (HeadA.u32MainMibVer != HeadB.u32MainMibVer)
             {
+                bug += String.Format("u32MainMibVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u32SubMibVer; 4 * 1:uint Mib辅助版本号(版本号"5_65_3_6", 截取3)
             if (HeadA.u32SubMibVer != HeadB.u32SubMibVer)
             {
+                bug += String.Format("u32SubMibVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u32IcFile_HeaderLength; 4 * 1:uint 初配文件头部长度 
             if (HeadA.u32IcFile_HeaderLength != HeadB.u32IcFile_HeaderLength)
             {
+                bug += String.Format("u32IcFile_HeaderLength 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u8IcFileDesc[256]    1 * 256:byte[256][256] 文件描述 “初配文件”
             byte[] byArrayA = HeadA.Getu8IcFileDesc().Skip(0).Take(9).ToArray();
             byte[] byArrayB = HeadB.Getu8IcFileDesc().Skip(0).Take(9).ToArray();
             if (!BytesCompare_Base64(byArrayA, byArrayB))
             {
+                bug += String.Format("u8IcFileDesc 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u32RevDatType; 4 * 1:uint 保留段数据类别 (1: 文件描述) 
             if (HeadA.u32RevDatType != HeadB.u32RevDatType)
             {
+                bug += String.Format("u32RevDatType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u32IcfFileType; 4 * 1:uint 初配文件类别（1:NB,2:RRS） 2005 - 12 - 22
             if (HeadA.u32IcfFileType != HeadB.u32IcfFileType)
             {
+                bug += String.Format("u32IcfFileType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //->u32IcfFileProperty; 4 * 1:uint 初配文件属性（0:正式文件; 1:补充文件）
             if (HeadA.u32IcfFileProperty != HeadB.u32IcfFileProperty)
             {
+                bug += String.Format("u32IcfFileProperty 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u32DevType; 4 * 1:uint 设备类型(1:超级基站; 2:紧凑型小基站)
             if (HeadA.u32DevType != HeadB.u32DevType)
             {
+                bug += String.Format("u32DevType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u16NeType    2 * 1:ushort 数据文件所属网元类型
             if (HeadA.u16NeType != HeadB.u16NeType)
             {
+                bug += String.Format("u16NeType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u8Pading[2]  1 * 2:byte[2][2]
 
@@ -209,21 +284,26 @@ namespace CfgFileOperation
             sbyte[] s8DataFmtVerB = HeadB.Gets8DataFmtVer();
             if (!SBytesCompare(s8DataFmtVerA, s8DataFmtVerB))
             {
+                bug += String.Format("s8DataFmtVer 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u8TblNum 1 * 1:byte 数据文件中表的个数  
             if (HeadA.u8TblNum != HeadB.u8TblNum)
             {
+                bug += String.Format("u8TblNum 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
             //-> u8FileType   1 * 1:byte 配置文件类别(1, init.cfg:cfg,或dfg,2 patch_ex.cfg:pdg,)
             if (HeadA.u8FileType != HeadB.u8FileType)
             {
+                bug += String.Format("u8FileType 不同。\n");
                 re = false;
-                return re;
+                //return re;
             }
+            bw.Write(bug);
+
             //-> u8Pad1   1 * 1:byte 保留 
             //-> u8ReserveAreaType    1 * 1:byte 保留空间的含义 = 0
 
@@ -248,7 +328,7 @@ namespace CfgFileOperation
             List<uint> NewTablePos = GetTablesPos(NewFilePath, (int)NewDhead.u32TableCnt);
             List<string> NewTableNames = GetTableNamesByTablesPos(NewFilePath, NewTablePos);
 
-            return TestBeyondTableName(YsTableNames, NewTableNames);
+            return TestBeyondTableName(bw,YsTableNames, NewTableNames);
         }
 
 
@@ -379,26 +459,35 @@ namespace CfgFileOperation
         /// <param name="tablesPosLA"></param>
         /// <param name="tablesPosLB"></param>
         /// <returns></returns>
-        bool TestBeyondTableName(List<string> tablesPosLA, List<string> tablesPosLB)
+        bool TestBeyondTableName(BinaryWriter bw, List<string> tablesPosLA, List<string> tablesPosLB)
         {
             bool re = true;
             List<string> tablNamesMore;
             List<string> tablNamesLess;
             if (tablesPosLA.Count > tablesPosLB.Count)
             {
+                bw.Write("TestBeyondTableName a is more than b.\n.");
                 tablNamesMore = tablesPosLA;
                 tablNamesLess = tablesPosLB;
             }
-            else
+            else if (tablesPosLA.Count < tablesPosLB.Count)
             {
+                bw.Write("TestBeyondTableName b is more than a.\n.");
                 tablNamesMore = tablesPosLB;
                 tablNamesLess = tablesPosLA;
+            }
+            else
+            {
+                //bw.Write("TestBeyondTableName a is more than b.");
+                tablNamesMore = tablesPosLA;
+                tablNamesLess = tablesPosLB;
             }
 
             foreach (var table in tablNamesMore)
             {
                 if (-1 == tablNamesLess.FindIndex(e => String.Equals(e, table)))
                 {
+                    bw.Write(String.Format("TestBeyondTableName not have {0}. \n.", table));
                     Console.WriteLine(String.Format("not have {0}", table));
                     re = false;
                 }
