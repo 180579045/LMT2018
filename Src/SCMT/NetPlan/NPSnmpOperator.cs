@@ -253,7 +253,7 @@ namespace NetPlan
 				return false;
 			}
 
-			result = MibInfoMgr.GetInstance().DistributeNetPlanAntToEnb(bDlAntWcb);
+			result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.ant, bDlAntWcb);
 			if (!result)
 			{
 				return false;

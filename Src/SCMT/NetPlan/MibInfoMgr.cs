@@ -639,43 +639,13 @@ namespace NetPlan
 			var devList = mapDataSource[devType];
 			var waitRmList = new List<DevAttributeInfo>();
 
+			var bSucceed = true;
+			NetDevBase handler = null;
 			foreach (var item in devList)
 			{
 				if (RecordDataType.Original == item.m_recordType)
 				{
 					continue;
-				}
-
-				// 新增设备才下发器件库信息
-				if (item.m_recordType == RecordDataType.NewAdd)
-				{
-					if (devType == EnumDevType.ant)
-					{
-						// 下发器件库信息
-						var drDev = new NetDevAnt();
-						if (!drDev.DistributeAntTypeInfo(item))
-						{
-							Log.Error($"下发索引为{item.m_strOidIndex}的天线阵器件库信息失败");
-							return false;
-						}
-					}
-
-					if (devType == EnumDevType.rru)
-					{
-						// 下发器件库信息
-						var ndrru = new NetDevRru();
-						if (!ndrru.DistributeRruTypeInfo(item))
-						{
-							Log.Error($"下发索引为{item.m_strOidIndex}的RRU器件库信息失败");
-							return false;
-						}
-
-						if (!ndrru.DistributeRruPortTypeInfo(item))
-						{
-							Log.Error($"下发索引为{item.m_strOidIndex}的RRU端口器件库信息失败");
-							return false;
-						}
-					}
 				}
 
 				// 天线安装规划表的特殊处理
@@ -688,60 +658,23 @@ namespace NetPlan
 					}
 				}
 
-				var cmdType = EnumSnmpCmdType.Invalid;
-				switch (item.m_recordType)
+				if (null == handler)
 				{
-					case RecordDataType.NewAdd:
-						cmdType = EnumSnmpCmdType.Add;
-						break;
-					case RecordDataType.Modified:
-						cmdType = EnumSnmpCmdType.Set;
-						break;
-					case RecordDataType.WaitDel:
-						cmdType = EnumSnmpCmdType.Del;
-						break;
-				}
-
-				// 本地小区参数下发前，需要先检查布配开关的状态
-				if (devType == EnumDevType.nrNetLc)
-				{
-					if (!NPCellOperator.SendNetPlanSwitchToEnb(true, item.m_strOidIndex, targetIp))
+					handler = NetDevFactory.GetDevHandler(targetIp, devType, mapDataSource);
+					if (null == handler)
 					{
-						Log.Error($"打开本地小区{item.m_strOidIndex}的布配开关失败");
+						Log.Error($"获取类型{devType}处理对象失败");
 						return false;
 					}
 				}
 
-				if (!DistributeSnmpData(item, cmdType, targetIp))
+				// 如果下发失败，就break，后面的流程还要执行，清理掉已经下发成功的待删除的设备
+				if (!(bSucceed = handler.DistributeToEnb(item, bDlAntWcb)))
 				{
-					var log = $"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}失败";
-					Log.Error(log);
-					NPLastErrorHelper.SetLastError(log);
-
-					if (EnumDevType.nrNetLc == devType && !NPCellOperator.SendNetPlanSwitchToEnb(false, item.m_strOidIndex, targetIp))
-					{
-						Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
-						NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
-					}
-
-					return false;
+					break;
 				}
 
-				if (item.m_recordType == RecordDataType.NewAdd)
-				{
-					// 天线阵的后处理
-					if (devType == EnumDevType.ant)
-					{
-						var drDev = new NetDevAnt();
-						if (!drDev.DistributeDevToEnb(item, bDlAntWcb))
-						{
-							Log.Error($"下发索引为{item.m_strOidIndex}的天线权重、耦合系数、波束扫面信息失败");
-							return false;
-						}
-					}
-				}
-
-				if (EnumSnmpCmdType.Del == cmdType)
+				if (item.m_recordType == RecordDataType.WaitDel)
 				{
 					waitRmList.Add(item);       // 如果是要删除的设备，参数下发后，直接删除内存中的数据
 				}
@@ -750,14 +683,7 @@ namespace NetPlan
 					item.SetDevRecordType(RecordDataType.Original);		// 下发成功的都设置为原始数据
 				}
 
-				Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发{cmdType.ToString()}成功");
-
-				if (EnumDevType.nrNetLc == devType && !NPCellOperator.SendNetPlanSwitchToEnb(false, item.m_strOidIndex, targetIp))
-				{
-					Log.Error($"关闭本地小区{item.m_strOidIndex}布配开关失败");
-					NPLastErrorHelper.SetLastError($"关闭本地小区{item.m_strOidIndex.Trim('.')}布配开关失败");
-					return false; // TODO 此处返回，已经下发的删除的本地小区网规信息存在不一致的问题
-				}
+				Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发成功");
 			}
 
 			foreach (var wrmDev in waitRmList)
@@ -765,7 +691,7 @@ namespace NetPlan
 				devList.Remove(wrmDev);
 			}
 
-			return true;
+			return bSucceed;
 		}
 
 		/// <summary>
@@ -773,17 +699,14 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="devType"></param>
 		/// <returns></returns>
-		public bool DistributeNetPlanInfoToEnb(EnumDevType devType)
+		public bool DistributeNetPlanInfoToEnb(EnumDevType devType, bool bDlAntWcb = false)
 		{
 			Log.Debug($"开始下发类型 {devType.ToString()} 的规划信息");
-			var result = DistributeData(devType, m_mapAllMibData);
+
+			var result = DistributeData(devType, m_mapAllMibData, bDlAntWcb);
+
 			Log.Debug($"类型 {devType.ToString()} 的规划信息下发完成，结果为：{result}");
 			return result;
-		}
-
-		public bool DistributeNetPlanAntToEnb(bool bDlAntWcb)
-		{
-			return DistributeData(EnumDevType.ant, m_mapAllMibData, bDlAntWcb);
 		}
 
 		/// <summary>
@@ -1159,28 +1082,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 获取最新值
-		/// </summary>
-		/// <param name="strOriginValue"></param>
-		/// <param name="strLatestValue"></param>
-		/// <returns></returns>
-		private static string GetLatestValue(string strOriginValue, string strLatestValue)
-		{
-			if (string.IsNullOrEmpty(strOriginValue))
-			{
-				return null;
-			}
-
-			var value = strOriginValue;
-
-			if (null != strLatestValue)
-			{
-				value = strLatestValue;
-			}
-			return value;
-		}
-
-		/// <summary>
 		/// 获取需要更新的值
 		/// </summary>
 		/// <param name="strOriginValue"></param>
@@ -1199,83 +1100,6 @@ namespace NetPlan
 			}
 
 			return strLatestValue;
-		}
-
-		/// <summary>
-		/// 布配网规信息
-		/// </summary>
-		/// <param name="devAttribute"></param>
-		/// <param name="cmdType"></param>
-		/// <param name="targetIp"></param>
-		/// <returns></returns>
-		public static bool DistributeSnmpData(DevAttributeBase devAttribute, EnumSnmpCmdType cmdType, string targetIp)
-		{
-			if (string.IsNullOrEmpty(targetIp))
-			{
-				throw new CustomException("下发网规信息功能传入目标IP参数错误");
-			}
-
-			if (EnumSnmpCmdType.Invalid == cmdType)
-			{
-				throw new CustomException("下发网规信息功能传入SNMP命令类型错误");
-			}
-
-			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(targetIp);
-			const EnbTypeEnum enbType = EnbTypeEnum.ENB_EMB6116;
-			//var cmdList = NPECmdHelper.GetInstance().GetCmdList(devAttribute.m_enumDevType, cmdType, enbType);
-			var cmdList = NPECmdHelper.GetInstance().GetCmdList(devAttribute.m_strEntryName, cmdType);
-
-			if (null == cmdList || 0 == cmdList.Count)
-			{
-				throw new CustomException($"未找到表入口名为{devAttribute.m_strEntryName}的{cmdType.ToString()}相关命令");
-			}
-
-			var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
-			if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
-			{
-				throw new CustomException($"未找到表入口名为{devAttribute.m_strEntryName}的{cmdType.ToString()}相关命令详细信息");
-			}
-
-			var strRs = "4";
-			GetMibValue gmv = GetLatestValue;
-			switch (cmdType)
-			{
-				case EnumSnmpCmdType.Set:
-					gmv = GetNeedUpdateValue;
-					break;
-
-				case EnumSnmpCmdType.Add:
-					break;
-
-				case EnumSnmpCmdType.Del:
-					strRs = "6";
-					break;
-
-				default:
-					throw new ArgumentOutOfRangeException(nameof(cmdType), cmdType, null);
-			}
-
-			foreach (var kv in cmdToMibLeafMap)
-			{
-				var cmdName = kv.Key;
-				var mibLeafList = kv.Value;
-
-				var name2Value = devAttribute.GenerateName2ValueMap(mibLeafList, gmv, strRs);
-				if (null == name2Value || name2Value.Count == 0)
-				{
-					Log.Error($"索引为{devAttribute.m_strOidIndex}的设备生成name2value失败");
-					return false;
-				}
-
-				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, devAttribute.m_strOidIndex, targetIp);
-				if (0 != ret)
-				{
-					Log.Error($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
-					return false;
-				}
-			}
-
-			return true;
 		}
 
 		/// <summary>

@@ -4,44 +4,63 @@ using LogManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-/// <summary>
-/// 天线阵设备
-/// </summary>
+
 namespace NetPlan
 {
 	internal class NetDevAnt : NetDevBase
 	{
+		#region 构造函数
+
+		internal NetDevAnt(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData) : base(strTargetIp, mapOriginData)
+		{
+
+		}
+
+		#endregion
+
+		#region 虚函数重载
+
 		/// <summary>
 		/// 下发天线阵设备信息到基站
 		/// </summary>
 		/// <returns></returns>
-		internal override bool DistributeDevToEnb(DevAttributeInfo dev)
+		internal override bool DistributeToEnb(DevAttributeBase dev, bool bDlAntWcb = false)
 		{
-			return base.DistributeDevToEnb(dev);
-		}
-
-		/// <summary>
-		/// 在ant中填入天线阵的信息
-		/// </summary>
-		/// <param name="ant"></param>
-		/// <param name="at"></param>
-		/// <returns></returns>
-		public static bool SetAntTypeInfo(DevAttributeBase ant, AntType at)
-		{
-			ant.SetFieldOriginValue("netAntArrayVendorName", at.antArrayNotMibVendorName);
-			ant.SetFieldOriginValue("netAntArrayModel", at.antArrayModelName);
-
-			if (at.antArrayType.Count > 0)
+			// 新增天线阵设备，需要先下发器件库信息
+			if (RecordDataType.NewAdd == dev.m_recordType)
 			{
-				ant.SetFieldOriginValue("netAntArrayType", at.antArrayType.First().value, true);
+				if (!DistributeAntTypeInfo(dev))
+				{
+					Log.Error($"下发索引为{dev.m_strOidIndex}的天线阵器件库信息失败");
+					return false;
+				}
 			}
 
-			ant.SetFieldOriginValue("netAntArrayNum", at.antArrayNum);
-			ant.SetFieldOriginValue("netAntArrayDistance", at.antArrayDistance);
+			// 下发天线阵的信息
+			if (!base.DistributeToEnb(dev, bDlAntWcb))
+			{
+				Log.Error($"索引为{dev.m_strOidIndex}的天线阵设备信息下发失败");
+				return false;
+			}
+
+			// 下发天线阵权重信息
+			if (bDlAntWcb && RecordDataType.NewAdd == dev.m_recordType)
+			{
+				if (!DistributeDevToEnb(dev, bDlAntWcb))
+				{
+					Log.Error($"下发索引为{dev.m_strOidIndex}的天线阵权重、耦合系数、波束扫描信息失败");
+					return false;
+				}
+			}
 
 			return true;
 		}
+
+		#endregion
+
+		#region 器件库相关
 
 		/// <summary>
 		/// 下发天线阵信息
@@ -49,7 +68,7 @@ namespace NetPlan
 		/// <param name="ant">天线阵设备</param>
 		/// <param name="bSendWcb">是否下发天线阵权重、耦合系数、波束扫描等信息</param>
 		/// <returns></returns>
-		internal bool DistributeDevToEnb(DevAttributeInfo ant, bool bSendWcb)
+		internal bool DistributeDevToEnb(DevAttributeBase ant, bool bSendWcb)
 		{
 			if (bSendWcb)
 			{
@@ -84,7 +103,7 @@ namespace NetPlan
 		/// 下发天线器件库信息
 		/// </summary>
 		/// <param name="ant"></param>
-		public bool DistributeAntTypeInfo(DevAttributeInfo ant)
+		public bool DistributeAntTypeInfo(DevAttributeBase ant)
 		{
 			var strVendor = GetAntVendorIdx(ant);
 			var strType = GetAntTypeIdx(ant);
@@ -115,7 +134,7 @@ namespace NetPlan
 			}
 
 			// 下发信息到基站
-			if (!MibInfoMgr.DistributeSnmpData(dev, EnumSnmpCmdType.Add, CSEnbHelper.GetCurEnbAddr()))
+			if (!base.DistributeToEnb(dev))
 			{
 				Log.Error($"下发索引为{ant.m_strOidIndex}的天线阵的器件库信息失败");
 				return false;
@@ -123,6 +142,32 @@ namespace NetPlan
 
 			return true;
 		}
+
+		#endregion
+
+		/// <summary>
+		/// 在ant中填入天线阵的信息
+		/// </summary>
+		/// <param name="ant"></param>
+		/// <param name="at"></param>
+		/// <returns></returns>
+		public static bool SetAntTypeInfo(DevAttributeBase ant, AntType at)
+		{
+			ant.SetFieldOriginValue("netAntArrayVendorName", at.antArrayNotMibVendorName);
+			ant.SetFieldOriginValue("netAntArrayModel", at.antArrayModelName);
+
+			if (at.antArrayType.Count > 0)
+			{
+				ant.SetFieldOriginValue("netAntArrayType", at.antArrayType.First().value, true);
+			}
+
+			ant.SetFieldOriginValue("netAntArrayNum", at.antArrayNum);
+			ant.SetFieldOriginValue("netAntArrayDistance", at.antArrayDistance);
+
+			return true;
+		}
+
+
 
 		#region 私有方法区
 
@@ -134,12 +179,12 @@ namespace NetPlan
 			return "4" == rs;
 		}
 
-		private string GetAntVendorIdx(DevAttributeInfo ant)
+		private string GetAntVendorIdx(DevAttributeBase ant)
 		{
 			return ant.GetNeedUpdateValue("netAntArrayVendorIndex");
 		}
 
-		private string GetAntTypeIdx(DevAttributeInfo ant)
+		private string GetAntTypeIdx(DevAttributeBase ant)
 		{
 			return ant.GetNeedUpdateValue("netAntArrayTypeIndex");
 		}
@@ -170,7 +215,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="ant"></param>
 		/// <returns></returns>
-		private AntWcbOpType GetWcbOpType(DevAttributeInfo ant)
+		private AntWcbOpType GetWcbOpType(DevAttributeBase ant)
 		{
 			switch (ant.m_recordType)
 			{
@@ -199,7 +244,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="ant"></param>
 		/// <returns></returns>
-		private bool IsSameTypeAntWithPrevious(DevAttributeInfo ant)
+		private bool IsSameTypeAntWithPrevious(DevAttributeBase ant)
 		{
 			var otype = ant.GetFieldOriginValue("netAntArrayTypeIndex");
 			var ovendor = ant.GetFieldOriginValue("netAntArrayVendorIndex");
@@ -213,7 +258,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="ant"></param>
 		/// <returns>-1：异常错误，0：成功，1：用户放弃</returns>
-		private int GenerateAntWcbInfo(DevAttributeInfo ant)
+		private int GenerateAntWcbInfo(DevAttributeBase ant)
 		{
 			var mapKv = new Dictionary<string, string>
 			{
@@ -363,21 +408,21 @@ namespace NetPlan
 			}
 		}
 
-		private bool SaveWcbDev(EnumDevType type, DevAttributeInfo dev)
+		private bool SaveWcbDev(EnumDevType type, DevAttributeBase dev)
 		{
-			List<DevAttributeInfo> refList = null;
+			List<DevAttributeBase> refList = null;
 			switch (type)
 			{
 				case EnumDevType.antWeight:
-					refList = m_antWeightList ?? new List<DevAttributeInfo>();
+					refList = m_antWeightList ?? new List<DevAttributeBase>();
 					break;
 
 				case EnumDevType.antCoup:
-					refList = m_antCouplingList ?? new List<DevAttributeInfo>();
+					refList = m_antCouplingList ?? new List<DevAttributeBase>();
 					break;
 
 				case EnumDevType.antBfScan:
-					refList = m_antBfScanList ?? new List<DevAttributeInfo>();
+					refList = m_antBfScanList ?? new List<DevAttributeBase>();
 					break;
 
 				default:
@@ -403,18 +448,40 @@ namespace NetPlan
 				return false;
 			}
 
-			return m_antWeightList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp)) &&
-				   m_antCouplingList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp)) &&
-				   m_antBfScanList.All(item => MibInfoMgr.DistributeSnmpData(item, cmdType, targetIp));
+			foreach (var item in m_antWeightList)
+			{
+				if (!base.DistributeToEnb(item))
+				{
+					return false;
+				}
+			}
+
+			foreach (var item in m_antCouplingList)
+			{
+				if (!base.DistributeToEnb(item))
+				{
+					return false;
+				}
+			}
+
+			foreach (var item in m_antBfScanList)
+			{
+				if (!base.DistributeToEnb(item))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		#endregion 私有方法区
 
 		#region 私有数据区
 
-		private List<DevAttributeInfo> m_antWeightList;
-		private List<DevAttributeInfo> m_antCouplingList;
-		private List<DevAttributeInfo> m_antBfScanList;
+		private List<DevAttributeBase> m_antWeightList;
+		private List<DevAttributeBase> m_antCouplingList;
+		private List<DevAttributeBase> m_antBfScanList;
 
 		#endregion 私有数据区
 	}

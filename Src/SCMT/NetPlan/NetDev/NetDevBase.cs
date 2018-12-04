@@ -3,19 +3,107 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtility;
+using DataBaseUtil;
+using LinkPath;
+using LogManager;
+using SCMTOperationCore.Elements;
+using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-/// <summary>
-/// 网规设备相关
-/// </summary>
 namespace NetPlan
 {
 	internal class NetDevBase
 	{
-		internal virtual bool DistributeDevToEnb(DevAttributeInfo dev)
+		#region 构造函数
+
+		internal NetDevBase(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData)
 		{
-			throw new NotImplementedException();
+			m_strTargetIp = strTargetIp;
+			m_mapOriginData = mapOriginData;
 		}
 
+		#endregion
+
+		#region 虚函数区
+
+		/// <summary>
+		/// 下发网规信息
+		/// </summary>
+		/// <param name="dev">待下发的设备</param>
+		/// <param name="mapOriginData">原始数据</param>
+		/// <param name="bDlAntWcb">是否下载天线阵权重信息</param>
+		/// <returns></returns>
+		internal virtual bool DistributeToEnb(DevAttributeBase dev, bool bDlAntWcb = false)
+		{
+			var cmdType = dev.m_recordType.ConvertToSct();
+
+			if (EnumSnmpCmdType.Invalid == cmdType)
+			{
+				Log.Error($"下发网规信息功能传入SNMP命令类型错误，无法下发索引为{dev.m_strOidIndex}的设备信息");
+				return false;
+			}
+
+			if (EnumSnmpCmdType.Get == cmdType)
+			{
+				Log.Debug($"无需下发类型为{dev.m_recordType.ToString()}索引为{dev.m_strOidIndex}设备信息");
+				return true;
+			}
+
+			// todo 多次获取命令的信息，流程待优化
+			var cmdList = NPECmdHelper.GetInstance().GetCmdList(dev.m_strEntryName, cmdType);
+
+			if (null == cmdList || 0 == cmdList.Count)
+			{
+				Log.Error($"未找到表入口名为{dev.m_strEntryName}的{cmdType.ToString()}相关命令");
+				return false;
+			}
+
+			var cmdToMibLeafMap = NPECmdHelper.GetInstance().GetSameTypeCmdMibLeaf(cmdList);
+			if (null == cmdToMibLeafMap || 0 == cmdToMibLeafMap.Count)
+			{
+				Log.Error($"未找到表入口名为{dev.m_strEntryName}的{cmdType.ToString()}相关命令详细信息");
+				return false;
+			}
+
+			var strRs = "4";
+			switch (cmdType)
+			{
+				case EnumSnmpCmdType.Set:
+				case EnumSnmpCmdType.Add:
+					break;
+
+				case EnumSnmpCmdType.Del:
+					strRs = "6";
+					break;
+			}
+
+			// 有些设备可能会有多个set命令
+			foreach (var kv in cmdToMibLeafMap)
+			{
+				var cmdName = kv.Key;
+				var mibLeafList = kv.Value;
+
+				var name2Value = dev.GenerateName2ValueMap(mibLeafList, strRs);
+				if (null == name2Value || name2Value.Count == 0)
+				{
+					Log.Error($"索引为{dev.m_strOidIndex}的设备生成name2value失败");
+					return false;
+				}
+
+				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dev.m_strOidIndex, m_strTargetIp);
+				if (0 != ret)
+				{
+					Log.Error($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		#endregion
+
+		#region 非虚函数
 
 		internal EnumSnmpCmdType GetSnmCmdTypeFromWcbOpType(AntWcbOpType opType)
 		{
@@ -53,5 +141,14 @@ namespace NetPlan
 			var tmp = 0;
 			return listOriginVd.Where(item => int.TryParse(item.value, out tmp)).Sum(item => tmp);
 		}
+
+		#endregion
+
+		#region 内部数据
+
+		protected MAP_DEVTYPE_DEVATTRI m_mapOriginData;
+		protected string m_strTargetIp;
+
+		#endregion
 	}
 }

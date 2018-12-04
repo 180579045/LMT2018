@@ -65,6 +65,8 @@
     <Compile Include="NetDev\DevAttributeBase.cs" />
     <Compile Include="NetDev\NetDevAnt.cs" />
     <Compile Include="NetDev\NetDevBase.cs" />
+    <Compile Include="NetDev\NetDevFactory.cs" />
+    <Compile Include="NetDev\NetDevLc.cs" />
     <Compile Include="NetDev\NetDevRhub.cs" />
     <Compile Include="NetDev\NetDevRru.cs" />
     <Compile Include="NetPlanMagicNum.cs" />

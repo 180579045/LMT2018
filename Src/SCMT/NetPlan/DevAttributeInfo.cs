@@ -16,10 +16,42 @@ namespace NetPlan
 {
 	public enum RecordDataType
 	{
-		Original,		// 从enb中查到的原始值
+		Original = 1,		// 从enb中查到的原始值
 		NewAdd,			// 新增的信息
 		Modified,		// enb中查到的数据被修改
 		WaitDel			// enb中查到的数据被删除
+	}
+
+	public static class RdtHelper
+	{
+		/// <summary>
+		/// 把RecordDataType枚举值转换为SnmpCmdType
+		/// </summary>
+		/// <param name="rdt"></param>
+		/// <returns></returns>
+		public static EnumSnmpCmdType ConvertToSct(this RecordDataType rdt)
+		{
+			var sct = EnumSnmpCmdType.Invalid;
+			switch (rdt)
+			{
+				case RecordDataType.Original:
+					sct = EnumSnmpCmdType.Get;
+					break;
+				case RecordDataType.NewAdd:
+					sct = EnumSnmpCmdType.Add;
+					break;
+				case RecordDataType.Modified:
+					sct = EnumSnmpCmdType.Set;
+					break;
+				case RecordDataType.WaitDel:
+					sct = EnumSnmpCmdType.Del;
+					break;
+				default:
+					break;
+			}
+
+			return sct;
+		}
 	}
 
 	// 设备的属性
