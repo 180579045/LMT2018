@@ -70,9 +70,11 @@ namespace MIBDataParser
 		public string mibDesc;
 		public bool IsTable = false;
 		public string managerWriteAble;
+        public string mibValAllListEng;
+        public string mibValAllList;
 
-		#region 构造函数
-		public MibLeaf()
+        #region 构造函数
+        public MibLeaf()
 		{
 			IsTable = false;
 		}
