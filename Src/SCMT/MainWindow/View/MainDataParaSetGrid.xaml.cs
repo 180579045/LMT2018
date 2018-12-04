@@ -370,7 +370,7 @@ namespace SCMTMainWindow.View
 
 						model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
 						{
-							m_Content = mibLeaf.managerValueRange,
+							m_Content = mibLeaf.mibValAllList,
 							oid = mibLeaf.childOid,
 							MibName_CN = mibLeaf.childNameCh,
 							MibName_EN = mibLeaf.childNameMib

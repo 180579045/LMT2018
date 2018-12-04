@@ -294,7 +294,7 @@ namespace LmtbSnmp
 				return null;
 			}
 
-			var mvr = retData.managerValueRange;                    // 1.取出该节点的取值范围;
+			var mvr = retData.mibValAllList;                    // 1.取出该节点的取值范围;
 			var mapKv = MibStringHelper.SplitManageValue(mvr);      // 2.分解取值范围;
 			
 			return mapKv;
@@ -349,7 +349,7 @@ namespace LmtbSnmp
 			else if (omType.Equals("enum"))
 			{
 				// 1.取出该节点的取值范围
-				var mvr = mibLeaf.managerValueRange;
+				var mvr = mibLeaf.mibValAllList;
 
 				// 2.分解取值范围
 				var mapKv = MibStringHelper.SplitManageValue(mvr);
