@@ -303,7 +303,10 @@ namespace NetPlan
 			foreach (var item in antArrayMultWeight)
 			{
 				var band = item.antennaWeightMultFrequencyBand;
-				if (mapKv.TryGetValue(band, out var bandDesc))
+
+				string bandDesc;
+
+				if (mapKv.TryGetValue(band, out bandDesc))
 				{
 					descList.Add(bandDesc);
 				}
