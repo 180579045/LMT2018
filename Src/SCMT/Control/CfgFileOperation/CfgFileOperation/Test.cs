@@ -21,44 +21,10 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
-            Dictionary<string, string> path = null;
-            if (args.Count() != 0)
-            {
-                path = new Dictionary<string, string>();
-                foreach (var par in args)
-                {
-                    string par_str = par.ToString();
-                    int pos = par_str.IndexOf(':');
-                    if (pos != -1)
-                    {
-                        string key = par_str.Substring(0, pos);
-                        string val = par_str.Substring(pos + 1);
-                        path.Add(key, val);
-                    }
-                }
-                Dictionary<string, string> path2 = new Dictionary<string, string>();
-                if (path.ContainsKey("OutDir"))
-                {
-                    foreach (var key in path.Keys)
-                    {
-                        if (String.Equals("OutDir", key))
-                        {
-                            path2.Add(key, path[key]);
-                        }
-                        else
-                        {
-                            path2.Add(key, path["OutDir"] + path[key]);
-                        }
-                    }
-                }
-                path = path2;
-            }
-            
-            if (path != null)
-            {
-                new Test().testCmdlineCreateInitPatch(path);
-            }
+            new Test().CmdlineCreateInitPatch(args);
 
+            var te = CfgExcelOp.GetInstance();
+            
 
             //TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
             //initPath.Main();
@@ -1581,6 +1547,9 @@ namespace CfgFileOperation
         /// </summary>
         void testForCreatePatchAndInit()
         {
+            FileStream fs = new FileStream("WriteInitPatchLog.txt", FileMode.Create);
+            //实例化BinaryWriter
+            BinaryWriter bw = new BinaryWriter(fs);
             string dataBasePath  = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\5GCfg\\";
             string dataMdbPath   = "lm.mdb";//1.数据库
             string antennaExPath = "LTE_基站天线广播波束权值参数配置表_5G.xls";//2.天线信息
@@ -1600,19 +1569,67 @@ namespace CfgFileOperation
                 { "SelfDef" ,dataBasePath+selfDefExPath},
                 { "OutDir" , dataBasePath },
             };
-            cfgOp.CreatePatchAndInitCfg(paths);
+            cfgOp.CreatePatchAndInitCfg(bw, paths);
+
+            //清空缓冲区
+            bw.Flush();
+            //关闭流
+            bw.Close();
+            fs.Close();
         }
         /// <summary>
         /// 命令行生成
         /// </summary>
         /// <param name="paths"></param>
-        void testCmdlineCreateInitPatch(Dictionary<string, string> paths)
+        void CmdlineCreateInitPatch(string[] args)
         {
-            foreach (var key in paths.Keys)
+            FileStream fs = new FileStream("WriteInitPatchLog.txt", FileMode.Create);
+            //实例化BinaryWriter
+            BinaryWriter bw = new BinaryWriter(fs);
+
+            bw.Write(String.Format("Cmdline CreateInitPatch Start... Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")));
+            Console.WriteLine(String.Format("....testCmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+
+            try
             {
-                Console.WriteLine(String.Format("cmdline:key={0},val={1}",key,paths[key]));
+                Dictionary<string, string> path = null;
+                if (args.Count() != 0)
+                {
+                    path = new Dictionary<string, string>();
+                    foreach (var par in args)
+                    {
+                        string par_str = par.ToString();
+                        int pos = par_str.IndexOf(':');
+                        if (pos != -1)
+                        {
+                            string key = par_str.Substring(0, pos);
+                            string val = par_str.Substring(pos + 1);
+                            path.Add(key, val);
+                            bw.Write(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val));
+                        }
+                    }
+                    new CfgOp().CreatePatchAndInitCfg(bw, path);
+                }
+                else
+                {
+                    bw.Write(String.Format("\nCmdline CreateInitPatch Err: need input par"));
+                    Console.WriteLine(" need input par...");
+                }
             }
-            new CfgOp().CreatePatchAndInitCfg(paths);
+            finally
+            {
+                CfgExcelOp.GetInstance().Dispose();
+            }
+
+
+            
+            Console.WriteLine(String.Format("....testCmdlineCreateInitPatch End. Time is ")+ DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+
+            //清空缓冲区
+            bw.Flush();
+            //关闭流
+            bw.Close();
+            fs.Close();
         }
 
         void testForParseAlarmEx()
@@ -1710,8 +1727,9 @@ namespace CfgFileOperation
 
         void testForOpReadExcelForCfg()
         {
-            CfgExcelOp exOp = new CfgExcelOp();
-            exOp.test(".\\123\\eNB告警信息表.xls");
+            //CfgExcelOp exOp = new CfgExcelOp();
+            var excelOp = CfgExcelOp.GetInstance();
+            //excelOp.test(".\\123\\eNB告警信息表.xls");
 
         }
 

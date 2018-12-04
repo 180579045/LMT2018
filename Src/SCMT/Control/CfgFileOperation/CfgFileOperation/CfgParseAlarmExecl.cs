@@ -27,14 +27,14 @@ namespace CfgFileOperation
 
         public void CfgParseAlarmExeclAndMdb(string strExcelPath, string strMdbPath)
         {
-            CfgExcelOp excelOp = new CfgExcelOp();
+            //var excelOp = CfgExcelOp.GetInstance();
             //string strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\eNB告警信息表.xls";
             string strSheetName = "eNB告警信息表";
-            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strSheetName);
+            
+            //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strSheetName);
 
             ProcessingAlarmMdb(strMdbPath);
-            ProcessingAlarmExcel(wks);
+            ProcessingAlarmExcel(strExcelPath, strSheetName);
 
             FileStream fs = new FileStream("alarmBugWriteBuf.txt", FileMode.Create);
             //实例化BinaryWriter
@@ -65,17 +65,17 @@ namespace CfgFileOperation
 
         public void ParseExcel(string strExcelPath)
         {
-            CfgExcelOp excelOp = new CfgExcelOp();
+            //CfgExcelOp excelOp = new CfgExcelOp();
+            
             string strSheetName = "eNB告警信息表";
-            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strSheetName);
-            ProcessingAlarmExcel(wks);
-        }
-
-        public void ParseMdb(string strMdbPath)
-        {
-            CfgExcelOp excelOp = new CfgExcelOp();
-            ProcessingAlarmMdb(strMdbPath);
+            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
+            //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strSheetName);
+            //if (wks != null)
+            ProcessingAlarmExcel(strExcelPath, strSheetName);
+            //else
+            //{
+            //    return;
+            //}
         }
         bool is_same_pama(StruAlarmInfo a, StruAlarmInfo b, List<byte> bugbuff)
         {
@@ -327,29 +327,30 @@ namespace CfgFileOperation
         /// 处理 excel sheet 的内容
         /// </summary>
         /// <param name="FilePath"></param>
-        void ProcessingAlarmExcel(Excel.Worksheet wks)
+        void ProcessingAlarmExcel(string strExcelPath, string strSheetName)
         {
-            if (wks == null)
-                return;
-            int rowCount = wks.UsedRange.Rows.Count;                  // 获取行数
-            object[,] arryB = (object[,])wks.Cells.get_Range("B2", "B" + rowCount).Value2;//{"告警编号", "B"},//  [//{"AlaNumber"}] 
-            object[,] arryD = (object[,])wks.Cells.get_Range("D2", "D" + rowCount).Value2;//{"是否为故障类告警", "D"},//  [//{"IsFault"}]
-            object[,] arryG = (object[,])wks.Cells.get_Range("G2", "G" + rowCount).Value2;//{"主告警编号", "G"},//  [//{"AlaSubtoPrimaryNumber"}]
-            object[,] arryI = (object[,])wks.Cells.get_Range("I2", "I" + rowCount).Value2;//{"告警类型", "I"},//  [//{"AlaType"}]
-            object[,] arryJ = (object[,])wks.Cells.get_Range("J2", "J" + rowCount).Value2;//{"厂家告警级别", "J"},//  [//{"AlaDegree"}]
-            object[,] arryQ = (object[,])wks.Cells.get_Range("Q2", "Q" + rowCount).Value2;//{"清除方式", "Q"},//  [//{"ClearStyle"}]
-            object[,] arryX = (object[,])wks.Cells.get_Range("X2", "X" + rowCount).Value2;//{"对应北向接口告警标准原因", "X"},//  [//{"ItfNProtocolCauseNo"}]
-            object[,] arryY = (object[,])wks.Cells.get_Range("Y2", "Y" + rowCount).Value2;//{"是否需要上报OMCR", "Y"},//  [//{"IsReportToOMCR"}]
-            object[,] arryZ = (object[,])wks.Cells.get_Range("Z2", "Z" + rowCount).Value2;//{"故障对象名称", "Z"},//  [//{"FathernameOfObject"}]
+            var cfgExOp = CfgExcelOp.GetInstance();
+            // 获取行数
+            int rowCount = cfgExOp.GetRowCount(strExcelPath, strSheetName);
 
-            object[,] arryAA = (object[,])wks.Cells.get_Range("AA2", "AA" + rowCount).Value2;//{"告警值含义描述", "AA"},// [//{"ValueStyle"}]
-            object[,] arryAC = (object[,])wks.Cells.get_Range("AC2", "AC" + rowCount).Value2;//{"故障类告警清除去抖周期{单位：s}", "AC"},// [//{"ClearDeditheringInterval"}]
-            object[,] arryAD = (object[,])wks.Cells.get_Range("AD2", "AD" + rowCount).Value2;//{"告警频次去抖间隔（单位：min）", "AD"},// [//{"CompressionInterval"}]
-            object[,] arryAE = (object[,])wks.Cells.get_Range("AE2", "AE" + rowCount).Value2;//{"告警频次去抖次数", "AE"},// [//{"CompressionRepetitions"}]
-            object[,] arryAF = (object[,])wks.Cells.get_Range("AF2", "AF" + rowCount).Value2;//{"告警产生去抖周期{单位：s}", "AF"},// [//{"CreateDeditheringInterval"}]
-            object[,] arryAV = (object[,])wks.Cells.get_Range("AV2", "AV" + rowCount).Value2;//{"故障对象名称_EN", "AV"},// [//{"FathernameOfObject_En"}]
-            object[,] arryAW = (object[,])wks.Cells.get_Range("AW2", "AW" + rowCount).Value2;//{"告警不稳定态处理方式", "AW"},// [//{"AlaUnstableDispose"}]
-            object[,] arryAX = (object[,])wks.Cells.get_Range("AX2", "AX" + rowCount).Value2;//{"不稳定态告警编号", "AX"},// [//{"UnstableAlaNum"}]
+            object[,] arryB = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "B2", "B" + rowCount);//{"告警编号", "B"},//  [//{"AlaNumber"}] 
+            object[,] arryD = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "D2", "D" + rowCount);//{"是否为故障类告警", "D"},//  [//{"IsFault"}]
+            object[,] arryG = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "G2", "G" + rowCount);//{"主告警编号", "G"},//  [//{"AlaSubtoPrimaryNumber"}]
+            object[,] arryI = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "I2", "I" + rowCount);//{"告警类型", "I"},//  [//{"AlaType"}]
+            object[,] arryJ = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "J2", "J" + rowCount);//{"厂家告警级别", "J"},//  [//{"AlaDegree"}]
+            object[,] arryQ = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "Q2", "Q" + rowCount);//{"清除方式", "Q"},//  [//{"ClearStyle"}]
+            object[,] arryX = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "X2", "X" + rowCount);//{"对应北向接口告警标准原因", "X"},//  [//{"ItfNProtocolCauseNo"}]
+            object[,] arryY = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "Y2", "Y" + rowCount);//{"是否需要上报OMCR", "Y"},//  [//{"IsReportToOMCR"}]
+            object[,] arryZ = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "Z2", "Z" + rowCount);//{"故障对象名称", "Z"},//  [//{"FathernameOfObject"}]
+
+            object[,] arryAA = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AA2", "AA" + rowCount);//{"告警值含义描述", "AA"},// [//{"ValueStyle"}]
+            object[,] arryAC = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AC2", "AC" + rowCount);//{"故障类告警清除去抖周期{单位：s}", "AC"},// [//{"ClearDeditheringInterval"}]
+            object[,] arryAD = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AD2", "AD" + rowCount);//{"告警频次去抖间隔（单位：min）", "AD"},// [//{"CompressionInterval"}]
+            object[,] arryAE = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AE2", "AE" + rowCount);//{"告警频次去抖次数", "AE"},// [//{"CompressionRepetitions"}]
+            object[,] arryAF = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AF2", "AF" + rowCount);//{"告警产生去抖周期{单位：s}", "AF"},// [//{"CreateDeditheringInterval"}]
+            object[,] arryAV = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AV2", "AV" + rowCount);//{"故障对象名称_EN", "AV"},// [//{"FathernameOfObject_En"}]
+            object[,] arryAW = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AW2", "AW" + rowCount);//{"告警不稳定态处理方式", "AW"},// [//{"AlaUnstableDispose"}]
+            object[,] arryAX = cfgExOp.GetRangeVal(strExcelPath, strSheetName, "AX2", "AX" + rowCount);//{"不稳定态告警编号", "AX"},// [//{"UnstableAlaNum"}]
 
             //List<StruAlarmInfo> vectAlarmInfo = new List<StruAlarmInfo>();
             // 处理 每行的告警内容

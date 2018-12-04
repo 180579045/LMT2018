@@ -53,14 +53,15 @@ namespace CfgFileOperation
             if ((String.Empty == strExcelPath) || (String.Empty == strFileToDirectory) || (String.Empty == strUeType) || (null == cfgOp))
                 return;
 
-            CfgExcelOp excelOp = new CfgExcelOp();
-            if (excelOp == null)
-                return;
+            //CfgExcelOp excelOp = new CfgExcelOp();
+            //var excelOp = CfgExcelOp.GetInstance();
+            //if (excelOp == null)
+            //    return;
 
             //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
-            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            if (wbook == null)
-                return;
+            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
+            //if (wbook == null)
+            //    return;
 
             // 获取 lm.mdb中数据，存入内存中
             //ProcessingMdbData(strFileToDirectory);var mibTreeMem = cfgOp.m_mibTreeMem;
@@ -70,7 +71,7 @@ namespace CfgFileOperation
             {
                 //strExcelPageArray[0] = "gNB参数表-7";
                 //strExcelPageArray[1] = "Cell参数表-8";
-                ProcessingExcelUeTypeDefault(wbook, excelOp, cfgOp);
+                ProcessingExcelUeTypeDefault(strExcelPath, cfgOp);
             }
             //展讯
             else if (0 == String.Compare(strUeType,"1:展讯", true))
@@ -116,7 +117,7 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="excelOp"></param>
-        void ProcessingExcelUeTypeDefault(Excel.Workbook wbook, CfgExcelOp excelOp, CfgOp cfgOp)
+        void ProcessingExcelUeTypeDefault(string strExcelPath,  CfgOp cfgOp)
         {
             // 如果是老的 reclist 
             // "Cell参数表"
@@ -137,22 +138,22 @@ namespace CfgFileOperation
                     { "End","Q"},                // 结束标志
                 };
 
-            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, "Cell参数表");//
-            if (wks == null)
-                return;
+            //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, "Cell参数表");//
+            //if (wks == null)
+            //    return;
 
-            DealReclistPageData(wks, SheetCellColUe0, cfgOp, "Cell参数表");
+            DealReclistPageData(strExcelPath, SheetCellColUe0, cfgOp, "Cell参数表");
         }
 
-        void DealReclistPageData(Excel.Worksheet wks, Dictionary<string, string> ColName, CfgOp cfgOp, string strPageName)
+        void DealReclistPageData(string strExcelPath, Dictionary<string, string> ColName, CfgOp cfgOp, string strPageName)
         {
-            int rowCount = GetEndLineNum(wks, ColName);// wks.UsedRange.Rows.Count;                  // 获取行数
-
+            int rowCount = GetEndLineNum(strExcelPath, strPageName, ColName);// wks.UsedRange.Rows.Count;                  // 获取行数
+            var exop = CfgExcelOp.GetInstance();
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
             foreach (var colName in ColName.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
             {
-                object[,] arry = (object[,])wks.Cells.get_Range(ColName[colName] + "1", ColName[colName] + rowCount).Value2;
+                object[,] arry = exop.GetRangeVal(strExcelPath, strPageName, ColName[colName] + "1", ColName[colName] + rowCount);
                 ColVals.Add(colName, arry);
             }
 
@@ -542,11 +543,12 @@ namespace CfgFileOperation
         /// <param name="wks"></param>
         /// <param name="ColName"></param>
         /// <returns></returns>
-        int GetEndLineNum(Excel.Worksheet wks, Dictionary<string, string> ColName)
+        int GetEndLineNum(string strExcelPath, string strPageName , Dictionary<string, string> ColName)
         {
-            int rowCount = wks.UsedRange.Rows.Count;
-            object[,] arry = (object[,])wks.Cells.get_Range(ColName["End"] + "1", ColName["End"] + rowCount).Value2;
-
+            //int rowCount = wks.UsedRange.Rows.Count;
+            var exop = CfgExcelOp.GetInstance();
+            int rowCount = exop.GetRowCount(strExcelPath, strPageName);
+            object[,] arry = exop.GetRangeVal(strExcelPath, strPageName, ColName["End"] + "1", ColName["End"] + rowCount);
             for (int row = 1; row < rowCount + 1; row++)
             {
                 if (arry[row, 1] == null)

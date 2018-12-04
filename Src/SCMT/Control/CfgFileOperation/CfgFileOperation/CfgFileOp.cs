@@ -57,33 +57,42 @@ namespace CfgFileOperation
         /// <summary>
         /// 创建 init.cfg path_ex.cfg
         /// </summary>
-        public bool CreatePatchAndInitCfg(Dictionary<string, string> paths)
+        public bool CreatePatchAndInitCfg(BinaryWriter bw, Dictionary<string, string> paths)
         {
             string err;
+            bw.Write(String.Format("CreatePatchAndInitCfg start ...\n"));
             // 校验文件地址
             if (!IsAllPathValid(paths, out err))
             {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: {0}, 不能生成init和patch.\n", err));
                 Console.WriteLine(String.Format("{0}, 不能生成init和patch", err));
                 return false;
             }
             //public RRU信息、告警信息、天线信息、lm.mdb
             if (!CreatCfg_public(paths))
             {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成公共数据部分失败！\n"));
                 Console.WriteLine(String.Format("生成公共数据部分失败！"));
                 return false;
             }
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n"));
             // 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
             if (!CreatCfg_init_cfg(paths))
             {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n"));
                 Console.WriteLine(String.Format("生成init.cfg失败！"));
                 return false;
             }
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n"));
             // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
             if (!CreatCfg_patch_ex_cfg(paths))
             {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n"));
                 Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
                 return false;
             }
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg end.\n"));
             return true;
         }
 
