@@ -34,7 +34,9 @@ namespace NetPlan
 					continue;
 				}
 
-				if (!int.TryParse(rhubEthNo, out var rhubPort))
+				int rhubPort;
+
+				if (!int.TryParse(rhubEthNo, out rhubPort))
 				{
 					Log.Error($"索引为{picoDev.m_strOidIndex}pico设备在端口{i}连接的rhub端口号配置错误，值：{rhubEthNo}");
 					continue;

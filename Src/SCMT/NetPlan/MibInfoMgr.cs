@@ -919,7 +919,8 @@ namespace NetPlan
 		/// <returns></returns>
 		private IEnumerable<RruPortInfo> GetRruPortInfoByIndex(string strIndex)
 		{
-			if (!int.TryParse(strIndex.Trim('.'), out _))
+			int nIndex;
+			if (!int.TryParse(strIndex.Trim('.'), out nIndex))
 			{
 				Log.Error($"传入的{strIndex}存在非法字符");
 				return null;
