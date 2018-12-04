@@ -28,7 +28,9 @@ namespace NetPlan
 
 		public bool m_bIsScalar;                   // 设备是否是标量表
 
-		public RecordDataType m_recordType { get; set; }    // 记录类型
+		public RecordDataType m_recordType { get; protected set; }    // 记录类型
+
+		protected string m_strRsMibName;
 
 		public DevAttributeBase(string strEntryName, string strIdx)
 		{
@@ -39,6 +41,8 @@ namespace NetPlan
 			m_recordType = RecordDataType.NewAdd;
 
 			InitDevInfo();
+
+			SetFieldLatestValue(m_strRsMibName, "4");
 		}
 
 		protected DevAttributeBase()
@@ -62,7 +66,17 @@ namespace NetPlan
 				return;
 			}
 
+
+			var rsMl = tbl.GetRowStatusMibName();
+			if (null == rsMl)
+			{
+				return;
+			}
+
 			m_mapAttributes = attributes;
+			m_strRsMibName = rsMl.childNameMib;
+
+			AddRowStatusToAttributeMap(rsMl, "6");
 
 			// 还需要加上索引列
 			if (indexGrade > 0)
@@ -383,7 +397,6 @@ namespace NetPlan
 		/// <returns></returns>
 		protected string GerenalDevOidIndex(int indexGrade, int devIndex)
 		{
-			// TODO 暂时先简单处理板卡，RRU，天线阵等设备的索引
 			if (m_bIsScalar)
 			{
 				return ".0";
@@ -418,10 +431,20 @@ namespace NetPlan
 			SetFieldLatestValue(strFieldName, strValue);
 			if (m_recordType != RecordDataType.NewAdd)
 			{
-				m_recordType = RecordDataType.Modified;
+				SetDevRecordType(RecordDataType.Modified);
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// 设置记录类型，用于同步设置行状态的值
+		/// </summary>
+		/// <param name="recordType"></param>
+		public void SetDevRecordType(RecordDataType recordType)
+		{
+			m_recordType = recordType;
+			SetRowStatusValue(recordType);
 		}
 
 		#region 私有函数
@@ -455,6 +478,37 @@ namespace NetPlan
 				m_mapAttributes.Add(indexColumn.childNameMib, info);
 			}
 			return true;
+		}
+
+		/// <summary>
+		/// 设行状态值，校验模块需要
+		/// </summary>
+		/// <param name="rdt"></param>
+		private void SetRowStatusValue(RecordDataType rdt)
+		{
+			string strRsValue = "4";
+			switch (m_recordType)
+			{
+				case RecordDataType.Original:
+				case RecordDataType.NewAdd:
+				case RecordDataType.Modified:
+					break;
+				case RecordDataType.WaitDel:
+					strRsValue = "6";
+					break;
+			}
+
+			SetFieldLatestValue(m_strRsMibName, strRsValue);
+		}
+
+
+		protected void AddRowStatusToAttributeMap(MibLeaf rsMibLeaf, string strValue)
+		{
+			if (!m_mapAttributes.ContainsKey(rsMibLeaf.childNameMib))
+			{
+				var tmp = new MibLeafNodeInfo {m_bReadOnly = true, m_bVisible = false, m_strOriginValue = strValue, mibAttri = rsMibLeaf};
+				m_mapAttributes[rsMibLeaf.childNameMib] = tmp;
+			}
 		}
 
 		#endregion 私有函数

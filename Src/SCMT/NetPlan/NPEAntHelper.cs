@@ -1,10 +1,8 @@
-﻿using System;
+﻿using CommonUtility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using CommonUtility;
 
 namespace NetPlan
 {
@@ -46,7 +44,7 @@ namespace NetPlan
 				}
 				else
 				{
-					var listAnt = new List<AntType> {antType};
+					var listAnt = new List<AntType> { antType };
 					mapAntInfo.Add(antType.antArrayNotMibVendorName, listAnt);
 				}
 			}
@@ -163,7 +161,7 @@ namespace NetPlan
 			return atList.FirstOrDefault(item => item.antArrayIndex.ToString() == strTypeIdx && item.antArrayVendor.ToString() == strVendorIdx);
 		}
 
-		#endregion
+		#endregion 公共接口
 
 		#region 私有接口、数据区
 
@@ -187,19 +185,18 @@ namespace NetPlan
 
 		private readonly WholeAntInfo _antInfo;
 
-	    public WholeAntInfo GetAntInfo()
-	    {
-	        return _antInfo;
-	    }
+		public WholeAntInfo GetAntInfo()
+		{
+			return _antInfo;
+		}
 
-
-        /// <summary>
-        /// 根据厂家索引和类型索引获取天线阵编号
-        /// </summary>
-        /// <param name="strVendorIdx"></param>
-        /// <param name="strTypeIdx"></param>
-        /// <returns></returns>
-        private int GetAntNoByVendorAndType(string strVendorIdx, string strTypeIdx)
+		/// <summary>
+		/// 根据厂家索引和类型索引获取天线阵编号
+		/// </summary>
+		/// <param name="strVendorIdx"></param>
+		/// <param name="strTypeIdx"></param>
+		/// <returns></returns>
+		private int GetAntNoByVendorAndType(string strVendorIdx, string strTypeIdx)
 		{
 			var nVIdx = int.Parse(strVendorIdx);
 			var nTIdx = int.Parse(strTypeIdx);
@@ -215,16 +212,16 @@ namespace NetPlan
 			return -1;
 		}
 
-		#endregion
+		#endregion 私有接口、数据区
 	}
 
 	#region 天线阵解析相关类型定义
 
 	public class WholeAntInfo
 	{
-		public List<AntType> antennaTypeTable;				// 天线类型
-		public List<AntWeight> antennaWeightTable;			// 天线权重
-		public List<AntCoupCoe> couplingCoeffctTable;		// 耦合系数
+		public List<AntType> antennaTypeTable;              // 天线类型
+		public List<AntWeight> antennaWeightTable;          // 天线权重
+		public List<AntCoupCoe> couplingCoeffctTable;       // 耦合系数
 
 		public WholeAntInfo()
 		{
@@ -240,19 +237,19 @@ namespace NetPlan
 	public class AntType
 	{
 		public int antArrayNotMibNumber { get; set; }
-        public int antArrayVendor { get; set; }                 // 厂家索引
-        public string antArrayNotMibVendorName { get; set; }    // 厂家文本描述
-        public int antArrayIndex { get; set; }                  // 天线阵型号索引
-        public string antArrayModelName { get; set; }           // 天线阵型号
-        public int antArrayNum { get; set; }                    // 天线阵根数
-        public int antArrayDistance { get; set; }               // 天线阵距离
-        public List<VD> antArrayType { get; set; }              // 天线阵形状
-        public List<VD> antArrayNotMibAntLossFlag { get; set; }
-        public List<VD> netAntArrayNotMibHalfPowerBeamWidth { get; set; }
+		public int antArrayVendor { get; set; }                 // 厂家索引
+		public string antArrayNotMibVendorName { get; set; }    // 厂家文本描述
+		public int antArrayIndex { get; set; }                  // 天线阵型号索引
+		public string antArrayModelName { get; set; }           // 天线阵型号
+		public int antArrayNum { get; set; }                    // 天线阵根数
+		public int antArrayDistance { get; set; }               // 天线阵距离
+		public List<VD> antArrayType { get; set; }              // 天线阵形状
+		public List<VD> antArrayNotMibAntLossFlag { get; set; }
+		public List<VD> netAntArrayNotMibHalfPowerBeamWidth { get; set; }
 
-        public string antInfoDesc { get; set; }                 // 天线阵信息简述
+		public string antInfoDesc { get; set; }                 // 天线阵信息简述
 
-        public AntType()
+		public AntType()
 		{
 			antArrayType = new List<VD>();
 			antArrayNotMibAntLossFlag = new List<VD>();
@@ -288,14 +285,14 @@ namespace NetPlan
 	public class AntWeight
 	{
 		public int antArrayNotMibNumber { get; set; }
-        public List<Weight> antArrayMultWeight { get; set; }
+		public List<Weight> antArrayMultWeight { get; set; }
 
-        public AntWeight()
+		public AntWeight()
 		{
 			antArrayMultWeight = new List<Weight>();
 		}
 
-		// todo 格式化支持的天线阵频段
+		// 格式化支持的天线阵频段
 		public string FormatSupportFeqBand()
 		{
 			var feqBandMvr =
@@ -306,7 +303,9 @@ namespace NetPlan
 			foreach (var item in antArrayMultWeight)
 			{
 				var band = item.antennaWeightMultFrequencyBand;
+
 				string bandDesc;
+
 				if (mapKv.TryGetValue(band, out bandDesc))
 				{
 					descList.Add(bandDesc);
@@ -329,7 +328,7 @@ namespace NetPlan
 	public struct Weight
 	{
 		public int antennaWeightMultFrequencyBand { get; set; }
-        public int antennaWeightMultAntGrpIndex;
+		public int antennaWeightMultAntGrpIndex;
 		public int antennaWeightMultAntStatusIndex;
 		public string antennaWeightMultNotMibAntStatus;
 		public int antennaWeightMultAntHalfPowerBeamWidth;
@@ -351,7 +350,6 @@ namespace NetPlan
 		public int antennaWeightMultAntAmplitude7 { get; set; }
 		public int antennaWeightMultAntPhase7 { get; set; }
 	}
-
 
 	/// <summary>
 	/// 天线耦合
@@ -387,5 +385,5 @@ namespace NetPlan
 		public int antCouplCoeffPhase7 { get; set; }
 	}
 
-	#endregion
+	#endregion 天线阵解析相关类型定义
 }

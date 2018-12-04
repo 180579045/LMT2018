@@ -30,7 +30,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != rhubClone.m_recordType)
 			{
-				rhubClone.m_recordType = RecordDataType.Modified;
+				rhubClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			// 处理与rhub连接的pico的信息
@@ -99,7 +99,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != rhubClone.m_recordType)
 			{
-				rhubClone.m_recordType = RecordDataType.Modified;
+				rhubClone.SetDevRecordType(RecordDataType.Modified);
 			}
 
 			if (mapMibInfo.ContainsKey(EnumDevType.rru))
@@ -374,7 +374,7 @@ namespace NetPlan.DevLink
 
 				if (RecordDataType.NewAdd != rru.m_recordType)
 				{
-					picoClone.m_recordType = RecordDataType.Modified;
+					picoClone.SetDevRecordType(RecordDataType.Modified);
 				}
 
 				newPico.Add(picoClone);

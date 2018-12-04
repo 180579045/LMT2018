@@ -214,28 +214,6 @@ namespace NetPlan
 
 		#region 私有数据区
 
-		/// <summary>
-		/// todo 读取alias的值
-		/// </summary>
-		//private static readonly Dictionary<string, EnumDevType> mapDevTypes = new Dictionary<string, EnumDevType>()
-		//{
-		//	["netBoardEntry"] = EnumDevType.board,
-		//	["netRRUEntry"] = EnumDevType.rru,
-		//	["netRHUBEntry"] = EnumDevType.rhub,
-		//	["netAntennaArrayEntry"] = EnumDevType.ant,
-		//	["netRRUAntennaSettingEntry"] = EnumDevType.rru_ant,
-		//	["netIROptPlanEntry"] = EnumDevType.board_rru,
-		//	["netEthPlanEntry"] = EnumDevType.rhub_prru,
-		//	["nrNetLocalCellEntry"] = EnumDevType.nrNetLc,
-		//	["nrLocalCellEntry"] = EnumDevType.nrLc,
-		//	["nrCellEntry"] = EnumDevType.nrCell,
-		//	["netLocalCellEntry"] = EnumDevType.netLc,
-		//	["localCellEntry"] = EnumDevType.lc,
-		//	["cellEntry"] = EnumDevType.cell,
-		//	["nrNetLocalCellCtrlEntry"] = EnumDevType.nrNetLcCtr,
-		//	["netLocalCellCtrlEntry"] = EnumDevType.netLcCtr,
-		//};
-
 		private static readonly Dictionary<EnumDevType, List<EnumDevType>> mapValidDevTypeCon =
 			new Dictionary<EnumDevType, List<EnumDevType>>()
 			{

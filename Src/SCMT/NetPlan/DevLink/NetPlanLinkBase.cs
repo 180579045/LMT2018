@@ -307,7 +307,7 @@ namespace NetPlan.DevLink
 
 			if (RecordDataType.NewAdd != dev.m_recordType)
 			{
-				dev.m_recordType = RecordDataType.Modified;
+				dev.SetDevRecordType(RecordDataType.Modified);
 			}
 		}
 

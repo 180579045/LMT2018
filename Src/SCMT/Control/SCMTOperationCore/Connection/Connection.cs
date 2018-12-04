@@ -170,7 +170,7 @@ namespace SCMTOperationCore.Connection
         ///     constructor. This method will block until the connection attempt completes and will throw a 
         ///     <see cref="HazelException"/> if there is a problem connecting.
         /// </remarks>
-        public abstract bool Connect(byte[] bytes = null, int timeout = 200);
+        public abstract bool Connect(byte[] bytes = null, int timeout = 2000);
 
         /// <summary>
         ///     Invokes the DataReceived event.

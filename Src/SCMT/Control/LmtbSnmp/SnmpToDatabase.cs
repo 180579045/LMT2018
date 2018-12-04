@@ -294,7 +294,7 @@ namespace LmtbSnmp
 				return null;
 			}
 
-			var mvr = retData.managerValueRange;                    // 1.取出该节点的取值范围;
+			var mvr = retData.mibValAllList;                    // 1.取出该节点的取值范围;
 			var mapKv = MibStringHelper.SplitManageValue(mvr);      // 2.分解取值范围;
 			
 			return mapKv;
@@ -349,7 +349,7 @@ namespace LmtbSnmp
 			else if (omType.Equals("enum"))
 			{
 				// 1.取出该节点的取值范围
-				var mvr = mibLeaf.managerValueRange;
+				var mvr = mibLeaf.mibValAllList;
 
 				// 2.分解取值范围
 				var mapKv = MibStringHelper.SplitManageValue(mvr);
@@ -748,6 +748,74 @@ namespace LmtbSnmp
                 else
                     return true;
             }
+        }
+        /// <summary>
+        /// 解析默认值，显示到界面，对无效的值"X",根据取值范围进行转换
+        /// </summary>
+        /// <param name="leaf"></param>
+        /// <returns>返回默认值</returns>
+        public static string GetDefaultValue(MibLeaf leaf)
+        {
+            string value = "";
+            string dvalue = leaf.defaultValue;
+            string valueRang = leaf.managerValueRange;
+            if (leaf.defaultValue.Equals("×"))
+            {
+                if (leaf.OMType.Equals("u32") || leaf.OMType.Equals("s32"))
+                {
+                    string[] str = leaf.managerValueRange.Split('-');
+                    value = str[0];
+                }
+
+                if (leaf.OMType.Equals("enum"))
+                {
+                    // 1.取出该节点的取值范围
+                    var mvr = leaf.managerValueRange;
+
+                    // 2.分解取值范围
+                    var mapKv = MibStringHelper.SplitManageValue(mvr);
+                    if (!mapKv.ContainsValue(value))
+                        value = mapKv.FirstOrDefault().Key.ToString();
+                }
+            }
+            else
+            {
+                //整型
+                if (leaf.OMType.Equals("s32")
+                    || leaf.OMType.Equals("s16")
+                    || leaf.OMType.Equals("s8")
+                    || leaf.OMType.Equals("u32")
+                    || leaf.OMType.Equals("u16")
+                    || leaf.OMType.Equals("u8"))
+                {
+                    if (dvalue.Contains(".."))
+                    {
+                        string[] strtem = dvalue.Split(new char[] { '.', '.', });
+                        value = strtem[0];
+                    }
+                    else if (dvalue.Contains(":"))
+                    {
+                        string[] strtem = dvalue.Split(':');
+                        value = strtem[0];
+                    }
+                    else
+                        value = dvalue;
+                }
+                else if (leaf.OMType.Equals("enum"))
+                {
+                    if (dvalue.Contains(":"))
+                    {
+                        string[] strtem = dvalue.Split(':');
+                        value = strtem[0];
+                    }
+                    else
+                        value = dvalue;
+                }
+                else
+                    value = dvalue;
+            }
+           
+            return value;
         }
 		#endregion
 

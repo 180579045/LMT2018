@@ -225,7 +225,7 @@ namespace NetPlan.DevLink
 		private int m_nRruPort;
 		private int m_nAntPort;
 		private string m_strRruAntIndex;
-		private const EnumDevType m_recordType = EnumDevType.rru_ant; // todo 后面移动到基类中
+		private const EnumDevType m_recordType = EnumDevType.rru_ant;
 
 		#endregion 私有数据区
 	}

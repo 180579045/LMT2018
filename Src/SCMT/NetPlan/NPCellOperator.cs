@@ -27,6 +27,7 @@ namespace NetPlan
 
 			var dValue = (bOpen ? "1" : "0");
 			const EnumDevType devType = EnumDevType.nrNetLcCtr;
+			var tmp = bOpen ? "打开" : "关闭";
 
 			// 修改内存中的数据，如果不存在，就添加
 			var dev = MibInfoMgr.GetInstance().GetDevAttributeInfo(strIndexTemp, devType);
@@ -35,15 +36,15 @@ namespace NetPlan
 				dev = new DevAttributeInfo(devType, strIndexTemp);
 				dev.SetFieldLatestValue(mibName, dValue);
 				dev.SetFieldOriginValue(mibName, dValue, true);
-				dev.m_recordType = RecordDataType.Original;
+				dev.SetDevRecordType(RecordDataType.Original);
 				MibInfoMgr.GetInstance().AddDevMibInfo(devType, dev);
 
-				Log.Debug($"增加本地小区{nLcNo}布配开关为：{{bOpen ? \"打开\" : \"关闭\"}}");
+				Log.Debug($"增加本地小区{nLcNo}布配开关为：{tmp}");
 			}
 			else
 			{
 				MibInfoMgr.GetInstance().SetDevAttributeValue($".{nLcNo}", mibName, dValue, devType);
-				Log.Debug($"修改本地小区{nLcNo}布配开关为：{{bOpen ? \"打开\" : \"关闭\"}}");
+				Log.Debug($"修改本地小区{nLcNo}布配开关为：{tmp}");
 			}
 
 			return true;
@@ -155,7 +156,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool SetCellActiveTrigger(int nCellId, string targetIp, CellOperType operType, int nDuration = 1)
 		{
-			if (string.IsNullOrEmpty(targetIp) || nCellId < 0 || nCellId > 35)
+			if (string.IsNullOrEmpty(targetIp) || nCellId < 0 || nCellId > MagicNum.LC_CNT - 1)
 			{
 				Log.Error("激活/去激活功能传入参数错误");
 				return false;
@@ -202,7 +203,7 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool DelLocalCell(int nLocalCellId, string targetIp)
 		{
-			if (string.IsNullOrEmpty(targetIp) || nLocalCellId < 0 || nLocalCellId > 35)
+			if (string.IsNullOrEmpty(targetIp) || nLocalCellId < 0 || nLocalCellId > MagicNum.LC_CNT - 1)
 			{
 				Log.Error("激活/去激活功能传入参数错误");
 				return false;
@@ -263,7 +264,7 @@ namespace NetPlan
 
 			// 查询nrNetLcDev是否存在，如果不存在说明基站中肯定没有这个实例，且没有规划过
 			var lcDev = MibInfoMgr.GetInstance().GetDevAttributeInfo(cellIndex, EnumDevType.nrNetLc);
-			if (null == lcDev)
+			if (null == lcDev || lcDev.m_recordType == RecordDataType.WaitDel)
 			{
 				Log.Debug($"索引为{nCellId}的本地小区实例不存在，状态为未规划");
 				return LcStatus.UnPlan;
@@ -325,6 +326,8 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool DelLcNetPlan(int nLocalCellId, string targetIp)
 		{
+			Log.Debug($"删除本地小区{nLocalCellId}网规信息");
+
 			var lcState = GetLcStatus(nLocalCellId, targetIp);
 			if (LcStatus.LcUnBuilded != lcState)
 			{
@@ -389,8 +392,6 @@ namespace NetPlan
 
 		/// <summary>
 		/// 取消本地小区规划。本地小区状态变化：规划中-->未规划
-		/// todo 后台需要做的操作：1.关闭布配开关；2.设置本地小区之前的状态
-		/// todo 需要原子性保证？
 		/// </summary>
 		/// <param name="nLcId"></param>
 		/// <returns></returns>

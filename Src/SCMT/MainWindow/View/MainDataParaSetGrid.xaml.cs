@@ -340,7 +340,7 @@ namespace SCMTMainWindow.View
 
 						model.AddParaProperty("ParaValue", new DataGrid_Cell_MIB()
 						{
-							m_Content = mibLeaf.defaultValue,
+							m_Content = SnmpToDatabase.GetDefaultValue(mibLeaf),
 							oid = mibLeaf.childOid,
 							MibName_CN = mibLeaf.childNameCh,
 							MibName_EN = mibLeaf.childNameMib
@@ -386,7 +386,7 @@ namespace SCMTMainWindow.View
 						MibLeaf mibLeaf = Database.GetInstance().GetMibDataByOid(oid, CSEnbHelper.GetCurEnbAddr());
 						dynamic model = new DyDataGrid_MIBModel();
 
-						string devalue = ConvertValidValue(mibLeaf);
+						string devalue = SnmpToDatabase.GetDefaultValue(mibLeaf);
                         bool bisDefault = false;
                         //判断是否含有默认值，如包含不显示到界面
                         if(cmdMibInfo.m_leafDefault != null)
@@ -413,7 +413,7 @@ namespace SCMTMainWindow.View
 
 						model.AddParaProperty("ParaValueRange", new DataGrid_Cell_MIB()
 						{
-							m_Content = mibLeaf.managerValueRange,
+							m_Content = mibLeaf.mibValAllList,
 							oid = mibLeaf.childOid,
 							MibName_CN = mibLeaf.childNameCh,
 							MibName_EN = mibLeaf.childNameMib
@@ -548,7 +548,7 @@ namespace SCMTMainWindow.View
                             if (temdicValue.ContainsKey(mibLeaf.childNameMib))
                                 devalue = temdicValue[mibLeaf.childNameMib];
                             else
-                                devalue = ConvertValidValue(mibLeaf); ;
+                                devalue = SnmpToDatabase.GetDefaultValue(mibLeaf) ;
 
                             if (temdicOid.ContainsKey(mibLeaf.childNameMib))
                                 stroid = temdicOid[mibLeaf.childNameMib];
@@ -700,42 +700,6 @@ namespace SCMTMainWindow.View
                 }
             }
         }
-
-		/// <summary>
-		/// 对无效的值"X",根据取值范围进行转换
-		/// </summary>
-		/// <param name="leaf"></param>
-		/// <returns></returns>
-		private string ConvertValidValue(MibLeaf leaf)
-		{
-			string value = leaf.defaultValue;
-			if (leaf.defaultValue.Equals("×"))
-			{
-				if (leaf.OMType.Equals("u32") || leaf.OMType.Equals("s32"))
-				{
-					string[] str = leaf.managerValueRange.Split('-');
-					value = str[0];
-				}
-
-				if (leaf.OMType.Equals("enum"))
-				{
-					// 1.取出该节点的取值范围
-					var mvr = leaf.managerValueRange;
-
-					// 2.分解取值范围
-					var mapKv = MibStringHelper.SplitManageValue(mvr);
-					if (!mapKv.ContainsValue(value))
-						value = mapKv.FirstOrDefault().Key.ToString();
-				}
-			}
-			else
-			{
-				string[] devalue = leaf.defaultValue.Split(':');
-				value = devalue[0];
-			}
-
-			return value;
-		}
 
 		public DyDataGrid_MIBModel ParaDataModel
 		{

@@ -11,8 +11,8 @@ namespace SCMTOperationCore.Elements
     /// </summary>
     interface IElement
     {
-        void Connect();
+        Task ConnectAsync();
 
-        void DisConnect();
+	    Task DisConnect();
     }
 }

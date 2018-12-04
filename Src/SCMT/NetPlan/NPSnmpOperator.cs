@@ -8,6 +8,7 @@ using LogManager;
 using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Elements;
+using System.Threading.Tasks;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NetPlan
@@ -124,7 +125,7 @@ namespace NetPlan
 		/// 调用时机：连接基站后，第一次进入网规页面
 		/// </summary>
 		/// <returns></returns>
-		public static bool InitNetPlanInfo()
+		public static async Task<bool> InitNetPlanInfo()
 		{
 			var curEnbIP = CSEnbHelper.GetCurEnbAddr();
 			if (null == curEnbIP)
@@ -140,7 +141,7 @@ namespace NetPlan
 				return false;
 			}
 
-			WalkAllNetPlanMibEntry(mibEntryList);
+			await WalkAllNetPlanMibEntry(mibEntryList);
 
 			return true;
 		}
@@ -150,9 +151,10 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="entryList"></param>
 		/// <returns></returns>
-		private static void WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
+		private static Task WalkAllNetPlanMibEntry(IEnumerable<NetPlanMibEntry> entryList)
 		{
 			Log.Debug($"开始遍历查询{entryList.Count()}个表信息");
+			return Task.Run(() =>
 			{
 				// 调用所有的Get函数，查询所有的信息。一个entry，可以认为是一类设备
 				foreach (var entry in entryList)
@@ -203,7 +205,7 @@ namespace NetPlan
 				}
 				// 所有设备信息保存完成后，解析连接信息
 				MibInfoMgr.GetInstance().ParseLinks();
-			}
+			});
 		}
 
 		/// <summary>
@@ -311,8 +313,8 @@ namespace NetPlan
 			{
 				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
 				mibAttri = mibLeaf,
-				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),      // 索引只读
-				m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
+				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),			// 索引只读
+				m_bVisible = !mibLeaf.IsRowStatus()					// 行状态不显示
 			};
 
 			return info;
@@ -349,7 +351,7 @@ namespace NetPlan
 				}
 			}
 
-			dev.m_recordType = RecordDataType.Original;
+			dev.SetDevRecordType(RecordDataType.Original);
 
 			return dev;
 		}
@@ -394,8 +396,8 @@ namespace NetPlan
 					{
 						m_strOriginValue = realValue,
 						mibAttri = childLeaf,
-						m_bReadOnly = !childLeaf.IsEmpoweredModify(),      // 索引只读
-						m_bVisible = (childLeaf.ASNType != "RowStatus")   // 行状态不显示
+						m_bReadOnly = !childLeaf.IsEmpoweredModify(),		// 索引只读
+						m_bVisible = !childLeaf.IsRowStatus()				// 行状态不显示
 					};
 				}
 				else
@@ -413,7 +415,7 @@ namespace NetPlan
 				dev.m_mapAttributes[childLeaf.childNameMib] = info;
 			}
 
-			dev.m_recordType = RecordDataType.Original;
+			dev.SetDevRecordType(RecordDataType.Original);
 
 			// TODO 注意：此处没有考虑result中是否会有剩余数据
 

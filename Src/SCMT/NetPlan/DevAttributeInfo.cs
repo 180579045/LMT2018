@@ -39,12 +39,14 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="mEnumDevType">设备类型</param>
 		/// <param name="devIndex">设备的序号，用于生成索引</param>
-		public DevAttributeInfo(EnumDevType mEnumDevType, int devIndex, bool bIsScalar = false) : base()
+		public DevAttributeInfo(EnumDevType mEnumDevType, int devIndex, bool bIsScalar = false)
 		{
 			m_bIsScalar = bIsScalar;
 			m_enumDevType = mEnumDevType;
 
 			InitDevInfo(mEnumDevType, devIndex);
+
+			SetFieldLatestValue(m_strRsMibName, "4");
 		}
 
 		/// <summary>
@@ -53,12 +55,14 @@ namespace NetPlan
 		/// <param name="mEnumDevType">设备类型</param>
 		/// <param name="strIndex">索引字符串</param>
 		/// <param name="bIsScalar">是否是标量</param>
-		public DevAttributeInfo(EnumDevType mEnumDevType, string strIndex, bool bIsScalar = false) : base()
+		public DevAttributeInfo(EnumDevType mEnumDevType, string strIndex, bool bIsScalar = false)
 		{
 			m_enumDevType = mEnumDevType;
 			m_strOidIndex = strIndex;
 			m_bIsScalar = bIsScalar;
 			InitDevInfo(mEnumDevType);
+
+			SetFieldLatestValue(m_strRsMibName, "4");
 		}
 
 		/// <summary>
@@ -117,7 +121,7 @@ namespace NetPlan
 				var mli = attribute.Value;
 				if (oldAttriMap.ContainsKey(mibName))
 				{
-					mli.m_strOriginValue = mli.m_strLatestValue;
+					mli.m_strLatestValue = mli.m_strOriginValue;
 					mli.m_strOriginValue = oldAttriMap[mibName].m_strOriginValue;
 				}
 			}
@@ -159,7 +163,16 @@ namespace NetPlan
 				return;
 			}
 
+			var rsMl = tbl.GetRowStatusMibName();
+			if (null == rsMl)
+			{
+				return;
+			}
+
 			m_mapAttributes = attributes;
+			m_strRsMibName = rsMl.childNameMib;
+
+			AddRowStatusToAttributeMap(rsMl, "6");
 
 			// 还需要加上索引列
 			if (!m_bIsScalar)

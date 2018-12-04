@@ -36,7 +36,7 @@ namespace NetPlan.Tests
 			var result = await db.initDatabase("172.27.245.92");
 			Assert.IsTrue(result);
 
-			var ret =NPSnmpOperator.InitNetPlanInfo();
+			var ret =await NPSnmpOperator.InitNetPlanInfo();
 			Assert.IsTrue(ret);
 		}
 

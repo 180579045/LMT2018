@@ -89,9 +89,9 @@
             </avalondock:DockingManager.Theme>
             <avalondock:LayoutRoot>
                 <avalondock:LayoutPanel>
-                    <avalondock:LayoutPanel>
+                    <avalondock:LayoutPanel x:Name="rootPanel">
                         <avalondock:LayoutAnchorablePane x:Name="leftList">
-                            <avalondock:LayoutAnchorable x:Name="LeftView" Title="模板列表">
+                            <avalondock:LayoutAnchorable x:Name="LeftView" Title="模板列表" CanClose="False" CanAutoHide="False" CanHide="True">
                                 <Grid>
                                     <ListView Name="TemplateFileList" SelectionMode="Single" ItemContainerStyle="{StaticResource TemplateListViewItemStyle}" 
                                               Background="AliceBlue" BorderBrush="Transparent" >
@@ -101,10 +101,10 @@
                                      </ListView>
                                 </Grid>
                             </avalondock:LayoutAnchorable>
-                            <avalondock:LayoutAnchorable Title="网络单元">
+                            <avalondock:LayoutAnchorable Title="网络单元" x:Name="netPlanElement" CanAutoHide="False" CanClose="False" CanHide="True">
                                 <Expander Header="Shapes" Content="{StaticResource ShapeStencils}" IsExpanded="True"/>
                             </avalondock:LayoutAnchorable>
-                            <avalondock:LayoutAnchorable Title="网规模板" CanClose="True" IsVisible="False">
+                            <avalondock:LayoutAnchorable Title="网规模板" x:Name="netPlanTemplate" CanClose="False" CanAutoHide="False" CanHide="True" IsVisible="False">
                                 <Grid x:Name="gridNetPlanTemlplate">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="30"/>
@@ -157,7 +157,7 @@
                             </avalondock:LayoutAnchorable >
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePane x:Name="CenterView" DockWidth="4*">
-                            <avalondock:LayoutAnchorable Title="网络规划" Closed="LayoutAnchorable_Closed" CanClose="True">
+                            <avalondock:LayoutAnchorable x:Name="netPlanCanvas" Title="网络规划" CanClose="False" CanHide="True" CanAutoHide="False">
                                 <Grid x:Name="gridNetPlan">
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="30"/>
@@ -282,7 +282,7 @@
                         </avalondock:LayoutAnchorablePane>
                         <avalondock:LayoutAnchorablePaneGroup Orientation="Vertical">
                             <avalondock:LayoutAnchorablePane x:Name="PropertyView"  DockWidth="1*" >
-                                <avalondock:LayoutAnchorable Title="属性">
+                                <avalondock:LayoutAnchorable Title="属性" CanAutoHide="False" CanClose="False" CanHide="True" x:Name="netPlanProperty">
                                     <Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="5*"></RowDefinition>

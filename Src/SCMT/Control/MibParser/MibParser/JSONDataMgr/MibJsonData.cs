@@ -328,6 +328,8 @@ namespace MIBDataParser.JSONDataMgr
 				{ "mibSyntax", rowRec["MIB_Syntax"].ToString()},
 				{ "mibDesc", rowRec["MIBDesc"].ToString()},
 				{ "managerWriteAble", rowRec["ManagerWriteAble"].ToString() },
+                { "mibValAllListEng", rowRec["MIBVal_AllList_Eng"].ToString()},//英文
+                { "mibValAllList", rowRec["MIBVal_AllList"].ToString()},//中文
 			};
 			childJArray.Add(childJObject);
 			return true;

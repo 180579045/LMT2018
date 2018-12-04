@@ -31,6 +31,7 @@ using SCMTOperationCore;
 using System.Threading;
 using System.Security.Permissions;
 using System.Windows.Threading;
+using System.Windows.Interop;
 
 namespace SCMTMainWindow.View
 {
@@ -62,6 +63,8 @@ namespace SCMTMainWindow.View
         //创建一个 dictionary 保存每个板卡对应连接的设备
         Dictionary<int, int> allBoardToDev = new Dictionary<int, int>();
 
+		InitWindows dlg = new InitWindows();
+
         /// <summary>
         /// 初始化函数
         /// </summary>
@@ -69,7 +72,7 @@ namespace SCMTMainWindow.View
         {
             InitializeComponent();
 
-            this.leftList.SelectedContentIndex = 1;
+			this.leftList.SelectedContentIndex = 1;
 
             //画小区
             DrawNrRect();
@@ -78,8 +81,6 @@ namespace SCMTMainWindow.View
             CreateMainBoard();
 
             CreateTemplateList();
-
-
         }
 
 
@@ -197,9 +198,13 @@ namespace SCMTMainWindow.View
         private void SetCellProperty(int nCellID)
         {            
             var devAttr = MibInfoMgr.GetInstance().GetDevAttributeInfo($".{ nCellID }", EnumDevType.nrNetLc);
-            MyDesigner.CreateGirdForNetInfo("小区"+nCellID, devAttr);
-            MyDesigner.g_nowDevAttr = devAttr;
-        }
+
+	        if (null != devAttr && devAttr.m_recordType != RecordDataType.WaitDel)
+	        {
+				MyDesigner.CreateGirdForNetInfo("小区" + nCellID, devAttr);
+				MyDesigner.g_nowDevAttr = devAttr;
+			}
+		}
 
         /// <summary>
         /// 小区右键点击时，弹出菜单
@@ -928,12 +933,14 @@ namespace SCMTMainWindow.View
 		/// <summary>
 		/// 初始化设备信息，从基站获取相关配置属性，显示到主界面上
 		/// </summary>
-		private bool InitNetPlan()
+		private async Task<bool> InitNetPlan()
 		{
 			//初始化是否成功
 			MibInfoMgr.GetInstance().Clear();
 
-			var initResult = NPSnmpOperator.InitNetPlanInfo();
+			var initResult = await NPSnmpOperator.InitNetPlanInfo();
+
+			dlg.Close();
 
 			// 剩下的工作全部推到UI线程中执行
 			if (initResult)
@@ -2074,6 +2081,8 @@ namespace SCMTMainWindow.View
             {
                 InitAllConnection();
                 DeleteAllItemConnector();
+								
+				//dlg.Close();
             }
         }
 
@@ -2264,7 +2273,14 @@ namespace SCMTMainWindow.View
             {
                 bInit = true;
                 InitNetPlan();
-            }
+
+				dlg.ShowDialog();
+				//HwndSource newWinHandler = HwndSource.FromDependencyObject(this) as HwndSource;
+				//if (newWinHandler != null)
+				//	new WindowInteropHelper(dlg) { Owner = newWinHandler.Handle };
+				//dlg.Show();
+				//this.IsEnabled = false;
+			}
         }
 
         /// <summary>
@@ -2272,11 +2288,11 @@ namespace SCMTMainWindow.View
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void LayoutAnchorable_Closed(object sender, EventArgs e)
-        {
-            MyDesigner.g_AllDevInfo.Clear();
-            MyDesigner.Children.Clear();
-        }
+        //private void LayoutAnchorable_Closed(object sender, EventArgs e)
+        //{
+        //    MyDesigner.g_AllDevInfo.Clear();
+        //    MyDesigner.Children.Clear();
+        //}
 
         public void NetPlanClean()
         {
@@ -2596,7 +2612,31 @@ namespace SCMTMainWindow.View
             Grid.SetColumn(notBelongCellRect, 1);
 
         }
-    }
+
+		public void ShowAvalonPanel()
+		{
+			if(this.CenterView.Children.Count == 0)
+			{
+				this.CenterView.Children.Add(this.netPlanCanvas);
+			}
+			if(!this.leftList.Children.Contains(this.LeftView))
+			{
+				this.leftList.Children.Add(this.LeftView);
+			}
+			if(!this.leftList.Children.Contains(this.netPlanElement))
+			{
+				this.leftList.Children.Add(this.netPlanElement);
+			}
+			if(!this.leftList.Children.Contains(this.netPlanTemplate))
+			{
+				this.leftList.Children.Add(this.netPlanTemplate);
+			}
+			if(!this.PropertyView.Children.Contains(this.netPlanProperty))
+			{
+				this.PropertyView.Children.Add(this.netPlanProperty);
+			}
+		}
+	}
 
 	public static class DispatcherHelper
 	{
