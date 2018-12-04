@@ -69,6 +69,7 @@
     <Compile Include="CommFunsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnmpErrDescHelperTests.cs" />
+    <Compile Include="SnmpMibUtilTests.cs" />
     <Compile Include="SnmpTest.cs" />
     <Compile Include="SQLiteHelperTests.cs" />
   </ItemGroup>

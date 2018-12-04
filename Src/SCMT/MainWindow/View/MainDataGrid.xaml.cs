@@ -956,6 +956,19 @@ namespace SCMTMainWindow.View
                     strFullOid = cell.oid + strIndex;
                 }
 
+				// 如果是Bits类型要将描述转换为uint，否则调用CreateGridCell()时异常
+				if (string.Equals("BITS", mibLeaf.mibSyntax, StringComparison.OrdinalIgnoreCase))
+				{
+					uint bitsVal;
+					if (false == SnmpMibUtil.GetBitsTypeValueFromDesc(mibLeaf.managerValueRange, value, out bitsVal))
+					{
+						strMsg = string.Format("{0}: 您所设置的值格式错误或不在取值范围内", mibLeaf.childNameCh); ;
+						Log.Error(strMsg);
+						MessageBox.Show(strMsg);
+						return;
+					}
+					value = bitsVal.ToString();
+                }
                 var dgm = DataGridCellFactory.CreateGridCell(cell.MibName_EN, cell.MibName_CN, value, strFullOid, CSEnbHelper.GetCurEnbAddr());
 
                 model.AddProperty(cell.MibName_EN, dgm, cell.MibName_CN);

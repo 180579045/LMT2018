@@ -153,8 +153,51 @@ namespace SCMTMainWindow.View
 
             if (m_operType != 0)//添加修改
             {
-                //将右键菜单列表内容转换成与基本信息列表格式相同结构
-                dynamic model = new DyDataGrid_MIBModel();
+				// Mib值校验
+				foreach (DyDataGrid_MIBModel mm in datalist)
+				{
+					string strMibVal = null;
+					var cell = mm.Properties["ParaValue"] as GridCell;
+					if (cell.cellDataType == LmtbSnmp.DataGrid_CellDataType.enumType)
+					{
+						var emnuCell = cell as DataGrid_Cell_MIB_ENUM;
+						if (emnuCell != null)
+							strMibVal = emnuCell.m_CurrentValue.ToString();
+						else
+							strMibVal = cell.m_Content;
+					}
+					else
+						strMibVal = cell.m_Content;
+
+					// 获取Mib节点属性
+					MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(cell.MibName_EN, CSEnbHelper.GetCurEnbAddr());
+					if (null == mibLeaf)
+					{
+						strMsg = "无法获取Mib节点信息！";
+						Log.Error(strMsg);
+						MessageBox.Show(strMsg);
+						return;
+					}
+
+					// 校验是否包含特殊字符
+					if (false == SnmpMibUtil.CheckMibValidChar(strMibVal, out strMsg))
+					{
+						Log.Error(string.Format("{0},节点名称：{1}，值：{2}", strMsg, cell.MibName_EN, strMibVal));
+						MessageBox.Show(string.Format("{0}: {1}", mibLeaf.childNameCh, strMsg));
+						return;
+					}
+					// 校验Mib值
+					if (false == SnmpMibUtil.CheckMibValueByMibLeaf(mibLeaf, strMibVal))
+					{
+						strMsg = string.Format("{0}: 您所设置的值格式错误或不在取值范围内", mibLeaf.childNameCh);
+						Log.Error(strMsg);
+						MessageBox.Show(strMsg);
+						return;
+					}
+				}
+
+				//将右键菜单列表内容转换成与基本信息列表格式相同结构
+				dynamic model = new DyDataGrid_MIBModel();
                 // 索引
                 int indexGrade = 0;
                 string strIndex = "";

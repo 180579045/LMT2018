@@ -163,6 +163,13 @@ namespace SCMTMainWindow.Utils
 					continue;
 				}
 
+				// 如果Mib节点类型是Bits，要做一下值的转换
+				if (string.Equals("BITS", reData.mibSyntax, StringComparison.OrdinalIgnoreCase))
+				{
+					uint bitsVal;
+					SnmpMibUtil.GetBitsTypeValueFromDesc(reData.managerValueRange, nodeVal, out bitsVal);
+					nodeVal = bitsVal.ToString();
+                }
 				// 组装Vb
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
 				lmtVb.Oid = oid;

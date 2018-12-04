@@ -21,7 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace LmtbSnmp
@@ -220,7 +222,7 @@ namespace LmtbSnmp
 						break;
 
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_GAUGE32:
-						vb.Value = new UInteger32(value);
+						vb.Value = new Gauge32(value); // new UInteger32(value);
 						break;
 
 					case SNMP_SYNTAX_TYPE.SNMP_SYNTAX_TIMETICKS:
@@ -1031,6 +1033,353 @@ namespace LmtbSnmp
 			{
 				strReValue = strMibValue;
 			}
+			return true;
+		}
+
+		/// <summary>
+		/// 根据Mib的英文名称校验Mib的值
+		/// </summary>
+		/// <param name="strIpAddr">基站IP</param>
+		/// <param name="mibNameEn">Mib英文名称</param>
+		/// <param name="strValue">True：校验合法；False：校验非法</param>
+		/// <returns></returns>
+		public static bool CheckMibValueByNameEn(string strIpAddr, string mibNameEn, string strValue)
+		{
+			if (string.IsNullOrEmpty(strIpAddr) || string.IsNullOrEmpty(mibNameEn))
+			{
+				return false;
+			}
+
+			//获取Mib节点信息
+			MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(mibNameEn, strIpAddr);
+			if (null == mibLeaf)
+			{
+				return false;
+			}
+
+			return CheckMibValueByMibLeaf(mibLeaf, strValue);
+		}
+
+		/// <summary>
+		/// 根据Oid校验Mib值
+		/// </summary>
+		/// <param name="strIpAddr">基站IP</param>
+		/// <param name="oid">Mib的Oid</param>
+		/// <param name="strValue">Mib值</param>
+		/// <returns>True:校验合法；False:校验非法</returns>
+		public static bool CheckMibValueByOid(string strIpAddr, string oid, string strValue)
+		{
+			if (string.IsNullOrEmpty(oid))
+			{
+				return false;
+			}
+
+			//获取Mib节点信息
+			MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByOid(oid, strIpAddr);
+			if (null == mibLeaf)
+			{
+				return false;
+			}
+
+			return CheckMibValueByMibLeaf(mibLeaf, strValue);
+		}
+
+		/// <summary>
+		/// 根据MibLeaf对象校验Mib值
+		/// </summary>
+		/// <param name="mibLeaf">MibLeaf对象</param>
+		/// <param name="strValue">Mib值</param>
+		/// <returns>True:校验通过；False:校验未通过</returns>
+		public static bool CheckMibValueByMibLeaf(MibLeaf mibLeaf, string strValue)
+		{
+			if (mibLeaf == null)
+			{
+				return false;
+			}
+
+			// LONG和UINT32类型校验
+			if (string.Equals(mibLeaf.mibSyntax, "LONG", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(mibLeaf.mibSyntax, "UINT32", StringComparison.OrdinalIgnoreCase))
+			{
+				return CheckLongOrUint32(mibLeaf.managerValueRange, strValue);
+			}
+			else if (string.Equals(mibLeaf.mibSyntax, "OCTETS", StringComparison.OrdinalIgnoreCase))
+			{
+				// TODO:此处不需要再用 "ASNType": "DisplayString"限制吧？
+				return CheckString(mibLeaf.managerValueRange, strValue);
+			}
+			else if (string.Equals(mibLeaf.mibSyntax, "BITS", StringComparison.OrdinalIgnoreCase))
+			{
+				// 此处只做校验，不返回计算后的值
+				uint bitsVal = 0;
+				return GetBitsTypeValueFromDesc(mibLeaf.managerValueRange, strValue, out bitsVal);
+			}
+			else if (string.Equals(mibLeaf.mibSyntax, "IPADDR", StringComparison.OrdinalIgnoreCase) 
+				|| string.Equals(mibLeaf.mibSyntax, "INETADDRESS", StringComparison.OrdinalIgnoreCase))
+			{
+				return CheckInetAddress(strValue);
+			}
+			else if (string.Equals(mibLeaf.mibSyntax, "DATETIME", StringComparison.OrdinalIgnoreCase)
+				|| string.Equals(mibLeaf.mibSyntax, "DATEANDTIME", StringComparison.OrdinalIgnoreCase))
+			{
+				return CheckDateTime(strValue);
+			}
+			else if (string.Equals(mibLeaf.mibSyntax, "MACADDRESS", StringComparison.OrdinalIgnoreCase))
+			{
+				return CheckMacAddr(strValue);
+			}
+			else if (string.Equals(mibLeaf.mibSyntax, "MNCMCCTYPE", StringComparison.OrdinalIgnoreCase))
+			{
+				return CheckMncMccType(strValue);
+			}
+
+
+			return true;
+		}
+
+		/// <summary>
+		/// MncMccType类型校验
+		/// </summary>
+		/// <param name="strMncMccVal">MncMccType类的值</param>
+		/// <returns></returns>
+		public static bool CheckMncMccType(string strMncMccVal)
+		{
+			if (string.IsNullOrEmpty(strMncMccVal))
+			{
+				return false;
+			}
+			if (strMncMccVal.Length != 2 && strMncMccVal.Length != 3)
+			{
+				return false;
+			}
+
+			uint val;
+			bool rs = uint.TryParse(strMncMccVal, out val);
+
+			return rs;
+		}
+
+		/// <summary>
+		/// MacAddress类型校验
+		/// </summary>
+		/// <param name="strMac">MacAddress类型的值</param>
+		/// <returns></returns>
+		public static bool CheckMacAddr(string strMac)
+		{
+			string partt = @"^([0-9a-fA-F]{2})(([/\s::][0-9a-fA-F]{2}){5})$";
+			Regex r = new Regex(partt);
+			return r.IsMatch(strMac);
+		}
+
+		/// <summary>
+		/// IP地址类型校验，包括IPV4和IPV6
+		/// </summary>
+		/// <param name="strIp">IP字符串</param>
+		/// <returns></returns>
+		public static bool CheckInetAddress(string strIp)
+		{
+			IPAddress ip;
+			return IPAddress.TryParse(strIp, out ip);
+		}
+
+		/// <summary>
+		/// 校验DateTime类型字符串，格式必须为"yyyy-MM-dd HH:mm:ss"
+		/// </summary>
+		/// <param name="strDataTime">日期类型字符串</param>
+		/// <returns></returns>
+		public static bool CheckDateTime(string strDataTime)
+		{
+			DateTime dt;
+			return DateTime.TryParseExact(strDataTime, "yyyy-MM-dd HH:mm:ss",null, DateTimeStyles.None, out dt);
+		}
+
+		/// <summary>
+		/// 检查字符串类型的Mib节点值是否在取值范围内，即检查字符串的长度是否合法
+		/// 对应mib.json文件中的"mibSyntax": "OCTETS"和"ASNType": "DisplayString"类型的校验
+		/// </summary>
+		/// <param name="strValList">取值范围，如："1-150"</param>
+		/// <param name="strValue">mib节点的当前值</param>
+		/// <returns></returns>
+		public static bool CheckString(string strValList, string strValue)
+		{
+			if (string.IsNullOrEmpty(strValList) || null == strValue)
+			{
+				return false;
+			}
+
+			// 取值范围，格式 : "1-150"
+			int index = strValList.IndexOf('-');
+			string[] valRange = strValList.Split('-');
+			if (valRange.Length != 2)
+			{
+				return false;
+			}
+
+			int minLen = Convert.ToInt32(valRange[0]);
+			int MaxLen = Convert.ToInt32(valRange[1]);
+			// 检查字符串的长度
+			if (strValue.Length < minLen || strValue.Length > MaxLen)
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+
+		/// <summary>
+		/// 检查LONG或UINT32类型的Mib节点值是否在取值范围内
+		/// 其中LONG包含枚举和数字两种类型
+		/// </summary>
+		/// <param name="strValList">取值范围，如："-2147483648-2147483647" 或 "0:关闭/1:故障对象自动复位/2:网元自动复位"</param>
+		/// <param name="strValue"></param>
+		/// <returns></returns>
+		public static bool CheckLongOrUint32(string strValList, string strValue)
+		{
+			if (string.IsNullOrEmpty(strValList) || strValue == null)
+			{
+				return false;
+			}
+
+			long longVal;
+			if (Int64.TryParse(strValue, out longVal) == false)
+			{
+				return false;
+			}
+
+			// 判断取值范围是枚举类型还是数字类型
+			if (strValList.IndexOf(':') > 0) // 有":"就认为是枚举
+			{
+				var valRange = MibStringHelper.SplitManageValue(strValList);
+				if (!valRange.ContainsKey(Convert.ToInt32(longVal)))
+				{
+					return false;
+				}
+			}
+			else if (strValList.LastIndexOf('-') > 0) // "-2147483648-2147483647"格式的取值范围
+			{
+				long minVal;
+				long maxVal;
+				int index = strValList.IndexOf("--");
+				if (index > 0) // 最大值为负数的情况，如："-100--50"
+				{
+					minVal = Convert.ToInt64(strValList.Substring(0, index));
+					maxVal = Convert.ToInt64(strValList.Substring(index + 2));
+				} 
+				else // "1-200"或"-100-200"格式 
+				{
+					index = strValList.LastIndexOf('-');
+					minVal = Convert.ToInt64(strValList.Substring(0, index));
+					maxVal = Convert.ToInt64(strValList.Substring(index + 1));
+				}
+
+				long val = Convert.ToInt64(strValue);
+				if (val < minVal || val > maxVal)
+				{
+					return false;
+				}
+			}
+			else // 取值范围格式无法识别
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+
+		/// <summary>
+		/// 根据Bits类型的描述信息校验值是否合法，并计算出整数值。此方法即可以用来做校验，也可以用来获取Bits计算后的值
+		/// 如：
+		/// strValList="0:通信类/1:服务质量类/2:处理类/3:设备类/4:环境类", strInputValue="通信类/服务质量类",  outValue=3
+		/// strValList="0:通信类/1:服务质量类/2:处理类/3:设备类/4:环境类", strInputValue="主要告警/次要告警",  outValue=6
+		/// </summary>
+		/// <param name="strValList">取值范围，如："0:通信类/1:服务质量类/2:处理类/3:设备类/4:环境类"</param>
+		/// <param name="strInputValue">描述信息，如："通信类/服务质量类"</param>
+		/// <param name="outValue">根据Bits类型的描述值计算得到的uint值</param>
+		/// <returns>True:校验值合法；False:校验值非法</returns>
+		public static bool GetBitsTypeValueFromDesc(string strValList, string strInputValue, out uint outValue)
+		{
+			outValue = 0; // 无效
+
+			// 无效
+			if (string.IsNullOrEmpty(strInputValue) || "无效".Equals(strInputValue))
+			{
+				outValue = 0;
+				return true;
+			}
+			if (string.IsNullOrEmpty(strValList))
+			{
+				return false;
+			}
+
+			// 存储Bits取值范围的描述和对应值
+			Dictionary<string, int> desc2Value = new Dictionary<string, int>();
+			// 解析取值范围
+			string[] valRangeList = strValList.Split('/');
+			foreach (string item in valRangeList)
+			{
+				string[] valDesc = item.Split(':');
+				if (valDesc.Length != 2)
+				{
+					return false;
+				}
+				desc2Value.Add(valDesc[1], Convert.ToInt32(valDesc[0]));
+			}
+
+			// 存储入参描述对应的数字
+			List<int> keyList = new List<int>();
+			// 解析入参
+			valRangeList = strInputValue.Split('/');
+			foreach (string item in valRangeList)
+			{
+				string desc;
+				if (item.IndexOf(':') >= 0) // 入参即有键又有描述的情况
+				{
+					desc = item.Substring(0, item.IndexOf(':'));
+				}
+				else
+				{
+					desc = item;
+				}
+
+				if (!desc2Value.ContainsKey(desc))
+				{
+					return false;
+				}
+				keyList.Add(desc2Value[desc]);
+			}
+
+			// 计算最终值
+			foreach (int val in keyList)
+			{
+				uint addVal = (uint)1 << val;
+				outValue |= addVal;
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 校验Mib值是否含有非法字符
+		/// </summary>
+		/// <param name="strValue">Mib值</param>
+		/// <param name="strMsg">提示信息</param>
+		/// <returns>True:未含有非法字符；False:含有非法字符</returns>
+		public static bool CheckMibValidChar(string strValue, out string strMsg)
+		{
+			strMsg = "";
+			if (string.IsNullOrEmpty(strValue))
+			{
+				return true;
+			}
+			if (strValue.Contains("&") || strValue.Contains("<")
+				|| strValue.Contains(">") || strValue.Contains("\r"))
+			{
+				strMsg = "请确保字符串中没有 &、 < 、 > 、回车符";
+				return false;
+			}
+			
 			return true;
 		}
 
