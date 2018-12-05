@@ -36,28 +36,29 @@ namespace CfgFileOperation
             if ((String.Empty == strExcelPath) || (String.Empty == strFileToDirectory) || (null == cfgOp))
                 return;
 
-            CfgExcelOp excelOp = new CfgExcelOp();
+            //CfgExcelOp excelOp = new CfgExcelOp();
+            //var excelOp = CfgExcelOp.GetInstance();
 
             //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
-            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            if (wbook == null)
-                return;
+            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
+            //if (wbook == null)
+            //    return;
 
             // "init" 页
             if (0 == String.Compare("init", strCondition, true)) // 不区分大小写，相等
             {
-                Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strCondition);//
-                if (wks == null)
-                    return;
-                ExportSelfExcelForInit(wks, cfgOp);
+                //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strCondition);//
+                //if (wks == null)
+                //    return;
+                ExportSelfExcelForInit(strExcelPath, strCondition, cfgOp);
             }
             // "patch" 页
             else if (0 == String.Compare("patch", strCondition, true))
             {
-                Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strCondition);//
-                if (wks == null)
-                    return;
-                ExportSelfExcelForPatch(wks, cfgOp);
+                //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strCondition);//
+                //if (wks == null)
+                //    return;
+                ExportSelfExcelForPatch(strExcelPath, strCondition, cfgOp);
             }
         }
 
@@ -66,10 +67,11 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="wbook"></param>
         /// <param name="excelOp"></param>
-        void ExportSelfExcelForInit(Excel.Worksheet wks, CfgOp cfgOp)
+        void ExportSelfExcelForInit(string FilePath, string sheetName, CfgOp cfgOp)
         {
-            int rowCount = GetEndLineNum(wks);                                        // 获取行数
-            Dictionary<string, object[,]> ColVals = GetSheetColInfos( wks, rowCount); // 获取所有sheet 每col的数据
+            var excelOp = CfgExcelOp.GetInstance();
+            int rowCount = GetEndLineNum(FilePath, sheetName);                                        // 获取行数
+            Dictionary<string, object[,]> ColVals = GetSheetColInfos(FilePath, sheetName, rowCount); // 获取所有sheet 每col的数据
             string strCurTableName = "";                                              // 保存当前表名
             string strCurIndex = "";                                                  // 保存当前索引
             // 逐行分析
@@ -100,10 +102,11 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="wks"></param>
         /// <param name="cfgOp"></param>
-        void ExportSelfExcelForPatch(Excel.Worksheet wks, CfgOp cfgOp)
+        void ExportSelfExcelForPatch(string FilePath, string sheetName, CfgOp cfgOp)
         {
-            int rowCount = GetEndLineNum(wks);                                        // 获取行数
-            Dictionary<string, object[,]> ColVals = GetSheetColInfos(wks, rowCount);  // 获取所有sheet 每col的数据
+            var excelOp = CfgExcelOp.GetInstance();
+            int rowCount = GetEndLineNum(FilePath, sheetName);                     // 获取行数
+            Dictionary<string, object[,]> ColVals = GetSheetColInfos(FilePath, sheetName, rowCount);  // 获取所有sheet 每col的数据
             string strCurTableName = "";                                              // 保存当前表名
             string strCurIndex = "";                                                  // 保存当前索引
             for (int currentLine = 2; currentLine < rowCount + 1; currentLine++)      // 逐行分析
@@ -222,11 +225,11 @@ namespace CfgFileOperation
         /// <param name="wks"></param>
         /// <param name="ColName"></param>
         /// <returns></returns>
-        int GetEndLineNum(Excel.Worksheet wks)
+        int GetEndLineNum(string FilePath, string sheetName)
         {
-            int rowCount = wks.UsedRange.Rows.Count;
-            object[,] arry = (object[,])wks.Cells.get_Range("A" + "1", "A" + rowCount).Value2;
-
+            var excelOp = CfgExcelOp.GetInstance();
+            int rowCount = excelOp.GetRowCount(FilePath, sheetName);
+            object[,] arry = excelOp.GetRangeVal(FilePath, sheetName, "A" + "1", "A" + rowCount);
             for (int row = 1; row < rowCount + 1; row++)
             {
                 var cellVar = arry[row, 1];
@@ -281,13 +284,14 @@ namespace CfgFileOperation
         /// <param name="wks"></param>
         /// <param name="rowCount"></param>
         /// <returns></returns>
-        Dictionary<string, object[,]> GetSheetColInfos(Excel.Worksheet wks, int rowCount)
+        Dictionary<string, object[,]> GetSheetColInfos(string FilePath, string sheetName, int rowCount)
         {
+            var excelOp = CfgExcelOp.GetInstance();
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
             foreach (var colName in SheetCellCol.Keys)//
             {
-                object[,] arry = (object[,])wks.Cells.get_Range(SheetCellCol[colName] + "1", SheetCellCol[colName] + rowCount).Value2;
+                object[,] arry = excelOp.GetRangeVal(FilePath, sheetName, SheetCellCol[colName] + "1", SheetCellCol[colName] + rowCount);
                 ColVals.Add(colName, arry);
             }
             return ColVals;
