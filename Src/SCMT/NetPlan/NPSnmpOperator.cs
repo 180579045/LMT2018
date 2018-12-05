@@ -9,13 +9,13 @@ using MIBDataParser;
 using MIBDataParser.JSONDataMgr;
 using SCMTOperationCore.Elements;
 using System.Threading.Tasks;
+using MsgQueue;
 using DIC_DOUBLE_STR = System.Collections.Generic.Dictionary<string, string>;
 
 namespace NetPlan
 {
-	/// <summary>
-	/// 网规snmp相关的操作
-	/// </summary>
+
+	// 网规snmp相关的操作
 	public class NPSnmpOperator
 	{
 		#region 公共接口
@@ -31,7 +31,7 @@ namespace NetPlan
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
 			{
-				Log.Error($"未选中基站");
+				Log.Error("未选中基站");
 				result = null;
 				indexList = null;
 				return false;
@@ -165,6 +165,8 @@ namespace NetPlan
 						Log.Debug($"表{entry.MibEntry}被设置为初始化时不需要查询");
 						continue;
 					}
+
+					PublishHelper.PublishMsg(TopicHelper.NetPlanInit, $"正在查询{entry.MibEntry}表信息...");
 
 					var getCmdList = entry.Get;
 					if (getCmdList.Count == 0)

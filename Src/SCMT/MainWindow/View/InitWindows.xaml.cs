@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MsgQueue;
 
 namespace SCMTMainWindow.View
 {
@@ -22,6 +23,18 @@ namespace SCMTMainWindow.View
 		public InitWindows()
 		{
 			InitializeComponent();
+
+			SubscribeHelper.AddSubscribe(TopicHelper.NetPlanInit, OnShowInitMsg);
 		}
+
+		#region 消息响应处理函数
+
+		// 消息体msg.Data是一个字符串，直接显示即可
+		private void OnShowInitMsg(SubscribeMsg msg)
+		{
+			var doing = Encoding.UTF8.GetString(msg.Data);
+		}
+
+		#endregion
 	}
 }
