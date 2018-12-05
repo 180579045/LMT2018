@@ -300,7 +300,8 @@ namespace NetPlan
 		#region 特殊处理流程
 
 		/// <summary>
-		/// 下发相关的天线阵安装规划表记录
+		/// 调用SetNetRRUAntennaLcID命令，修改
+		/// 1.先删除了本地小区规划，未下发；2.删除天线阵，下发参数。下发失败，原因：该射频通道已经布配本地小区
 		/// </summary>
 		/// <param name="waitDisDev"></param>
 		/// <param name="mapOriginData"></param>
@@ -322,17 +323,20 @@ namespace NetPlan
 			var listRelateRas = LinkRruAnt.GetRecordsByRruNo(rruNo, listRas);
 			foreach (var item in listRelateRas)
 			{
-				// todo 这里如果存在冲突该怎么搞？
-				if (!LinkRruAnt.RruHasConnectToAnt(item))
+				// todo 如果RRU已经布配了本地小区，不允许直接删除RRU
+				// 此时需要两步操作：1.先下发修改，2.下发删除操作
+				if (item.m_recordType == RecordDataType.WaitDel)
 				{
-					Log.Debug($"索引为{item.m_strOidIndex}的天线安装规划记录没有配置天线阵的信息，忽略不再下发");
-					continue;
-				}
+					NetDevLc.ResetNetLcConfig(item);
+					item.SetDevRecordType(RecordDataType.Modified);
+					if (!base.DistributeToEnb(item, "SetNetRRUAntennaLcID"))
+					{
+						Log.Error($"索引为{item.m_strOidIndex}的天线阵安装规划表记录下发失败");
+						item.SetDevRecordType(RecordDataType.WaitDel);
+						return false;
+					}
 
-				if (!base.DistributeToEnb(item))
-				{
-					Log.Error($"索引为{item.m_strOidIndex}的天线阵安装规划表记录下发失败");
-					return false;
+					item.SetDevRecordType(RecordDataType.WaitDel);
 				}
 			}
 

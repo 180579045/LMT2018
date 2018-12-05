@@ -413,7 +413,6 @@ namespace NetPlan
 				return false;
 			}
 
-			//dev.m_mapAttributes[strFieldName].SetLatestValue(strValue);
 			SetFieldLatestValue(strFieldName, strValue);
 			if (m_recordType != RecordDataType.NewAdd)
 			{

@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using CommonUtility;
 using DataBaseUtil;
 using LinkPath;
+using LmtbSnmp;
 using LogManager;
+using MIBDataParser;
 using SCMTOperationCore.Elements;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -96,6 +98,39 @@ namespace NetPlan
 					Log.Error($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
 					return false;
 				}
+			}
+
+			return true;
+		}
+
+		internal bool DistributeToEnb(DevAttributeBase dev, string strCmdName)
+		{
+			var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(strCmdName, m_strTargetIp);
+			if (null == cmdInfo)
+			{
+				return false;
+			}
+
+			var oidList = cmdInfo.m_leaflist;
+			var mibLeafInfoList = SnmpToDatabase.ConvertOidListToMibInfoList(oidList, m_strTargetIp);
+			var leafInfoList = mibLeafInfoList as IList<MibLeaf> ?? mibLeafInfoList.ToList();
+			if (!leafInfoList.Any())
+			{
+				return false;
+			}
+
+			var name2Value = dev.GenerateName2ValueMap(leafInfoList.ToList(), "4");
+			if (null == name2Value || name2Value.Count == 0)
+			{
+				Log.Error($"索引为{dev.m_strOidIndex}的设备生成name2value失败");
+				return false;
+			}
+
+			var ret = CDTCmdExecuteMgr.CmdSetSync(strCmdName, name2Value, dev.m_strOidIndex, m_strTargetIp);
+			if (0 != ret)
+			{
+				Log.Error($"下发命令{strCmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+				return false;
 			}
 
 			return true;

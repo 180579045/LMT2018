@@ -43,7 +43,70 @@ namespace NetPlan
 
 		#region 非虚函数区
 
+		/// <summary>
+		/// 重置本地小区相关的配置
+		/// </summary>
+		/// <param name="dev"></param>
+		/// <param name="strLcId"></param>
+		/// <returns></returns>
+		public static bool ResetNetLcConfig(DevAttributeBase dev, string strLcId)
+		{
+			if (null == dev || string.IsNullOrEmpty(strLcId))
+			{
+				throw new ArgumentNullException();
+			}
 
+			var mapAttributes = dev.m_mapAttributes;
+			for (var j = 1; j <= MagicNum.RRU_TO_BBU_PORT_CNT; j++)
+			{
+				var mibName = "netSetRRUPortSubtoLocalCellId";
+				if (j > 1)
+				{
+					mibName += $"{j}";
+				}
+
+				if (!mapAttributes.ContainsKey(mibName))
+				{
+					Log.Error($"在天线阵安装规划表中没有找到名为{mibName}的节点，可能MIB版本错误");
+					continue;
+				}
+
+				var lcValue = dev.GetNeedUpdateValue(mibName);
+				if (null != lcValue && lcValue != strLcId) continue;
+
+				dev.SetFieldLatestValue(mibName, "-1");
+
+				if (RecordDataType.NewAdd != dev.m_recordType)
+				{
+					dev.SetDevRecordType(RecordDataType.Modified);
+				}
+			}
+
+			return true;
+		}
+
+		public static bool ResetNetLcConfig(DevAttributeBase dev)
+		{
+			var mapAttributes = dev.m_mapAttributes;
+			for (var j = 1; j <= MagicNum.RRU_TO_BBU_PORT_CNT; j++)
+			{
+				var mibName = "netSetRRUPortSubtoLocalCellId";
+				if (j > 1)
+				{
+					mibName += $"{j}";
+				}
+
+				if (!mapAttributes.ContainsKey(mibName))
+				{
+					Log.Error($"在天线阵安装规划表中没有找到名为{mibName}的节点，可能MIB版本错误");
+					continue;
+				}
+
+				dev.SetDevAttributeValue(mibName, "-1");
+			}
+
+			return true;
+		}
 
 		#endregion
 
