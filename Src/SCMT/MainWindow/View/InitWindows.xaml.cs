@@ -33,7 +33,15 @@ namespace SCMTMainWindow.View
 		private void OnShowInitMsg(SubscribeMsg msg)
 		{
 			var doing = Encoding.UTF8.GetString(msg.Data);
-		}
+
+            this.txtInfo.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                this.txtInfo.Text = doing;
+
+            DispatcherHelper.DoEvents();
+
+        }));
+        }
 
 		#endregion
 	}

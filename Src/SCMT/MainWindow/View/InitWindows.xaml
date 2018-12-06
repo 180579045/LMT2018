@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SCMTMainWindow.View"
         mc:Ignorable="d"
-        Title="正在初始化" Height="300" Width="300" WindowStartupLocation="CenterScreen">
+        Title="正在初始化" Height="100" Width="300" WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBlock Name="txtInfo" Width="300" Height="25" Background="AliceBlue" Text="正在初始化..."></TextBlock>
     </Grid>

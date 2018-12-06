@@ -940,8 +940,6 @@ namespace SCMTMainWindow.View
 
 			var initResult = await NPSnmpOperator.InitNetPlanInfo();
 
-			dlg.Close();
-
 			// 剩下的工作全部推到UI线程中执行
 			if (initResult)
 			{
@@ -967,11 +965,13 @@ namespace SCMTMainWindow.View
 
                 InitCellStatus();
 
-				return true;
-			}
+                dlg.Close();
+                return true;
+            }
 
-			return false;
-		}
+            dlg.Close();
+            return false;
+        }
 
         #region 初始化小区状态
 
