@@ -2657,19 +2657,19 @@ namespace SCMTMainWindow.View
 			{
 				this.CenterView.Children.Add(this.netPlanCanvas);
 			}
-			if(!this.leftList.Children.Contains(this.LeftView))
+			if(!this.leftList.Children.Contains(this.LeftView) && this.LeftView.IsHidden)
 			{
 				this.leftList.Children.Add(this.LeftView);
 			}
-			if(!this.leftList.Children.Contains(this.netPlanElement))
+			if(!this.leftList.Children.Contains(this.netPlanElement) && this.netPlanElement.IsHidden)
 			{
 				this.leftList.Children.Add(this.netPlanElement);
 			}
-			if(!this.leftList.Children.Contains(this.netPlanTemplate))
+			if(!this.leftList.Children.Contains(this.netPlanTemplate) && this.netPlanTemplate.IsHidden)
 			{
 				this.leftList.Children.Add(this.netPlanTemplate);
 			}
-			if(!this.PropertyView.Children.Contains(this.netPlanProperty))
+			if(!this.PropertyView.Children.Contains(this.netPlanProperty) && this.netPlanProperty.IsHidden)
 			{
 				this.PropertyView.Children.Add(this.netPlanProperty);
 			}
