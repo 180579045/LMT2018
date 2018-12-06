@@ -267,18 +267,19 @@ namespace CfgFileOperation
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strSheet))
                 return;
-            CfgExcelOp excelOp = new CfgExcelOp();
-            if (excelOp == null)
-                return;
+            //CfgExcelOp excelOp = new CfgExcelOp();
+            //var excelOp = CfgExcelOp.GetInstance();
+            //if (excelOp == null)
+            //    return;
 
             //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\LTE_基站天线广播波束权值参数配置表_5G.xls";
 
-            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            if (wbook == null)
-                return;
-            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strSheet);//使用"波束扫描原始值"填写数据库中表"antennaBfScan"的内容
-            if (wks == null)
-                return;
+            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
+            //if (wbook == null)
+            //    return;
+            //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strSheet);//使用"波束扫描原始值"填写数据库中表"antennaBfScan"的内容
+            //if (wks == null)
+            //    return;
 
             //Console.WriteLine("ProcessingAntennaExcelBS : Start..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             if (String.Equals("原始值", strSheet))
@@ -287,11 +288,11 @@ namespace CfgFileOperation
             { }
             else if (String.Equals("波束扫描原始值", strSheet))
             {
-                ProcessingAntennaExcelBS(wks);     // 类似 mdb 存储解析excel的内容
+                ProcessingAntennaExcelBS(strExcelPath, strSheet);     // 类似 mdb 存储解析excel的内容
                 ProcessingAntennaExcelToStrList2(nTableNum); // 把存储内容 再次解析成 struct 的格式
             }
 
-            excelOp = null;
+            //excelOp = null;
             //Console.WriteLine("ProcessingAntennaExcelBS : END..., time is " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
         }
         /// <summary>
@@ -589,12 +590,15 @@ namespace CfgFileOperation
         /// 处理"波束扫描原始值"的内容
         /// </summary>
         /// <param name="FilePath"></param>
-        private void ProcessingAntennaExcelBS(Excel.Worksheet wks)
+        private void ProcessingAntennaExcelBS(string strExcelPath, string strSheet)
         {
-            if ((wks == null) || (AntennaIndexBS == null))
+            //if ((wks == null) || (AntennaIndexBS == null))
+            //    return;
+            if (AntennaIndexBS == null)
                 return;
 
-            int rowCount = wks.UsedRange.Rows.Count;                  // 获取行数
+            var excelOp = CfgExcelOp.GetInstance();
+            int rowCount = excelOp.GetRowCount(strExcelPath, strSheet);                  // 获取行数
 
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
@@ -604,7 +608,7 @@ namespace CfgFileOperation
                 //{
                 //    Console.WriteLine("===");
                 //}
-                object[,] arry = (object[,])wks.Cells.get_Range(ColsInfoBS[colName] + "1", ColsInfoBS[colName] + rowCount).Value2;
+                object[,] arry = excelOp.GetRangeVal(strExcelPath, strSheet, ColsInfoBS[colName] + "1", ColsInfoBS[colName] + rowCount);
                 ColVals.Add(colName, arry);
             }
             

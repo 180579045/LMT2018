@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NetPlan
 {
-	internal class NetDevRhub : NetDevBase
+	internal class NetDevRhub
 	{
 		/// <summary>
 		/// 获取RHUB设备连接的板卡的插槽号。遍历4个光口

@@ -125,7 +125,7 @@ namespace NetPlan
 		}
 
 		// 获取所有的mib信息和命令信息
-		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(EnbTypeEnum enbType)
+		public List<NetPlanMibEntry> GetAllMibEntryAndCmds(EnbTypeEnum enbType = EnbTypeEnum.ENB_EMB6116)
 		{
 			return EnbTypeEnum.ENB_EMB6116 == enbType ? _npeCmd.EMB6116.NetPlanMibEntrys : null;
 		}
@@ -342,9 +342,9 @@ namespace NetPlan
 	public enum EnumSnmpCmdType
 	{
 		Invalid = -1,
-		Get,
-		Set,
+		Get = 1,
 		Add,
+		Set,
 		Del
 	}
 }

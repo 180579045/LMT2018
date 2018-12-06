@@ -14,7 +14,7 @@ using MIBDataParser.JSONDataMgr;
 namespace NetPlan
 {
 	/// <summary>
-	/// 无类型设备信息 todo 公共函数封装好
+	/// 无类型设备信息
 	/// </summary>
 	[Serializable]
 	public class DevAttributeBase : ICloneable
@@ -121,7 +121,7 @@ namespace NetPlan
 		{
 			if (string.IsNullOrEmpty(strFieldName))
 			{
-				throw new ArgumentNullException("传入字段名无效");
+				throw new ArgumentNullException(strFieldName);
 			}
 
 			if (!m_mapAttributes.ContainsKey(strFieldName))
@@ -131,7 +131,7 @@ namespace NetPlan
 			}
 
 			var originValue = m_mapAttributes[strFieldName].m_strOriginValue;
-			if (bConvertToNum)
+			if (bConvertToNum && null != originValue)
 			{
 				return SnmpToDatabase.ConvertStringToMibValue(m_mapAttributes[strFieldName].mibAttri, originValue);
 			}
@@ -149,7 +149,7 @@ namespace NetPlan
 		{
 			if (string.IsNullOrEmpty(strFieldName))
 			{
-				throw new ArgumentNullException("传入字段名无效");
+				throw new ArgumentNullException(strFieldName);
 			}
 
 			if (!m_mapAttributes.ContainsKey(strFieldName))
@@ -263,25 +263,23 @@ namespace NetPlan
 		//浅拷贝
 		public object Clone()
 		{
-			return this.MemberwiseClone();
+			return MemberwiseClone();
 		}
 
 		//浅拷贝
 		public DevAttributeBase ShallowClone()
 		{
-			return this.Clone() as DevAttributeBase;
+			return Clone() as DevAttributeBase;
 		}
 
 
 		/// <summary>
 		/// 根据listColumns中的每个元素，在devInfo中找到对应的值，组装成字典，用于下发
 		/// </summary>
-		/// <param name="devInfo"></param>
 		/// <param name="listColumns"></param>
-		/// <param name="gmv"></param>
 		/// <param name="strRs">行状态的值：4，6</param>
 		/// <returns></returns>
-		public Dictionary<string, string> GenerateName2ValueMap(List<MibLeaf> listColumns, MibInfoMgr.GetMibValue gmv, string strRs = "4")
+		public Dictionary<string, string> GenerateName2ValueMap(List<MibLeaf> listColumns, string strRs)
 		{
 			if (null == listColumns)
 			{
@@ -289,35 +287,25 @@ namespace NetPlan
 			}
 
 			var n2v = new Dictionary<string, string>();
-			var absMap = this.m_mapAttributes;
 
 			foreach (var leafInfo in listColumns)
 			{
 				var leafName = leafInfo.childNameMib;
 
 				// 行状态的值特殊处理
-				if (leafInfo.ASNType.Equals("RowStatus", StringComparison.OrdinalIgnoreCase))
+				if (leafInfo.IsRowStatus())
 				{
 					n2v.Add(leafName, strRs);
+					continue;
 				}
-				else
+
+				var value = GetNeedUpdateValue(leafName);
+				if (null == value)
 				{
-					if (!absMap.ContainsKey(leafName))
-					{
-						continue;
-					}
-
-					var mi = absMap[leafName];
-					var value = gmv?.Invoke(mi.m_strOriginValue, mi.m_strLatestValue);
-					if (null == value)
-					{
-						continue;
-					}
-
-					// value 有可能是枚举值等描述信息，需要翻转为snmp类型
-					var ret = SnmpToDatabase.ConvertStringToMibValue(leafInfo, value);
-					n2v.Add(leafName, ret);
+					continue;
 				}
+
+				n2v.Add(leafName, value);
 			}
 
 			return n2v;
@@ -329,7 +317,7 @@ namespace NetPlan
 		/// <param name="strOriginValue"></param>
 		/// <param name="strLatestValue"></param>
 		/// <returns></returns>
-		private static string GetNeedUpdateValue(string strOriginValue, string strLatestValue)
+		private string GetNeedUpdateValue(string strOriginValue, string strLatestValue)
 		{
 			if (string.IsNullOrEmpty(strOriginValue))
 			{
@@ -343,7 +331,6 @@ namespace NetPlan
 
 			return strLatestValue;
 		}
-
 
 		public string GetNeedUpdateValue(string strFieldName, bool bConvert = true)
 		{
@@ -367,7 +354,6 @@ namespace NetPlan
 		/// <summary>
 		/// 查询指定设备的多个字段值
 		/// </summary>
-		/// <param name="dev">设备属性</param>
 		/// <param name="mapFieldAndValue">多个字段。key:字段名，value:字段值</param>
 		/// <param name="bConvertToDigital">枚举值是否转换为数字</param>
 		/// <returns>全部查询成功，返回true；其他情况返回false</returns>
@@ -427,7 +413,6 @@ namespace NetPlan
 				return false;
 			}
 
-			//dev.m_mapAttributes[strFieldName].SetLatestValue(strValue);
 			SetFieldLatestValue(strFieldName, strValue);
 			if (m_recordType != RecordDataType.NewAdd)
 			{
@@ -487,7 +472,7 @@ namespace NetPlan
 		private void SetRowStatusValue(RecordDataType rdt)
 		{
 			string strRsValue = "4";
-			switch (m_recordType)
+			switch (rdt)
 			{
 				case RecordDataType.Original:
 				case RecordDataType.NewAdd:

@@ -81,39 +81,39 @@ namespace CfgFileOperation
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strSheet))
                 return;
-            CfgExcelOp excelOp = new CfgExcelOp();
-            if (excelOp == null)
-                return;
+            //CfgExcelOp excelOp = new CfgExcelOp();
+            //var excelOp = CfgExcelOp.GetInstance();
+            //if (excelOp == null)
+            //    return;
 
             //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表.xls";
 
-            Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            if (wbook == null)
-                return;
-            Excel.Worksheet wks = excelOp.ReadExcelSheet(wbook, strSheet);//
-            if (wks == null)
-                return;
+            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
+            //if (wbook == null)
+            //    return;
+            //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strSheet);//
+            //if (wks == null)
+            //    return;
 
             // 处理所有数据
-            ProcessingExcelRru(wks);
+            ProcessingExcelRru(strExcelPath, strSheet);
         }
         /// <summary>
         /// 处理"波束扫描原始值"的内容
         /// </summary>
         /// <param name="FilePath"></param>
-        private void ProcessingExcelRru(Excel.Worksheet wks)
+        private void ProcessingExcelRru(string strExcelPath, string strSheet)
         {
-            if ((wks == null) || (RruInfo == null))
+            if ((RruInfo == null))
                 return;
-
-            int rowCount = wks.UsedRange.Rows.Count;                  // 获取行数
-            
+            var excelOp = CfgExcelOp.GetInstance();
+            int rowCount = excelOp.GetRowCount(strExcelPath, strSheet);                  // 获取行数
 
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
             foreach (var colName in ColsInfoRru.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
             {
-                object[,] arry = (object[,])wks.Cells.get_Range(ColsInfoRru[colName] + "1", ColsInfoRru[colName] + rowCount).Value2;
+                object[,] arry = excelOp.GetRangeVal(strExcelPath, strSheet, ColsInfoRru[colName] + "1", ColsInfoRru[colName] + rowCount);
                 ColVals.Add(colName, arry);
             }
             //test(ColVals, rowCount);

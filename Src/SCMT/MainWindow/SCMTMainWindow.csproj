@@ -89,6 +89,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -99,6 +100,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="log4net">
@@ -265,6 +269,7 @@
     <Compile Include="View\UeInfo.xaml.cs">
       <DependentUpon>UeInfo.xaml</DependentUpon>
     </Compile>
+    <None Include="app.manifest" />
     <None Include="Component\Configration\RRUPropertyConfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -763,12 +768,14 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ZeroMQ\* "$(TargetDir)"
 xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\LmtbZip\* "$(TargetDir)"
+xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\otherdll\* "$(TargetDir)"
+xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ftp\* "$(TargetDir)tools\"
 xcopy /I /E /F /Y $(SolutionDir)UI\Chart\* "$(TargetDir)"
 xcopy /I /E /F /Y $(ProjectDir)Component\Configration\HotKey.json "$(TargetDir)"
-xcopy /I /E /F /Y $(SolutionDir)..\ThridParty\ftp\* "$(TargetDir)tools\"
+xcopy /I /E /F /Y $(ProjectDir)Component\SCMTControl\FlowChart.xml "$(TargetDir)config\"
 xcopy /I /E /F /Y $(SolutionDir)config\* "$(TargetDir)config\"
 xcopy /I /E /F /Y $(ProjectDir)Data\*.json "$(TargetDir)Data\"
-xcopy /I /E /F /Y $(ProjectDir)Component\SCMTControl\FlowChart.xml "$(TargetDir)config\"</PostBuildEvent>
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

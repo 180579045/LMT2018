@@ -944,6 +944,14 @@ namespace SCMTMainWindow.View
 
 				//从全局 list 中删除相关的项
 				Grid grid = item.Content as Grid;
+
+				//位置设备直接删除
+				if(grid.Children.Count == 0)
+				{
+					this.Children.Remove(item);
+					return;
+				}
+
                 TextBlock text = grid.Children[1] as TextBlock;
 
                 if(MibInfoMgr.GetInstance().DelDev(item.DevIndex, item.DevType))
