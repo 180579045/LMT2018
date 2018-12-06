@@ -1,17 +1,14 @@
-﻿using System;
+﻿using CommonUtility;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Threading;
-using CommonUtility;
 using LogManager;
 
 namespace MIBDataParser.JSONDataMgr
 {
-	class NameEnInfo
+	internal class NameEnInfo
 	{
 		public string m_oid;
 		public bool m_isLeaf;
@@ -20,7 +17,10 @@ namespace MIBDataParser.JSONDataMgr
 		public string m_tableNameEn;
 		public List<NameEnInfo> m_sameNameEn;
 
-		public NameEnInfo(){}
+		public NameEnInfo()
+		{
+		}
+
 		public NameEnInfo(bool isLeaf, dynamic table, dynamic child)
 		{
 			this.m_isLeaf = isLeaf;
@@ -28,15 +28,16 @@ namespace MIBDataParser.JSONDataMgr
 			this.m_tableNameEn = table["nameMib"].ToString();
 			if (isLeaf)//Leaf
 			{
-				this.m_oid    = child["childOid"].ToString();
+				this.m_oid = child["childOid"].ToString();
 				this.m_nameCh = child["childNameCh"].ToString();
 			}
 			else// table
 			{
-				this.m_oid    = table["oid"].ToString();
+				this.m_oid = table["oid"].ToString();
 				this.m_nameCh = table["nameCh"].ToString();
 			}
 		}
+
 		public void AddSameNameEnInfo(NameEnInfo nameInfo)
 		{
 			if (this.m_sameNameEn == null)
@@ -46,7 +47,8 @@ namespace MIBDataParser.JSONDataMgr
 			this.m_sameNameEn.Add(nameInfo);
 		}
 	}
-	class OidInfo
+
+	internal class OidInfo
 	{
 		public bool m_isLeaf;
 		public int m_indexNum;
@@ -54,53 +56,29 @@ namespace MIBDataParser.JSONDataMgr
 		public string m_nameCh;
 		public string m_tableNameEn;
 
-		public OidInfo() { }
+		public OidInfo()
+		{
+		}
+
 		public OidInfo(bool isLeaf, dynamic table, dynamic child)
 		{
 			this.m_isLeaf = isLeaf;
 			this.m_indexNum = int.Parse(table["indexNum"].ToString());
 			this.m_tableNameEn = table["nameMib"].ToString();
-			if (isLeaf){
+			if (isLeaf)
+			{
 				this.m_nameEn = child["childNameMib"].ToString();
 				this.m_nameCh = child["childNameCh"].ToString();
 			}
-			else {
+			else
+			{
 				this.m_nameEn = table["nameMib"].ToString();
 				this.m_nameCh = table["nameCh"].ToString();
 			}
 		}
 	}
-	class LeafInfo
-	{
-		public string childNameMib;
-		public int childNo;
-		public string childOid;
-		public string childNameCh;
-		public int isMib;
-		public string ASNType;
-		public string OMType;
-		public int UIType;
-		public string managerValueRange;
-		public string defaultValue;
-		public string detailDesc;
-		public int leafProperty;
-		public string unit;
-		public string IsIndex;
-		public string mibSyntax;
-		public string mibDesc;
-	}
-	class TableInfo
-	{
-		public string nameMib;
-		public string oid;
-		public string nameCh;
-		public int indexNum;
-		public string mibSyntax;
-		public string mibDesc;
-		public List<LeafInfo> childList = new List<LeafInfo>();
-	}
 
-	class MibInfoList
+	internal class MibInfoList
 	{
 		#region 私有数据区
 
@@ -109,7 +87,7 @@ namespace MIBDataParser.JSONDataMgr
 		private Dictionary<string, List<MibLeaf>> mibsWithSameName;
 		private MibTree mibTree;
 
-		#endregion
+		#endregion 私有数据区
 
 		/*************************************        公共接口实现       ********************************************/
 
@@ -119,17 +97,17 @@ namespace MIBDataParser.JSONDataMgr
 			oidToMib = new Dictionary<string, MibLeaf>();
 			mibsWithSameName = new Dictionary<string, List<MibLeaf>>();
 
-            string err = "";
+			string err = "";
 			var jsonfilepath = ReadIniFile.IniReadValue(
 				ReadIniFile.GetIniFilePath("JsonDataMgr.ini", out err), "JsonFileInfo", "jsonfilepath");
 
 			try
 			{
-                if (String.Empty == jsonfilepath)
-                {
-                    Log.Error("GeneratedMibInfoList err: IniReadValue err.");
-                    return false;
-                }
+				if (String.Empty == jsonfilepath)
+				{
+					Log.Error("GeneratedMibInfoList err: IniReadValue err.");
+					return false;
+				}
 				var mibJsonFilePath = jsonfilepath + "mib.json";
 				var mibJsonContent = FileRdWrHelper.GetFileContent(mibJsonFilePath, Encoding.GetEncoding("gb2312"));
 				mibTree = JsonHelper.SerializeJsonToObject<MibTree>(mibJsonContent);
@@ -227,40 +205,6 @@ namespace MIBDataParser.JSONDataMgr
 			}
 
 			return oidInfo;
-
-			// TODO 不知道为什么要判断oid中.的数量，并且要大于4
-			while (findKey.Count(ch => ch == '.') > 4)
-			{
-				if (!oidToMib.ContainsKey(findKey))
-				{
-					findKey = findKey.Substring(0, findKey.LastIndexOf("."));
-					indexNum += 1;
-				}
-				else
-				{
-					oidInfo = oidToMib[findKey];
-					break;
-					// TODO 此处暂不处理
-					//// 表量表有索引，索引个数应该与移位个数相同
-					//if (indexNum == oidInfo.m_indexNum)
-					//{
-					//	break;
-					//}
-					//// 标量表无索引，但最后一位以".0"占位 例如"1.3.6.1.4.1.5105.100.1.5.2.1.2.4.0" alterationNotiTime 配置变更时间
-					//else if ((0 == oidInfo.m_indexNum) && (indexNum == oidInfo.m_indexNum + 1))
-					//{
-					//	break;
-					//}
-					//// 索引为唯一OID列表，不能有重复oid存在
-					//else
-					//{
-					//	oidInfo = null;
-					//	break;
-					//}
-				}
-			}
-
-			return oidInfo;
 		}
 
 		public MibTable getTableInfo(string key)
@@ -268,6 +212,7 @@ namespace MIBDataParser.JSONDataMgr
 			var tableList = mibTree.tableList;
 			return tableList.FirstOrDefault(table => table.nameMib.Equals(key));
 		}
+
 		/*************************************        公共接口实现       ********************************************/
 	}
 }

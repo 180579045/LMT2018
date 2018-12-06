@@ -1,17 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
-using Newtonsoft.Json.Linq;
-
 
 namespace MIBDataParser.JSONDataMgr
 {
 	// 保存MIB表中表量表的信息
 	internal class MibTableInfo
 	{
-		public List<int> childIndex;		// 保存子项节点的索引号
-		public int index;					// table的索引号
+		public List<int> childIndex;        // 保存子项节点的索引号
+		public int index;                   // table的索引号
 
 		public MibTableInfo()
 		{
@@ -22,33 +21,29 @@ namespace MIBDataParser.JSONDataMgr
 	public class MibJsonData
 	{
 		//string stringMibJson;
-		JObject mibJObject; // mib节点，表
+		private JObject mibJObject; // mib节点，表
+
 		//JArray mibJArray;
-		int tableNum;
-		string mibVersion;
+		private int tableNum;
+
+		private string mibVersion;
 
 		public MibJsonData()
 		{
 			mibJObject = new JObject();
 			tableNum = 0;
 		}
+
 		public MibJsonData(string mibVersion)
 		{
 			mibJObject = new JObject();
 			tableNum = 0;
 			this.mibVersion = mibVersion;
 		}
-		public JObject GetMibJObject()
-		{
-			return mibJObject;
-		}
+
 		public string GetStringMibJson()
 		{
 			return mibJObject.ToString();
-		}
-		public void SetMibVersion(string version)
-		{
-			mibVersion = version;
 		}
 
 		/// <summary>
@@ -63,7 +58,7 @@ namespace MIBDataParser.JSONDataMgr
 			var mapTableToLeafIndex = new Dictionary<string, MibTableInfo>();
 
 			// key:leaf节点索引号 value：parent oid
-			var mapNotFoundParentLeaf = new Dictionary<int, string>();	// 保存未找到父节点的leaf节点索引号
+			var mapNotFoundParentLeaf = new Dictionary<int, string>();  // 保存未找到父节点的leaf节点索引号
 
 			var table = MibdateSet.Tables[0];
 			var tableCount = table.Rows.Count;
@@ -73,7 +68,7 @@ namespace MIBDataParser.JSONDataMgr
 				var dataRow = table.Rows[loop];
 				var bIsLeaf = dataRow["IsLeaf"].ToString().Equals("true", StringComparison.OrdinalIgnoreCase);
 
-				if (bIsLeaf)		// 如果是叶子节点，就尝试找到父节点，建立起连接管理；
+				if (bIsLeaf)        // 如果是叶子节点，就尝试找到父节点，建立起连接管理；
 				{
 					var poid = dataRow["ParentOID"].ToString();
 					if (mapTableToLeafIndex.ContainsKey(poid))      // 如果已经添加过枝干节点，就把索引值填入到childIndex中
@@ -100,8 +95,8 @@ namespace MIBDataParser.JSONDataMgr
 				}
 			}
 
-			var listAloneLeaf = new List<int>();		// 真正孤立的节点。TODO 这种情况如何处理？
-			// 扫描没有找到父节点的leaf节点列表，建立完整的父子关系
+			var listAloneLeaf = new List<int>();        // 真正孤立的节点。TODO 这种情况如何处理？
+														// 扫描没有找到父节点的leaf节点列表，建立完整的父子关系
 			foreach (var leafIndex in mapNotFoundParentLeaf)
 			{
 				var poid = leafIndex.Value;
@@ -121,68 +116,15 @@ namespace MIBDataParser.JSONDataMgr
 			foreach (var ti in mapTableToLeafIndex)
 			{
 				var mti = ti.Value;
-				if (mti.childIndex.Count > 0)		// 不保存没有叶子节点的节点
+				if (mti.childIndex.Count > 0)       // 不保存没有叶子节点的节点
 				{
 					mibJArray.Add(ConvertDbToJson(table, mti));
 				}
 			}
 
-			//JObject objRec = null;
-			//JArray childJArray = null;
-			//// TODO 为什么只到tableCount - 1？
-			//for (int loop = 0; loop < tableCount - 1; loop++)
-			//{
-			//	DataRow row = table.Rows[loop];
-			//	DataRow nextRow = table.Rows[loop + 1];		//TODO 靠两个相邻位置的信息进行判断，不太合适
-
-			//	var c1 = row["IsLeaf"].ToString();
-			//	var c2 = nextRow["IsLeaf"].ToString();
-			//	EnumTableLeafType tableLeafType = IsTable(row["IsLeaf"].ToString(), nextRow["IsLeaf"].ToString());
-			//	if (EnumTableLeafType.table == tableLeafType)
-			//	{
-			//		if (0 != this.tableNum)
-			//		{
-			//			objRec.Add("childList", childJArray);
-			//			mibJArray.Add(objRec);
-			//		}
-			//		objRec = new JObject();
-			//		childJArray = new JArray();
-			//	}
-
-			//	switch (tableLeafType)
-			//	{
-			//		case EnumTableLeafType.table:
-			//			if (!TableToJsonData(row, nextRow, out objRec))
-			//			{
-			//				Console.WriteLine("Err:DB err.TableToJsonData,TableRow({0}),but leaf({1}).", row["MIBName"].ToString(), nextRow["MIBName"].ToString());
-			//			}
-			//			this.tableNum++;
-			//			break;
-			//		case EnumTableLeafType.leaf:
-			//			if (!LeafToJsonData(objRec, childJArray, row))
-			//			{
-			//				//Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), row["MIBName"].ToString());
-			//			}
-			//			break;
-			//		case EnumTableLeafType.other:
-			//			break;
-			//		default:
-			//			break;
-			//	}
-			//}
-
-			//if (!LeafToJsonData(objRec, childJArray, table.Rows[tableCount-1]))
-			//{
-			//	Console.WriteLine("Err:DB err.LeafToJsonData,TableRow({0}),but leaf({1}).", objRec["MIBName"].ToString(), MibdateSet.Tables[0].Rows[tableCount]["MIBName"].ToString());
-			//}
-			//objRec.Add("childList", childJArray);
-			//mibJArray.Add(objRec);
-
 			mibJObject.Add("mibVersion", mibVersion);
 			mibJObject.Add("tableNum", this.tableNum);
 			mibJObject.Add("tableList", mibJArray);
-
-			//this.stringMibJson = this.mibJObject.ToString();
 		}
 
 		private JObject ConvertDbToJson(DataTable dt, MibTableInfo mti)
@@ -208,40 +150,6 @@ namespace MIBDataParser.JSONDataMgr
 			return jParent;
 		}
 
-		private EnumTableLeafType IsTable(string currentRow, string nextRow)
-		{
-			if (0 == string.Compare(currentRow, "True"))
-			{
-				return EnumTableLeafType.leaf;
-			}
-			else if ((0 == string.Compare(currentRow, "False")) &&
-				(0 == string.Compare(nextRow, "True")))
-			{
-				return EnumTableLeafType.table;
-			}
-			else
-			{
-				return EnumTableLeafType.other;
-			}
-		}
-		//input:string propertyName, string varValue
-		private bool TableToJsonData(DataRow rowRec, DataRow rowRecNext, out JObject table)
-		{
-			//int isStatic = 1;
-			// 两个节点是否有父子关系
-			if( !String.Equals( rowRecNext["ParentOID"].ToString(), rowRec["OID"].ToString()))
-			{
-				table = TableToJsonDataResolveTable(rowRec, null);
-				return false;
-			}
-			
-			////判断静动态表
-			//if ("" != rowRec["TableContent"].ToString())
-			//    isStatic = 0;//0表示动态表，1表示静态表
-
-			table = TableToJsonDataResolveTable(rowRec, rowRecNext);
-			return true;
-		}
 		/// <summary>
 		/// 解析 table,在TableToJsonData中。
 		/// </summary>
@@ -259,6 +167,7 @@ namespace MIBDataParser.JSONDataMgr
 				{ "mibDesc", rowRec["MIBDesc"].ToString()},
 			};
 		}
+
 		/// <summary>
 		/// 解析索引个数，在TableToJsonData中。
 		/// </summary>
@@ -285,7 +194,7 @@ namespace MIBDataParser.JSONDataMgr
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="childJArray"></param>
 		/// <param name="rowRec"></param>
@@ -299,7 +208,7 @@ namespace MIBDataParser.JSONDataMgr
 			if (!rowRec["ParentOID"].ToString().Equals(table["oid"].ToString()))
 				return false;
 
-			if (0 == string.Compare("√",rowRec["IsMIB"].ToString()))//假MIB不写入
+			if (0 == string.Compare("√", rowRec["IsMIB"].ToString()))//假MIB不写入
 				isMib = 1;
 
 			if (0 == string.Compare("enum", rowRec["OMType"].ToString()))
@@ -328,57 +237,11 @@ namespace MIBDataParser.JSONDataMgr
 				{ "mibSyntax", rowRec["MIB_Syntax"].ToString()},
 				{ "mibDesc", rowRec["MIBDesc"].ToString()},
 				{ "managerWriteAble", rowRec["ManagerWriteAble"].ToString() },
-                { "mibValAllListEng", rowRec["MIBVal_AllList_Eng"].ToString()},//英文
+				{ "mibValAllListEng", rowRec["MIBVal_AllList_Eng"].ToString()},//英文
                 { "mibValAllList", rowRec["MIBVal_AllList"].ToString()},//中文
 			};
 			childJArray.Add(childJObject);
 			return true;
 		}
-		
-		static public string RemoveCommOID(string OID)
-		{
-			int lastIndex = OID.LastIndexOf("1.3.6.1.4.1.5105.100");
-			string result = OID.Substring(lastIndex + "1.3.6.1.4.1.5105.100".Length);
-			Console.WriteLine("RemoveCommOID result is {0}", result);
-			return result;
-		}
-		
-		static public string AddCommOID(string OID)
-		{
-			string result = "1.3.6.1.4.1.5105.100" + OID;
-			Console.WriteLine("AddCommOID result is {0}", result);
-			return result;
-		}
-		static public string GetTotalOID(string OID, int index)
-		{
-			string temp = AddCommOID(OID);
-			string result = temp + "." + index.ToString();
-			Console.WriteLine("GetTotalOID result is {0}", result);
-			return result;
-		}
 	}
-	public enum EnumTableLeafType
-	{
-		leaf = -1,
-		table = 0,
-		other = 1
-	}
-	
-	/*
-	class LeafNode
-	{
-		public string childNameMib;
-		public int childNo;
-		public string childOid;
-		public string childNameCh;
-		public int isMib;
-		public string ASNType;
-		public string OMType;
-		public int UIType;
-		public string managerValueRange;
-		public string defaultValue;
-		public string detailDesc;
-		public string unit;
-	} */
 }
-

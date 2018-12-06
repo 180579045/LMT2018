@@ -151,8 +151,6 @@ namespace LinkPath
 				return -1;
 			}
 
-			//todo houshangling
-
 			// TODO: 方便观察消息，生产环境时需去掉
 			ShowLogHelper.Show($"Trap消息，TrapType:{intTrapType}", lmtPdu.m_SourceIp
 				, InfoTypeEnum.ENB_OTHER_INFO_IMPORT);
@@ -455,9 +453,6 @@ namespace LinkPath
 					{
 						strMsg = $"{strMsg} ({CommString.IDS_UNITNAME}{strUnitName})";
 					}
-
-					// 时间信息
-					// TODO:打印信息中已经有统一的时间了，在这在计算时间没意义吧？暂时去掉
 
 					strShowMsg = $"{strShowMsg}{strMsg};\n";
 

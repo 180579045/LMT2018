@@ -1860,6 +1860,10 @@ namespace SCMTMainWindow
 		private void OnShowLog(SubscribeMsg msg)
 		{
 			var logInfo = ShowLogHelper.GetLogInfo(msg.Data);
+			if (null == logInfo)
+			{
+				return;
+			}
 			//var neName = NodeBControl.GetInstance().GetFriendlyNameByIp(logInfo.TargetIp);
 
 			var newLogInfo = new LogInfoTitle
