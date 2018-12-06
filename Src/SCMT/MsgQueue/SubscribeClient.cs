@@ -115,11 +115,26 @@ namespace MsgQueue
 			ZError error;
 			while (!_stop)
 			{
-				if (null == (msg = Client.ReceiveMessage(out error)))
+				try
 				{
-					if (error == ZError.ETERM)
-						break;  // Interrupted
-					throw new ZException(error);
+					if (null == (msg = Client.ReceiveMessage(out error)))
+					{
+						if (error == ZError.ETERM)
+							break; // Interrupted
+
+						Log.Error($"[MQ] {error}");
+						break;
+					}
+				}
+				catch (ObjectDisposedException e)
+				{
+					Log.Error($"[MQ] ObjectDisposed Execption {e}");
+					break;
+				}
+				catch(Exception e)
+				{
+					Log.Error($"[MQ] {e}");
+					break;
 				}
 
 				using (msg)
@@ -135,8 +150,6 @@ namespace MsgQueue
 					{
 						handler?.Invoke(new SubscribeMsg(msgBody, topic));
 					}
-
-					//Log.Debug($"recv msg topic: {topic}, body: {BitConverter.ToString(msgBody)}");
 				}
 			}
 		}

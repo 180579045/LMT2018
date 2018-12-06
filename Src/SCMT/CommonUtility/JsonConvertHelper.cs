@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
+using LogManager;
 using Newtonsoft.Json;
 
 namespace CommonUtility
@@ -26,7 +28,15 @@ namespace CommonUtility
 		/// <returns>T类型对象实例</returns>
 		public static T SerializeJsonToObject<T>(string json)
 		{
-			return JsonConvert.DeserializeObject<T>(json);
+			try
+			{
+				return JsonConvert.DeserializeObject<T>(json);
+			}
+			catch (Exception e)
+			{
+				Log.Error($"[JSONCOVHELPER] json convert failed, excrption : {e}");
+				return default(T);
+			}
 		}
 
 		/// <summary>
