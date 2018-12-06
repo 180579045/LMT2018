@@ -5628,6 +5628,116 @@
           ]
         }
       ]
+    },
+    {
+      "rruTypeManufacturerIndex": 4,
+      "rruTypeNotMibManufacturerName": "datang|大唐",
+      "rruTypeIndex": 120,
+      "rruTypeName": "TDAU5164N41",
+      "rruTypeMaxAntPathNum": 64,
+      "rruTypeMaxTxPower": 8960,
+      "rruTypeBandWidth": 160,
+      "rruTypeFiberLength": [
+        {
+          "value": "1",
+          "desc": "ten|10km"
+        }
+      ],
+      "rruTypeIrCompressMode": [
+        {
+          "value": "1",
+          "desc": "notCompress|不压缩"
+        }
+      ],
+      "rruTypeSupportCellWorkMode": [
+        {
+          "value": "4",
+          "desc": "nr|NR"
+        }
+      ],
+      "rruTypeFamilyName": "",
+      "rruTypeNotMibMaxePortNo": 64,
+      "rruTypeNotMibSupportNetWorkMode": [
+        {
+          "value": "1",
+          "desc": "normal|正常模式"
+        }
+      ],
+      "rruTypeNotMibIrRate": [
+        {
+          "value": "5",
+          "desc": "mbps100000|100G"
+        }
+      ],
+      "rruTypeNotMibIrBand": [
+        {
+          "value": "1",
+          "desc": "notCompress|不压缩",
+          "bandwidth": [
+            {
+              "value": "4",
+              "desc": "val100M|100MHz"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "rruTypeManufacturerIndex": 4,
+      "rruTypeNotMibManufacturerName": "datang|大唐",
+      "rruTypeIndex": 119,
+      "rruTypeName": "TDAU5264N41",
+      "rruTypeMaxAntPathNum": 64,
+      "rruTypeMaxTxPower": 9216,
+      "rruTypeBandWidth": 160,
+      "rruTypeFiberLength": [
+        {
+          "value": "1",
+          "desc": "ten|10km"
+        }
+      ],
+      "rruTypeIrCompressMode": [
+        {
+          "value": "2",
+          "desc": "compress|压缩"
+        }
+      ],
+      "rruTypeSupportCellWorkMode": [
+        {
+          "value": "4",
+          "desc": "nr|NR"
+        }
+      ],
+      "rruTypeFamilyName": "",
+      "rruTypeNotMibMaxePortNo": 64,
+      "rruTypeNotMibSupportNetWorkMode": [
+        {
+          "value": "1",
+          "desc": "normal|正常模式"
+        }
+      ],
+      "rruTypeNotMibIrRate": [
+        {
+          "value": "4",
+          "desc": "mbps25000|25G"
+        }
+      ],
+      "rruTypeNotMibIrBand": [
+        {
+          "value": "2",
+          "desc": "compress|压缩",
+          "bandwidth": [
+            {
+              "value": "3",
+              "desc": "val20M|20MHz"
+            },
+            {
+              "value": "4",
+              "desc": "val100M|100MHz"
+            }
+          ]
+        }
+      ]
     }
   ],
   "rruTypePortInfo": [
@@ -25342,6 +25452,4486 @@
       "rruTypePortCalPoutTxNom": 6144,
       "rruTypePortCalPinRxNom": -12800,
       "rruTypePortAntMaxPower": 5888,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 1,
+      "rruTypePortPathNo": 1,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 2,
+      "rruTypePortPathNo": 2,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 3,
+      "rruTypePortPathNo": 3,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 4,
+      "rruTypePortPathNo": 4,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 5,
+      "rruTypePortPathNo": 5,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 6,
+      "rruTypePortPathNo": 6,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 7,
+      "rruTypePortPathNo": 7,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 8,
+      "rruTypePortPathNo": 8,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 9,
+      "rruTypePortPathNo": 9,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 10,
+      "rruTypePortPathNo": 10,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 11,
+      "rruTypePortPathNo": 11,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 12,
+      "rruTypePortPathNo": 12,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 13,
+      "rruTypePortPathNo": 13,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 14,
+      "rruTypePortPathNo": 14,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 15,
+      "rruTypePortPathNo": 15,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 16,
+      "rruTypePortPathNo": 16,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 17,
+      "rruTypePortPathNo": 17,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 18,
+      "rruTypePortPathNo": 18,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 19,
+      "rruTypePortPathNo": 19,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 20,
+      "rruTypePortPathNo": 20,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 21,
+      "rruTypePortPathNo": 21,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 22,
+      "rruTypePortPathNo": 22,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 23,
+      "rruTypePortPathNo": 23,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 24,
+      "rruTypePortPathNo": 24,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 25,
+      "rruTypePortPathNo": 25,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 26,
+      "rruTypePortPathNo": 26,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 27,
+      "rruTypePortPathNo": 27,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 28,
+      "rruTypePortPathNo": 28,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 29,
+      "rruTypePortPathNo": 29,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 30,
+      "rruTypePortPathNo": 30,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 31,
+      "rruTypePortPathNo": 31,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 32,
+      "rruTypePortPathNo": 32,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 33,
+      "rruTypePortPathNo": 33,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 34,
+      "rruTypePortPathNo": 34,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 35,
+      "rruTypePortPathNo": 35,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 36,
+      "rruTypePortPathNo": 36,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 37,
+      "rruTypePortPathNo": 37,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 38,
+      "rruTypePortPathNo": 38,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 39,
+      "rruTypePortPathNo": 39,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 40,
+      "rruTypePortPathNo": 40,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 41,
+      "rruTypePortPathNo": 41,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 42,
+      "rruTypePortPathNo": 42,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 43,
+      "rruTypePortPathNo": 43,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 44,
+      "rruTypePortPathNo": 44,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 45,
+      "rruTypePortPathNo": 45,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 46,
+      "rruTypePortPathNo": 46,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 47,
+      "rruTypePortPathNo": 47,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 48,
+      "rruTypePortPathNo": 48,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 49,
+      "rruTypePortPathNo": 49,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 50,
+      "rruTypePortPathNo": 50,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 51,
+      "rruTypePortPathNo": 51,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 52,
+      "rruTypePortPathNo": 52,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 53,
+      "rruTypePortPathNo": 53,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 54,
+      "rruTypePortPathNo": 54,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 55,
+      "rruTypePortPathNo": 55,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 56,
+      "rruTypePortPathNo": 56,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 57,
+      "rruTypePortPathNo": 57,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 58,
+      "rruTypePortPathNo": 58,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 59,
+      "rruTypePortPathNo": 59,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 60,
+      "rruTypePortPathNo": 60,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 61,
+      "rruTypePortPathNo": 61,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 62,
+      "rruTypePortPathNo": 62,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 63,
+      "rruTypePortPathNo": 63,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 120,
+      "rruTypePortNo": 64,
+      "rruTypePortPathNo": 64,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 8960,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 8960,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 1,
+      "rruTypePortPathNo": 1,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 2,
+      "rruTypePortPathNo": 2,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 3,
+      "rruTypePortPathNo": 3,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 4,
+      "rruTypePortPathNo": 4,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 5,
+      "rruTypePortPathNo": 5,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 6,
+      "rruTypePortPathNo": 6,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 7,
+      "rruTypePortPathNo": 7,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 8,
+      "rruTypePortPathNo": 8,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 9,
+      "rruTypePortPathNo": 9,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 10,
+      "rruTypePortPathNo": 10,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 11,
+      "rruTypePortPathNo": 11,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 12,
+      "rruTypePortPathNo": 12,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 13,
+      "rruTypePortPathNo": 13,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 14,
+      "rruTypePortPathNo": 14,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 15,
+      "rruTypePortPathNo": 15,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 16,
+      "rruTypePortPathNo": 16,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 17,
+      "rruTypePortPathNo": 17,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 18,
+      "rruTypePortPathNo": 18,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 19,
+      "rruTypePortPathNo": 19,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 20,
+      "rruTypePortPathNo": 20,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 21,
+      "rruTypePortPathNo": 21,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 22,
+      "rruTypePortPathNo": 22,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 23,
+      "rruTypePortPathNo": 23,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 24,
+      "rruTypePortPathNo": 24,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 25,
+      "rruTypePortPathNo": 25,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 26,
+      "rruTypePortPathNo": 26,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 27,
+      "rruTypePortPathNo": 27,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 28,
+      "rruTypePortPathNo": 28,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 29,
+      "rruTypePortPathNo": 29,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 30,
+      "rruTypePortPathNo": 30,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 31,
+      "rruTypePortPathNo": 31,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 32,
+      "rruTypePortPathNo": 32,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 33,
+      "rruTypePortPathNo": 33,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 34,
+      "rruTypePortPathNo": 34,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 35,
+      "rruTypePortPathNo": 35,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 36,
+      "rruTypePortPathNo": 36,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 37,
+      "rruTypePortPathNo": 37,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 38,
+      "rruTypePortPathNo": 38,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 39,
+      "rruTypePortPathNo": 39,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 40,
+      "rruTypePortPathNo": 40,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 41,
+      "rruTypePortPathNo": 41,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 42,
+      "rruTypePortPathNo": 42,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 43,
+      "rruTypePortPathNo": 43,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 44,
+      "rruTypePortPathNo": 44,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 45,
+      "rruTypePortPathNo": 45,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 46,
+      "rruTypePortPathNo": 46,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 47,
+      "rruTypePortPathNo": 47,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 48,
+      "rruTypePortPathNo": 48,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 49,
+      "rruTypePortPathNo": 49,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 50,
+      "rruTypePortPathNo": 50,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 51,
+      "rruTypePortPathNo": 51,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 52,
+      "rruTypePortPathNo": 52,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 53,
+      "rruTypePortPathNo": 53,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 54,
+      "rruTypePortPathNo": 54,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 55,
+      "rruTypePortPathNo": 55,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 56,
+      "rruTypePortPathNo": 56,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 57,
+      "rruTypePortPathNo": 57,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 58,
+      "rruTypePortPathNo": 58,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 59,
+      "rruTypePortPathNo": 59,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 60,
+      "rruTypePortPathNo": 60,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 61,
+      "rruTypePortPathNo": 61,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 62,
+      "rruTypePortPathNo": 62,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 63,
+      "rruTypePortPathNo": 63,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
+      "rruTypePortNotMibRxTxStatus": [
+        {
+          "value": "1",
+          "desc": "rx|接收有效"
+        },
+        {
+          "value": "2",
+          "desc": "tx|发送有效"
+        },
+        {
+          "value": "3",
+          "desc": "rxAndTx|接收发送均有效"
+        }
+      ]
+    },
+    {
+      "rruTypePortManufacturerIndex": 4,
+      "rruTypePortNotMibManufacturerName": "datang|大唐",
+      "rruTypePortIndex": 119,
+      "rruTypePortNo": 64,
+      "rruTypePortPathNo": 64,
+      "rruTypePortSupportFreqBand": [
+        {
+          "value": "64",
+          "desc": "b41|B41频段(2496-2690)"
+        }
+      ],
+      "rruTypePortSupportFreqBandWidth": 160,
+      "rruTypePortSupportAbandTdsCarrierNum": 0,
+      "rruTypePortSupportFBandTdsCarrierNum": 0,
+      "rruTypePortCalAIqTxNom": 8230,
+      "rruTypePortCalAIqRxNom": 8230,
+      "rruTypePortCalPoutTxNom": 9216,
+      "rruTypePortCalPinRxNom": -12800,
+      "rruTypePortAntMaxPower": 9216,
       "rruTypePortNotMibRxTxStatus": [
         {
           "value": "1",
