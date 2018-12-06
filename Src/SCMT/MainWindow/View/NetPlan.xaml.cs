@@ -1143,6 +1143,15 @@ namespace SCMTMainWindow.View
 
                 MyDesigner.Children.Add(designerItem);
                 SetConnectorDecoratorTemplate(designerItem);
+
+				if(bHiddenLineConnector)
+				{
+					HiddenConnectorDecoratorTemplate(designerItem);
+				}
+				else
+				{
+					VisibilityConnectorDecoratorTemplate(designerItem);
+				}
             }
         }
 
@@ -1278,7 +1287,16 @@ namespace SCMTMainWindow.View
                 MyDesigner.CreateGirdForNetInfo(strName, item);
 
                 MyDesigner.gridProperty = this.gridProperty;
-            }
+
+				if (bHiddenLineConnector)
+				{
+					HiddenConnectorDecoratorTemplate(newItem);
+				}
+				else
+				{
+					VisibilityConnectorDecoratorTemplate(newItem);
+				}
+			}
         }
         #endregion
 
@@ -1378,7 +1396,16 @@ namespace SCMTMainWindow.View
                 MyDesigner.CreateGirdForNetInfo(strName, item);
 
                 MyDesigner.gridProperty = this.gridProperty;
-            }
+
+				if (bHiddenLineConnector)
+				{
+					HiddenConnectorDecoratorTemplate(newItem);
+				}
+				else
+				{
+					VisibilityConnectorDecoratorTemplate(newItem);
+				}
+			}
         }
 
         #endregion
@@ -1491,7 +1518,16 @@ namespace SCMTMainWindow.View
                 MyDesigner.CreateGirdForNetInfo(strName, item);
 
                 MyDesigner.gridProperty = this.gridProperty;
-            }
+
+				if (bHiddenLineConnector)
+				{
+					HiddenConnectorDecoratorTemplate(newItem);
+				}
+				else
+				{
+					VisibilityConnectorDecoratorTemplate(newItem);
+				}
+			}
         }
 
         #endregion
@@ -2163,7 +2199,9 @@ namespace SCMTMainWindow.View
 
 			//MyDesigner = new DesignerCanvas();
 			CreateMainBoard();
+			dlg = new InitWindows();
 			InitNetPlan();
+			dlg.ShowDialog();
 
 			DispatcherHelper.DoEvents();
 			
