@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LogManager;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
@@ -192,6 +193,15 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
+		/// <summary>
+		/// 根据
+		/// </summary>
+		/// <returns></returns>
+		public static List<DevAttributeInfo> GetRecordsByRruNo(string strRruNo, IReadOnlyList<DevAttributeInfo> listOriginData)
+		{
+			return listOriginData.Where(item => IsRelateSetting(strRruNo, item)).ToList();
+		}
+
 		#endregion 公共接口区
 
 		#region 私有接口
@@ -214,6 +224,12 @@ namespace NetPlan.DevLink
 
 			return record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
 					record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", strPathNo);
+		}
+
+		private static bool IsRelateSetting(string strRruNo, DevAttributeBase rruAntSetting)
+		{
+			var rruNoInSetting = rruAntSetting.GetNeedUpdateValue("netSetRRUNo");
+			return strRruNo == rruNoInSetting;
 		}
 
 		#endregion 私有接口

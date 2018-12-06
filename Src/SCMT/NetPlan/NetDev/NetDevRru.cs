@@ -3,11 +3,62 @@ using System.Linq;
 using CommonUtility;
 using LinkPath;
 using LogManager;
+using NetPlan.DevLink;
+using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
 	internal sealed class NetDevRru : NetDevBase
 	{
+		#region 构造函数
+
+		internal NetDevRru(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData) : base(strTargetIp, mapOriginData)
+		{
+
+		}
+
+		#endregion
+
+		#region 虚函数重载
+
+		internal override bool DistributeToEnb(DevAttributeBase dev, bool bDlAntWcb = false)
+		{
+			// 如果是新增的rru设备，需要先处理器件库
+			if (RecordDataType.NewAdd == dev.m_recordType)
+			{
+				if (!DistributeRruTypeInfo(dev))
+				{
+					Log.Error($"下发索引为{dev.m_strOidIndex}的RRU器件库信息失败");
+					return false;
+				}
+
+				if (!DistributeRruPortTypeInfo(dev))
+				{
+					Log.Error($"下发索引为{dev.m_strOidIndex}的RRU端口器件库信息失败");
+					return false;
+				}
+			}
+
+			// 如果是删除的rru设备，先下发天线阵安装规划表
+			if (RecordDataType.WaitDel == dev.m_recordType)
+			{
+				if (!DisRelateRass(dev, m_mapOriginData))
+				{
+					Log.Error($"和索引为{dev.m_strOidIndex}RRU设备相关的天线阵安装规划表下发失败");
+					return false;
+				}
+				Log.Debug($"和索引为{dev.m_strOidIndex}RRU设备相关的天线阵安装规划表下发成功");
+			}
+
+			// 特殊处理完成后，调用基类的函数下发rru的信息
+			return base.DistributeToEnb(dev, bDlAntWcb);
+		}
+
+		#endregion
+
+
+		#region 静态接口
+
 		/// <summary>
 		/// 从pico中查询连接的rhub的编号和端口号
 		/// </summary>
@@ -56,6 +107,9 @@ namespace NetPlan
 			return epMap;
 		}
 
+		#endregion
+
+
 		#region 器件库信息处理
 
 		/// <summary>
@@ -63,7 +117,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="rru"></param>
 		/// <returns></returns>
-		public bool DistributeRruTypeInfo(DevAttributeInfo rru)
+		public bool DistributeRruTypeInfo(DevAttributeBase rru)
 		{
 			var strVendor = GetRruVendorIdx(rru);
 			var strType = GetRruTypeIdx(rru);
@@ -93,7 +147,7 @@ namespace NetPlan
 			}
 
 			// 下发参数
-			if (!MibInfoMgr.DistributeSnmpData(newRruType, EnumSnmpCmdType.Add, CSEnbHelper.GetCurEnbAddr()))
+			if (!base.DistributeToEnb(newRruType))
 			{
 				Log.Error($"厂家编号为{strVendor}、类型索引为{strType}的RRU器件库信息下发失败");
 				return false;
@@ -102,7 +156,7 @@ namespace NetPlan
 			return true;
 		}
 
-		public bool DistributeRruPortTypeInfo(DevAttributeInfo rru)
+		public bool DistributeRruPortTypeInfo(DevAttributeBase rru)
 		{
 			var strVendor = GetRruVendorIdx(rru);
 			var strType = GetRruTypeIdx(rru);
@@ -129,7 +183,7 @@ namespace NetPlan
 			// 下发参数
 			foreach (var item in rpiDevList)
 			{
-				if (!MibInfoMgr.DistributeSnmpData(item, EnumSnmpCmdType.Add, targetIp))
+				if (!base.DistributeToEnb(item))
 				{
 					Log.Error($"索引为{item.m_strOidIndex}的RRU端口器件库信息下发失败");
 					continue;	// 此处使用continue而不是return，是因为判断端口器件库信息是否存在时，只判断了端口1的信息，不能保证所有的信息都已经被删除
@@ -144,12 +198,12 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="rru"></param>
 		/// <returns></returns>
-		private string GetRruVendorIdx(DevAttributeInfo rru)
+		private string GetRruVendorIdx(DevAttributeBase rru)
 		{
 			return rru.GetNeedUpdateValue("netRRUManufacturerIndex");
 		}
 
-		private string GetRruTypeIdx(DevAttributeInfo rru)
+		private string GetRruTypeIdx(DevAttributeBase rru)
 		{
 			return rru.GetNeedUpdateValue("netRRUTypeIndex");
 		}
@@ -245,7 +299,49 @@ namespace NetPlan
 
 		#region 特殊处理流程
 
-		// 删除rru设备时，需要先下发天线阵安装规划
+		/// <summary>
+		/// 调用SetNetRRUAntennaLcID命令，修改
+		/// 1.先删除了本地小区规划，未下发；2.删除天线阵，下发参数。下发失败，原因：该射频通道已经布配本地小区
+		/// </summary>
+		/// <param name="waitDisDev"></param>
+		/// <param name="mapOriginData"></param>
+		/// <returns></returns>
+		private bool DisRelateRass(DevAttributeBase waitDisDev, MAP_DEVTYPE_DEVATTRI mapOriginData)
+		{
+			if (!mapOriginData.ContainsKey(EnumDevType.rru_ant))
+			{
+				return true;
+			}
+
+			var rruNo = waitDisDev.m_strOidIndex.Trim('.');
+			var listRas = mapOriginData[EnumDevType.rru_ant];
+			if (null == listRas || listRas.Count == 0)
+			{
+				return true;
+			}
+
+			var listRelateRas = LinkRruAnt.GetRecordsByRruNo(rruNo, listRas);
+			foreach (var item in listRelateRas)
+			{
+				// todo 如果RRU已经布配了本地小区，不允许直接删除RRU
+				// 此时需要两步操作：1.先下发修改，2.下发删除操作
+				if (item.m_recordType == RecordDataType.WaitDel)
+				{
+					NetDevLc.ResetNetLcConfig(item);
+					item.SetDevRecordType(RecordDataType.Modified);
+					if (!base.DistributeToEnb(item, "SetNetRRUAntennaLcID"))
+					{
+						Log.Error($"索引为{item.m_strOidIndex}的天线阵安装规划表记录下发失败");
+						item.SetDevRecordType(RecordDataType.WaitDel);
+						return false;
+					}
+
+					item.SetDevRecordType(RecordDataType.WaitDel);
+				}
+			}
+
+			return true;
+		}
 
 		#endregion
 	}

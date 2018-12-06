@@ -17,7 +17,7 @@ namespace MsgQueue
 
 		#region 通知UI界面相关消息
 		public const string SHOW_LOG = "show_log";
-
+		public const string NetPlanInit = "netplan_init_flow";
 
 		#endregion
 

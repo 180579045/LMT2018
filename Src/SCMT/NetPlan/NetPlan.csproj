@@ -65,6 +65,8 @@
     <Compile Include="NetDev\DevAttributeBase.cs" />
     <Compile Include="NetDev\NetDevAnt.cs" />
     <Compile Include="NetDev\NetDevBase.cs" />
+    <Compile Include="NetDev\NetDevFactory.cs" />
+    <Compile Include="NetDev\NetDevLc.cs" />
     <Compile Include="NetDev\NetDevRhub.cs" />
     <Compile Include="NetDev\NetDevRru.cs" />
     <Compile Include="NetPlanMagicNum.cs" />
@@ -108,6 +110,10 @@
     <ProjectReference Include="..\Control\SCMTOperationCore\SCMTOperationCore.csproj">
       <Project>{5bf0ee4e-8220-4e2a-af99-53246ff970a2}</Project>
       <Name>SCMTOperationCore</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MsgQueue\MsgQueue.csproj">
+      <Project>{dfcc660c-1b0a-470a-9ab1-14448a33091c}</Project>
+      <Name>MsgQueue</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
