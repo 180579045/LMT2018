@@ -32,11 +32,20 @@ namespace NetPlan
 
 			// 下发本地小区信息
 			var bSucceedLc = base.DistributeToEnb(dev);
+			if (bSucceedLc)
+			{
+				dev.SetDevRecordType(RecordDataType.Original);
+			}
 
-			// 下发完成后关闭布配开关。无论是否下发成功都要关闭开关
-			var bSucceedSwitch = NPCellOperator.SendNetPlanSwitchToEnb(false, dev.m_strOidIndex, m_strTargetIp);
+			return bSucceedLc;
+		}
 
-			return bSucceedLc && bSucceedSwitch;
+		// 下发完成后关闭布配开关。无论是否下发成功都要关闭开关
+		// 对于本地小区这样特殊的网规参数，下发时，会有好几步操作，在测试过程中发现本地小区的增加、修改已经下发成功，但是在关闭布配开关时
+		// 出现基站校验错误，导致本地小区信息类型没有设置。增加后处理操作，如果主体操作成功，就修改对应的记录类型。
+		internal override bool PostDeal(DevAttributeBase dev)
+		{
+			return NPCellOperator.SendNetPlanSwitchToEnb(false, dev.m_strOidIndex, m_strTargetIp);
 		}
 
 		#endregion

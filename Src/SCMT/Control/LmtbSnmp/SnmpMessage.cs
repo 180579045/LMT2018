@@ -246,11 +246,9 @@ namespace LmtbSnmp
                 if (m_Result.Pdu.ErrorStatus != 0)
                 {
                     // agent reported an error with the request
-                    Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-                        m_Result.Pdu.ErrorStatus,
-                        m_Result.Pdu.ErrorIndex);
+					SnmpErrorParser.PrintPduError(m_Result.Pdu);
 
-                    rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
+					rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
                 }
                 else
                 {
@@ -307,11 +305,9 @@ namespace LmtbSnmp
                     if (m_Result.Pdu.ErrorStatus != 0)
                     {
                         // agent reported an error with the request
-                        Console.WriteLine("Error in SNMP reply. Error {0} index {1}",
-                            m_Result.Pdu.ErrorStatus,
-                            m_Result.Pdu.ErrorIndex);
+						SnmpErrorParser.PrintPduError(m_Result.Pdu);
 
-                        rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
+						rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
                         res.SetSNMPReslut(rest);
                         Thread.Sleep(3111);
                         callback(res);

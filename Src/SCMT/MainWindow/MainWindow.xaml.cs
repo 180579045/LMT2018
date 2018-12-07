@@ -8,24 +8,6 @@
 // 创建时间：2017-11-20
 //----------------------------------------------------------------*/
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SQLite;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Threading;
 using CDLBrowser.Parser;
 using CDLBrowser.Parser.BPLAN;
 using CDLBrowser.Parser.Configuration;
@@ -51,6 +33,24 @@ using SCMTOperationCore.Control;
 using SCMTOperationCore.Elements;
 using SCMTOperationCore.Message.SI;
 using SuperLMT.Utils;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Data;
+using System.Data.SQLite;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net.Sockets;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Threading;
 using UICore.Controls.Metro;
 using Xceed.Wpf.AvalonDock.Layout;
 using DbType = CDLBrowser.Parser.DatabaseMgr.DbType;
@@ -252,33 +252,6 @@ namespace SCMTMainWindow
 			ExpanderBaseInfo.IsExpanded = false;
 			TabControlEnable(false);
 			return false;
-
-			//	node.db.resultInitData = (bool ret) =>
-			//	{
-			//		if (ret == false)
-			//		{
-			//                  ShowLogHelper.Show("数据库初始化失败，无法创建对象树", "SCMT");
-
-			//                  Dispatcher.Invoke(() =>
-			//                  {
-			//                      ExpanderBaseInfo.IsEnabled = false;
-			//                  ExpanderBaseInfo.IsExpanded = false;
-			//                  TabControlEnable(false);
-			//                  });
-			//              }
-			//		else
-			//		{
-			//			Dispatcher.Invoke(() =>
-			//			{
-			//				var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
-			//				RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
-
-			//                      TabControlEnable(true);
-			//                      ExpanderBaseInfo.IsEnabled = true;
-			//                      ExpanderBaseInfo.IsExpanded = true;
-			//                  });
-			//		}
-			//	};
 		}
 
 		/// <summary>
@@ -337,26 +310,24 @@ namespace SCMTMainWindow
 						nn = (int)JObj.First.Next.First[TempCount]["ObjCollect"];
 						break;
 					}
-					else
-					{
-						var ObjNodesId = (int)JObj.First.Next.First[TempCount]["ObjID"];
-						var ObjParentNodesId = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
-						var ObjChildRenCount = (int)JObj.First.Next.First[TempCount]["ChildRenCount"];
-						var ObjNameEn = (string)JObj.First.Next.First[TempCount]["ObjNameEn"];
-						var ObjMibTableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
-						var ObjMibList = (string)JObj.First.Next.First[TempCount]["MIBList"];
-						JObject NewObjNodes = new JObject(new JProperty("ObjID", ObjNodesId),
-							new JProperty("ObjParentID", ObjParentNodesId),
-							new JProperty("ChildRenCount", ObjChildRenCount),
-							new JProperty("ObjName", name),
-							new JProperty("ObjNameEn", ObjNameEn),
-							new JProperty("MibTableName", ObjMibTableName),
-							new JProperty("MIBList", ObjMibList),
-							new JProperty("ObjCollect", 1));
-						JObj.First.Next.First[TempCount].Remove();
-						JObj.First.Next.First[TempCount].AddBeforeSelf(NewObjNodes);
-						break;
-					}
+
+					var ObjNodesId = (int)JObj.First.Next.First[TempCount]["ObjID"];
+					var ObjParentNodesId = (int)JObj.First.Next.First[TempCount]["ObjParentID"];
+					var ObjChildRenCount = (int)JObj.First.Next.First[TempCount]["ChildRenCount"];
+					var ObjNameEn = (string)JObj.First.Next.First[TempCount]["ObjNameEn"];
+					var ObjMibTableName = (string)JObj.First.Next.First[TempCount]["MibTableName"];
+					var ObjMibList = (string)JObj.First.Next.First[TempCount]["MIBList"];
+					JObject NewObjNodes = new JObject(new JProperty("ObjID", ObjNodesId),
+						new JProperty("ObjParentID", ObjParentNodesId),
+						new JProperty("ChildRenCount", ObjChildRenCount),
+						new JProperty("ObjName", name),
+						new JProperty("ObjNameEn", ObjNameEn),
+						new JProperty("MibTableName", ObjMibTableName),
+						new JProperty("MIBList", ObjMibList),
+						new JProperty("ObjCollect", 1));
+					JObj.First.Next.First[TempCount].Remove();
+					JObj.First.Next.First[TempCount].AddBeforeSelf(NewObjNodes);
+					break;
 				}
 				TempCount++;
 			}
@@ -1537,8 +1508,8 @@ namespace SCMTMainWindow
 					{
 						m_Content = null,
 						oid = null,
-                        m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib, CSEnbHelper.GetCurEnbAddr()),
-                        MibName_CN = "实例描述",
+						m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib, CSEnbHelper.GetCurEnbAddr()),
+						MibName_CN = "实例描述",
 						MibName_EN = "indexlist"
 					}, "实例描述");
 				}
@@ -1548,7 +1519,7 @@ namespace SCMTMainWindow
 					{
 						m_Content = null,
 						oid = null,
-                        m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib,CSEnbHelper.GetCurEnbAddr()),
+						m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(leaf.childNameMib, CSEnbHelper.GetCurEnbAddr()),
 						MibName_CN = leaf.childNameCh,
 						MibName_EN = leaf.childNameMib
 					}, leaf.childNameCh);
@@ -1584,9 +1555,9 @@ namespace SCMTMainWindow
 		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
-            Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+			Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
 
-            int RealIndexCount = IndexCount;                         // 真实的索引维度;
+			int RealIndexCount = IndexCount;                         // 真实的索引维度;
 
 			if (IndexCount == 0)                                     // 如果索引个数为0，按照1来处理;
 				IndexCount = 1;
@@ -1650,15 +1621,15 @@ namespace SCMTMainWindow
 						IndexContent += oid_cn[IndexOID] + temp[temp.Length - RealIndexCount + i];
 					}
 
-                    // 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
-                    // 参数一：属性名称;
-                    // 参数二：单元格实例;
-                    // 参数三：单元格列中文名称;
-                    model.AddProperty("indexlist", new DataGrid_Cell_MIB()
-                    {
-                        m_Content = IndexContent,
-                        oid = IndexOIDPre + ".",
-                        m_bIsReadOnly = true,
+					// 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
+					// 参数一：属性名称;
+					// 参数二：单元格实例;
+					// 参数三：单元格列中文名称;
+					model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+					{
+						m_Content = IndexContent,
+						oid = IndexOIDPre + ".",
+						m_bIsReadOnly = true,
 						MibName_CN = "实例描述",
 						MibName_EN = "indexlist"
 					}, "实例描述");
@@ -1801,8 +1772,8 @@ namespace SCMTMainWindow
 
 			foreach (LayoutAnchorable item in listAvalon)
 			{
-                //为了在文件管理中增加说明本地or基站。。
-				if (item.Title.Contains(strFriendName + "  ") )
+				//为了在文件管理中增加说明本地or基站。。
+				if (item.Title.Contains(strFriendName + "  "))
 				{
 					item.Show();
 					return;
@@ -1891,7 +1862,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-			var result = await InitDataBase();		// todo lm.dtz文件不存在时，这里抛出异常
+			var result = await InitDataBase();      // todo lm.dtz文件不存在时，这里抛出异常
 
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
@@ -1903,21 +1874,20 @@ namespace SCMTMainWindow
 
 			if (!result)
 			{
-				Log.Error($"数据库初始化失败，不再查询基站的设备信息");
+				Log.Error("数据库初始化失败，不再查询基站的设备信息");
 				return;
 			}
 
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
-		    st = GetEquipType(ip);
-            /*
-            var pcuSlot = GetPcuSlot(ip);
-			// 5G基站的电源插槽是4
-			if (4 == pcuSlot)
+			st = GetEquipType(ip);
+			if (st != EnbTypeEnum.ENB_EMB6116)
 			{
-				st = EnbTypeEnum.ENB_EMB6116;
+				ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
+				NodeBControl.GetInstance().DisConnectNodeb(fname);
+				return;
 			}
-            */
+
 			NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
 		}
 
@@ -1956,31 +1926,32 @@ namespace SCMTMainWindow
 			CSEnbHelper.ClearCurEnbAddr(ip);
 		}
 
-	    /// <summary>
-	    /// 查询基站的电源信息，用于获取电源的插槽号
-	    /// </summary>
-	    /// <param name="targetIp"></param>
-	    /// <returns></returns>
-	    public EnbTypeEnum GetEquipType(string targetIp)
-	    {
-	        const string cmdName = "GetEquipmentCommonInfo";
-	        long reqId;
-	        var pdu = new CDTLmtbPdu(cmdName);
-	        int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0", targetIp, ref pdu);
-	        if (ret != 0 || pdu.m_LastErrorStatus != 0)
-	        {
-	            ShowLogHelper.Show("查询设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-	            return EnbTypeEnum.ENB_EMB6116;
-	        }
-	        string equipType;
-	        if (!pdu.GetValueByMibName(targetIp, "equipNEType", out equipType))
-	        {
-	            ShowLogHelper.Show("查询基站设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
-	            return EnbTypeEnum.ENB_EMB6116;
-            }
-            Log.Info($"基站设备类型是"+ equipType); Convert.ToInt32(equipType);
-            return (EnbTypeEnum)Convert.ToInt32(equipType);
-	    }     
+		/// <summary>
+		/// 查询基站的类型
+		/// </summary>
+		/// <param name="targetIp"></param>
+		/// <returns></returns>
+		public EnbTypeEnum GetEquipType(string targetIp)
+		{
+			const string cmdName = "GetEquipmentCommonInfo";
+			long reqId;
+			var pdu = new CDTLmtbPdu(cmdName);
+			int ret = CDTCmdExecuteMgr.GetInstance().CmdGetSync(cmdName, out reqId, "0", targetIp, ref pdu);
+			if (ret != 0 || pdu.m_LastErrorStatus != 0)
+			{
+				ShowLogHelper.Show("查询设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+				return EnbTypeEnum.ENB_EMB6116;
+			}
+			string equipType;
+			if (!pdu.GetValueByMibName(targetIp, "equipNEType", out equipType))
+			{
+				ShowLogHelper.Show("查询基站设备信息失败，无法判断基站型号", targetIp, InfoTypeEnum.ENB_GETOP_ERR_INFO);
+				return EnbTypeEnum.ENB_EMB6116;
+			}
+
+			Log.Info($"基站设备类型是{equipType}");
+			return (EnbTypeEnum)Convert.ToInt32(equipType);
+		}
 
 		#endregion 订阅消息及处理
 

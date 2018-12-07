@@ -240,8 +240,7 @@ namespace LmtbSnmp
 				if (es != 0)
 				{
 					// agent reported an error with the request
-					Log.Error($"Error in SNMP reply. Error {es} index {m_Result.Pdu.ErrorIndex} Error Desc {SnmpErrDescHelper.GetErrDescById(es)}");
-
+					SnmpErrorParser.PrintPduError(m_Result.Pdu);
 
 					rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
 				}
@@ -301,7 +300,7 @@ namespace LmtbSnmp
 					if (es != 0)
 					{
 						// agent reported an error with the request
-						Log.Error($"Error in SNMP reply. Error {es} index {m_Result.Pdu.ErrorIndex} Error Desc {SnmpErrDescHelper.GetErrDescById(es)}");
+						SnmpErrorParser.PrintPduError(m_Result.Pdu);
 
 						rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
 						res.SetSNMPReslut(rest);
@@ -314,7 +313,7 @@ namespace LmtbSnmp
 						{
 							rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
 							res.SetSNMPReslut(rest);
-							Thread.Sleep(3111);
+							Thread.Sleep(3111);			// todo 为什么sleep 3秒？
 							callback(res);
 						}
 					}
