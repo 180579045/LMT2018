@@ -434,14 +434,14 @@ namespace CfgFileOperation
 
             // mdb 
             string strSQLRruType = ("select  * from rruType");
-            DataSet rruTypedateSet = new CfgOp().CfgGetRecordByAccessDb(strMdbPath, strSQLRruType);
+            DataSet rruTypedateSet = new CfgAccessDBManager().GetRecord(strMdbPath, strSQLRruType);
             int rruTypeCount = rruTypedateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
 
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             //string strSQL = ("select * from MibTree where MIBName='rruTypeEntry' DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
             string strSQL = ("select * from MibTree where MIBName='rruTypeEntry'");
 
-            DataSet MibdateSet = new CfgOp().CfgGetRecordByAccessDb(strFileToDirectory , strSQL);
+            DataSet MibdateSet = new CfgAccessDBManager().GetRecord(strFileToDirectory , strSQL);
             DataRow tableRow = MibdateSet.Tables[0].Rows[0];
             int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
 
@@ -455,12 +455,12 @@ namespace CfgFileOperation
 
             // mdb rrutypeport
             string strSQLRruTypePort = ("select  * from rruTypePort");
-            DataSet rruTypePortDateSet = new CfgOp().CfgGetRecordByAccessDb(strMdbPath, strSQLRruTypePort);
+            DataSet rruTypePortDateSet = new CfgAccessDBManager().GetRecord(strMdbPath, strSQLRruTypePort);
             int rruTypePortCount = rruTypePortDateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
 
             //strSQL = ("select * from MibTree where MIBName='rruTypePortEntry' DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
             strSQL = ("select * from MibTree where MIBName='rruTypePortEntry' ");
-            MibdateSet = new CfgOp().CfgGetRecordByAccessDb(strFileToDirectory, strSQL);
+            MibdateSet = new CfgAccessDBManager().GetRecord(strFileToDirectory, strSQL);
             tableRow = MibdateSet.Tables[0].Rows[0];
             nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
 
@@ -474,6 +474,10 @@ namespace CfgFileOperation
 
 
             is_same_rru(rruList, vectRRUTypeInfo);
+
+            new CfgAccessDBManager().Close(rruTypedateSet);
+            new CfgAccessDBManager().Close(MibdateSet);
+            new CfgAccessDBManager().Close(rruTypePortDateSet);
         }
         void is_same_rru(List<RRuTypeTabStru> ExData, List<RRuTypeTabStru> MdbData)
         {

@@ -158,12 +158,13 @@ namespace MIBDataParser.JSONDataMgr
 		{
 			//Console.WriteLine("DbToJsonMibTree start " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 			string sqlContent = "select * from MibTree order by OID asc";
+
 			DataSet dataSet = GetRecordByAccessDb(this.mdbFile, sqlContent);
 			MibJsonData mibJsonDatat = new MibJsonData(this.mibVersion);
 			mibJsonDatat.MibParseDataSet(dataSet);//按格式解析
-
-			// 把解析内容写成json文件
-			JsonFileWrite(_jsonFilePath + "mib.json", mibJsonDatat.GetStringMibJson());
+            CloseMdbData(dataSet);
+            // 把解析内容写成json文件
+            JsonFileWrite(_jsonFilePath + "mib.json", mibJsonDatat.GetStringMibJson());
 			this.mibInfo = mibJsonDatat.GetStringMibJson();
 
 			isMibJsonOK = true;
@@ -180,8 +181,8 @@ namespace MIBDataParser.JSONDataMgr
 			DataSet dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
 			ObjTressJsonData objTreeJson = new ObjTressJsonData();
 			objTreeJson.ObjParseDataSet(dataSet);
-
-			JsonFileWrite(_jsonFilePath + "obj.json", objTreeJson.GetStringObjTreeJson());
+            CloseMdbData(dataSet);
+            JsonFileWrite(_jsonFilePath + "obj.json", objTreeJson.GetStringObjTreeJson());
 			this.objTreeInfo = objTreeJson.GetStringObjTreeJson();
 
 			isObjJsonOK = true;
@@ -197,8 +198,8 @@ namespace MIBDataParser.JSONDataMgr
 			DataSet dataSet = GetRecordByAccessDb(mdbFile, sqlContent);
 			ObjTressJsonData objTreeJson = new ObjTressJsonData(this.mibVersion);
 			objTreeJson.TreeReferenceParseDataSet(dataSet);
-
-			JsonFileWrite(_jsonFilePath + "Tree_Reference.json", objTreeJson.GetStringTreeReference());
+            CloseMdbData(dataSet);
+            JsonFileWrite(_jsonFilePath + "Tree_Reference.json", objTreeJson.GetStringTreeReference());
 
 			isObjJson2OK = true;
 			//Console.WriteLine("DbToJson : TreeReference end " + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
@@ -231,6 +232,7 @@ namespace MIBDataParser.JSONDataMgr
 			CmdTreeJsonData cmdJsonDatat = new CmdTreeJsonData();
             //cmdJsonDatat.CmdParseDataSet(dataSet);
             cmdJsonDatat.CmdParseDataSetVersion2(dataSet);
+            CloseMdbData(dataSet);
 
             JsonFile jsonObjFile = new JsonFile();
 			//jsonObjFile.WriteFile("D:\\C#\\SCMT\\obj.json", objTreeJson.GetStringObjTreeJson());
@@ -252,28 +254,32 @@ namespace MIBDataParser.JSONDataMgr
 			Console.WriteLine("DbToJson : Thread Protect Timer over, err.");
 		}
 
-		/// <summary>
-		/// 打开数据库,进行查询
-		/// </summary>
-		/// <param name="fileName">完整文件名</param>
-		/// <param name="sqlContent">sql查询语句</param>
-		/// <returns>DataSet结果</returns>
-		private DataSet GetRecordByAccessDb(string fileName, string sqlContent)
-		{
-			//fileName = "D:\\C#\\SCMT\\lm.mdb";
-			DataSet dateSet;
-			//To do:将lm.dtz改名lm.rar,再解压缩,再改名成为mdb
-			var mdbData = new AccessDBManager(fileName);
-			try
-			{
-				mdbData.Open();
-				dateSet = mdbData.GetDataSet(sqlContent);
-			}
-			finally
-			{
-				mdbData.Close();
-			}
-			return dateSet;
-		}
-	}
+        /// <summary>
+        /// 打开数据库,进行查询
+        /// </summary>
+        /// <param name="fileName">完整文件名</param>
+        /// <param name="sqlContent">sql查询语句</param>
+        /// <returns>DataSet结果</returns>
+        private DataSet GetRecordByAccessDb(string fileName, string sqlContent)
+        {
+            //fileName = "D:\\C#\\SCMT\\lm.mdb";
+            DataSet dateSet;
+            //To do:将lm.dtz改名lm.rar,再解压缩,再改名成为mdb
+            var mdbData = new AccessDBManager(fileName);
+            try
+            {
+                mdbData.Open();
+                dateSet = mdbData.GetDataSet(sqlContent);
+            }
+            finally
+            {
+                mdbData.Close();
+            }
+            return dateSet;
+        }
+        private void CloseMdbData(DataSet dateSet)
+        {
+            dateSet.Dispose();
+        }
+    }
 }

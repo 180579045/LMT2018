@@ -343,7 +343,7 @@ namespace NetPlan
                 return true;
             }
             //中间变量，遍历元素it
-            if (name.StartsWith("it."))
+            if (name.StartsWith("it.") || name.Equals("it"))
             {
                 return true;
             }
@@ -357,7 +357,7 @@ namespace NetPlan
         public EnumResultType GetPropertyConditionValue(string property, DevAttributeInfo curRecord)
         {
             List<string> propertyNameList;
-            Dictionary<string, string> propertyValueDic = new Dictionary<string, string>();
+            Dictionary<string, object> propertyValueDic = new Dictionary<string, object>();
             CommCheckRuleHelper commCheckRule = new CommCheckRuleHelper();
             if (!CommCheckRuleHelper.GetParaByConditionalExp(property, out propertyNameList))
             {
@@ -424,7 +424,16 @@ namespace NetPlan
                     Log.Error(typeof(T).Name + " not have property "+ fieldName);
                     return EnumResultType.fail_continue;
                 }
-                fieldValue = info.GetValue(newObj,null);
+                object originValue = info.GetValue(newObj,null);
+                //进行下数据转换，如果为整型则转换为字符串,方便后面的校验运算
+                if (originValue is int)
+                {
+                    fieldValue = Convert.ToString(originValue);
+                }
+                else
+                {
+                    fieldValue = originValue;
+                }
                 return EnumResultType.success_true;
             }
             return EnumResultType.fail;
@@ -831,7 +840,7 @@ namespace NetPlan
             if (leafName.Equals("Count"))
             {
                 IEnumerable list = fatherValue as IEnumerable;
-                objResult = list.ToDynamicArray().Count();
+                objResult = list.ToDynamicArray().Count().ToString();
                 return EnumResultType.success_true;
             }
             string fatherName = fatherFullName.Substring(query1.Length);
@@ -839,7 +848,8 @@ namespace NetPlan
             if (fatherName.StartsWith("mib.") || fatherName.StartsWith("this."))
             {
                 string[] split = fatherName.Split('.');
-                if (fatherValue is EnumerableQuery<DevAttributeInfo>)
+                if ((fatherValue is EnumerableQuery<DevAttributeInfo>)
+                    || (fatherValue is List<DevAttributeInfo>))
                 {
                     IEnumerable list = fatherValue as IEnumerable;
                     foreach (DevAttributeInfo tmp in list)
@@ -956,13 +966,8 @@ namespace NetPlan
                 return paraRes;
             }
             //3.直接进行计算
-            Dictionary<string, string> paraValueStringDic = new Dictionary<string, string>();
-            foreach (var para in paraValueDic)
-            {
-                paraValueStringDic.Add(para.Key, para.Value.ToString());
-            }
             string result;
-            if (!CommCheckRuleHelper.CalculateConditionExpr(rules, paraValueStringDic, out result))
+            if (!CommCheckRuleHelper.CalculateConditionExpr(rules, paraValueDic, out result))
             {
                 Log.Warn("CalculateConditionExpr " + rules + " fail");
                 return EnumResultType.fail;
@@ -1211,9 +1216,9 @@ namespace NetPlan
                     //做一个保护,如果outvar不是it, 而是it.XX,需要保证返回值是List<string>类型,
                     if (!realSelect.Equals("it"))
                     {
-                        if (!(listRes is List<string>))
+                        if (!((listRes is List<string>) || (listRes is EnumerableQuery<string>)))
                         {
-                            Log.Warn("Please check select part of rules:" + roundRule.rules);
+                            Log.Warn("Please check select part of rules:" + roundRule.rules + " , should be string, not struct");
                             return EnumResultType.fail;
                         }
                     }
