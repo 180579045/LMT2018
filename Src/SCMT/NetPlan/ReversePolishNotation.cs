@@ -203,7 +203,7 @@ namespace NetPlan
                         }
                     case "Contains":
                     {
-                        if (para1 is List<string> && para2 is string)
+                        if (((para1 is List<string>) || (para1 is EnumerableQuery<string>)) && para2 is string)
                         {
                                
                             IEnumerable list = para1 as IEnumerable;
@@ -235,6 +235,8 @@ namespace NetPlan
 
         public static TOKENFLAG getToken(string inputStr, out string token, out int tokenLen)
         {
+            //2018.12.7此方法的好处是可以运算符不必须填写空格，但是无法解决Contains这种自定义操作符
+            //故综合考虑后要求操作符前后必须有空格
             token = "";
             tokenLen = 0;
             for (int loop = 0; loop < inputStr.Length;)
@@ -289,6 +291,11 @@ namespace NetPlan
                         {
                             nextStr = "";
                         }
+                    }
+                    //类似Contains这种自定义的操作符要在此区分
+                    if (IsOperator(token))
+                    {
+                        return TOKENFLAG.Tokenop;
                     }
                     return TOKENFLAG.Tokenpara;
                 }

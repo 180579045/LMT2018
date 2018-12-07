@@ -261,7 +261,7 @@ namespace NetPlan.Tests
             List<string> list1 = new List<string> { "3", "5", "18", "2" };
             paraValueDic.Add("query1", list1);
             res = ReversePolishNotation.CalculatePolishExp(expr, paraValueDic, out exprResult);
-            Assert.IsTrue(res == false);
+            Assert.IsTrue(res == true);
         }
 
         [TestMethod()]

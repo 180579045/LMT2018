@@ -250,41 +250,39 @@ namespace NetPlan.Tests
             netIrOfpInfo.Add(oneIrOfp);
 
             List<DevAttributeInfo> netLcCtrInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, ".1");
-            oneNetLcCtr.m_mapAttributes["netPlanControlLcConfigSwitch"].m_strLatestValue = 0.ToString();
+            DevAttributeInfo oneNetLcCtr = new DevAttributeInfo(EnumDevType.nrNetLcCtr, ".1");
+            oneNetLcCtr.m_mapAttributes["nrNetLocalCellCtrlConfigSwitch"].m_strLatestValue = 0.ToString();
             netLcCtrInfo.Add(oneNetLcCtr);
-            oneNetLcCtr = new DevAttributeInfo(EnumDevType.netLcCtr, ".2");
-            oneNetLcCtr.m_mapAttributes["netPlanControlLcConfigSwitch"].m_strLatestValue = 0.ToString();
+            oneNetLcCtr = new DevAttributeInfo(EnumDevType.nrNetLcCtr, ".2");
+            oneNetLcCtr.m_mapAttributes["nrNetLocalCellCtrlConfigSwitch"].m_strLatestValue = 0.ToString();
             netLcCtrInfo.Add(oneNetLcCtr);
 
             List<DevAttributeInfo> netLcInfo = new List<DevAttributeInfo>();
-            DevAttributeInfo oneNetLc = new DevAttributeInfo(EnumDevType.netLc, ".1");
-            oneNetLc.m_mapAttributes["netLcRowStatus"].m_strLatestValue = 4.ToString();
-            oneNetLc.m_mapAttributes["netLcFreqBand"].m_strLatestValue = 8.ToString();
-            oneNetLc.m_mapAttributes["netLcFreqBandWidth"].m_strLatestValue = 3.ToString();
-            oneNetLc.m_mapAttributes["netLcAntCombinationFlag"].m_strLatestValue = 0.ToString();
-            oneNetLc.m_mapAttributes["netLcAppScene"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcAntArrayMode"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcIrCompressMode"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcAntPortNum"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcFrameType"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcCellCombineEnhancedSwitch"].m_strLatestValue = 0.ToString();
-            oneNetLc.m_mapAttributes["netLcSdcFuncSwitch"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcFrameType"].m_strLatestValue = 1.ToString();
+            DevAttributeInfo oneNetLc = new DevAttributeInfo(EnumDevType.nrNetLc, ".1");
+            oneNetLc.m_mapAttributes["nrNetLocalCellRowStatus"].m_strLatestValue = 4.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellFreqBand"].m_strLatestValue = 8192.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellFreqBandWidth"].m_strLatestValue = 3.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellAntCombinationFlag"].m_strLatestValue = 0.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellAppScene"].m_strLatestValue = "0";
+            oneNetLc.m_mapAttributes["nrNetLocalCellAntArrayMode"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellIrCompressMode"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellAntPortNum"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellFrameType"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellCombineEnhancedSwitch"].m_strLatestValue = 0.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellSdcFuncSwitch"].m_strLatestValue = 1.ToString();
             netLcInfo.Add(oneNetLc);
-            oneNetLc = new DevAttributeInfo(EnumDevType.netLc, ".2");
-            oneNetLc.m_mapAttributes["netLcRowStatus"].m_strLatestValue = 4.ToString();
-            oneNetLc.m_mapAttributes["netLcFreqBand"].m_strLatestValue = 8.ToString();
-            oneNetLc.m_mapAttributes["netLcFreqBandWidth"].m_strLatestValue = 3.ToString();
-            oneNetLc.m_mapAttributes["netLcAntCombinationFlag"].m_strLatestValue = 0.ToString();
-            oneNetLc.m_mapAttributes["netLcAppScene"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcAntArrayMode"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcIrCompressMode"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcAntPortNum"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcFrameType"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcCellCombineEnhancedSwitch"].m_strLatestValue = 0.ToString();
-            oneNetLc.m_mapAttributes["netLcSdcFuncSwitch"].m_strLatestValue = 1.ToString();
-            oneNetLc.m_mapAttributes["netLcFrameType"].m_strLatestValue = 1.ToString();
+            oneNetLc = new DevAttributeInfo(EnumDevType.nrNetLc, ".2");
+            oneNetLc.m_mapAttributes["nrNetLocalCellRowStatus"].m_strLatestValue = 4.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellFreqBand"].m_strLatestValue = 8192.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellFreqBandWidth"].m_strLatestValue = 3.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellAntCombinationFlag"].m_strLatestValue = 0.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellAppScene"].m_strLatestValue = "0";
+            oneNetLc.m_mapAttributes["nrNetLocalCellAntArrayMode"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellIrCompressMode"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellAntPortNum"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellFrameType"].m_strLatestValue = 1.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellCombineEnhancedSwitch"].m_strLatestValue = 0.ToString();
+            oneNetLc.m_mapAttributes["nrNetLocalCellSdcFuncSwitch"].m_strLatestValue = 1.ToString();
             netLcInfo.Add(oneNetLc);
 
             enbCurPlan.Add(EnumDevType.board, netBoardInfo);
@@ -292,8 +290,8 @@ namespace NetPlan.Tests
             enbCurPlan.Add(EnumDevType.ant, netAntInfo);
             enbCurPlan.Add(EnumDevType.rru_ant, netRruAntInfo);
             enbCurPlan.Add(EnumDevType.board_rru, netIrOfpInfo);
-            enbCurPlan.Add(EnumDevType.netLc, netLcInfo);
-            enbCurPlan.Add(EnumDevType.netLcCtr, netLcCtrInfo);
+            enbCurPlan.Add(EnumDevType.nrNetLc, netLcInfo);
+            enbCurPlan.Add(EnumDevType.nrNetLcCtr, netLcCtrInfo);
             return enbCurPlan;
         }
 
@@ -499,8 +497,8 @@ namespace NetPlan.Tests
             string leafName = "equipNEType";
             EnumResultType res = rulesHelper.MapLibQueryOfDataType(preQueryName, shelfList, leafName, out objValue);
             Assert.IsTrue(res == EnumResultType.success_true);
-            Assert.IsTrue(objValue is int);
-            Assert.IsTrue(10 == Convert.ToInt32(objValue));
+            Assert.IsTrue(objValue is String);
+            Assert.IsTrue("10" == Convert.ToString(objValue));
 
             preQueryName = "lib.shelfEquipment.planSlotInfo";
             leafName = "supportBoardType";
@@ -1182,7 +1180,7 @@ namespace NetPlan.Tests
             roundRule.rules =
                 "from it in lib.rruTypeInfo where it.rruTypeManufacturerIndex == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex select it";
             roundRule.outvar = "query1";
-            DevAttributeInfo curRecord = SimAddRru("1", 133, 4, 1);
+            DevAttributeInfo curRecord = SimAddRru(".1", 133, 4, 1);
             curRecord.m_mapAttributes["netRRURowStatus"].m_strOriginValue = "6";
             curRecord.m_mapAttributes["netRRURowStatus"].m_strLatestValue = "4";
             Dictionary<string, object> queryDic = new Dictionary<string, object>();
@@ -1216,6 +1214,7 @@ namespace NetPlan.Tests
         [TestMethod()]
         public async Task GetRoundCheckValueTest()
         {
+            await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
             NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
             List<RoundRule> roundList = new List<RoundRule>();
@@ -1239,7 +1238,7 @@ namespace NetPlan.Tests
                 "where query1.Count == 1";
             roundRule.outvar = "";
             roundList.Add(roundRule);
-            DevAttributeInfo curRecord = SimAddRru("1", 133, 5, 1);
+            DevAttributeInfo curRecord = SimAddRru(".1", 133, 5, 1);
             curRecord.m_mapAttributes["netRRURowStatus"].m_strOriginValue = "6";
             curRecord.m_mapAttributes["netRRURowStatus"].m_strLatestValue = "4";
             Dictionary<string, object> queryDic = new Dictionary<string, object>();
@@ -1251,6 +1250,7 @@ namespace NetPlan.Tests
         [TestMethod()]
         public async Task GetRoundCheckValueTest1()
         {
+            await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
             NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
             List<RoundRule> roundList = new List<RoundRule>();
@@ -1274,7 +1274,7 @@ namespace NetPlan.Tests
                 "where query1.Count == 1";
             roundRule.outvar = "";
             roundList.Add(roundRule);
-            DevAttributeInfo curRecord = SimAddRru("1", 133, 4, 1);
+            DevAttributeInfo curRecord = SimAddRru(".1", 133, 4, 1);
             curRecord.m_mapAttributes["netRRURowStatus"].m_strOriginValue = "6";
             curRecord.m_mapAttributes["netRRURowStatus"].m_strLatestValue = "4";
             Dictionary<string, object> queryDic = new Dictionary<string, object>();
@@ -1283,5 +1283,34 @@ namespace NetPlan.Tests
             Assert.IsTrue(res == EnumResultType.success_true);
         }
 
+        [TestMethod()]
+        public async Task GetRoundCheckValueTest2()
+        {
+            await simConnectEnb();
+            MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            //测试Contains
+            List<RoundRule> roundList = new List<RoundRule>();
+            RoundRule roundRule = new RoundRule();
+            roundRule.round = 1;
+            roundRule.rules =
+                @"from it in this.netBoardEntry where it.netBoardRowStatus == 4 select it.netBoardSlotNo";
+            roundRule.outvar = "query1";
+            roundList.Add(roundRule);
+
+            roundRule = new RoundRule();
+            roundRule.round = 2;
+            roundRule.rules =
+                @"where query1 Contains cur.netRRUEntry.netRRUAccessSlotNo";
+            roundRule.outvar = "";
+            roundList.Add(roundRule);
+            DevAttributeInfo curRecord = SimAddRru(".1", 133, 4, 1);
+            curRecord.m_mapAttributes["netRRURowStatus"].m_strOriginValue = "6";
+            curRecord.m_mapAttributes["netRRURowStatus"].m_strLatestValue = "4";
+            Dictionary<string, object> queryDic = new Dictionary<string, object>();
+
+            EnumResultType res = rulesHelper.GetRoundCheckValue(roundList, curRecord);
+            Assert.IsTrue(res == EnumResultType.success_true);
+        }
     }
 }

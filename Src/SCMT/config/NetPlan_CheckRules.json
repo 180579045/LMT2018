@@ -93,5 +93,37 @@
        "false_tip":"该RHUB上承载的本地小区已经建立不允许删除"
     }
   ],
-
+  "netAntennaArrayCheck":[],
+  "netRRUCheck":[],
+  "netIROptPlanCheck":[],
+  "netEthPlanCheck":[],
+  "netPRRUCheck":[],
+  "netRRUAntennaSettingCheck":[
+  {
+      "id": 1, 
+       "desc" : "删除RRU布配校验小区1", 
+       "property":"where cur.netRRUAntennaSettingEntry.netRRURowStatus == 6",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId != -1",
+              "outvar":""
+          }],
+         "false_tip":"该RRU上已经有归属的小区，则不允许删除"
+    },{
+       "id": 2, 
+       "desc" : "删除RRU布配校验小区2", 
+       "property":"where cur.netRRUAntennaSettingEntry.netRRURowStatus == 6",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId1 != -1",
+              "outvar":""
+          }],
+         "false_tip":"该RRU上已经有归属的小区2，则不允许删除"
+    }],
+  "netLocalCellCheck":[],
+  "nrNetLocalCellCheck":[],
+  "netLocalCellCtrlCheck":[],
+  "nrNetLocalCellCtrlCheck":[],
 }
