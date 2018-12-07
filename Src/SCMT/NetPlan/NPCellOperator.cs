@@ -408,7 +408,7 @@ namespace NetPlan
 			if (!MibInfoMgr.GetInstance().DelDev($".{nLcId}", EnumDevType.nrNetLc))
 			{
 				Log.Error($"删除本地小区{nLcId}的属性信息失败");
-				return false;
+				//return false;
 			}
 
 			// 重置天线安装规划表中相关的记录

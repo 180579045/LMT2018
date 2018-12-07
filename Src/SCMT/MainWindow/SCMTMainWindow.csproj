@@ -238,6 +238,9 @@
     <Compile Include="View\AddBoardWindow.xaml.cs">
       <DependentUpon>AddBoardWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\BitParaSetWindow.xaml.cs">
+      <DependentUpon>BitParaSetWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\ChooseAntennaType.xaml.cs">
       <DependentUpon>ChooseAntennaType.xaml</DependentUpon>
     </Compile>
@@ -383,6 +386,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\AddBoardWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\BitParaSetWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
