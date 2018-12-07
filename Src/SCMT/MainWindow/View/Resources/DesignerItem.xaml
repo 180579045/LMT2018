@@ -130,7 +130,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type s:DesignerItem}">
-                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}" x:Name="template_Grid"
                           ContextMenu="{StaticResource DesignerItemContextMenu}">
                         <!-- PART_DragThumb -->
                         <c:DragThumb x:Name="PART_DragThumb" 

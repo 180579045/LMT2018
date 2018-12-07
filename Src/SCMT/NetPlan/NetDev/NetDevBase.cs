@@ -136,6 +136,12 @@ namespace NetPlan
 			return true;
 		}
 
+		// 后处理
+		internal virtual bool PostDeal(DevAttributeBase dev)
+		{
+			return true;
+		}
+
 		#endregion
 
 		#region 非虚函数
