@@ -205,8 +205,41 @@ namespace SCMTMainWindow.View
 				Log.Error(strMsg);
 				return;
 			}
-            //根据修改的单元格重组单元格数据，而不是下发整行数据。
-            dynamic modifyModel = new DyDataGrid_MIBModel();
+			if (string.IsNullOrEmpty(mibNameEn))
+			{
+				strMsg = string.Format("无法获取Mib英文名称，oid:{0}", oid);
+				Log.Error(strMsg);
+				return;
+			}
+
+			// 获取Mib节点属性
+			MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByName(mibNameEn, CSEnbHelper.GetCurEnbAddr());
+			if (null == mibLeaf)
+			{
+				strMsg = "无法获取Mib节点信息！";
+				Log.Error(strMsg);
+				MessageBox.Show(strMsg);
+				return;
+			}
+
+			// 校验是否包含特殊字符
+			if (false == SnmpMibUtil.CheckMibValidChar(strVal, out strMsg))
+			{
+				Log.Error(string.Format("{0},节点名称：{1}，值：{2}", strMsg, mibNameEn, strVal));
+				MessageBox.Show(string.Format("{0}: {1}", mibLeaf.childNameCh, strMsg));
+				return;
+			}
+			// 校验Mib值
+			if (false == SnmpMibUtil.CheckMibValueByMibLeaf(mibLeaf, strVal))
+			{
+				strMsg = string.Format("{0}: 您所设置的值格式错误或不在取值范围内", mibLeaf.childNameCh);
+				Log.Error(strMsg);
+				MessageBox.Show(strMsg);
+				return;
+			}
+
+			//根据修改的单元格重组单元格数据，而不是下发整行数据。
+			dynamic modifyModel = new DyDataGrid_MIBModel();
             if (mibModel.Properties.ContainsKey(mibNameEn))
             {
                 if (mibModel.Properties[mibNameEn] is DataGrid_Cell_MIB_ENUM)
@@ -224,13 +257,6 @@ namespace SCMTMainWindow.View
                     modifyModel.AddProperty(iter.MibName_EN, dgm, iter.MibName_CN);
                 }
             } 
-
-            if (string.IsNullOrEmpty(mibNameEn))
-			{
-				strMsg = string.Format("无法获取Mib英文名称，oid:{0}", oid);
-				Log.Error(strMsg);
-				return;
-			}
 
             // 单元格数据
             Dictionary<string, object> lineDataPro = modifyModel.Properties;
