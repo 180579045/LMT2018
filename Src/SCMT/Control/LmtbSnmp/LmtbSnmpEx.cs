@@ -226,16 +226,15 @@ namespace LmtbSnmp
 			{
 				if (ReqResult.Pdu.ErrorStatus != 0)
 				{
-					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
-					Log.Error(logMsg);
+					SnmpErrorParser.PrintPduError(ReqResult.Pdu);
 					status = false;
 				}
 				else
 				{
 					foreach (var vb in ReqResult.Pdu.VbList)
 					{
-						logMsg =
-							$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
+						//logMsg =
+						//	$"ObjectName={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
 						// 根据Mib类型转换为可显示字符串
 						string strValue = null;
 						SnmpMibUtil.ConvertSnmpVal2MibStr(strIpAddr, vb, out strValue);
@@ -365,8 +364,8 @@ namespace LmtbSnmp
 			{
 				if (ReqResult.Pdu.ErrorStatus != 0)
 				{
-					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
-					Log.Error(logMsg);
+					SnmpErrorParser.PrintPduError(ReqResult.Pdu);
+
 					status = false;
 
 					SnmpErrDescHelper.SetLastErrorCode(ReqResult.Pdu.ErrorStatus);
@@ -469,8 +468,7 @@ namespace LmtbSnmp
 			{
 				if (ReqResult.Pdu.ErrorStatus != 0)// 状态码
 				{
-					logMsg = $"Error in SNMP reply. Error {ReqResult.Pdu.ErrorStatus} index {ReqResult.Pdu.ErrorIndex}";
-//					Log.Error(logMsg);
+					SnmpErrorParser.PrintPduError(ReqResult.Pdu);
 					status = false;
 					// 状态码为106 下发报文中绑定变量个数不应大于60个，此时要返回
 					if (ReqResult.Pdu.ErrorStatus == 106)
@@ -668,7 +666,7 @@ namespace LmtbSnmp
 		public bool SnmpSetSync(string strIpAddr, List<CDTLmtbVb> setVbs, long timeOut)
 		{
 			//	Log.Debug("========== SnmpSetSync() Start ==========");
-			var logMsg = $"pars: strIpAddr={strIpAddr}, timeOut={timeOut}";
+			//var logMsg = $"pars: strIpAddr={strIpAddr}, timeOut={timeOut}";
 			//			Log.Debug(logMsg);
 
 			if (string.IsNullOrEmpty(strIpAddr))
@@ -680,8 +678,7 @@ namespace LmtbSnmp
 			var snmp = m_SnmpSync;
 			if (null == snmp)
 			{
-				logMsg = $"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令";
-				Log.Error(logMsg);
+				Log.Error($"基站[{strIpAddr}]的snmp连接不存在，无法下发snmp命令");
 				return false;
 			}
 
@@ -698,8 +695,7 @@ namespace LmtbSnmp
 
 			if (result.Pdu.ErrorStatus != 0)
 			{
-				logMsg = $"Error in SNMP reply. Error {result.Pdu.ErrorStatus} index {result.Pdu.ErrorIndex}";
-				//Log.Error(logMsg);
+				SnmpErrorParser.PrintPduError(result.Pdu);
 				return false;
 			}
 

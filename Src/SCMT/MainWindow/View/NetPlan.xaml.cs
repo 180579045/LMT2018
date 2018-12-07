@@ -50,8 +50,8 @@ namespace SCMTMainWindow.View
         private int boardRow;
 
         //选中时的边框显示
-        private Polygon rect = new Polygon();
-        private Polygon rectForCell = new Polygon();
+        private Polygon rect;
+        private Polygon rectForCell;
 
         //初始化连接
         private int nSizeChangedNo = 0;
@@ -125,6 +125,7 @@ namespace SCMTMainWindow.View
                 }
             }
 
+            rectForCell = new Polygon();
             rectForCell.Stroke = new LinearGradientBrush(Colors.Black, Colors.LightSkyBlue, 30.0);
             rectForCell.StrokeThickness = 3;
             rectForCell.Points.Add(new Point(2, 2));
@@ -569,6 +570,7 @@ namespace SCMTMainWindow.View
             boardCanvas.MouseLeftButtonDown += BoardCanvas_MouseLeftButtonDown;
 
             //初始化选择框
+            rect = new Polygon();
             rect.Stroke = new SolidColorBrush(Colors.Red);
             rect.StrokeThickness = 3;
             rect.Points.Add(new Point(2, 2));
@@ -711,7 +713,8 @@ namespace SCMTMainWindow.View
 
                     MyDesigner.Children.Add(designerItem);
                     SetConnectorDecoratorTemplate(designerItem);
-					if (bHiddenLineConnector)
+                    CancelContextMenu(designerItem);
+                    if (bHiddenLineConnector)
 					{
 						HiddenConnectorDecoratorTemplate(designerItem);
 					}
@@ -903,6 +906,7 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void BoardCanvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
+            MyDesigner.SelectionService.ClearSelection();
             if(boardCanvas != null && boardCanvas.Children.Count > 0)
             {
                 Point pt = e.GetPosition(boardCanvas);
@@ -1143,7 +1147,7 @@ namespace SCMTMainWindow.View
 
                 MyDesigner.Children.Add(designerItem);
                 SetConnectorDecoratorTemplate(designerItem);
-
+                CancelContextMenu(designerItem);
 				if(bHiddenLineConnector)
 				{
 					HiddenConnectorDecoratorTemplate(designerItem);
@@ -1554,7 +1558,14 @@ namespace SCMTMainWindow.View
                     InitBoardToDev(item);
                 }
             }
-            if(allLink.ContainsKey(EnumDevType.rru_ant))
+            if (allLink.ContainsKey(EnumDevType.rhub_prru))
+            {
+                foreach (var item in allLink[EnumDevType.rhub_prru])
+                {
+                    InitRHUBToPRRU(item);
+                }
+            }
+            if (allLink.ContainsKey(EnumDevType.rru_ant))
             {
                 for(int i = 0; i < allLink[EnumDevType.rru_ant].Count; i++)
                 {
@@ -1566,13 +1577,6 @@ namespace SCMTMainWindow.View
                         }
                     }
                     InitRRUToAnt(allLink[EnumDevType.rru_ant][i]);
-                }
-            }
-            if(allLink.ContainsKey(EnumDevType.rhub_prru))
-            {
-                foreach(var item in allLink[EnumDevType.rhub_prru])
-                {
-                    InitRHUBToPRRU(item);
                 }
             }
         }
@@ -1841,8 +1845,10 @@ namespace SCMTMainWindow.View
 
                                 if (targetItem.ItemName.Equals(strName))
                                 {
-                                    DesignerCanvas.SetLeft(targetItem, DesignerCanvas.GetLeft(rruItem) + 120);
-                                    DesignerCanvas.SetTop(targetItem, DesignerCanvas.GetTop(rruItem) - 20);
+                                    double uiLeft = DesignerCanvas.GetLeft(rruItem);
+                                    double uiTop = DesignerCanvas.GetTop(rruItem);
+                                    DesignerCanvas.SetTop(targetItem, uiTop - rruItem.Height - 10);
+                                    DesignerCanvas.SetLeft(targetItem, uiLeft + rruItem.Width + 10);
                                     break;
                                 }
                             }
@@ -1924,8 +1930,10 @@ namespace SCMTMainWindow.View
 
                                 if (targetItem.ItemName.Equals(strName))
                                 {
-                                    DesignerCanvas.SetLeft(targetItem, DesignerCanvas.GetLeft(rhubItem) + 220);
-                                    DesignerCanvas.SetTop(targetItem, DesignerCanvas.GetTop(rhubItem) - 20);
+                                    double uiLeft = DesignerCanvas.GetLeft(rhubItem);
+                                    double uiTop = DesignerCanvas.GetTop(rhubItem);
+                                    DesignerCanvas.SetLeft(targetItem, uiLeft + rhubItem.Width + 10);
+                                    DesignerCanvas.SetTop(targetItem, uiTop - rhubItem.Height - 10);
                                     break;
                                 }
                             }
@@ -2034,6 +2042,22 @@ namespace SCMTMainWindow.View
         }
 
         /// <summary>
+        /// 右键菜单
+        /// </summary>
+        /// <param name="item"></param>
+        public void CancelContextMenu(DesignerItem item)
+        {
+            if (item.Content is UIElement)
+            {
+                ControlTemplate template = DesignerItem.GetConnectorDecoratorTemplate(item.Content as UIElement);
+                
+                Grid decorator = item.Template.FindName("template_Grid", item) as Grid;
+                if (decorator != null && template != null)
+                    decorator.ContextMenu = null;
+            }
+        }
+
+        /// <summary>
         /// 恢复连接
         /// </summary>
         /// <param name="item"></param>
@@ -2117,8 +2141,9 @@ namespace SCMTMainWindow.View
             {
                 InitAllConnection();
                 DeleteAllItemConnector();
-								
-				//dlg.Close();
+                DispatcherHelper.DoEvents();
+
+                //dlg.Close();
             }
         }
 
@@ -2138,7 +2163,7 @@ namespace SCMTMainWindow.View
         private void NewHandler(object sender, RoutedEventArgs e)
         {
             //handle click event
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("新建网规配置文件功能正在建设中...");
         }
         /// <summary>
         /// 点击导入网规文件触发方法
@@ -2148,7 +2173,7 @@ namespace SCMTMainWindow.View
         private void ExportHandler(object sender, RoutedEventArgs e)
         {
             //handle click event
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("导入网规文件功能建设中...");
         }
         /// <summary>
         /// 点击下发网规规划触发方法
@@ -2206,11 +2231,12 @@ namespace SCMTMainWindow.View
 			DispatcherHelper.DoEvents();
 			
 			InitAllConnection();
+            DispatcherHelper.DoEvents();
         }
         private void ClearHandler(object sender, RoutedEventArgs e)
         {
             //handle click event
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("清除网规数据建设中...");
         }
 
 
@@ -2262,16 +2288,16 @@ namespace SCMTMainWindow.View
         }
         private void ZoomIncreaseHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("放大画布功能建设中...");
         }
 
         private void ZoomDecreaseHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("缩小画布功能建设中...");
         }
         private void FullScreenHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("全屏功能建设中...");
         }
         private void HiddenCellHandler(object sender, RoutedEventArgs e)
         {
@@ -2296,7 +2322,7 @@ namespace SCMTMainWindow.View
         }
         private void DeleteElementHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MyDesigner.DeleteCurrentSelection();
         }
 
         /// <summary>

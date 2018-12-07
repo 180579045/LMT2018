@@ -906,7 +906,7 @@ namespace SCMTMainWindow.View
             Clipboard.SetData(DataFormats.Xaml, root);
         }
 
-        private void DeleteCurrentSelection()
+        public void DeleteCurrentSelection()
         {
             foreach (Connection connection in SelectionService.CurrentSelection.OfType<Connection>())
             {

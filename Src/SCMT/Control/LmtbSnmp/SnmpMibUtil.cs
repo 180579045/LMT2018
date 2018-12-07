@@ -251,8 +251,8 @@ namespace LmtbSnmp
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message);
-				throw e;
+				Log.Error($"{e.Message} syntax type:{syntaxType.ToString()} value:{value} vb info:{vb}");
+				throw;
 			}
 
 			return 0;
@@ -686,7 +686,7 @@ namespace LmtbSnmp
 		/// <summary>
 		/// 将Bits类型的数值翻译成具体的位描述意义
 		/// </summary>
-		/// <param name="strBitsTypeValue">值</param>
+		/// <param name="strBitsTypeValue">数字字符串</param>
 		/// <param name="strValueList">值的取值范围</param>
 		/// <param name="strOutput">bit位的描述意义</param>
 		/// <returns></returns>

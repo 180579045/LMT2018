@@ -401,7 +401,7 @@ namespace CfgFileOperation
         {
             string strSQLAlarm = ("select  * from AlarmInform_5216");
 
-            DataSet AlarmdateSet = new CfgOp().CfgGetRecordByAccessDb(strMdbPath, strSQLAlarm);
+            DataSet AlarmdateSet = new CfgAccessDBManager().GetRecord(strMdbPath, strSQLAlarm);
 
             int alarmCount = AlarmdateSet.Tables[0].Rows.Count; // 例如一个版本 2178个告警信息 0~2177
 
@@ -410,6 +410,7 @@ namespace CfgFileOperation
             {  // 在表之间循环
                 vectAlarmInfoMdb.Add(new StruAlarmInfo(AlarmdateSet.Tables[0].Rows[loop]));
             }
+            new CfgAccessDBManager().Close(AlarmdateSet);
         }
 
         /// <summary>
