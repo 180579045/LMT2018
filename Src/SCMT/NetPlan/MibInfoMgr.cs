@@ -671,6 +671,7 @@ namespace NetPlan
 				// 如果下发失败，就break，后面的流程还要执行，清理掉已经下发成功的待删除的设备
 				if (!(bSucceed = handler.DistributeToEnb(item, bDlAntWcb)))
 				{
+					handler.PostDeal(item);
 					break;
 				}
 
@@ -681,6 +682,12 @@ namespace NetPlan
 				else
 				{
 					item.SetDevRecordType(RecordDataType.Original);		// 下发成功的都设置为原始数据
+				}
+
+				// 收尾处理
+				if (!(bSucceed = handler.PostDeal(item)))
+				{
+					break;
 				}
 
 				Log.Debug($"类型为{devType.ToString()}，索引为{item.m_strOidIndex}的网规信息下发成功");
