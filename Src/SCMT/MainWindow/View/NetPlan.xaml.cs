@@ -2138,7 +2138,7 @@ namespace SCMTMainWindow.View
         private void NewHandler(object sender, RoutedEventArgs e)
         {
             //handle click event
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("新建网规配置文件功能正在建设中...");
         }
         /// <summary>
         /// 点击导入网规文件触发方法
@@ -2148,7 +2148,7 @@ namespace SCMTMainWindow.View
         private void ExportHandler(object sender, RoutedEventArgs e)
         {
             //handle click event
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("导入网规文件功能建设中...");
         }
         /// <summary>
         /// 点击下发网规规划触发方法
@@ -2210,7 +2210,7 @@ namespace SCMTMainWindow.View
         private void ClearHandler(object sender, RoutedEventArgs e)
         {
             //handle click event
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("清除网规数据建设中...");
         }
 
 
@@ -2262,16 +2262,16 @@ namespace SCMTMainWindow.View
         }
         private void ZoomIncreaseHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("放大画布功能建设中...");
         }
 
         private void ZoomDecreaseHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("缩小画布功能建设中...");
         }
         private void FullScreenHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("全屏功能建设中...");
         }
         private void HiddenCellHandler(object sender, RoutedEventArgs e)
         {
@@ -2296,7 +2296,7 @@ namespace SCMTMainWindow.View
         }
         private void DeleteElementHandler(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("ggggggggggggg");
+            MessageBox.Show("删除网元功能建设中...");
         }
 
         /// <summary>
