@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SCMTMainWindow.Component.ViewModel;
+using SCMTMainWindow.View;
 
 namespace SCMTMainWindow
 {
@@ -129,6 +130,47 @@ namespace SCMTMainWindow
 				this.m_Content = this.m_AllContent[val];
 			}
 		}
+    }
+
+    public class DataGrid_Cell_MIB_BIT : GridCell
+    {
+        /// <summary>
+        /// 要显示的BIT数据集合;
+        /// </summary>
+        public Dictionary<int, string> m_AllBit { get; set; }
+
+        public DataGrid_Cell_MIB_BIT()
+        {
+            m_AllBit = new Dictionary<int, string>();
+        }
+       
+        // 单元格中的对象被拖拽到另一个对象上;
+        public override void CellDragawayCallback()
+        {
+        }
+
+        // 编辑该对象时的事件回调函数;
+        public override void EditingCallback()
+        {
+            //Console.WriteLine("Editing Callback");
+            BitParaSetWindow win = new BitParaSetWindow();
+            win.InitBITShowContent(m_AllBit);
+            win.ShowDialog();
+
+            if (!win.bOK)
+                return;
+
+            m_Content = win.strBITShow;
+        }
+
+        public override void MouseMoveOnCell()
+        {
+        }
+
+        public override void SelectionCellChanged(object SelectionObj)
+        {
+            Console.WriteLine("Editing Callback");
+        }
     }
 
     public class DataGridCell_MIB_MouseEventArgs

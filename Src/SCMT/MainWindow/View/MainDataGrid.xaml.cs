@@ -111,7 +111,19 @@ namespace SCMTMainWindow.View
 
 						this.DynamicDataGrid.Columns.Add(column);
 					}
-					else
+                    else if (iter.Item3 is DataGrid_Cell_MIB_BIT)
+                    {
+                        // 当前添加的表格类型只有Text类型，应该使用工厂模式添加对应不同的数据类型;
+                        var column = new DataGridTextColumn
+                        {
+                            Header = iter.Item2,
+                            IsReadOnly = (iter.Item3 as DataGrid_Cell_MIB_BIT).m_bIsReadOnly,
+                            Binding = new Binding(iter.Item1 + ".m_Content")
+                        };
+
+                        this.DynamicDataGrid.Columns.Add(column);
+                    }
+                    else
 					{
 					}
 				}

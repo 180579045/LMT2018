@@ -72,8 +72,12 @@ namespace SCMTMainWindow
             // 如果是BIT类型的单元格;
             else if(dataType == DataGrid_CellDataType.bitType)
             {
-                var dgm = new DataGrid_Cell_MIB()
+                Dictionary<int, string> all_list = new Dictionary<int, string>();     // 获取所有要显示的值的集合;
+
+                all_list = SnmpToDatabase.ConvertSnmpValueToEnumContent(MibName, targetIP);
+                var dgm = new DataGrid_Cell_MIB_BIT()
                 {
+                    m_AllBit = all_list,
                     m_Content = SnmpToDatabase.ConvertSnmpValueToString(MibName, value, targetIP) as string,
                     oid = oid,
                     m_bIsReadOnly = SnmpToDatabase.GetReadAndWriteStatus(MibName, targetIP),
