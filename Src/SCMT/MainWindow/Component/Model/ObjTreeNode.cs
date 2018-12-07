@@ -26,6 +26,7 @@ using CommonUtility;
 using LogManager;
 using System.Windows.Media;
 using System.Linq;
+using System.Threading;
 
 namespace SCMTMainWindow
 {
@@ -505,10 +506,23 @@ namespace SCMTMainWindow
 			//msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
 		}
 
+		private void ObjTreeNode_Click(ObjNode node)
+		{
+			Thread thread = new Thread(new ParameterizedThreadStart(ttt));
+			thread.IsBackground = true;
+			thread.Start(node);
+		}
+
+		private void ttt(object obj)
+		{
+			ObjNode node = (ObjNode)obj;
+			ObjTreeNode_Click_thd(node);
+        }
+
 		/// <summary>
 		/// 点击树枝节点时的处理方法;
 		/// </summary>
-		private void ObjTreeNode_Click(ObjNode node)
+		private void ObjTreeNode_Click_thd(ObjNode node)
 		{
 			//Console.WriteLine("TreeNode Clicked to show info!");
 			var ret = new MibTable();
