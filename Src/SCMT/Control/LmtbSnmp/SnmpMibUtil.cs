@@ -251,8 +251,8 @@ namespace LmtbSnmp
 			}
 			catch (Exception e)
 			{
-				Log.Error(e.Message);
-				throw e;
+				Log.Error($"{e.Message} syntax type:{syntaxType.ToString()} value:{value} vb info:{vb}");
+				throw;
 			}
 
 			return 0;

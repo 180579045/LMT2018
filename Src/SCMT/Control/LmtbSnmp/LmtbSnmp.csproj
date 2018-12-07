@@ -51,6 +51,7 @@
     <Compile Include="LmtTrapMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SnmpControl.cs" />
+    <Compile Include="SnmpErrorParser.cs" />
     <Compile Include="SnmpHelper.cs" />
     <Compile Include="SnmpMessage.cs" />
     <Compile Include="SnmpMibUtil.cs" />
