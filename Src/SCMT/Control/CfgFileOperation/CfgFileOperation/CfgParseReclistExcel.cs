@@ -49,22 +49,8 @@ namespace CfgFileOperation
         /// <param name="strUeType"></param>
         public void ProcessingExcel(string strExcelPath, string strFileToDirectory, string strUeType, CfgOp cfgOp)
         {
-
             if ((String.Empty == strExcelPath) || (String.Empty == strFileToDirectory) || (String.Empty == strUeType) || (null == cfgOp))
                 return;
-
-            //CfgExcelOp excelOp = new CfgExcelOp();
-            //var excelOp = CfgExcelOp.GetInstance();
-            //if (excelOp == null)
-            //    return;
-
-            //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
-            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            //if (wbook == null)
-            //    return;
-
-            // 获取 lm.mdb中数据，存入内存中
-            //ProcessingMdbData(strFileToDirectory);var mibTreeMem = cfgOp.m_mibTreeMem;
 
             // 几种模式
             if (0 == String.Compare("0:默认", strUeType, true)) // 不区分大小写，相等
@@ -93,6 +79,7 @@ namespace CfgFileOperation
                 //strExcelPageArray[0] = "gNB参数表-13";
                 //strExcelPageArray[1] = "Cell参数表-14";
                 //strExcelPageArray[]={"gNB参数表-x3", "Cell参数表-y3"};
+                //ProcessingExcelUeTypeDefault();
             }
             else
             {

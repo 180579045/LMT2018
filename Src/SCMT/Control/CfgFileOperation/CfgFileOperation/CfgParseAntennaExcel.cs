@@ -121,7 +121,7 @@ namespace CfgFileOperation
         {
             vectAntArrayBfScanInfoMdb = new List<AntArrayBfScanAntWeightTabStru>();
             string strSQLAlarm = ("select  * from antennaBfScan");
-            DataSet dateSet = new CfgOp().CfgGetRecordByAccessDb(strMdbPath, strSQLAlarm);
+            DataSet dateSet = new CfgAccessDBManager().GetRecord(strMdbPath, strSQLAlarm);
 
             int dataCount = dateSet.Tables[0].Rows.Count; // 例如一个版本 2178个告警信息 0~2177
 
@@ -255,6 +255,8 @@ namespace CfgFileOperation
                 //下一种bf组合
                 nBfScanIndex++;
             }
+
+            new CfgAccessDBManager().Close(dateSet);
         }
 
         /// <summary>
