@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -43,36 +44,47 @@ namespace SCMTMainWindow.View.Controls
 				Canvas.SetLeft(dragTarget, left + deltaHorizontal);
 				Canvas.SetTop(dragTarget, top + deltaVertical);
 
+                CaptureMouse();
 
-				designer.InvalidateMeasure();
+                designer.InvalidateMeasure();
 				e.Handled = true;
 			}
         }
 
-		protected override void OnMouseDown(MouseButtonEventArgs e)
-		{
-			base.OnMouseDown(e);
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseLeftButtonDown(e);
+            CaptureMouse();
+            if (e.ClickCount == 2)
+            {
+                return;
+            }else if(e.ClickCount == 1)
+            {
+                DesignerItem designerItem = this.DataContext as DesignerItem;
+                dragTarget = new DesignerItem();
+                Grid gridContent = new Grid();
+                gridContent.Background = new SolidColorBrush(Color.FromArgb(50, 105, 105, 105));
+                dragTarget.Content = gridContent;
+                dragTarget.Width = designerItem.Width;
+                dragTarget.Height = designerItem.Height;
+                DesignerCanvas designer = VisualTreeHelper.GetParent(designerItem) as DesignerCanvas;
+                if (designerItem != null && designer != null && designerItem.IsSelected)
+                {
+                    designer.Children.Add(dragTarget);
+                    Canvas.SetLeft(dragTarget, Canvas.GetLeft(designerItem));
+                    Canvas.SetTop(dragTarget, Canvas.GetTop(designerItem));
+                }
+            }
+        }
 
-			DesignerItem designerItem = this.DataContext as DesignerItem;
-			dragTarget = new DesignerItem();
-			Grid gridContent = new Grid();
-			gridContent.Background = new SolidColorBrush(Color.FromArgb(50, 105, 105, 105));
-			dragTarget.Content = gridContent;
-			dragTarget.Width = designerItem.Width;
-			dragTarget.Height = designerItem.Height;
-			DesignerCanvas designer = VisualTreeHelper.GetParent(designerItem) as DesignerCanvas;
-			if (designerItem != null && designer != null && designerItem.IsSelected)
-			{
-				designer.Children.Add(dragTarget);
-				Canvas.SetLeft(dragTarget, Canvas.GetLeft(designerItem));
-				Canvas.SetTop(dragTarget, Canvas.GetTop(designerItem));
-			}
-		}
-
-		protected override void OnMouseUp(MouseButtonEventArgs e)
+        protected override void OnMouseUp(MouseButtonEventArgs e)
 		{
 			base.OnMouseUp(e);
-			DesignerItem designerItem = this.DataContext as DesignerItem;
+            if (IsMouseCaptured)
+            {
+                ReleaseMouseCapture();
+            }
+            DesignerItem designerItem = this.DataContext as DesignerItem;
 			DesignerCanvas designer = VisualTreeHelper.GetParent(designerItem) as DesignerCanvas;
 			if (designerItem != null && designer != null && designerItem.IsSelected && dragTarget != null)
 			{
@@ -81,5 +93,19 @@ namespace SCMTMainWindow.View.Controls
 				designer.Children.Remove(dragTarget);
 			}
 		}
-	}
+
+        protected override void OnLostMouseCapture(MouseEventArgs e)
+        {
+            base.OnLostMouseCapture(e);
+
+            DesignerItem designerItem = this.DataContext as DesignerItem;
+            DesignerCanvas designer = VisualTreeHelper.GetParent(designerItem) as DesignerCanvas;
+            if (designerItem != null && designer != null && designerItem.IsSelected && dragTarget != null)
+            {
+                Canvas.SetLeft(designerItem, Canvas.GetLeft(dragTarget));
+                Canvas.SetTop(designerItem, Canvas.GetTop(dragTarget));
+                designer.Children.Remove(dragTarget);
+            }
+        }
+    }
 }
