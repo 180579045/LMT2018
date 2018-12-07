@@ -1921,6 +1921,8 @@ namespace SCMTMainWindow.View
                         Connection newConnection = new Connection(srcConnector, dstConnector);
                         Canvas.SetZIndex(newConnection, MyDesigner.Children.Count);
                         MyDesigner.Children.Add(newConnection);
+                        newConnection.Source.PortType = linkrHUBToprru.m_srcEndPoint.portType;
+                        newConnection.Sink.PortType = linkrHUBToprru.m_dstEndPoint.portType;
 
                         for (int i = 1; i < MyDesigner.Children.Count; i++)
                         {
