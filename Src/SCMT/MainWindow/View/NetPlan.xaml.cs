@@ -2053,7 +2053,7 @@ namespace SCMTMainWindow.View
                 
                 Grid decorator = item.Template.FindName("template_Grid", item) as Grid;
                 if (decorator != null && template != null)
-                    decorator.ContextMenu.Visibility = Visibility.Hidden;
+                    decorator.ContextMenu = null;
             }
         }
 
