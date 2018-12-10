@@ -132,6 +132,12 @@ namespace SCMTMainWindow.Utils
 					oid = mibText.oid;
 					nodeOldVal = mibText.m_Content;
 				}
+                else if(typeof(DataGrid_Cell_MIB_BIT) == obj.GetType())//BIT类型
+                {
+                    DataGrid_Cell_MIB_BIT mibBIT = (DataGrid_Cell_MIB_BIT)obj;
+                    oid = mibBIT.oid;
+                    nodeOldVal = mibBIT.m_Content;
+                }
 				// 值
 				if (enName2Value.ContainsKey(mibNameEn))
 				{
@@ -216,6 +222,11 @@ namespace SCMTMainWindow.Utils
 					DataGrid_Cell_MIB mibText = (DataGrid_Cell_MIB)item.Value;
 					mibValue = mibText.m_Content;
 				}
+                else if(typeof(DataGrid_Cell_MIB_BIT) == item.Value.GetType())//BIT类型
+                {
+                    DataGrid_Cell_MIB_BIT mibText = (DataGrid_Cell_MIB_BIT)item.Value;
+                    mibValue = mibText.m_Content;
+                }
 
 				enName2Value.Add(mibNameEn, mibValue);
 			}
