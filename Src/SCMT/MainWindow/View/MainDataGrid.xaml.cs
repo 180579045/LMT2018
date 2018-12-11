@@ -85,7 +85,7 @@ namespace SCMTMainWindow.View
 						column.Header = iter.Item2;                                      // 填写列名称;
 						column.CellTemplate = TextBlockTemplate;                         // 将单元格的显示形式赋值;
 						column.CellEditingTemplate = ComboBoxTemplate;                   // 将单元格的编辑形式赋值;
-						column.Width = 230;                                              // 设置显示宽度;
+						//column.Width = 230;                                              // 设置显示宽度;
 						column.IsReadOnly = (iter.Item3 as DataGrid_Cell_MIB_ENUM).m_bIsReadOnly;
 
 						this.DynamicDataGrid.Columns.Add(column);
@@ -107,7 +107,7 @@ namespace SCMTMainWindow.View
 
 						column.Header = iter.Item2;                               // 填写列名称;
 						column.CellTemplate = template;                           // 将单元格的显示形式赋值;
-						column.Width = 230;                                       // 设置显示宽度;
+						//column.Width = 230;                                       // 设置显示宽度;
 
 						this.DynamicDataGrid.Columns.Add(column);
 					}
