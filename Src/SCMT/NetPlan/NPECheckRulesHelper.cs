@@ -11,6 +11,7 @@ using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Dynamic.Core;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
 
 namespace NetPlan
 {
@@ -25,10 +26,10 @@ namespace NetPlan
     public class NetPlanCheckRules
     {
         public string versionId;
-        public List<BaseCheckRule> _netRRUCheck;
         public List<BaseCheckRule> _netBoardCheck;
-        public List<BaseCheckRule> _netAntennaArrayCheck;
         public List<BaseCheckRule> _netRHUBCheck;
+        public List<BaseCheckRule> _netRRUCheck;
+        public List<BaseCheckRule> _netAntennaArrayCheck;
         public List<BaseCheckRule> _netIROptPlanCheck;
         public List<BaseCheckRule> _netEthPlanCheck;
         public List<BaseCheckRule> _netPRRUCheck;
@@ -57,12 +58,12 @@ namespace NetPlan
     public class NPEMibData
     {
         public List<DevAttributeInfo> _netBoard;
-        public List<DevAttributeInfo> _netAntennaArray;
+        public List<DevAttributeInfo> _netAntennaArray;//rru_ant
         public List<DevAttributeInfo> _netRRU;
         public List<DevAttributeInfo> _netRRUAntennaSetting;
-        public List<DevAttributeInfo> _netIROptPlan;
+        public List<DevAttributeInfo> _netIROptPlan;//board_rru
         public List<DevAttributeInfo> _netRHUB;
-        public List<DevAttributeInfo> _netEthPlan;
+        public List<DevAttributeInfo> _netEthPlan;//rhub_prru
         public List<DevAttributeInfo> _nrNetLocalCell;
         public List<DevAttributeInfo> _netLocalCell;
         public List<DevAttributeInfo> _nrNetLocalCellCtrl;
@@ -71,6 +72,8 @@ namespace NetPlan
         public List<DevAttributeInfo> _nrCell;
         public List<DevAttributeInfo> _localCell;
         public List<DevAttributeInfo> _cell;
+        //public List<DevAttributeInfo> _netIROptPlan_boardrhub;//board_rhub
+        //public List<DevAttributeInfo> _netRRUAntennaSetting_prruant;//prru_ant
 
         public NPEMibData()
         {
@@ -119,7 +122,7 @@ namespace NetPlan
         private NPELibData _npedata_lib;
         //json文件中所有的校验规则
         private NetPlanCheckRules _allRules;
-        private string _equipType_this;
+        private int _equipType_this;
         private Dictionary<string, Object> _dicDatasrcUIPara;//key为规则中的数据来源名，value为UI参数
         private Dictionary<string, List<BaseCheckRule>> _sequence;//校验顺序
         private Dictionary<string, List<DevAttributeInfo>> _dicRuleNameUIPara;//key为规则类名,value为对应要校验的UI参数
@@ -241,9 +244,6 @@ namespace NetPlan
             npeMibData._netBoard = mapMib.ContainsKey(EnumDevType.board)
                 ? mapMib[EnumDevType.board]
                 : new List<DevAttributeInfo>();
-            npeMibData._netBoard = mapMib.ContainsKey(EnumDevType.board)
-                ? mapMib[EnumDevType.board]
-                : new List<DevAttributeInfo>();
             npeMibData._netAntennaArray = mapMib.ContainsKey(EnumDevType.ant)
                 ? mapMib[EnumDevType.ant]
                 : new List<DevAttributeInfo>();
@@ -253,9 +253,25 @@ namespace NetPlan
             npeMibData._netRRUAntennaSetting = mapMib.ContainsKey(EnumDevType.rru_ant)
                 ? mapMib[EnumDevType.rru_ant]
                 : new List<DevAttributeInfo>();
+            //prru_ant
+            if (mapMib.ContainsKey(EnumDevType.prru_ant))
+            {
+                foreach (var tmp in mapMib[EnumDevType.prru_ant])
+                {
+                    npeMibData._netRRUAntennaSetting.Add(tmp);
+                }
+            }
             npeMibData._netIROptPlan = mapMib.ContainsKey(EnumDevType.board_rru)
                 ? mapMib[EnumDevType.board_rru]
                 : new List<DevAttributeInfo>();
+            //board_rhub
+            if (mapMib.ContainsKey(EnumDevType.board_rhub))
+            {
+                foreach (var tmp in mapMib[EnumDevType.board_rhub])
+                {
+                    npeMibData._netIROptPlan.Add(tmp);
+                }
+            }
             npeMibData._netRHUB = mapMib.ContainsKey(EnumDevType.rhub)
                 ? mapMib[EnumDevType.rhub]
                 : new List<DevAttributeInfo>();
@@ -304,7 +320,7 @@ namespace NetPlan
             var jsonContent = FileRdWrHelper.GetFileContent(path, Encoding.UTF8);
             _allRules = JsonHelper.SerializeJsonToObject<NetPlanCheckRules>(jsonContent);
         }
-        public NPECheckRulesHelper(MAP_DEVTYPE_DEVATTRI mapMib_this, string equipType)
+        public NPECheckRulesHelper(MAP_DEVTYPE_DEVATTRI mapMib_this, int equipType)
         {
             _npedata_this = new NPEMibData();
             _npedata_lib = new NPELibData();
@@ -318,6 +334,8 @@ namespace NetPlan
             InitLibData();
             //获取校验规则
             InitCheckRulesData();
+            //设置校验顺序
+            SetSequence();
             //映射关系,遍历查询时的集合名会使用到
             SetMapOfDatasrcAndPara();
             SetMapOfRulesNameAndPara();
@@ -369,6 +387,11 @@ namespace NetPlan
             {
                 //初步过滤，认为非关键词开头的变量名，真实的对应是一个值，而不是变量名,不需要填写到propertyValueDic中
                 if (!IsValidParaName(name))
+                {
+                    continue;
+                }
+                //参数名有可能重复进行去重保护
+                if (propertyValueDic.ContainsKey(name))
                 {
                     continue;
                 }
