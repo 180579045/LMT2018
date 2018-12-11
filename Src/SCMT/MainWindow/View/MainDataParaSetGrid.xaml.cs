@@ -151,10 +151,11 @@ namespace SCMTMainWindow.View
 			ObservableCollection<DyDataGrid_MIBModel> datalist = new ObservableCollection<DyDataGrid_MIBModel>();
 			datalist = (ObservableCollection<DyDataGrid_MIBModel>)this.DynamicParaSetGrid.DataContext;
 
+            Dictionary<string, object> lineData = new Dictionary<string, object>();
             if (m_operType != 0)//添加修改
             {
-				// Mib值校验
-				foreach (DyDataGrid_MIBModel mm in datalist)
+                // Mib值校验
+                foreach (DyDataGrid_MIBModel mm in datalist)
 				{
 					string strMibVal = null;
 					var cell = mm.Properties["ParaValue"] as GridCell;
@@ -196,21 +197,19 @@ namespace SCMTMainWindow.View
 					}
 				}
 
-				//将右键菜单列表内容转换成与基本信息列表格式相同结构
-				dynamic model = new DyDataGrid_MIBModel();
                 // 索引
                 int indexGrade = 0;
                 string strIndex = "";
-                m_MainDataGrid.ConvertToDataModel(datalist, ref indexGrade,ref strIndex, ref model, true);
+                m_MainDataGrid.ModelConvertToDic(datalist, ref indexGrade, ref strIndex, ref lineData,true);
 
                 if (m_CmdDataList.Count > 0)
                 {
-                    m_MainDataGrid.ConvertToDataModel(m_CmdDataList, ref indexGrade, ref strIndex, ref model, false);
+                    m_MainDataGrid.ModelConvertToDic(m_CmdDataList, ref indexGrade, ref strIndex, ref lineData, false);
                 }
 
                 // 像基站下发添加指令
                 CDTLmtbPdu lmtPdu = new CDTLmtbPdu();
-                if (!m_MainDataGrid.AddAndModifyCmd(model, ref lmtPdu))
+                if (!m_MainDataGrid.AddAndModifyCmd(lineData, ref lmtPdu))
                     return;           
                              
                 // 判读SNMP响应结果

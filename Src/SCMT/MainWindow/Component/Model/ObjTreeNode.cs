@@ -556,6 +556,11 @@ namespace SCMTMainWindow
 					continue;
 				}
 
+                if(iter.ASNType.Equals("RowStatus"))
+                {
+                    continue;
+                }
+
 				// 保存中文名称等信息
 				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
 				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
@@ -765,8 +770,13 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				// 保存中文名称等信息
-				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+                if (iter.ASNType.Equals("RowStatus"))
+                {
+                    continue;
+                }
+
+                // 保存中文名称等信息
+                name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
 				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
 				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
 			}
