@@ -5,27 +5,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LogManager;
 
 namespace NetPlan.Tests
 {
     [TestClass()]
     public class ReversePolishNotationTests
     {
+        public ReversePolishNotationTests()
+        {
+            Log.SetLogFileName("ReversePolishNotationTests.log");
+        }
+
         [TestMethod()]
         public void getOpeLevelTest()
         {
             Dictionary<string, int> sign = new Dictionary<string, int>();
             sign.Add("(", 1);
-            sign.Add(")", 9);
-            sign.Add("#", 10);
+            sign.Add(")", 1);
+            sign.Add("#", 0);
             sign.Add("<", 5);
             sign.Add(">", 5);
             sign.Add("<=", 5);
             sign.Add(">=", 5);
-            sign.Add("==", 6);
-            sign.Add("!=", 6);
-            sign.Add("&&", 7);
-            sign.Add("||", 8);
+            sign.Add("==", 4);
+            sign.Add("!=", 4);
+            sign.Add("&&", 3);
+            sign.Add("||", 2);
+            sign.Add("Contains", 9);
             sign.Add("~", -1);
             foreach (var tmp in sign)
             {
@@ -81,10 +88,10 @@ namespace NetPlan.Tests
         [TestMethod()]
         public void CalculateSignExprTest()
         {
-            string[] opera1 = { "2", "9", "9", true.ToString(), false.ToString(), false.ToString(), true.ToString(), "2", "2", "16", "16", "2", "2", false.ToString(), "4" };
-            string[] opera2 = { "8", "4", "4", false.ToString(), false.ToString(), true.ToString(), true.ToString(), "1", "2", "1", "16", "2", "-2", true.ToString(), "1" };
-            string[] sign = { "*", "/", "%", "||", "||", "&&", "&&", "==", "==", "<", ">=", "+", "-", "!=", ">>" };
-            string[] rightRes = { "16", "2", "1", true.ToString(), false.ToString(), false.ToString(), true.ToString(), false.ToString(), true.ToString(), false.ToString(), true.ToString(), "4", "4", true.ToString(), "2" };
+            string[] opera1 = { "2", "9", "9", true.ToString(), false.ToString(), false.ToString(), true.ToString(), "2", "2", "16", "16", "2", false.ToString(), "4" };
+            string[] opera2 = { "8", "4", "4", false.ToString(), false.ToString(), true.ToString(), true.ToString(), "1", "2", "1", "16", "2", true.ToString(), "1" };
+            string[] sign = { "*", "/", "%", "||", "||", "&&", "&&", "==", "==", "<", ">=", "+", "!=", ">>" };
+            string[] rightRes = { "16", "2", "1", true.ToString(), false.ToString(), false.ToString(), true.ToString(), false.ToString(), true.ToString(), false.ToString(), true.ToString(), "4", true.ToString(), "2" };
             for (int loop = 0; loop < sign.Length; loop++)
             {
                 string res = ReversePolishNotation.CalculateSignExpr(opera1[loop], opera2[loop], sign[loop]);
@@ -224,7 +231,7 @@ namespace NetPlan.Tests
         {
             //鉴于与CalculatePolishExp是一样的，只是入参有点区别，故不做太多测试
             bool res;
-            Dictionary<string, string> paraValueDic = new Dictionary<string, string>();
+            Dictionary<string, object> paraValueDic = new Dictionary<string, object>();
             string exprResult;
             string expr = "where all";
             res = ReversePolishNotation.CalculatePolishExp(expr, paraValueDic, out exprResult);
@@ -248,6 +255,31 @@ namespace NetPlan.Tests
             res = ReversePolishNotation.CalculatePolishExp(expr, paraValueDic, out exprResult);
             Assert.IsTrue(res == true);
             Assert.IsTrue(exprResult == true.ToString());
+
+            //验证Contains
+            expr = "query1 Contains 2";
+            List<string> list1 = new List<string> { "3", "5", "18", "2" };
+            paraValueDic.Add("query1", list1);
+            res = ReversePolishNotation.CalculatePolishExp(expr, paraValueDic, out exprResult);
+            Assert.IsTrue(res == true);
+        }
+
+        [TestMethod()]
+        public void CalculateSignExprTest1()
+        {
+            List<string> list1 = new List<string> {"3", "5", "18", "2"};
+            string para2 = "18";
+            string res = ReversePolishNotation.CalculateSignExpr(list1, para2, "Contains");
+            Assert.IsTrue(res == true.ToString());
+
+            para2 = "1";
+            res = ReversePolishNotation.CalculateSignExpr(list1, para2, "Contains");
+            Assert.IsTrue(res == false.ToString());
+
+            List<int> listint = new List<int> { 3,5,18,2 };
+            para2 = "1";
+            res = ReversePolishNotation.CalculateSignExpr(listint, para2, "Contains");
+            Assert.IsTrue(string.IsNullOrEmpty(res));
         }
     }
 }

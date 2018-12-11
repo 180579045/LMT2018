@@ -21,13 +21,54 @@ namespace CfgFileOperation
     {
         static void Main(string[] args)
         {
-            new Test().CmdlineCreateInitPatch(args);
 
-            var te = CfgExcelOp.GetInstance();
-            
+            //string d = Console.ReadLine();
+            int cmdNo = -1;
+            foreach (var arg in args)
+            {
+                Console.WriteLine(String.Format(" arg:({0})", arg));
+                int pos = arg.ToString().IndexOf(':');// arg.ToString().IndexOfAny("Command".ToCharArray());
+                if (-1 == pos)
+                    continue;
+
+                string strKey = arg.ToString().Substring(0, pos);
+                string strVal = arg.ToString().Substring(pos + 1);
+                // 命令行
+                if (String.Equals(strKey, "Command"))
+                {
+                    // beyond compare : 比较 两个文件
+                    if (string.Equals(strVal, "BeyondCompare"))
+                    {
+                        cmdNo = 1;
+                        TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
+                        //initPath.Main();
+                        initPath.BeyondCompareInitCfgMain(args);
+                        break;
+                    }
+                    // 命令行生成init
+                    else if (string.Equals(strVal, "Cmdline"))
+                    {
+                        cmdNo = 2;
+                        new Test().CmdlineCreateInitPatch(args);
+                        break;
+                    }
+                    else if (string.Equals(strVal, "BeyondComparePatch"))
+                    {
+                        cmdNo = 3;
+                        break;
+                    }
+                    else
+                    {
+                        cmdNo = 4;
+                        break;
+                    }
+                }
+            }
+            Console.WriteLine(String.Format("cmdno={0}.",cmdNo));
+            //new Test().CmdlineCreateInitPatch(args);
 
             //TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
-            //initPath.Main();
+            ////initPath.Main();
             //initPath.BeyondCompareInitCfgMain();
             //Log.Error("解析板卡到rru的连接，信息缺失");
             //Test test = new Test();
@@ -852,7 +893,7 @@ namespace CfgFileOperation
             // 表内容
             string strSQL = String.Format(
                 "select * from MibTree where MIBName='{0}' and DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine", table);
-            DataSet TableMibdateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL);
+            DataSet TableMibdateSet = new CfgAccessDBManager().GetRecord(dataBasePath + dataMdbPath, strSQL);
             DataRow TableRow = TableMibdateSet.Tables[0].Rows[0];
             string strTableName = TableRow["MIBName"].ToString().Trim(' ');
             if (!String.Equals(strTableName, table))
@@ -865,7 +906,7 @@ namespace CfgFileOperation
             // 叶子节点
             string strSQL2 = String.Format(
                 "select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", tableOid);
-            DataSet MibLeafsDateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL2);
+            DataSet MibLeafsDateSet = new CfgAccessDBManager().GetRecord(dataBasePath + dataMdbPath, strSQL2);
             int childcount = MibLeafsDateSet.Tables[0].Rows.Count;
             if (childcount == 0)
             {
@@ -884,6 +925,9 @@ namespace CfgFileOperation
                     indexLeafsName.Add(strleafName);
                 }
             }
+
+            new CfgAccessDBManager().Close(TableMibdateSet);
+            new CfgAccessDBManager().Close(MibLeafsDateSet);
             return indexLeafsName;
         }
         List<StruCfgFileFieldInfo> TestGetIndexLeafInfo(string table, Dictionary<string, StruCfgFileFieldInfo> LeafHead)
@@ -896,7 +940,7 @@ namespace CfgFileOperation
             // 表内容
             string strSQL = String.Format(
                 "select * from MibTree where MIBName='{0}' and DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine", table);
-            DataSet TableMibdateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL);
+            DataSet TableMibdateSet = new CfgAccessDBManager().GetRecord(dataBasePath + dataMdbPath, strSQL);
             DataRow TableRow = TableMibdateSet.Tables[0].Rows[0];
             string strTableName = TableRow["MIBName"].ToString().Trim(' ');
             if (!String.Equals(strTableName, table))
@@ -909,7 +953,7 @@ namespace CfgFileOperation
             // 叶子节点
             string strSQL2 = String.Format(
                 "select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", tableOid);
-            DataSet MibLeafsDateSet = CfgGetRecordByAccessDb(dataBasePath + dataMdbPath, strSQL2);
+            DataSet MibLeafsDateSet = new CfgAccessDBManager().GetRecord(dataBasePath + dataMdbPath, strSQL2);
             int childcount = MibLeafsDateSet.Tables[0].Rows.Count;
             if (childcount == 0)
             {
@@ -937,25 +981,27 @@ namespace CfgFileOperation
                     indexLeafsInfo.Add(LeafHead[leaf]);
                 }
             }
-            
+
+            new CfgAccessDBManager().Close(TableMibdateSet);
+            new CfgAccessDBManager().Close(MibLeafsDateSet);
             return indexLeafsInfo;
         }
-        public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
-        {
-            DataSet dateSet = new DataSet();
-            AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
-            try
-            {
-                mdbData.Open();
-                dateSet = mdbData.GetDataSet(sqlContent);
-                mdbData.Close();
-            }
-            finally
-            {
-                mdbData = null;
-            }
-            return dateSet;
-        }
+        //public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
+        //{
+        //    DataSet dateSet = new DataSet();
+        //    AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
+        //    try
+        //    {
+        //        mdbData.Open();
+        //        dateSet = mdbData.GetDataSet(sqlContent);
+        //        mdbData.Close();
+        //    }
+        //    finally
+        //    {
+        //        mdbData = null;
+        //    }
+        //    return dateSet;
+        //}
         /// <summary>
         /// 获取表的所有实例
         /// </summary>
@@ -1583,12 +1629,14 @@ namespace CfgFileOperation
         /// <param name="paths"></param>
         void CmdlineCreateInitPatch(string[] args)
         {
-            FileStream fs = new FileStream("WriteInitPatchLog.txt", FileMode.Create);
+            string time = DateTime.Now.ToString("yyyyMMddHHmmss");
+            string fileName = string.Format("LogInitPatch_{0}.txt", time);
+            FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
             //实例化BinaryWriter
-            BinaryWriter bw = new BinaryWriter(fs);
 
-            bw.Write(String.Format("Cmdline CreateInitPatch Start... Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")));
-            Console.WriteLine(String.Format("....testCmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            BinaryWriter bw = new BinaryWriter(fs, Encoding.Default,true);
+            bw.Write(String.Format("Cmdline CreateInitPatch Start... Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
+            Console.WriteLine(String.Format("....CmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
             try
             {
@@ -1605,25 +1653,28 @@ namespace CfgFileOperation
                             string key = par_str.Substring(0, pos);
                             string val = par_str.Substring(pos + 1);
                             path.Add(key, val);
-                            bw.Write(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val));
+                            bw.Write(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val).ToArray());
                         }
                     }
                     new CfgOp().CreatePatchAndInitCfg(bw, path);
                 }
                 else
                 {
-                    bw.Write(String.Format("\nCmdline CreateInitPatch Err: need input par"));
+                    bw.Write(String.Format("\nCmdline CreateInitPatch Err: need input par.\n").ToArray());
                     Console.WriteLine(" need input par...");
                 }
             }
+            //catch
+            //{
+            //    //CfgExcelOp.GetInstance().Dispose();
+            //    bw.Write(String.Format("Cmdline CreateInitPatch Err. Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
+            //}
             finally
             {
                 CfgExcelOp.GetInstance().Dispose();
             }
-
-
-            
-            Console.WriteLine(String.Format("....testCmdlineCreateInitPatch End. Time is ")+ DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            bw.Write(String.Format("Cmdline CreateInitPatch End. Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
+            Console.WriteLine(String.Format("....testCmdlineCreateInitPatch End. Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
             //清空缓冲区
             bw.Flush();
@@ -1691,7 +1742,7 @@ namespace CfgFileOperation
         {
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             CfgParseDBMibTreeToMemory mibTree = new CfgParseDBMibTreeToMemory();
-            mibTree.ReadMibTreeToMemory(strFileToDirectory);
+            ///mibTree.ReadMibTreeToMemory(null,strFileToDirectory);
             int a = 1;
         }
 

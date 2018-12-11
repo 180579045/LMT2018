@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using LogManager;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NetPlan;
 using System;
 using System.Collections.Generic;
@@ -28,14 +29,18 @@ namespace NetPlan.Tests
     [TestClass()]
     public class CommCheckRuleHelperTests
     {
+        public CommCheckRuleHelperTests()
+        {
+            Log.SetLogFileName("CommCheckRuleHelperTests.log");
+        }
         [TestMethod()]
         public void GetParaByQueryExprTest5()
         {
-            AttributeInfoT boardAtt = new AttributeInfoT(EnumDevType.board,1);
+            AttributeInfoT boardAtt = new AttributeInfoT(EnumDevType.board, 1);
             MibLeafNodeInfo leafNode = new MibLeafNodeInfo();
             leafNode.m_strOriginValue = "1";
             leafNode.m_strLatestValue = "5";
-            boardAtt.m_mapAttributes.Add("rowStatus",leafNode);
+            boardAtt.m_mapAttributes.Add("rowStatus", leafNode);
             leafNode = new MibLeafNodeInfo();
             leafNode.m_strOriginValue = "2";
             leafNode.m_strLatestValue = "6";
@@ -163,7 +168,7 @@ namespace NetPlan.Tests
         {
             string expr = " where cur.board.rowStatus == 4";
             string calRes;
-            Dictionary<string, string> paraDic = new Dictionary<string, string>();
+            Dictionary<string, object> paraDic = new Dictionary<string, object>();
             paraDic.Add("cur.board.rowStatus", "6");
             bool res = CommCheckRuleHelper.CalculateConditionExpr(expr, paraDic, out calRes);
             Assert.IsTrue(res == true);
@@ -214,7 +219,7 @@ namespace NetPlan.Tests
             string expr = " select it";
             int length;
             int res = CommCheckRuleHelper.GetIndex(expr, "select ", out length);
-            Assert.IsTrue(res == 0);
+            Assert.IsTrue(res == 1);
             Assert.IsTrue(length == 7);
 
             res = CommCheckRuleHelper.GetIndex(expr, "where ", out length);
@@ -274,7 +279,7 @@ namespace NetPlan.Tests
             splitDic.Add("wherePart", "where it.netBoardRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netBoardShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo");
             splitDic.Add("fromPart", "from it in mib.netBoardEntry");
             bool res = CommCheckRuleHelper.GetParaByQueryExpr(splitDic, out paraDic);
-            Assert.IsTrue(res == false);
+            Assert.IsTrue(res == true);
         }
 
         [TestMethod()]
@@ -327,7 +332,7 @@ namespace NetPlan.Tests
             //OK:round==@0 && rules.Contains (@1)
             //strWhere.AppendFormat("round==@0 && rules.Contains (@1)", id, r);
             //strWhere.AppendFormat("&& rules == @{0}", @"where this.netLocalCellCtrlEntry.lcid ==0");
-            paramList.Add(r);
+            //paramList.Add(r);
             //select ok:it.rules, rules,new(rules, round)
             var list = roundRuleList.AsQueryable().Where(strWhere.ToString(), paramList.ToArray()).Select("it");
             //如果不是新建一个对象来查询结果，可以直接var使用；否则需要使用dynamic tmp in list的方式 
@@ -338,14 +343,14 @@ namespace NetPlan.Tests
         [TestMethod()]
         public void GetFilterWhereTest3()
         {
-            //缺少参数值
+            //缺少参数值，该函数不做保护~~
             string expr = "where it.netBoardRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netBoardShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo";
             Dictionary<string, object> paraValueDic = new Dictionary<string, object>();
             paraValueDic.Add("cur.netIROptPlanEntry.netIROfpPortRackNo", 0);
             paraValueDic.Add("cur.netIROptPlanEntry.netIROfpPortShelfNo", 0);
             List<object> paramList;
             string res = CommCheckRuleHelper.GetFilterWhere(expr, paraValueDic, out paramList);
-            Assert.IsNull(res);
+            Assert.IsTrue(res == "where it.netBoardRackNo == @0 && it.netBoardShelfNo == @1 && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo");
         }
 
         [TestMethod()]
@@ -375,5 +380,22 @@ namespace NetPlan.Tests
             Assert.IsTrue(res == false);
         }
 
+        [TestMethod()]
+        public void GetFilterWhereTest4()
+        {
+            //12.3对于Contains进行转换
+            Dictionary<string, object> paraDic = new Dictionary<string, object>();
+            List<string> cellList = new List<string> {"1","3","5"};
+            paraDic.Add("query1", cellList);
+            paraDic.Add("it.id", "1");
+            string wherePart = "query1 Contains it.id";
+            List<object> paramList;
+            string res = CommCheckRuleHelper.GetFilterWhere(wherePart, paraDic, out paramList);
+            Assert.IsTrue(res.Equals("@0.Contains (it.id)"));
+
+            wherePart = "(query1 Contains it.id) && (it.id != -1)";            
+            res = CommCheckRuleHelper.GetFilterWhere(wherePart, paraDic, out paramList);
+            Assert.IsTrue(res.Equals("(@0.Contains (it.id)) && (it.id != -1)"));
+        }
     }
 }

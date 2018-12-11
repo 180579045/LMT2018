@@ -1921,6 +1921,8 @@ namespace SCMTMainWindow.View
                         Connection newConnection = new Connection(srcConnector, dstConnector);
                         Canvas.SetZIndex(newConnection, MyDesigner.Children.Count);
                         MyDesigner.Children.Add(newConnection);
+                        newConnection.Source.PortType = linkrHUBToprru.m_srcEndPoint.portType;
+                        newConnection.Sink.PortType = linkrHUBToprru.m_dstEndPoint.portType;
 
                         for (int i = 1; i < MyDesigner.Children.Count; i++)
                         {
@@ -2053,7 +2055,7 @@ namespace SCMTMainWindow.View
                 
                 Grid decorator = item.Template.FindName("template_Grid", item) as Grid;
                 if (decorator != null && template != null)
-                    decorator.ContextMenu.Visibility = Visibility.Hidden;
+                    decorator.ContextMenu = null;
             }
         }
 

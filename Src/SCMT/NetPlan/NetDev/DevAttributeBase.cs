@@ -66,18 +66,14 @@ namespace NetPlan
 				return;
 			}
 
-
+		    m_mapAttributes = attributes;
+            //添加行状态
 			var rsMl = tbl.GetRowStatusMibName();
-			if (null == rsMl)
+			if (null != rsMl)
 			{
-				return;
-			}
-
-			m_mapAttributes = attributes;
-			m_strRsMibName = rsMl.childNameMib;
-
-			AddRowStatusToAttributeMap(rsMl, "6");
-
+			    m_strRsMibName = rsMl.childNameMib;
+			    AddRowStatusToAttributeMap(rsMl, "6");
+            }
 			// 还需要加上索引列
 			if (indexGrade > 0)
 			{
@@ -454,7 +450,8 @@ namespace NetPlan
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
 				var info = new MibLeafNodeInfo
 				{
-					m_strOriginValue = indexVale,
+				    m_strLatestValue = indexVale,//索引不会变化，将m_strLatestValue赋值
+                    m_strOriginValue = indexVale,
 					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
 					m_bVisible = true,
 					mibAttri = indexColumn

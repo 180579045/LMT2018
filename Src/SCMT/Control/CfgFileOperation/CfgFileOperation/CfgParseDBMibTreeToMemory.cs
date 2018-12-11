@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using MIBDataParser.JSONDataMgr;
+using System.IO;
 
 namespace CfgFileOperation
 {
@@ -22,16 +23,25 @@ namespace CfgFileOperation
             
         }
         
-        public void ReadMibTreeToMemory(string strFileToDirectory)
+        /// <summary>
+        /// patch 需要再次加载 数据库
+        /// </summary>
+        /// <param name="strFileToDirectory"></param>
+        public void ReadMibTreeToMemory(BinaryWriter bw, string strFileToDirectory)
         {
             //string strFileToDirectory = "";
-            strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
-
+            //strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string strSQL = "select * from MibTree order by ExcelLine";// ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
             // 连接数据库，获取信息
-            DataSet MibdateSet = RecordByAccessDb(strFileToDirectory, strSQL);
+            DataSet MibdateSet = new CfgAccessDBManager().GetRecord(strFileToDirectory, strSQL);
+            if (null == MibdateSet)
+            {
+                bw.Write(String.Format("path({0}), sql({1}) Get Mdb err.\n", strFileToDirectory, strSQL).ToArray());
+                return;
+            }
             // 处理重组信息
             ParseProcessing(MibdateSet);
+            new CfgAccessDBManager().Close(MibdateSet);
         }
 
         /// <summary>
@@ -69,22 +79,31 @@ namespace CfgFileOperation
         /// <param name="fileName"></param>
         /// <param name="sqlContent"></param>
         /// <returns></returns>
-        private DataSet RecordByAccessDb(string fileName, string sqlContent)
-        {
-            DataSet dateSet = new DataSet();
-            AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
-            try
-            {
-                mdbData.Open();
-                dateSet = mdbData.GetDataSet(sqlContent);
-                mdbData.Close();
-            }
-            finally
-            {
-                mdbData = null;
-            }
-            return dateSet;
-        }
+        //private DataSet RecordByAccessDb(string fileName, string sqlContent)
+        //{
+        //    DataSet dateSet = null;
+        //    AccessDBManager mdbData = null;//fileName = "D:\\C#\\SCMT\\lm.mdb";
+        //    try
+        //    {
+        //        dateSet = new DataSet();
+        //        mdbData = new AccessDBManager(fileName);
+
+        //        mdbData.Open();
+        //        dateSet = mdbData.GetDataSet(sqlContent);
+        //        mdbData.Close();
+        //    }
+        //    catch
+        //    {
+        //        dateSet = null;
+        //        mdbData = null;
+        //        Console.WriteLine(String.Format("RecordByAccessDb err, fileName({0}), sqlContent({1})", fileName, sqlContent));
+        //    }
+        //    finally
+        //    {
+        //        mdbData = null;
+        //    }
+        //    return dateSet;
+        //}
 
         // 解析处理
         private void ParseProcessing(DataSet MibdateSet)

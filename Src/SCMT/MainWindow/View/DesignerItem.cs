@@ -155,6 +155,8 @@ namespace SCMTMainWindow.View
         protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
         {
             base.OnPreviewMouseDown(e);
+            if (this.DevType == EnumDevType.board)
+                return;
             DesignerCanvas designer = VisualTreeHelper.GetParent(this) as DesignerCanvas;
 
             // update selection
@@ -222,6 +224,11 @@ namespace SCMTMainWindow.View
                     {
                         targetItem.Visibility = Visibility.Hidden;
                     }
+                    Control targetResize = this.Template.FindName("PART_ResizeDecorator", this) as Control;
+                    if (targetResize != null)
+                    {
+                        targetResize.Visibility = Visibility.Hidden;
+                    }                    
 
                         return;
                 }

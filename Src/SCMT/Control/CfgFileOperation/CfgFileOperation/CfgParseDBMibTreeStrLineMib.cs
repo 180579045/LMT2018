@@ -419,12 +419,25 @@ namespace CfgFileOperation
         USERPRIVILEGE GetEnumMibVisibleLevel(DataRow row)
         {
             string nVisibleLevel = row["ICFWriteAble"].ToString();
-            if (String.Empty != nVisibleLevel)//if (!rs.GetCollect("ICFWriteAble", nVisibleLevel))
+            if (String.Empty == nVisibleLevel)//if (!rs.GetCollect("ICFWriteAble", nVisibleLevel))
             {
                 return USERPRIVILEGE.USERPRIVILEGE_UNKNOWN;//如果没有找到该节点，则默认为最低级别也能看到
             }
             else
-                return (USERPRIVILEGE)int.Parse(nVisibleLevel);
+            {
+                USERPRIVILEGE a ;
+                try
+                {
+                    a = (USERPRIVILEGE)int.Parse(nVisibleLevel);
+                    return a;
+                }
+                catch
+                {
+                    a = USERPRIVILEGE.USERPRIVILEGE_UNKNOWN;
+                }
+                return a;
+            }
+                
         }
 
     }

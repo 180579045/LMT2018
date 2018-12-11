@@ -102,8 +102,14 @@ namespace NetPlan
         }
 
         //条件语句，使用波兰表达式计算
-        public static bool CalculateConditionExpr(String expr, Dictionary<string, string> paraValueDic, out string exprResult)
+        public static bool CalculateConditionExpr(String expr, Dictionary<string, object> paraValueDic, out string exprResult)
         {
+            //进行简单的保护，以where开头
+            if (!expr.Trim().StartsWith("where"))
+            {
+                exprResult = "";
+                return false;
+            }
             //去除where头，保留纯表达式
             expr = expr.Trim().Substring("where".Length);
             return ReversePolishNotation.CalculatePolishExp(expr, paraValueDic, out exprResult);
@@ -133,11 +139,7 @@ namespace NetPlan
                 splitDic.Add("wherePart", wherePart);
                 rulesInfo = rulesInfo.Substring(0, index);
             }
-            else
-            {
-                Log.Error("the rules must have from word!");
-                return false;
-            }
+            
             index = GetIndex(rulesInfo, "from ", out length);
             if (-1 == index)
             {
@@ -172,7 +174,7 @@ namespace NetPlan
                 return false;
             }
             int length;
-            int index = GetIndex(fromPart, "in ", out length);
+            int index = GetIndex(fromPart, " in ", out length);
             List<string> fromList = new List<string>();
             fromList.Add(fromPart.Substring(index + length).Trim(' '));
             paraDic.Add("fromParaList", fromList);
@@ -280,7 +282,7 @@ namespace NetPlan
             paraDic.Add("selectParaList", selectList);
             return true;
         }
-        public static string GetFilterWhere(string wherePart, Dictionary<string, Object> paraValueDic, out List<Object> paramList)
+        public static string GetFilterWhere(string wherePart, Dictionary<string, Object> paraValueDic, out List<object> paramList)
         {
             StringBuilder strBuilder = new StringBuilder();
             string exptr = wherePart;
@@ -304,11 +306,6 @@ namespace NetPlan
             {
                 if (!ReversePolishNotation.IsOperator(keyWord))
                 {
-                    //纯数值，例如 this.rowStatus = 4中的4
-                    if (-1 == keyWord.IndexOf('.'))
-                    {
-                        continue;
-                    }
                     //如果是以it.开头的参数名，表示是遍历的元素，也是不需要获取参数值的
                     if (keyWord.StartsWith("it."))
                     {
@@ -318,15 +315,56 @@ namespace NetPlan
                     object dataValue;
                     if (!paraValueDic.TryGetValue(keyWord, out dataValue))
                     {
+                        //说明是纯数值，不需要进行转换
+                        continue;
+                    }
+                    int length;
+                    int index = GetIndex(exptr, keyWord, out length);
+                    if (index != -1)
+                    {
+                        exptr = exptr.Substring(0, index) + "@" + paraIndex.ToString() +
+                                exptr.Substring(index + length);
+                        paramList.Add(dataValue);
+                        paraIndex++;
+                    }
+                    else
+                    {
                         return null;
                     }
-                    exptr = exptr.Replace(keyWord, "@" + paraIndex.ToString());
-                    paramList.Add(dataValue);
-                    paraIndex++;
                 }
             }
             strBuilder.AppendFormat(exptr);
-            return strBuilder.ToString();
+
+            string convertBuilder = strBuilder.ToString();
+            //最后一步，需要将Contains特殊处理下,back部分不太好获取，规则较复杂
+            string pattern = @"\w+\s+Contains\s+";
+            MatchCollection collectionRegex = Regex.Matches(convertBuilder, pattern);
+            foreach (var tmp in collectionRegex)
+            {
+                string value = tmp.ToString();
+                string forward = value.Substring(0, value.IndexOf(" ")) + ".Contains ";
+                string back = "";
+                int length;
+                int indexForward = GetIndex(convertBuilder, value, out length);//肯定会找到
+                string leftContains = convertBuilder.Substring(indexForward + length);//找到Contains关键词后面的部分
+                string leftPart;
+                //查找Contains后面的参数，标志是空格间隔
+               int indexBack = GetIndex(leftContains, " ", out length);
+                if (indexBack == -1)
+                {
+                    back =  "(" + leftContains + ")";
+                    leftPart = "";
+                }
+                else
+                {
+                    back = "(" + leftContains.Substring(0, indexBack) + ")";
+                    //最后剩下的字段
+                    leftPart = leftContains.Substring(indexBack);
+                }
+                //替换XX Contains YY => XX.Contains (YY)
+                convertBuilder = convertBuilder.Substring(0, indexForward) + forward + back + leftPart;
+            }
+            return convertBuilder;
         }
 
         public static string GetFilterSelect(List<string> selectList)

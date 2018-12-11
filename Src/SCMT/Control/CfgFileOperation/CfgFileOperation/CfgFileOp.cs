@@ -18,7 +18,7 @@ namespace CfgFileOperation
     /// </summary>
     class CfgOp
     {
-        public CfgParseDBMibTreeToMemory mibTreeLineMen = null;
+        //public CfgParseDBMibTreeToMemory mibTreeLineMen = null;
 
         public CfgParseAlarmExecl m_alarmExcel = null;
         public CfgParseAntennaExcel m_antennaExcel = null;
@@ -60,39 +60,39 @@ namespace CfgFileOperation
         public bool CreatePatchAndInitCfg(BinaryWriter bw, Dictionary<string, string> paths)
         {
             string err;
-            bw.Write(String.Format("CreatePatchAndInitCfg start ...\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg start ...\n").ToArray());
             // 校验文件地址
             if (!IsAllPathValid(paths, out err))
             {
-                bw.Write(String.Format("CreatePatchAndInitCfg err: {0}, 不能生成init和patch.\n", err));
+                bw.Write(String.Format("CreatePatchAndInitCfg err: {0}, 不能生成init和patch.\n", err).ToArray());
                 Console.WriteLine(String.Format("{0}, 不能生成init和patch", err));
                 return false;
             }
             //public RRU信息、告警信息、天线信息、lm.mdb
             if (!CreatCfg_public(paths))
             {
-                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成公共数据部分失败！\n"));
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成公共数据部分失败！\n").ToArray());
                 Console.WriteLine(String.Format("生成公共数据部分失败！"));
                 return false;
             }
-            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n").ToArray());
             // 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
             if (!CreatCfg_init_cfg(paths))
             {
-                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n"));
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n").ToArray());
                 Console.WriteLine(String.Format("生成init.cfg失败！"));
                 return false;
             }
-            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n").ToArray());
             // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
-            if (!CreatCfg_patch_ex_cfg(paths))
+            if (!CreatCfg_patch_ex_cfg(bw, paths))
             {
-                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n"));
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n").ToArray());
                 Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
                 return false;
             }
-            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n"));
-            bw.Write(String.Format("CreatePatchAndInitCfg end.\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n").ToArray());
+            bw.Write(String.Format("CreatePatchAndInitCfg end.\n").ToArray());
             return true;
         }
 
@@ -158,39 +158,39 @@ namespace CfgFileOperation
             //string filePath = paths["DataMdb"];
             if (!File.Exists(paths["DataMdb"]))
             {
-                err = paths["DataMdb"] + " 文件不存在！";
+                err = "DataMdb: " + paths["DataMdb"] + " 文件不存在！";
                 return false;
             }
             if (!File.Exists(paths["Antenna"]))
             {
-                err = paths["Antenna"] + " 文件不存在！";
+                err = "Antenna: " + paths["Antenna"] + " 文件不存在！";
                 return false;
             }
             if (!File.Exists(paths["Alarm"]))
             {
-                err = paths["Alarm"] + " 文件不存在！";
+                err = "Alarm: " + paths["Alarm"] + " 文件不存在！";
                 return false;
             }
             if (!File.Exists(paths["RruInfo"]))
             {
-                err = paths["RruInfo"] + " 文件不存在！";
+                err = "RruInfo: " + paths["RruInfo"] + " 文件不存在！";
                 return false;
             }
             if (!File.Exists(paths["Reclist"]))
             {
-                err = paths["Reclist"] + " 文件不存在！";
+                err = "Reclist: " + paths["Reclist"] + " 文件不存在！";
                 return false;
             }
             if (!File.Exists(paths["SelfDef"]))
             {
-                err = paths["SelfDef"] + " 文件不存在！";
+                err = "SelfDef: " + paths["SelfDef"] + " 文件不存在！";
                 return false;
             }
             if (!Directory.Exists(paths["OutDir"]))//文件夹
             {
                 //Directory.Delete(paths["OutDir"], true);//删除文件夹以及文件夹中的子目录，文件    
                 //Directory.CreateDirectory(paths["OutDir"]);//如果不存在就创建file文件夹
-                err = paths["OutDir"] + " 文件夹不存在！";
+                err = "OutDir: " + paths["OutDir"] + " 文件夹不存在！";
                 return false;
             }
             return true;
@@ -235,11 +235,11 @@ namespace CfgFileOperation
         /// 根据patch_ex特性, 对表和实例进行修改
         /// </summary>
         /// <param name="paths"></param>
-        bool CreatCfg_patch_ex_cfg(Dictionary<string, string> paths)
+        bool CreatCfg_patch_ex_cfg(BinaryWriter bw, Dictionary<string, string> paths)
         {
             //patch-1. lm.mdb 以每行为单位加载, reclist使用 
             m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            m_mibTreeMem.ReadMibTreeToMemory(paths["DataMdb"]);
+            m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]);
             //patch-2. reclist 
             m_reclistExcel = new CfgParseReclistExcel();
             m_reclistExcel.ProcessingExcel(paths["Reclist"], paths["DataMdb"], "0:默认", this);
@@ -376,9 +376,10 @@ namespace CfgFileOperation
         private void WriteHeaderVersionInfo(string strDBName)//CAdoConnection* pAdoCon,const CString &strFileDesc)
         {
             string strSQL = "select * from SystemParameter where SysParameter = 'MibPublicVersion'";
-            DataSet MibdateSet = CfgGetRecordByAccessDb(strDBName, strSQL);
+            DataSet MibdateSet = new CfgAccessDBManager().GetRecord(strDBName, strSQL);
             DataRow row = MibdateSet.Tables[0].Rows[0];
             string strMibVersion = row.ItemArray[1].ToString();//row["MibPublicVersion"].ToString();
+            new CfgAccessDBManager().Close(MibdateSet);
             m_cfgFile_Header = new StruCfgFileHeader("init");
             m_cfgFile_Header.Setu8VerifyStr("ICF");
             m_cfgFile_Header.Setu8HiDeviceType(new MacroDefinition().NB_DEVICE);// 暂时
@@ -404,9 +405,10 @@ namespace CfgFileOperation
         private void WriteHeaderVersionInfoPDG(string strDBName)//CAdoConnection* pAdoCon,const CString &strFileDesc)
         {
             string strSQL = "select * from SystemParameter where SysParameter = 'MibPublicVersion'";
-            DataSet MibdateSet = CfgGetRecordByAccessDb(strDBName, strSQL);
+            DataSet MibdateSet = new CfgAccessDBManager().GetRecord(strDBName, strSQL);
             DataRow row = MibdateSet.Tables[0].Rows[0];
             string strMibVersion = row.ItemArray[1].ToString();//row["MibPublicVersion"].ToString();
+            new CfgAccessDBManager().Close(MibdateSet);
             m_eNB_pdgFile_Header = new StruCfgFileHeader("patch");
             m_eNB_pdgFile_Header.Setu8VerifyStr("ICF");
             m_eNB_pdgFile_Header.Setu8HiDeviceType(new MacroDefinition().NB_DEVICE);// 暂时
@@ -433,7 +435,7 @@ namespace CfgFileOperation
         {
             /// sql 获取所有的 table 和 entry 
             string strSQL = ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
-            DataSet MibdateSet = CfgGetRecordByAccessDb(paths["DataMdb"], strSQL);
+            DataSet MibdateSet = new CfgAccessDBManager().GetRecord(paths["DataMdb"], strSQL);
             uint TableOffset = 0 ;// //设置表的偏移量
             for (int loop = 0; loop <= MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
@@ -450,6 +452,8 @@ namespace CfgFileOperation
                 table.SetTableOffset(iTableOffset);
             }
             WriteDataHeadInfo((uint)m_tableNum);
+
+            new CfgAccessDBManager().Close(MibdateSet);
         }
         /// <summary>
         /// 解压
@@ -492,22 +496,22 @@ namespace CfgFileOperation
         /// <param name="fileName"></param>
         /// <param name="sqlContent"></param>
         /// <returns></returns>
-        public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
-        {
-            DataSet dateSet = new DataSet();
-            AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
-            try
-            {
-                mdbData.Open();
-                dateSet = mdbData.GetDataSet(sqlContent);
-                mdbData.Close();
-            }
-            finally
-            {
-                mdbData = null;
-            }
-            return dateSet;
-        }
+        //public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
+        //{
+        //    DataSet dateSet = new DataSet();
+        //    AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
+        //    try
+        //    {
+        //        mdbData.Open();
+        //        dateSet = mdbData.GetDataSet(sqlContent);
+        //        mdbData.Close();
+        //    }
+        //    finally
+        //    {
+        //        mdbData = null;
+        //    }
+        //    return dateSet;
+        //}
         /// <summary>
         /// 数据块的头
         /// </summary>
@@ -547,7 +551,7 @@ namespace CfgFileOperation
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
             //if (df.Tables[0].Rows.Count > 0)
             string strSQL = String.Format("select * from mibtree where ParentOID ='{0}' and IsLeaf <> 0 and ICFWriteAble <> '×' order by ExcelLine", row["OID"].ToString());
-            DataSet MibdateSet = CfgGetRecordByAccessDb(paths["DataMdb"], strSQL);
+            DataSet MibdateSet = new CfgAccessDBManager().GetRecord(paths["DataMdb"], strSQL);
             int childcount = MibdateSet.Tables[0].Rows.Count;
             if (childcount > 0)
             {
@@ -571,6 +575,8 @@ namespace CfgFileOperation
                 TableOffset = SetTableOffset_2(tableOp, isDyTable, TableOffset);              //计算表的偏移量
                 m_mapTableInfo.Add(strTableName, tableOp);
             }
+
+            new CfgAccessDBManager().Close(MibdateSet);
             return TableOffset;
         }
         /// <summary>
@@ -884,8 +890,9 @@ namespace CfgFileOperation
             string strSQLRruTypePort = ("select  * from rruTypePort");
             string strFileToDirectory = paths["DataMdb"];
             string rruTypePortPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-            DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
+            DataSet rruTypePortdateSet = new CfgAccessDBManager().GetRecord(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
             SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
+            new CfgAccessDBManager().Close(rruTypePortdateSet);
         }
         /// <summary>
         /// RruType 
@@ -903,8 +910,9 @@ namespace CfgFileOperation
             string strSQLRruType = ("select  * from rruType");
             string strFileToDirectory = paths["DataMdb"];
             string rruTypePath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-            DataSet rruTypedateSet = CfgGetRecordByAccessDb(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
+            DataSet rruTypedateSet = new CfgAccessDBManager().GetRecord(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
             SetBuffersInfoForRruType(tableRow, rruTypedateSet, tableOp, leafNum);
+            new CfgAccessDBManager().Close(rruTypedateSet);
         }
         /// <summary>
         /// 
@@ -917,10 +925,11 @@ namespace CfgFileOperation
         {
             string strSQLAlarm = ("select  * from AlarmInform_5216");
             string alarmPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-            DataSet AlarmdateSet = CfgGetRecordByAccessDb(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
+            DataSet AlarmdateSet = new CfgAccessDBManager().GetRecord(alarmPath + "\\LMTAlarm.mdb", strSQLAlarm);
             //foreach (var col in AlarmdateSet.Tables[0].Columns)
             //    Console.WriteLine(String.Format("rowName:{0},value:{1}.",col.ToString(), AlarmdateSet.Tables[0].Rows[0][col.ToString()]));
             SetBuffersInfoForAlarmCauseMdb(tableRow, AlarmdateSet, tableOp, leafNum);
+            new CfgAccessDBManager().Close(AlarmdateSet);
         }
 
         private void CreateSpecialTalbeAlarmCauseEntryByExcel(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)

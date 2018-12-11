@@ -15,7 +15,7 @@ namespace NetPlan.Tests
 	public class MibInfoMgrTests
 	{
 		[TestMethod()]
-		public async void AddNewAntTest()
+		public async Task AddNewAntTest()
 		{
 			// 初始化数据库
 			CSEnbHelper.SetCurEnbAddr("172.27.245.92");
