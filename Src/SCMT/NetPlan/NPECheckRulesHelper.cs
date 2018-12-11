@@ -390,6 +390,11 @@ namespace NetPlan
                 {
                     continue;
                 }
+                //参数名有可能重复进行去重保护
+                if (propertyValueDic.ContainsKey(name))
+                {
+                    continue;
+                }
                 //根据参数名称，获取参数的值,为了方便表示变化，只有在property中可以使用old.
                 //例如 where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId ！= old.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId
                 if (!name.StartsWith("cur.") && !name.StartsWith("old."))
