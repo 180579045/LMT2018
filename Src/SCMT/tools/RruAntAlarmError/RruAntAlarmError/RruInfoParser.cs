@@ -633,7 +633,8 @@ namespace RruAntAlarmError
                 {"rruTypeNotMibMaxePortNo", table.rruTypeNotMibMaxePortNo},
                 {"rruTypeNotMibSupportNetWorkMode", jArraySupportNetWorkMode},
                 {"rruTypeNotMibIrRate", jArrayIrRate},
-                {"rruTypeNotMibIrBand", jArrayIrBand}
+                {"rruTypeNotMibIrBand", jArrayIrBand},
+                {"rruTypeNotMibIsPico",  table.rruTypeNotMibIsPico}
             };
             //同一款RRU多个通道，excel表是单元合并的方式填写的，此处保存数据时需要进行去重
             foreach (var item in rruTypeJArray)
@@ -755,6 +756,8 @@ namespace RruAntAlarmError
                     return false;
                 }        
                 rruTypeItem.rruTypeNotMibIrBand = mibValue;
+                //增加是否为pico的属性
+                rruTypeItem.rruTypeNotMibIsPico = rruTypeItem.rruTypeName.StartsWith("p") ? 1 : 0;
                 AddRruTypeElement(rruTypeJArray, rruTypeItem);
 
                 //通道信息
