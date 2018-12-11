@@ -323,7 +323,7 @@ namespace NetPlan.Tests
                 attInfo.supportBoardType.Add(vd);
                 listInfo.Add(attInfo);
             }
-                        
+
             shelf.planSlotInfo = listInfo;
             return shelf;
         }
@@ -1311,6 +1311,17 @@ namespace NetPlan.Tests
 
             EnumResultType res = rulesHelper.GetRoundCheckValue(roundList, curRecord);
             Assert.IsTrue(res == EnumResultType.success_true);
+        }
+
+        [TestMethod()]
+        public async Task CheckAllPlanDataTest()
+        {
+            await simConnectEnb();
+            MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            string falseTip;
+            bool res = rulesHelper.CheckAllPlanData(out falseTip);
+            Assert.IsTrue(res == true);
         }
     }
 }
