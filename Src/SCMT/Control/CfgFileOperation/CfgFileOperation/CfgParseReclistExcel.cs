@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Data;
 using MIBDataParser.JSONDataMgr;
+using System.IO;
 
 namespace CfgFileOperation
 {
@@ -47,10 +48,10 @@ namespace CfgFileOperation
         /// <param name="strExcelPath"></param>
         /// <param name="strFileToDirectory"></param>
         /// <param name="strUeType"></param>
-        public void ProcessingExcel(string strExcelPath, string strFileToDirectory, string strUeType, CfgOp cfgOp)
+        public bool ProcessingExcel(BinaryWriter bw, string strExcelPath, string strFileToDirectory, string strUeType, CfgOp cfgOp)
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strFileToDirectory) || (String.Empty == strUeType) || (null == cfgOp))
-                return;
+                return false;
 
             // 几种模式
             if (0 == String.Compare("0:默认", strUeType, true)) // 不区分大小写，相等
@@ -75,11 +76,11 @@ namespace CfgFileOperation
             //华为
             else if (0 == String.Compare(strUeType, "3:华为", true))
             {
-
+                // 华为 ： Cell参数表 N; gNB参数表 N;
                 //strExcelPageArray[0] = "gNB参数表-13";
                 //strExcelPageArray[1] = "Cell参数表-14";
                 //strExcelPageArray[]={"gNB参数表-x3", "Cell参数表-y3"};
-                //ProcessingExcelUeTypeDefault();
+                return ProcessingExcelByHuaWei(bw, strExcelPath, cfgOp);
             }
             else
             {
@@ -87,8 +88,69 @@ namespace CfgFileOperation
                 //strExcelPageArray[1] = "Cell参数表-17";
                 //strExcelPageArray[] = {"eNB参数表-11", "Cell参数表-17"};
             }
-            
+            return true;
         }
+        /// <summary>
+        /// 5G 生成
+        /// <处理规则>
+        /// 1. 非索引节点 : 处理标识, 节点取值处理.0: 不处理;1：使用默认值;2：使用推荐值.
+        /// 2. 索引节点时 : 处理标识只有0和1,有2就是错误。
+        ///    2.1. 当标识为1时, 代表具体的实例的具体索引.例如:
+        ///         MIB变量名         | 中文名称          | 取值范围  | 默认值 | 华为:推荐值 | 处理标识
+        ///         nrCellUlIotIndex* | 小区上行底噪索引	 | 0..6	     |  0     |             |  1
+        ///         含义: ”nrCellUlIotIndex” 在 生成"华为patch"时, 这个值只取 "0"。
+        ///    2.2.当标识为0时, 并且存在(<条件1>处理标识为1或2)(<条件2>非索引)的节点才有意义, 这时表示对所有实例有效。
+        ///         修改这个表的所有实例，每个实例中这个节点都要修改为"标识"的值.
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="strExcelPath"></param>
+        /// <param name="strFileToDirectory"></param>
+        /// <param name="strUeType"></param>
+        /// <param name="cfgOp"></param>
+        /// <returns></returns>
+        public bool ProcessingExcel_5G(BinaryWriter bw, string strExcelPath, string strFileToDirectory, string strUeType, CfgOp cfgOp)
+        {
+            if ((String.Empty == strExcelPath) || (String.Empty == strFileToDirectory) || (String.Empty == strUeType) || (null == cfgOp))
+                return false;
+
+            // 几种模式
+            if (0 == String.Compare("0:默认", strUeType, true)) // 不区分大小写，相等
+            {
+                //strExcelPageArray[0] = "gNB参数表-7";
+                //strExcelPageArray[1] = "Cell参数表-8";
+                ProcessingExcelUeTypeDefault(strExcelPath, cfgOp);
+            }
+            //展讯
+            else if (0 == String.Compare(strUeType, "1:展讯", true))
+            {
+                //strExcelPageArray[0] = "gNB参数表-9";
+                //strExcelPageArray[1] = "Cell参数表-10";
+            }
+            //e500
+            else if (0 == String.Compare(strUeType, "2:e500", true))
+            {
+                //strExcelPageArray[0] = "gNB参数表-11";
+                //strExcelPageArray[1] = "Cell参数表-12";
+                //strExcelPageArray[]={"gNB参数表-x2", "Cell参数表-y2"};
+            }
+            //华为
+            else if (0 == String.Compare(strUeType, "3:华为", true))
+            {
+                // 华为 ： Cell参数表 N; gNB参数表 N;
+                //strExcelPageArray[0] = "gNB参数表-13";
+                //strExcelPageArray[1] = "Cell参数表-14";
+                //strExcelPageArray[]={"gNB参数表-x3", "Cell参数表-y3"};
+                return ProcessingExcel_5GHuaWei(bw, strExcelPath, cfgOp);
+            }
+            else
+            {
+                //strExcelPageArray[0] = "eNB参数表-11";
+                //strExcelPageArray[1] = "Cell参数表-17";
+                //strExcelPageArray[] = {"eNB参数表-11", "Cell参数表-17"};
+            }
+            return true;
+        }
+
 
         public int GetVectPDGTabNameNum()
         {
@@ -97,6 +159,38 @@ namespace CfgFileOperation
         public List<string> GetVectPDGTabName()
         {
             return m_vectPDGTabName;
+        }
+        /// <summary>
+        /// 华为相关数据处理
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="strExcelPath"></param>
+        /// <param name="cfgOp"></param>
+        /// <returns></returns>
+        bool ProcessingExcel_5GHuaWei(BinaryWriter bw, string strExcelPath, CfgOp cfgOp)
+        {
+            bool re = true;
+            // "Cell参数表"
+            SheetCellColUe0 = new Dictionary<string, string>(){
+                    { "ProcessIdentity" ,"Q" },  // 处理标识
+                    { "NodeName", "A"},          // 节点名
+                    { "DefaultValue", "E"},      // 默认值
+                    { "recommendValue", "P"},    // 推荐值
+                    { "End","Q"},                // 结束标志
+                };
+
+            // "gNB参数表" 展讯
+            SheetGNBColUe0 = new Dictionary<string, string>(){
+                    { "ProcessIdentity" ,"M" },  // 处理标识
+                    { "NodeName", "A"},          // 节点名
+                    { "DefaultValue", "E"},      // 默认值
+                    { "recommendValue", "L"},    // 推荐值
+                    { "End","Q"},                // 结束标志
+                };
+
+
+
+            return re;
         }
 
         /// <summary>
