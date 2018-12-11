@@ -81,10 +81,10 @@ namespace SCMTMainWindow.Utils
 		/// <summary>
 		/// 使用DataGrid行数据组装VB
 		/// </summary>
-		/// <param name="lineData"></param>
-		/// <param name="enName2Value"></param>
-		/// <param name="setVbs"></param>
-		/// <param name="strErr"></param>
+		/// <param name="lineData">DataGrid的行数据</param>
+		/// <param name="enName2Value">变更节点的英文名称与值的对应关系</param>
+		/// <param name="setVbs">组装后的CDTLmtbVb列表</param>
+		/// <param name="strErr">错误信息</param>
 		/// <returns></returns>
 		public static bool MakeSnmpVbs(Dictionary<string, object> lineData, Dictionary<string, string> enName2Value
 			, ref List<CDTLmtbVb> setVbs, out string strErr, int cmdType)
@@ -169,7 +169,7 @@ namespace SCMTMainWindow.Utils
 					uint bitsVal;
 					SnmpMibUtil.GetBitsTypeValueFromDesc(reData.managerValueRange, nodeVal, out bitsVal);
 					nodeVal = bitsVal.ToString();
-                }
+				}
 				// 组装Vb
 				CDTLmtbVb lmtVb = new CDTLmtbVb();
 				lmtVb.Oid = oid;
@@ -243,8 +243,8 @@ namespace SCMTMainWindow.Utils
 			{
 				mibNameEn = item.Key;
 
-                if (mibNameEn.Equals("indexlist"))
-                    continue;
+				if (mibNameEn.Equals("indexlist"))
+					continue;
 
 				// Mib值
 				if (typeof(DataGrid_Cell_MIB_ENUM) == item.Value.GetType()) // ComboBox
@@ -252,7 +252,7 @@ namespace SCMTMainWindow.Utils
 					DataGrid_Cell_MIB_ENUM mibEnum = (DataGrid_Cell_MIB_ENUM)item.Value;
 					mibValue = mibEnum.m_CurrentValue.ToString();
 					oid = mibEnum.oid;
-                }
+				}
 				else if (typeof(DataGrid_Cell_MIB) == item.Value.GetType()) // TextBox
 				{
 					DataGrid_Cell_MIB mibText = (DataGrid_Cell_MIB)item.Value;
@@ -353,7 +353,7 @@ namespace SCMTMainWindow.Utils
 				{
 					return true; // 改变
 				}
-            }
+			}
 			else if (typeof(DataGrid_Cell_MIB) == mibNode.GetType()) // TextBox
 			{
 				DataGrid_Cell_MIB mibTextBox = (DataGrid_Cell_MIB)mibNode;
@@ -361,71 +361,71 @@ namespace SCMTMainWindow.Utils
 				{
 					return true; // 改变
 				}
-            }
+			}
 
 			return false;
 		}
 
-        /// <summary>
-        /// 右键菜单添加修改删除时根据返回的结果获取索引节点显示信息
-        /// </summary>
-        /// <param name="pdu"></param>
-        /// <returns></returns>
-        public static bool GetIndexNodeInfoFromLmtbPdu(CDTLmtbPdu lmtPdu, MibTable tbl, ref string oid, ref string showInfo)
-        {
-            string index = "";
-            if (!GetIndexFromLmtbPdu(lmtPdu, ref index))
-                return false;
+		/// <summary>
+		/// 右键菜单添加修改删除时根据返回的结果获取索引节点显示信息
+		/// </summary>
+		/// <param name="pdu"></param>
+		/// <returns></returns>
+		public static bool GetIndexNodeInfoFromLmtbPdu(CDTLmtbPdu lmtPdu, MibTable tbl, ref string oid, ref string showInfo)
+		{
+			string index = "";
+			if (!GetIndexFromLmtbPdu(lmtPdu, ref index))
+				return false;
 
-            if (tbl == null)
-                return false;
+			if (tbl == null)
+				return false;
 
-            foreach (MibLeaf leaf in tbl.childList)
-            {
-                if (leaf.IsIndex.Equals("True"))
-                {
-                    showInfo += leaf.childNameCh + index;
-                }
-            }
-            oid = SnmpToDatabase.GetMibPrefix() + tbl.oid;
+			foreach (MibLeaf leaf in tbl.childList)
+			{
+				if (leaf.IsIndex.Equals("True"))
+				{
+					showInfo += leaf.childNameCh + index;
+				}
+			}
+			oid = SnmpToDatabase.GetMibPrefix() + tbl.oid;
 
-            return true;
-        }
-        /// <summary>
-        /// 获取添加修改删除的索引号
-        /// </summary>
-        /// <param name="lmtPdu"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        public static bool GetIndexFromLmtbPdu(CDTLmtbPdu lmtPdu, ref string index)
-        {
-            var strOidPrefix = SnmpToDatabase.GetMibPrefix();
-            var lmtVbCount = lmtPdu.VbCount();
-            // 根据Vb 中的OID 获取 MibOid
-            string strMibOid;
-            if (lmtPdu.VbCount() > 0)
-            {
-                var lmtVb = lmtPdu.GetVbByIndexEx(0);
-                var strVbOid = lmtVb?.Oid;
-                if (string.IsNullOrEmpty(strVbOid))
-                {
-                    return false;
-                }
+			return true;
+		}
+		/// <summary>
+		/// 获取添加修改删除的索引号
+		/// </summary>
+		/// <param name="lmtPdu"></param>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public static bool GetIndexFromLmtbPdu(CDTLmtbPdu lmtPdu, ref string index)
+		{
+			var strOidPrefix = SnmpToDatabase.GetMibPrefix();
+			var lmtVbCount = lmtPdu.VbCount();
+			// 根据Vb 中的OID 获取 MibOid
+			string strMibOid;
+			if (lmtPdu.VbCount() > 0)
+			{
+				var lmtVb = lmtPdu.GetVbByIndexEx(0);
+				var strVbOid = lmtVb?.Oid;
+				if (string.IsNullOrEmpty(strVbOid))
+				{
+					return false;
+				}
 
-                // 去掉前缀
-                strMibOid = strVbOid.Replace(strOidPrefix, "");
+				// 去掉前缀
+				strMibOid = strVbOid.Replace(strOidPrefix, "");
 
-                // 去掉最后一位索引
-                var nindex = strMibOid.LastIndexOf('.');
-                if (nindex >= strMibOid.Length)
-                {
-                    return false;
-                }
-                index = strMibOid.Substring(nindex + 1);
-            }
+				// 去掉最后一位索引
+				var nindex = strMibOid.LastIndexOf('.');
+				if (nindex >= strMibOid.Length)
+				{
+					return false;
+				}
+				index = strMibOid.Substring(nindex + 1);
+			}
 
-            return true;
-        }
+			return true;
+		}
 
-    }
+	}
 }
