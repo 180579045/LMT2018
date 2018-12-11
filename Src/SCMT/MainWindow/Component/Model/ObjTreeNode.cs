@@ -27,6 +27,7 @@ using LogManager;
 using System.Windows.Media;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace SCMTMainWindow
 {
@@ -93,6 +94,8 @@ namespace SCMTMainWindow
 		public static int ChildCount { get; set; }                     // 孩子节点的个数;
 
 		public static MibTable nodeMibTable { get; set; }        //每个节点对应的Mib信息
+
+		public static bool isGetParaTaskRunning = false;				//异步获取参数任务是否正在进行
 
 		/// <summary>
 		/// 对象树节点点击事件;
@@ -322,6 +325,18 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		public override void ClickObjNode(object sender, EventArgs e)
 		{
+			// 上一个请求任务是否正在进行
+			if (isGetParaTaskRunning == true)
+			{
+				Log.Info("上一个Get命令正在进行，本次操作无法进行，已退出...");
+				Console.WriteLine("上一个Get命令正在进行，本次操作无法进行，已退出...");
+				return;
+			}
+
+			// 清除DataGrid表格数据
+			main.Main_Dynamic_DataGrid.DynamicDataGrid.Columns.Clear();
+			main.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+
 			var items = sender as MetroExpander;
 
 			// 清理掉之前填入的Children节点;
@@ -375,6 +390,7 @@ namespace SCMTMainWindow
 				//        ObjTreeNode_Click(node);
 				//    }
 				//}
+
 				// 该节点有对应的表可查;
 				if (node.ObjTableName != @"/")
 				{
@@ -506,23 +522,188 @@ namespace SCMTMainWindow
 			//msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
 		}
 
+		/// <summary>
+		/// 点击树枝节点时的处理方法;
+		/// </summary>
+		/// <param name="node"></param>
 		private void ObjTreeNode_Click(ObjNode node)
 		{
-			Thread thread = new Thread(new ParameterizedThreadStart(ttt));
-			thread.IsBackground = true;
-			thread.Start(node);
+			contentlist.Clear();
+
+			// 异步获取数据，避免UI卡死
+			Task tk = new Task(() =>
+			{
+				Action<ObjNode> ac = (nodeInfo) => GetParentNodeDatasThd(nodeInfo);
+				GetParentNodeDatas(ac, node);
+            });
+			// 启动任务
+			tk.Start();
+
+			// 任务列表，用于检查任务是否结束
+			List<Task> taskList = new List<Task>();
+			taskList.Add(tk);
+
+			// 设置任务标识为进行中
+			isGetParaTaskRunning = true;
+
+			// 异步等待任务完成
+			Task.Factory.StartNew(x => {
+				// 等待任务完成
+				Task.WaitAll(taskList.ToArray());
+				// 任务完成，设置任务完成标识
+				isGetParaTaskRunning = false;
+
+				Log.Info("Snmp Get任务完成...");
+				Console.WriteLine("Get任务完成...");
+			}, null);
+
+			Console.WriteLine("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
+
 		}
 
-		private void ttt(object obj)
+		/// <summary>
+		/// 获取树枝节点的DataGrid数据
+		/// </summary>
+		/// <param name="_ac">Action</param>
+		/// <param name="objNode">ObjNode节点实例</param>
+		private void GetParentNodeDatas(Action<ObjNode> _ac, ObjNode objNode)
 		{
-			ObjNode node = (ObjNode)obj;
-			ObjTreeNode_Click_thd(node);
-        }
+			_ac(objNode);
+		}
+
+		/// <summary>
+		/// 点击树枝节点时的异步处理方法;
+		/// </summary>
+		private void GetParentNodeDatasThd(ObjNode node)
+		{
+			//Console.WriteLine("TreeNode Clicked to show info!");
+			var ret = new MibTable();
+			var GetNextRet = new Dictionary<string, string>();
+			var IndexNum = 0;
+			Dictionary<string, string> getNextResList = new Dictionary<string, string>();
+			string objParentOID = string.Empty;
+			MibTable nodeMibTable = new MibTable();
+
+			// 目前可以获取到节点对应的中文名以及对应的表名;
+			//Console.WriteLine("LeafNode Clicked!" + node.ObjName + " and TableName " + node.ObjTableName);
+
+			var errorInfo = "";
+			//根据表名获取该表内所有MIB节点;
+			nodeb.db = Database.GetInstance();
+			nodeb.db.GetMibDataByTableName(node.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+			nodeMibTable = ret;
+
+			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
+			//name_cn.Clear(); // TODO: 此方法在线程中调用，尽量避免使用全局变量
+			Dictionary<string, string> name_cn = new Dictionary<string, string>();
+			//oid_cn.Clear();
+			Dictionary<string, string> oid_cn = new Dictionary<string, string>();
+			//oid_en.Clear();         // 每个节点都有自己的表数据结构;
+			Dictionary<string, string> oid_en = new Dictionary<string, string>();
+
+			try
+			{
+				int.TryParse(ret.indexNum.ToString(), out IndexNum);              // 获取这张表索引的个数;
+				IndexCount = ret.indexNum;
+				LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
+				ChildCount = ret.childList.Count - IndexNum;
+				objParentOID = ret.oid;                                // 将父节点OID赋值;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
+
+			// 循环MIb表，组装列名称
+			foreach (var iter in ret.childList)
+			{
+				// 过滤非Mib节点
+				if (iter.isMib != 1)
+				{
+					ChildCount--;
+					continue;
+				}
+
+				// 保存中文名称等信息
+				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+			}
+
+			// 数据的最终结果
+			List<Dictionary<string, string>> oidAndValTable = new List<Dictionary<string, string>>();
+			// 一行数据，因为一行数据可能是由多次GeNext的结果拼成的
+			Dictionary<string, string> oidAndValLine = new Dictionary<string, string>();
+
+			// 根据表名获取命令信息
+			CmdInfoList cmdList = new CmdInfoList();
+			if (!cmdList.GeneratedCmdInfoList())
+			{
+				return;
+			}
+
+			List<CmdMibInfo> cmdMibInfoList = cmdList.GetCmdsByTblName(ret.nameMib);
+			if (cmdMibInfoList.Count == 0)
+			{
+				return;
+			}
+
+			// 获取DataGrid数据
+			LmtbSnmpEx lmtSnmpEx = DTLinkPathMgr.GetSnmpInstance(CSEnbHelper.GetCurEnbAddr());
+			// 组装GentNext 的Oid列表
+			List<string> getNextOidList = new List<string>();
+
+			// 无论是标量还是矢量表，每个GetCmd执行一次GetNext
+			foreach (CmdMibInfo cmdItem in cmdMibInfoList)
+			{
+				if ("0".Equals(cmdItem.m_cmdType)) // Get命令
+				{
+					// 每个GetCmd执行一次GetNext
+					try
+					{
+						// 获取一个GetCmd命令中的Oid
+						getNextOidList.Clear();
+						foreach (string oid in cmdItem.m_leaflist)
+						{
+							getNextOidList.Add(prev_oid + oid);
+						}
+						// GetNext结果
+						List<Dictionary<string, string>> oidAndValTableTmp = null;
+						if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTableTmp))
+						{
+							Log.Error("执行SnmpGetNextLoop()方法错误！");
+							return;
+						}
+
+						// 循环每行
+						foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
+						{
+							// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
+							// 循环每列
+							foreach (KeyValuePair<string, string> kv in oidVal)
+							{
+								// 保存多次GetNext的结果
+								getNextResList.Add(kv.Key, kv.Value);
+							}
+						}
+
+					}
+					catch (Exception ex)
+					{
+						throw ex;
+					}
+
+				}
+			}
+
+			// 更新DataGrid数据
+			UpdataDataGrid(getNextResList, oid_cn, oid_en, objParentOID, nodeMibTable);
+		}
 
 		/// <summary>
 		/// 点击树枝节点时的处理方法;
 		/// </summary>
-		private void ObjTreeNode_Click_thd(ObjNode node)
+		private void ObjTreeNode_Click_bak2(ObjNode node)
 		{
 			//Console.WriteLine("TreeNode Clicked to show info!");
 			var ret = new MibTable();
@@ -643,7 +824,7 @@ namespace SCMTMainWindow
 			}
 
 			// 更新DataGrid数据
-			UpdataDataGrid(GetNextResList);
+			//UpdataDataGrid(GetNextResList);
 		}
 
 		/// <summary>
@@ -662,10 +843,18 @@ namespace SCMTMainWindow
 			}
 		}
 
-
-		private void UpdataDataGrid(Dictionary<string, string> getNextList)
+		/// <summary>
+		/// 调用主界面更新DataGrid
+		/// </summary>
+		/// <param name="getNextList"></param>
+		/// <param name="oid_cn"></param>
+		/// <param name="oid_en"></param>
+		/// <param name="objParentOID"></param>
+		/// <param name="nodeMibTable"></param>
+		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid_cn
+			, Dictionary<string, string>  oid_en, string objParentOID, MibTable nodeMibTable)
 		{
-			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
+			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, objParentOID, IndexCount, nodeMibTable);
 		}
 
 		/// <summary>
@@ -702,24 +891,29 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		public override void ClickObjNode(object sender, EventArgs e)
 		{
-			string strMsg = "";
+			// 上一个请求任务是否正在进行
+			if (isGetParaTaskRunning == true)
+			{
+				Log.Info("上一个Get命令正在进行，本次操作无法进行，已退出...");
+				Console.WriteLine("上一个Get命令正在进行，本次操作无法进行，已退出...");
+				return;
+			}
+
+			contentlist.Clear();
+			// 清理DataGrid表格数据
+			main.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+			main.Main_Dynamic_DataGrid.DynamicDataGrid.Columns.Clear();
+
 			var item = sender as MetroExpander;
 			var node = item.obj_type as ObjNode;
-			var ret = new MibTable();
-			var GetNextRet = new Dictionary<string, string>();
-			var IndexNum = 0;
-			contentlist.Clear();
-			GetNextResList.Clear();
-			ObjParentOID = String.Empty;
-			nodeMibTable = new MibTable();
 
-			if(item.Parent.GetType() == typeof(StackPanel))
+			if (item.Parent.GetType() == typeof(StackPanel))
 			{
 				StackPanel parentItem = item.Parent as StackPanel;
 
-				foreach(var subItem in parentItem.Children)
+				foreach (var subItem in parentItem.Children)
 				{
-					if(subItem.GetType() == typeof(MetroExpander))
+					if (subItem.GetType() == typeof(MetroExpander))
 					{
 						var targetItem = subItem as MetroExpander;
 						targetItem.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
@@ -730,6 +924,63 @@ namespace SCMTMainWindow
 
 			// 目前可以获取到节点对应的中文名以及对应的表名;
 			Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " + this.ObjTableName);
+
+			// 启用多任务查询数据，避免UI卡死
+			Task tk = new Task(() =>
+			{
+				Action<ObjNode> ac = (nodeInfo) => GetLeafNodeDatasThd(nodeInfo);
+				GetLeafNodeDatas(ac, node);
+            });
+			// 启动线程
+			tk.Start();
+
+			// 设置任务标识为进行中
+			isGetParaTaskRunning = true;
+
+			// 任务列表，用于检查任务是否结束
+			List<Task> taskList = new List<Task>();
+			taskList.Add(tk);
+
+			// 异步检查任务是否结束，避免UI卡死
+			Task.Factory.StartNew(x => 
+			{
+				// 等待任务结束
+				Task.WaitAll(taskList.ToArray());
+				// 任务结束，设置任务标识为完成
+				isGetParaTaskRunning = false;
+
+				Log.Info("Snmp Get任务完成");
+				Console.WriteLine("Snmp Get任务完成");
+
+			}, null);
+
+			Console.WriteLine("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
+
+		}
+
+		/// <summary>
+		/// 获取叶子节点的DataGrid数据
+		/// </summary>
+		/// <param name="_ac"></param>
+		/// <param name="node"></param>
+		private void GetLeafNodeDatas(Action<ObjNode> _ac, ObjNode node)
+		{
+			_ac(node);
+		}
+
+		/// <summary>
+		/// 获取叶子节点的DataGrid数据;
+		/// </summary>
+		/// <param name="node">ObjNode对象</param>
+		public void GetLeafNodeDatasThd(ObjNode node)
+		{
+			string strMsg = "";
+			var ret = new MibTable();
+			var IndexNum = 0;
+			Dictionary<string, string> getNextResList = new Dictionary<string, string>();
+			string objParentOID = string.Empty;
+			MibTable nodeMibTable = new MibTable();
+
 
 			var errorInfo = "";
 			//根据表名获取该表内所有MIB节点;
@@ -747,6 +998,175 @@ namespace SCMTMainWindow
 			{
 				strMsg = string.Format("使用Mib表名获取到的Mib表信息为空（Mib表名：{0}）", ObjTableName);
                 Log.Error(strMsg);
+				MessageBox.Show(strMsg);
+				return;
+			}
+
+			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
+			//name_cn.Clear(); // TODO: 方法在多线程中执行，尽量避免使用全局变量
+			//oid_cn.Clear();
+			//oid_en.Clear();         // 每个节点都有自己的表数据结构;
+			Dictionary<string, string> name_cn = new Dictionary<string, string>();
+			Dictionary<string, string> oid_cn = new Dictionary<string, string>();
+			Dictionary<string, string> oid_en = new Dictionary<string, string>();
+
+			try
+			{
+				int.TryParse(ret.indexNum.ToString(), out IndexNum);              // 获取这张表索引的个数;
+				IndexCount = ret.indexNum;
+				LastColumn = 0;                                        // 初始化判断整表是否读完的判断字段;
+				ChildCount = ret.childList.Count - IndexNum;
+				objParentOID = ret.oid;                                // 将父节点OID赋值;
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex);
+			}
+
+			// 循环MIb表，组装列名称
+			foreach (var iter in ret.childList)
+			{
+				// 过滤非Mib节点
+				if (iter.isMib != 1)
+				{
+					ChildCount--;
+					continue;
+				}
+
+				// 保存中文名称等信息
+				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
+				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
+				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+			}
+
+			// 数据的最终结果
+			List<Dictionary<string, string>> oidAndValTable = new List<Dictionary<string, string>>();
+			// 一行数据，因为一行数据可能是由多次GeNext的结果拼成的
+			Dictionary<string, string> oidAndValLine = new Dictionary<string, string>();
+
+			// 根据表名获取命令信息
+			CmdInfoList cmdList = new CmdInfoList();
+			if (!cmdList.GeneratedCmdInfoList())
+			{
+				return;
+			}
+
+			List<CmdMibInfo> cmdMibInfoList = cmdList.GetCmdsByTblName(ret.nameMib);
+			if (cmdMibInfoList.Count == 0)
+			{
+				return;
+			}
+
+			// 获取DataGrid数据
+			LmtbSnmpEx lmtSnmpEx = DTLinkPathMgr.GetSnmpInstance(CSEnbHelper.GetCurEnbAddr());
+			// 组装GentNext 的Oid列表
+			List<string> getNextOidList = new List<string>();
+
+			// 无论是标量还是矢量表，每个GetCmd执行一次GetNext
+			foreach (CmdMibInfo cmdItem in cmdMibInfoList)
+			{
+				if ("0".Equals(cmdItem.m_cmdType)) // Get命令
+				{
+					// 每个GetCmd执行一次GetNext
+					try
+					{
+						// 获取一个GetCmd命令中的Oid
+						getNextOidList.Clear();
+						foreach (string oid in cmdItem.m_leaflist)
+						{
+							getNextOidList.Add(prev_oid + oid);
+						}
+						// GetNext结果
+						List<Dictionary<string, string>> oidAndValTableTmp = null;
+						if (false == lmtSnmpEx.SnmpGetNextLoop(CSEnbHelper.GetCurEnbAddr(), getNextOidList, out oidAndValTableTmp))
+						{
+							Log.Error("执行SnmpGetNextLoop()方法错误！");
+							return;
+						}
+
+						// 循环每行
+						foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
+						{
+							// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
+							// 循环每列
+							foreach (KeyValuePair<string, string> kv in oidVal)
+							{
+								// 保存多次GetNext的结果
+								if (!getNextResList.ContainsKey(kv.Key))
+								{
+									getNextResList.Add(kv.Key, kv.Value);
+								}
+							}
+						}
+
+					}
+					catch (Exception ex)
+					{
+						throw ex;
+					}
+
+				}
+			}
+
+			// 更新DataGrid数据
+			UpdataDataGrid(getNextResList, oid_cn, oid_en, objParentOID, nodeMibTable);
+
+		}
+
+
+		/// <summary>
+		/// 当点击叶子节点时，会触发GetNext操作;
+		/// 注意：基站GetNext不支持全节点查询，最大粒度为Get命令当中的节点数量;
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public void ClickObjNode_bak2(object sender, EventArgs e)
+		{
+			string strMsg = "";
+			var item = sender as MetroExpander;
+			var node = item.obj_type as ObjNode;
+			var ret = new MibTable();
+			var GetNextRet = new Dictionary<string, string>();
+			var IndexNum = 0;
+			contentlist.Clear();
+			GetNextResList.Clear();
+			ObjParentOID = String.Empty;
+			nodeMibTable = new MibTable();
+
+			if (item.Parent.GetType() == typeof(StackPanel))
+			{
+				StackPanel parentItem = item.Parent as StackPanel;
+
+				foreach (var subItem in parentItem.Children)
+				{
+					if (subItem.GetType() == typeof(MetroExpander))
+					{
+						var targetItem = subItem as MetroExpander;
+						targetItem.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+					}
+				}
+			}
+			item.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+
+			// 目前可以获取到节点对应的中文名以及对应的表名;
+			Console.WriteLine("LeafNode Clicked!" + node.ObjName + "and TableName " + this.ObjTableName);
+
+			var errorInfo = "";
+			//根据表名获取该表内所有MIB节点;
+			nodeb.db = Database.GetInstance();
+			nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
+
+			if (ret == null)
+			{
+				Log.Error("获取不到该节点的表信息");
+				return;
+			}
+
+			nodeMibTable = ret;
+			if (ret == null)
+			{
+				strMsg = string.Format("使用Mib表名获取到的Mib表信息为空（Mib表名：{0}）", ObjTableName);
+				Log.Error(strMsg);
 				MessageBox.Show(strMsg);
 				return;
 			}
@@ -856,7 +1276,7 @@ namespace SCMTMainWindow
 			}
 
 			// 更新DataGrid数据
-			UpdataDataGrid(GetNextResList);
+			//UpdataDataGrid(GetNextResList);
 
 		}
 
@@ -983,10 +1403,16 @@ namespace SCMTMainWindow
 		/// 更新DataGrid数据
 		/// </summary>
 		/// <param name="getNextList"></param>
-		private void UpdataDataGrid(Dictionary<string, string> getNextList)
+		/// <param name="oid_cn"></param>
+		/// <param name="oid_en"></param>
+		/// <param name="objParentOID"></param>
+		/// <param name="nodeMibTable"></param>
+		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid_cn
+			, Dictionary<string, string> oid_en, string objParentOID, MibTable nodeMibTable)
 		{
-			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
+			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, objParentOID, IndexCount, nodeMibTable);
 		}
+
 		/// <summary>
 		/// ReceiveResBySingleNode的GetNext函数收集完成之后，调用主界面更新DataGrid
 		/// </summary>
