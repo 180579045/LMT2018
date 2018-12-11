@@ -493,10 +493,10 @@ namespace SCMTMainWindow
 						continue;
 					}
 
-					var temp = prev_oid + iter.childOid;
-					name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-					oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-					oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+					var temp = SnmpToDatabase.GetMibPrefix() + iter.childOid;
+					name_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+					oid_en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+					oid_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 					oidlist.Add(temp);
 
 					// 通过GetNext查询单个节点数据;
@@ -509,9 +509,9 @@ namespace SCMTMainWindow
 				else
 				{
 					//ty:增加索引的信息
-					name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-					oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-					oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+					name_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+					oid_en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+					oid_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 				}
 
 				// 如果是单个节点遍历，就只能在此处组DataGrid的VM类;
@@ -595,11 +595,11 @@ namespace SCMTMainWindow
 
 			var oidlist = new List<string>();             // 填写SNMP模块需要的OIDList;
 			//name_cn.Clear(); // TODO: 此方法在线程中调用，尽量避免使用全局变量
-			Dictionary<string, string> name_cn = new Dictionary<string, string>();
+			Dictionary<string, string> name2cn = new Dictionary<string, string>();
 			//oid_cn.Clear();
-			Dictionary<string, string> oid_cn = new Dictionary<string, string>();
+			Dictionary<string, string> oid2cn = new Dictionary<string, string>();
 			//oid_en.Clear();         // 每个节点都有自己的表数据结构;
-			Dictionary<string, string> oid_en = new Dictionary<string, string>();
+			Dictionary<string, string> oid2en = new Dictionary<string, string>();
 
 			try
 			{
@@ -625,9 +625,9 @@ namespace SCMTMainWindow
 				}
 
 				// 保存中文名称等信息
-				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 			}
 
 			// 数据的最终结果
@@ -665,7 +665,7 @@ namespace SCMTMainWindow
 						getNextOidList.Clear();
 						foreach (string oid in cmdItem.m_leaflist)
 						{
-							getNextOidList.Add(prev_oid + oid);
+							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -697,7 +697,7 @@ namespace SCMTMainWindow
 			}
 
 			// 更新DataGrid数据
-			UpdataDataGrid(getNextResList, oid_cn, oid_en, objParentOID, nodeMibTable);
+			UpdataDataGrid(getNextResList, oid2cn, oid2en, objParentOID, nodeMibTable);
 		}
 
 		/// <summary>
@@ -757,9 +757,9 @@ namespace SCMTMainWindow
                 }
 
 				// 保存中文名称等信息
-				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+				name_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+				oid_en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+				oid_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 			}
 
 			// 数据的最终结果
@@ -797,7 +797,7 @@ namespace SCMTMainWindow
 						getNextOidList.Clear();
 						foreach (string oid in cmdItem.m_leaflist)
 						{
-							getNextOidList.Add(prev_oid + oid);
+							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -856,10 +856,10 @@ namespace SCMTMainWindow
 		/// <param name="oid_en"></param>
 		/// <param name="objParentOID"></param>
 		/// <param name="nodeMibTable"></param>
-		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid_cn
-			, Dictionary<string, string>  oid_en, string objParentOID, MibTable nodeMibTable)
+		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid2cn
+			, Dictionary<string, string>  oid2en, string objParentOID, MibTable nodeMibTable)
 		{
-			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, objParentOID, IndexCount, nodeMibTable);
+			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
 		}
 
 		/// <summary>
@@ -1011,9 +1011,9 @@ namespace SCMTMainWindow
 			//name_cn.Clear(); // TODO: 方法在多线程中执行，尽量避免使用全局变量
 			//oid_cn.Clear();
 			//oid_en.Clear();         // 每个节点都有自己的表数据结构;
-			Dictionary<string, string> name_cn = new Dictionary<string, string>();
-			Dictionary<string, string> oid_cn = new Dictionary<string, string>();
-			Dictionary<string, string> oid_en = new Dictionary<string, string>();
+			Dictionary<string, string> name2cn = new Dictionary<string, string>();
+			Dictionary<string, string> oid2cn = new Dictionary<string, string>();
+			Dictionary<string, string> oid2en = new Dictionary<string, string>();
 
 			try
 			{
@@ -1039,9 +1039,9 @@ namespace SCMTMainWindow
 				}
 
 				// 保存中文名称等信息
-				name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 			}
 
 			// 数据的最终结果
@@ -1079,7 +1079,7 @@ namespace SCMTMainWindow
 						getNextOidList.Clear();
 						foreach (string oid in cmdItem.m_leaflist)
 						{
-							getNextOidList.Add(prev_oid + oid);
+							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -1114,7 +1114,7 @@ namespace SCMTMainWindow
 			}
 
 			// 更新DataGrid数据
-			UpdataDataGrid(getNextResList, oid_cn, oid_en, objParentOID, nodeMibTable);
+			UpdataDataGrid(getNextResList, oid2cn, oid2en, objParentOID, nodeMibTable);
 
 		}
 
@@ -1210,9 +1210,9 @@ namespace SCMTMainWindow
                 }
 
                 // 保存中文名称等信息
-                name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-				oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-				oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+                name_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+				oid_en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+				oid_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 			}
 
 
@@ -1251,7 +1251,7 @@ namespace SCMTMainWindow
 						getNextOidList.Clear();
 						foreach (string oid in cmdItem.m_leaflist)
 						{
-							getNextOidList.Add(prev_oid + oid);
+							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -1358,10 +1358,10 @@ namespace SCMTMainWindow
 						continue;
 					}
 
-					var temp = prev_oid + iter.childOid;
-					name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-					oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-					oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+					var temp = SnmpToDatabase.GetMibPrefix() + iter.childOid;
+					name_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+					oid_en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+					oid_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 					oidlist.Add(temp);
 
 					// 通过GetNext查询单个节点数据;
@@ -1371,9 +1371,9 @@ namespace SCMTMainWindow
 				else
 				{
 					//ty:增加索引的信息
-					name_cn.Add(prev_oid + iter.childNameMib, iter.childNameCh);
-					oid_en.Add(prev_oid + iter.childOid, iter.childNameMib);
-					oid_cn.Add(prev_oid + iter.childOid, iter.childNameCh);
+					name_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+					oid_en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+					oid_cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 				}
 
 				// 如果是单个节点遍历，就只能在此处组DataGrid的VM类;
@@ -1417,10 +1417,10 @@ namespace SCMTMainWindow
 		/// <param name="oid_en"></param>
 		/// <param name="objParentOID"></param>
 		/// <param name="nodeMibTable"></param>
-		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid_cn
-			, Dictionary<string, string> oid_en, string objParentOID, MibTable nodeMibTable)
+		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid2cn
+			, Dictionary<string, string> oid2en, string objParentOID, MibTable nodeMibTable)
 		{
-			main.UpdateAllMibDataGrid(getNextList, oid_cn, oid_en, contentlist, objParentOID, IndexCount, nodeMibTable);
+			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
 		}
 
 		/// <summary>
