@@ -7,8 +7,28 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="30"/>
+        </Grid.RowDefinitions>
         <DataGrid x:Name="DynamicDataGrid"  Grid.Row="0" AutoGenerateColumns="False" CanUserAddRows="False"
                   SelectionMode="Single" ItemsSource="{Binding Path=.}" SelectionUnit="CellOrRowHeader" 
                   HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="转到" Margin="5"/>
+            <TextBox Name="tbxPageNum" Text="" Width="20"/>
+            <TextBlock Text="页" Margin="5"/>
+            <Button Content="Go" VerticalAlignment="Center"  Click="btnGo_Click" Margin="5"/>
+            <Button Name="btnUp" Content="上一页" VerticalAlignment="Center" Click="btnUp_Click"  Margin="5"/>
+            <Button Name="btnNext" Content="下一页" VerticalAlignment="Center" Click="btnNext_Click" Margin="5"/>
+            <TextBlock Height="20" Margin="5">
+                <TextBlock Text="【共"/>
+                <TextBlock Name="tbkTotal" Foreground="Red"/>
+                <TextBlock Text="页】"/>
+                <TextBlock Text="【当前"/>
+                <TextBlock Name="tbkCurrentPage" Foreground="Red" />
+                <TextBlock Text="页】"/>
+            </TextBlock>
+        </StackPanel>
     </Grid>
 </UserControl>

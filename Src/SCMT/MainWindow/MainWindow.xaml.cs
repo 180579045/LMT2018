@@ -1736,15 +1736,94 @@ namespace SCMTMainWindow
 
 			//MibDataGrid.DataContext = contentlist;
 		}
+        /// <summary>
+        /// 行数据，key为索引,value为oid与值得键值对
+        /// </summary>
+        public Dictionary<string, Dictionary<string, string>> LineDataList = new Dictionary<string, Dictionary<string, string>>();
+        private void SetMainDataGridLineData(dict_d_string ar, dict_d_string oid_cn, int IndexCount)
+        {
+            LineDataList.Clear();
+            int RealIndexCount = IndexCount; // 真实的索引维度;
 
-		#endregion DataGrid相关处理
+            if (IndexCount == 0) // 如果索引个数为0，按照1来处理;
+                IndexCount = 1;
 
-		/// <summary>
-		/// 隐藏  信令消息界面
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void subForMessageRecv_Hiding(object sender, CancelEventArgs e)
+            var AlreadyRead = new List<string>();
+
+            // ar是遍历GetNext的结果，遍历后，根据索引将其转化为DataGrid显示的整行数据
+            foreach (var iter in ar)
+            {
+                var fulloid = iter.Key;
+
+                // 获取当前遍历到的节点的索引值(即取最后N位数字);
+                var temp = fulloid.Split('.');
+                var NowIndex = "";
+                for (var i = temp.Length - IndexCount; i < temp.Length; i++)
+                {
+                    NowIndex += "." + temp[i];
+                }
+
+                // 如果存在索引,且索引没有被添加到表中;
+                if (!fulloid.Contains(NowIndex) || AlreadyRead.Contains(NowIndex))
+                    continue;
+
+                // 将ar当中所有匹配的结果取出,最后会取出了一行数据;
+                foreach (var iter3 in ar)
+                {
+                    // 将所有相同索引取出;
+                    temp = iter3.Key.Split('.');
+                    string TempIndex = "";
+
+                    for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+                    {
+                        TempIndex += "." + temp[i];
+                    }
+
+                    // 该步骤为抽取同样索引的内容，组成一行数据，然后添加至model中;
+                    if (TempIndex == NowIndex)
+                    {
+                        // 将GetNext整表的OID数值取出到temp_compare;
+                        string[] temp_nowoid = iter3.Key.Split('.');
+                        string NowNodeOID = "";
+                        for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
+                        {
+                            NowNodeOID += "." + temp_nowoid[i];
+                        }
+                        string temp_compare = NowNodeOID.Substring(1);
+
+                        // 如果OID匹配;
+                        if (oid_cn.ContainsKey(temp_compare))
+                        {
+                            if (!LineDataList.ContainsKey(TempIndex))
+                            {
+                                LineDataList.Add(TempIndex, new dict_d_string());
+                                LineDataList[TempIndex].Add(iter3.Key, iter3.Value);
+                            }
+                            else
+                            {
+                                if (!LineDataList[TempIndex].ContainsKey(iter3.Key))
+                                    LineDataList[TempIndex].Add(iter3.Key, iter3.Value);
+                            }
+
+
+                            // 已经查询过该索引,后续不再参与查询;
+                            if (!AlreadyRead.Contains(NowIndex))
+                            {
+                                AlreadyRead.Add(NowIndex);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        #endregion DataGrid相关处理
+
+        /// <summary>
+        /// 隐藏  信令消息界面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void subForMessageRecv_Hiding(object sender, CancelEventArgs e)
 		{
 			messageRecv.ClearAll();
 		}

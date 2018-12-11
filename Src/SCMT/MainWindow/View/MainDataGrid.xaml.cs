@@ -1204,5 +1204,67 @@ namespace SCMTMainWindow.View
             if ((m_ColumnModel.TableProperty as MibTable).indexNum == 0)
                 strIndex = ".0";
         }
-	}
+
+        private int perPageLineNum = 30;//每页显示行数
+        private int totalLineNum;//总行数
+        private int pageNum;//总页数
+        /// <summary>
+        /// 行数据，key为索引,value为oid与值得键值对
+        /// </summary>
+        public Dictionary<string, Dictionary<string, string>> LineDataList = new Dictionary<string, Dictionary<string, string>>();
+        private void RefreshDataGridPage(int curentPage)
+        {
+            totalLineNum = LineDataList.Count;
+
+            if (totalLineNum % perPageLineNum == 0)
+                pageNum = totalLineNum / perPageLineNum;
+            else
+                pageNum = totalLineNum / perPageLineNum + 1;
+
+            tbkTotal.Text = pageNum.ToString();
+            tbkCurrentPage.Text = curentPage.ToString();
+
+        }
+        /// <summary>
+        /// 跳转到指定页面
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnGo_Click(object sender, RoutedEventArgs e)
+        {
+            int pageNum = int.Parse(tbxPageNum.Text);
+            int total = int.Parse(tbkTotal.Text);//总页数
+            if(pageNum >= 1 && pageNum <= total)
+            {
+                RefreshDataGridPage(pageNum);
+            }
+        }
+        /// <summary>
+        /// 跳转到上一页
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnUp_Click(object sender, RoutedEventArgs e)
+        {
+            int currentPage = int.Parse(tbkCurrentPage.Text);//获取当前页数
+            if(currentPage > 1)
+            {
+                RefreshDataGridPage(currentPage - 1);
+            }
+        }
+        /// <summary>
+        /// 跳转到下一页
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnNext_Click(object sender, RoutedEventArgs e)
+        {
+            int total = int.Parse(tbkTotal.Text);//总页数
+            int currentPage = int.Parse(tbkCurrentPage.Text);//获取当前页数
+            if (currentPage < total)
+            {
+                RefreshDataGridPage(currentPage + 1);
+            }
+        }
+    }
 }
