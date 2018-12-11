@@ -188,7 +188,7 @@ namespace NetPlan.Tests
             oneBoard.m_mapAttributes["netBoardType"].m_strLatestValue = 173.ToString();
             oneBoard.m_mapAttributes["netBoardWorkMode"].m_strLatestValue = 2.ToString();
             oneBoard.m_mapAttributes["netBoardIrFrameType"].m_strLatestValue = 1.ToString();
-            oneBoard.m_mapAttributes["netBoardRowStatus"].m_strOriginValue = 6.ToString();
+            oneBoard.m_mapAttributes["netBoardRowStatus"].m_strOriginValue = 4.ToString();
             oneBoard.m_mapAttributes["netBoardType"].m_strOriginValue = 178.ToString();
             oneBoard.m_mapAttributes["netBoardWorkMode"].m_strOriginValue = 2.ToString();
             oneBoard.m_mapAttributes["netBoardIrFrameType"].m_strOriginValue = 2.ToString();
@@ -338,7 +338,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             string[] name =
             {
@@ -363,7 +363,7 @@ namespace NetPlan.Tests
             //校验前提校验
             string property = "where cur.netBoardEntry.netBoardRowStatus != old.netBoardEntry.netBoardRowStatus";
             DevAttributeInfo curBoard = SimAddBoard(".0.0.4", "241", "4");
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             EnumResultType res = rulesHelper.GetPropertyConditionValue(property, curBoard);
             Assert.IsTrue(EnumResultType.success_true == res);
 
@@ -403,7 +403,7 @@ namespace NetPlan.Tests
             string leafName = "value";
             object objValue;
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             EnumResultType res = rulesHelper.MapQueryAndData4Layer(preQueryName, tmp, leafName, out objValue);
             Assert.IsTrue(res == EnumResultType.success_true);
             Assert.IsTrue(objValue.ToString().Equals("1"));
@@ -439,7 +439,7 @@ namespace NetPlan.Tests
             rruInfo.rruTypeSupportCellWorkMode.Add(vd);
             rruInfoList.Add(rruInfo);
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             object objValue;
             EnumResultType res = rulesHelper.MapLibQueryOfDataType(preQueryName, rruInfoList,
                 "rruTypeSupportCellWorkMode", out objValue);
@@ -491,7 +491,7 @@ namespace NetPlan.Tests
             shelfList.Add(shelf);
 
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             object objValue;
             string preQueryName = "lib.shelfEquipment";
             string leafName = "equipNEType";
@@ -525,7 +525,7 @@ namespace NetPlan.Tests
 
             string expr = "query1.equipNETypeName";
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             string fatherName;
             bool res = rulesHelper.GetQueryFatherName(expr, queryDic, out fatherName);
             Assert.IsTrue(res == true);
@@ -561,7 +561,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             Shelf shelf = SimSetLibShelf(10, 12, "150,143,243");
             List<Shelf> shelfList = new List<Shelf>();
@@ -621,7 +621,7 @@ namespace NetPlan.Tests
             await simConnectEnb();
             //mib，this情况
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             Shelf shelf = SimSetLibShelf(10, 12, "150,143,243");
             List<Shelf> shelfList = new List<Shelf>();
@@ -664,7 +664,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<DevAttributeInfo> devAttriList;
             mapMib_this.TryGetValue(EnumDevType.board_rru, out devAttriList);
             Dictionary<string, object> queryDic = new Dictionary<string, object>();
@@ -709,7 +709,7 @@ namespace NetPlan.Tests
             await simConnectEnb();
             //mib，this情况
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             Shelf shelf = SimSetLibShelf(10, 12, "150,143,243");
             List<Shelf> shelfList = new List<Shelf>();
@@ -757,7 +757,7 @@ namespace NetPlan.Tests
             await simConnectEnb();
             //构造几种计算结果false的场景
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             Shelf shelf = SimSetLibShelf(10, 12, "150,143,243");
             List<Shelf> shelfList = new List<Shelf>();
@@ -792,7 +792,7 @@ namespace NetPlan.Tests
             string whereLast;
 
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             bool res = rulesHelper.ConvertNameInWhere(fromName, wherePart, queryDic, whereNameList, out whereLast);
             Assert.IsTrue(res == false);
 
@@ -816,7 +816,7 @@ namespace NetPlan.Tests
             string whereLast;
 
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             //替换mib中
             bool res = rulesHelper.ConvertNameInWhere(fromName, wherePart, queryDic, whereNameList, out whereLast);
             Assert.IsTrue(res == true);
@@ -895,7 +895,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             string name = "mib.cellEntry";
             bool res = rulesHelper.IsMibTable(name);
@@ -932,7 +932,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             List<NetPlan.DevAttributeInfo> boardList;
             mapMib_this.TryGetValue(EnumDevType.board, out boardList);
@@ -965,7 +965,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<NetPlan.DevAttributeInfo> boardList;
             mapMib_this.TryGetValue(EnumDevType.board, out boardList);
             Dictionary<string, object> queryDic = new Dictionary<string, object>();
@@ -1012,7 +1012,7 @@ namespace NetPlan.Tests
             string fatherName = "this.netBoardEntry";
             string strSelect = "it";
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<NetPlan.DevAttributeInfo> boardList;
             mapMib_this.TryGetValue(EnumDevType.board, out boardList);
             Dictionary<string, object> queryDic = new Dictionary<string, object>();
@@ -1047,7 +1047,7 @@ namespace NetPlan.Tests
             string fatherName = "this.netBoardEntry";
             string strSelect = "it.boardType";
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<NetPlan.DevAttributeInfo> boardList;
             mapMib_this.TryGetValue(EnumDevType.board, out boardList);
             List<string> boarTypeList = new List<string> { "173", "241", "258" };
@@ -1100,7 +1100,7 @@ namespace NetPlan.Tests
             await simConnectEnb();
             //查询集合为query变量
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<NetPlan.DevAttributeInfo> boardList;
             mapMib_this.TryGetValue(EnumDevType.board, out boardList);
 
@@ -1141,7 +1141,7 @@ namespace NetPlan.Tests
             await simConnectEnb();
             //outvar非法
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<NetPlan.DevAttributeInfo> boardList;
             mapMib_this.TryGetValue(EnumDevType.board, out boardList);
             string outvar = "query";
@@ -1172,7 +1172,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
 
             //简单的查询
             RoundRule roundRule = new RoundRule();
@@ -1216,7 +1216,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<RoundRule> roundList = new List<RoundRule>();
             RoundRule roundRule = new RoundRule();
             roundRule.round = 1;
@@ -1252,7 +1252,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             List<RoundRule> roundList = new List<RoundRule>();
             RoundRule roundRule = new RoundRule();
             roundRule.round = 1;
@@ -1288,7 +1288,7 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             //测试Contains
             List<RoundRule> roundList = new List<RoundRule>();
             RoundRule roundRule = new RoundRule();
@@ -1318,10 +1318,22 @@ namespace NetPlan.Tests
         {
             await simConnectEnb();
             MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
-            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, "5");
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 5);
             string falseTip;
             bool res = rulesHelper.CheckAllPlanData(out falseTip);
             Assert.IsTrue(res == true);
         }
+
+        [TestMethod()]
+        public async Task CheckAllPlanDataTest1()
+        {
+            await simConnectEnb();
+            MAP_DEVTYPE_DEVATTRI mapMib_this = SimGetNetPlanEnbMib();
+            NPECheckRulesHelper rulesHelper = new NPECheckRulesHelper(mapMib_this, 10);
+            string falseTip;
+            bool res = rulesHelper.CheckAllPlanData(out falseTip);
+            Assert.IsTrue(res == false);
+        }
+
     }
 }

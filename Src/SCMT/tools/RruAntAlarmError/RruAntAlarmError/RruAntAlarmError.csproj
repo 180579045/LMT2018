@@ -94,7 +94,7 @@
     <Compile Include="JsonFile.cs" />
     <Compile Include="NetPlanElement.cs" />
     <Compile Include="NetPlanElementsParser.cs" />
-    <Compile Include="RruTypePortTble.cs" />
+    <Compile Include="rruTypePortTble.cs" />
     <Compile Include="RruTypeTable.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -28,7 +28,7 @@
       {
       "id": 1, 
       "desc" : "修改板卡类型校验/删除规划板卡校验小区状态", 
-      "property":"where (cur.netBoardEntry.netBoardRowStatus == 4 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.netBoardRowStatus == 6 && old.netBoardEntry.netBoardRowStatus == 4)",
+      "property":"where (cur.netBoardEntry.netBoardRowStatus == 4 && old.netBoardEntry.netBoardRowStatus == 4 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.netBoardRowStatus == 6 && old.netBoardEntry.netBoardRowStatus == 4)",
       "exp":[
           {
               "round":"1",
