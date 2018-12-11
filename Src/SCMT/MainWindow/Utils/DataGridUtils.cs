@@ -373,6 +373,17 @@ namespace SCMTMainWindow.Utils
 					return true; // 改变
 				}
 			}
+			else if (typeof(DataGrid_Cell_MIB_BIT) == mibNode.GetType())
+			{
+				DataGrid_Cell_MIB_BIT mibTextBox = (DataGrid_Cell_MIB_BIT)mibNode;
+				if (string.Compare(mibTextBox.m_Content, strValue) != 0)
+				{
+					return true; // 改变
+				}
+
+				return true; // Bits类型暂时先设置为True
+
+			}
 
 			return false;
 		}
