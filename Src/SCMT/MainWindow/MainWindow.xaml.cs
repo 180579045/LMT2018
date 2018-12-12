@@ -1497,7 +1497,7 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				if (leaf.isMib != 1)
+				if (leaf.isMib != 1 || leaf.IsRowStatus())
 				{
 					continue;
 				}
