@@ -40,9 +40,9 @@ namespace NetPlan
             exp = new List<RoundRule>();
         }     
     }
-    public class CommCheckRuleHelper
+    public class CommCheckRuleDeal
     {
-        public CommCheckRuleHelper()
+        public CommCheckRuleDeal()
         {
             
         }

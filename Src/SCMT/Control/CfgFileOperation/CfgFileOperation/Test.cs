@@ -26,7 +26,7 @@ namespace CfgFileOperation
             int cmdNo = -1;
             foreach (var arg in args)
             {
-                Console.WriteLine(String.Format(" arg:({0})", arg));
+                Console.WriteLine(String.Format("Main arg:({0})", arg));
                 int pos = arg.ToString().IndexOf(':');// arg.ToString().IndexOfAny("Command".ToCharArray());
                 if (-1 == pos)
                     continue;
@@ -64,7 +64,7 @@ namespace CfgFileOperation
                     }
                 }
             }
-            Console.WriteLine(String.Format("cmdno={0}.",cmdNo));
+            Console.WriteLine(String.Format("Main End CmdNo={0}.", cmdNo));
             //new Test().CmdlineCreateInitPatch(args);
 
             //TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
@@ -1701,14 +1701,14 @@ namespace CfgFileOperation
             string strDBPath = "";
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
             //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
-
+            BinaryWriter bw = null;
             // reclist
             cfgOp.m_reclistExcel = new CfgParseReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
             //reclist.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
-            cfgOp.m_reclistExcel.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+            cfgOp.m_reclistExcel.ProcessingExcel(bw, excelPath, strFileToDirectory, UeType, cfgOp);
 
             // 自定义文件
             excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\自定义_初配数据文件_ENB_5G_00_00_05.xls";
@@ -1729,13 +1729,13 @@ namespace CfgFileOperation
             string strDBPath = "";
             string strDBName = ".\\Data\\lmdtz\\lm.dtz";
             //cfgOp.CreateCfgFile(strCfgFileName, FileToDirectory, strDBPath, strDBName);
-
+            BinaryWriter bw = null;
             // reclist
             //CfgParseReclistExcel reclist = new CfgParseReclistExcel();
             string excelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
             string strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string UeType = "0:默认";
-            cfgOp.m_reclistExcel.ProcessingExcel(excelPath, strFileToDirectory, UeType, cfgOp);
+            cfgOp.m_reclistExcel.ProcessingExcel(bw, excelPath, strFileToDirectory, UeType, cfgOp);
         }
 
         void testLoadMibTreeIntoMem()

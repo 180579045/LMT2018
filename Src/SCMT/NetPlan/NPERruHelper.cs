@@ -193,8 +193,9 @@ namespace NetPlan
         public List<VD> rruTypeNotMibSupportNetWorkMode { get; set; }
         public List<VD> rruTypeNotMibIrRate { get; set; }
         public List<IrBand> rruTypeNotMibIrBand { get; set; }
+        public int rruTypeNotMibIsPico { get; set; }
 
-		public RruInfo()
+        public RruInfo()
 		{
 			rruTypeFiberLength = new List<VD>();
 			rruTypeIrCompressMode = new List<VD>();

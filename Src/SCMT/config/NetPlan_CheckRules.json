@@ -1,107 +1,107 @@
-{
-  versionId:"20181011.2.0",
-  "netBoardCheck":[
+ï»¿{
+  "versionId":"20181011.2.0",
+  "_netBoardCheck":[
     {
       "id": 1, 
-      "desc" : "Ìí¼Ó/ĞŞ¸Ä°å¿¨Ğ£Ñé²ÛÎ»ÊÇ·ñÖ§³Ö°åĞÍ", 
+      "desc" : "æ·»åŠ /ä¿®æ”¹æ¿å¡æ ¡éªŒæ§½ä½æ˜¯å¦æ”¯æŒæ¿å‹", 
       "property":"where cur.netBoardEntry.netBoardRowStatus == 4",
       "exp":[
           {
-              "round":"1"£¬
-              "rules":"from it in lib.shelfEquipment where it.equipNEType == this.equipType select it.planSlotInfo",
+              "round":"1",
+              "rules":"from it in lib.shelfEquipment where it.equipNEType == this.equipType select it",
               "outvar":"query1"
           },{
-              "round":"2"£¬
-              "rules":"from it in query1 where it.slotIndex == cur.netBoardEntry.netBoardSlotNo select it.supportBoardType",
+              "round":"2",
+              "rules":"from it in query1.planSlotInfo where it.slotIndex == cur.netBoardEntry.netBoardSlotNo select it",
               "outvar":"query2"
           },{
-              "round":"3"£¬
-              "rules":"from it in query2  where it.value == cur.netBoardEntry.netBoardType select it",
+              "round":"3",
+              "rules":"from it in query2.supportBoardType where it.value == cur.netBoardEntry.netBoardType select it",
               "outvar":"query3"
           },{
-              "round":"4"£¬
+              "round":"4",
               "rules":"where query3.Count == 1",
               "outvar":""
           }],
-      "false_tip":"±¾²ÛÎ»²»Ö§³Ö¹æ»®´ËÀàĞÍ°å¿¨"
+      "false_tip":"æœ¬æ§½ä½ä¸æ”¯æŒè§„åˆ’æ­¤ç±»å‹æ¿å¡"
       },
       {
       "id": 1, 
-      "desc" : "ĞŞ¸Ä°å¿¨ÀàĞÍĞ£Ñé/É¾³ı¹æ»®°å¿¨Ğ£ÑéĞ¡Çø×´Ì¬", 
-      "property":"where (cur.netBoardEntry.netBoardRowStatus == 4 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.netBoardRowStatus == 6 && old.netBoardEntry.netBoardRowStatus == 4)",
+      "desc" : "ä¿®æ”¹æ¿å¡ç±»å‹æ ¡éªŒ/åˆ é™¤è§„åˆ’æ¿å¡æ ¡éªŒå°åŒºçŠ¶æ€", 
+      "property":"where (cur.netBoardEntry.netBoardRowStatus == 4 && old.netBoardEntry.netBoardRowStatus == 4 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.netBoardRowStatus == 6 && old.netBoardEntry.netBoardRowStatus == 4)",
       "exp":[
           {
-              "round":"1"£¬
+              "round":"1",
               "rules":"from it in mib.baseBandwidthEntry 
                        where it.baseBandwidthRackNo == cur.netBoardEntry.netBoardRackNo && it.baseBandwidthShelfNo == cur.netBoardEntry.netBoardShelfNo && it.baseBandwidthSlotNo == cur.netBoardEntry.netBoardSlotNo && it.baseBandwidthLcId != -1 && it.baseBandwidthEngagedState != 0
                        select it",
               "outvar":"query1"
           },{
-              "round":"2"£¬
-              "rules":"where query1.Count >= 1",
+              "round":"2",
+              "rules":"where query1.Count == 0",
               "outvar":""
           }],
-       "false_tip":"¸Ã°å¿¨ÉÏÒÑ¾­½¨Á¢±¾µØĞ¡Çø£¬²»ÔÊĞíĞŞ¸Ä»òÕßÉ¾³ı"
+       "false_tip":"è¯¥æ¿å¡ä¸Šå·²ç»å»ºç«‹æœ¬åœ°å°åŒº,ä¸å…è®¸ä¿®æ”¹æˆ–è€…åˆ é™¤"
     }],
-  "netRHUBcheck":[
+  "_netRHUBCheck":[
     {
        "id": 3, 
-       "desc" : "RHUBĞ£ÑéÊÇ·ñÁ¬½Ó°å¿¨", 
+       "desc" : "RHUBæ ¡éªŒæ˜¯å¦è¿æ¥æ¿å¡", 
        "property":"where cur.netRHUBEntry.netRHUBRowStatus == 4",
        "exp":[
           {
-              "round":"1"£¬
+              "round":"1",
               "rules":"where cur.netRHUBEntry.netRHUBAccessRackNo != -1 && cur.netRHUBEntry.netRHUBAccessShelfNo != -1 && cur.netRHUBEntry.netRHUBAccessSlotNo != -1 ",
               "outvar":""
           }],
-       "false_tip":"¸Ã°å¿¨Î´Á¬½Óµ½°å¿¨ÉÏ"
+       "false_tip":"è¯¥æ¿å¡æœªè¿æ¥åˆ°æ¿å¡ä¸Š"
     },{
        "id": 4, 
-       "desc" : "RHUBĞ£ÑéÁ¬½ÓµÄ°å¿¨ÊÇ·ñÒÑ¾­¹æ»®", 
+       "desc" : "RHUBæ ¡éªŒè¿æ¥çš„æ¿å¡æ˜¯å¦å·²ç»è§„åˆ’", 
        "property":"where cur.netRHUBEntry.netRHUBRowStatus == 4",
         "exp":[
           {
-              "round":"1"£¬
+              "round":"1",
               "rules":"from it in this.netBoardEntry 
                        where it.netBoardRackNo == cur.netRHUBEntry.netRHUBAccessRackNo && it.netBoardShelfNo == cur.netRHUBEntry.netRHUBAccessShelfNo && it.netBoardSlotNo == cur.netRHUBEntry.netRHUBAccessSlotNo && it.netBoardRowStatus == 4
                        select it",
               "outvar":"query1"
           },{
-              "round":"2"£¬
+              "round":"2",
               "rules":"where query1.Count == 1",
               "outvar":""
           }],
-       "false_tip":"¸ÃRHUBÉÏÁ¬½ÓµÄ°å¿¨Î´¹æ»®"
+       "false_tip":"è¯¥RHUBä¸Šè¿æ¥çš„æ¿å¡æœªè§„åˆ’"
     },{
        "id": 5, 
-       "desc" : "É¾³ıRHUBĞ£ÑéÁ¬½ÓµÄRRUÉÏÊÇ·ñÓĞ½¨Á¢±¾µØĞ¡Çø", 
+       "desc" : "åˆ é™¤RHUBæ ¡éªŒè¿æ¥çš„RRUä¸Šæ˜¯å¦æœ‰å»ºç«‹æœ¬åœ°å°åŒº", 
        "property":"where cur.netRHUBEntry.netRHUBRowStatus == 6 && old.netRHUBEntry.netRHUBRowStatus == 4",
         "exp":[
           {
-              "round":"1"£¬
+              "round":"1",
               "rules":"from it in this.netRRUEntry 
                        where it.netRRUHubNo == cur.netRHUBEntry.netRHUBNo 
                        select it.netSetRRUNo",
               "outvar":"query1"
           },{
-              "round":"2"£¬
+              "round":"2",
               "rules":"from it in this.netRRUAntennaSettingEntry 
                        where (query1 Contains it.netSetRRUNo) && it.netSetRRUPortWithAntennaRowStatus == 4 && netSetRRUPortSubtoLocalCellId != -1
                        select it.netSetRRUNo",
               "outvar":""
           }],
-       "false_tip":"¸ÃRHUBÉÏ³ĞÔØµÄ±¾µØĞ¡ÇøÒÑ¾­½¨Á¢²»ÔÊĞíÉ¾³ı"
+       "false_tip":"è¯¥RHUBä¸Šæ‰¿è½½çš„æœ¬åœ°å°åŒºå·²ç»å»ºç«‹ä¸å…è®¸åˆ é™¤"
     }
   ],
-  "netAntennaArrayCheck":[],
-  "netRRUCheck":[],
-  "netIROptPlanCheck":[],
-  "netEthPlanCheck":[],
-  "netPRRUCheck":[],
-  "netRRUAntennaSettingCheck":[
+  "_netRRUCheck":[],
+  "_netAntennaArrayCheck":[],
+  "_netIROptPlanCheck":[],
+  "_netEthPlanCheck":[],
+  "_netPRRUCheck":[],
+  "_netRRUAntennaSettingCheck":[
   {
       "id": 1, 
-       "desc" : "É¾³ıRRU²¼ÅäĞ£ÑéĞ¡Çø1", 
+       "desc" : "åˆ é™¤RRUå¸ƒé…æ ¡éªŒå°åŒº1", 
        "property":"where cur.netRRUAntennaSettingEntry.netRRURowStatus == 6",
         "exp":[
           {
@@ -109,10 +109,10 @@
               "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId != -1",
               "outvar":""
           }],
-         "false_tip":"¸ÃRRUÉÏÒÑ¾­ÓĞ¹éÊôµÄĞ¡Çø£¬Ôò²»ÔÊĞíÉ¾³ı"
+         "false_tip":"è¯¥RRUä¸Šå·²ç»æœ‰å½’å±çš„å°åŒº,åˆ™ä¸å…è®¸åˆ é™¤"
     },{
        "id": 2, 
-       "desc" : "É¾³ıRRU²¼ÅäĞ£ÑéĞ¡Çø2", 
+       "desc" : "åˆ é™¤RRUå¸ƒé…æ ¡éªŒå°åŒº2", 
        "property":"where cur.netRRUAntennaSettingEntry.netRRURowStatus == 6",
         "exp":[
           {
@@ -120,10 +120,10 @@
               "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId1 != -1",
               "outvar":""
           }],
-         "false_tip":"¸ÃRRUÉÏÒÑ¾­ÓĞ¹éÊôµÄĞ¡Çø2£¬Ôò²»ÔÊĞíÉ¾³ı"
+         "false_tip":"è¯¥RRUä¸Šå·²ç»æœ‰å½’å±çš„å°åŒº2,åˆ™ä¸å…è®¸åˆ é™¤"
     }],
-  "netLocalCellCheck":[],
-  "nrNetLocalCellCheck":[],
-  "netLocalCellCtrlCheck":[],
-  "nrNetLocalCellCtrlCheck":[],
+  "_netLocalCellCheck":[],
+  "_nrNetLocalCellCheck":[],
+  "_netLocalCellCtrlCheck":[],
+  "_nrNetLocalCellCtrlCheck":[],
 }

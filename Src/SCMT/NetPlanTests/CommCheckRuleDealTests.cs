@@ -27,11 +27,11 @@ namespace NetPlan.Tests
 
     }
     [TestClass()]
-    public class CommCheckRuleHelperTests
+    public class CommCheckRuleDealTests
     {
-        public CommCheckRuleHelperTests()
+        public CommCheckRuleDealTests()
         {
-            Log.SetLogFileName("CommCheckRuleHelperTests.log");
+            Log.SetLogFileName("CommCheckRuleDealTests.log");
         }
         [TestMethod()]
         public void GetParaByQueryExprTest5()
@@ -130,15 +130,15 @@ namespace NetPlan.Tests
         public void ExpressionIsConditionOrQueryTest()
         {
             string expr = " where this.board.rowStatus == 4";
-            EXPRESSIONTYPE type = CommCheckRuleHelper.ExpressionIsConditionOrQuery(expr);
+            EXPRESSIONTYPE type = CommCheckRuleDeal.ExpressionIsConditionOrQuery(expr);
             Assert.IsTrue(type == EXPRESSIONTYPE.CONDITIONTYPE);
 
             expr = " from it in this.board \r\n where this.board.rowStatus == 4 \r\n select it";
-            type = CommCheckRuleHelper.ExpressionIsConditionOrQuery(expr);
+            type = CommCheckRuleDeal.ExpressionIsConditionOrQuery(expr);
             Assert.IsTrue(type == EXPRESSIONTYPE.QUERYTYPE);
 
             expr = "  it in this.board \r\n where this.board.rowStatus == 4 \r\n select it";
-            type = CommCheckRuleHelper.ExpressionIsConditionOrQuery(expr);
+            type = CommCheckRuleDeal.ExpressionIsConditionOrQuery(expr);
             Assert.IsTrue(type == EXPRESSIONTYPE.INVALIDTYPE);
         }
 
@@ -147,12 +147,12 @@ namespace NetPlan.Tests
         {
             string expr = "  it in this.board \r\n where this.board.rowStatus == 4 \r\n select it";
             List<string> paraList;
-            bool res = CommCheckRuleHelper.GetParaByConditionalExp(expr, out paraList);
+            bool res = CommCheckRuleDeal.GetParaByConditionalExp(expr, out paraList);
             Assert.IsTrue(res == false);
 
             expr = " where cur.board.rowStatus == 4";
             List<string> realParaList = new List<string>() { "cur.board.rowStatus", "4" };
-            res = CommCheckRuleHelper.GetParaByConditionalExp(expr, out paraList);
+            res = CommCheckRuleDeal.GetParaByConditionalExp(expr, out paraList);
             Assert.IsTrue(res == true);
             int loop = 0;
             foreach (var tmp in realParaList)
@@ -170,12 +170,12 @@ namespace NetPlan.Tests
             string calRes;
             Dictionary<string, object> paraDic = new Dictionary<string, object>();
             paraDic.Add("cur.board.rowStatus", "6");
-            bool res = CommCheckRuleHelper.CalculateConditionExpr(expr, paraDic, out calRes);
+            bool res = CommCheckRuleDeal.CalculateConditionExpr(expr, paraDic, out calRes);
             Assert.IsTrue(res == true);
             Assert.IsTrue(calRes == false.ToString());
 
             expr = "  it in this.board \r\n where this.board.rowStatus == 4 \r\n select it";
-            res = CommCheckRuleHelper.CalculateConditionExpr(expr, paraDic, out calRes);
+            res = CommCheckRuleDeal.CalculateConditionExpr(expr, paraDic, out calRes);
             Assert.IsTrue(res == false);
         }
 
@@ -184,11 +184,11 @@ namespace NetPlan.Tests
         {
             string expr = " where cur.board.rowStatus == 4";
             Dictionary<string, string> paraDic;
-            bool res = CommCheckRuleHelper.SplitQueryExpr(expr, out paraDic);
+            bool res = CommCheckRuleDeal.SplitQueryExpr(expr, out paraDic);
             Assert.IsTrue(res == false);
 
             expr = " from it in this.board \r\n where this.board.rowStatus == 4 \r\n select it";
-            res = CommCheckRuleHelper.SplitQueryExpr(expr, out paraDic);
+            res = CommCheckRuleDeal.SplitQueryExpr(expr, out paraDic);
             Assert.IsTrue(res == true);
             Assert.IsTrue(paraDic.Count == 3);
             string outStr;
@@ -200,7 +200,7 @@ namespace NetPlan.Tests
             Assert.IsTrue(outStr.Equals("where this.board.rowStatus == 4"));
 
             expr = " from it in this.board select it";
-            res = CommCheckRuleHelper.SplitQueryExpr(expr, out paraDic);
+            res = CommCheckRuleDeal.SplitQueryExpr(expr, out paraDic);
             Assert.IsTrue(res == true);
             Assert.IsTrue(paraDic.Count == 2);
             Assert.IsTrue(paraDic.TryGetValue("selectPart", out outStr));
@@ -209,7 +209,7 @@ namespace NetPlan.Tests
             Assert.IsFalse(paraDic.TryGetValue("wherePart", out outStr));
 
             expr = " select it";
-            res = CommCheckRuleHelper.SplitQueryExpr(expr, out paraDic);
+            res = CommCheckRuleDeal.SplitQueryExpr(expr, out paraDic);
             Assert.IsTrue(res == false);
         }
 
@@ -218,11 +218,11 @@ namespace NetPlan.Tests
         {
             string expr = " select it";
             int length;
-            int res = CommCheckRuleHelper.GetIndex(expr, "select ", out length);
+            int res = CommCheckRuleDeal.GetIndex(expr, "select ", out length);
             Assert.IsTrue(res == 1);
             Assert.IsTrue(length == 7);
 
-            res = CommCheckRuleHelper.GetIndex(expr, "where ", out length);
+            res = CommCheckRuleDeal.GetIndex(expr, "where ", out length);
             Assert.IsTrue(res == -1);
         }
 
@@ -234,7 +234,7 @@ namespace NetPlan.Tests
             splitDic.Add("selectPart", "select it");
             splitDic.Add("wherePart", "where it.netBoardRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netBoardShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo");
             splitDic.Add("fromPart", "from it in mib.netBoardEntry");
-            bool res = CommCheckRuleHelper.GetParaByQueryExpr(splitDic, out paraDic);
+            bool res = CommCheckRuleDeal.GetParaByQueryExpr(splitDic, out paraDic);
             Assert.IsTrue(res == true && paraDic.Count == 3);
             List<string> selectParaList;
             List<string> whereParaList;
@@ -265,7 +265,7 @@ namespace NetPlan.Tests
             Dictionary<string, List<string>> paraDic;
             splitDic.Add("selectPart", "select it");
             splitDic.Add("wherePart", "where it.netBoardRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netBoardShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo");
-            bool res = CommCheckRuleHelper.GetParaByQueryExpr(splitDic, out paraDic);
+            bool res = CommCheckRuleDeal.GetParaByQueryExpr(splitDic, out paraDic);
             Assert.IsTrue(res == false);
         }
 
@@ -278,7 +278,7 @@ namespace NetPlan.Tests
             splitDic.Add("selectPart", "select it.netBoardType");
             splitDic.Add("wherePart", "where it.netBoardRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netBoardShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo");
             splitDic.Add("fromPart", "from it in mib.netBoardEntry");
-            bool res = CommCheckRuleHelper.GetParaByQueryExpr(splitDic, out paraDic);
+            bool res = CommCheckRuleDeal.GetParaByQueryExpr(splitDic, out paraDic);
             Assert.IsTrue(res == true);
         }
 
@@ -289,7 +289,7 @@ namespace NetPlan.Tests
             Dictionary<string, object> paraValueDic = new Dictionary<string, object>();
             paraValueDic.Add("cur.board.rowStatus", 6);
             List<object> paramList;
-            string res = CommCheckRuleHelper.GetFilterWhere(expr, paraValueDic, out paramList);
+            string res = CommCheckRuleDeal.GetFilterWhere(expr, paraValueDic, out paramList);
             Assert.IsTrue(res == " where @0 == 4");
             Assert.IsTrue(paramList.Count == 1 && Convert.ToInt32(paramList[0]) == 6);
         }
@@ -303,7 +303,7 @@ namespace NetPlan.Tests
             paraValueDic.Add("cur.netIROptPlanEntry.netIROfpPortSlotNo", "6");//如果是字符串
 
             List<object> paramList;
-            string res = CommCheckRuleHelper.GetFilterWhere(expr, paraValueDic, out paramList);
+            string res = CommCheckRuleDeal.GetFilterWhere(expr, paraValueDic, out paramList);
             Assert.IsTrue(res == "where it.netBoardRackNo == @0 && it.netBoardShelfNo == @1 && it.netBoardSlotNo == @2");
             Assert.IsTrue(paramList.Count == 3 && Convert.ToInt32(paramList[0]) == 0 && Convert.ToInt32(paramList[1]) == 0 && Convert.ToString(paramList[2]) == "6");
         }
@@ -349,7 +349,7 @@ namespace NetPlan.Tests
             paraValueDic.Add("cur.netIROptPlanEntry.netIROfpPortRackNo", 0);
             paraValueDic.Add("cur.netIROptPlanEntry.netIROfpPortShelfNo", 0);
             List<object> paramList;
-            string res = CommCheckRuleHelper.GetFilterWhere(expr, paraValueDic, out paramList);
+            string res = CommCheckRuleDeal.GetFilterWhere(expr, paraValueDic, out paramList);
             Assert.IsTrue(res == "where it.netBoardRackNo == @0 && it.netBoardShelfNo == @1 && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo");
         }
 
@@ -361,7 +361,7 @@ namespace NetPlan.Tests
             List<string> selectParaList;
             List<string> whereParaList;
             List<string> fromParaList;
-            bool res = CommCheckRuleHelper.GetParaByQueryExpr(expr, out paraDic);
+            bool res = CommCheckRuleDeal.GetParaByQueryExpr(expr, out paraDic);
             Assert.IsTrue(res == true);
             Assert.IsTrue(paraDic.TryGetValue("selectParaList", out selectParaList) && selectParaList.Count == 1 && selectParaList[0] == "it");
             Assert.IsTrue(paraDic.TryGetValue("fromParaList", out fromParaList) && fromParaList.Count == 1 && fromParaList[0] == "this.board");
@@ -376,7 +376,7 @@ namespace NetPlan.Tests
             List<string> selectParaList;
             List<string> whereParaList;
             List<string> fromParaList;
-            bool res = CommCheckRuleHelper.GetParaByQueryExpr(expr, out paraDic);
+            bool res = CommCheckRuleDeal.GetParaByQueryExpr(expr, out paraDic);
             Assert.IsTrue(res == false);
         }
 
@@ -390,11 +390,11 @@ namespace NetPlan.Tests
             paraDic.Add("it.id", "1");
             string wherePart = "query1 Contains it.id";
             List<object> paramList;
-            string res = CommCheckRuleHelper.GetFilterWhere(wherePart, paraDic, out paramList);
+            string res = CommCheckRuleDeal.GetFilterWhere(wherePart, paraDic, out paramList);
             Assert.IsTrue(res.Equals("@0.Contains (it.id)"));
 
             wherePart = "(query1 Contains it.id) && (it.id != -1)";            
-            res = CommCheckRuleHelper.GetFilterWhere(wherePart, paraDic, out paramList);
+            res = CommCheckRuleDeal.GetFilterWhere(wherePart, paraDic, out paramList);
             Assert.IsTrue(res.Equals("(@0.Contains (it.id)) && (it.id != -1)"));
         }
     }

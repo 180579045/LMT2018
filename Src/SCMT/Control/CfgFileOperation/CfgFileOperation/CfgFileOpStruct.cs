@@ -1963,7 +1963,7 @@ namespace CfgFileOpStruct
             string strRruTypeSupportCellWorkMode = excelRead(RRuInfo, "rruTypeSupportCellWorkMode");
             int pos = 0;
             Dictionary<string, string> CellWorkMode = new Dictionary<string, string>() {
-                { "LTE","LTE TDD"},{ "TD","TD-SCDMA"},{ "NR","NR"},
+                { "LTE","LTE TDD"},{ "TD","TD-SCDMA"},{ "NR","NR"}, { "FDD","LTE FDD"}
             };
             while (true)
             {
