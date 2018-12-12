@@ -65,7 +65,13 @@ namespace SCMTMainWindow.View
             {
                 Connector sourceConnector = this.sourceConnector;
                 Connector sinkConnector = this.HitConnector;
-                Connection newConnection = new Connection(sourceConnector, sinkConnector);
+
+                if(this.sourceConnector.Connections.Count > 0 || this.hitConnector.Connections.Count > 0)
+                {
+                    MessageBox.Show("只允许连接一条线");
+                    AfterReturnOnMouseMove();
+                    return;
+                }
 
                 //这里是创建连接的地方，需要下发给基站
 
@@ -124,7 +130,40 @@ namespace SCMTMainWindow.View
                 else
                 {
                     srcPoint.portType = sourceConnector.PortType;
-                    dstPoint.portType = sinkConnector.PortType;
+                    if(sinkConnector.PortType == EnumPortType.bbu_to_other)
+                    {
+                        if(sourceConnector.DevType == EnumDevType.rru)
+                        {
+                            dstPoint.portType = EnumPortType.bbu_to_rru;
+                        }else if(sourceConnector.DevType == EnumDevType.rhub)
+                        {
+                            dstPoint.portType = EnumPortType.bbu_to_rhub;
+                        }
+                    }else if(sinkConnector.PortType == EnumPortType.rru_to_other)
+                    {
+                        if(sourceConnector.DevType == EnumDevType.board)
+                        {
+                            dstPoint.portType = EnumPortType.rru_to_bbu;
+                        }else if(sourceConnector.DevType == EnumDevType.rru)
+                        {
+                            dstPoint.portType = EnumPortType.rru_to_rru;
+                        }else if(sourceConnector.DevType == EnumDevType.rhub)
+                        {
+                            dstPoint.portType = EnumPortType.pico_to_rhub;
+                        }
+                    }else if(sinkConnector.PortType == EnumPortType.rhub_to_other)
+                    {
+                        if(sourceConnector.DevType == EnumDevType.board)
+                        {
+                            dstPoint.portType = EnumPortType.rhub_to_bbu;
+                        }else if(sourceConnector.DevType == EnumDevType.rhub)
+                        {
+                            dstPoint.portType = EnumPortType.rhub_to_rhub;
+                        }
+                    }else
+                    {
+                        dstPoint.portType = sinkConnector.PortType;
+                    }
                 }
 
                 if(sinkConnector.ParentDesignerItem.NPathNumber > 16 && sourceConnector.ParentDesignerItem.NPathNumber > 16)
@@ -132,6 +171,7 @@ namespace SCMTMainWindow.View
                     if(sinkConnector.ParentDesignerItem.NPathNumber != sourceConnector.ParentDesignerItem.NPathNumber)
                     {
                         MessageBox.Show("暂不支持这种连接");
+                        AfterReturnOnMouseMove();
                         return;
                     }
                     for(int i =1; i <= sinkConnector.ParentDesignerItem.NPathNumber; i++)
@@ -141,9 +181,12 @@ namespace SCMTMainWindow.View
                         if (!MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
                         {
                             MessageBox.Show("AddLink 失败");
+                            AfterReturnOnMouseMove();
                             return;
                         }
                     }
+
+                    Connection newConnection = new Connection(sourceConnector, sinkConnector);
                     Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
                     this.designerCanvas.Children.Add(newConnection);
 
@@ -157,6 +200,7 @@ namespace SCMTMainWindow.View
                 {
                     if (MibInfoMgr.GetInstance().AddLink(srcPoint, dstPoint))
                     {
+                        Connection newConnection = new Connection(sourceConnector, sinkConnector);
                         Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
                         this.designerCanvas.Children.Add(newConnection);
 
@@ -175,8 +219,13 @@ namespace SCMTMainWindow.View
                         MessageBox.Show("AddLink 失败");
                     }
                 }
-                
+
             }
+            AfterReturnOnMouseMove();
+        }
+
+        private void AfterReturnOnMouseMove()
+        {
             if (HitDesignerItem != null)
             {
                 this.HitDesignerItem.IsDragConnectionOver = false;
