@@ -356,15 +356,15 @@ namespace SCMTOperationCore.Message.SI
 	public class SI_STRU_FileInfo_V2 : IASerialize
 	{
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
-		public byte[] s8FileName;    /*40--->70文件名 2014.12.11 */
+		public byte[] s8FileName;
 
 		public uint u32FileLength;					/* 文件字节长度 */
 		public SIDOS_DATE_TIME struFileTime;		/* 文件时间 */
 
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = SiMacroDef.SI_FILEVER_MAX_LEN)]
 		public byte[] s8FileMicroVer;				/* 文件小版本 */
-
-		public byte u8RdWrAttribute;				/* 文件读写属性 0:可读可写 1：只读 */
+		public byte u8RdWrAttribute;                /* 文件读写属性 0:可读可写 1：只读 */
+		public byte[] u8Pad;						// 补齐3个字节
 
 		public SI_STRU_FileInfo_V2()
 		{
@@ -388,7 +388,7 @@ namespace SCMTOperationCore.Message.SI
 			int used = 0;
 			used += SerializeHelper.SerializeBytes(ref s8FileName, 0, bytes, offset + used, 70);
 
-			used += 2;		// 2个字节补齐
+			used += 2;		// 2个字节补齐(自动补齐)
 
 			used += SerializeHelper.DeserializeInt32(bytes, offset + used, ref u32FileLength);
 			used += struFileTime.DeserializeToStruct(bytes, offset + used);
@@ -440,7 +440,9 @@ namespace SCMTOperationCore.Message.SI
 			}
 
 			int used = 0;
-			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_year);
+			//used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_year);
+			dosdt_year = BitConverter.ToUInt32(bytes, used + offset);
+			used += 4;
 			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_month);
 			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_day);
 			used += SerializeHelper.DeserializeInt32(bytes, used + offset, ref dosdt_hour);
