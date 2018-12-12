@@ -80,7 +80,7 @@ namespace CfgFileOperation
                 //strExcelPageArray[0] = "gNB参数表-13";
                 //strExcelPageArray[1] = "Cell参数表-14";
                 //strExcelPageArray[]={"gNB参数表-x3", "Cell参数表-y3"};
-                return ProcessingExcelByHuaWei(bw, strExcelPath, cfgOp);
+                //return ProcessingExcel_5GHuaWei(bw, strExcelPath, cfgOp);
             }
             else
             {
