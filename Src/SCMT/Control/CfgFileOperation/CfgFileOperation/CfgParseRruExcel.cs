@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -77,37 +78,28 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="strExcelPath"></param>
         /// <param name="strSheet"></param>
-        public void ProcessingExcel(string strExcelPath, string strSheet)
+        public bool ProcessingExcel(BinaryWriter bw, string strExcelPath, string strSheet)
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strSheet))
-                return;
-            //CfgExcelOp excelOp = new CfgExcelOp();
-            //var excelOp = CfgExcelOp.GetInstance();
-            //if (excelOp == null)
-            //    return;
-
-            //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RRU基本信息表.xls";
-
-            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            //if (wbook == null)
-            //    return;
-            //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strSheet);//
-            //if (wks == null)
-            //    return;
-
+                return false;
             // 处理所有数据
-            ProcessingExcelRru(strExcelPath, strSheet);
+            return ProcessingExcelRru(bw, strExcelPath, strSheet);
         }
         /// <summary>
         /// 处理"波束扫描原始值"的内容
         /// </summary>
         /// <param name="FilePath"></param>
-        private void ProcessingExcelRru(string strExcelPath, string strSheet)
+        private bool ProcessingExcelRru(BinaryWriter bw, string strExcelPath, string strSheet)
         {
             if ((RruInfo == null))
-                return;
+                return false;
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = excelOp.GetRowCount(strExcelPath, strSheet);                  // 获取行数
+            if (-1 == rowCount)
+            {
+                bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
+                return false;
+            }
 
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
@@ -144,7 +136,7 @@ namespace CfgFileOperation
                 PreInfo = CurInfo;
                 RruInfo.Add(CurInfo);
             }
-
+            return true;
         }
 
         /// <summary>
@@ -428,7 +420,7 @@ namespace CfgFileOperation
         public void TestMdbAndExcel(string strExcelPath, string strMdbPath)
         {
             string sheetName = "RRU基本信息表";
-            ProcessingExcel(strExcelPath, sheetName);
+            ProcessingExcel(null,strExcelPath, sheetName);
             List<RRuTypeTabStru> rruList = GetRruTypeInfoData();
             List<RRuTypePortTabStru> rruPortL = GetRruTypePortInfoData();
 
