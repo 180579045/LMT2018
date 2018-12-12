@@ -6,6 +6,7 @@ using CommonUtility;
 using DataBaseUtil;
 using LinkPath;
 using LogManager;
+using MsgQueue;
 using NetPlan.DevLink;
 using SCMTOperationCore.Elements;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
@@ -58,7 +59,7 @@ namespace NetPlan
 				}
 			}
 
-			NPLastErrorHelper.SetLastError($"未找到索引为{strIndex}的{type.ToString()}设备");
+			Log.Error($"未找到索引为{strIndex}的{type.ToString()}设备");
 			return null;
 		}
 
@@ -242,7 +243,6 @@ namespace NetPlan
 				!dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType))
 			{
 				Log.Error("设置新板卡属性失败");
-				NPLastErrorHelper.SetLastError("设备新板卡属性失败");
 				return null;
 			}
 
@@ -250,6 +250,8 @@ namespace NetPlan
 			{
 				return null;
 			}
+
+			InfoTip($"添加索引为.{slot}的{strBoardType}板卡成功");
 
 			return dev;
 		}
@@ -266,7 +268,6 @@ namespace NetPlan
 			if (null == seqIndexList || string.IsNullOrEmpty(strWorkMode))
 			{
 				Log.Error("传入RRU索引列表为null；工作模式为null或空");
-				NPLastErrorHelper.SetLastError("新增RRU失败，传入RRU索引列表或工作模式为空");
 				return null;
 			}
 
@@ -284,8 +285,7 @@ namespace NetPlan
 				if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString()) ||
 					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
 				{
-					Log.Error("设置RRU参数netRRUTypeIndex、netRRUOfpWorkMode失败");
-					NPLastErrorHelper.SetLastError("设置RRU工作模式失败");
+					ErrorTip($"设置索引为.{seqIndex}天线阵工作模式信息失败");
 					return null;
 				}
 
@@ -294,7 +294,8 @@ namespace NetPlan
 					return null;
 				}
 
-				Log.Debug($"编号为{seqIndex}的RRU设备添加成功");
+				InfoTip($"添加索引为.{seqIndex}的天线阵成功");
+
 				rruList.Add(newRru);
 			}
 
@@ -327,14 +328,14 @@ namespace NetPlan
 			var dev = new RHubDevAttri(nRhubNo, strDevVer);
 			if (dev.m_mapAttributes.Count == 0)
 			{
-				Log.Error($"编号为{nRhubNo}的rhub设备属性数量为0");
+				ErrorTip($"新增编号为{nRhubNo}rhub设备出现未知错误");
 				return null;
 			}
 
 			var devIndex = dev.m_strOidIndex;
 			if (HasSameIndexDev(m_mapAllMibData, type, devIndex))
 			{
-				Log.Error($"已经存在编号为{nRhubNo}的rhub设备，添加失败");
+				ErrorTip($"已经存在编号为{nRhubNo}的rhub设备，操作失败");
 				return null;
 			}
 
@@ -342,13 +343,13 @@ namespace NetPlan
 
 			if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
 			{
-				Log.Error("设置rhub参数netRHUBOfpWorkMode失败");
+				ErrorTip($"设置编号为{nRhubNo}的rhub设备工作模式参数失败");
 				return null;
 			}
 
 			if (!dev.SetFieldOriginValue("netRHUBType", strDevVer))
 			{
-				Log.Error("设置rhub参数netRHUBType失败");
+				ErrorTip($"设置编号为{nRhubNo}的rhub设备类型参数失败");
 				return null;
 			}
 
@@ -357,7 +358,7 @@ namespace NetPlan
 				return null;
 			}
 
-			Log.Debug($"编号为{nRhubNo}的rhub设备添加成功");
+			Log.Debug($"新增编号为{nRhubNo}的rhub设备成功");
 
 			return dev;
 		}
@@ -429,7 +430,7 @@ namespace NetPlan
 			var linkType = EnumDevType.unknown;
 			if (!GetLinkTypeBySrcDstEnd(srcEndpoint, dstEndpoint, ref linkType))
 			{
-				Log.Error("获取连接类型失败");
+				ErrorTip($"新增连接失败，连接两端详细信息：\r\n源端：{srcEndpoint}\r\n目的端：{dstEndpoint}");
 				return false;
 			}
 
@@ -438,7 +439,7 @@ namespace NetPlan
 			var handler = LinkFactory.CreateLinkHandler(linkType);
 			if (null == handler)
 			{
-				Log.Error($"连接类型{linkType.ToString()}尚未提供支持");
+				ErrorTip($"新增连接失败，连接类型{linkType.ToString()}尚未支持");
 				return false;
 			}
 
@@ -490,7 +491,7 @@ namespace NetPlan
 			var dev = GetDevAttributeInfo(strIndex, devType);
 			if (null == dev)
 			{
-				Log.Error($"未找到类型为{devType.ToString()}索引为{strIndex}的记录");
+				ErrorTip($"删除索引为{strIndex}的{devType.ToString()}设备失败，未找到对应的记录");
 				return false;
 			}
 
@@ -507,6 +508,8 @@ namespace NetPlan
 
 				DelDevFromMap(m_mapAllMibData, devType, dev);
 			}
+
+			InfoTip($"删除索引为{strIndex}的{devType.ToString()}设备成功");
 			return true;
 		}
 
@@ -937,6 +940,19 @@ namespace NetPlan
 			}
 		}
 
+		public static void ErrorTip(string strTip)
+		{
+			var msg = $"[网络规划] {strTip}";
+			ShowLogHelper.Show(msg, "SCMT", InfoTypeEnum.ENB_OTHER_INFO_IMPORT);
+			Log.Error(msg);
+		}
+
+		public static void InfoTip(string strTip)
+		{
+			ShowLogHelper.Show($"[网络规划] {strTip}", "SCMT", InfoTypeEnum.ENB_OTHER_INFO);
+		}
+
+
 		#endregion 公共接口
 
 		#region 私有接口
@@ -1077,8 +1093,7 @@ namespace NetPlan
 				var oldDev = GetSameIndexDev(devList, devIndex);
 				if (null != oldDev && RecordDataType.WaitDel != oldDev.m_recordType)
 				{
-					Log.Error($"存在相同类型{type.ToString()}相同索引{devIndex}的设备");
-					NPLastErrorHelper.SetLastError($"已存在编号为{lastIndexValue}的{type.ToString()}设备");
+					ErrorTip($"已存在编号为{lastIndexValue}的{type.ToString()}设备");
 					return null;
 				}
 			}

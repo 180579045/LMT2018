@@ -62,8 +62,8 @@ namespace NetPlan
 			}
 
 			//var enbType = NodeBControl.GetInstance().GetEnbTypeByIp(target);
-			var enbType = EnbTypeEnum.ENB_EMB6116;
-			var npMibEntryList = GetAllMibEntryAndCmds(enbType);
+			//var enbType = EnbTypeEnum.ENB_EMB6116;
+			//var npMibEntryList = GetAllMibEntryAndCmds(enbType);
 
 			// 根据MIB入口名得到Get命令
 			var getCmdsList = GetCmdList(strEntryName, EnumSnmpCmdType.Get);
@@ -129,9 +129,9 @@ namespace NetPlan
 		/// <summary>
 		/// 根据version和设备类型，获取对应的Set命令列表
 		/// </summary>
-		/// <param name="strVersion"></param>
 		/// <param name="devType"></param>
 		/// <param name="cmdType"></param>
+		/// <param name="enbType"></param>
 		/// <returns></returns>
 		public List<string> GetCmdList(EnumDevType devType, EnumSnmpCmdType cmdType, EnbTypeEnum enbType)
 		{
@@ -183,7 +183,6 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strEntryName"></param>
 		/// <param name="cmdType"></param>
-		/// <param name="enbType"></param>
 		/// <returns></returns>
 		public List<string> GetCmdList(string strEntryName, EnumSnmpCmdType cmdType)
 		{

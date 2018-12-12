@@ -48,7 +48,7 @@ namespace NetPlan.DevLink
 			var rruRs = rru.GetNeedUpdateValue("netRRURowStatus");
 			if (null == rruRs)
 			{
-				Log.Error($"从RRU{rru.m_strOidIndex}查询netRRURowStatus属性值失败");
+				m_strLatestError = $"获取索引为{rru.m_strOidIndex}的rru设备netRRURowStatus字段值失败";
 				return false;
 			}
 
@@ -60,26 +60,27 @@ namespace NetPlan.DevLink
 
 			if (!rru.SetFieldLatestValue("netRRUAccessRackNo", bbi.strRackNo))
 			{
-				Log.Error($"RRU{rru.m_strOidIndex}设置字段netRRUAccessRackNo值失败");
+				m_strLatestError = $"设置索引为{rru.m_strOidIndex}的rru设备netRRUAccessRackNo字段值{bbi.strRackNo}失败";
 				return false;
 			}
 
 			if (!rru.SetFieldLatestValue("netRRUAccessShelfNo", bbi.strShelfNo))
 			{
-				Log.Error($"RRU{rru.m_strOidIndex}设置字段netRRUAccessShelfNo值失败");
+				m_strLatestError = $"设置索引为{rru.m_strOidIndex}的rru设备netRRUAccessShelfNo字段值{bbi.strShelfNo}失败";
+				Log.Error(m_strLatestError);
 				return false;
 			}
 
 			if (!rru.SetFieldLatestValue("netRRUAccessBoardType", bbi.strBoardCode))
 			{
-				Log.Error($"RRU{rru.m_strOidIndex}设置字段netRRUAccessBoardType值失败");
+				m_strLatestError = $"设置索引为{rru.m_strOidIndex}的rru设备netRRUAccessBoardType字段值{bbi.strBoardCode}失败";
 				return false;
 			}
 
 			var slotMibName = nRruIrPort == 1 ? "netRRUAccessSlotNo" : $"netRRUOfp{nRruIrPort}SlotNo";
 			if (!rru.SetFieldLatestValue(slotMibName, bbi.strSlotNo))
 			{
-				Log.Error($"RRU{rru.m_strOidIndex}设置字段{slotMibName}值失败");
+				m_strLatestError = $"设置索引为{rru.m_strOidIndex}的rru设备{slotMibName}字段值{bbi.strSlotNo}失败";
 				return false;
 			}
 
@@ -98,14 +99,14 @@ namespace NetPlan.DevLink
 			var workMode = rru.GetNeedUpdateValue("netRRUOfpWorkMode", false);
 			if (null == workMode)
 			{
-				Log.Error($"从rru{rru.m_strOidIndex}查询netRRUOfpWorkMode属性值失败");
+				m_strLatestError = $"获取索引为{rru.m_strOidIndex}的rru设备netRRUOfpWorkMode字段值失败";
 				return false;
 			}
 
 			var ofpPortMib = $"netRRUOfp{nRruIrPort}AccessOfpPortNo";
 			if (!rru.SetFieldLatestValue(ofpPortMib, nBoardIrPort.ToString()))
 			{
-				Log.Error($"RRU{rru.m_strOidIndex}设置字段{ofpPortMib}值失败");
+				m_strLatestError = $"设置索引为{rru.m_strOidIndex}的rru设备{ofpPortMib}字段值{nBoardIrPort}失败";
 				return false;
 			}
 
@@ -114,7 +115,7 @@ namespace NetPlan.DevLink
 			var ofpLinePosMib = $"netRRUOfp{nRruIrPort}AccessLinePosition";
 			if (!rru.SetFieldLatestValue(ofpLinePosMib, lp))
 			{
-				Log.Error($"RRU{rru.m_strOidIndex}设置字段{ofpPortMib}值失败");
+				m_strLatestError = $"设置索引为{rru.m_strOidIndex}的rru设备{ofpLinePosMib}字段值{lp}失败";
 				return false;
 			}
 
@@ -139,39 +140,8 @@ namespace NetPlan.DevLink
 				return devList.FirstOrDefault(dev => dev.m_strOidIndex == strIndex);
 			}
 
-			NPLastErrorHelper.SetLastError($"未找到索引为{strIndex}的{type.ToString()}设备");
+			Log.Error($"未找到索引为{strIndex}的{type.ToString()}设备");
 			return null;
-		}
-
-		public bool SetDevFieldValue(DevAttributeInfo dev, string strFieldName, string strValue)
-		{
-			if (null == dev || string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strValue))
-			{
-				Log.Error("设置设备字段值传入参数为null");
-				return false;
-			}
-
-			var mapAttributes = dev.m_mapAttributes;
-			if (null == mapAttributes || mapAttributes.Count == 0)
-			{
-				Log.Error("设备的属性为空");
-				return false;
-			}
-
-			if (!mapAttributes.ContainsKey(strFieldName))
-			{
-				Log.Error($"索引为{dev.m_strOidIndex}的设备没有找到{strFieldName}属性，无法设置属性值");
-				return false;
-			}
-
-			var property = mapAttributes[strFieldName];
-			if (null == property)
-			{
-				Log.Error($"索引为{dev.m_strOidIndex}的设备{strFieldName}属性值为null");
-				return false;
-			}
-
-			return property.SetLatestValue(strValue);
 		}
 
 		protected static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType type, DevAttributeInfo newDev)
@@ -258,16 +228,23 @@ namespace NetPlan.DevLink
 		{
 			if (!mapOriginData.ContainsKey(recordType))
 			{
+				Log.Error($"不存在类型为{recordType.ToString()}的记录");
 				return false;
 			}
 
 			var devList = mapOriginData[recordType];
 			if (null == devList || devList.Count == 0)
 			{
+				Log.Error($"不存在类型为{recordType.ToString()}的记录");
 				return false;
 			}
 
 			var dev = devList.FirstOrDefault(tmp => tmp.m_strOidIndex == strRecordIndex);
+			if (null == dev)
+			{
+				Log.Error($"不存在类型为{recordType.ToString()}，索引为{strRecordIndex}的记录");
+			}
+
 			return (null != dev);
 		}
 
@@ -291,6 +268,10 @@ namespace NetPlan.DevLink
 			}
 
 			var dev = devList.FirstOrDefault(tmp => tmp.m_strOidIndex == strRecordIndex);
+			if (null != dev)
+			{
+				Log.Error($"已经存在类型为{recordType.ToString()}，索引为{strRecordIndex}的记录");
+			}
 			return (null == dev);
 		}
 
@@ -318,6 +299,8 @@ namespace NetPlan.DevLink
 		private readonly object m_syncObj = new object();
 
 		public MAP_DEVTYPE_DEVATTRI mapOriginData;
+
+		protected string m_strLatestError;
 
 		#endregion 私有数据区
 	}

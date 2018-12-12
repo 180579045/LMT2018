@@ -80,7 +80,6 @@
     <Compile Include="NPECheckRulesHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />
     <Compile Include="NPERruHelper.cs" />
-    <Compile Include="NPLastErrorHelper.cs" />
     <Compile Include="NPRruToCellInfo.cs" />
     <Compile Include="NPSnmpOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
