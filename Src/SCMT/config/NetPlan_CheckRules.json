@@ -38,7 +38,7 @@
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"where query1.Count >= 1",
+              "rules":"where query1.Count == 0",
               "outvar":""
           }],
        "false_tip":"该板卡上已经建立本地小区,不允许修改或者删除"

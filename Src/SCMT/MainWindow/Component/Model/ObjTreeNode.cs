@@ -427,6 +427,7 @@ namespace SCMTMainWindow
 			SubObj_Lsit.Remove(obj);
 		}
 
+/*
 		/// <summary>
 		/// 点击树枝节点时的处理方法;
 		/// </summary>
@@ -521,6 +522,7 @@ namespace SCMTMainWindow
 			//SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
 			//msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
 		}
+*/
 
 		/// <summary>
 		/// 点击树枝节点时的处理方法;
@@ -700,6 +702,7 @@ namespace SCMTMainWindow
 			UpdataDataGrid(getNextResList, oid2cn, oid2en, objParentOID, nodeMibTable);
 		}
 
+/*
 		/// <summary>
 		/// 点击树枝节点时的处理方法;
 		/// </summary>
@@ -831,6 +834,7 @@ namespace SCMTMainWindow
 			// 更新DataGrid数据
 			//UpdataDataGrid(GetNextResList);
 		}
+*/
 
 		/// <summary>
 		/// 按照单个节点进行GetNext;
@@ -1119,6 +1123,7 @@ namespace SCMTMainWindow
 		}
 
 
+/*
 		/// <summary>
 		/// 当点击叶子节点时，会触发GetNext操作;
 		/// 注意：基站GetNext不支持全节点查询，最大粒度为Get命令当中的节点数量;
@@ -1289,7 +1294,9 @@ namespace SCMTMainWindow
 			//UpdataDataGrid(GetNextResList);
 
 		}
+*/
 
+/*
 		/// <summary>
 		/// 当点击叶子节点时，会触发GetNext操作;
 		/// 注意：基站GetNext不支持全节点查询，最大粒度为Get命令当中的节点数量;
@@ -1383,6 +1390,7 @@ namespace SCMTMainWindow
 			//SnmpMessageV2c msg = new SnmpMessageV2c("public", nodeb.m_IPAddress.ToString());
 			//msg.GetNextRequest(new AsyncCallback(ReceiveRes), oidlist);
 		}
+*/		
 
 		/// <summary>
 		/// 每当收集完一行数据后，更新主界面中的DataGrid;
