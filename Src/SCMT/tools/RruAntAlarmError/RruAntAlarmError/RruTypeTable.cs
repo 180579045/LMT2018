@@ -42,5 +42,7 @@ namespace RruAntAlarmError
         //压缩属性与带宽约束关系
         public string rruTypeNotMibIrBand
         { get; set; }
+        public int rruTypeNotMibIsPico
+        { get; set; }
     }
 }

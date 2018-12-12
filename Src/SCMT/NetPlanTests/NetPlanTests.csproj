@@ -59,12 +59,13 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CommCheckRuleHelperTests.cs" />
+    <Compile Include="CommCheckRuleDealTests.cs" />
     <Compile Include="DevLink\LinkBoardRruTests.cs" />
     <Compile Include="MibInfoMgrTests.cs" />
     <Compile Include="NPCellOperatorTests.cs" />
     <Compile Include="NPEAntHelperTests.cs" />
     <Compile Include="NPEBoardHelperTests.cs" />
+    <Compile Include="NPECheckRulesDealTests.cs" />
     <Compile Include="NPECheckRulesHelperTests.cs" />
     <Compile Include="NPECmdHelperTests.cs" />
     <Compile Include="NPERruHelperTests.cs" />
