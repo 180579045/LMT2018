@@ -364,6 +364,8 @@ namespace NetPlan
 
 			var bSrcIsRru = (EnumDevType.rru == m_srcEndPoint.devType);
 			var bSrcIsRhub = (EnumDevType.rhub == m_srcEndPoint.devType);
+			var bDstIsRru = (EnumDevType.rru == m_dstEndPoint.devType);
+			var bDstIsRhub = (EnumDevType.rhub == m_dstEndPoint.devType);
 
 			var srcDevTypeStr = m_srcEndPoint.devType.ToString();
 			var dstDevTypeStr = m_dstEndPoint.devType.ToString();
@@ -387,6 +389,25 @@ namespace NetPlan
 			{
 				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}不是有效的组合");
 				return linkType;
+			}
+
+			// 判断是否是rhub与pico设备的连接。rhub只能和pico连接，不能和普通的rru设备连接
+			var bFlag1 = false;
+			var bFlag2 = false;
+			if ((bFlag1 = (bSrcIsRru && bDstIsRhub)) || (bFlag2 = (bSrcIsRhub && bDstIsRru)))
+			{
+				var strRruIndex = m_srcEndPoint.strDevIndex;
+
+				if (bFlag2)
+				{
+					strRruIndex = m_dstEndPoint.strDevIndex;
+				}
+
+				if (!MibInfoMgr.GetInstance().IsPico(strRruIndex))
+				{
+					Log.Error($"索引为{strRruIndex}的RRU设备不是pico，不能建立到rhub的连接");
+					return linkType;
+				}
 			}
 
 			var srcPortTypeStr = m_srcEndPoint.portType.ToString();

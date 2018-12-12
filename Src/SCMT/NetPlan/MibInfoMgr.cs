@@ -928,6 +928,32 @@ namespace NetPlan
 			return true;
 		}
 
+		public bool IsPico(string strRruIndex)
+		{
+			var rru = GetDevAttributeInfo(strRruIndex, EnumDevType.rru);
+			if (null == rru)
+			{
+				Log.Error($"获取索引为{strRruIndex}的rru设备属性失败");
+				return false;
+			}
+
+			var rruTypeIndex = rru.GetNeedUpdateValue("netRRUTypeIndex");
+			if (null == rruTypeIndex)
+			{
+				Log.Error($"获取索引为{rru.m_strOidIndex}的rru设备netRRUTypeIndex字段值失败");
+				return false;
+			}
+
+			int rruType;
+			if (int.TryParse(rruTypeIndex, out rruType))
+			{
+				return NPERruHelper.GetInstance().IsPicoDevice(rruType);
+			}
+
+			Log.Error($"索引为{rru.m_strOidIndex}的rru设备netRRUTypeIndex字段值{rruTypeIndex}无效");
+			return false;
+		}
+
 		/// <summary>
 		/// 清理所有的数据
 		/// </summary>
