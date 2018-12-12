@@ -71,6 +71,11 @@ namespace CfgFileOperation
         {
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = GetEndLineNum(FilePath, sheetName);                                        // 获取行数
+            if (-1 == rowCount)
+            {
+                //bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
+                return;// false;
+            }
             Dictionary<string, object[,]> ColVals = GetSheetColInfos(FilePath, sheetName, rowCount); // 获取所有sheet 每col的数据
             string strCurTableName = "";                                              // 保存当前表名
             string strCurIndex = "";                                                  // 保存当前索引
@@ -106,6 +111,11 @@ namespace CfgFileOperation
         {
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = GetEndLineNum(FilePath, sheetName);                     // 获取行数
+            if (-1 == rowCount)
+            {
+                //bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
+                return;// false;
+            }
             Dictionary<string, object[,]> ColVals = GetSheetColInfos(FilePath, sheetName, rowCount);  // 获取所有sheet 每col的数据
             string strCurTableName = "";                                              // 保存当前表名
             string strCurIndex = "";                                                  // 保存当前索引
@@ -229,6 +239,11 @@ namespace CfgFileOperation
         {
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = excelOp.GetRowCount(FilePath, sheetName);
+            if (-1 == rowCount)
+            {
+                //bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
+                return -1;// false;
+            }
             object[,] arry = excelOp.GetRangeVal(FilePath, sheetName, "A" + "1", "A" + rowCount);
             for (int row = 1; row < rowCount + 1; row++)
             {

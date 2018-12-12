@@ -85,13 +85,13 @@ namespace CfgFileOperation
             }
             bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n").ToArray());
             // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
-            if (!CreatCfg_patch_ex_cfg(bw, paths))
-            {
-                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n").ToArray());
-                Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
-                return false;
-            }
-            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n").ToArray());
+            //if (!CreatCfg_patch_ex_cfg(bw, paths))
+            //{
+            //    bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n").ToArray());
+            //    Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
+            //    return false;
+            //}
+            //bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n").ToArray());
             bw.Write(String.Format("CreatePatchAndInitCfg end.\n").ToArray());
             return true;
         }
@@ -110,7 +110,7 @@ namespace CfgFileOperation
             
             //public-1. RRU信息
             m_rruExcel = new CfgParseRruExcel();
-            m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
+            m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表");
 
             //public-2. 告警信息
             //在CreateCfgFile中就解析了
@@ -203,7 +203,8 @@ namespace CfgFileOperation
         {
             //public-1. RRU信息
             m_rruExcel = new CfgParseRruExcel();
-            m_rruExcel.ProcessingExcel(paths["RruInfo"], "RRU基本信息表");
+            if (false == m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表"))
+                return false;
 
             //public-2. 告警信息
             //在CreateCfgFile中就解析了
@@ -248,7 +249,7 @@ namespace CfgFileOperation
 
             //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
             m_reclistExcel = new CfgParseReclistExcel();
-            if (m_reclistExcel.ProcessingExcel(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
+            if (m_reclistExcel.ProcessingExcel_5G(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
             //if (m_reclistExcel.ProcessingExcel(bw, paths["Reclist"], paths["DataMdb"], "0:默认", this))
             {
 

@@ -601,7 +601,11 @@ namespace CfgFileOperation
 
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = excelOp.GetRowCount(strExcelPath, strSheet);                  // 获取行数
-
+            if (-1 == rowCount)
+            {
+                //bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
+                return;// false;
+            }
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
             foreach (var colName in ColsInfoBS.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
