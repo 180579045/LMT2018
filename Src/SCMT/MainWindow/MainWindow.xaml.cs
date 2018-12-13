@@ -1534,25 +1534,54 @@ namespace SCMTMainWindow
 		/// <param name="oid_cn"></param>
 		/// <param name="oid_en"></param>
 		/// <param name="contentlist"></param>
-		public void UpdateAllMibDataGrid(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
+		public void UpdateAllMibDataGrid(Dictionary<string, Dictionary<string, string>> ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
-			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int, MibTable>(UpdateMibDataGridCallback);
+			var action = new Action<Dictionary<string, Dictionary<string, string>>, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int, MibTable>(UpdateMibDataGridCallback);
 
 			//MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
 			this.Main_Dynamic_DataGrid.Dispatcher.Invoke(action, new object[] { ar, oid_cn, oid_en, contentlist, ParentOID, IndexCount, mibTable });
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="ar"></param>
-		/// <param name="oid_cn">OID与其中文友好名的对照字典</param>
-		/// <param name="oid_en">OID与其英文友好名，即字段名称的对应字典</param>
-		/// <param name="contentlist">包含了所有要显示内容的集合</param>
-		/// <param name="ParentOID"></param>
-		/// <param name="IndexCount">真实的索引个数</param>
-		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <param name="oid_cn">OID与其中文友好名的对照字典</param>
+        /// <param name="oid_en">OID与其英文友好名，即字段名称的对应字典</param>
+        /// <param name="contentlist">包含了所有要显示内容的集合</param>
+        /// <param name="ParentOID"></param>
+        /// <param name="IndexCount">真实的索引个数</param>
+        private void UpdateMibDataGridCallback(Dictionary<string,Dictionary<string,string>> ar, dict_d_string oid_cn, dict_d_string oid_en,
+            ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
+        {
+            Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+
+            // 需要为记录为空的表生成表头，否则无法执行添加实例操作
+            if (ar.Count == 0)
+            {
+                if (mibTable == null)
+                {
+                    return;
+                }
+
+                dynamic model = new DyDataGrid_MIBModel();
+                model.AddTableProperty(mibTable);
+                AddPropertyForEmptyTbl(ref model, mibTable);
+
+                Main_Dynamic_DataGrid.ColumnModel = model;
+                Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = contentlist;
+                return;
+            }
+            Main_Dynamic_DataGrid.LineDataList.Clear();
+            Main_Dynamic_DataGrid.LineDataList = ar;
+
+            if (Main_Dynamic_DataGrid.LineDataList.Count == 0)
+                return;
+            Main_Dynamic_DataGrid.SetDataGridInfo(oid_cn,oid_en,mibTable,IndexCount);
+            Main_Dynamic_DataGrid.RefreshDataGridPage(1);
+        }
+        /*private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
 			Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
@@ -1735,87 +1764,8 @@ namespace SCMTMainWindow
 			//}
 
 			//MibDataGrid.DataContext = contentlist;
-		}
-        /// <summary>
-        /// 行数据，key为索引,value为oid与值得键值对
-        /// </summary>
-        public Dictionary<string, Dictionary<string, string>> LineDataList = new Dictionary<string, Dictionary<string, string>>();
-        private void SetMainDataGridLineData(dict_d_string ar, dict_d_string oid_cn, int IndexCount)
-        {
-            LineDataList.Clear();
-            int RealIndexCount = IndexCount; // 真实的索引维度;
+		}*/
 
-            if (IndexCount == 0) // 如果索引个数为0，按照1来处理;
-                IndexCount = 1;
-
-            var AlreadyRead = new List<string>();
-
-            // ar是遍历GetNext的结果，遍历后，根据索引将其转化为DataGrid显示的整行数据
-            foreach (var iter in ar)
-            {
-                var fulloid = iter.Key;
-
-                // 获取当前遍历到的节点的索引值(即取最后N位数字);
-                var temp = fulloid.Split('.');
-                var NowIndex = "";
-                for (var i = temp.Length - IndexCount; i < temp.Length; i++)
-                {
-                    NowIndex += "." + temp[i];
-                }
-
-                // 如果存在索引,且索引没有被添加到表中;
-                if (!fulloid.Contains(NowIndex) || AlreadyRead.Contains(NowIndex))
-                    continue;
-
-                // 将ar当中所有匹配的结果取出,最后会取出了一行数据;
-                foreach (var iter3 in ar)
-                {
-                    // 将所有相同索引取出;
-                    temp = iter3.Key.Split('.');
-                    string TempIndex = "";
-
-                    for (int i = temp.Length - IndexCount; i < temp.Length; i++)
-                    {
-                        TempIndex += "." + temp[i];
-                    }
-
-                    // 该步骤为抽取同样索引的内容，组成一行数据，然后添加至model中;
-                    if (TempIndex == NowIndex)
-                    {
-                        // 将GetNext整表的OID数值取出到temp_compare;
-                        string[] temp_nowoid = iter3.Key.Split('.');
-                        string NowNodeOID = "";
-                        for (int i = 0; i < temp_nowoid.Length - IndexCount; i++)
-                        {
-                            NowNodeOID += "." + temp_nowoid[i];
-                        }
-                        string temp_compare = NowNodeOID.Substring(1);
-
-                        // 如果OID匹配;
-                        if (oid_cn.ContainsKey(temp_compare))
-                        {
-                            if (!LineDataList.ContainsKey(TempIndex))
-                            {
-                                LineDataList.Add(TempIndex, new dict_d_string());
-                                LineDataList[TempIndex].Add(iter3.Key, iter3.Value);
-                            }
-                            else
-                            {
-                                if (!LineDataList[TempIndex].ContainsKey(iter3.Key))
-                                    LineDataList[TempIndex].Add(iter3.Key, iter3.Value);
-                            }
-
-
-                            // 已经查询过该索引,后续不再参与查询;
-                            if (!AlreadyRead.Contains(NowIndex))
-                            {
-                                AlreadyRead.Add(NowIndex);
-                            }
-                        }
-                    }
-                }
-            }
-        }
         #endregion DataGrid相关处理
 
         /// <summary>

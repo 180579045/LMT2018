@@ -15,8 +15,10 @@
                   SelectionMode="Single" ItemsSource="{Binding Path=.}" SelectionUnit="CellOrRowHeader" 
                   HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <TextBlock Text="每页显示行数" Margin="5"/>
+            <TextBox Name="tbkShowLineNum" Margin="5,5,30,5" Width="20" Foreground="Red" LostFocus="tbkShowLineNum_LostFocus"/>
             <TextBlock Text="转到" Margin="5"/>
-            <TextBox Name="tbxPageNum" Text="" Width="20"/>
+            <TextBox Name="tbxPageNum" Text="" Width="20" Foreground="Red"/>
             <TextBlock Text="页" Margin="5"/>
             <Button Content="Go" VerticalAlignment="Center"  Click="btnGo_Click" Margin="5"/>
             <Button Name="btnUp" Content="上一页" VerticalAlignment="Center" Click="btnUp_Click"  Margin="5"/>

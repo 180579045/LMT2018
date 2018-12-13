@@ -262,7 +262,78 @@ namespace SCMTMainWindow
 			Console.WriteLine("111" + (abc.obj_type as ObjNode).ObjName);
 			MainWindow.m_strNodeName = (abc.obj_type as ObjNode).ObjName;
 		}
-	}
+
+        /// <summary>
+        /// 将查询到的数据组成界面显示的整行数据
+        /// </summary>
+        /// <param name="lineData"></param>
+        /// <param name="nextResult"></param>
+        public void SetMainDataGridLineData(ref Dictionary<string, Dictionary<string, string>> lineData, List<Dictionary<string, string>> nextResult)
+        {
+            if (nextResult.Count == 0)
+                return;
+
+            if (lineData == null)
+                lineData = new Dictionary<string, Dictionary<string, string>>();
+
+            if (IndexCount > 0)
+            {
+                // 循环每行
+                foreach (Dictionary<string, string> oidVal in nextResult)
+                {
+                    string TempIndex = "";
+                    int count = 0;
+                    // 循环每列
+                    foreach (KeyValuePair<string, string> kv in oidVal)
+                    {
+                        if (count == 0)//由于每行的索引相同，执行一次获取到索引
+                        {
+                            var temp = kv.Key.Split('.');
+
+                            for (int i = temp.Length - IndexCount; i < temp.Length; i++)
+                            {
+                                TempIndex += "." + temp[i];
+                            }
+                        }
+
+                        if (!lineData.ContainsKey(TempIndex))
+                        {
+                            lineData.Add(TempIndex, new Dictionary<string, string>());
+                            lineData[TempIndex].Add(kv.Key, kv.Value);
+                        }
+                        else
+                        {
+                            if (!lineData[TempIndex].ContainsKey(kv.Key))
+                                lineData[TempIndex].Add(kv.Key, kv.Value);
+                        }
+                        count++;
+                    }
+                }
+            }
+            else if (IndexCount == 0)//无索引时，后缀索引为.0
+            {
+                // 循环每行
+                foreach (Dictionary<string, string> oidVal in nextResult)
+                {
+                    string TempIndex = ".0";
+                    // 循环每列
+                    foreach (KeyValuePair<string, string> kv in oidVal)
+                    {
+                        if (!lineData.ContainsKey(TempIndex))
+                        {
+                            lineData.Add(TempIndex, new Dictionary<string, string>());
+                            lineData[TempIndex].Add(kv.Key, kv.Value);
+                        }
+                        else
+                        {
+                            if (!lineData[TempIndex].ContainsKey(kv.Key))
+                                lineData[TempIndex].Add(kv.Key, kv.Value);
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 	/// <summary>
 	/// 对象树*普通树枝*节点;
@@ -583,11 +654,12 @@ namespace SCMTMainWindow
 			Dictionary<string, string> getNextResList = new Dictionary<string, string>();
 			string objParentOID = string.Empty;
 			MibTable nodeMibTable = new MibTable();
+            Dictionary<string, Dictionary<string, string>> getNextResultLineData = new Dictionary<string, Dictionary<string, string>>();
 
-			// 目前可以获取到节点对应的中文名以及对应的表名;
-			//Console.WriteLine("LeafNode Clicked!" + node.ObjName + " and TableName " + node.ObjTableName);
+        // 目前可以获取到节点对应的中文名以及对应的表名;
+        //Console.WriteLine("LeafNode Clicked!" + node.ObjName + " and TableName " + node.ObjTableName);
 
-			var errorInfo = "";
+        var errorInfo = "";
 			//根据表名获取该表内所有MIB节点;
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(node.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
@@ -624,8 +696,13 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				// 保存中文名称等信息
-				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+                if (iter.ASNType.Equals("RowStatus"))
+                {
+                    continue;
+                }
+
+                // 保存中文名称等信息
+                name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
 				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
 				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 			}
@@ -675,8 +752,9 @@ namespace SCMTMainWindow
 							return;
 						}
 
-						// 循环每行
-						foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
+                        SetMainDataGridLineData(ref getNextResultLineData, oidAndValTableTmp);
+                        
+                        /*foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
 						{
 							// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
 							// 循环每列
@@ -685,7 +763,7 @@ namespace SCMTMainWindow
 								// 保存多次GetNext的结果
 								getNextResList.Add(kv.Key, kv.Value);
 							}
-						}
+						}*/
 
 					}
 					catch (Exception ex)
@@ -697,7 +775,7 @@ namespace SCMTMainWindow
 			}
 
 			// 更新DataGrid数据
-			UpdataDataGrid(getNextResList, oid2cn, oid2en, objParentOID, nodeMibTable);
+			UpdataDataGrid(getNextResultLineData, oid2cn, oid2en, objParentOID, nodeMibTable);
 		}
 
 		/// <summary>
@@ -856,7 +934,7 @@ namespace SCMTMainWindow
 		/// <param name="oid_en"></param>
 		/// <param name="objParentOID"></param>
 		/// <param name="nodeMibTable"></param>
-		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid2cn
+		private void UpdataDataGrid(Dictionary<string, Dictionary<string, string>> getNextList, Dictionary<string, string> oid2cn
 			, Dictionary<string, string>  oid2en, string objParentOID, MibTable nodeMibTable)
 		{
 			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
@@ -873,7 +951,7 @@ namespace SCMTMainWindow
 			// 全部节点都已经收集完毕;
 			if (LastColumn == ChildCount)
 			{
-				main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
+				//main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
 			}
 		}
 	}
@@ -985,9 +1063,10 @@ namespace SCMTMainWindow
 			Dictionary<string, string> getNextResList = new Dictionary<string, string>();
 			string objParentOID = string.Empty;
 			MibTable nodeMibTable = new MibTable();
+            Dictionary<string, Dictionary<string, string>> getNextResultLineData = new Dictionary<string, Dictionary<string, string>>();
 
 
-			var errorInfo = "";
+            var errorInfo = "";
 			//根据表名获取该表内所有MIB节点;
 			nodeb.db = Database.GetInstance();
 			nodeb.db.GetMibDataByTableName(this.ObjTableName, out ret, nodeb.m_IPAddress.ToString(), out errorInfo);
@@ -1038,8 +1117,13 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				// 保存中文名称等信息
-				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
+                if (iter.ASNType.Equals("RowStatus"))
+                {
+                    continue;
+                }
+
+                // 保存中文名称等信息
+                name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
 				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
 				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
 			}
@@ -1089,8 +1173,9 @@ namespace SCMTMainWindow
 							return;
 						}
 
-						// 循环每行
-						foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
+                        SetMainDataGridLineData(ref getNextResultLineData, oidAndValTableTmp);
+                        // 循环每行
+                        /*foreach (Dictionary<string, string> oidVal in oidAndValTableTmp)
 						{
 							// var oidAndValLine2 = oidAndValLine.Concat(oidVal);
 							// 循环每列
@@ -1102,9 +1187,9 @@ namespace SCMTMainWindow
 									getNextResList.Add(kv.Key, kv.Value);
 								}
 							}
-						}
+						}*/
 
-					}
+                    }
 					catch (Exception ex)
 					{
 						throw ex;
@@ -1114,7 +1199,7 @@ namespace SCMTMainWindow
 			}
 
 			// 更新DataGrid数据
-			UpdataDataGrid(getNextResList, oid2cn, oid2en, objParentOID, nodeMibTable);
+			UpdataDataGrid(getNextResultLineData, oid2cn, oid2en, objParentOID, nodeMibTable);
 
 		}
 
@@ -1417,7 +1502,7 @@ namespace SCMTMainWindow
 		/// <param name="oid_en"></param>
 		/// <param name="objParentOID"></param>
 		/// <param name="nodeMibTable"></param>
-		private void UpdataDataGrid(Dictionary<string, string> getNextList, Dictionary<string, string> oid2cn
+		private void UpdataDataGrid(Dictionary<string, Dictionary<string, string>> getNextList, Dictionary<string, string> oid2cn
 			, Dictionary<string, string> oid2en, string objParentOID, MibTable nodeMibTable)
 		{
 			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
@@ -1434,7 +1519,7 @@ namespace SCMTMainWindow
 			// 全部节点都已经收集完毕;
 			if (LastColumn == ChildCount)
 			{
-				main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
+				//main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
 			}
 		}
 

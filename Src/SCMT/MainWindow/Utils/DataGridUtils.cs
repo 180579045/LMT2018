@@ -385,17 +385,21 @@ namespace SCMTMainWindow.Utils
 		public static bool GetIndexNodeInfoFromLmtbPdu(CDTLmtbPdu lmtPdu, MibTable tbl, ref string oid, ref string showInfo)
 		{
 			string index = "";
-			if (!GetIndexFromLmtbPdu(lmtPdu, ref index))
+			if (!GetIndexFromLmtbPdu(lmtPdu,tbl.indexNum, ref index))
 				return false;
 
 			if (tbl == null)
 				return false;
 
+            string temp = index.Trim('.');
+            string[] strindex = temp.Split('.');
+            int i = 0;
 			foreach (MibLeaf leaf in tbl.childList)
 			{
 				if (leaf.IsIndex.Equals("True"))
 				{
-					showInfo += leaf.childNameCh + index;
+					showInfo += leaf.childNameCh + strindex[i];
+                    i++;
 				}
 			}
 			oid = SnmpToDatabase.GetMibPrefix() + tbl.oid;
@@ -408,12 +412,10 @@ namespace SCMTMainWindow.Utils
 		/// <param name="lmtPdu"></param>
 		/// <param name="index"></param>
 		/// <returns></returns>
-		public static bool GetIndexFromLmtbPdu(CDTLmtbPdu lmtPdu, ref string index)
+		public static bool GetIndexFromLmtbPdu(CDTLmtbPdu lmtPdu, int nIndexNum, ref string index)
 		{
-			var strOidPrefix = SnmpToDatabase.GetMibPrefix();
 			var lmtVbCount = lmtPdu.VbCount();
 			// 根据Vb 中的OID 获取 MibOid
-			string strMibOid;
 			if (lmtPdu.VbCount() > 0)
 			{
 				var lmtVb = lmtPdu.GetVbByIndexEx(0);
@@ -422,21 +424,10 @@ namespace SCMTMainWindow.Utils
 				{
 					return false;
 				}
-
-				// 去掉前缀
-				strMibOid = strVbOid.Replace(strOidPrefix, "");
-
-				// 去掉最后一位索引
-				var nindex = strMibOid.LastIndexOf('.');
-				if (nindex >= strMibOid.Length)
-				{
-					return false;
-				}
-				index = strMibOid.Substring(nindex + 1);
+                index = MibStringHelper.GetIndexValueByGrade(strVbOid, nIndexNum);
 			}
 
 			return true;
 		}
-
 	}
 }

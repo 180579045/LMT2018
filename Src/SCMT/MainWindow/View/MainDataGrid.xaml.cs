@@ -166,8 +166,8 @@ namespace SCMTMainWindow.View
 				return;
 			}
 
-			// 变更后的值
-			string strVal = null;
+            // 变更后的值
+            string strVal = null;
 			// 操作信息
 			string strMsg = "";
 			// Mib英文名称
@@ -1205,24 +1205,149 @@ namespace SCMTMainWindow.View
                 strIndex = ".0";
         }
 
+        #region 基本信息列表分页处理
         private int perPageLineNum = 30;//每页显示行数
         private int totalLineNum;//总行数
-        private int pageNum;//总页数
+        private int totalPageNum = 1;//总页数
+        private Dictionary<string, string> oid_cn;
+        private Dictionary<string, string> oid_en;
+        private MibTable mibTable;
+        private int IndexCount = 0;
         /// <summary>
         /// 行数据，key为索引,value为oid与值得键值对
         /// </summary>
         public Dictionary<string, Dictionary<string, string>> LineDataList = new Dictionary<string, Dictionary<string, string>>();
-        private void RefreshDataGridPage(int curentPage)
+
+        public void SetDataGridInfo(Dictionary<string, string> oidcn, Dictionary<string, string> oiden, MibTable table, int indexCount)
         {
+            if (LineDataList.Count == 0)
+                return;
+
+            oid_cn = oidcn;
+            oid_en = oiden;
+            mibTable = table;
+            IndexCount = indexCount;
+
+            tbkShowLineNum.Text = perPageLineNum.ToString();
             totalLineNum = LineDataList.Count;
-
+            SetPageInfo();           
+            tbkCurrentPage.Text = "1";
+        }
+        /// <summary>
+        /// 每页显示的行数改变时，需要重新设置总页数
+        /// </summary>
+        private void SetPageInfo()
+        {                    
             if (totalLineNum % perPageLineNum == 0)
-                pageNum = totalLineNum / perPageLineNum;
+                totalPageNum = totalLineNum / perPageLineNum;
             else
-                pageNum = totalLineNum / perPageLineNum + 1;
+                totalPageNum = totalLineNum / perPageLineNum + 1;
 
-            tbkTotal.Text = pageNum.ToString();
+            tbkTotal.Text = totalPageNum.ToString();           
+        }
+        /// <summary>
+        /// 根据设置的页数刷新界面的显示
+        /// </summary>
+        /// <param name="curentPage"></param>
+        public void RefreshDataGridPage(int curentPage)
+        {
+            if (LineDataList.Count == 0)
+                return;
             tbkCurrentPage.Text = curentPage.ToString();
+
+            DynamicDataGrid.DataContext = null;
+            var itemCount = 0;
+            int count = 0;
+            ObservableCollection<DyDataGrid_MIBModel> contentlist = new ObservableCollection<DyDataGrid_MIBModel>();
+
+            foreach (string key in LineDataList.Keys)
+            {
+                count++;
+                if(curentPage == 1)
+                {
+                    if (curentPage * perPageLineNum < count)
+                        return;
+                }
+                else
+                {
+                    if(!((count > (curentPage - 1) * perPageLineNum) && (count < curentPage * perPageLineNum)))
+                    {
+                        continue;
+                    }
+
+                    if (count > curentPage * perPageLineNum)
+                        break;
+                }
+                
+                // 创建一个能够填充到DataGrid控件的动态类型，这个类型的所有属性来自于读取的所有MIB节点;
+                dynamic model = new DyDataGrid_MIBModel();
+                string keyTem = key.Trim('.');
+                string[] temp = keyTem.Split('.');
+
+                // 当多因维度大于0，即该表为矢量表的时候为该列添加表头;
+                if (IndexCount > 0)
+                {
+                    var IndexContent = "";
+                    for (int i = 0; i < IndexCount; i++)
+                    {
+                        string IndexOIDTemp = SnmpToDatabase.GetMibPrefix() + mibTable.oid + "." + (i + 1);
+                        IndexContent += oid_cn[IndexOIDTemp] + temp[i];
+                    }
+
+                    // 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
+                    // 参数一：属性名称;
+                    // 参数二：单元格实例;
+                    // 参数三：单元格列中文名称;
+                    model.AddProperty("indexlist", new DataGrid_Cell_MIB()
+                    {
+                        m_Content = IndexContent,
+                        oid = SnmpToDatabase.GetMibPrefix() + mibTable.oid + ".",
+                        m_bIsReadOnly = true,
+                        MibName_CN = "实例描述",
+                        MibName_EN = "indexlist"
+                    }, "实例描述");
+                }
+
+                if (mibTable != null)
+                {
+                    model.AddTableProperty(mibTable);
+                }
+
+                foreach (var iter in LineDataList[key])
+                {
+                    string temp_compare = iter.Key.Remove(iter.Key.Length - key.Length);
+
+                    // 如果OID匹配;
+                    if (oid_cn.ContainsKey(temp_compare))
+                    {
+                        Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter.Value + " and Header is:" + oid_cn[temp_compare]);
+
+                        // 在这里要区分DataGrid要显示的数据类型;
+                        var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare]
+                            , iter.Value, iter.Key, CSEnbHelper.GetCurEnbAddr());
+
+                        // 第一个参数：属性的名称——节点英文名称;
+                        // 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
+                        // 第三个参数：列要显示的中文名——节点的中文友好名;
+                        model.AddProperty(oid_en[temp_compare], dgm, oid_cn[temp_compare]);
+                    }
+                }
+
+                // 将这个整行数据填入List;
+                if (model.Properties.Count != 0)
+                {
+                    // 向单元格内添加内容;
+                    contentlist.Add(model);
+                    itemCount++;
+                }
+
+                // 最终全部收集完成后，为控件赋值;
+                if (itemCount == contentlist.Count)
+                {
+                    ColumnModel = model;
+                    DynamicDataGrid.DataContext = contentlist;
+                }
+            }
 
         }
         /// <summary>
@@ -1232,6 +1357,9 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void btnGo_Click(object sender, RoutedEventArgs e)
         {
+            if (totalPageNum == 1)
+                return;
+
             int pageNum = int.Parse(tbxPageNum.Text);
             int total = int.Parse(tbkTotal.Text);//总页数
             if(pageNum >= 1 && pageNum <= total)
@@ -1246,6 +1374,9 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void btnUp_Click(object sender, RoutedEventArgs e)
         {
+            if (totalPageNum == 1)
+                return;
+
             int currentPage = int.Parse(tbkCurrentPage.Text);//获取当前页数
             if(currentPage > 1)
             {
@@ -1259,6 +1390,9 @@ namespace SCMTMainWindow.View
         /// <param name="e"></param>
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
+            if (totalPageNum == 1)
+                return;
+
             int total = int.Parse(tbkTotal.Text);//总页数
             int currentPage = int.Parse(tbkCurrentPage.Text);//获取当前页数
             if (currentPage < total)
@@ -1266,5 +1400,20 @@ namespace SCMTMainWindow.View
                 RefreshDataGridPage(currentPage + 1);
             }
         }
+        /// <summary>
+        /// 为了兼容不同显示器，可改变界面显示的行数，默认一页显示30行
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void tbkShowLineNum_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!perPageLineNum.Equals(int.Parse(tbkShowLineNum.Text)))
+            {
+                perPageLineNum = int.Parse(tbkShowLineNum.Text);
+                SetPageInfo();
+                RefreshDataGridPage(int.Parse(tbkCurrentPage.Text));
+            }
+        }
+        #endregion
     }
 }
