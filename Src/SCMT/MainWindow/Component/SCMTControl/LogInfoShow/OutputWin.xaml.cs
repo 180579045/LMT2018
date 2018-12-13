@@ -257,7 +257,10 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
 		public bool IsSelectedIP
 		{
-			get => bIsSelectedIP;
+			get
+            {
+                return bIsSelectedIP;
+            } 
 			set
 			{
 				bIsSelectedIP = value;
@@ -294,7 +297,10 @@ namespace SCMTMainWindow.Component.SCMTControl.LogInfoShow
 
 		public bool IsSelectedType
 		{
-			get => bIsSelectedType;
+			get
+            {
+                return bIsSelectedType;
+            }
 			set
 			{
 				bIsSelectedType = value;
