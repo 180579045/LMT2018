@@ -293,15 +293,18 @@ namespace SCMTMainWindow.View
 			}
 
 			// 使用返回的Pdu更新DataGrid
-			if (false == DataGridUtils.UpdateGridByPdu(lineDataPro, lmtPdu))
+			/*if (false == DataGridUtils.UpdateGridByPdu(lineDataPro, lmtPdu))
 			{
 				strMsg = "使用CDTLmtbPdu更新DataGrid时出错!";
 				Log.Error(strMsg);
 				return;
-			}
+			}*/
 
 			MessageBox.Show("参数修改成功！");
-		}
+
+            m_operType = 3;
+            RefreshDataGrid(lmtPdu, (m_ColumnModel.TableProperty as MibTable).indexNum);
+        }
 
 		/// <summary>
 		/// 单元格开始编辑时;
@@ -805,7 +808,9 @@ namespace SCMTMainWindow.View
 
 			dynamic model = new DyDataGrid_MIBModel();
 			var strOidPrefix = SnmpToDatabase.GetMibPrefix();
-			var lmtVbCount = lmtPdu.VbCount();
+            string strIndex = "";
+
+            var lmtVbCount = lmtPdu.VbCount();
 
 			for (var i = 0; i < lmtVbCount; i++)
 			{
@@ -817,8 +822,7 @@ namespace SCMTMainWindow.View
 				}
 
 				// 根据Vb 中的OID 获取 MibOid
-				// 去掉前缀
-				string strIndex = "";
+				// 去掉前缀				
 				if (nIndexGrade > 0)
 				{
 					strIndex = MibStringHelper.GetIndexValueByGrade(strVbOid, nIndexGrade);
@@ -848,11 +852,26 @@ namespace SCMTMainWindow.View
 
 				if (mibLeaf.IsIndex.Equals("False"))
 				{
-					if (m_operType == 1)
+					if (m_operType == 1)//添加新行数据
 					{
 						var dgm = DataGridCellFactory.CreateGridCell(mibLeaf.childNameMib, mibLeaf.childNameCh, lmtVb.Value, lmtVb.Oid, CSEnbHelper.GetCurEnbAddr());
 						model.AddProperty(mibLeaf.childNameMib, dgm, mibLeaf.childNameCh);
-					}
+
+                        //分页处理，增加的数据也需要添加到内存中，针对数据存在多页的情况，单页数据没有影响
+                        if (totalPageNum > 1)
+                        {
+                            if (!LineDataList.ContainsKey(strIndex))
+                            {
+                                LineDataList.Add(strIndex, new Dictionary<string, string>());
+                                LineDataList[strIndex].Add(lmtVb.Oid, lmtVb.Value);
+                            }
+                            else
+                            {
+                                if (!LineDataList[strIndex].ContainsKey(lmtVb.Oid))
+                                    LineDataList[strIndex].Add(lmtVb.Oid, lmtVb.Value);
+                            }
+                        }
+                    }
 					else if (m_operType == 3 || m_operType == 4)//修改直接更新值
 					{
 						foreach (DyDataGrid_MIBModel mm in datalist)
@@ -876,7 +895,23 @@ namespace SCMTMainWindow.View
 								}
 							}
 						}
-					}
+
+                        //分页处理，修改的数据更新到内存中
+                        if (totalPageNum > 1 && LineDataList.ContainsKey(strIndex))
+                        {
+                            foreach (KeyValuePair<string, string> kv in LineDataList[strIndex])
+                            {
+                                if(kv.Key.Equals(lmtVb.Oid))
+                                {
+                                    if(!kv.Value.Equals(lmtVb.Value))
+                                    {
+                                        LineDataList[strIndex][kv.Key] = lmtVb.Value;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
 				}
 			}
 
@@ -918,7 +953,13 @@ namespace SCMTMainWindow.View
 							}
 						}
 					}
-				}
+
+                    //分页处理，删除的数据更新到内存中
+                    if (totalPageNum > 1 && LineDataList.ContainsKey(strIndex))
+                    {
+                        LineDataList.Remove(strIndex);
+                    }
+                }
 
 				if (m_operType == 1)
 					datalist.Add(model);
