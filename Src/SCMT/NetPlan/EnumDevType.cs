@@ -33,7 +33,8 @@ namespace NetPlan
 
 		antWeight,			// 天线权重·
 		antCoup,			// 天线耦合系数
-		antBfScan,			// 天线波束扫描
+		antBfScan,          // 天线波束扫描
+		bandWidth,			// 基带带宽
 	}
 
 	public enum EnumPortType
@@ -59,30 +60,6 @@ namespace NetPlan
 	/// 设备类型助手类
 	public static class DevTypeHelper
 	{
-		public static string GetDevDescString(EnumDevType type)
-		{
-			string desc = null;
-			switch (type)
-			{
-				case EnumDevType.board:
-				case EnumDevType.rru:
-				case EnumDevType.rhub:
-				case EnumDevType.ant:
-					desc = type.ToString();
-					break;
-				case EnumDevType.board_rru:
-					desc = "board-rru";
-					break;
-				case EnumDevType.rru_ant:
-					desc = "rru-ant";
-					break;
-				default:
-					throw new ArgumentOutOfRangeException(nameof(type), type, null);
-			}
-
-			return desc;
-		}
-
 		public static EnumDevType GetEnumDevType(string type)
 		{
 			var devType = (EnumDevType) Enum.Parse(typeof(EnumDevType), type, true);
@@ -129,12 +106,6 @@ namespace NetPlan
 
 			var strDevType = type.ToString();
 			return NPECmdHelper.GetInstance().GetEntryNameByAlias(strDevType);
-			//if (mapDevTypes.ContainsValue(type))
-			//{
-			//	return mapDevTypes.FirstOrDefault(kv => kv.Value == type).Key;
-			//}
-
-			//return null;
 		}
 
 		/// <summary>

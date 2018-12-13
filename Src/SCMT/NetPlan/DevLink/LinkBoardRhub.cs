@@ -19,12 +19,14 @@ namespace NetPlan.DevLink
 
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
 			{
+				MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
 			var rhubClone = m_rhubDev.DeepClone();
 			if (!ResetBoardInfoInRhub(rhubClone, m_nRhubPort))
 			{
+				MibInfoMgr.ErrorTip("删除连接失败，原因：重置rhub设备中板卡信息失败");
 				return false;
 			}
 
@@ -44,7 +46,7 @@ namespace NetPlan.DevLink
 
 				if (!UpdatePicoInfo(bbi, mapMibInfo[EnumDevType.rru], out oldPicoList, out newPicoList))
 				{
-					Log.Error("更新与rhub相连的pico信息失败");
+					MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 					return false;
 				}
 
@@ -71,6 +73,8 @@ namespace NetPlan.DevLink
 			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"删除类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
 
+			MibInfoMgr.InfoTip("删除连接成功");
+
 			return true;
 		}
 
@@ -80,6 +84,7 @@ namespace NetPlan.DevLink
 
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
+				MibInfoMgr.ErrorTip($"添加连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -89,11 +94,13 @@ namespace NetPlan.DevLink
 
 			if (!SetBoardBaseInfoInRhub(bbi, rhubClone))
 			{
+				MibInfoMgr.ErrorTip($"添加连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
 			if (!SetOfpLinkInfoInRhub(rhubClone, m_nBoardPort))
 			{
+				MibInfoMgr.ErrorTip($"添加连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -109,7 +116,7 @@ namespace NetPlan.DevLink
 				List<DevAttributeInfo> newPicoList;
 				if (!UpdatePicoInfo(bbi, mapMibInfo[EnumDevType.rru], out oldPicoList, out newPicoList))
 				{
-					Log.Error("更新与rhub相连的pico信息失败");
+					MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 					return false;
 				}
 
@@ -141,6 +148,8 @@ namespace NetPlan.DevLink
 			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"添加类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
 
+			MibInfoMgr.InfoTip("添加连接成功");
+
 			return true;
 		}
 
@@ -149,90 +158,86 @@ namespace NetPlan.DevLink
 			var boardIndex = wholeLink.GetDevIndex(EnumDevType.board);
 			if (null == boardIndex)
 			{
-				Log.Error("获取board索引失败");
+				m_strLatestError = "获取板卡索引失败";
 				return false;
 			}
 
 			m_nBoardPort = wholeLink.GetDevIrPort(EnumDevType.board, EnumPortType.bbu_to_rhub);
 			if (-1 == m_nBoardPort)
 			{
-				Log.Error("获取板卡连接光口失败");
+				m_strLatestError = "获取板卡连接rhub设备光口号失败";
 				return false;
 			}
 
 			m_boardDev = GetDevAttributeInfo(boardIndex, EnumDevType.board);
 			if (null == m_boardDev)
 			{
-				Log.Error($"根据板卡属性{boardIndex}未找到对应的设备");
+				m_strLatestError = $"根据索引{boardIndex}未找到板卡信息";
 				return false;
 			}
 
 			var rhubIndex = wholeLink.GetDevIndex(EnumDevType.rhub);
 			if (null == rhubIndex)
 			{
-				Log.Error("获取rhub设备索引失败");
+				m_strLatestError = "获取rhub设备索引失败";
 				return false;
 			}
 
 			m_nRhubPort = wholeLink.GetDevIrPort(EnumDevType.rhub, EnumPortType.rhub_to_bbu);
 			if (-1 == m_nRhubPort)
 			{
-				Log.Error("获取rhub设备的光口号失败");
+				m_strLatestError = "获取rhub设备连接板卡光口号失败";
 				return false;
 			}
 
 			m_rhubDev = GetDevAttributeInfo(rhubIndex, EnumDevType.rhub);
 			if (null == m_rhubDev)
 			{
-				Log.Error($"根据rhub设备属性{rhubIndex}未找到对应的设备信息");
+				m_strLatestError = $"根据索引{rhubIndex}未找到rhub设备信息";
 				return false;
 			}
 
 			// 确定netIROptPlanEntry中是否已经存在对应的记录
 			m_strIrRecodeIndex = $"{boardIndex}.{m_nBoardPort}";
-			//var irRecord = GetDevAttributeInfo(m_strIrRecodeIndex, EnumDevType.board_rru);
-			//if (null != irRecord)
-			//{
-			//	Log.Error($"根据板卡索引和光口号组合{m_strIrRecodeIndex}找到已经存在的记录，板卡的每个光口只能连接一个设备");
-			//	return false;
-			//}
 			if (!checkExist.Invoke(m_strIrRecodeIndex, EnumDevType.board_rru))
 			{
+				var tmp = checkExist == RecordExistInDel ? "不" : "已";
+				m_strLatestError = $"索引为{m_strIrRecodeIndex}的光口规划表记录{tmp}存在";
 				return false;
 			}
 
 			var slotNo = m_boardDev.GetNeedUpdateValue("netBoardSlotNo");
 			if (null == slotNo)
 			{
-				Log.Error("获取板卡插槽号失败");
+				m_strLatestError = $"获取索引为{m_boardDev.m_strOidIndex}板卡设备netBoardSlotNo字段值失败";
 				return false;
 			}
 
 			var boardType = m_boardDev.GetNeedUpdateValue("netBoardType");
 			if (null == boardType)
 			{
-				Log.Error("获取板卡类型失败");
+				m_strLatestError = $"获取索引为{m_boardDev.m_strOidIndex}板卡设备netBoardType字段值失败";
 				return false;
 			}
 
 			m_strOfpMibName = $"netRHUBOfp{m_nRhubPort}AccessOfpPortNo";                // 板卡的光口号
 			if (!m_rhubDev.IsExistField(m_strOfpMibName))
 			{
-				Log.Error($"当前MIB版本中不包含{m_strOfpMibName}字段，请确认MIB是否正确");
+				m_strLatestError = $"获取索引为{m_boardDev.m_strOidIndex}板卡设备{m_strOfpMibName}字段值失败，可能MIB版本差异导致错误";
 				return false;
 			}
 
 			m_strOfpLinePosMibName = $"netRHUBOfp{m_nRhubPort}AccessLinePosition";      // 接入级数
 			if (!m_rhubDev.IsExistField(m_strOfpLinePosMibName))
 			{
-				Log.Error($"当前MIB版本中不包含{m_strOfpLinePosMibName}字段，请确认MIB是否正确");
+				m_strLatestError = $"获取索引为{m_boardDev.m_strOidIndex}板卡设备{m_strOfpLinePosMibName}字段值失败，可能MIB版本差异导致错误";
 				return false;
 			}
 
 			m_strSlotMibName = m_nRhubPort == 1 ? "netRHUBAccessSlotNo" : $"netRHUBOfp{m_nRhubPort}SlotNo";
 			if (!m_rhubDev.IsExistField(m_strSlotMibName))
 			{
-				Log.Error($"当前MIB版本中不包含{m_strSlotMibName}字段，请确认MIB是否正确");
+				m_strLatestError = $"获取索引为{m_boardDev.m_strOidIndex}板卡设备{m_strSlotMibName}字段值失败，可能MIB版本差异导致错误";
 				return false;
 			}
 
@@ -268,7 +273,7 @@ namespace NetPlan.DevLink
 			var rowstatus = dev.GetNeedUpdateValue("netRHUBRowStatus");
 			if (null == rowstatus)
 			{
-				Log.Error($"从RHUB{dev.m_strOidIndex}查询netRHUBRowStatus属性值失败");
+				m_strLatestError = $"获取索引为{dev.m_strOidIndex}rhub设备netRHUBRowStatus字段值失败";
 				return false;
 			}
 
@@ -280,18 +285,23 @@ namespace NetPlan.DevLink
 
 			if (!dev.SetDevAttributeValue("netRHUBAccessRackNo", bbi.strRackNo))
 			{
+				m_strLatestError = $"设置索引为{dev.m_strOidIndex}的rhub设备netRHUBAccessRackNo字段值{bbi.strRackNo}失败";
 				return false;
 			}
 			if (!dev.SetDevAttributeValue("netRHUBAccessShelfNo", bbi.strShelfNo))
 			{
+				m_strLatestError = $"设置索引为{dev.m_strOidIndex}的rhub设备netRHUBAccessShelfNo字段值{bbi.strShelfNo}失败";
 				return false;
 			}
 			if (!dev.SetDevAttributeValue(m_strSlotMibName, bbi.strSlotNo))
 			{
+				m_strLatestError = $"设置索引为{dev.m_strOidIndex}的rhub设备{m_strSlotMibName}字段值{bbi.strSlotNo}失败";
 				return false;
 			}
+
 			if (!dev.SetDevAttributeValue("netRHUBAccessBoardType", bbi.strBoardCode))
 			{
+				m_strLatestError = $"设置索引为{dev.m_strOidIndex}的rhub设备netRHUBAccessBoardType字段值{bbi.strBoardCode}失败";
 				return false;
 			}
 
@@ -303,12 +313,13 @@ namespace NetPlan.DevLink
 			var workMode = rhub.GetNeedUpdateValue("netRHUBOfpWorkMode", false);
 			if (null == workMode)
 			{
-				Log.Error($"从rhub{rhub.m_strOidIndex}查询光口工作模式失败");
+				m_strLatestError = $"获取索引为{rhub.m_strOidIndex}rhub设备netRHUBOfpWorkMode字段值失败";
 				return false;
 			}
 
 			if (!rhub.SetDevAttributeValue(m_strOfpMibName, nBoardPort.ToString()))
 			{
+				m_strLatestError = $"设置索引为{rhub.m_strOidIndex}的rhub设备{m_strOfpMibName}字段值{nBoardPort}失败";
 				return false;
 			}
 
@@ -316,6 +327,7 @@ namespace NetPlan.DevLink
 
 			if (!rhub.SetDevAttributeValue(m_strOfpLinePosMibName, lp))
 			{
+				m_strLatestError = $"设置索引为{rhub.m_strOidIndex}的rhub设备{m_strOfpLinePosMibName}字段值{lp}失败";
 				return false;
 			}
 
@@ -346,6 +358,7 @@ namespace NetPlan.DevLink
 				var rruTypeIndex = rru.GetNeedUpdateValue("netRRUTypeIndex");
 				if (null == rruTypeIndex)
 				{
+					m_strLatestError = $"获取索引为{rru.m_strOidIndex}的rru设备netRRUTypeIndex字段值失败";
 					return false;
 				}
 
@@ -357,6 +370,7 @@ namespace NetPlan.DevLink
 				var rhubNoInPico = rru.GetNeedUpdateValue("netRRUHubNo");
 				if (null == rhubNoInPico)
 				{
+					m_strLatestError = $"获取索引为{rru.m_strOidIndex}的rru设备netRRUHubNo字段值失败";
 					return false;
 				}
 

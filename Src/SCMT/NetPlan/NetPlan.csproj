@@ -51,7 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommCheckRuleHelper.cs" />
+    <Compile Include="CommCheckRuleDeal.cs" />
     <Compile Include="DevAttributeInfo.cs" />
     <Compile Include="DevLink\INetPlanLink.cs" />
     <Compile Include="DevLink\LinkBoardRhub.cs" />
@@ -77,10 +77,10 @@
     <Compile Include="NPDescHelper.cs" />
     <Compile Include="NPEAntHelper.cs" />
     <Compile Include="NPEBoardHelper.cs" />
+    <Compile Include="NPECheckRulesDeal.cs" />
     <Compile Include="NPECheckRulesHelper.cs" />
     <Compile Include="NPECmdHelper.cs" />
     <Compile Include="NPERruHelper.cs" />
-    <Compile Include="NPLastErrorHelper.cs" />
     <Compile Include="NPRruToCellInfo.cs" />
     <Compile Include="NPSnmpOperator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

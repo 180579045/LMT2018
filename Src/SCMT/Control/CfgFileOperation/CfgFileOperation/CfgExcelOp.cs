@@ -102,8 +102,9 @@ namespace CfgFileOperation
             {
                 wbookDic[FilePath] = excel.Workbooks.Open(FilePath);
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(String.Format("Open excel({0}) err:{1}", FilePath, ex.Message));
                 return false;
             }
             return true;
