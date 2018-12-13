@@ -148,13 +148,15 @@
                 </LinearGradientBrush>
             </GridSplitter.Background>
         </GridSplitter>
+        
         <Expander Name="ExpanderBaseInfo" Grid.Column="2" ExpandDirection="Right" IsExpanded="False" IsEnabled="False">
             <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
             <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
                 <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                     <StackPanel>
-                        <Metro:MetroTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..."
-                                                    ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
+                        <View:GlobalSearchTextBox Width="200" x:Name="check2" Text="搜索内容" Title="" InputHint="InputHint..."
+                                            ButtonTitle="搜索" PopupHint="Enter you want" Icon="Resources/editIcon.png" />
+                        
                         <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
                     </StackPanel>
                 </Border>
