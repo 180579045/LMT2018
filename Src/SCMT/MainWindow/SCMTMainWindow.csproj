@@ -252,6 +252,7 @@
     <Compile Include="View\EditColumns.xaml.cs">
       <DependentUpon>EditColumns.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\GlobalSearchTextBox.cs" />
     <Compile Include="View\InitWindows.xaml.cs">
       <DependentUpon>InitWindows.xaml</DependentUpon>
     </Compile>
