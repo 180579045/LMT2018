@@ -22,6 +22,7 @@ namespace UICore.Controls.Metro
         public static readonly DependencyProperty IsPassWordBoxProperty = ElementBase.Property<MetroTextBox, bool>(nameof(IsPassWordBoxProperty), false);
         public static readonly DependencyProperty CornerRadiusProperty = ElementBase.Property<MetroTextBox, CornerRadius>(nameof(CornerRadiusProperty));
 
+        // 按钮Click命令;
         public static RoutedUICommand ButtonClickCommand = ElementBase.Command<MetroTextBox>(nameof(ButtonClickCommand));
 
         public string Title { get { return (string)GetValue(TitleProperty); } set { SetValue(TitleProperty, value); } }
@@ -40,14 +41,23 @@ namespace UICore.Controls.Metro
 
 
         public Func<string, bool> ErrorCheckAction { get; set; }
-        public event EventHandler ButtonClick;
+        public event EventHandler ButtonClick;                       // 自定义路由事件的对外暴露事件接口;
 
         public MetroTextBox()
         {
             ContextMenu = null;
             Loaded += delegate { ErrorCheck(); };
             TextChanged += delegate { ErrorCheck(); };
-            CommandBindings.Add(new CommandBinding(ButtonClickCommand, delegate { if (ButtonClick != null) { ButtonClick(this, null); } }));
+            
+            // 将命令和命令处理的回调添加关联;
+            CommandBindings.Add(new CommandBinding(ButtonClickCommand, delegate 
+            {
+                if (ButtonClick != null)
+                {
+                    ButtonClick(this, null);
+                }
+            }));
+
             Utility.Refresh(this);
         }
 

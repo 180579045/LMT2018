@@ -7,6 +7,9 @@ using UICore.Controls.Metro;
 
 namespace SCMTMainWindow.View
 {
+    /// <summary>
+    /// 全局索引功能类;
+    /// </summary>
     class GlobalSearchTextBox : MetroTextBox
     {
 

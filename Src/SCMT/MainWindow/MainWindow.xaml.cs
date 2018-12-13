@@ -115,16 +115,24 @@ namespace SCMTMainWindow
 			Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 			//  当某个异常未被捕获时出现。主要指的是非UI线程
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            // 设置Command源和目标;
+            this.GlobalSearch.ButtonClick += GlobalSearch_ButtonClick;
 		}
 
-		#endregion 构造、析构
+        private void GlobalSearch_ButtonClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
-		#region 程序初始化
+        #endregion 构造、析构
 
-		/// <summary>
-		/// 初始化用户界面;
-		/// </summary>
-		private void InitView()
+        #region 程序初始化
+
+        /// <summary>
+        /// 初始化用户界面;
+        /// </summary>
+        private void InitView()
 		{
 			// 			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
 			// 			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
