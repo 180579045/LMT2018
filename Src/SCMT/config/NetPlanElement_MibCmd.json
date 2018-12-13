@@ -127,6 +127,15 @@
 				"Set" : ["SetAntennaBfScanWeightInfo"],
 				"Add" : ["AddAntennaBfScanWeightInfo"],
 				"Del" : ["DelAntennaBfScanWeightInfo"]
+			},
+			{
+				"MibEntry" : "baseBandwidthEntry",
+				"Alias" : "bandWidth",
+				"InitQuery" : "true",
+				"Get" : ["GetBaseBandwidthInfo"],
+				"Set" : [""],
+				"Add" : [""],
+				"Del" : [""]
 			}
 		]	
 	}
