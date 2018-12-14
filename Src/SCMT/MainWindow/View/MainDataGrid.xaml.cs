@@ -792,11 +792,6 @@ namespace SCMTMainWindow.View
 			return mibLeaf;
 		}
 
-		private int GetDataGridMaxIndex()
-		{
-			return 0;
-		}
-
 		public void RefreshDataGrid(CDTLmtbPdu lmtPdu, int nIndexGrade)
 		{
 			//获取列表内容
@@ -1252,7 +1247,7 @@ namespace SCMTMainWindow.View
         }
 
         #region 基本信息列表分页处理
-        private int perPageLineNum = 30;//每页显示行数
+        private int perPageLineNum = 50;//每页显示行数
         private int totalLineNum;//总行数
         private int totalPageNum = 1;//总页数
         private Dictionary<string, string> oid_cn;
@@ -1289,7 +1284,12 @@ namespace SCMTMainWindow.View
             else
                 totalPageNum = totalLineNum / perPageLineNum + 1;
 
-            tbkTotal.Text = totalPageNum.ToString();           
+            tbkTotal.Text = totalPageNum.ToString();
+
+            if (totalPageNum == 1)
+                PageInfo.Visibility = Visibility.Collapsed;
+            else
+                PageInfo.Visibility = Visibility.Visible;    
         }
         /// <summary>
         /// 根据设置的页数刷新界面的显示
