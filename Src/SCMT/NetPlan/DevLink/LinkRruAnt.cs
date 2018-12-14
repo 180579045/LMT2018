@@ -16,6 +16,7 @@ namespace NetPlan.DevLink
 
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, null))     // 这里传入null，因为rru和本地小区的关联也会添加rru_ant类型的记录，此处直接跳过不检查
 			{
+				MibInfoMgr.ErrorTip($"添加连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -33,8 +34,9 @@ namespace NetPlan.DevLink
 
 			ChangeDevRecordTypeToModify(newRecord);
 
-			if (!SetRruLinkAntInfo(newRecord, "1"))
+			if (!SetRruLinkAntInfo(newRecord, "1"))		// todo 注意：硬编码，可能导致连接删除失败
 			{
+				MibInfoMgr.ErrorTip($"添加连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -48,6 +50,8 @@ namespace NetPlan.DevLink
 			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"添加类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
 
+			MibInfoMgr.InfoTip("添加连接成功");
+
 			return true;
 		}
 
@@ -57,6 +61,7 @@ namespace NetPlan.DevLink
 
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
 			{
+				MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -68,6 +73,7 @@ namespace NetPlan.DevLink
 
 			if (!SetRruLinkAntInfo(newRecord, "-1"))
 			{
+				MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -75,8 +81,11 @@ namespace NetPlan.DevLink
 
 			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"删除类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
+			AddDevToMap(mapMibInfo, m_recordType, newRecord);
 
-			return AddDevToMap(mapMibInfo, m_recordType, newRecord);
+			MibInfoMgr.InfoTip("删除连接成功");
+
+			return true;
 		}
 
 		/// 验证两端连接的设备是否存在
@@ -85,21 +94,21 @@ namespace NetPlan.DevLink
 			var strRruIndex = wholeLink.GetDevIndex(EnumDevType.rru);
 			if (null == strRruIndex)
 			{
-				Log.Error("查询连接的RRU设备索引失败");
+				m_strLatestError = "查询连接的rru设备索引失败";
 				return false;
 			}
 
 			m_rruDev = GetDevAttributeInfo(strRruIndex, EnumDevType.rru);
 			if (null == m_rruDev)
 			{
-				Log.Error($"索引为{strRruIndex}的RRU设备不存在");
+				m_strLatestError = $"索引为{strRruIndex}的rru设备不存在";
 				return false;
 			}
 
 			m_nRruPort = wholeLink.GetDevIrPort(EnumDevType.rru, EnumPortType.rru_to_ant);
 			if (-1 == m_nRruPort)
 			{
-				Log.Error($"索引为{strRruIndex}的RRU设备连接天线端口号错误");
+				m_strLatestError = $"索引为{strRruIndex}的rru设备连接天线阵端口号错误";
 				return false;
 			}
 
@@ -109,34 +118,30 @@ namespace NetPlan.DevLink
 			{
 				if (!checkExist.Invoke(m_strRruAntIndex, m_recordType))
 				{
+					var tmp = checkExist == RecordExistInDel ? "不" : "已";
+					m_strLatestError = $"索引为{m_strRruAntIndex}的天线阵安装规划表记录{tmp}存在";
 					return false;
 				}
 			}
-			//var record = GetDevAttributeInfo(m_strRruAntIndex, m_recordType);
-			//if (null != record)
-			//{
-			//	Log.Error($"索引为{strRruIndex}RRU{m_nRruPort}通道已经有到天线阵的连接");
-			//	return false;
-			//}
 
 			var strAntIndex = wholeLink.GetDevIndex(EnumDevType.ant);
 			if (null == strAntIndex)
 			{
-				Log.Error("查询连接的天线阵设备失败");
+				m_strLatestError = "查询连接的天线阵设备失败";
 				return false;
 			}
 
 			m_antDev = GetDevAttributeInfo(strAntIndex, EnumDevType.ant);
 			if (null == m_antDev)
 			{
-				Log.Error($"索引为{strAntIndex}的天线阵设备信息查询失败");
+				m_strLatestError = $"索引为{strAntIndex}的天线阵设备信息查询失败";
 				return false;
 			}
 
 			m_nAntPort = wholeLink.GetDevIrPort(EnumDevType.ant, EnumPortType.ant_to_rru);
 			if (-1 == m_nAntPort)
 			{
-				Log.Error($"索引为{strAntIndex}的ANT设备连接RRU端口号设置错误");
+				m_strLatestError = $"索引为{strAntIndex}的天线阵连接rru设备端口号错误";
 				return false;
 			}
 
@@ -207,7 +212,7 @@ namespace NetPlan.DevLink
 		#region 私有接口
 
 		/// <summary>
-		/// 设置RRU设备中
+		/// 设置天线阵安装规划表中信息
 		/// </summary>
 		/// <param name="record"></param>
 		/// <param name="strValue">重置的值。如果为-1，表示重置</param>
@@ -222,8 +227,21 @@ namespace NetPlan.DevLink
 				strPathNo = "-1";
 			}
 
-			return record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo) &&
-					record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", strPathNo);
+			var bSucceed = record.SetFieldLatestValue("netSetRRUPortAntArrayNo", strAntNo);
+			if (!bSucceed)
+			{
+				m_strLatestError = $"设置索引为{record.m_strOidIndex}的天线阵安装规划表记录字段netSetRRUPortAntArrayNo值{strAntNo}失败";
+				return false;
+			}
+
+			bSucceed = record.SetFieldLatestValue("netSetRRUPortAntArrayPathNo", strPathNo);
+			if (!bSucceed)
+			{
+				m_strLatestError = $"设置索引为{record.m_strOidIndex}的天线阵安装规划表记录字段netSetRRUPortAntArrayPathNo值{strPathNo}失败";
+				return false;
+			}
+
+			return true;
 		}
 
 		private static bool IsRelateSetting(string strRruNo, DevAttributeBase rruAntSetting)

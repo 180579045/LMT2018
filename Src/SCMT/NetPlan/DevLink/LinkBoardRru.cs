@@ -21,6 +21,7 @@ namespace NetPlan.DevLink
 
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordExistInDel))
 			{
+				MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -30,6 +31,7 @@ namespace NetPlan.DevLink
 			var rruClone = m_rruDev.DeepClone();
 			if (!ResetRruToBoardInfo(rruClone, m_nRruPort))
 			{
+				MibInfoMgr.ErrorTip($"删除连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -49,6 +51,7 @@ namespace NetPlan.DevLink
 			Log.Debug($"删除连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"删除类型为：{m_irRecordType.ToString()}，索引为：{oldRecord.m_strOidIndex}的记录成功");
 
+			MibInfoMgr.InfoTip("删除连接成功");
 			return true;
 		}
 
@@ -57,6 +60,7 @@ namespace NetPlan.DevLink
 			mapOriginData = mapMibInfo;
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
 			{
+				MibInfoMgr.ErrorTip($"添加连接失败，原因：{m_strLatestError}");
 				return false;
 			}
 
@@ -68,6 +72,7 @@ namespace NetPlan.DevLink
 			var rruClone = m_rruDev.DeepClone();
 			if (!SetRruToBoardInfo(rruClone, m_nRruPort, m_boardDev, m_nBoardPort))
 			{
+				MibInfoMgr.ErrorTip("添加连接失败，原因：设置rru记录中板卡相关信息失败");
 				return false;
 			}
 
@@ -86,7 +91,7 @@ namespace NetPlan.DevLink
 			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"添加类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
 
-
+			MibInfoMgr.InfoTip("添加连接成功");
 			return true;
 		}
 
@@ -112,21 +117,21 @@ namespace NetPlan.DevLink
 			var boardIndex = wholeLink.GetDevIndex(EnumDevType.board);
 			if (null == boardIndex)
 			{
-				Log.Error("获取板卡索引失败，请检查添加连接时板卡属性设置是否正确");
+				m_strLatestError = "获取板卡索引失败";
 				return false;
 			}
 
 			m_nBoardPort = wholeLink.GetDevIrPort(EnumDevType.board, EnumPortType.bbu_to_rru);
 			if (-1 == m_nBoardPort)
 			{
-				Log.Error("获取板卡光口号失败，请检查添加连接时板卡属性设置是否正确");
+				m_strLatestError = "获取板卡连接rru设备光口号失败";
 				return false;
 			}
 
 			m_boardDev = GetDevAttributeInfo(boardIndex, EnumDevType.board);
 			if (null == m_boardDev)
 			{
-				Log.Error($"根据索引{boardIndex}未找到板卡信息");
+				m_strLatestError = $"根据索引{boardIndex}未找到板卡信息";
 				return false;
 			}
 
@@ -134,6 +139,8 @@ namespace NetPlan.DevLink
 			var bExist = checkExist.Invoke(m_irRecordIndex, EnumDevType.board_rru);
 			if (!bExist)
 			{
+				var tmp = checkExist == RecordExistInDel ? "不" : "已";
+				m_strLatestError = $"索引为{m_irRecordIndex}的光口规划表记录{tmp}存在";
 				return false;
 			}
 
@@ -141,21 +148,21 @@ namespace NetPlan.DevLink
 			var rruIndex = wholeLink.GetDevIndex(EnumDevType.rru);
 			if (null == rruIndex)
 			{
-				Log.Error("获取RRU设备索引失败，请检查添加连接时RRU设备属性设置是否正确");
+				m_strLatestError = "获取RRU设备索引失败";
 				return false;
 			}
 
 			m_nRruPort = wholeLink.GetDevIrPort(EnumDevType.rru, EnumPortType.rru_to_bbu);
 			if (-1 == m_nRruPort)
 			{
-				Log.Error("获取RRU设备光口号失败，请检查添加连接时RRU设备属性设置是否正确");
+				m_strLatestError = "获取rru设备连接板卡光口号失败";
 				return false;
 			}
 
 			m_rruDev = GetDevAttributeInfo(rruIndex, EnumDevType.rru);
 			if (null == m_rruDev)
 			{
-				Log.Error($"根据索引{rruIndex}未找到RRU信息");
+				m_strLatestError = $"根据索引{rruIndex}未找到rru信息";
 				return false;
 			}
 

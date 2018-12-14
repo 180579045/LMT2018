@@ -1003,11 +1003,15 @@ namespace SCMTMainWindow.View
                 {
                     srcPort.portType = EnumPortType.bbu_to_rhub;
                     dstPort.portType = EnumPortType.rhub_to_bbu;
+                    connection.Source.PortType = EnumPortType.bbu_to_other;
+                    connection.Sink.PortType = EnumPortType.rhub_to_other;
                 }
                 else if (connection.Sink.DevType == EnumDevType.rru)
                 {
                     srcPort.portType = EnumPortType.bbu_to_rru;
                     dstPort.portType = EnumPortType.rru_to_bbu;
+                    connection.Source.PortType = EnumPortType.bbu_to_other;
+                    connection.Sink.PortType = EnumPortType.rru_to_other;
                 }
                 else
                 {
@@ -1021,16 +1025,21 @@ namespace SCMTMainWindow.View
                 {
                     srcPort.portType = EnumPortType.rru_to_rru;
                     dstPort.portType = EnumPortType.rru_to_rru;
+                    connection.Source.PortType = EnumPortType.rru_to_other;
+                    connection.Sink.PortType = EnumPortType.rru_to_other;
                 }
                 else if (connection.Sink.DevType == EnumDevType.board)
                 {
                     srcPort.portType = EnumPortType.rru_to_bbu;
                     dstPort.portType = EnumPortType.bbu_to_rru;
+                    connection.Source.PortType = EnumPortType.rru_to_other;
+                    connection.Sink.PortType = EnumPortType.bbu_to_other;
                 }
                 else if (connection.Sink.DevType == EnumDevType.rhub)
                 {
                     srcPort.portType = EnumPortType.pico_to_rhub;
                     dstPort.portType = EnumPortType.rhub_to_pico;
+                    connection.Source.PortType = EnumPortType.rru_to_other;
                 }
                 else
                 {
@@ -1044,16 +1053,21 @@ namespace SCMTMainWindow.View
                 {
                     srcPort.portType = EnumPortType.rhub_to_bbu;
                     dstPort.portType = EnumPortType.bbu_to_rhub;
+                    connection.Source.PortType = EnumPortType.rhub_to_other;
+                    connection.Sink.PortType = EnumPortType.bbu_to_other;
                 }
                 else if (connection.Sink.DevType == EnumDevType.rhub)
                 {
                     srcPort.portType = EnumPortType.rhub_to_rhub;
                     dstPort.portType = EnumPortType.rhub_to_rhub;
+                    connection.Source.PortType = EnumPortType.rhub_to_other;
+                    connection.Sink.PortType = EnumPortType.rhub_to_other;
                 }
                 else if (connection.Sink.DevType == EnumDevType.rru)
                 {
                     srcPort.portType = EnumPortType.rhub_to_pico;
                     dstPort.portType = EnumPortType.pico_to_rhub;
+                    connection.Sink.PortType = EnumPortType.rru_to_other;
                 }
             }
             else

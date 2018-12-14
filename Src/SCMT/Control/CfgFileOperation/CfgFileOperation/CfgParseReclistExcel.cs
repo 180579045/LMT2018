@@ -17,24 +17,17 @@ namespace CfgFileOperation
     /// </summary>
     class CfgParseReclistExcel
     {
-        List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
+        //List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
 
         /// <summary>
         /// 需要处理的表名
         /// </summary>
         List<string> m_vectPDGTabName = new List<string>();
 
-        //2014-2-12 luoxin 多实例配置的规划索引
-        string m_strPlanIndex = "";
+        ////2014-2-12 luoxin 多实例配置的规划索引
+        //string m_strPlanIndex = "";
         //2014-2-12 luoxin 当前索引
         string m_strCurTabAndIndex = "";
-
-        private Dictionary<string, string> ColsNameCell = null;//Cell参数表
-
-        private Dictionary<string, string> ColsNamegNB = null; //Cell参数表
-
-        Dictionary<string, string> SheetCellColUe0;
-        Dictionary<string, string> SheetGNBColUe0;
 
         public CfgParseReclistExcel()
         {
@@ -43,7 +36,7 @@ namespace CfgFileOperation
         }
 
         /// <summary>
-        /// 总体处理 reclist
+        /// 4G:总体处理 reclist
         /// </summary>
         /// <param name="strExcelPath"></param>
         /// <param name="strFileToDirectory"></param>
@@ -160,39 +153,7 @@ namespace CfgFileOperation
         {
             return m_vectPDGTabName;
         }
-        /// <summary>
-        /// 华为相关数据处理
-        /// </summary>
-        /// <param name="bw"></param>
-        /// <param name="strExcelPath"></param>
-        /// <param name="cfgOp"></param>
-        /// <returns></returns>
-        bool ProcessingExcel_5GHuaWei(BinaryWriter bw, string strExcelPath, CfgOp cfgOp)
-        {
-            bool re = true;
-            // "Cell参数表"
-            SheetCellColUe0 = new Dictionary<string, string>(){
-                    { "ProcessIdentity" ,"Q" },  // 处理标识
-                    { "NodeName", "A"},          // 节点名
-                    { "DefaultValue", "E"},      // 默认值
-                    { "recommendValue", "P"},    // 推荐值
-                    { "End","Q"},                // 结束标志
-                };
-
-            // "gNB参数表" 展讯
-            SheetGNBColUe0 = new Dictionary<string, string>(){
-                    { "ProcessIdentity" ,"M" },  // 处理标识
-                    { "NodeName", "A"},          // 节点名
-                    { "DefaultValue", "E"},      // 默认值
-                    { "recommendValue", "L"},    // 推荐值
-                    { "End","Q"},                // 结束标志
-                };
-
-
-
-            return re;
-        }
-
+        
         /// <summary>
         /// 默认值
         /// </summary>
@@ -202,7 +163,7 @@ namespace CfgFileOperation
         {
             // 如果是老的 reclist 
             // "Cell参数表"
-            SheetCellColUe0 = new Dictionary<string, string>(){
+            Dictionary<string, string> SheetCellColUe0 = new Dictionary<string, string>(){
                     { "ProcessIdentity" ,"Q" },  // 处理标识
                     { "NodeName", "A"},          // 节点名
                     { "DefaultValue", "E"},      // 默认值
@@ -211,7 +172,7 @@ namespace CfgFileOperation
                 };
 
             // "gNB参数表" 展讯
-            SheetGNBColUe0 = new Dictionary<string, string>(){
+            Dictionary<string, string> SheetGNBColUe0 = new Dictionary<string, string>(){
                     { "ProcessIdentity" ,"M" },  // 处理标识
                     { "NodeName", "A"},          // 节点名
                     { "DefaultValue", "E"},      // 默认值
@@ -226,6 +187,48 @@ namespace CfgFileOperation
             DealReclistPageData(strExcelPath, SheetCellColUe0, cfgOp, "Cell参数表");
         }
 
+        /// <summary>
+        /// 华为相关数据处理
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="strExcelPath"></param>
+        /// <param name="cfgOp"></param>
+        /// <returns></returns>
+        bool ProcessingExcel_5GHuaWei(BinaryWriter bw, string strExcelPath, CfgOp cfgOp)
+        {
+            bool re = true;
+            // "Cell参数表"
+            Dictionary<string, string> CellParaCol = new Dictionary<string, string>(){
+                    { "NodeName", "A"},          // 节点名
+                    { "DefaultValue", "E"},      // 默认值                   
+                    { "End","O"},                // 结束标志                   
+                    { "recommendValue", "M"},    // 推荐值
+                    { "ProcessIdentity" ,"N" },  // 处理标识
+                };
+
+            // "gNB参数表" 展讯
+            Dictionary<string, string> gNBParaCol = new Dictionary<string, string>(){
+                    { "NodeName", "A"},          // 节点名
+                    { "DefaultValue", "E"},      // 默认值                    
+                    { "End","Q"},                // 结束标志
+                    { "recommendValue", "L"},    // 推荐值
+                    { "ProcessIdentity" ,"M" },  // 处理标识
+                };
+
+            re = DealReclist5GData(bw, strExcelPath, "Cell参数表", CellParaCol, cfgOp);
+
+            return re;
+        }
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strExcelPath"></param>
+        /// <param name="ColName"></param>
+        /// <param name="cfgOp"></param>
+        /// <param name="strPageName"></param>
         void DealReclistPageData(string strExcelPath, Dictionary<string, string> ColName, CfgOp cfgOp, string strPageName)
         {
             int rowCount = GetEndLineNum(strExcelPath, strPageName, ColName);// wks.UsedRange.Rows.Count;                  // 获取行数
@@ -242,34 +245,23 @@ namespace CfgFileOperation
             string strCurTableName = "";
             int  m_iCurTabIndexNum = -1;//2014-2-12 luoxin 当前表索引个数
             bool m_bIsMoreInsts = false;//2014-2-12 luoxin 是否多实例配置
+            string m_strPlanIndex = ""; //2014-2-12 luoxin 多实例配置的规划索引
+            List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
             for (int currentLine = 4; currentLine < rowCount + 1; currentLine++)
             {
-                bool bIsIndexNode = false;//是否是索引节点
-                //结束标记
-                if (isEndLine(ColVals, currentLine))
+                bool bIsIndexNode = false;//是否是索引节点                
+                if (isEndLine(ColVals, currentLine))//结束标记
                     break;
-                
-                //根据patch标识进行处理
-                string strFlag = GetExcelFlag(ColVals, currentLine);
+                string strFlag = GetExcelFlag(ColVals, currentLine);//根据patch标识进行处理
                 if (!isEffectiveLine(strFlag))
                     continue;
 
-                // excel cell value
-                string CellNodeName = GetCellString(ColVals["NodeName"][currentLine, 1]);
+                //节点名 NodeName, 是否为索引节点 bIsIndexNode
+                string NodeName = GetIndexNodeName(GetCellString(ColVals["NodeName"][currentLine, 1]), out bIsIndexNode);               
+                string DefaultValue = GetDefaultValue(ColVals["DefaultValue"][currentLine, 1]);//节点值
 
-                //节点名
-                string NodeName = GetIndexNodeName(CellNodeName);
-                //节点值
-                string DefaultValue = GetDefaultValue(ColVals["DefaultValue"][currentLine, 1]);
-                //是否为索引节点
-                bIsIndexNode = IsIndexNode(CellNodeName);
-
-
-                ///下面是挑选的过程，
-                ///1.把reclist 中存在 表名tableName 存起来；
-                ///2.把reclist中每个table下的node存起来
-                ///3.处理每个reclist中node的默认值。
-
+                //下面是挑选的过程，
+                //1.把reclist 中存在 表名tableName 存起来；2.把reclist中每个table下的node存起来3.处理每个reclist中node的默认值。
                 /// 1.通过node mibName 找 tableName，判断reclist中表名是否是在当前数据库中存在
                 string strTableName = cfgOp.m_mibTreeMem.GetTableNameFromDBMibTree(NodeName);
                 if (String.Empty == strTableName)
@@ -297,29 +289,194 @@ namespace CfgFileOperation
                 //表量表
                 else
                 {
-                    //处理索引
-                    if (bIsIndexNode)
+                    if (bIsIndexNode)//处理索引
                     {
                         m_vectIndexScope.Add(DefaultValue);
-
-                        if (0 == String.Compare(strFlag,"2",true))
+                        if (0 == String.Compare(strFlag, "2", true))
                         {
                             m_bIsMoreInsts = true;
                             m_strPlanIndex = GetRecommendValue(ColVals, currentLine);//推荐值
                         }
-                        continue;//索引节点没有办法设定特殊值
-                    }
-
-                    //处理表量表中节点
-                    if (!DealTableWithIndex(cfgOp, m_bIsMoreInsts, NodeName, DefaultValue, strFlag, strCurTableName, m_iCurTabIndexNum, strPageName))
-                    {
                         continue;
                     }
+                    //处理表量表中节点
+                    DealTableWithIndex(cfgOp, m_bIsMoreInsts, NodeName, DefaultValue, strFlag,
+                        strCurTableName, m_iCurTabIndexNum, strPageName, m_vectIndexScope, m_strPlanIndex);
                 }
 
             }
 
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="strExcelPath"></param>
+        /// <param name="strPageName"></param>
+        /// <param name="ColName"></param>
+        /// <param name="cfgOp"></param>
+        /// <returns></returns>
+        bool DealReclist5GData(BinaryWriter bw, string strExcelPath, string strPageName, 
+            Dictionary<string, string> ColName, CfgOp cfgOp)
+        {
+            bool re = true;
+            int rowValidCount = GetEndLineNum(strExcelPath, strPageName, ColName);// 获取行数  
+            Dictionary<string, object[,]> ColVals = GetExcelRangeValue(strExcelPath, strPageName, rowValidCount, ColName);// 获取ColName相关的col的数据
+
+            string m_strCurTableName = ""; // 当前处理的表名 
+            int m_iCurTabIndexNum = -1;  // 2014-2-12 luoxin 当前表索引个数
+            bool m_bIsMoreInsts = false; // 2014-2-12 luoxin 是否多实例配置
+            string m_strPlanIndex = "";  // 2014-2-12 luoxin 多实例配置的规划索引
+            List<string> m_vectIndexScope = null;//2014-2-12 luoxin 索引取值范围
+            //for (int currentLine = 4; currentLine < rowValidCount + 1; currentLine++)
+            for (int currentLine = rowValidCount-3; currentLine < rowValidCount + 1; currentLine++)
+            {
+                bool bIsIndexNode = false;//是否是索引节点
+
+                if (isEndLine(ColVals, currentLine))
+                    break;
+                
+                string strFlag = GetExcelFlag(ColVals, currentLine);//根据patch标识进行处理
+                if (!isEffectiveLine(strFlag))
+                    continue;
+
+                string NodeName = GetIndexNodeName(
+                    GetCellString(ColVals["NodeName"][currentLine, 1]), out bIsIndexNode);//节点名NodeName,是否为索引节点bIsIndexNode              
+                string DefaultValue = GetDefaultValue(ColVals["DefaultValue"][currentLine, 1]);//节点值
+
+                /// 下面是挑选的过程，
+                /// 1.把reclist 中存在 表名tableName 存起来；2.把reclist中每个table下的node存起来3.处理每个reclist中node的默认值。
+                /// 1.通过node mibName 找 tableName，判断reclist中表名是否是在当前数据库中存在
+                if (false == IsNewTableAndDeal(cfgOp, NodeName,
+                    m_strCurTableName, out m_strCurTableName, 
+                    m_iCurTabIndexNum, out m_iCurTabIndexNum, 
+                    m_bIsMoreInsts, out m_bIsMoreInsts, m_vectIndexScope))
+                {
+                    continue;
+                }
+
+                //标量表
+                if (0 == m_iCurTabIndexNum)
+                {
+                    if (bIsIndexNode)
+                        Console.WriteLine("Err: 自相矛盾。标量表不能有索引节点");
+                    if (!DealScalarTable(cfgOp, m_strCurTableName, NodeName, strFlag))
+                        continue;
+                }
+                //表量表
+                else
+                {
+                    //索引节点
+                    if (bIsIndexNode)
+                    {
+                        DealIndexNode(m_vectIndexScope, DefaultValue, strFlag, ColVals, currentLine,
+                            m_bIsMoreInsts, out m_bIsMoreInsts, m_strPlanIndex, out m_strPlanIndex);
+                        continue;//索引节点没有办法设定特殊值
+                    }
+                    //其他节点
+                    DealTableWithIndex(cfgOp, m_bIsMoreInsts, NodeName, DefaultValue, strFlag,
+                        m_strCurTableName, m_iCurTabIndexNum, strPageName, m_vectIndexScope, m_strPlanIndex);
+                }
+            }
+
+            return re;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strExcelPath"></param>
+        /// <param name="strPageName"></param>
+        /// <param name="rowValidCount"></param>
+        /// <param name="ColName"></param>
+        /// <returns></returns>
+        Dictionary<string, object[,]> GetExcelRangeValue(string strExcelPath, string strPageName, int rowValidCount, 
+            Dictionary<string, string> ColName)
+        {
+            // 获取所有sheet 每col的数据
+            Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
+            foreach (var colName in ColName.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
+            {
+                object[,] arry = CfgExcelOp.GetInstance().GetRangeVal(strExcelPath, strPageName, ColName[colName] + "1", ColName[colName] + rowValidCount);
+                ColVals.Add(colName, arry);
+            }
+            return ColVals;
+        }
+
+        /// <summary>
+        /// NodeName节点是否是属于新表。如果属于新表，更新相关内容。
+        /// </summary>
+        /// <param name="cfgOp"></param>
+        /// <param name="NodeName"></param>
+        /// <param name="strCurTableName"></param>
+        /// <param name="m_CurTableName"></param>
+        /// <param name="iCurTabIndexNum">输入:表的索引个数</param>
+        /// <param name="m_iCurTabIndexNum">输出:初始化表的索引个数</param>
+        /// <param name="bIsMoreInsts">输入:是否是多实例</param>
+        /// <param name="m_bIsMoreInsts">输出:初始化是否是多实例</param>
+        /// <param name="m_vectIndexScope"></param>
+        /// <returns>false:continue; true:继续流程(内部处理赋值问题0:不处理;1:处理)</returns>
+        bool IsNewTableAndDeal(CfgOp cfgOp, string NodeName, 
+            string strCurTableName,out string m_CurTableName,
+            int iCurTabIndexNum, out int m_iCurTabIndexNum, 
+            bool bIsMoreInsts, out bool m_bIsMoreInsts, List<string> m_vectIndexScope)
+        {
+            // 先保持数据不变
+            m_CurTableName = strCurTableName;
+            m_iCurTabIndexNum = iCurTabIndexNum;
+            m_bIsMoreInsts = bIsMoreInsts;
+            // 处理
+            string strTableName = cfgOp.m_mibTreeMem.GetTableNameFromDBMibTree(NodeName);
+            if (String.Empty == strTableName)
+            {
+                return false;//continue;
+            }
+            ///如果表名在数据库中存在，看看reclist excel lineNo 的节点是否同一个表，防止多次处理同一张表
+            if (0 != String.Compare(strCurTableName, strTableName, true))// 不区分大小，不相等时
+            {
+                //再次查看是否有这个表
+                if (!cfgOp.m_mapTableInfo.ContainsKey(strTableName))
+                    return false; //continue;
+                else
+                {
+                    m_CurTableName = strCurTableName;
+                    m_iCurTabIndexNum = cfgOp.m_mibTreeMem.GetIndexNumFromDBMibTree(NodeName);
+                    m_bIsMoreInsts = false;
+                    return true;
+                }
+            }
+            else
+                return true;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="m_vectIndexScope"></param>
+        /// <param name="strCellVal"></param>
+        /// <param name="strFlag"></param>
+        /// <param name="ColVals"></param>
+        /// <param name="currentLine"></param>
+        /// <param name="bIsMoreInsts"></param>
+        /// <param name="m_bIsMoreInsts"></param>
+        /// <param name="strPlanIndex"></param>
+        /// <param name="m_strPlanIndex"></param>
+        void DealIndexNode(List<string> m_vectIndexScope, string strCellVal, string strFlag,
+            Dictionary<string, object[,]> ColVals, int currentLine,
+            bool bIsMoreInsts, out bool m_bIsMoreInsts,
+            string strPlanIndex, out string m_strPlanIndex)
+        {
+            m_bIsMoreInsts = bIsMoreInsts;
+            m_strPlanIndex = strPlanIndex;
+
+            m_vectIndexScope.Add(strCellVal);
+            if (0 == String.Compare(strFlag, "2", true))
+            {
+                m_bIsMoreInsts = true;
+                m_strPlanIndex = GetRecommendValue(ColVals, currentLine);//推荐值
+            }
+        }
+
 
         /// <summary>
         /// 是否是索引节点
@@ -337,8 +494,9 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="NodeName"></param>
         /// <returns></returns>
-        string GetIndexNodeName(string NodeName)
+        string GetIndexNodeName(string NodeName, out bool bIsIndexNode)
         {
+            bIsIndexNode = IsIndexNode(NodeName);
             int pos = NodeName.IndexOf('*');
             if (-1 != pos)
                 return NodeName.Substring(0, pos);
@@ -362,6 +520,11 @@ namespace CfgFileOperation
                     cfgOp.m_mapTableInfo[strCurTableName].m_InstIndex2LeafName.Add(".0", new List<string>() { strNodeName });
                 }
             }
+            if (0 == String.Compare(ProcessIdentity, "2", true))
+            {
+                //do something copy by quyaxin
+            }
+
 
             return true;
         }
@@ -376,7 +539,9 @@ namespace CfgFileOperation
         /// <param name="strFlag"></param>
         /// <param name="strPageName"></param>
         /// <returns></returns>
-        bool DealTableWithIndex(CfgOp cfgOp, bool m_bIsMoreInsts, string strNodeName, string strNodeValue, string strFlag, string strCurTableName, int m_iCurTabIndexNum, string strPageName)
+        bool DealTableWithIndex(CfgOp cfgOp, bool m_bIsMoreInsts, string strNodeName, string strNodeValue, 
+            string strFlag, string strCurTableName, int m_iCurTabIndexNum, string strPageName, List<string> m_vectIndexScope,
+            string m_strPlanIndex)
         {
             //单实例配置
             if (!m_bIsMoreInsts)
@@ -387,7 +552,8 @@ namespace CfgFileOperation
             //多实例配置
             else
             {
-                if (!DealMoreConfigTable(cfgOp, strNodeName, strNodeValue, strFlag, strCurTableName, m_iCurTabIndexNum, strPageName))
+                if (!DealMoreConfigTable(cfgOp, strNodeName, strNodeValue, strFlag, strCurTableName, 
+                    m_iCurTabIndexNum, strPageName, m_vectIndexScope, m_strPlanIndex))
                 {
                     return false;
                 }
@@ -413,20 +579,23 @@ namespace CfgFileOperation
         }
 
         //2014-2-12 luoxin 处理多实例配置表节点
-        bool DealMoreConfigTable(CfgOp cfgOp, string strNodeName, string strNodeValue, string strFlag, string strCurTableName, int m_iCurTabIndexNum, string strPageName)
+        bool DealMoreConfigTable(CfgOp cfgOp, string strNodeName, string strNodeValue, string strFlag, string strCurTableName, 
+            int m_iCurTabIndexNum, string strPageName, List<string> m_vectIndexScope, string m_strPlanIndex)
         {
             string strIndex = "";
 
             //一维索引
             if (1 == m_iCurTabIndexNum)
             {
-                if (!DealMoreConfigTableOneDimensional(cfgOp, strNodeName, strNodeValue, strFlag, strCurTableName, strPageName))
+                if (!DealMoreConfigTableOneDimensional(cfgOp, strNodeName, strNodeValue, strFlag, strCurTableName, 
+                    strPageName, m_strPlanIndex))
                     return false;
             }
             //二维索引
             if (2 == m_iCurTabIndexNum)
             {
-                DealMoreConfigTableTwoDimensionalD(cfgOp, strNodeName, strNodeValue, strFlag, strCurTableName, strPageName);
+                DealMoreConfigTableTwoDimensionalD(cfgOp, strNodeName, strNodeValue, strFlag, strCurTableName, 
+                    strPageName, m_vectIndexScope, m_strPlanIndex);
             }
 
             return true;
@@ -442,7 +611,8 @@ namespace CfgFileOperation
         /// <param name="strCurTableName"></param>
         /// <param name="strPageName"></param>
         /// <returns></returns>
-        bool DealMoreConfigTableOneDimensional(CfgOp cfgOp, string strNodeName, string strNodeValue, string strFlag, string strCurTableName, string strPageName)
+        bool DealMoreConfigTableOneDimensional(CfgOp cfgOp, string strNodeName, string strNodeValue, string strFlag, 
+            string strCurTableName, string strPageName, string m_strPlanIndex)
         {
             string strIndex = "." + m_strPlanIndex;//一维索引
 
@@ -497,7 +667,8 @@ namespace CfgFileOperation
         /// <param name="strCurTableName"></param>
         /// <param name="strPageName"></param>
         /// <returns></returns>
-        bool DealMoreConfigTableTwoDimensionalD(CfgOp cfgOp, string strNodeName, string strNodeValue, string strFlag, string strCurTableName, string strPageName)
+        bool DealMoreConfigTableTwoDimensionalD(CfgOp cfgOp, string strNodeName, string strNodeValue, string strFlag, 
+            string strCurTableName, string strPageName, List<string> m_vectIndexScope, string m_strPlanIndex)
         {
             string strFirstIndexScope = m_vectIndexScope[0];
 
@@ -629,7 +800,12 @@ namespace CfgFileOperation
             //int rowCount = wks.UsedRange.Rows.Count;
             var exop = CfgExcelOp.GetInstance();
             int rowCount = exop.GetRowCount(strExcelPath, strPageName);
-            object[,] arry = exop.GetRangeVal(strExcelPath, strPageName, ColName["End"] + "1", ColName["End"] + rowCount);
+            if (-1 == rowCount)
+            {
+                //bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
+                return -1;// false;
+            }
+            object[,] arry = exop.GetRangeVal(strExcelPath, strPageName, ColName["End"] + "1", ColName["End"] + (rowCount+1));
             for (int row = 1; row < rowCount + 1; row++)
             {
                 if (arry[row, 1] == null)
