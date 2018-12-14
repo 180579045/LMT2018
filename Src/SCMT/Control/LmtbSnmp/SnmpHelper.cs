@@ -47,6 +47,9 @@ namespace LmtbSnmp
 		/// <param name="destIpAddr"></param>
 		public SnmpHelper(string commnuity, string destIpAddr)
 		{
+			string logMsg = string.Format("Pars: commnuity={0}, destIpAddr={1}", commnuity, destIpAddr);
+			Log.Info(logMsg);
+
 			this.m_DestIPAddr = destIpAddr;
 			this.m_Community = commnuity;
 
@@ -63,6 +66,10 @@ namespace LmtbSnmp
 		/// <param name="timeOut"></param>
 		public SnmpHelper(string commnuity, string destIpAddr, int destPort, SnmpVersion version, int timeOut, int retry)
 		{
+			string logMsg = string.Format("Pars: commnuity={0}, destIpAddr={1}, destPort={2}, version={3}, timeOut={4}, retry={5}"
+				, commnuity, destIpAddr, destPort, version, timeOut, retry);
+			Log.Info(logMsg);
+
 			this.m_Community = commnuity;
 			this.m_DestIPAddr = destIpAddr;
 			this.m_DestPort = destPort;
@@ -118,14 +125,25 @@ namespace LmtbSnmp
 		/// <returns></returns>
 		protected UdpTarget ConnectToAgent(string community, string ipAddr)
 		{
+			string logMsg = string.Format("Pars: community={0}, ipAddr={1}", community, ipAddr);
+			Log.Info(logMsg);
+
 			OctetString OctCommunity = new OctetString(community);
 			m_Param = new AgentParameters(OctCommunity);
 			m_Param.Version = SnmpVersion.Ver2;
 
 			IPAddress agent = IPAddress.Parse(ipAddr);
 
-			// 创建代理(基站);
-			m_target = new UdpTarget(agent, m_DestPort, m_TimeOut, m_Retry);
+			try
+			{
+				// 创建代理(基站);
+				m_target = new UdpTarget(agent, m_DestPort, m_TimeOut, m_Retry);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 
 			return m_target;
 		}
@@ -175,13 +193,13 @@ namespace LmtbSnmp
 			try
 			{
 				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				// TODO:函数为处理内容
+				// TODO:函数没处理内容
 				//HandleGetRequestResult(result);
 			}
 			catch (SnmpException e1)
 			{
 				Log.Error(e1.Message);
-				return null;
+				throw;
 			}
 			catch (Exception e)
 			{
@@ -336,7 +354,7 @@ namespace LmtbSnmp
 			catch (Exception e)
 			{
 				Log.Error(e.Message);
-				throw e;
+				throw;
 			}
 
 			if (response == null)
@@ -404,7 +422,7 @@ namespace LmtbSnmp
 			catch (Exception e)
 			{
 				Log.Error(e.Message);
-				throw e;
+				throw;
 			}
 
 			return rs;

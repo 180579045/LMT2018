@@ -155,7 +155,17 @@ namespace LmtbSnmp
 				return -1;
 			}
 
-			var result = snmp.GetRequest(pdu);
+			SnmpPacket result = null;
+			try
+			{
+				result = snmp.GetRequest(pdu);
+
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 			if (result == null)
 			{
 				Log.Error("SNMP request error, response is null.");
@@ -297,18 +307,28 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
 
-			var ReqResult = snmp.GetRequest(pdu);
-
-			if (null != ReqResult)
+			SnmpPacket reqResult = null; 
+			try
 			{
-				if (ReqResult.Pdu.ErrorStatus != 0)
+				reqResult = snmp.GetRequest(pdu);
+
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
+
+			if (null != reqResult)
+			{
+				if (reqResult.Pdu.ErrorStatus != 0)
 				{
-					SnmpErrorParser.PrintPduError(ReqResult.Pdu);
+					SnmpErrorParser.PrintPduError(reqResult.Pdu);
 					status = false;
 				}
 				else
 				{
-					foreach (var vb in ReqResult.Pdu.VbList)
+					foreach (var vb in reqResult.Pdu.VbList)
 					{
 						logMsg = $"Oid={vb.Oid.ToString()}, Type={SnmpConstants.GetTypeName(vb.Value.Type)}, Value={vb.Value.ToString()}";
 						Log.Info(logMsg);
@@ -380,7 +400,16 @@ namespace LmtbSnmp
 
 			var callback = new SnmpAsyncResponse(SnmpCallbackFun);
 
-			var status = snmp.GetRequestAsync(pdu, callback);
+			bool status;
+			try
+			{
+				status = snmp.GetRequestAsync(pdu, callback);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 
 			if (!status)
 			{
@@ -432,25 +461,34 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
 
-			var ReqResult = (SnmpV2Packet)snmp.GetNextRequest(pdu);
-
-			if (null != ReqResult)
+			SnmpPacket reqResult = null;
+			try
 			{
-				if (ReqResult.Pdu.ErrorStatus != 0)
+				reqResult = snmp.GetNextRequest(pdu);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
+
+			if (null != reqResult)
+			{
+				if (reqResult.Pdu.ErrorStatus != 0)
 				{
-					SnmpErrorParser.PrintPduError(ReqResult.Pdu);
+					SnmpErrorParser.PrintPduError(reqResult.Pdu);
 
 					status = false;
 
-					SnmpErrDescHelper.SetLastErrorCode(ReqResult.Pdu.ErrorStatus);
+					SnmpErrDescHelper.SetLastErrorCode(reqResult.Pdu.ErrorStatus);
 
 					// 资源不可用的情况需要上报
-					if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
+					if (reqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable)// endOfMibView
 					{
-						var errIndex = ReqResult.Pdu.ErrorIndex;
+						var errIndex = reqResult.Pdu.ErrorIndex;
 						if (errIndex == 1)
 						{
-							var errVb = ReqResult.Pdu.VbList.ElementAt(0);
+							var errVb = reqResult.Pdu.VbList.ElementAt(0);
 							var errValue = errVb.Value.ToString();
 							if (errValue.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
 							{
@@ -466,7 +504,7 @@ namespace LmtbSnmp
 				}
 				else
 				{
-					foreach (var vb in ReqResult.Pdu.VbList)
+					foreach (var vb in reqResult.Pdu.VbList)
 					{
 						//logMsg = string.Format("ObjectName={0}, Type={1}, Value={2}"
 						//	, vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString());
@@ -535,23 +573,32 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketQueryPdu(reqOidList, out pdu);
 
-			var ReqResult = (SnmpV2Packet)snmp.GetNextRequest(pdu);
-
-			if (null != ReqResult)
+			SnmpPacket reqResult = null;
+			try
 			{
-				if (ReqResult.Pdu.ErrorStatus != 0)// 状态码
+				reqResult = snmp.GetNextRequest(pdu);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
+
+			if (null != reqResult)
+			{
+				if (reqResult.Pdu.ErrorStatus != 0)// 状态码
 				{
-					SnmpErrorParser.PrintPduError(ReqResult.Pdu);
+					SnmpErrorParser.PrintPduError(reqResult.Pdu);
 					status = false;
 					// 状态码为106 下发报文中绑定变量个数不应大于60个，此时要返回
-					if (ReqResult.Pdu.ErrorStatus == 106)
+					if (reqResult.Pdu.ErrorStatus == 106)
 					{
 
 					}
 					// 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
-					if (ReqResult.Pdu.ErrorIndex == 0)
+					if (reqResult.Pdu.ErrorIndex == 0)
 					{
-						foreach (var vb in ReqResult.Pdu.VbList)
+						foreach (var vb in reqResult.Pdu.VbList)
 						{
 							// 如果返回的Oid与传入的Oid相等则说明有错误，要返回错误，避免造成死循环
 							if (reqOidList.Contains(vb.Oid.ToString()))
@@ -570,19 +617,19 @@ namespace LmtbSnmp
 						return true;
 					}
 
-					if (ReqResult.Pdu.VbList.Count > 0)
+					if (reqResult.Pdu.VbList.Count > 0)
 					{
 						// 第一个Vb的值
-						string firstVbVal = ReqResult.Pdu.VbList.ElementAt(0).Value.ToString();
+						string firstVbVal = reqResult.Pdu.VbList.ElementAt(0).Value.ToString();
 						// 只有状态码为13并且错误索引为1并且第一个vb的值为endOfMibView，才表示检索结束
-						if (ReqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable 
+						if (reqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable 
 							&& firstVbVal.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
 						{
 							return true;
 						}
 						else // 其他错误
 						{
-							logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", ReqResult.Pdu.ErrorIndex, firstVbVal);
+							logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", reqResult.Pdu.ErrorIndex, firstVbVal);
 							Log.Error(logMsg);
 							return false;
 						}
@@ -591,7 +638,7 @@ namespace LmtbSnmp
 				}
 				else
 				{
-					foreach (var vb in ReqResult.Pdu.VbList)
+					foreach (var vb in reqResult.Pdu.VbList)
 					{
 						// 根据Mib类型转换为可显示字符串
 						string strValue = null;
@@ -702,26 +749,33 @@ namespace LmtbSnmp
 			var pdu = new Pdu();
 			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 
-			var result = snmp.SetRequest(pdu);
-
+			SnmpPacket result = null;
+			try
+			{
+				result = snmp.SetRequest(pdu);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 			if (result == null)
 			{
 				Log.Error("SNMP request error, response is null.");
 				return -1;
 			}
 
-/*			if (0 != result.Pdu.ErrorStatus)
-			{
-				SnmpErrDescHelper.SetLastErrorCode(result.Pdu.ErrorStatus);
-				return 2;
-			}
-*/
 			rs = SnmpPdu2LmtPdu(result.Pdu, snmp.m_target, ref lmtPdu, 0, false);
+			if (rs == false)
+			{
+				Log.Error("执行SnmpPdu2LmtPdu()方法错误！");
+			}
 
 			// 实例序列化
 			var bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 			// 发布消息
 			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnResponse, bytes);
+
 			return 0;
 		}
 
@@ -754,7 +808,16 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketSetPdu(setVbs, out pdu);
 
-			var result = snmp.SetRequest(pdu);
+			SnmpPacket result = null;
+			try
+			{
+				result = snmp.SetRequest(pdu);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 
 			if (result == null)
 			{
@@ -808,7 +871,7 @@ namespace LmtbSnmp
 
 			var pdu = new Pdu();
 			requestId = pdu.RequestId;
-			// TODO:
+
 			var rs = LmtPdu2SnmpPdu(out pdu, lmtPdu, strIpAddr);
 			if (!rs)
 			{
@@ -817,7 +880,15 @@ namespace LmtbSnmp
 
 			var snmpCallback = new SnmpAsyncResponse(this.SnmpCallbackFun);
 
-			rs = snmp.SetRequestAsync(pdu, snmpCallback);
+			try
+			{
+				rs = snmp.SetRequestAsync(pdu, snmpCallback);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 
 			if (!rs)
 			{
@@ -1024,10 +1095,10 @@ namespace LmtbSnmp
 				var lmtPdu = new CDTLmtbPdu();
 				var rs = SnmpPdu2LmtPdu(packetv2.Pdu, m_SnmpAsync.m_target, ref lmtPdu, 0, false);
 
-				// TODO
 				// 发消息
 				if (packetv2.Pdu.Type == PduType.Inform)
 				{
+					// TODO 后续实现
 				}
 			}
 
