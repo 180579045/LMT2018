@@ -76,6 +76,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LinkPath">
+      <HintPath>..\..\LinkPath\bin\Debug\LinkPath.dll</HintPath>
+    </Reference>
     <Reference Include="LmtbSnmp">
       <HintPath>..\..\LmtbSnmp\bin\Debug\LmtbSnmp.dll</HintPath>
     </Reference>

@@ -836,21 +836,6 @@ namespace SCMTMainWindow
 		}
 */
 
-		/// <summary>
-		/// 按照单个节点进行GetNext;
-		/// 该函数将所有数据收集完成后再通知主界面DataGrid更新;
-		/// </summary>
-		/// <param name="ar"></param>
-		private void ReceiveResBySingleNode(IAsyncResult ar)
-		{
-			var res = ar as SnmpMessageResult;
-
-			// 遍历GetNext结果，添加到对应容器当中,GetNextResList容器中保存着全量集;
-			foreach (var iter in res.AsyncState as Dictionary<string, string>)
-			{
-				GetNextResList.Add(iter.Key, iter.Value);
-			}
-		}
 
 		/// <summary>
 		/// 调用主界面更新DataGrid
@@ -1400,22 +1385,6 @@ namespace SCMTMainWindow
 		// 		{
 		// 			main.UpdateMibDataGrid(ar, oid_cn, oid_en, contentlist);
 		// 		}
-
-		/// <summary>
-		/// 按照单个节点进行GetNext;
-		/// 该函数将所有数据收集完成后再通知主界面DataGrid更新;
-		/// </summary>
-		/// <param name="ar"></param>
-		private void ReceiveResBySingleNode(IAsyncResult ar)
-		{
-			var res = ar as SnmpMessageResult;
-
-			// 遍历GetNext结果，添加到对应容器当中,GetNextResList容器中保存着全量集;
-			foreach (var iter in res.AsyncState as Dictionary<string, string>)
-			{
-				GetNextResList.Add(iter.Key, iter.Value);
-			}
-		}
 
 		/// <summary>
 		/// 更新DataGrid数据
