@@ -27,21 +27,20 @@ namespace CfgFileOperation
         /// patch 需要再次加载 数据库
         /// </summary>
         /// <param name="strFileToDirectory"></param>
-        public void ReadMibTreeToMemory(BinaryWriter bw, string strFileToDirectory)
+        public bool ReadMibTreeToMemory(BinaryWriter bw, string strFileToDirectory)
         {
-            //string strFileToDirectory = "";
-            //strFileToDirectory = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\Data\\lmdtz\\lm.mdb";
             string strSQL = "select * from MibTree order by ExcelLine";// ("select * from MibTree where DefaultValue='/' and ICFWriteAble = '√' order by ExcelLine");
             // 连接数据库，获取信息
             DataSet MibdateSet = new CfgAccessDBManager().GetRecord(strFileToDirectory, strSQL);
             if (null == MibdateSet)
             {
                 bw.Write(String.Format("path({0}), sql({1}) Get Mdb err.\n", strFileToDirectory, strSQL).ToArray());
-                return;
+                return false;
             }
             // 处理重组信息
             ParseProcessing(MibdateSet);
             new CfgAccessDBManager().Close(MibdateSet);
+            return true;
         }
 
         /// <summary>
