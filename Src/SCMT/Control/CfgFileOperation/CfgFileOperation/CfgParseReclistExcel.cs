@@ -520,6 +520,11 @@ namespace CfgFileOperation
                     cfgOp.m_mapTableInfo[strCurTableName].m_InstIndex2LeafName.Add(".0", new List<string>() { strNodeName });
                 }
             }
+            if (0 == String.Compare(ProcessIdentity, "2", true))
+            {
+                //do something copy by quyaxin
+            }
+
 
             return true;
         }

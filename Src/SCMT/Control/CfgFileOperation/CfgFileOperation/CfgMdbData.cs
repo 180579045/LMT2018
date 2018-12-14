@@ -15,10 +15,10 @@ namespace CfgFileOperation
     {
         public DataSet GetRecord(string fileName, string sqlContent)
         {
-            if (-1 != fileName.IndexOf("SCMT"))
-            {
-                int a = 1;
-            }
+            //if (-1 != fileName.IndexOf("SCMT"))
+            //{
+            //    int a = 1;
+            //}
             DataSet dateSet = new DataSet();
             AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
             try
