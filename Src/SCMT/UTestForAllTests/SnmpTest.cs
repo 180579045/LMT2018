@@ -41,7 +41,7 @@ namespace UTestForAllTests
 
 			long requestId;
 			if (0 != lmtbSnmpEx.SnmpGetSync(lmtPdu, out requestId, destIpAddr, 10))
-            {
+			{
 				Debug.WriteLine("方法异常");
 				return;
 			}
@@ -95,11 +95,11 @@ namespace UTestForAllTests
 
 			while (true)
 			{
-				lmtbSnmpEx.GetNextRequest(destIpAddr, oidList, out oidValueMap, out lastOidList, 0);
-                if (oidValueMap.Count() > 0) // 获取到数据
+				lmtbSnmpEx.GetNextRequest(destIpAddr, oidList, out oidValueMap, out lastOidList);
+				if (oidValueMap.Count() > 0) // 获取到数据
 				{
 					oidList.Clear();
-                    foreach (KeyValuePair<string, string> item in oidValueMap)
+					foreach (KeyValuePair<string, string> item in oidValueMap)
 					{
 						logMsg = $"oid={item.Key}, value={item.Value}";
 

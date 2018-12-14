@@ -192,7 +192,8 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		private void MetroWindow_Closed(object sender, EventArgs e)
 		{
-			TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
+			// TODO:已作废
+			//TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
 		}
 
 		/// <summary>
@@ -1339,6 +1340,7 @@ namespace SCMTMainWindow
             // 需要为记录为空的表生成表头，否则无法执行添加实例操作
             if (ar.Count == 0)
             {
+                Main_Dynamic_DataGrid.PageInfo.Visibility = Visibility.Collapsed;//无数据时不显示分页信息
                 if (mibTable == null)
                 {
                     return;

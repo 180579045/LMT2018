@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 using LogManager;
 using SnmpSharpNet;
-using MIBDataParser.JSONDataMgr;
-using MIBDataParser;
 using MsgQueue;
 using CommonUtility;
 
@@ -50,6 +44,7 @@ namespace LmtbSnmp
 		{
 			if (_socketIpv4 != null)
 			{
+				Log.Info("调用StopReceiver()，停止Trap服务");
 				StopReceiver();
 			}
 
@@ -67,6 +62,7 @@ namespace LmtbSnmp
 
 			if (_socketIpv4 == null)
 			{
+				Log.Error("创建IPV4 Trap Socket错误！");
 				return false;
 			}
 
@@ -86,11 +82,13 @@ namespace LmtbSnmp
 
 			if (_socketIpv4 == null)
 			{
+				Log.Error("IPV4 Trap Socket Bind错误！");
 				return false;
 			}
 
 			if (!RegisterReceiveOperation(_socketIpv4))
 			{
+				Log.Error("调用RegisterReceiveOperation()错误！");
 				return false;
 			}
 
@@ -105,6 +103,7 @@ namespace LmtbSnmp
 		{
 			if (_socketIpv6 != null)
 			{
+				Log.Info("调用StopReceiver()，停止Trap服务");
 				StopReceiver();
 			}
 
@@ -122,6 +121,8 @@ namespace LmtbSnmp
 
 			if (_socketIpv6 == null)
 			{
+				Log.Info("创建IPV6 Trap Socket错误！");
+
 				return false;
 			}
 
@@ -141,11 +142,13 @@ namespace LmtbSnmp
 
 			if (_socketIpv6 == null)
 			{
+				Log.Error("IPV6 Trap Socket Bind错误！");
 				return false;
 			}
 
 			if (!RegisterReceiveOperation(_socketIpv6))
 			{
+				Log.Error("调用RegisterReceiveOperation()错误！");
 				return false;
 			}
 
@@ -160,6 +163,7 @@ namespace LmtbSnmp
 		{
 			if (socket == null)
 			{
+				Log.Error("参数socket为空！");
 				return false;
 			}
 
@@ -191,10 +195,12 @@ namespace LmtbSnmp
 				Log.Error(ex.Message.ToString());
 				socket.Close();
 				socket = null;
+				throw ex;
 			}
 
 			if (socket == null)
 			{
+				Log.Error("socket为空！");
 				return false;
 			}
 
@@ -378,7 +384,7 @@ namespace LmtbSnmp
 			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo {m_bIsSync = !isAsync};
 
 			var logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
-			//			Log.Debug(logMsg);
+			Log.Debug(logMsg);
 
 			appendInfo.m_bIsNeedPrint = true;
 
@@ -396,23 +402,6 @@ namespace LmtbSnmp
 
 			lmtPdu.reason = reason;
 			lmtPdu.m_type = (ushort)pdu.Type;
-
-
-			// TODO
-			/*
-			LMTORINFO* pLmtorInfo = CDTAppStatusInfo::GetInstance()->GetLmtorInfo(csIpAddr);
-			if (pLmtorInfo != NULL && pLmtorInfo->m_isSimpleConnect && pdu.get_type() == sNMP_PDU_TRAP)
-			{
-				Oid id;
-				pdu.get_notify_id(id);
-				CString strTrapOid = id.get_printable();
-				if (strTrapOid != "1.3.6.1.4.1.5105.100.1.2.2.3.1.1")
-				{
-					//如果是简单连接网元的非文件传输结果事件，就不要往上层抛送了
-					return FALSE;
-				}
-			}
-			*/
 
 			//如果是错误的响应，则直接返回
 			if (lmtPdu.m_LastErrorStatus != 0 || reason == -5)
@@ -455,14 +444,8 @@ namespace LmtbSnmp
 				Log.Debug(logMsg);
 
 				CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = vb.Oid.ToString()};
-
-				// 值是否需要SetVbValue()处理
-				bool isNeedPostDispose = true;
-
 				string strValue = vb.Value.ToString();
-
-				// TODO
-				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type; //vb.GetType();
+				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type;
 
 				// 如果是getbulk响应返回的SNMP_SYNTAX_ENDOFMIBVIEW，则不处理这个vb，继续
 				if (lmtVb.SnmpSyntax == SNMP_SYNTAX_TYPE.SNMP_SYNTAX_ENDOFMIBVIEW)
@@ -483,8 +466,7 @@ namespace LmtbSnmp
 			//为方便后面统一处理，将错误码设为资源不可得
 			if (lmtPdu.VbCount() == 0)
 			{
-				// TODO: SNMP_ERROR_RESOURCE_UNAVAIL
-				lmtPdu.m_LastErrorStatus = 13;
+				lmtPdu.m_LastErrorStatus = SnmpConstants.ErrResourceUnavailable;
 				lmtPdu.m_LastErrorIndex = 1;
 			}
 

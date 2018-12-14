@@ -9,12 +9,12 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <DataGrid x:Name="DynamicDataGrid"  Grid.Row="0" AutoGenerateColumns="False" CanUserAddRows="False"
                   SelectionMode="Single" ItemsSource="{Binding Path=.}" SelectionUnit="CellOrRowHeader" 
                   HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC"/>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+        <StackPanel Name="PageInfo" Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Height="30" Visibility="Collapsed">
             <TextBlock Text="每页显示行数" Margin="5"/>
             <TextBox Name="tbkShowLineNum" Margin="5,5,30,5" Width="20" Foreground="Red" LostFocus="tbkShowLineNum_LostFocus"/>
             <TextBlock Text="转到" Margin="5"/>
