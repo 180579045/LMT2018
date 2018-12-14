@@ -128,7 +128,7 @@ namespace MIBDataParser
 		{
 			//
 			InitDbByConnectIp();
-		}
+        }
 
 		static void InitDbByConnectIp()
 		{
