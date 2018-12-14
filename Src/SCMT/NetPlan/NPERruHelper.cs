@@ -78,8 +78,7 @@ namespace NetPlan
 				return false;
 			}
 
-			var rruTypeName = rruInfo.rruTypeName;
-			return (rruTypeName.IndexOf('p') == 0) ;
+			return 1 == rruInfo.rruTypeNotMibIsPico;
 		}
 
 		/// <summary>

@@ -14,9 +14,12 @@ namespace UICore.Controls.Metro
 
     public class MetroButton : Button
     {
-        public static readonly DependencyProperty MetroButtonStateProperty = ElementBase.Property<MetroButton, ButtonState>(nameof(MetroButtonStateProperty), ButtonState.None);
+        public static readonly DependencyProperty MetroButtonStateProperty = 
+            ElementBase.Property<MetroButton, ButtonState>(nameof(MetroButtonStateProperty), ButtonState.None);
 
-        public ButtonState MetroButtonState { get { return (ButtonState)GetValue(MetroButtonStateProperty); } set { SetValue(MetroButtonStateProperty, value); } }
+        public ButtonState MetroButtonState {
+            get { return (ButtonState)GetValue(MetroButtonStateProperty); }
+            set { SetValue(MetroButtonStateProperty, value); } }
 
         public MetroButton()
         {

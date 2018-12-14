@@ -27,7 +27,6 @@ using Newtonsoft.Json.Linq;
 using SCMTMainWindow.Component.SCMTControl;
 using SCMTMainWindow.Component.SCMTControl.FileManager;
 using SCMTMainWindow.Component.SCMTControl.LogInfoShow;
-using SCMTMainWindow.Component.View;
 using SCMTMainWindow.Component.ViewModel;
 using SCMTOperationCore.Control;
 using SCMTOperationCore.Elements;
@@ -67,12 +66,6 @@ namespace SCMTMainWindow
 
 		private bool m_bIsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
 		private bool m_bIsRepeat;
-		private IntPtr m_Hwnd;                            // 当前主窗口句柄;
-		private LayoutAnchorable subForMessageRecv;       //信令消息界面
-		private readonly MessageRecv messageRecv = new MessageRecv();
-
-		// 全局快捷键字典，注册的时候作为出参，根据该信息可以判断热键消息
-		private Dictionary<eHotKey, int> m_HotKeyDic = new Dictionary<eHotKey, int>();
 
 		private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 
@@ -122,16 +115,24 @@ namespace SCMTMainWindow
 			Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 			//  当某个异常未被捕获时出现。主要指的是非UI线程
 			AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            // 设置Command源和目标;
+            this.GlobalSearch.ButtonClick += GlobalSearch_ButtonClick;
 		}
 
-		#endregion 构造、析构
+        private void GlobalSearch_ButtonClick(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
 
-		#region 程序初始化
+        #endregion 构造、析构
 
-		/// <summary>
-		/// 初始化用户界面;
-		/// </summary>
-		private void InitView()
+        #region 程序初始化
+
+        /// <summary>
+        /// 初始化用户界面;
+        /// </summary>
+        private void InitView()
 		{
 			// 			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
 			// 			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
@@ -520,36 +521,7 @@ namespace SCMTMainWindow
 		}
 
 		#endregion 显示折线图事件
-
-		#region 显示B方案Message列表控件
-
-		private void ShowMessage_Click(object sender, EventArgs e)
-		{
-			///后续需要有一个界面元素管理类;
-			//  LayoutAnchorable sub = new LayoutAnchorable();
-			//     MesasgeRecv content = new MesasgeRecv();
-
-			subForMessageRecv = new LayoutAnchorable
-			{
-				Content = messageRecv,
-				Title = "信令消息",
-				FloatingHeight = 500,
-				FloatingWidth = 800,
-				CanHide = true,
-				CanClose = false,
-				CanAutoHide = false
-			};
-
-			subForMessageRecv.Hiding += subForMessageRecv_Hiding;
-
-			Pane.Children.Add(subForMessageRecv);
-
-			subForMessageRecv.Show();
-			subForMessageRecv.Float();
-		}
-
-		#endregion 显示B方案Message列表控件
-
+        
 		#region 添加基站
 
 		private void AddeNB(object sender, EventArgs e)
@@ -1089,200 +1061,7 @@ namespace SCMTMainWindow
 			}//if button
 		}
 
-		/// <summary>
-		/// 窗体资源准备完成之后，获取当前窗口句柄，并添加消息处理程序;
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnSourceInitialized(EventArgs e)
-		{
-			base.OnSourceInitialized(e);
-
-			//获取窗体句柄;
-			m_Hwnd = new WindowInteropHelper(this).Handle;
-			HwndSource m_HwndSource = HwndSource.FromHwnd(m_Hwnd);
-
-			//添加消息处理程序;
-			if (m_HwndSource != null)
-			{
-				m_HwndSource.AddHook(WndProc);
-			}
-		}
-
-		/// <summary>
-		/// 窗体消息回调函数，负责处理热键消息;
-		/// </summary>
-		/// <param name="hWnd">窗口句柄</param>
-		/// <param name="msg">消息</param>
-		/// <param name="wParam">附加参数1</param>
-		/// <param name="lParam">附加参数2</param>
-		/// <param name="handled">是否处理</param>
-		/// <returns></returns>
-		private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-		{
-			switch (msg)
-			{
-				//消息是热键消息;
-				case HotKeyManager.WM_HOTKEY:
-
-					int atomID = wParam.ToInt32();
-
-					//此处无法使用switch，因为case不是常量而是变量;
-					if (atomID == m_HotKeyDic[eHotKey.UserCase1])
-					{
-						SignalBConfig.SetScriptTxt(1);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase2])
-					{
-						SignalBConfig.SetScriptTxt(2);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase3])
-					{
-						SignalBConfig.SetScriptTxt(3);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase4])
-					{
-						SignalBConfig.SetScriptTxt(4);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase5])
-					{
-						SignalBConfig.SetScriptTxt(5);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase6])
-					{
-						SignalBConfig.SetScriptTxt(6);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase7])
-					{
-						SignalBConfig.SetScriptTxt(7);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase8])
-					{
-						SignalBConfig.SetScriptTxt(8);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					else if (atomID == m_HotKeyDic[eHotKey.UserCase9])
-					{
-						SignalBConfig.SetScriptTxt(9);
-						PublishHelper.PublishMsg("StartTraceHlSignal", "");
-					}
-					handled = true;
-
-					break;
-			}
-			return IntPtr.Zero;
-		}
-
-		/// <summary>
-		/// 所有控件初始化完成之后，注册快捷键
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnContentRendered(EventArgs e)
-		{
-			base.OnContentRendered(e);
-
-			InitHotKey();
-		}
-
-		/// <summary>
-		/// 初始化并注册快捷键
-		/// </summary>
-		/// <param name="listHotKeyModel">待注册的快捷键集合，初始为空，再次注册时则不为空</param>
-		/// <returns>成功 true 并保存全局变量的值  失败 false 弹出重新注册的界面</returns>
-		private bool InitHotKey(ObservableCollection<HotKeyModel> listHotKeyModel = null)
-		{
-			//参数为空，加载配置文件中的数据，否则，按照界面设置的数据进行设置
-			var listHKM = listHotKeyModel ?? HotKeyInit.Instance.LoadJsonFileInfo();
-
-			if (listHKM == null)
-			{
-				MessageBox.Show("加载配置文件失败");
-				return false;
-			}
-
-			string strFali = HotKeyManager.RegisterAllHotKey(listHKM, m_Hwnd, out m_HotKeyDic);
-
-			//返回的字符串为空则全局注册成功
-			if (String.IsNullOrEmpty(strFali))
-			{
-				//更新配置文件数据
-				File.WriteAllText("HotKey.json", JsonConvert.SerializeObject(listHKM));
-				return true;
-			}
-
-			//注册失败，弹出选择框，是否重新注册快捷键
-			MessageBoxResult mbResult = MessageBox.Show(String.Format("无法注册下列快捷键\n\r{0}是否重新注册？", strFali), "提示", MessageBoxButton.YesNo);
-
-			if (mbResult == MessageBoxResult.Yes)
-			{
-				var win = HotKeySet.CreateInstance();
-
-				if (!win.IsVisible)
-				{
-					win.ShowDialog();
-				}
-				else
-				{
-					win.Activate();
-				}
-
-				return false;
-			}
-
-			return false;
-		}
-
-		/// <summary>
-		/// 窗口加载完成之后，添加注册事件
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
-		{
-			HotKeyInit.Instance.RegisterGlobalHotKeyEvent += Instance_RegisterGlobalHotKeyEvent;
-		}
-
-		/// <summary>
-		/// 事件处理函数
-		/// </summary>
-		/// <param name="listHotKeyModel"></param>
-		/// <returns></returns>
-		private bool Instance_RegisterGlobalHotKeyEvent(ObservableCollection<HotKeyModel> listHotKeyModel)
-		{
-			return InitHotKey(listHotKeyModel);
-		}
-
-		/// <summary>
-		/// 显示  注册界面
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
-		{
-			//显示  设置窗体
-			var win = HotKeySet.CreateInstance();
-
-			if (!win.IsVisible)
-			{
-				win.ShowDialog();
-			}
-			else
-			{
-				win.Activate();
-			}
-		}
-
 		#endregion 快捷键在此
-
-		private void OnSizeChanged(object sender, SizeChangedEventArgs e)
-		{
-		}
 
 		private void Lost_Nodeb_Focus(object sender, RoutedEventArgs e)
 		{
@@ -1497,7 +1276,7 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				if (leaf.isMib != 1)
+				if (leaf.isMib != 1 || leaf.IsRowStatus())
 				{
 					continue;
 				}
@@ -1534,25 +1313,54 @@ namespace SCMTMainWindow
 		/// <param name="oid_cn"></param>
 		/// <param name="oid_en"></param>
 		/// <param name="contentlist"></param>
-		public void UpdateAllMibDataGrid(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
+		public void UpdateAllMibDataGrid(Dictionary<string, Dictionary<string, string>> ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
-			var action = new Action<dict_d_string, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int, MibTable>(UpdateMibDataGridCallback);
+			var action = new Action<Dictionary<string, Dictionary<string, string>>, dict_d_string, dict_d_string, ObservableCollection<DyDataGrid_MIBModel>, string, int, MibTable>(UpdateMibDataGridCallback);
 
 			//MibDataGrid.Dispatcher.Invoke(action, new object[] {ar, oid_cn , oid_en, contentlist, ParentOID, IndexCount});
 			this.Main_Dynamic_DataGrid.Dispatcher.Invoke(action, new object[] { ar, oid_cn, oid_en, contentlist, ParentOID, IndexCount, mibTable });
 		}
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="ar"></param>
-		/// <param name="oid_cn">OID与其中文友好名的对照字典</param>
-		/// <param name="oid_en">OID与其英文友好名，即字段名称的对应字典</param>
-		/// <param name="contentlist">包含了所有要显示内容的集合</param>
-		/// <param name="ParentOID"></param>
-		/// <param name="IndexCount">真实的索引个数</param>
-		private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <param name="oid_cn">OID与其中文友好名的对照字典</param>
+        /// <param name="oid_en">OID与其英文友好名，即字段名称的对应字典</param>
+        /// <param name="contentlist">包含了所有要显示内容的集合</param>
+        /// <param name="ParentOID"></param>
+        /// <param name="IndexCount">真实的索引个数</param>
+        private void UpdateMibDataGridCallback(Dictionary<string,Dictionary<string,string>> ar, dict_d_string oid_cn, dict_d_string oid_en,
+            ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
+        {
+            Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+
+            // 需要为记录为空的表生成表头，否则无法执行添加实例操作
+            if (ar.Count == 0)
+            {
+                if (mibTable == null)
+                {
+                    return;
+                }
+
+                dynamic model = new DyDataGrid_MIBModel();
+                model.AddTableProperty(mibTable);
+                AddPropertyForEmptyTbl(ref model, mibTable);
+
+                Main_Dynamic_DataGrid.ColumnModel = model;
+                Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = contentlist;
+                return;
+            }
+            Main_Dynamic_DataGrid.LineDataList.Clear();
+            Main_Dynamic_DataGrid.LineDataList = ar;
+
+            if (Main_Dynamic_DataGrid.LineDataList.Count == 0)
+                return;
+            Main_Dynamic_DataGrid.SetDataGridInfo(oid_cn,oid_en,mibTable,IndexCount);
+            Main_Dynamic_DataGrid.RefreshDataGridPage(1);
+        }
+        /*private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
 		{
 			Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
@@ -1735,19 +1543,9 @@ namespace SCMTMainWindow
 			//}
 
 			//MibDataGrid.DataContext = contentlist;
-		}
+		}*/
 
-		#endregion DataGrid相关处理
-
-		/// <summary>
-		/// 隐藏  信令消息界面
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void subForMessageRecv_Hiding(object sender, CancelEventArgs e)
-		{
-			messageRecv.ClearAll();
-		}
+        #endregion DataGrid相关处理
 
 		private void FileManagerTabItem_GotFocus(object sender, RoutedEventArgs e)
 		{

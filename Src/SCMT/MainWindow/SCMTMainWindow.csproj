@@ -202,16 +202,9 @@
     <Compile Include="Component\SCMTControl\FlowChart.xaml.cs">
       <DependentUpon>FlowChart.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\HotKeyManager.cs" />
     <Compile Include="MainWindowPartial.cs" />
-    <Compile Include="Pages\HotKeySet.xaml.cs">
-      <DependentUpon>HotKeySet.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Component\SCMTControl\LinechartContent.xaml.cs">
       <DependentUpon>LinechartContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Component\SCMTControl\MesasgeRecv.xaml.cs">
-      <DependentUpon>MesasgeRecv.xaml</DependentUpon>
     </Compile>
     <Compile Include="Component\SCMTControl\TraceSet.xaml.cs">
       <DependentUpon>TraceSet.xaml</DependentUpon>
@@ -259,6 +252,7 @@
     <Compile Include="View\EditColumns.xaml.cs">
       <DependentUpon>EditColumns.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\GlobalSearchTextBox.cs" />
     <Compile Include="View\InitWindows.xaml.cs">
       <DependentUpon>InitWindows.xaml</DependentUpon>
     </Compile>
@@ -333,15 +327,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\HotKeySet.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Component\SCMTControl\LinechartContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Component\SCMTControl\MesasgeRecv.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -570,9 +556,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Data\Tree_Reference.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Component\Configration\HotKey.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="packages.config">

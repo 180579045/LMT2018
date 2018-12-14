@@ -1,15 +1,15 @@
-﻿using System;
+﻿using CommonUtility;
+using LmtbSnmp;
+using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
-using CommonUtility;
-using LmtbSnmp;
-using LogManager;
-using MIBDataParser;
-using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan
 {
@@ -66,14 +66,14 @@ namespace NetPlan
 				return;
 			}
 
-		    m_mapAttributes = attributes;
-            //添加行状态
+			m_mapAttributes = attributes;
+			//添加行状态
 			var rsMl = tbl.GetRowStatusMibName();
 			if (null != rsMl)
 			{
-			    m_strRsMibName = rsMl.childNameMib;
-			    AddRowStatusToAttributeMap(rsMl, "6");
-            }
+				m_strRsMibName = rsMl.childNameMib;
+				AddRowStatusToAttributeMap(rsMl, "6");
+			}
 			// 还需要加上索引列
 			if (indexGrade > 0)
 			{
@@ -268,7 +268,6 @@ namespace NetPlan
 			return Clone() as DevAttributeBase;
 		}
 
-
 		/// <summary>
 		/// 根据listColumns中的每个元素，在devInfo中找到对应的值，组装成字典，用于下发
 		/// </summary>
@@ -395,7 +394,6 @@ namespace NetPlan
 			return sb.ToString();
 		}
 
-
 		public bool SetDevAttributeValue(string strFieldName, string strValue)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strValue))
@@ -450,8 +448,8 @@ namespace NetPlan
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
 				var info = new MibLeafNodeInfo
 				{
-				    m_strLatestValue = indexVale,//索引不会变化，将m_strLatestValue赋值
-                    m_strOriginValue = indexVale,
+					m_strLatestValue = indexVale,//索引不会变化，将m_strLatestValue赋值
+					m_strOriginValue = indexVale,
 					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
 					m_bVisible = true,
 					mibAttri = indexColumn
@@ -475,6 +473,7 @@ namespace NetPlan
 				case RecordDataType.NewAdd:
 				case RecordDataType.Modified:
 					break;
+
 				case RecordDataType.WaitDel:
 					strRsValue = "6";
 					break;
@@ -483,12 +482,11 @@ namespace NetPlan
 			SetFieldLatestValue(m_strRsMibName, strRsValue);
 		}
 
-
 		protected void AddRowStatusToAttributeMap(MibLeaf rsMibLeaf, string strValue)
 		{
 			if (!m_mapAttributes.ContainsKey(rsMibLeaf.childNameMib))
 			{
-				var tmp = new MibLeafNodeInfo {m_bReadOnly = true, m_bVisible = false, m_strOriginValue = strValue, mibAttri = rsMibLeaf};
+				var tmp = new MibLeafNodeInfo { m_bReadOnly = true, m_bVisible = false, m_strOriginValue = strValue, mibAttri = rsMibLeaf };
 				m_mapAttributes[rsMibLeaf.childNameMib] = tmp;
 			}
 		}
