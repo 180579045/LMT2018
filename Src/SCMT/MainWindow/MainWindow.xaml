@@ -121,7 +121,7 @@
                     <!--分隔线-->
                     <Grid Height="1" Background="#CCCCCC"></Grid>
                     <!--对象树模型(对象树节点只到父节点级别)-->
-                    <Metro:MetroExpander x:Name="Obj_Root" Header="基站节点" IsExpanded="True" >
+                    <View:ObjTree_MetroExpander x:Name="Obj_Root" Header="基站节点" IsExpanded="True" >
                         <!--<StackPanel Margin="20,0,0,0" Name="NodebList">-->
                             <!--<Metro:MetroExpander Header="172.27.245.92" Icon="Resources/NetPLanB.png">-->
                                 <Metro:MetroExpander.ContextMenu>
@@ -132,7 +132,7 @@
                             <!--</Metro:MetroExpander>-->
                         <!--</StackPanel>-->
 
-                    </Metro:MetroExpander>
+                    </View:ObjTree_MetroExpander>
 
                 </StackPanel>
             </Border>

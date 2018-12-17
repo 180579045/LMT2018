@@ -122,7 +122,6 @@ namespace SCMTMainWindow
 
         private void GlobalSearch_ButtonClick(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
         }
 
         #endregion 构造、析构
@@ -237,8 +236,9 @@ namespace SCMTMainWindow
 			{
 				Dispatcher.Invoke(() =>
 				{
-					var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息;
+					var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息,Ctrl.m_RootNode即全部对象树信息;
 					RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
+                    this.Obj_Root.m_RootNode = Ctrl.m_RootNode;
 
 					TabControlEnable(true);
 					ExpanderBaseInfo.IsEnabled = true;
@@ -264,8 +264,9 @@ namespace SCMTMainWindow
 		{
 			// 将右侧叶节点容器容器加入到对象树子容器中;
 			Obj_Root.SubExpender = FavLeaf_Lists;
-
-			foreach (var items in ItemsSource)
+            GlobalSearch.Target_element = Obj_Root;
+            
+            foreach (var items in ItemsSource)
 			{
 				items.TraverseChildren(Obj_Root, FavLeaf_Lists, 0);
 			}
