@@ -155,6 +155,10 @@ namespace LmtbSnmp
 	/// </summary>
 	public class SnmpHelperV2 : SnmpHelper
 	{
+		// 一个基站对应一个SnmpHelper实例;
+		// 保证同一基站同一时刻只有一个线程进行SNMP交互，否则会出现“Invalid request id in reply”异常
+		private readonly object lockObj = new object();
+
 		/// <summary>
 		/// 构造方法，此类为SNMP的底层封装，其他程序集要通过LmtbSnmpEx实例访问，不可直接访问,因此访问权限为internal修饰
 		/// </summary>
@@ -192,9 +196,12 @@ namespace LmtbSnmp
 			pdu.Type = PduType.Get;
 			try
 			{
-				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				// TODO:函数没处理内容
-				//HandleGetRequestResult(result);
+				lock (lockObj)
+				{
+					result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+					// TODO:函数没处理内容
+					//HandleGetRequestResult(result);
+				}
 			}
 			catch (SnmpException e1)
 			{
@@ -282,9 +289,12 @@ namespace LmtbSnmp
 
 			try
 			{
-				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				// TODO: 函数无处理内容
-				//HandleGetRequestResult(result);
+				lock (lockObj)
+				{
+					result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+					// TODO: 函数无处理内容
+					//HandleGetRequestResult(result);
+				}
 			}
 			catch (Exception e)
 			{
@@ -349,7 +359,10 @@ namespace LmtbSnmp
 
 			try
 			{
-				response = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+				lock (lockObj)
+				{
+					response = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+				}
 			}
 			catch (Exception e)
 			{

@@ -688,7 +688,16 @@ namespace LmtbSnmp
 			// 循环获取每一行数据，直至结束
 			while(true)
 			{
-				GetNextRequest(strIpAddr, oidListTmp, out oidValueLine, out lastOidValue);
+				try
+				{
+					GetNextRequest(strIpAddr, oidListTmp, out oidValueLine, out lastOidValue);
+
+				}
+				catch (Exception ex)
+				{
+					Log.Error(ex.Message);
+					throw;
+				}
 				if (oidValueLine.Count() > 0) // 数据存在
 				{
 					// 查询结果
