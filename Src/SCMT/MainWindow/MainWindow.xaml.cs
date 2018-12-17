@@ -1340,6 +1340,7 @@ namespace SCMTMainWindow
             if (ar.Count == 0)
             {
                 Main_Dynamic_DataGrid.PageInfo.Visibility = Visibility.Collapsed;//无数据时不显示分页信息
+                ShowProgressBar(0, Visibility.Collapsed);
                 if (mibTable == null)
                 {
                     return;
@@ -1360,6 +1361,8 @@ namespace SCMTMainWindow
                 return;
             Main_Dynamic_DataGrid.SetDataGridInfo(oid_cn,oid_en,mibTable,IndexCount);
             Main_Dynamic_DataGrid.RefreshDataGridPage(1);
+
+            ShowProgressBar(0, Visibility.Collapsed);
         }
         /*private void UpdateMibDataGridCallback(dict_d_string ar, dict_d_string oid_cn, dict_d_string oid_en,
 			ObservableCollection<DyDataGrid_MIBModel> contentlist, string ParentOID, int IndexCount, MibTable mibTable)
@@ -1719,6 +1722,7 @@ namespace SCMTMainWindow
 				Obj_Root.Children?.Clear();
 				//MibDataGrid.Columns.Clear();
 				MainHorizenTab.SelectedIndex = 0;
+                ShowProgressBar(0,Visibility.Collapsed);
 			});
 
 			// 断开后，当前已经连接的基站信息清空
@@ -1886,5 +1890,22 @@ namespace SCMTMainWindow
 			View.ConfigFileOperate dlgConfigFile = new View.ConfigFileOperate();
 			dlgConfigFile.ShowDialog();
 		}
-	}
+
+        /// <summary>
+        /// 点击树节点显示列表时，在状态栏显示进度条进度
+        /// </summary>
+        /// <param name="value">进度</param>
+        /// <param name="isVisible">是否显示进度条</param>
+        public void ShowProgressBar(double value, Visibility showstatus)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                if (progressBar == null)
+                    return;
+
+                progressBar.Value = value;
+                progressBar.Visibility = showstatus;
+            });
+        }
+    }
 }

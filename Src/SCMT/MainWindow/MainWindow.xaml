@@ -34,6 +34,9 @@
             <DataTemplate DataType="{x:Type ViewModel:UeInfoModel}">
                 <View:UeInfo></View:UeInfo>
             </DataTemplate>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="View\Resources/Styles/ProgressBar.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -75,6 +78,10 @@
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
         <!-- 软件左侧导航菜单(后续还是改成TreeView，应该会比较稳定) -->
         <Metro:MetroScrollViewer Grid.Column="0">
@@ -428,8 +435,12 @@
             </Grid>
         </Grid>
 
-
-
+        <!-- 状态栏 -->
+        <StackPanel Name="StatusInfoShow" Orientation="Horizontal" Height="20" Background="LightBlue"  Grid.ColumnSpan="4" Grid.Row="1">
+            <TextBlock Text="连接状态：" Margin="5,0"/>
+            <TextBlock Name="tbConnectStatus" Width="50"/>
+            <ProgressBar Name="progressBar" Minimum="0" Maximum="100" Visibility="Collapsed" Width="800" Height="15" Style="{StaticResource ProgressBarRes}"/>
+        </StackPanel>
 
     </Grid>
 
