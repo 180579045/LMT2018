@@ -209,9 +209,9 @@ namespace RruAntAlarmError
 
         public static ICell GetMergeCellValue(ISheet sheet, CellRangeAddress range)
         {
-            for (int row = range.FirstRow; row < range.LastRow; row++)
+            for (int row = range.FirstRow; row <= range.LastRow; row++)
             {
-                for(int column = range.FirstColumn; column < range.LastRow; column++)
+                for(int column = range.FirstColumn; column <= range.LastColumn; column++)
                 {
                     ICell cell = sheet.GetRow(row).GetCell(column);
                     if (cell != null)

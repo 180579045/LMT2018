@@ -45,7 +45,7 @@ namespace RruAntAlarmError
                 return false;
             }
 
-            if (false == parseAntennaCouplingCoeffct("波束扫描原始值", isFirstRowColumn, fileName))
+            if (false == parseAntennaBfScanWeight("波束扫描原始值", isFirstRowColumn, fileName))
             {
                 Log.Error("==== parse sheet:波束扫描原始值 in " + fileName + " error, stop parse antennainfo");
                 return false;
@@ -55,6 +55,7 @@ namespace RruAntAlarmError
             infoJObect.Add("antennaTypeTable", antennaTypeJArray);
             infoJObect.Add("antennaWeightTable", antennaWeightJArray);
             infoJObect.Add("couplingCoeffctTable", couplingCoeffctJArray);
+            infoJObect.Add("bfScanWeightTable", bfScanWeightArray);
             jsonFile.WriteFile(@".\output\NetPlanElement_AntennaInfo.json", infoJObect.ToString());
             Log.Info("======parse " + fileName + "into output\\NetPlanElement_AntennaInfo.json ok");
             return true;
@@ -406,49 +407,49 @@ namespace RruAntAlarmError
                         //给相位四舍五入
                         antennaWeightTable.antennaWeightMultAntGrpIndex = grpLoop;
                         antennaWeightTable.antennaWeightMultAntAmplitude0 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase0 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (1 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (1 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude1 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase1 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (2 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (2 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude2 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase2 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (3 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (3 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude3 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase3 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (4 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (4 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude4 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase4 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (5 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (5 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude5 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase5 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (6 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (6 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude6 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase6 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         columnAmpName = "ANT" + (7 + 8 * grpLoop) + "(幅度)\n[V]";
                         columnPhaName = "ANT" + (7 + 8 * grpLoop) + "(相位)\n[deg]";
                         antennaWeightTable.antennaWeightMultAntAmplitude7 =
-                            (int) (float.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
+                            (int) (double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100);
                         antennaWeightTable.antennaWeightMultAntPhase7 =
                             round((double.Parse(rowRec[columnPhaName].ToString().Trim())));
                         AddAntennaWeightOneRecord(oneAntennaWeightJArray, antennaWeightTable);
@@ -616,7 +617,7 @@ namespace RruAntAlarmError
 
                     couplingCoeffctTable.antArrayNotMibNumber = antIndex;
                     couplingCoeffctTable.antCouplCoeffFreq =
-                        (int) (float.Parse(rowRec["频点值:antFrequency"].ToString().Trim()) * 10);
+                        (int) (double.Parse(rowRec["频点值:antFrequency"].ToString().Trim()) * 10);
                     Object[] itemArray = rowRec.ItemArray;
                     //取幅度最小值
                     double minValue;
@@ -624,7 +625,7 @@ namespace RruAntAlarmError
                     {
                         return false;
                     }
-                    //32个天线按照8天线一组
+                    //64个天线按照8天线一组
                     for (int grpLoop = 0; grpLoop < 8; grpLoop++)
                     {
                         string columnAmpName = "ANTCPL" + (0 + 8 * grpLoop) + "(幅度)\n[V]";
@@ -708,6 +709,176 @@ namespace RruAntAlarmError
             return true;
         }
 
+        private bool splitKeyValue(string excelValue, string sign, out string key, out string value)
+        {
+            key = "";
+            value = "";
+            if (-1 == excelValue.IndexOf(sign))
+            {
+                return false;
+            }
+            key = excelValue.Substring(0, excelValue.IndexOf(sign));
+            value = excelValue.Substring(excelValue.IndexOf(sign) + sign.Length);
+
+            return true;
+        }
+
+        private bool checkBfScanExist(int line, AntennaBfScanWeightTable bfscanTable)
+        {
+            foreach (var antType in antennaTypeJArray)
+            {
+                if (antType["antArrayNotMibNumber"].ToString().Equals(bfscanTable.antArrayNotMibNumber)
+                    && antType["antArrayVendor"].ToString().Equals(bfscanTable.antArrayBfScanAntWeightVendorIndex)
+                    && antType["antArrayIndex"].ToString().Equals(bfscanTable.antArrayBfScanAntWeightTypeIndex))
+                {
+                    return true;
+                }
+            }
+            recordLog("波束扫描原始值 sheet" + " Line " + line + " 中的天线阵在原始值sheet页中不存在");
+            return false;
+        }
+
+        private void recordLog(string msg)
+        {
+            MessageBox.Show(msg);
+            Log.Error(msg);
+        }
+
+        private bool setBFScanVendorInfo(string excelValue, int line, AntennaBfScanWeightTable bfscanTable)
+        {
+            string key, value;
+            if (false == splitKeyValue(excelValue, ":", out key,
+                    out value))
+            {
+                return false;
+            }
+            bfscanTable.antArrayBfScanAntWeightVendorIndex = key;
+            bfscanTable.antArrayBfScanNotMibVendorName = value;
+            return true;
+        }
+
+        private bool setBFScanAntTypeInfo(string excelValue, int line, AntennaBfScanWeightTable bfscanTable)
+        {
+            string key, value;
+            if (false == splitKeyValue(excelValue, ":", out key,
+                    out value))
+            {
+                return false;
+            }
+            bfscanTable.antArrayBfScanAntWeightTypeIndex = key;
+            bfscanTable.antArrayBfScanNotMibTypeName = value;
+            return true;
+        }
+        private void AddBfScanOneRecord(AntennaBfScanWeightTable table)
+        {
+            JObject tableObject = new JObject
+            {
+                {"antArrayNotMibNumber", table.antArrayNotMibNumber},
+                {"antArrayBfScanAntWeightVendorIndex", table.antArrayBfScanAntWeightVendorIndex},
+                {"antArrayBfScanNotMibVendorName", table.antArrayBfScanNotMibVendorName},
+                {"antArrayBfScanAntWeightTypeIndex", table.antArrayBfScanAntWeightTypeIndex},
+                {"antArrayBfScanNotMibTypeName", table.antArrayBfScanNotMibTypeName},
+                {"antArrayBfScanAntWeightIndex", table.antArrayBfScanAntWeightIndex},
+                {"antennaBfScanWeightBFScanGrpNo", table.antennaBfScanWeightBFScanGrpNo},
+                {"antArrayBfScanAntWeightAntGrpNo", table.antArrayBfScanAntWeightAntGrpNo},
+                {"antennaBfScanWeightAmplitude0", table.antennaBfScanWeightAmplitude0},
+                {"antennaBfScanWeightPhase0", table.antennaBfScanWeightPhase0},
+                {"antennaBfScanWeightAmplitude1", table.antennaBfScanWeightAmplitude1},
+                {"antennaBfScanWeightPhase1", table.antennaBfScanWeightPhase1},
+                {"antennaBfScanWeightAmplitude2", table.antennaBfScanWeightAmplitude2},
+                {"antennaBfScanWeightPhase2", table.antennaBfScanWeightPhase2},
+                {"antennaBfScanWeightAmplitude3", table.antennaBfScanWeightAmplitude3},
+                {"antennaBfScanWeightPhase3", table.antennaBfScanWeightPhase3},
+                {"antennaBfScanWeightAmplitude4", table.antennaBfScanWeightAmplitude4},
+                {"antennaBfScanWeightPhase4", table.antennaBfScanWeightPhase4},
+                {"antennaBfScanWeightAmplitude5", table.antennaBfScanWeightAmplitude5},
+                {"antennaBfScanWeightPhase5", table.antennaBfScanWeightPhase5},
+                {"antennaBfScanWeightAmplitude6", table.antennaBfScanWeightAmplitude6},
+                {"antennaBfScanWeightPhase6", table.antennaBfScanWeightPhase6},
+                {"antennaBfScanWeightAmplitude7", table.antennaBfScanWeightAmplitude7},
+                {"antennaBfScanWeightPhase7", table.antennaBfScanWeightPhase7},
+                {"antennaBfScanWeightHorizonNum", table.antennaBfScanWeightHorizonNum},
+                {"antennaBfScanWeightVerticalNum", table.antennaBfScanWeightVerticalNum}
+
+            };
+            bfScanWeightArray.Add(tableObject);
+        }
+
+        private bool AddBfScanIndex5Record(int line, int index3Value, int index4Value, DataRow rowRec)
+        {
+            //32个天线按照8天线一组, 对应第五维索引
+            for (int index5Valueloop = 0; index5Valueloop < 4; index5Valueloop++)
+            {
+                string columnAmpName = "ANTCPL" + (0 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                string columnPhaName = "ANTCPL" + (0 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                if (rowRec[columnAmpName].ToString().Trim().Equals(""))
+                {
+                    break;
+                }
+                AntennaBfScanWeightTable bfscanTable = new AntennaBfScanWeightTable();
+                bfscanTable.antArrayNotMibNumber = rowRec["天线编号:antIndex"].ToString().Trim();
+                if (false == setBFScanVendorInfo(rowRec["天线厂家名称:antVendorName"].ToString(), line, bfscanTable))
+                {
+                    return false;
+                }
+                if (false == setBFScanAntTypeInfo(rowRec["天线型号:antMode"].ToString().Trim(), line, bfscanTable))
+                {
+                    return false;
+                }
+                //作校验，需要在antennaTypeJArray中存在此天线阵
+                if (!checkBfScanExist(line, bfscanTable))
+                {
+                    return false;
+                }
+                bfscanTable.antArrayBfScanAntWeightIndex = Convert.ToString(index3Value);
+                bfscanTable.antennaBfScanWeightBFScanGrpNo = Convert.ToString(index4Value);
+                bfscanTable.antArrayBfScanAntWeightAntGrpNo = Convert.ToString(index5Valueloop);
+                bfscanTable.antennaBfScanWeightAmplitude0 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (1 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude1 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (2 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude2 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (3 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude3 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (4 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude4 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (5 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude5 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (6 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude6 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+                columnAmpName = "ANTCPL" + (7 + 8 * index5Valueloop) + "(幅度)\n[V]";
+                bfscanTable.antennaBfScanWeightAmplitude7 = ((int)(double.Parse(rowRec[columnAmpName].ToString().Trim()) * 100)).ToString();
+
+                bfscanTable.antennaBfScanWeightPhase0 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (1 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase1 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (2 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase2 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (3 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase3 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (4 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase4 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (5 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase5 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (6 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase6 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                columnPhaName = "ANTCPL" + (7 + 8 * index5Valueloop) + "(相位)\n[deg]";
+                bfscanTable.antennaBfScanWeightPhase7 =
+                    (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
+                bfscanTable.antennaBfScanWeightHorizonNum = rowRec["水平方向波束个数:horBeamScanning"].ToString().Trim();
+                bfscanTable.antennaBfScanWeightVerticalNum = rowRec["垂直方向波束个数:verBeamScanning"].ToString().Trim();
+                AddBfScanOneRecord(bfscanTable);
+            }
+            return true;
+        }
+
         public bool parseAntennaBfScanWeight(string sheetName, bool isFirstRowColumn, string fileName)
         {
             Log.Info("begin to parse sheet:" + sheetName);
@@ -719,62 +890,71 @@ namespace RruAntAlarmError
             }
             string arrayNumber = ""; //存储大排行号，即excel表中第一列值 
             string result;
-            int indexValue = 0; //第三维索引起始值
+            int index3Value = -1; //第三维索引起始值
             int indexFlag = -1; //第三维索引切换标识
             for (int loop = 0; loop < dataSet.Tables[0].Rows.Count;)
             {
                 DataRow rowRec = dataSet.Tables[0].Rows[loop];
                 int line = loop + 2;
-                //一行excel有四条mib记录(对应于第五维索引antennaBfScanWeightAntGrpNo,excel表是第I列到BT列每8个天线一组)
-                AntennaBfScanWeightTable[] bfscanTable = new AntennaBfScanWeightTable[4];
                 string excelValue = rowRec["天线编号:antIndex"].ToString();
                 if (string.IsNullOrEmpty(excelValue))
                 {
-                    result = "波束扫描原始值 sheet" + sheetName + " Line " + line + " 天线编号:antIndex value is invalid";
-                    MessageBox.Show(result);
-                    Log.Error(result);
+                    recordLog(sheetName + " Line " + line + " 天线编号:antIndex value is invalid");
                     return false;
                 }
                 try
                 {
                     if (!excelValue.Equals(arrayNumber))
                     {
-                        //不同天线类型
-                        string horizonNum = rowRec["水平方向波束个数:horBeamScanning"].ToString();
-                        string verticalNum = rowRec["垂直方向波束个数:verBeamScanning"].ToString();
-                        //对应第四维索引的个数
-                        int maxBFScanGrpNo = Convert.ToInt32(horizonNum) + Convert.ToInt32(verticalNum);
-                        //增加保护，MIB取值范围目前最大为7
-                        if (maxBFScanGrpNo > 8)
-                        {
-                            result = "波束扫描原始值 sheet" + sheetName + " Line " + line + " 水平方向波束个数+垂直方向波束个数超过了波束扫描组号的最大值";
-                            MessageBox.Show(result);
-                            Log.Error(result);
-                            return false;
-                        }
-                        if (indexFlag != maxBFScanGrpNo)
-                        {
-                            //第三维索引加1，新记录
-                            indexValue++;
-                            //
-
-                            indexFlag = maxBFScanGrpNo;
-                        }
-                        else
-                        {
-                            //循环进行第四维索引保存表记录
-                            for(int scanGrpNoloop = 0; scanGrpNoloop < maxBFScanGrpNo; scanGrpNoloop++)
-                            {
-                                
-                            }
-                        }
-
+                        //后面统一处理
+                    }
+                    else
+                    {
+                        //新的天线阵类型，重置第三维相关索引信息，恢复为初始值
+                        index3Value = -1;
+                        indexFlag = -1;
                     }
 
+                    int horizonNum = Convert.ToInt32(rowRec["水平方向波束个数:horBeamScanning"].ToString().Trim());
+                    int verticalNum = Convert.ToInt32(rowRec["垂直方向波束个数:verBeamScanning"].ToString().Trim());
+                    //对应第四维索引的个数
+                    int maxBFScanGrpNo = horizonNum + verticalNum;
+                    //增加保护，MIB取值范围目前最大为7
+                    if (maxBFScanGrpNo > 8)
+                    {
+                        recordLog("波束扫描原始值 sheet" + sheetName + " Line " + line +
+                                  " 水平方向波束个数+垂直方向波束个数超过了波束扫描组号的最大值");
+                        return false;
+                    }
+                    if (indexFlag != maxBFScanGrpNo)
+                    {
+                        //第三维索引加1，新记录
+                        index3Value++;
+                        //循环进行第四维索引保存表记录,最多maxBFScanGrpNo
+                        for (int index4Valueloop = 0; index4Valueloop < maxBFScanGrpNo; index4Valueloop++)
+                        {
+                            DataRow rowRecGrp = dataSet.Tables[0].Rows[loop + index4Valueloop];
+                            //32个天线按照8天线一组对应第五维索引
+                            if (!AddBfScanIndex5Record(line, index3Value, index4Valueloop, rowRecGrp))
+                            {
+                                return false;
+                            }
+                            line++;
+                        }
+                        loop = loop + maxBFScanGrpNo;
+                        indexFlag = maxBFScanGrpNo;
+                    }
+                    else
+                    {
+                        recordLog(sheetName + " Line " + line + " maxBFScanGrpNo(水平方向波束个数+垂直方向波束个数)出现重复的，请检查");
+                        return false;
+                    }               
                 }
                 catch(Exception e)
                 {
-                    
+                    result = "Line " + line + " exception: " + e.ToString();
+                    Log.Error(result);
+                    return false;
                 }
             }
             return true;
