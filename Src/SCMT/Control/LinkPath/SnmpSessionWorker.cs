@@ -86,6 +86,33 @@ namespace LinkPath
 			return lmtbSnmp.SnmpGetSync(strIpAddr, vbs, out queryResults, timeout);
 		}
 
+
+		/// <summary>
+		/// 更加Oid列表执行Get请求
+		/// </summary>
+		/// <param name="strIpAddr">目的Ip</param>
+		/// <param name="oidList">Oid列表</param>
+		/// <param name="queryResults">响应结果</param>
+		/// <returns></returns>
+		public static bool SnmpGetSync(string strIpAddr, List<string> oidList, out Dictionary<string, string> queryResults)
+		{
+			queryResults = new Dictionary<string, string>();
+
+			ILmtbSnmp lmtbSnmp = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
+			if (lmtbSnmp == null)
+			{
+				Log.Error("获取lmtbSnmp实例错误");
+				return false;
+			}
+
+			if(0 != lmtbSnmp.SnmpGetSync(strIpAddr, oidList, out queryResults, 2000))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		/// <summary>
 		/// SNMP Set同步方法
 		/// </summary>

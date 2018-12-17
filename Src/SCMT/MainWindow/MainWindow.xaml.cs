@@ -192,7 +192,8 @@ namespace SCMTMainWindow
 		/// <param name="e"></param>
 		private void MetroWindow_Closed(object sender, EventArgs e)
 		{
-			TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
+			// TODO:已作废
+			//TrapMessage.RequestStop();                                         // 停止注册的Trap监听;
 		}
 
 		/// <summary>

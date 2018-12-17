@@ -10,136 +10,140 @@
 //----------------------------------------------------------------*/
 
 using System;
-using System.Collections.Generic;
-using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DataBaseUtil;
 using LogManager;
 using SnmpSharpNet;
+using System.Collections.Generic;
 
 namespace LmtbSnmp
 {
 	/// <summary>
 	/// 抽象SNMP报文，以便后续扩展SNMPV3;
+	/// 注意：此类为底层封装，其他模块不得直接使用此类
 	/// </summary>
 	public abstract class SnmpHelper
 	{
-		public Dictionary<string, string> m_Response { get; set; }        // Get返回的结果;
-		public string m_DestIPAddr { get; set; }                              // 代理目标IP地址
-		public long m_DestPort { get { return 161; } set { m_DestPort = value; } }  //目的端口
-		public string m_Community { get; set; }                           // 代理目标的Community
-		public long m_TrapPort { get { return 162; } set { m_TrapPort = value; } }  //管理端Trap监听端口
-		public long m_TimeOut { get { return 1000; } set { m_TimeOut = value; } }   //设置的超时时间(10s超时，以10ms为单位)
-		public string m_ErrorStatus { get; set; }                         // 错误码;
-		protected SnmpV2Packet m_Result { get; set; }                     // 返回结果;
-		public SnmpVersion m_Version { get { return SnmpVersion.Ver2; } set { m_Version = value; } } // SNMP版本,当前基站使用SNMP固定为Ver.2;
-		public List<string> PduList { get; set; }                         // Snmp报文的Pdu列表
-
+		// 代理目标IP地址
+		public string m_DestIPAddr { get; set; }
+		// 目的端口                          
+		public int m_DestPort { get { return 161; } set { m_DestPort = value; } }
+		// 代理目标的Community
+		public string m_Community { get; set; }
+		// 设置的超时时间(10s超时，以10ms为单位)
+		public int m_TimeOut { get { return 2000; } set { m_TimeOut = value; } }
+		// 重试次数
+		public int m_Retry { get { return 1; } set { m_Retry = value; } }
+		// SNMP版本,当前基站使用SNMP固定为Ver.2
+		public SnmpVersion m_Version { get { return SnmpVersion.Ver2; } set { m_Version = value; } } 
+		// Target
 		public UdpTarget m_target { get; set; }
-
+		// 代理参数
 		public AgentParameters m_Param { get; set; }
 
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		/// <param name="commnuity"></param>
+		/// <param name="destIpAddr"></param>
 		public SnmpHelper(string commnuity, string destIpAddr)
 		{
+			string logMsg = string.Format("Pars: commnuity={0}, destIpAddr={1}", commnuity, destIpAddr);
+			Log.Info(logMsg);
+
 			this.m_DestIPAddr = destIpAddr;
 			this.m_Community = commnuity;
 
 			ConnectToAgent(m_Community, m_DestIPAddr);
 		}
 
-		public SnmpHelper(string commnuity, string destIpAddr, long destPort, long trapPort
-			, SnmpVersion version, long timeOut)
+		/// <summary>
+		/// 构造方法
+		/// </summary>
+		/// <param name="commnuity"></param>
+		/// <param name="destIpAddr"></param>
+		/// <param name="destPort"></param>
+		/// <param name="version"></param>
+		/// <param name="timeOut"></param>
+		public SnmpHelper(string commnuity, string destIpAddr, int destPort, SnmpVersion version, int timeOut, int retry)
 		{
+			string logMsg = string.Format("Pars: commnuity={0}, destIpAddr={1}, destPort={2}, version={3}, timeOut={4}, retry={5}"
+				, commnuity, destIpAddr, destPort, version, timeOut, retry);
+			Log.Info(logMsg);
+
 			this.m_Community = commnuity;
 			this.m_DestIPAddr = destIpAddr;
 			this.m_DestPort = destPort;
-			this.m_TrapPort = trapPort;
 			this.m_Version = version;
 			this.m_TimeOut = timeOut;
+			this.m_Retry = retry;
 
 			ConnectToAgent(m_Community, m_DestIPAddr);
 		}
-
-		/// <summary>
-		/// GetRequest的对外接口
-		/// </summary>
-		/// <param name="PduList">需要查询的Pdu列表</param>
-		/// <param name="Community">需要设置的Community</param>
-		/// <param name="IpAddress">需要设置的IP地址</param>
-		/// <returns></returns>
-		public abstract Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddress);
-
-		/// <summary>
-		/// GetRequest的对外接口，客户端通过异步回调获取数据;
-		/// </summary>
-		/// <param name="callback">异步回调方法</param>
-		/// <param name="PduList">需要查询的Pdu列表</param>
-		/// <param name="Community">需要设置的Community</param>
-		/// <param name="IpAddress">需要设置的IP地址</param>
-		public abstract void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddress);
-
-		/// <summary>
-		/// GetRequest的对外接口，入参只有Pdulist
-		/// </summary>
-		/// <param name="PduList"></param>
-		/// <returns></returns>
-		public abstract SnmpV2Packet GetRequest(List<string> PduList);
 
 		/// <summary>
 		/// Get请求
 		/// </summary>
 		/// <param name="pdu"></param>
 		/// <returns></returns>
-		public abstract SnmpV2Packet GetRequest(Pdu pdu);
-
-		public abstract bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
+		public abstract SnmpPacket GetRequest(Pdu pdu);
 
 		/// <summary>
-		/// SetRequest的对外接口
+		/// 异步Get请求
 		/// </summary>
-		/// <param name="PduList">需要查询的Pdu列表</param>
-		/// <param name="Community">需要设置的Community</param>
-		/// <param name="IpAddress">需要设置的IP地址</param>
-		public abstract void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress);
+		/// <param name="pdu"></param>
+		/// <param name="callback"></param>
+		/// <returns></returns>
+		public abstract bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
+		
+		/// <summary>
+		/// GetNext请求
+		/// </summary>
+		/// <param name="pdu"></param>
+		/// <returns></returns>
+		public abstract SnmpPacket GetNextRequest(Pdu pdu);
 
 		/// <summary>
 		/// Set请求
 		/// </summary>
 		/// <param name="pdu"></param>
 		/// <returns></returns>
-		public abstract SnmpV2Packet SetRequest(Pdu pdu);
+		public abstract SnmpPacket SetRequest(Pdu pdu);
 
+		/// <summary>
+		/// 异步Set请求
+		/// </summary>
+		/// <param name="pdu"></param>
+		/// <param name="callback"></param>
+		/// <returns></returns>
 		public abstract bool SetRequestAsync(Pdu pdu, SnmpAsyncResponse callback);
 
 		/// <summary>
-		/// SetRequest的对外接口;
-		/// </summary>
-		/// <param name="callback"></param>
-		/// <param name="PduList"></param>
-		public abstract void SetRequest(AsyncCallback callback, List<string> PduList);
-
-		public abstract SnmpPacket GetNextRequest(Pdu pdu);
-
-		/// <summary>
-		/// 连接代理;
+		/// Snmp连接代理方法
 		/// </summary>
 		/// <param name="Community"></param>
 		/// <param name="IpAddr"></param>
 		/// <returns></returns>
-		protected UdpTarget ConnectToAgent(string Community, string IpAddr)
+		protected UdpTarget ConnectToAgent(string community, string ipAddr)
 		{
-			OctetString community = new OctetString(Community);
-			m_Param = new AgentParameters(community);
+			string logMsg = string.Format("Pars: community={0}, ipAddr={1}", community, ipAddr);
+			Log.Info(logMsg);
+
+			OctetString OctCommunity = new OctetString(community);
+			m_Param = new AgentParameters(OctCommunity);
 			m_Param.Version = SnmpVersion.Ver2;
 
-			IPAddress agent = IPAddress.Parse(IpAddr);
-			//IpAddress agent = new IpAddress(IpAddr);
+			IPAddress agent = IPAddress.Parse(ipAddr);
 
-			// 创建代理(基站);
-			m_target = new UdpTarget(agent, 161, 2000, 1);
+			try
+			{
+				// 创建代理(基站);
+				m_target = new UdpTarget(agent, m_DestPort, m_TimeOut, m_Retry);
+			}
+			catch (Exception ex)
+			{
+				Log.Error(ex.Message);
+				throw;
+			}
 
 			return m_target;
 		}
@@ -147,252 +151,55 @@ namespace LmtbSnmp
 	}
 
 	/// <summary>
-	/// 异步获取SNMP结果参数;
-	/// </summary>
-	public class SnmpHelperResult : IAsyncResult
-	{
-		/// <summary>
-		/// Key：oid;
-		/// value：数值;
-		/// </summary>
-		private Dictionary<string, string> m_Result;
-
-		public void SetSNMPReslut(Dictionary<string, string> res)
-		{
-			this.m_Result = res;
-		}
-
-		public object AsyncState
-		{
-			get
-			{
-				return m_Result;
-			}
-		}
-
-		public WaitHandle AsyncWaitHandle
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		public bool CompletedSynchronously
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-
-		public bool IsCompleted
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
-	}
-
-	/// <summary>
 	/// Snmp报文V2c版本
 	/// </summary>
-	public class SnmpHelperV2c : SnmpHelper
+	public class SnmpHelperV2 : SnmpHelper
 	{
-		public SnmpHelperV2c(string Commnuity, string ipaddr) : base(Commnuity, ipaddr)
-		{
-		}
+		/// <summary>
+		/// 构造方法，此类为SNMP的底层封装，其他程序集要通过LmtbSnmpEx实例访问，不可直接访问,因此访问权限为internal修饰
+		/// </summary>
+		/// <param name="Commnuity"></param>
+		/// <param name="ipaddr"></param>
+		internal SnmpHelperV2(string Commnuity, string ipaddr) : base(Commnuity, ipaddr)
+		{}
 
 		/// <summary>
-		/// GetRequest
+		/// Get请求
 		/// </summary>
-		/// <param name="PduList">需要查询的Pdu列表</param>
-		/// <param name="Community">需要设置的Community</param>
-		/// <param name="IpAddr">需要设置的IP地址</param>
-		/// <returns>返回一个字典,键值为OID,值为MIB值;</returns>
-		public override Dictionary<string, string> GetRequest(List<string> PduList, string Community, string IpAddr)
-		{
-			Dictionary<string, string> rest = new Dictionary<string, string>();
-			OctetString community = new OctetString(Community);
-			AgentParameters param = new AgentParameters(community);
-			param.Version = SnmpVersion.Ver2;
-
-			// 创建代理(基站);
-			UdpTarget target = ConnectToAgent(Community, IpAddr);
-
-			// 填写Pdu请求;
-			Pdu pdu = new Pdu(PduType.Get);
-			foreach (string pdulist in PduList)
-			{
-				pdu.VbList.Add(pdulist);
-			}
-
-			// 接收结果;
-			m_Result = (SnmpV2Packet)target.Request(pdu, param);
-
-			// 如果结果为空,则认为Agent没有回响应;
-			if (m_Result != null)
-			{
-				// ErrorStatus other then 0 is an error returned by
-				// the Agent - see SnmpConstants for error definitions
-				var es = m_Result.Pdu.ErrorStatus;
-				if (es != 0)
-				{
-					// agent reported an error with the request
-					SnmpErrorParser.PrintPduError(m_Result.Pdu);
-
-					rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
-				}
-				else
-				{
-					for (int i = 0; i < m_Result.Pdu.VbCount; i++)
-					{
-						rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
-					}
-				}
-			}
-			else
-			{
-				Console.WriteLine("No response received from SNMP agent.");
-			}
-
-			target.Close();
-			return rest;
-		}
-
-		/// <summary>
-		/// 带有异步回调的GetResponse;
-		/// </summary>
-		/// <param name="callback"></param>
-		/// <param name="PduList"></param>
-		/// <param name="Community"></param>
-		/// <param name="IpAddr"></param>
-		public override void GetRequest(AsyncCallback callback, List<string> PduList, string Community, string IpAddr)
-		{
-			// 当确认全部获取SNMP数据后，调用callback回调;
-			SnmpHelperResult res = new SnmpHelperResult();
-			OctetString community = new OctetString(Community);
-			AgentParameters param = new AgentParameters(community);
-			Dictionary<string, string> rest = new Dictionary<string, string>();
-			param.Version = SnmpVersion.Ver2;
-
-			// 创建代理(基站);
-			UdpTarget target = ConnectToAgent(Community, IpAddr);
-
-			// Pdu请求形式Get;
-			Pdu pdu = new Pdu(PduType.Get);
-			foreach (string pdulist in PduList)
-			{
-				pdu.VbList.Add(pdulist);
-			}
-
-			Task tsk = Task.Factory.StartNew(() =>
-			{
-				// 接收结果;
-				m_Result = (SnmpV2Packet)target.Request(pdu, param);
-
-				if (m_Result != null)
-				{
-					// ErrorStatus other then 0 is an error returned by
-					// the Agent - see SnmpConstants for error definitions
-					var es = m_Result.Pdu.ErrorStatus;
-					if (es != 0)
-					{
-						// agent reported an error with the request
-						SnmpErrorParser.PrintPduError(m_Result.Pdu);
-
-						rest.Add(m_Result.Pdu.ErrorIndex.ToString(), m_Result.Pdu.ErrorStatus.ToString());
-						res.SetSNMPReslut(rest);
-						Thread.Sleep(3111);
-						callback(res);
-					}
-					else
-					{
-						for (int i = 0; i < m_Result.Pdu.VbCount; i++)
-						{
-							rest.Add(m_Result.Pdu.VbList[i].Oid.ToString(), m_Result.Pdu.VbList[i].Value.ToString());
-							res.SetSNMPReslut(rest);
-							Thread.Sleep(3111);			// todo 为什么sleep 3秒？
-							callback(res);
-						}
-					}
-				}
-				else
-				{
-					Console.WriteLine("No response received from SNMP agent.");
-				}
-
-				target.Close();
-			});
-		}
-
-		/// <summary>
-		/// 只需要填入Pdulist的GetResponse;
-		/// </summary>
-		/// <param name="VbList"></param>
+		/// <param name="pdu">Pdu实例</param>
 		/// <returns></returns>
-		public override SnmpV2Packet GetRequest(List<string> VbList)
+		public override SnmpPacket GetRequest(Pdu pdu)
 		{
-			if (m_target == null)
-			{
-				Log.Error("SNMP m_target = null.");
-				return null;
-			}
-
 			// Log msg
 			string logMsg;
-			SnmpV2Packet result = null;
 
-			Pdu pdu = new Pdu(PduType.Get);
-
-			foreach (string oid in VbList)
-			{
-				pdu.VbList.Add(oid);
-			}
-
-			try
-			{
-				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				HandleGetRequestResult(result);
-			}
-			catch (Exception e)
-			{
-				Log.Error(e.Message);
-				throw;
-			}
-
-			return result;
-		}
-
-		public override SnmpV2Packet GetRequest(Pdu pdu)
-		{
 			if (m_target == null)
 			{
-				Log.Error("SNMP m_target = null.");
+				logMsg = "SNMP代理连接m_target为空";
+				Log.Error(logMsg);
 				return null;
 			}
 
 			if (pdu == null)
 			{
-				Log.Error("SNMP请求参数pdu为空");
+				logMsg = "SNMP请求参数pdu为空";
+				Log.Error(logMsg);
 				return null;
 			}
 
-			// Log msg
-			string logMsg;
 			SnmpV2Packet result;
 
 			pdu.Type = PduType.Get;
 			try
 			{
 				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				HandleGetRequestResult(result);
+				// TODO:函数没处理内容
+				//HandleGetRequestResult(result);
 			}
 			catch (SnmpException e1)
 			{
 				Log.Error(e1.Message);
-				return null;
+				throw;
 			}
 			catch (Exception e)
 			{
@@ -406,21 +213,26 @@ namespace LmtbSnmp
 		/// <summary>
 		/// 异步GetRequest
 		/// </summary>
-		/// <param name="pdu"></param>
-		/// <param name="callback"></param>
+		/// <param name="pdu">Pdu实例</param>
+		/// <param name="callback">回调方法</param>
 		/// <returns></returns>
 		public override bool GetRequestAsync(Pdu pdu, SnmpAsyncResponse callback)
 		{
+			// Log msg
+			string logMsg;
+
 			bool rs = false;
 			if (m_target == null)
 			{
-				Log.Error("SNMP m_target = null.");
+				logMsg = "SNMP代理连接m_target为空";
+				Log.Error(logMsg);
 				return false;
 			}
 
 			if (pdu == null)
 			{
-				Log.Error("SNMP请求参数pdu为空");
+				logMsg = "SNMP请求参数pdu为空";
+				Log.Error(logMsg);
 				return false;
 			}
 			pdu.Type = PduType.Get;
@@ -431,6 +243,7 @@ namespace LmtbSnmp
 				if (!rs)
 				{
 					Log.Error("SNMP异步请求错误");
+					rs = false;
 				}
 			}
 			catch (Exception e)
@@ -445,31 +258,33 @@ namespace LmtbSnmp
 		/// <summary>
 		/// GetNextRequest
 		/// </summary>
-		/// <param name="pdu"></param>
+		/// <param name="pdu">Pdu实例</param>
 		/// <returns></returns>
 		public override SnmpPacket GetNextRequest(Pdu pdu)
 		{
+			// Log msg
+			string logMsg;
 			if (m_target == null)
 			{
-				Log.Error("SNMP m_target = null.");
+				logMsg = "SNMP代理连接m_target为空";
+				Log.Error(logMsg);
 				return null;
 			}
-
 			if (pdu == null)
 			{
-				Log.Error("SNMP请求参数pdu为空");
+				logMsg = "SNMP请求参数pdu为空";
+				Log.Error(logMsg);
 				return null;
 			}
 
 			pdu.Type = PduType.GetNext;
-			// Log msg
-			string logMsg;
 			SnmpV2Packet result = null;
 
 			try
 			{
 				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				HandleGetRequestResult(result);
+				// TODO: 函数无处理内容
+				//HandleGetRequestResult(result);
 			}
 			catch (Exception e)
 			{
@@ -482,13 +297,12 @@ namespace LmtbSnmp
 
 		private void HandleGetRequestResult(object result)
 		{
+			string logMsg;
 			if (!(result is SnmpV2Packet)) return;
 
 			var newObj = (SnmpV2Packet)Convert.ChangeType(result, typeof(SnmpV2Packet));
 			if (newObj == null)
 				return;
-
-			string logMsg;
 
 			var es = newObj.Pdu.ErrorStatus;
 			if (es != 0)
@@ -508,29 +322,29 @@ namespace LmtbSnmp
 		}
 
 		/// <summary>
-		/// SNMP Set
+		/// Set请求
 		/// </summary>
-		/// <param name="pdu"></param>
-		/// <param name="community"></param>
+		/// <param name="pdu">Pdu实例</param>
 		/// <returns></returns>
-		public override SnmpV2Packet SetRequest(Pdu pdu)
+		public override SnmpPacket SetRequest(Pdu pdu)
 		{
-			if (m_target == null)
-			{
-				Log.Error("SNMP m_target = null.");
-				return null;
-			}
-
-			if (pdu == null)
-			{
-				Log.Error("Parameter pdu=null.");
-				return null;
-			}
-			pdu.Type = PduType.Set;
-
 			// log msg
 			string logMsg;
 
+			if (m_target == null)
+			{
+				logMsg = "SNMP代理连接m_target为空";
+				Log.Error(logMsg);
+				return null;
+			}
+			if (pdu == null)
+			{
+				logMsg = "SNMP请求参数pdu为空";
+				Log.Error(logMsg);
+				return null;
+			}
+
+			pdu.Type = PduType.Set;
 			SnmpV2Packet response;
 
 			try
@@ -540,24 +354,28 @@ namespace LmtbSnmp
 			catch (Exception e)
 			{
 				Log.Error(e.Message);
-				throw e;
+				throw;
 			}
 
 			if (response == null)
 			{
-				Log.Error("SNMP Set 命令错误");
+				logMsg = "SNMP Set 命令错误，response为null";
+				Log.Error(logMsg);
+				return response;
 			}
 			else
 			{
 				if (response.Pdu.ErrorStatus != 0)
 				{
-					logMsg = $"SNMP agent returned ErrorStatus {response.Pdu.ErrorStatus} on index {response.Pdu.ErrorIndex}";
+					logMsg = $"SNMP响应返回错误， ErrorStatus: {response.Pdu.ErrorStatus}, ErrorIndex: {response.Pdu.ErrorIndex}";
+					Log.Error(logMsg);
 				}
 				else
 				{
 					foreach (Vb vb in response.Pdu.VbList)
 					{
-						logMsg = $"ObectName={vb.Oid}, Type={vb.Value.Type}, Value={vb.Value}";
+						logMsg = $"SNMP Set响应，Oid={vb.Oid}, Type={vb.Value.Type}, Value={vb.Value}";
+						Log.Info(logMsg);
 					}
 				}
 			}
@@ -566,76 +384,27 @@ namespace LmtbSnmp
 		}
 
 		/// <summary>
-		/// SetRequest的SnmpV2c版本
-		/// </summary>
-		/// <param name="PduList">需要查询的Pdu列表</param>
-		/// <param name="Community">需要设置的Community</param>
-		/// <param name="IpAddress">需要设置的IP地址</param>
-		public override void SetRequest(Dictionary<string, string> PduList, string Community, string IpAddress)
-		{
-			// Prepare target
-			UdpTarget target = new UdpTarget((IPAddress)new IpAddress(IpAddress));
-			// Create a SET PDU
-			Pdu pdu = new Pdu(PduType.Set);
-			foreach (var list in PduList)
-			{
-				pdu.VbList.Add(new Oid(list.Key), new OctetString(list.Value));
-			}
-
-			// Set Agent security parameters
-			AgentParameters aparam = new AgentParameters(SnmpVersion.Ver2, new OctetString(Community));
-			// Response packet
-			SnmpV2Packet response;
-			try
-			{
-				// Send request and wait for response
-				response = target.Request(pdu, aparam) as SnmpV2Packet;
-			}
-			catch (Exception ex)
-			{
-				// If exception happens, it will be returned here
-				Console.WriteLine($"Request failed with exception: {ex.Message}");
-				target.Close();
-				return;
-			}
-			// Make sure we received a response
-			if (response == null)
-			{
-				Console.WriteLine("Error in sending SNMP request.");
-			}
-			else
-			{
-				// Check if we received an SNMP error from the agent
-				if (response.Pdu.ErrorStatus != 0)
-				{
-					Console.WriteLine($"SNMP agent returned ErrorStatus {response.Pdu.ErrorStatus} on index {response.Pdu.ErrorIndex}");
-				}
-				else
-				{
-					// Everything is ok. Agent will return the new value for the OID we changed
-					Console.WriteLine($"Agent response {response.Pdu[0].Oid}: {response.Pdu[0].Value}");
-				}
-			}
-		}
-
-		/// <summary>
 		/// 异步SetRequest
 		/// </summary>
-		/// <param name="pdu"></param>
-		/// <param name="callback"></param>
+		/// <param name="pdu">Pdu实例</param>
+		/// <param name="callback">回调方法</param>
 		/// <returns></returns>
 		public override bool SetRequestAsync(Pdu pdu, SnmpAsyncResponse callback)
 		{
+			// log msg
+			string logMsg;
+
 			bool rs = false;
 			if (m_target == null)
 			{
-				Log.Error("SNMP m_target = null.");
+				logMsg = "SNMP代理连接m_target为空";
+				Log.Error(logMsg);
 				return false;
 			}
-
 			if (pdu == null)
 			{
-				Log.Error("SNMP请求参数pdu为空");
+				logMsg = "SNMP请求参数pdu为空";
+				Log.Error(logMsg);
 				return false;
 			}
 			pdu.Type = PduType.Set;
@@ -645,21 +414,19 @@ namespace LmtbSnmp
 				rs = m_target.RequestAsync(pdu, m_Param, callback);
 				if (!rs)
 				{
-					Log.Error("SNMP异步请求错误");
+					logMsg = "SNMP异步请求错误";
+					Log.Error(logMsg);
+					return false;
 				}
 			}
 			catch (Exception e)
 			{
 				Log.Error(e.Message);
-				throw e;
+				throw;
 			}
 
 			return rs;
 		}
 
-		public override void SetRequest(AsyncCallback callback, List<string> PduList)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

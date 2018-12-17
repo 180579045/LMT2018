@@ -23,6 +23,7 @@ namespace CfgFileOperation
         public CfgParseAlarmExecl m_alarmExcel = null;
         public CfgParseAntennaExcel m_antennaExcel = null;
         public CfgParseReclistExcel m_reclistExcel = null;
+        public CfgParseReclistExcel5G m_reclistExcel5G = null;
         public CfgParseRruExcel m_rruExcel = null;
         public CfgParseSelfExcel m_selfExcel = null;
         //mibTreeMem = new CfgParseDBMibTreeToMemory();
@@ -119,20 +120,20 @@ namespace CfgFileOperation
             }
             bw.Write(String.Format("CreatePatch : CreatCfg_public OK.\n").ToArray());
             //// 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
-            //if (!CreatCfg_init_cfg(paths))
-            //{
-            //    bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n").ToArray());
-            //    Console.WriteLine(String.Format("生成init.cfg失败！"));
-            //    return false;
-            //}
-            //bw.Write(String.Format("CreatePatch : CreatCfg_init_cfg OK.\n").ToArray());
-            // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
-            if (!CreatCfg_5Gpatch_ex_cfg(bw, paths))
+            if (!CreatCfg_init_cfg(paths))
             {
-                bw.Write(String.Format("CreatePatch err: 生成patch_ex.cfg失败！\n").ToArray());
-                Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n").ToArray());
+                Console.WriteLine(String.Format("生成init.cfg失败！"));
                 return false;
             }
+            bw.Write(String.Format("CreatePatch : CreatCfg_init_cfg OK.\n").ToArray());
+            // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
+            //if (!CreatCfg_5Gpatch_ex_cfg(bw, paths))
+            //{
+            //    bw.Write(String.Format("CreatePatch err: 生成patch_ex.cfg失败！\n").ToArray());
+            //    Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
+            //    return false;
+            //}
             bw.Write(String.Format("CreatePatch : CreatCfg_patch_ex_cfg OK.\n").ToArray());
             bw.Write(String.Format("CreatePatch end.\n").ToArray());
             return true;
@@ -295,12 +296,14 @@ namespace CfgFileOperation
             }
 
             //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
-            m_reclistExcel = new CfgParseReclistExcel();
-            if (false == m_reclistExcel.ProcessingExcel_5G(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
+            //m_reclistExcel = new CfgParseReclistExcel();
+            //if (false == m_reclistExcel.ProcessingExcel_5G(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
             //if (m_reclistExcel.ProcessingExcel(bw, paths["Reclist"], paths["DataMdb"], "0:默认", this))
-            {
+            //{
+            //}http://music.163.com/song?id=28018075&userid=1701638611
+            m_reclistExcel5G = new CfgParseReclistExcel5G();
+            m_reclistExcel5G.ProcessingExcel(bw, paths["Reclist"], "0:升级发布", this);
 
-            }
 
             //patch-3. 自定义 (patch)
             m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);
@@ -324,17 +327,10 @@ namespace CfgFileOperation
                 bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.").ToArray());
                 return false;
             }
-
-            ////patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
-            //CfgParseReclistExcel reclistExcel = new CfgParseReclistExcel();
-            //if (false == reclistExcel.ProcessingExcel_5G(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
-            ////if (m_reclistExcel.ProcessingExcel(bw, paths["Reclist"], paths["DataMdb"], "0:默认", this))
-            //{
-
-            //}
-
-            CfgParseReclistExcel5G recEx5G = new CfgParseReclistExcel5G();
-
+            
+            //CfgParseReclistExcel5G recEx5G = new CfgParseReclistExcel5G();
+            m_reclistExcel5G = new CfgParseReclistExcel5G();
+            m_reclistExcel5G.ProcessingExcel(bw, paths["Reclist"], "0:升级发布", this);
 
             //patch-3. 自定义 (patch)
             m_selfExcel.ProcessingExcel(paths["SelfDef"], paths["DataMdb"], "patch", this);

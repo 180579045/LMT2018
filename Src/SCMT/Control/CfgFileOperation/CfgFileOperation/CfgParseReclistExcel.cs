@@ -249,7 +249,7 @@ namespace CfgFileOperation
             List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
             for (int currentLine = 4; currentLine < rowCount + 1; currentLine++)
             {
-                bool bIsIndexNode = false;//是否是索引节点                
+                bool bIsIndexNode = false;          //是否是索引节点                
                 if (isEndLine(ColVals, currentLine))//结束标记
                     break;
                 string strFlag = GetExcelFlag(ColVals, currentLine);//根据patch标识进行处理
@@ -442,6 +442,9 @@ namespace CfgFileOperation
                     m_CurTableName = strCurTableName;
                     m_iCurTabIndexNum = cfgOp.m_mibTreeMem.GetIndexNumFromDBMibTree(NodeName);
                     m_bIsMoreInsts = false;
+                    if (m_vectIndexScope != null)
+                        m_vectIndexScope.Clear();
+                    m_vectIndexScope = new List<string>();
                     return true;
                 }
             }
