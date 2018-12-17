@@ -133,7 +133,8 @@ namespace CfgFileOperation
                 // 标记 表名和实例信息
                 if (0 != String.Compare("", Index, true))
                 {
-                    cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               // 增加要写Patch的表名
+                    //cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               // 增加要写Patch的表名
+                    cfgOp.m_reclistExcel5G.InsertPdgTab(strCurTableName, "1");        // 增加要写Patch的表名
                     if (0 == String.Compare("-1", Index, true))                       // 索引 == -1 相关的处理
                     {
                         PatchNeedWritePatchTable(cfgOp, strCurTableName);             // 需要做补丁文件的表名和表下面的节点     

@@ -6,6 +6,7 @@ using System.Windows;
 using CommonUtility;
 using LmtbSnmp;
 using Xceed.Wpf.AvalonDock.Layout;
+using LinkPath;
 
 namespace SnmpWindow
 {
@@ -19,7 +20,7 @@ namespace SnmpWindow
 		public MainWindow()
 		{
 			InitializeComponent();
-			TrapMessage.SetNodify(this.UpdateTrapText);
+			//TrapMessage.SetNodify(this.UpdateTrapText);
 			//             Thread T2 = new Thread(NumPlus);
 			//             T2.Start();
 		}
@@ -103,16 +104,13 @@ namespace SnmpWindow
 			}
 
 			// 获取基站中对应数值;
-			SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-			Ret1 = snmpmsg1.GetRequest(inputoid1, "public", enbIp);
+			SnmpSessionWorker.SnmpGetSync(enbIp, inputoid1, out Ret1);
 
 			// 获取基站中对应数值;
-			SnmpMessageV2c snmpmsg2 = new SnmpMessageV2c();
-			Ret2 = snmpmsg2.GetRequest(inputoid2, "public", enbIp);
+			SnmpSessionWorker.SnmpGetSync(enbIp, inputoid1, out Ret2);
 
 			// 获取基站中对应数值;
-			SnmpMessageV2c snmpmsg3 = new SnmpMessageV2c();
-			Ret3 = snmpmsg3.GetRequest(inputoid3, "public", enbIp);
+			SnmpSessionWorker.SnmpGetSync(enbIp, inputoid1, out Ret3);
 
 			var RetTemp = Ret1.Union(Ret2);
 			var AllRet = RetTemp.Union(Ret3);
@@ -145,14 +143,16 @@ namespace SnmpWindow
 			}
 
 			// 获取基站中对应数值;
-			SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-			snmpmsg1.GetRequest(AsyncGetSNMP, inputoid1, "public", CSEnbHelper.GetCurEnbAddr());
+			// TODO: 方法已废弃
+			//SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
+			//snmpmsg1.GetRequest(AsyncGetSNMP, inputoid1, "public", CSEnbHelper.GetCurEnbAddr());
 		}
 
 		private void AsyncGetSNMP(IAsyncResult ar)
 		{
-			SnmpMessageResult res = ar as SnmpMessageResult;
-			Dictionary<string, string> temp = res.AsyncState as Dictionary<string, string>;
+			// TODO:方法已废弃
+			//SnmpMessageResult res = ar as SnmpMessageResult;
+			//Dictionary<string, string> temp = res.AsyncState as Dictionary<string, string>;
 		}
 
 		/// <summary>
@@ -160,7 +160,6 @@ namespace SnmpWindow
 		/// </summary>
 		private void StartGetValueContinue()
 		{
-			SnmpMessageV2c snmpmsg = new SnmpMessageV2c();
 			Dictionary<string, string> Ret;
 			List<string> inputpdu = new List<string>();
 			// 这个是板卡表;
@@ -178,7 +177,7 @@ namespace SnmpWindow
 
 			while (GetValueStatus)
 			{
-				Ret = snmpmsg.GetRequest(inputpdu, "public", enbIp);
+				SnmpSessionWorker.SnmpGetSync(enbIp, inputpdu, out Ret);
 				string temp = "";
 				foreach (var RetShow in Ret)
 				{
@@ -216,8 +215,9 @@ namespace SnmpWindow
 				throw new CustomException("尚未选中基站");
 			}
 
-			SnmpMessageV2c SetValue = new SnmpMessageV2c();
-			SetValue.SetRequest(Pdulist1, "public", enbIp);
+			// 方法已废弃
+			//SnmpMessageV2c SetValue = new SnmpMessageV2c();
+			//SetValue.SetRequest(Pdulist1, "public", enbIp);
 		}
 
 		private void GetNext_Click(object sender, RoutedEventArgs e)
@@ -230,7 +230,7 @@ namespace SnmpWindow
 			{
 				throw new CustomException("尚未选中基站");
 			}
-			SnmpMessageV2c msg = new SnmpMessageV2c("public", enbIp);
+			//SnmpMessageV2c msg = new SnmpMessageV2c("public", enbIp);
 			//Dictionary<string,string> ret = msg.GetNext(UserInputList1);
 		}
 
@@ -251,18 +251,20 @@ namespace SnmpWindow
 				OidsArgs.Add(iter);
 			}
 
-			SnmpMessageV2c msg = new SnmpMessageV2c("public", enbIp);
-			msg.GetNextRequest(ReceiveRes, OidsArgs);
+			//SnmpMessageV2c msg = new SnmpMessageV2c("public", enbIp);
+			//msg.GetNextRequest(ReceiveRes, OidsArgs);
 		}
 
 		private void ReceiveRes(IAsyncResult ar)
 		{
-			SnmpMessageResult res = ar as SnmpMessageResult;
+			// TODO 方法已废弃
+			/*SnmpMessageResult res = ar as SnmpMessageResult;
 
 			foreach (KeyValuePair<string, string> iter in res.AsyncState as Dictionary<string, string>)
 			{
 				Console.WriteLine("NextIndex" + iter.Key + "Value:" + iter.Value);
 			}
+			*/
 		}
 
 		private void shownewpanel(object sender, RoutedEventArgs e)

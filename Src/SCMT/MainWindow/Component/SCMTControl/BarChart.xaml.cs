@@ -18,6 +18,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 using System.Threading;
 using LmtbSnmp;
 using CommonUtility;
+using LinkPath;
 
 namespace SCMTMainWindow.Component.SCMTControl
 {
@@ -114,9 +115,8 @@ namespace SCMTMainWindow.Component.SCMTControl
                             // 持续获取数据 TODO 需要配置这个表针对的是哪个基站
                             while (GettingValue)
                             {
-                                // ！！！后续需要扩展功能，保存日志文件;
-                                SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-                                Ret = snmpmsg1.GetRequest(inputoid, "public", CSEnbHelper.GetCurEnbAddr());
+								// ！！！后续需要扩展功能，保存日志文件;
+								SnmpSessionWorker.SnmpGetSync(CSEnbHelper.GetCurEnbAddr(), inputoid, out Ret);
                                 double temp = 0;
 
                                 foreach (var iter2 in Ret)
