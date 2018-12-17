@@ -196,9 +196,12 @@ namespace LmtbSnmp
 			pdu.Type = PduType.Get;
 			try
 			{
-				result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
-				// TODO:函数没处理内容
-				//HandleGetRequestResult(result);
+				lock (lockObj)
+				{
+					result = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+					// TODO:函数没处理内容
+					//HandleGetRequestResult(result);
+				}
 			}
 			catch (SnmpException e1)
 			{
@@ -356,7 +359,10 @@ namespace LmtbSnmp
 
 			try
 			{
-				response = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+				lock (lockObj)
+				{
+					response = (SnmpV2Packet)m_target.Request(pdu, m_Param);
+				}
 			}
 			catch (Exception e)
 			{
