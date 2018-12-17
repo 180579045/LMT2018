@@ -207,6 +207,22 @@ namespace RruAntAlarmError
             }
         }
 
+        public static ICell GetMergeCellValue(ISheet sheet, CellRangeAddress range)
+        {
+            for (int row = range.FirstRow; row <= range.LastRow; row++)
+            {
+                for(int column = range.FirstColumn; column <= range.LastColumn; column++)
+                {
+                    ICell cell = sheet.GetRow(row).GetCell(column);
+                    if (cell != null)
+                    {
+                        return cell;
+                    }
+                }
+            }
+            return null;
+        }
+
         public static bool GetCellMergedRange(ISheet sheet, int rowIndex, int colunmIndex, out CellRangeAddress range)
         {
             CellRangeAddress inputRange = new CellRangeAddress(rowIndex, rowIndex, colunmIndex, colunmIndex);
@@ -298,7 +314,8 @@ namespace RruAntAlarmError
                         isMerged = GetCellMergedRange(sheet, rowLoop, columnTemp, out cellRange);
                         if(isMerged)
                         {
-                            dr[columnTemp] = GetCellValue(sheet.GetRow(cellRange.FirstRow).GetCell(cellRange.FirstColumn));
+                            //dr[columnTemp] =  GetCellValue(sheet.GetRow(cellRange.FirstRow).GetCell(cellRange.FirstColumn));
+                            dr[columnTemp] = GetCellValue(GetMergeCellValue(sheet, cellRange));
                         }
                         else
                         {

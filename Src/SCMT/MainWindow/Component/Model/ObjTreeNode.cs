@@ -629,10 +629,12 @@ namespace SCMTMainWindow
 			LmtbSnmpEx lmtSnmpEx = DTLinkPathMgr.GetSnmpInstance(CSEnbHelper.GetCurEnbAddr());
 			// 组装GentNext 的Oid列表
 			List<string> getNextOidList = new List<string>();
-
-			// 无论是标量还是矢量表，每个GetCmd执行一次GetNext
-			foreach (CmdMibInfo cmdItem in cmdMibInfoList)
+            int i = 0;
+            main.ShowProgressBar(0, Visibility.Visible);
+            // 无论是标量还是矢量表，每个GetCmd执行一次GetNext
+            foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
+                i++;
 				if ("0".Equals(cmdItem.m_cmdType)) // Get命令
 				{
 					// 每个GetCmd执行一次GetNext
@@ -670,10 +672,13 @@ namespace SCMTMainWindow
 						throw ex;
 					}
 				}
-			}
 
-			// 更新DataGrid数据
-			UpdataDataGrid(getNextResultLineData, oid2cn, oid2en, objParentOID, nodeMibTable);
+                double proBarValue = (i / (double)cmdMibInfoList.Count) * 100;
+                main.ShowProgressBar(proBarValue, Visibility.Visible);
+            }
+
+            // 更新DataGrid数据
+            UpdataDataGrid(getNextResultLineData, oid2cn, oid2en, objParentOID, nodeMibTable);
 		}
 
 		/// <summary>
@@ -891,10 +896,12 @@ namespace SCMTMainWindow
 			LmtbSnmpEx lmtSnmpEx = DTLinkPathMgr.GetSnmpInstance(CSEnbHelper.GetCurEnbAddr());
 			// 组装GentNext 的Oid列表
 			List<string> getNextOidList = new List<string>();
-
-			// 无论是标量还是矢量表，每个GetCmd执行一次GetNext
-			foreach (CmdMibInfo cmdItem in cmdMibInfoList)
+            int i = 0;
+            main.ShowProgressBar(0, Visibility.Visible);
+            // 无论是标量还是矢量表，每个GetCmd执行一次GetNext
+            foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
+                i++;
 				if ("0".Equals(cmdItem.m_cmdType)) // Get命令
 				{
 					// 每个GetCmd执行一次GetNext
@@ -935,7 +942,9 @@ namespace SCMTMainWindow
 						throw ex;
 					}
 				}
-			}
+                double proBarValue = (i / (double)cmdMibInfoList.Count) * 100;
+                main.ShowProgressBar(proBarValue, Visibility.Visible);
+            }
 
 			// 更新DataGrid数据
 			UpdataDataGrid(getNextResultLineData, oid2cn, oid2en, objParentOID, nodeMibTable);

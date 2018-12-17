@@ -121,7 +121,7 @@ namespace RruAntAlarmError
                 if (item.Equals("不压缩"))
                 {
                     objRec = new JObject{
-                              { "value","1" },
+                              { "value","0" },
                               { "desc","notCompress|不压缩"} 
                              };
                     fileValueJArray.Add(objRec);
@@ -129,7 +129,7 @@ namespace RruAntAlarmError
                 else if (item.Equals("压缩"))
                 {
                     objRec = new JObject{
-                              { "value","2" },
+                              { "value","1" },
                               { "desc","compress|压缩"}
                              };
                     fileValueJArray.Add(objRec);
@@ -163,14 +163,14 @@ namespace RruAntAlarmError
                 if (temp == "不压缩")
                 {
                     objRec = new JObject{
-                              { "value","1" },
+                              { "value","0" },
                               { "desc","notCompress|不压缩"}
                              };
                 }
                 else if (temp == "压缩")
                 {
                     objRec = new JObject{
-                              { "value","2" },
+                              { "value","1" },
                               { "desc","compress|压缩"}
                              };
                 }
@@ -180,7 +180,7 @@ namespace RruAntAlarmError
                     result = "rru excel Line " + line + " value is invalid, 压缩属性 is " + excelValue;
                     Log.Debug(result);
                     objRec = new JObject{
-                              { "value","2" },
+                              { "value","1" },
                               { "desc","compress|压缩"}
                              };
                 }
