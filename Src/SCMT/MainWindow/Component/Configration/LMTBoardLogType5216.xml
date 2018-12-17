@@ -1,0 +1,1406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LOGSHOW>
+    <TABLTPAGE>
+        <TABLE TABLETYPE="6.10" DESCRIBE="LTELOG"/>
+    </TABLTPAGE>
+	<BASEBANDTODSP>
+		<BOARD BOARDTYPE="143" DESCRIBE="BPOG">
+			<BASEBAND BASEBANDNO="0" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="1" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="2" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="3" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="4" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="5" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="6" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="7" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="8" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="9" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="10" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="11" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="12" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="13" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="14" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="15" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="16" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="17" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="18" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="19" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="20" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="21" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="22" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="23" DSPNO="2"/>
+		</BOARD>
+		<BOARD BOARDTYPE="177" DESCRIBE="BPOH">
+			<BASEBAND BASEBANDNO="0" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="1" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="2" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="3" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="4" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="5" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="6" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="7" DSPNO="0"/>
+			<BASEBAND BASEBANDNO="8" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="9" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="10" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="11" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="12" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="13" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="14" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="15" DSPNO="1"/>
+			<BASEBAND BASEBANDNO="16" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="17" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="18" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="19" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="20" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="21" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="22" DSPNO="2"/>
+			<BASEBAND BASEBANDNO="23" DSPNO="2"/>
+		</BOARD>
+		<BOARD BOARDTYPE="241" DESCRIBE="BPOI">
+			<BASEBAND BASEBANDNO="0" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="1" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="2" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="3" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="4" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="5" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="6" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="7" DSPNO="0" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="8" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="9" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="10" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="11" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="12" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="13" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="14" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="15" DSPNO="0" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="16" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="17" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="18" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="19" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="20" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="21" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="22" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="23" DSPNO="0" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="24" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="25" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="26" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="27" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="28" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="29" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="30" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="31" DSPNO="1" CORENO1="0" CORENO2="1"/>
+			<BASEBAND BASEBANDNO="32" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="33" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="34" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="35" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="36" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="37" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="38" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="39" DSPNO="1" CORENO1="2" CORENO2="3"/>
+			<BASEBAND BASEBANDNO="40" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="41" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="42" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="43" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="44" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="45" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="46" DSPNO="1" CORENO1="4" CORENO2="5"/>
+			<BASEBAND BASEBANDNO="47" DSPNO="1" CORENO1="4" CORENO2="5"/>
+		</BOARD>
+	</BASEBANDTODSP>
+	<CARRIERNOTODSP>
+		<BOARD BOARDTYPE="98" DESCRIBE="BPIA">
+			<CARRIERNO CARRIERNO="0" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="1" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="2" DSPNO="2"/>
+		</BOARD>
+		<BOARD BOARDTYPE="109" DESCRIBE="BPOE">
+			<CARRIERNO CARRIERNO="0" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="1" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="2" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="3" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="4" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="5" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="6" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="7" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="8" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="9" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="10" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="11" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="12" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="13" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="14" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="15" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="16" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="17" DSPNO="1"/>
+		</BOARD>
+		<BOARD BOARDTYPE="128" DESCRIBE="BPOF">
+			<CARRIERNO CARRIERNO="0" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="1" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="2" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="3" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="4" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="5" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="6" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="7" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="8" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="9" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="10" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="11" DSPNO="1"/>
+		</BOARD>
+		<BOARD BOARDTYPE="99" DESCRIBE="BPOA">
+			<CARRIERNO CARRIERNO="0" DSPNO="0"/>
+			<CARRIERNO CARRIERNO="1" DSPNO="1"/>
+			<CARRIERNO CARRIERNO="2" DSPNO="2"/>
+			<CARRIERNO CARRIERNO="3" DSPNO="3"/>
+			<CARRIERNO CARRIERNO="4" DSPNO="4"/>
+			<CARRIERNO CARRIERNO="5" DSPNO="5"/>
+		</BOARD>
+	</CARRIERNOTODSP>
+	<PUBLICFILE>
+		<LOGSHOW TYPE="1" CAPTION="操作日志"/>
+		<LOGSHOW TYPE="4" CAPTION="告警日志文件"/>
+		<LOGSHOW TYPE="5" CAPTION="重要过程日志"/>
+		<LOGSHOW TYPE="7" CAPTION="黑匣子日志"/>
+		<LOGSHOW TYPE="8" CAPTION="异常日志"/>
+		<LOGSHOW TYPE="9" CAPTION="事件日志"/>
+		<LOGSHOW TYPE="11" CAPTION="配置数据一致性文件"/>
+		<LOGSHOW TYPE="12" CAPTION="状态数据一致性文件"/>
+		<LOGSHOW TYPE="13" CAPTION="数据一致性文件"/>
+		<LOGSHOW TYPE="14" CAPTION="当前运行配置文件"/>
+		<LOGSHOW TYPE="26" CAPTION="数据库文件"/>
+		<LOGSHOW TYPE="27" CAPTION="活跃告警文件"/>
+		<LOGSHOW TYPE="33" CAPTION="dump快照日志文件"/>
+		<LOGSHOW TYPE="43" CAPTION="跟踪用户日志"/>
+	</PUBLICFILE>
+	<ACCESSBOARD>
+		<BOARD TYPE="178" DESCRIBE="SCTE">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="53" CAPTION="日志主要记录基站大部分信令流程信息和告警"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="日志中包含UE0-19的信息"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含UE20-39的信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和eNB侧专用测试0-199的信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中包含RAC的实例区信息，主要记录HL的RAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC和CAC的实例区信息，主要记录HL的RBC和CAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="日志中包含MCH的实例区信息，主要记录HL的MCH实例区全局变量信息"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含ICIC的实例区信息，主要记录HL的ICIC实例区全局变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="66" CAPTION="日志中包含当有严重告警出现时的历史消息信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="97" DESCRIBE="SCTA">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="40" CAPTION="TNL子系统全部资源表信息"/>
+					<LOGSHOW TYPE="41" CAPTION="TNL子系统全局变量信息"/>
+					<LOGSHOW TYPE="42" CAPTION="APS资源表信息"/>
+					<LOGSHOW TYPE="43" CAPTION="APS收到的历史消息信息"/>
+					<LOGSHOW TYPE="44" CAPTION="APS告警时保留的资源表"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="141" DESCRIBE="SCTA-IP">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="40" CAPTION="TNL子系统全部资源表信息"/>
+					<LOGSHOW TYPE="41" CAPTION="TNL子系统全局变量信息"/>
+					<LOGSHOW TYPE="42" CAPTION="APS资源表信息"/>
+					<LOGSHOW TYPE="43" CAPTION="APS收到的历史消息信息"/>
+					<LOGSHOW TYPE="44" CAPTION="APS告警时保留的资源表"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="53" CAPTION="日志主要记录基站大部分信令流程信息和告警"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="日志中包含UE0-19的信息"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含UE20-39的信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和eNB侧专用测试0-199的信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中包含RAC的实例区信息，主要记录HL的RAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC和CAC的实例区信息，主要记录HL的RBC和CAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="日志中包含MCH的实例区信息，主要记录HL的MCH实例区全局变量信息"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含ICIC的实例区信息，主要记录HL的ICIC实例区全局变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="66" CAPTION="日志中包含当有严重告警出现时的历史消息信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="0-0.141" DESCRIBE="0槽位为主控板的0槽位板卡日志">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+					<LOGSHOW TYPE="40" CAPTION="TNL子系统全部资源表信息"/>
+					<LOGSHOW TYPE="41" CAPTION="TNL子系统全局变量信息"/>
+					<LOGSHOW TYPE="42" CAPTION="APS资源表信息"/>
+					<LOGSHOW TYPE="43" CAPTION="APS收到的历史消息信息"/>
+					<LOGSHOW TYPE="44" CAPTION="APS告警时保留的资源表"/>
+					<LOGSHOW TYPE="46" CAPTION="APB告警时保留的资源表"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="0-0" DESCRIBE="0槽位为主控板的0槽位板卡日志">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+					<LOGSHOW TYPE="40" CAPTION="TNL子系统全部资源表信息"/>
+					<LOGSHOW TYPE="41" CAPTION="TNL子系统全局变量信息"/>
+					<LOGSHOW TYPE="42" CAPTION="APS资源表信息"/>
+					<LOGSHOW TYPE="43" CAPTION="APS收到的历史消息信息"/>
+					<LOGSHOW TYPE="44" CAPTION="APS告警时保留的资源表"/>
+					<LOGSHOW TYPE="46" CAPTION="APB告警时保留的资源表"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="1-0.240" DESCRIBE="0槽位为主控板的1槽位板卡日志">
+			<PROCESSOR TYPE="4" DESCRIBE="MSCP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="6" DESCRIBE="6核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+        <CORE TYPE="7" DESCRIBE="7核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="8" DESCRIBE="8核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="9" DESCRIBE="9核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="10" DESCRIBE="10核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="1-0.141" DESCRIBE="0槽位为主控板的1槽位板卡日志">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="日志中包含UE0-19的信息"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含UE20-39的信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和eNB侧专用测试0-199的信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中包含RAC的实例区信息，主要记录HL的RAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC和CAC的实例区信息，主要记录HL的RBC和CAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含ICIC的实例区信息，主要记录HL的ICIC实例区全局变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="1-0" DESCRIBE="0槽位为主控板的1槽位板卡日志">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="日志中包含UE0-19的信息"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含UE20-39的信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和eNB侧专用测试0-199的信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中包含RAC的实例区信息，主要记录HL的RAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC和CAC的实例区信息，主要记录HL的RBC和CAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含ICIC的实例区信息，主要记录HL的ICIC实例区全局变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="1-1.141" DESCRIBE="1槽位为主控板的1槽位板卡日志">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+			    <LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="日志中包含UE0-19的信息"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含UE20-39的信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和eNB侧专用测试0-199的信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中包含RAC的实例区信息，主要记录HL的RAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC和CAC的实例区信息，主要记录HL的RBC和CAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含ICIC的实例区信息，主要记录HL的ICIC实例区全局变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="1-1.240" DESCRIBE="1槽位为主控板的1槽位板卡日志">
+			<PROCESSOR TYPE="4" DESCRIBE="MSCP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="6" DESCRIBE="6核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+        <CORE TYPE="7" DESCRIBE="7核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="8" DESCRIBE="8核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="9" DESCRIBE="9核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="10" DESCRIBE="10核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="资源异常信息记录"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含可测性计数统计信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和UE索引链表信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中记录HL查表相关信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC实例区信息，主要记录HL的RBC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含CAC抢占资源和对应DRB存储信息，主要记录HL的CAC抢占和相应DRB相关变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="1-1" DESCRIBE="1槽位为主控板的1槽位板卡日志">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="11" CAPTION="记录跟踪相关信息"/>
+					<LOGSHOW TYPE="13" CAPTION="记录设备管理信息"/>
+					<LOGSHOW TYPE="15" CAPTION="记录FAN运行信息"/>
+					<LOGSHOW TYPE="16" CAPTION="记录SON相关信息"/>
+					<LOGSHOW TYPE="17" CAPTION="记录OMC心跳信息"/>
+					<LOGSHOW TYPE="18" CAPTION="RRU接入帧结构日志"/>
+			    <LOGSHOW TYPE="53" CAPTION="AP高端内存日志"/>
+					<LOGSHOW TYPE="54" CAPTION="日志包含小区信息和小区公共测量信息"/>
+					<LOGSHOW TYPE="55" CAPTION="日志中包含UE0-19的信息"/>
+					<LOGSHOW TYPE="56" CAPTION="日志中包含UE20-39的信息"/>
+					<LOGSHOW TYPE="57" CAPTION="日志中包含DRB0-499和eNB侧专用测试0-199的信息"/>
+					<LOGSHOW TYPE="58" CAPTION="日志中包含CRM的实例区信息，主要记录HL的CRM实例区全局变量信息"/>
+					<LOGSHOW TYPE="59" CAPTION="日志中包含CPM的实例区信息，主要记录HL的CPM实例区全局变量信息"/>
+					<LOGSHOW TYPE="60" CAPTION="日志中包含RAC的实例区信息，主要记录HL的RAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="61" CAPTION="日志中包含RBC和CAC的实例区信息，主要记录HL的RBC和CAC实例区全局变量信息"/>
+					<LOGSHOW TYPE="62" CAPTION="负荷均衡日志"/>
+					<LOGSHOW TYPE="63" CAPTION="日志中包含HC的实例区信息，主要记录HL的HC实例区全局变量信息"/>
+					<LOGSHOW TYPE="64" CAPTION="日志中包含ICIC的实例区信息，主要记录HL的ICIC实例区全局变量信息"/>
+					<LOGSHOW TYPE="65" CAPTION="日志中包含当有链表告警出现时的错误链表现场信息"/>
+					<LOGSHOW TYPE="67" CAPTION="AP当前资源表日志"/>
+					<LOGSHOW TYPE="68" CAPTION="HL标准接口消息编解码失败日志"/>
+					<LOGSHOW TYPE="69" CAPTION="HL高端内存日志"/>
+					<LOGSHOW TYPE="70" CAPTION="IP板卡抓包记录"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="73" CAPTION="E1状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="143" DESCRIBE="BPOG">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="20" CAPTION="DSP0 Core0~1内存数据"/>
+					<LOGSHOW TYPE="21" CAPTION="DSP0 Core2~3内存数据"/>
+					<LOGSHOW TYPE="22" CAPTION="DSP0 Core4~5内存数据"/>
+					<LOGSHOW TYPE="23" CAPTION="DSP0 Core0~2堆栈数据"/>
+					<LOGSHOW TYPE="24" CAPTION="DSP0 Core3~5堆栈数据"/>
+					<LOGSHOW TYPE="25" CAPTION="DSP1 Core0~1内存数据"/>
+					<LOGSHOW TYPE="26" CAPTION="DSP1 Core2~3内存数据"/>
+					<LOGSHOW TYPE="27" CAPTION="DSP1 Core4~5内存数据"/>
+					<LOGSHOW TYPE="28" CAPTION="DSP1 Core0~2堆栈数据"/>
+					<LOGSHOW TYPE="29" CAPTION="DSP1 Core3~5堆栈数据"/>
+					<LOGSHOW TYPE="30" CAPTION="DSP2 Core0~1内存数据"/>
+					<LOGSHOW TYPE="31" CAPTION="DSP2 Core2~3内存数据"/>
+					<LOGSHOW TYPE="32" CAPTION="DSP2 Core4~5内存数据"/>
+					<LOGSHOW TYPE="33" CAPTION="DSP2 Core0~2堆栈数据"/>
+					<LOGSHOW TYPE="34" CAPTION="DSP2 Core3~5堆栈数据"/>
+					<LOGSHOW TYPE="36" CAPTION="FPGA寄存器值的日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="74" CAPTION="IR链路误码"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="5" CAPTION="PUCCH监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="AC校准日志"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER监测日志"/>
+					<LOGSHOW TYPE="4" CAPTION="下行BLER监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="4" CAPTION="下行BLER监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="60" CAPTION="L2_C4_60号日志"/>
+					<LOGSHOW TYPE="61" CAPTION="L2_C4_61号日志"/>
+					<LOGSHOW TYPE="62" CAPTION="L2_C4_62号日志"/>
+					<LOGSHOW TYPE="63" CAPTION="L2_C4重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="L2告警异常日志"/>
+					<LOGSHOW TYPE="65" CAPTION="L2_C4切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="L2信令流程异常日志"/>
+					<LOGSHOW TYPE="67" CAPTION="L2流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="60" CAPTION="L2_C5_60号日志"/>
+					<LOGSHOW TYPE="61" CAPTION="L2_C5_61号日志"/>
+					<LOGSHOW TYPE="62" CAPTION="L2_C5_62号日志"/>
+					<LOGSHOW TYPE="63" CAPTION="L2_C5重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="L2告警异常日志"/>
+					<LOGSHOW TYPE="65" CAPTION="L2_C5切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="L2信令流程异常日志"/>
+					<LOGSHOW TYPE="67" CAPTION="L2流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="177" DESCRIBE="BPOH">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="20" CAPTION="DSP0 Core0~1内存数据"/>
+					<LOGSHOW TYPE="21" CAPTION="DSP0 Core2~3内存数据"/>
+					<LOGSHOW TYPE="22" CAPTION="DSP0 Core4~5内存数据"/>
+					<LOGSHOW TYPE="23" CAPTION="DSP0 Core0~2堆栈数据"/>
+					<LOGSHOW TYPE="24" CAPTION="DSP0 Core3~5堆栈数据"/>
+					<LOGSHOW TYPE="25" CAPTION="DSP1 Core0~1内存数据"/>
+					<LOGSHOW TYPE="26" CAPTION="DSP1 Core2~3内存数据"/>
+					<LOGSHOW TYPE="27" CAPTION="DSP1 Core4~5内存数据"/>
+					<LOGSHOW TYPE="28" CAPTION="DSP1 Core0~2堆栈数据"/>
+					<LOGSHOW TYPE="29" CAPTION="DSP1 Core3~5堆栈数据"/>
+					<LOGSHOW TYPE="30" CAPTION="DSP2 Core0~1内存数据"/>
+					<LOGSHOW TYPE="31" CAPTION="DSP2 Core2~3内存数据"/>
+					<LOGSHOW TYPE="32" CAPTION="DSP2 Core4~5内存数据"/>
+					<LOGSHOW TYPE="33" CAPTION="DSP2 Core0~2堆栈数据"/>
+					<LOGSHOW TYPE="34" CAPTION="DSP2 Core3~5堆栈数据"/>
+					<LOGSHOW TYPE="36" CAPTION="FPGA寄存器值的日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="74" CAPTION="IR链路误码"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="5" CAPTION="PUCCH监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="AC校准日志"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER监测日志"/>
+					<LOGSHOW TYPE="4" CAPTION="下行BLER监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="4" CAPTION="下行BLER监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="60" CAPTION="L2_C4_60号日志"/>
+					<LOGSHOW TYPE="61" CAPTION="L2_C4_61号日志"/>
+					<LOGSHOW TYPE="62" CAPTION="L2_C4_62号日志"/>
+					<LOGSHOW TYPE="63" CAPTION="L2_C4重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="L2告警异常日志"/>
+					<LOGSHOW TYPE="65" CAPTION="L2_C4切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="L2信令流程异常日志"/>
+					<LOGSHOW TYPE="67" CAPTION="L2流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="60" CAPTION="L2_C5_60号日志"/>
+					<LOGSHOW TYPE="61" CAPTION="L2_C5_61号日志"/>
+					<LOGSHOW TYPE="62" CAPTION="L2_C5_62号日志"/>
+					<LOGSHOW TYPE="63" CAPTION="L2_C5重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="L2告警异常日志"/>
+					<LOGSHOW TYPE="65" CAPTION="L2_C5切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="L2信令流程异常日志"/>
+					<LOGSHOW TYPE="67" CAPTION="L2流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="109" DESCRIBE="BPOE">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="23" CAPTION="SOM异常处理信息"/>
+					<LOGSHOW TYPE="24" CAPTION="SOM重要消息的收发记录"/>
+					<LOGSHOW TYPE="36" CAPTION="FPGA寄存器值的日志"/>
+					<LOGSHOW TYPE="45" CAPTION="APB资源表信息"/>
+					<LOGSHOW TYPE="46" CAPTION="APB告警时保留的资源表"/>
+					<LOGSHOW TYPE="47" CAPTION="SBC广播帧信息和资源表信息"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="49" CAPTION="记录APB给CC的无线链路相关消息"/>
+					<LOGSHOW TYPE="50" CAPTION="TIS记录的各类消息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="74" CAPTION="IR链路误码"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="FP资源表的相关信息"/>
+					<LOGSHOW TYPE="4" CAPTION="DSP DUMP日志1"/>
+					<LOGSHOW TYPE="5" CAPTION="DSP DUMP日志2"/>
+					<LOGSHOW TYPE="6" CAPTION="DSP DUMP日志3"/>
+					<LOGSHOW TYPE="7" CAPTION="DSP DUMP日志4"/>
+					<LOGSHOW TYPE="8" CAPTION="DSP DUMP日志5"/>
+					<LOGSHOW TYPE="9" CAPTION="DSP DUMP日志6"/>
+					<LOGSHOW TYPE="51" CAPTION="MAC流控资源表的相关信息"/>
+					<LOGSHOW TYPE="58" CAPTION="用户信令帧记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="52" CAPTION="MAC调度资源表的相关信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="52" CAPTION="MAC调度资源表的相关信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="52" CAPTION="MAC调度资源表的相关信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="128" DESCRIBE="BPOF">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="23" CAPTION="SOM异常处理信息"/>
+					<LOGSHOW TYPE="24" CAPTION="SOM重要消息的收发记录"/>
+					<LOGSHOW TYPE="36" CAPTION="FPGA寄存器值的日志"/>
+					<LOGSHOW TYPE="45" CAPTION="APB资源表信息"/>
+					<LOGSHOW TYPE="46" CAPTION="APB告警时保留的资源表"/>
+					<LOGSHOW TYPE="47" CAPTION="SBC广播帧信息和资源表信息"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="49" CAPTION="记录APB给CC的无线链路相关消息"/>
+					<LOGSHOW TYPE="50" CAPTION="TIS记录的各类消息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="74" CAPTION="IR链路误码"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="FP资源表的相关信息"/>
+					<LOGSHOW TYPE="4" CAPTION="DSP DUMP日志1"/>
+					<LOGSHOW TYPE="5" CAPTION="DSP DUMP日志2"/>
+					<LOGSHOW TYPE="6" CAPTION="DSP DUMP日志3"/>
+					<LOGSHOW TYPE="7" CAPTION="DSP DUMP日志4"/>
+					<LOGSHOW TYPE="8" CAPTION="DSP DUMP日志5"/>
+					<LOGSHOW TYPE="9" CAPTION="DSP DUMP日志6"/>
+					<LOGSHOW TYPE="51" CAPTION="MAC流控资源表的相关信息"/>
+					<LOGSHOW TYPE="58" CAPTION="用户信令帧记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="52" CAPTION="MAC调度资源表的相关信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="52" CAPTION="MAC调度资源表的相关信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="52" CAPTION="MAC调度资源表的相关信息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="99" DESCRIBE="BPOA">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="23" CAPTION="SOM异常处理信息"/>
+					<LOGSHOW TYPE="24" CAPTION="SOM重要消息的收发记录"/>
+					<LOGSHOW TYPE="45" CAPTION="APB资源表信息"/>
+					<LOGSHOW TYPE="46" CAPTION="APB告警时保留的资源表"/>
+					<LOGSHOW TYPE="47" CAPTION="SBC广播帧信息和资源表信息"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="49" CAPTION="记录APB给CC的无线链路相关消息"/>
+					<LOGSHOW TYPE="50" CAPTION="TIS记录的各类消息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="75" CAPTION="DSP1内存Dump日志"/>
+					<LOGSHOW TYPE="76" CAPTION="DSP2内存Dump日志"/>
+					<LOGSHOW TYPE="77" CAPTION="DSP3内存Dump日志"/>
+					<LOGSHOW TYPE="78" CAPTION="DSP4内存Dump日志"/>
+					<LOGSHOW TYPE="79" CAPTION="DSP5内存Dump日志"/>
+					<LOGSHOW TYPE="80" CAPTION="DSP6内存Dump日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="FP资源表相关信息"/>
+					<LOGSHOW TYPE="3" CAPTION="MAC资源表的相关信息"/>
+					<LOGSHOW TYPE="4" CAPTION="CORE0部分日志文件0"/>
+					<LOGSHOW TYPE="5" CAPTION="CORE0部分日志文件1"/>
+					<LOGSHOW TYPE="6" CAPTION="CORE0部分日志文件2"/>
+					<LOGSHOW TYPE="7" CAPTION="CORE0部分日志文件3"/>
+					<LOGSHOW TYPE="16" CAPTION="CORE间共享部分日志文件12"/>
+					<LOGSHOW TYPE="17" CAPTION="CORE间共享部分日志文件13"/>
+					<LOGSHOW TYPE="18" CAPTION="CORE间共享部分日志文件14"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="72" CAPTION="DD调试内存日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="8" CAPTION="CORE1部分日志文件4"/>
+					<LOGSHOW TYPE="9" CAPTION="CORE1部分日志文件5"/>
+					<LOGSHOW TYPE="10" CAPTION="CORE1部分日志文件6"/>
+					<LOGSHOW TYPE="11" CAPTION="CORE1部分日志文件7"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="72" CAPTION="DD调试内存日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="12" CAPTION="CORE2部分日志文件8"/>
+					<LOGSHOW TYPE="13" CAPTION="CORE2部分日志文件9"/>
+					<LOGSHOW TYPE="14" CAPTION="CORE2部分日志文件10"/>
+					<LOGSHOW TYPE="15" CAPTION="CORE2部分日志文件11"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="72" CAPTION="DD调试内存日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="98" DESCRIBE="BPIA">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="23" CAPTION="SOM异常处理信息"/>
+					<LOGSHOW TYPE="24" CAPTION="SOM重要消息的收发记录"/>
+					<LOGSHOW TYPE="45" CAPTION="APB资源表信息"/>
+					<LOGSHOW TYPE="46" CAPTION="APB告警时保留的资源表"/>
+					<LOGSHOW TYPE="47" CAPTION="SBC广播帧信息和资源表信息"/>
+					<LOGSHOW TYPE="48" CAPTION="TNL子代理的资源表信息"/>
+					<LOGSHOW TYPE="49" CAPTION="记录APB给CC的无线链路相关消息"/>
+					<LOGSHOW TYPE="50" CAPTION="TIS记录的各类消息"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="74" CAPTION="IR链路误码"/>
+					<LOGSHOW TYPE="75" CAPTION="DSP1内存Dump日志"/>
+					<LOGSHOW TYPE="76" CAPTION="DSP2内存Dump日志"/>
+					<LOGSHOW TYPE="77" CAPTION="DSP3内存Dump日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="FP资源表相关信息"/>
+					<LOGSHOW TYPE="3" CAPTION="MAC资源表的相关信息"/>
+					<LOGSHOW TYPE="4" CAPTION="CORE0部分日志文件0"/>
+					<LOGSHOW TYPE="5" CAPTION="CORE0部分日志文件1"/>
+					<LOGSHOW TYPE="6" CAPTION="CORE0部分日志文件2"/>
+					<LOGSHOW TYPE="7" CAPTION="CORE0部分日志文件3"/>
+					<LOGSHOW TYPE="16" CAPTION="CORE间共享部分日志文件12"/>
+					<LOGSHOW TYPE="17" CAPTION="CORE间共享部分日志文件13"/>
+					<LOGSHOW TYPE="18" CAPTION="CORE间共享部分日志文件14"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="72" CAPTION="DD调试内存日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="8" CAPTION="CORE1部分日志文件4"/>
+					<LOGSHOW TYPE="9" CAPTION="CORE1部分日志文件5"/>
+					<LOGSHOW TYPE="10" CAPTION="CORE1部分日志文件6"/>
+					<LOGSHOW TYPE="11" CAPTION="CORE1部分日志文件7"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="72" CAPTION="DD调试内存日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="12" CAPTION="CORE2部分日志文件8"/>
+					<LOGSHOW TYPE="13" CAPTION="CORE2部分日志文件9"/>
+					<LOGSHOW TYPE="14" CAPTION="CORE2部分日志文件10"/>
+					<LOGSHOW TYPE="15" CAPTION="CORE2部分日志文件11"/>
+					<LOGSHOW TYPE="71" CAPTION="DD驱动调试日志"/>
+					<LOGSHOW TYPE="72" CAPTION="DD调试内存日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+		<BOARD TYPE="241" DESCRIBE="BPOI">
+			<PROCESSOR TYPE="1" DESCRIBE="MCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="14" CAPTION="记录RRU管理信息"/>
+					<LOGSHOW TYPE="36" CAPTION="FPGA寄存器值的日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="74" CAPTION="IR链路误码"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="2" DESCRIBE="DSP">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER检测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="AC校准日志"/>
+					<LOGSHOW TYPE="5" CAPTION="PUCCH监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER检测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="AC校准日志"/>
+					<LOGSHOW TYPE="5" CAPTION="PUCCH监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="4" DESCRIBE="4核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="3" CAPTION="上行BLER检测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="5" DESCRIBE="5核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="2" CAPTION="AC校准日志"/>
+					<LOGSHOW TYPE="5" CAPTION="PUCCH监测日志"/>
+					<LOGSHOW TYPE="20" CAPTION="DD故障内容记录日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+			<PROCESSOR TYPE="4" DESCRIBE="MCMCU">
+				<CORE TYPE="0" DESCRIBE="0核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="60" CAPTION="PDCP/RLC告警日志"/>
+					<LOGSHOW TYPE="64" CAPTION="PDCP/RLC切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="PDCP/RLC流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="1" DESCRIBE="1核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="60" CAPTION="PDCP/RLC告警日志"/>
+					<LOGSHOW TYPE="61" CAPTION="MAC告警日志"/>
+					<LOGSHOW TYPE="62" CAPTION="RLC重建立日志"/>
+					<LOGSHOW TYPE="63" CAPTION="MAC重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="PDCP/RLC切换日志"/>
+					<LOGSHOW TYPE="65" CAPTION="MAC切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="PDCP/RLC流程日志"/>
+					<LOGSHOW TYPE="67" CAPTION="MAC流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="2" DESCRIBE="2核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="60" CAPTION="PDCP/RLC告警日志"/>
+					<LOGSHOW TYPE="61" CAPTION="MAC告警日志"/>
+					<LOGSHOW TYPE="62" CAPTION="RLC重建立日志"/>
+					<LOGSHOW TYPE="63" CAPTION="MAC重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="PDCP/RLC切换日志"/>
+					<LOGSHOW TYPE="65" CAPTION="MAC切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="PDCP/RLC流程日志"/>
+					<LOGSHOW TYPE="67" CAPTION="MAC流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+				<CORE TYPE="3" DESCRIBE="3核">
+					<LOGSHOW TYPE="1" CAPTION="OSP记录的系统信息，包括任务统计、内存池统计、SFU收发统计、高端内存异常信息等"/>
+					<LOGSHOW TYPE="60" CAPTION="PDCP/RLC告警日志"/>
+					<LOGSHOW TYPE="61" CAPTION="MAC告警日志"/>
+					<LOGSHOW TYPE="62" CAPTION="RLC重建立日志"/>
+					<LOGSHOW TYPE="63" CAPTION="MAC重建立日志"/>
+					<LOGSHOW TYPE="64" CAPTION="PDCP/RLC切换日志"/>
+					<LOGSHOW TYPE="65" CAPTION="MAC切换日志"/>
+					<LOGSHOW TYPE="66" CAPTION="PDCP/RLC流程日志"/>
+					<LOGSHOW TYPE="67" CAPTION="MAC流程日志"/>
+					<LOGSHOW TYPE="71" CAPTION="驱动状态记录日志"/>
+					<LOGSHOW TYPE="81" CAPTION="记录指定板卡上所有类型的用户日志的上传结果"/>
+				</CORE>
+			</PROCESSOR>
+		</BOARD>
+	</ACCESSBOARD>
+</LOGSHOW>
