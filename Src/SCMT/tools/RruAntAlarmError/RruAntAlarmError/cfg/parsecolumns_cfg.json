@@ -2,7 +2,7 @@
   "rruFileColumnHeader":"RRU型号编号&RRU厂家名称&RRU硬件类型&RRU名称&支持的天线根数&通道的最大发射功率&支持的频带总宽度（M）&支持的工作模式&支持建立的小区类型&射频通道数&射频通道编号&通道支持频段&各频段支持的载波数&各射频通道支持的载波数&通道支持带宽（M）&所属天线编号&通道支持的最大发送功率&通道TX基带信号的标定振幅&通道RX基带信号的标定振幅&通道天线单元的标定输出(1/256dbm)&通道天线单元的标定输入(1/256dbm)&拉远属性&压缩属性&支持的IR口速率&压缩属性与带宽约束关系&通道收发",
   "rruTypeManufacturerIndex":"4:datang|大唐",
   "rruTypeFiberLength":"1:ten|10km/2:twenty|20km/4:forty|40km",
-  "rruTypeIrCompressMode":"1:notCompress|不压缩/2:compress|压缩",
+  "rruTypeIrCompressMode":"0:notCompress|不压缩/1:compress|压缩",
   "rruTypeSupportCellWorkMode":"1:lte|LTE TDD/2:td|TD-SCDMA/4:nr|NR/8:fdd|LTE FDD",
   "rruTypePortSupportFreqBand":"1:a|A频段(2010-2025)/2:d|D频段(2570-2620)/4:e|E频段(2300-2400)/8:f|F频段(1880-1920)/16:dl|DL频段(2545-2575)/32:v|V频段(1447-1467)/64:b41|B41频段(2496-2690)/128:t|T频段(1785-1805)/256:b03|B03频段(1805-1880)/512:b01|B01频段(2110-2170)/1024:b44|B44频段(703-803)/2048:b42|B42频段(3400-3600)/4096:n78|N78频段(3300-3800)/8192:b08|B08频段(930-960)/16384:n79|N79频段(4400-5000)",
   "netRRUOfpWorkMode":"1:normal|正常模式/2:lined|级联模式/3:backup|主备模式/4:shared|负荷分担模式",
