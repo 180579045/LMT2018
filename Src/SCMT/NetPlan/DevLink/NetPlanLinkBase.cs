@@ -4,7 +4,7 @@ using System.Linq;
 using LogManager;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
 	public class NetPlanLinkBase : INetPlanLink
 	{
