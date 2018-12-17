@@ -18,6 +18,7 @@ using Xceed.Wpf.AvalonDock.Layout;
 using System.Threading;
 using LmtbSnmp;
 using CommonUtility;
+using LinkPath;
 
 namespace SCMTMainWindow.Component.SCMTControl
 {
@@ -113,9 +114,8 @@ namespace SCMTMainWindow.Component.SCMTControl
                             // 持续获取数据;
                             while (GettingValue)
                             {
-                                // ！！！后续需要扩展功能，保存日志文件;
-                                SnmpMessageV2c snmpmsg1 = new SnmpMessageV2c();
-                                Ret = snmpmsg1.GetRequest(inputoid, "public", CSEnbHelper.GetCurEnbAddr()); // TODO 需要确定真正的板卡地址
+								// ！！！后续需要扩展功能，保存日志文件;
+								SnmpSessionWorker.SnmpGetSync(CSEnbHelper.GetCurEnbAddr(), inputoid, out Ret); // TODO 需要确定真正的板卡地址
 
 								double temp = 0;
 

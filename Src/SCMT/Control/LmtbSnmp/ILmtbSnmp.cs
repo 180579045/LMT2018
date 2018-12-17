@@ -12,6 +12,8 @@ namespace LmtbSnmp
 
 		int SnmpGetSync(CDTLmtbPdu lmtPdu, out long requestId, string strIpAddr, long timeOut);
 
+		int SnmpGetSync(string strIpAddr, List<string> oidList, out Dictionary<string, string> results, long timeout);
+
 		bool SnmpGetSync(string strIpAddr, List<CDTLmtbVb> queryVbs, out Dictionary<string, string> results, long timeout);
 
 		int SnmpGetAsync(CDTLmtbPdu lmtPdu, out long requestId, string strIpAddr);
