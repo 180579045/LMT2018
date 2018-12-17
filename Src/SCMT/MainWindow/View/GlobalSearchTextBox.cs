@@ -39,8 +39,8 @@ namespace SCMTMainWindow.View
                     SearchTextChange = e.Changes
                 });
             }
-
         }
+        
     }
 
     public class SearchButtonEventArgs : EventArgs

@@ -122,6 +122,7 @@ namespace SCMTMainWindow
 
         private void GlobalSearch_ButtonClick(object sender, EventArgs e)
         {
+            this.GlobalSearch.Text = "";
         }
 
         #endregion 构造、析构
