@@ -505,7 +505,7 @@ namespace SCMTMainWindow.View
 					var menuChildItem = new MetroMenuItem();
 					menuChildItem.Header = mibinfo.m_cmdDesc;
 					menuChildItem.Click += MenuModifyItem_Click;
-					if (m_selectDataGrid == null)
+					if (m_selectDataGrid == null && mibinfo.m_cmdType.Equals("3") && table.indexNum > 0)
 						menuChildItem.IsEnabled = false;
 					else
 						menuChildItem.IsEnabled = true;
@@ -580,23 +580,44 @@ namespace SCMTMainWindow.View
 				return;
 
 			CmdMibInfo info = listCmdMibInfo.Find(p => p.m_cmdDesc.Equals(menu.Header));
-			if (info != null)
+            int indexNum = (m_ColumnModel.TableProperty as MibTable).indexNum;
+
+            if (info != null)
 			{
 				m_operType = int.Parse(info.m_cmdType);
 
-				//判断是否含有默认值，如果含有的默认值与列表个数相同，不显示窗口，直接根据默认值下发指令
+				//判断是否含有默认值
 				if (info.m_leafDefault != null)
 				{
-					if (info.m_leaflist.Count == info.m_leafDefault.Count)
+					if (m_operType == 4)
 					{
-						ModifySpecialProcess(info);
+                        if(indexNum > 0)
+                        {
+                            //选择数据且含有的默认值与列表个数相同，不显示窗口，直接根据默认值下发指令
+                            if (m_selectDataGrid != null && (info.m_leaflist.Count == info.m_leafDefault.Count))
+                                ModifySpecialProcess(info);
+                            else//没有选择数据，需要显示窗口设置索引
+                            {
+                                MainDataParaSetGrid paradlg = new MainDataParaSetGrid(this);
+                                paradlg.InitAddParaSetGrid(info, (m_ColumnModel.TableProperty as MibTable), m_operType);
+                                paradlg.ShowDialog();
+                            }
+                        }
+                        else
+                        {
+                            ModifySpecialProcess(info);
+                        }
+                        
 						return;
 					}
 				}
 
 				MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-				paraGrid.InitModifyParaSetGrid(info, m_selectDataGrid, (m_ColumnModel.TableProperty as MibTable), m_operType);
-				paraGrid.ShowDialog();
+                if(indexNum > 0)
+				    paraGrid.InitModifyParaSetGrid(info, m_selectDataGrid, (m_ColumnModel.TableProperty as MibTable), m_operType);
+                else
+                    paraGrid.InitModifyParaSetGrid(info, ((ObservableCollection<DyDataGrid_MIBModel>)this.DynamicDataGrid.DataContext)[0], (m_ColumnModel.TableProperty as MibTable), m_operType);
+                paraGrid.ShowDialog();
 
 				if (!paraGrid.bOK)
 				{
@@ -632,14 +653,23 @@ namespace SCMTMainWindow.View
 				}
 				else if (tbl.indexNum > 0)//弹出包含索引节点的窗口
 				{
-					MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
-					paraGrid.InitQueryParaSetGrid(info, tbl, m_operType);
-					paraGrid.ShowDialog();
-
-					if (!paraGrid.bOK)
-					{
-						return;
-					}
+                    if(m_selectDataGrid == null)
+                    {
+                        MainDataParaSetGrid paraGrid = new MainDataParaSetGrid(this);
+                        paraGrid.InitQueryParaSetGrid(info, tbl, m_operType);
+                        paraGrid.ShowDialog();
+                        return;
+                    }
+                    else
+                    {
+                        string strIndex = "";
+                        GetCurrentSelectIndex(ref strIndex);
+                        if (CommLinkPath.GetMibValueFromCmdExeResult(strIndex, info.m_cmdNameEn, ref dicMibToValue, CSEnbHelper.GetCurEnbAddr()))
+                        {
+                            QuerySuccessRefreshDataGrid(dicMibToValue, dicMibToOid, 0, "");
+                        }
+                    }
+					
 				}
 			}
 		}
@@ -768,10 +798,9 @@ namespace SCMTMainWindow.View
 			}
 
 			this.DynamicDataGrid.DataContext = null;
-			//if(count == 0)
-
 			this.DynamicDataGrid.DataContext = datalist;
-		}
+            this.DynamicDataGrid.CurrentItem = null;
+        }
 
 		/// <summary>
 		/// 获取行状态信息，用于右键删除指令
@@ -961,6 +990,7 @@ namespace SCMTMainWindow.View
 
 				this.DynamicDataGrid.DataContext = null;
 				this.DynamicDataGrid.DataContext = datalist;
+                this.DynamicDataGrid.CurrentItem = null;
 			}
 		}
 
@@ -1008,7 +1038,7 @@ namespace SCMTMainWindow.View
                 }
 
                 // 获取索引节点
-                if ("True".Equals(mibLeaf.IsIndex) && m_operType == 1 && bisIndex) // 只有添加时才获取索引
+                if ("True".Equals(mibLeaf.IsIndex) && (m_operType == 1 || m_operType == 4) && bisIndex) // 只有添加时才获取索引
                 {
                     strIndex += "." + strMibVal;
                     indexGrade++;
@@ -1177,7 +1207,12 @@ namespace SCMTMainWindow.View
                 return;
 
             if (string.IsNullOrWhiteSpace(strIndex))
-                GetCurrentSelectIndex(ref strIndex);
+            {
+                if (indexGrade > 0)
+                    GetCurrentSelectIndex(ref strIndex);
+                else
+                    strIndex = ".0";
+            }              
 
             ModelConvertToDic(datalist, ref indexGrade, ref strIndex, ref lineData,false);
             if (!AddAndModifyCmd(lineData, ref lmtPdu))
@@ -1273,6 +1308,8 @@ namespace SCMTMainWindow.View
             totalLineNum = LineDataList.Count;
             SetPageInfo();           
             tbkCurrentPage.Text = "1";
+            DynamicDataGrid.DataContext = null;
+            m_selectDataGrid = null;
         }
         /// <summary>
         /// 每页显示的行数改变时，需要重新设置总页数
