@@ -419,11 +419,13 @@ namespace NetPlan
                     opStack.Pop();
                 }
             }
-            Log.Info("test print _exprPolishList:");
+            Log.Debug("test print _exprPolishList:");
+            string printInfo = "****";
             foreach (string temp in exprPolishList)
             {
-                Log.Info("****"+ temp.ToString());
+                printInfo = printInfo + temp.ToString() + " ";
             }
+            Log.Debug(printInfo);
             return true;
         }       
 
