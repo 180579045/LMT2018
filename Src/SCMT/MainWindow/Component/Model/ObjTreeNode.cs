@@ -407,44 +407,49 @@ namespace SCMTMainWindow
 			main.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
 
 			var items = sender as MetroExpander;
+            ObjNode node;
+            node = items.obj_type as ObjNode;
 
-			// 清理掉之前填入的Children节点;
-			if (items != null)
+            // 清理掉之前填入的Children节点;
+            if ((items != null))
 			{
-				items.SubExpender.Children.Clear();
+                if(!(items.SubExpender is null))
+                {
+                    items.SubExpender.Children.Clear();
 
-				//Add By Mayi  修改选中节点的背景色
-				//if(selectedItem != null)
-				GetRoot(items);
-				items.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+                    //Add By Mayi  修改选中节点的背景色
+                    //if(selectedItem != null)
+                    GetRoot(items);
+                    items.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
 
-				// 将叶子节点加入右侧容器;
-				var node = items.obj_type as ObjNode;
-				if (null == node)
-					return;
+                    // 将叶子节点加入右侧容器;
+                    if (null == node)
+                        return;
 
-				if (node.SubObj_Lsit != null)
-				{
-					foreach (var iter in ((ObjNode)items.obj_type).SubObj_Lsit)
-					{
-						// 子节点如果是枝节点跳过;
-						if (iter is ObjTreeNode)
-						{
-							continue;
-						}
+                    if (node.SubObj_Lsit != null)
+                    {
+                        foreach (var iter in ((ObjNode)items.obj_type).SubObj_Lsit)
+                        {
+                            // 子节点如果是枝节点跳过;
+                            if (iter is ObjTreeNode)
+                            {
+                                continue;
+                            }
 
-						// 初始化对应的内容,并加入到容器中;
-						var subitems = new MetroExpander
-						{
-							Header = iter.ObjName,
-							obj_type = iter
-						};
+                            // 初始化对应的内容,并加入到容器中;
+                            var subitems = new MetroExpander
+                            {
+                                Header = iter.ObjName,
+                                obj_type = iter
+                            };
 
-						subitems.Click += iter.ClickObjNode;
-						items.SubExpender.Children.Add(subitems);
-					}
+                            subitems.Click += iter.ClickObjNode;
+                            items.SubExpender.Children.Add(subitems);
+                        }
 
-				}
+                    }
+                }
+				
 
 				// 该节点有对应的表可查;
 				if (node.ObjTableName != @"/")

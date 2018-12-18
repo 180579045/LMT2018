@@ -86,6 +86,7 @@
     </ApplicationDefinition>
     <Compile Include="AlarmTable.cs" />
     <Compile Include="AntennaArrayTypeTable.cs" />
+    <Compile Include="AntennaBfScanWeightTable.cs" />
     <Compile Include="AntennaCouplingCoeffctTable.cs" />
     <Compile Include="AntennaInfoParser.cs" />
     <Compile Include="AntennaWeightTable.cs" />

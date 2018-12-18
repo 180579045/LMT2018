@@ -267,6 +267,8 @@
       <DependentUpon>MainDataParaSetGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\NetPlanTemplateCanvas.cs" />
+    <Compile Include="View\ObjTree_MetroExpander.cs" />
+    <Compile Include="View\UCInterface\I_SCMT_BelongUserControl.cs" />
     <Compile Include="View\UeInfo.xaml.cs">
       <DependentUpon>UeInfo.xaml</DependentUpon>
     </Compile>

@@ -1,4 +1,8 @@
-﻿<Window x:Class="SnmpWindow.MainWindow"
+﻿<!--
+    这是SCMT新工具最最最初始版本，不要删除，留个纪念~~
+-->
+    
+<Window x:Class="SnmpWindow.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

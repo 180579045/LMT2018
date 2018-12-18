@@ -13,10 +13,12 @@ namespace RruAntAlarmError
         /// 天线阵厂家索引
         /// </summary>
         public string antArrayBfScanAntWeightVendorIndex { get; set; }
+        public string antArrayBfScanNotMibVendorName { get; set; }
         /// <summary>
         /// 天线阵型号索引
         /// </summary>
         public string antArrayBfScanAntWeightTypeIndex { get; set; }
+        public string antArrayBfScanNotMibTypeName { get; set; }
         /// <summary>
         /// 天线阵索引
         /// </summary>
