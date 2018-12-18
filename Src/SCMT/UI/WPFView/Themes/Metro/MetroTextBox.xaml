@@ -90,7 +90,7 @@
                         <Popup x:Name="popupHint" PlacementTarget="{Binding ElementName=PART_ContentHost}" AllowsTransparency="True" Focusable="False" Placement="RelativePoint" VerticalOffset="-42" HorizontalOffset="-14" PopupAnimation="Fade">
                             <Grid>
                                 <StackPanel Visibility="{TemplateBinding PopupHint, Converter={StaticResource StringToVisibility}}">
-                                    <Border x:Name="popupborder" CornerRadius="2" Background="{TemplateBinding BorderBrush}">
+                                    <Border x:Name="popupborder" CornerRadius="2" Background="CadetBlue">
                                         <Metro:MetroTextBlock x:Name="popupText" Text="{TemplateBinding PopupHint}" Margin="8,6" Foreground="#FFFFFFFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
                                     <Polygon x:Name="popuppolygon" Points="0,0 10,0 5,5 0,0" Fill="{TemplateBinding BorderBrush}" Margin="10,0,0,0"/>

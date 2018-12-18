@@ -5,9 +5,13 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace UICore.Controls.Metro
 {
+    /// <summary>
+    /// SCMT专用MetroExpander,分为左右两栏，左栏对象树/右栏保存收藏节点，叶子节点和搜索结果;
+    /// </summary>
     public class MetroExpander : ContentControl
     {
         public static readonly DependencyProperty IsExpandedProperty = ElementBase.Property<MetroExpander, bool>(nameof(IsExpandedProperty));
@@ -37,7 +41,7 @@ namespace UICore.Controls.Metro
         public object obj_type { get; set; }                       // 保存对象;
         public Grid NBContent_Grid { get; set; }                   // 显示内容的容器;
         public MetroScrollViewer NBBase_Grid { get; set; }         // 显示基本信息的容器;
-        
+
         public event EventHandler Click;
 
         //public event MouseButtonEventHandler RightClick;

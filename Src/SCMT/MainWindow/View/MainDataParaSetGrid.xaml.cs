@@ -200,7 +200,8 @@ namespace SCMTMainWindow.View
                 // 索引
                 int indexGrade = 0;
                 string strIndex = "";
-                m_MainDataGrid.ModelConvertToDic(datalist, ref indexGrade, ref strIndex, ref lineData,true);
+                if(datalist.Count > 0)
+                    m_MainDataGrid.ModelConvertToDic(datalist, ref indexGrade, ref strIndex, ref lineData,true);
 
                 if (m_CmdDataList.Count > 0)
                 {
@@ -660,7 +661,7 @@ namespace SCMTMainWindow.View
 
                         model.AddParaProperty("ParaValue", new DataGrid_Cell_MIB()
                         {
-                            m_Content = mibLeaf.defaultValue,
+                            m_Content = SnmpToDatabase.GetDefaultValue(mibLeaf),
                             oid = mibLeaf.childOid,
                             MibName_CN = mibLeaf.childNameCh,
                             MibName_EN = mibLeaf.childNameMib

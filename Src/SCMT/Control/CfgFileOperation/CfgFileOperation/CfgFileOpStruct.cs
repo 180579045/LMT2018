@@ -1184,6 +1184,16 @@ namespace CfgFileOpStruct
             u16RecLen = 0;
             u32RecNum = 0;
         }
+        public object DeepCopy()
+        {
+            StruCfgFileTblInfo s = new StruCfgFileTblInfo("init");
+            s.u16DataFmtVer = this.u16DataFmtVer;
+            Array.Copy(s.u8TblName, this.u8TblName, this.u8TblName.Length); 
+            s.u16FieldNum = this.u16FieldNum;
+            s.u16RecLen = this.u16RecLen;
+            s.u32RecNum = this.u32RecNum;
+            return s;
+        }
         /// <summary>
         /// 把 Struct DataHead 中的参数转化成byte[]串
         /// </summary>

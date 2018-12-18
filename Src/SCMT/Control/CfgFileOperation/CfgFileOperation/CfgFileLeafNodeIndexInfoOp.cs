@@ -30,6 +30,14 @@ namespace CfgFileOperation
                 RecorNum *= m_struIndex[i].indexNum;
             return RecorNum;
         }
+        public object DeepCopy()
+        {
+            CfgFileLeafNodeIndexInfoOp s = new CfgFileLeafNodeIndexInfoOp();
+            s.indexNo = this.indexNo;
+            
+
+            return s;
+        }
     }
     //索引结构体
     struct struIndexInfoCFG
@@ -101,7 +109,21 @@ namespace CfgFileOperation
             typeSize = new StruCfgFileFieldInfo().Get_u16FieldLen(strIndexOMType, leafRow["MIBVal_AllList"].ToString(), leafRow["MIB_Syntax"].ToString());
             mibName = leafRow["MIBName"].ToString();
         }
-
+        public object DeepCopy()
+        {
+            struIndexInfoCFG s = new struIndexInfoCFG();
+            s.indexNum = this.indexNum;
+            s.IndexMinValue = this.IndexMinValue;
+            s.bEnumIndex = this.bEnumIndex;
+            s.pEnumIndexValue = new uint[this.pEnumIndexValue.Count()];
+            Array.Copy(s.pEnumIndexValue, this.pEnumIndexValue, this.pEnumIndexValue.Length);
+            s.strIndexOMType = this.strIndexOMType;
+            s.typeSize = this.typeSize;
+            s.strDefaultValue = this.strDefaultValue;
+            s.asnType = this.asnType;
+            s.mibName = this.mibName;
+            return s;
+        }
         /// <summary>
         /// type: BITS,为indexNum IndexMinValue 赋值
         /// </summary>

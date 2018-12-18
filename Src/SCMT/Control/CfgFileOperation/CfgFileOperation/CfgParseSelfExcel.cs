@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,35 +32,39 @@ namespace CfgFileOperation
         /// <param name="strExcelPath"></param>
         /// <param name="strFileToDirectory"></param>
         /// <param name="strUeType"></param>
-        public void ProcessingExcel(string strExcelPath, string strFileToDirectory, string strCondition, CfgOp cfgOp)
+        public bool ProcessingExcel(BinaryWriter bw, string strExcelPath, string strFileToDirectory, string strCondition, CfgOp cfgOp)
         {
             if ((String.Empty == strExcelPath) || (String.Empty == strFileToDirectory) || (null == cfgOp))
-                return;
-
-            //CfgExcelOp excelOp = new CfgExcelOp();
-            //var excelOp = CfgExcelOp.GetInstance();
-
-            //strExcelPath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\123\\RecList_V6.00.50.05.40.07.01.xls";
-            //Excel.Workbook wbook = excelOp.OpenExcel(strExcelPath);
-            //if (wbook == null)
-            //    return;
+                return false;
 
             // "init" 页
             if (0 == String.Compare("init", strCondition, true)) // 不区分大小写，相等
             {
-                //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strCondition);//
-                //if (wks == null)
-                //    return;
                 ExportSelfExcelForInit(strExcelPath, strCondition, cfgOp);
             }
             // "patch" 页
             else if (0 == String.Compare("patch", strCondition, true))
             {
-                //Excel.Worksheet wks = excelOp.ReadExcelSheet(strExcelPath, strCondition);//
-                //if (wks == null)
-                //    return;
-                ExportSelfExcelForPatch(strExcelPath, strCondition, cfgOp);
+                ExportSelfExcelForPatch(bw, strExcelPath, strCondition, cfgOp);
             }
+            return true;
+        }
+        /// <summary>
+        /// 总体处理 reclist
+        /// </summary>
+        /// <param name="strExcelPath"></param>
+        /// <param name="strFileToDirectory"></param>
+        /// <param name="strUeType"></param>
+        public bool ProcessingExcel5G(BinaryWriter bw, string strExcel, string strFile, string strCon, CfgOp cfgOp, CfgParseReclistExcel5G reclist)
+        {
+            if ((String.Empty == strExcel) || (String.Empty == strFile) || (null == reclist))
+                return false;
+            // "patch" 页
+            if (0 == String.Compare("patch", strCon, true))
+            {
+                ExportSelfExcelForPatch5G(bw, strExcel, strFile, cfgOp, reclist);
+            }
+            return true;
         }
 
         /// <summary>
@@ -107,14 +112,14 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="wks"></param>
         /// <param name="cfgOp"></param>
-        void ExportSelfExcelForPatch(string FilePath, string sheetName, CfgOp cfgOp)
+        bool ExportSelfExcelForPatch(BinaryWriter bw, string FilePath, string sheetName, CfgOp cfgOp)
         {
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = GetEndLineNum(FilePath, sheetName);                     // 获取行数
             if (-1 == rowCount)
             {
-                //bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
-                return;// false;
+                bw.Write(String.Format("Err:ExportSelfExcelForPatch ({0}):({1}), get row count err.", FilePath, sheetName).ToArray());
+                return false;
             }
             Dictionary<string, object[,]> ColVals = GetSheetColInfos(FilePath, sheetName, rowCount);  // 获取所有sheet 每col的数据
             string strCurTableName = "";                                              // 保存当前表名
@@ -133,8 +138,7 @@ namespace CfgFileOperation
                 // 标记 表名和实例信息
                 if (0 != String.Compare("", Index, true))
                 {
-                    //cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               // 增加要写Patch的表名
-                    cfgOp.m_reclistExcel5G.InsertPdgTab(strCurTableName, "1");        // 增加要写Patch的表名
+                    cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               // 增加要写Patch的表名
                     if (0 == String.Compare("-1", Index, true))                       // 索引 == -1 相关的处理
                     {
                         PatchNeedWritePatchTable(cfgOp, strCurTableName);             // 需要做补丁文件的表名和表下面的节点     
@@ -148,6 +152,56 @@ namespace CfgFileOperation
                     strCurIndex, NodeName, NodeValue))
                     continue;
             }
+            return true;
+        }
+
+        /// <summary>
+        /// patch页的处理，用于制作nb_patch.cfg
+        /// </summary>
+        /// <param name="wks"></param>
+        /// <param name="cfgOp"></param>
+        bool ExportSelfExcelForPatch5G(BinaryWriter bw, string FilePath, string sheetName, CfgOp cfgOp, CfgParseReclistExcel5G reclist)
+        {
+            var excelOp = CfgExcelOp.GetInstance();
+            int rowCount = GetEndLineNum(FilePath, sheetName);                     // 获取行数
+            if (-1 == rowCount)
+            {
+                bw.Write(String.Format("Err:ExportSelfExcelForPatch ({0}):({1}), get row count err.", FilePath, sheetName).ToArray());
+                return false;
+            }
+            Dictionary<string, object[,]> ColVals = GetSheetColInfos(FilePath, sheetName, rowCount);  // 获取所有sheet 每col的数据
+            string strCurTableName = "";                                              // 保存当前表名
+            string strCurIndex = "";                                                  // 保存当前索引
+            for (int currentLine = 2; currentLine < rowCount + 1; currentLine++)      // 逐行分析
+            {
+                if (!IsExistTableName(cfgOp, ColVals, currentLine))                 // 判断 : 查看是否有这个表
+                    break;//
+
+                string TableName = GetCellValue(ColVals, currentLine, "TableName");   // 表名
+                string Index = GetCellValue(ColVals, currentLine, "Index");           // 索引
+                string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     // 叶子名
+                string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   // 叶子值
+                strCurTableName = SetCurTableName(TableName, strCurTableName);        // 更新表名
+
+                // 标记 表名和实例信息
+                if (0 != String.Compare("", Index, true))
+                {
+                    //cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);             // 增加要写Patch的表名
+                    reclist.InsertPdgTab(strCurTableName, "1", cfgOp);                // 增加要写Patch的表名
+                    if (0 == String.Compare("-1", Index, true))                       // 索引 == -1 相关的处理
+                    {
+                        PatchNeedWritePatchTable(cfgOp, strCurTableName, reclist);             // 需要做补丁文件的表名和表下面的节点     
+                        continue;
+                    }
+                    else                                                              // 索引 剩下的不为空 相关处理
+                        strCurIndex = SetCurIndex(Index, strCurIndex);                // 更新索引
+                }
+
+                if (!WriteValueToBuffer(reclist.GetReclistTableByName(strCurTableName).tableInfo,        // 更新节点值
+                    strCurIndex, NodeName, NodeValue))
+                    continue;
+            }
+            return true;
         }
 
         /// <summary>
@@ -158,8 +212,7 @@ namespace CfgFileOperation
         void PatchNeedWritePatchTable(CfgOp cfgOp, string strCurTableName)
         {
             //需要做补丁文件的表名
-            //cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               //增加要写Patch的表名
-
+            cfgOp.m_reclistExcel.InsertPdgTab(strCurTableName);               //增加要写Patch的表名
             //需要做补丁文件的表下面的节点
             List<CfgTableInstanceInfos> m_cfgInsts = cfgOp.m_mapTableInfo[strCurTableName].m_cfgInsts;//实例
             List<CfgFileLeafNodeOp> m_LeafNodes = cfgOp.m_mapTableInfo[strCurTableName].m_LeafNodes;  //节点;
@@ -170,6 +223,28 @@ namespace CfgFileOperation
                 {
                     string strMibName = leafNode.m_struMibNode.strMibName;
                     cfgOp.m_mapTableInfo[strCurTableName].InsertInstOrLeaf(strInstIndex, strMibName);
+                }
+            }
+        }
+        /// <summary>
+        /// 5G 
+        /// </summary>
+        /// <param name="cfgOp"></param>
+        /// <param name="strCurTableName"></param>
+        /// <param name="reclist"></param>
+        void PatchNeedWritePatchTable(CfgOp cfgOp, string strCurTableName, CfgParseReclistExcel5G reclist)
+        {
+            //需要做补丁文件的表名
+            reclist.InsertPdgTab(strCurTableName, "1", cfgOp);//增加要写Patch的表名
+            //需要做补丁文件的表下面的节点
+            ReclistTable recTable = reclist.GetReclistTableByName(strCurTableName);
+            if (null == recTable)
+                return;
+            foreach (var cfgInst in recTable.tableInfo.m_cfgInsts)//实例
+            {
+                foreach (var leafNode in recTable.tableInfo.m_LeafNodes)//节点;
+                {
+                    recTable.AddLeafNameByIndex(cfgInst.GetInstantNum(), leafNode.m_struMibNode.strMibName);
                 }
             }
         }
@@ -229,7 +304,7 @@ namespace CfgFileOperation
             }
             return true;
         }
-
+        
         /// <summary>
         /// 判断是否结束行
         /// </summary>

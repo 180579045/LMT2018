@@ -26,7 +26,19 @@ namespace CfgFileOperation
             m_struMibNode.SetAllParmsInfo(leafRow);// 叶子节点 StruMibNode m_struMibNode
         }
         private CfgFileLeafNodeOp() { }
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public object DeepCopy()
+        {
+            CfgFileLeafNodeOp s = new CfgFileLeafNodeOp();
+            s.m_struFieldInfo = (StruCfgFileFieldInfo)this.m_struFieldInfo.DeepCopy();
+            s.m_struMibNode = (StruMibNode)this.m_struMibNode.DeepCopy();
+            return s;
+        }
+
+
     }
 
     /// <summary>
@@ -521,6 +533,19 @@ namespace CfgFileOperation
         {
             return bytes;
         }
+
+        public object DeepCopy()
+        {
+            StruCfgFileFieldInfo s = new StruCfgFileFieldInfo("init");
+            s.u16FieldOffset = this.u16FieldOffset;
+            s.u16FieldLen = this.u16FieldLen;
+            s.u8FieldType = this.u8FieldType;
+            s.u8FieldTag = this.u8FieldTag;
+            s.u8SaveTag = this.u8SaveTag;
+            s.u8ConfigFlag = this.u8ConfigFlag;
+            Array.Copy(s.u8FieldName, this.u8FieldName, this.u8FieldName.Length);
+            return s;
+        }
     }
 
     /// <summary>
@@ -568,29 +593,41 @@ namespace CfgFileOperation
             //m_bIsTrigger = false;
         }
 
-
+        public object DeepCopy()
+        {
+            StruMibNode s = new StruMibNode();
+            s.strMibName = this.strMibName;//MibTree的MibName
+            s.strMibDefValue = this.strMibDefValue;//Mib的默认值
+            s.strMIBVal_AllList = this.strMIBVal_AllList;//
+            s.strMibSyntax = this.strMibSyntax;
+            s.strChFriendName = this.strChFriendName; //2009-11-24 张新发添加，中文友好名
+            s.strOID = this.strOID;//MibTree的OID
+            s.strOMType = this.strOMType;//OMType字段2010-03-26 by cuidairui 
+            s.strMibDesc = this.strMibDesc;//对应MibTree节点的MIBDesc字段的'('左侧的部分
+            return s;
+        }
         /// <summary>
         /// 
         /// </summary>
         //MacroDefinition.USERPRIVILEGE m_enumMibVisibleLevel;//该Mib节点的权限，对应MibTree的ICFWritAble字段
         //uint u32InstNum;//MibTree节点的InstanceNum字段，如果值>1，则说明该节点是数组---add by cuidairui 2009--08-04
         //MacroDefinition.ENUM_MIBVALUETYPE enumMibValueType;//对应MibTree节点的MIB_Syntax字段，表示该节点的参数类型---add by yuxiaowei 2009--08-03
-        
+
         //bool bIsBitSegParent;//对应MibTree节点的IsBitsegParent字段，标识是不是位段的父节点---add by cuidairui 2009--08-04
         //int nBasicDataTypeLen;//对数组等有用，表示基本数据元的类型，根据OMType获取 //于晓伟 2009-11-09添加
         //long u32MemSize;//对应MibTree节点的MemSize字段，标识该节点所占内存的大小（以bit为单位）--add by cuidairui 2009-08-04
         //byte u8BitSegStartOffset;//对应MibTree节点的BitSegStartOffset字段，如果是位段的话，标识位段在父节点中的起始位置--add by cuidairui 2009-08-04
-        
-        
-        
+
+
+
 
         ////在参数设置对话框中用户设置的值，其初始值应该为strMibDefValue，作为节点初始值
         //string strSelectedValue;
 
         //string strMIBVal_List;//MibTree节点的取值范围
-        
+
         //string strParentOID;//MibTree节点的父节点的OID
-        
+
         //string strMibTotalDesc;//对应MibTree节点的MIBDesc字段------add by cuidairui 2009-08-06
         //string strTableName;//本节点所属的表名
         //string strEqualObj;//等同对象
@@ -605,8 +642,8 @@ namespace CfgFileOperation
         //MacroDefinition.MibNodeType nodeType;
         //string strUnit;
         //string strMMLName;//MMLName字段add by cuidairui 2009-10-30
-        
-        
+
+
         //bool bIsMib;//是否是Mib节点(对应着MibTree中IsMIB字段)
         //string strMibWriteAble;//Mib节点读写权限(对应着MibTree的ICFWriteAble列)
 
