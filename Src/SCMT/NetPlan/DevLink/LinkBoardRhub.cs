@@ -1,20 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using LogManager;
+using System.Collections.Generic;
 using System.Linq;
-using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
-	public sealed class LinkBoardRhub : NetPlanLinkBase
+	internal sealed class LinkBoardRhub : NetPlanLinkBase
 	{
-		public LinkBoardRhub() : base()
+		public LinkBoardRhub()
 		{
 			m_irRecordType = EnumDevType.board_rru;
 		}
 
 		#region 虚函数重载
 
-		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -25,7 +24,7 @@ namespace NetPlan.DevLink
 			}
 
 			var rhubClone = m_rhubDev.DeepClone();
-			if (!ResetBoardInfoInRhub(rhubClone, m_nRhubPort))
+			if (!ResetBoardInfoInRhub(rhubClone))
 			{
 				MibInfoMgr.ErrorTip("删除连接失败，原因：重置rhub设备中板卡信息失败");
 				return false;
@@ -76,7 +75,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -151,7 +150,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			var boardIndex = wholeLink.GetDevIndex(EnumDevType.board);
 			if (null == boardIndex)
@@ -242,7 +241,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -254,7 +253,7 @@ namespace NetPlan.DevLink
 			return GetDevAttributeInfo(m_strIrRecodeIndex, m_irRecordType);
 		}
 
-		private bool ResetBoardInfoInRhub(DevAttributeInfo rhub, int nRhubPort)
+		private bool ResetBoardInfoInRhub(DevAttributeInfo rhub)
 		{
 			var bbi = new BoardBaseInfo();
 			return SetBoardBaseInfoInRhub(bbi, rhub) && SetOfpLinkInfoInRhub(rhub, -1);
@@ -335,6 +334,7 @@ namespace NetPlan.DevLink
 		/// <summary>
 		/// 更新和rhub相连的pico信息
 		/// </summary>
+		/// <param name="bbi">bbu基本信息</param>
 		/// <param name="rruList"></param>
 		/// <param name="picoList">出参，保存原来map中的pico设备</param>
 		/// <param name="newPico">出参，保存clone的pico设备</param>
@@ -397,7 +397,6 @@ namespace NetPlan.DevLink
 		}
 
 		#endregion 虚函数重载
-
 
 		#region 静态接口区
 
@@ -642,8 +641,7 @@ namespace NetPlan.DevLink
 			{
 				if (null == m_mapParsedRhub[key])
 				{
-					var listRru = new List<ParsedRruInfo>();
-					listRru.Add(element);
+					var listRru = new List<ParsedRruInfo> {element};
 					m_mapParsedRhub[key] = listRru;
 				}
 				else
@@ -676,7 +674,7 @@ namespace NetPlan.DevLink
 			}
 
 			var nextRruUpLinePort = curRhubInfo.nRruIrPort;      // 上联口
-																// rru级联必然是上级rru的下联口连接到下级rru的上联口
+																 // rru级联必然是上级rru的下联口连接到下级rru的上联口
 
 			var prevEndpoint = new LinkEndpoint
 			{
@@ -722,7 +720,7 @@ namespace NetPlan.DevLink
 
 		private static Dictionary<string, List<ParsedRruInfo>> m_mapParsedRhub;
 
-		#endregion
+		#endregion 静态接口区
 
 		#region 私有数据区
 
@@ -737,7 +735,7 @@ namespace NetPlan.DevLink
 		private int m_nBoardPort;
 		private int m_nRhubPort;
 
-		private EnumDevType m_irRecordType;
+		private readonly EnumDevType m_irRecordType;
 
 		#endregion 私有数据区
 	}

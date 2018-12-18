@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
@@ -12,22 +11,22 @@ namespace NetPlan
 
 		#region 公共接口
 
-		public virtual bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
+		public virtual bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			return null;
 		}
@@ -144,7 +143,7 @@ namespace NetPlan
 			return null;
 		}
 
-		protected static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType type, DevAttributeInfo newDev)
+		protected static bool AddDevToMap(NPDictionary mapData, EnumDevType type, DevAttributeInfo newDev)
 		{
 			if (null == mapData || type == EnumDevType.unknown || null == newDev)
 			{
@@ -296,9 +295,7 @@ namespace NetPlan
 
 		#region 私有数据区
 
-		private readonly object m_syncObj = new object();
-
-		public MAP_DEVTYPE_DEVATTRI mapOriginData;
+		public NPDictionary mapOriginData;
 
 		protected string m_strLatestError;
 

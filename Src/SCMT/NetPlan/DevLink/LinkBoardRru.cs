@@ -1,24 +1,21 @@
-﻿using System;
+﻿using LogManager;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
 	// 专门处理board与rru之间的连接
 	public class LinkBoardRru : NetPlanLinkBase
 	{
-		public LinkBoardRru() : base()
+		public LinkBoardRru()
 		{
 			m_irRecordType = EnumDevType.board_rru;
 		}
 
 		#region 虚函数区
 
-		public override bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -55,7 +52,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 			if (!CheckLinkIsValid(wholeLink, mapMibInfo, RecordNotExistInAdd))
@@ -95,7 +92,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -107,7 +104,7 @@ namespace NetPlan.DevLink
 			return GetDevAttributeInfo(m_irRecordIndex, m_irRecordType);
 		}
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			if (null == wholeLink || null == mapMibInfo || mapMibInfo.Count == 0)
 			{
@@ -169,9 +166,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-
-		#endregion
-
+		#endregion 虚函数区
 
 		#region 静态接口
 
@@ -345,7 +340,7 @@ namespace NetPlan.DevLink
 			//	return false;
 			//}
 
-			AddElementToParsedRruList(parsedRru);		// 先保存起来，最后统一处理
+			AddElementToParsedRruList(parsedRru);       // 先保存起来，最后统一处理
 
 			return null;
 		}
@@ -439,8 +434,7 @@ namespace NetPlan.DevLink
 			{
 				if (null == m_mapParsedRru[key])
 				{
-					var listRru = new List<ParsedRruInfo>();
-					listRru.Add(element);
+					var listRru = new List<ParsedRruInfo> {element};
 					m_mapParsedRru[key] = listRru;
 				}
 				else
@@ -475,8 +469,7 @@ namespace NetPlan.DevLink
 
 		private static Dictionary<string, List<ParsedRruInfo>> m_mapParsedRru;
 
-		#endregion
-
+		#endregion 静态接口
 
 		#region 私有函数
 
@@ -513,7 +506,7 @@ namespace NetPlan.DevLink
 			return SetBoardBaseInfoInRru(bbi, rruDev, nRruPort) && SetRruOfpInfo(rruDev, nRruPort, -1);
 		}
 
-		#endregion
+		#endregion 私有函数
 
 		#region 私有数据区
 
@@ -522,12 +515,8 @@ namespace NetPlan.DevLink
 		private DevAttributeInfo m_rruDev;
 		private int m_nBoardPort;
 		private int m_nRruPort;
-		private EnumDevType m_irRecordType;
+		private readonly EnumDevType m_irRecordType;
 
-		#endregion
-
+		#endregion 私有数据区
 	}
-
-
-
 }

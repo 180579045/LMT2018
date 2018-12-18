@@ -1,22 +1,16 @@
-﻿using System;
+﻿using CommonUtility;
+using LogManager;
+using MsgQueue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CommonUtility;
-using DataBaseUtil;
-using LinkPath;
-using LogManager;
-using MsgQueue;
-using NetPlan.DevLink;
-using SCMTOperationCore.Elements;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
 	// MIB信息管理类，单例
 	public class MibInfoMgr : Singleton<MibInfoMgr>
 	{
-		public delegate string GetMibValue(string strOriginValue, string strLatestValue);
 
 		#region 公共接口
 
@@ -25,7 +19,7 @@ namespace NetPlan
 		/// 调用时机：打开网规页面初始化成功后
 		/// </summary>
 		/// <returns></returns>
-		public MAP_DEVTYPE_DEVATTRI GetAllEnbInfo()
+		public NPDictionary GetAllEnbInfo()
 		{
 			lock (_syncObj)
 			{
@@ -94,14 +88,14 @@ namespace NetPlan
 		{
 			lock (_syncObj)
 			{
-				return m_linkMgr.ParseLinksFromMibInfo(m_mapAllMibData);
+				return _mLinkParser.ParseLinksFromMibInfo(m_mapAllMibData);
 			}
 		}
 
 		/// 获取所有的连接信息
 		public Dictionary<EnumDevType, List<WholeLink>> GetLinks()
 		{
-			return m_linkMgr.GetAllLink();
+			return _mLinkParser.GetAllLink();
 		}
 
 		/// <summary>
@@ -445,8 +439,13 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				return handler.AddLink(wlink, ref m_mapAllMibData);
+				if (!handler.AddLink(wlink, m_mapAllMibData))
+				{
+					return false;
+				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -455,7 +454,7 @@ namespace NetPlan
 		/// <param name="mapData"></param>
 		/// <param name="devType"></param>
 		/// <param name="dev"></param>
-		public static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dev)
+		public static bool AddDevToMap(NPDictionary mapData, EnumDevType devType, DevAttributeInfo dev)
 		{
 			if (null == mapData || devType == EnumDevType.unknown || null == dev)
 			{
@@ -561,8 +560,13 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				return handler.DelLink(wlink, ref m_mapAllMibData);
+				if (!handler.DelLink(wlink, m_mapAllMibData))
+				{
+					return false;
+				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -629,7 +633,7 @@ namespace NetPlan
 		/// 下发网规信息
 		/// </summary>
 		/// <returns></returns>
-		private bool DistributeData(EnumDevType devType, MAP_DEVTYPE_DEVATTRI mapDataSource, bool bDlAntWcb = false)
+		private bool DistributeData(EnumDevType devType, NPDictionary mapDataSource, bool bDlAntWcb = false)
 		{
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
@@ -684,7 +688,8 @@ namespace NetPlan
 				}
 				else
 				{
-					item.SetDevRecordType(RecordDataType.Original);		// 下发成功的都设置为原始数据
+					item.AdjustLatestValueToOriginal();                 // 把latest value设置为original value
+					item.SetDevRecordType(RecordDataType.Original);     // 下发成功的都设置为原始数据
 				}
 
 				// 收尾处理
@@ -962,7 +967,7 @@ namespace NetPlan
 			lock (_syncObj)
 			{
 				m_mapAllMibData.Clear();
-				m_linkMgr.Clear();
+				_mLinkParser.Clear();
 			}
 		}
 
@@ -978,15 +983,14 @@ namespace NetPlan
 			ShowLogHelper.Show($"[网络规划] {strTip}", "SCMT", InfoTypeEnum.ENB_OTHER_INFO);
 		}
 
-
 		#endregion 公共接口
 
 		#region 私有接口
 
 		private MibInfoMgr()
 		{
-			m_mapAllMibData = new MAP_DEVTYPE_DEVATTRI();
-			m_linkMgr = new NetPlanLinkMgr();
+			m_mapAllMibData = new NPDictionary();
+			_mLinkParser = new NetPlanLinkParser();
 		}
 
 		/// <summary>
@@ -996,7 +1000,7 @@ namespace NetPlan
 		/// <param name="devType"></param>
 		/// <param name="strIndex"></param>
 		/// <returns></returns>
-		private static bool HasSameIndexDev(MAP_DEVTYPE_DEVATTRI mapMibInfo, EnumDevType devType, string strIndex)
+		private static bool HasSameIndexDev(NPDictionary mapMibInfo, EnumDevType devType, string strIndex)
 		{
 			if (!mapMibInfo.ContainsKey(devType)) return false;
 
@@ -1022,7 +1026,7 @@ namespace NetPlan
 		/// <param name="devType">设备类型</param>
 		/// <param name="dai">设备属性</param>
 		/// <param name="bDelReal">是否立即删除，不仅是设置记录类型</param>
-		public static void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
+		public static void DelDevFromMap(NPDictionary mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
 		{
 			if (null == mapData || null == dai)
 			{
@@ -1367,9 +1371,9 @@ namespace NetPlan
 
 		// 保存所有的网规MIB数据。开始保存的是从设备中查询回来的信息，如果对这些信息进行了修改、删除，就从这个数据结构中移动到对应的结构中
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
-		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
+		private NPDictionary m_mapAllMibData;
 
-		private readonly NetPlanLinkMgr m_linkMgr;
+		private readonly NetPlanLinkParser _mLinkParser;
 
 		private readonly object _syncObj = new object();
 

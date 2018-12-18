@@ -327,6 +327,7 @@ namespace NetPlan
 			return strLatestValue;
 		}
 
+		// todo 这里可能存在bug。
 		public string GetNeedUpdateValue(string strFieldName, bool bConvert = true)
 		{
 			if (string.IsNullOrEmpty(strFieldName))
@@ -367,6 +368,17 @@ namespace NetPlan
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// 下发参数成功后，把latest设置为original
+		/// </summary>
+		public void AdjustLatestValueToOriginal()
+		{
+			foreach (var item in m_mapAttributes)
+			{
+				item.Value.SetOriginalValueToLatest();
+			}
 		}
 
 		/// <summary>

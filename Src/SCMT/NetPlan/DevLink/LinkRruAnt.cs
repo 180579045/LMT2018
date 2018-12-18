@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
-	public class LinkRruAnt : NetPlanLinkBase
+	internal class LinkRruAnt : NetPlanLinkBase
 	{
 		#region 公共接口区
 
-		public override bool AddLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -55,7 +54,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -87,7 +86,7 @@ namespace NetPlan.DevLink
 		}
 
 		/// 验证两端连接的设备是否存在
-		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo, IsRecordExist checkExist)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			var strRruIndex = wholeLink.GetDevIndex(EnumDevType.rru);
 			if (null == strRruIndex)
@@ -152,7 +151,7 @@ namespace NetPlan.DevLink
 		/// <param name="wholeLink"></param>
 		/// <param name="mapMibInfo"></param>
 		/// <returns></returns>
-		public override DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -214,7 +213,7 @@ namespace NetPlan.DevLink
 		public static List<DevAttributeBase> GetRecordsByAntNo(string strAntNo, IReadOnlyList<DevAttributeInfo> listOriginData)
 		{
 			return (from item in listOriginData
-				let antNoInMib = item.GetNeedUpdateValue("netSetRRUPortAntArrayNo")
+				let antNoInMib = item.GetFieldOriginValue("netSetRRUPortAntArrayNo")
 				where null != antNoInMib && strAntNo == antNoInMib select item)
 				.Cast<DevAttributeBase>()
 				.ToList();
@@ -444,7 +443,7 @@ namespace NetPlan.DevLink
 		/// <returns></returns>
 		private bool SetRruLinkAntInfo(DevAttributeInfo record, string strValue)
 		{
-			var strAntNo = m_antDev.m_strOidIndex.Trim('.'); ;
+			var strAntNo = m_antDev.m_strOidIndex.Trim('.');
 			var strPathNo = m_nAntPort.ToString();
 			if ("-1" == strValue)
 			{

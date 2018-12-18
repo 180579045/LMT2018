@@ -103,11 +103,12 @@ namespace NetPlan
 			return true;
 		}
 
-		internal bool DistributeToEnb(DevAttributeBase dev, string strCmdName)
+		internal bool DistributeToEnb(DevAttributeBase dev, string strCmdName, string strRs)
 		{
 			var cmdInfo = SnmpToDatabase.GetCmdInfoByCmdName(strCmdName, m_strTargetIp);
 			if (null == cmdInfo)
 			{
+				Log.Error($"下发命令{strCmdName}失败，原因：获取命令信息失败");
 				return false;
 			}
 
@@ -116,22 +117,26 @@ namespace NetPlan
 			var leafInfoList = mibLeafInfoList as IList<MibLeaf> ?? mibLeafInfoList.ToList();
 			if (!leafInfoList.Any())
 			{
+				Log.Error($"下发命令{strCmdName}失败，原因：命令对应的MIB表节点为空");
 				return false;
 			}
 
-			var name2Value = dev.GenerateName2ValueMap(leafInfoList.ToList(), "4");
+			var name2Value = dev.GenerateName2ValueMap(leafInfoList.ToList(), strRs);
 			if (null == name2Value || name2Value.Count == 0)
 			{
 				Log.Error($"索引为{dev.m_strOidIndex}的设备生成name2value失败");
 				return false;
 			}
 
+			var tmp = $"目标索引为：{dev.m_strOidIndex},目标类型为：{dev.m_recordType.ToString()}";
 			var ret = CDTCmdExecuteMgr.CmdSetSync(strCmdName, name2Value, dev.m_strOidIndex, m_strTargetIp);
 			if (0 != ret)
 			{
-				Log.Error($"下发命令{strCmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+				Log.Error($"下发命令{strCmdName}失败，{tmp}。原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
 				return false;
 			}
+
+			Log.Debug($"下发命令{strCmdName}成功，{tmp}");
 
 			return true;
 		}
@@ -181,6 +186,90 @@ namespace NetPlan
 		{
 			var tmp = 0;
 			return listOriginVd.Where(item => int.TryParse(item.value, out tmp)).Sum(item => tmp);
+		}
+
+		protected bool PreDelAntSettingRecord(IReadOnlyList<DevAttributeBase> listRelateRas)
+		{
+			foreach (var item in listRelateRas)
+			{
+				// 此时需要两步操作：1.先下发修改，2.下发删除操作
+				if (item.m_recordType != RecordDataType.WaitDel)
+					continue;
+
+				NetDevLc.ResetNetLcConfig(item);
+				item.SetDevRecordType(RecordDataType.Modified);
+				if (!DistributeToEnb(item, "SetNetRRUAntennaLcID", "4"))
+				{
+					Log.Error($"索引为{item.m_strOidIndex}的天线阵安装规划表记录下发失败");
+					item.SetDevRecordType(RecordDataType.WaitDel);
+					return false;
+				}
+
+				item.SetDevRecordType(RecordDataType.WaitDel);
+
+				// 下发删除命令 todo 命令硬编码
+				if (!DistributeToEnb(item, "DelNetRRUAntennaSetting", "6"))
+				{
+					Log.Error($"索引为{item.m_strOidIndex}的天线阵安装规划表记录下发失败");
+					return false;
+				}
+
+				m_mapOriginData[EnumDevType.rru_ant].Remove((DevAttributeInfo)item);  // 此处直接删掉
+			}
+
+			return true;
+		}
+
+
+		protected DevAttributeBase GetDev(EnumDevType type, string strIndex)
+		{
+			if (string.IsNullOrEmpty(strIndex) || EnumDevType.unknown == type)
+			{
+				return null;
+			}
+
+			if (m_mapOriginData.ContainsKey(type))
+			{
+				var devList = m_mapOriginData[type];
+				return devList.FirstOrDefault(dev => dev.m_strOidIndex == strIndex);
+			}
+
+			Log.Error($"未找到索引为{strIndex}的{type.ToString()}设备");
+			return null;
+		}
+
+		/// <summary>
+		/// 模糊匹配索引。如以太网规划记录索引有5维，可以只传入前面的4维索引，找到所有符合条件的记录
+		/// </summary>
+		/// <param name="type"></param>
+		/// <param name="strPartIdx"></param>
+		/// <returns></returns>
+		protected List<DevAttributeBase> GetDevs(EnumDevType type, string strPartIdx)
+		{
+			var retList = new List<DevAttributeBase>();
+			if (string.IsNullOrEmpty(strPartIdx) || EnumDevType.unknown == type)
+			{
+				return retList;
+			}
+
+			Log.Debug($"[NetPlan] start search type = {type.ToString()} and part index = {strPartIdx} records");
+
+			if (m_mapOriginData.ContainsKey(type))
+			{
+				var devList = m_mapOriginData[type];
+				foreach (var dev in devList)
+				{
+					if (dev.m_strOidIndex.Contains(strPartIdx))		// todo 如果传入的部分索引太短，可能引起错误
+					{
+						Log.Debug($"[NetPlan] found index = {dev.m_strOidIndex} record ");
+						retList.Add(dev);
+					}
+				}
+			}
+
+			Log.Debug($"[NetPlan] search completed, result count : {retList.Count}");
+
+			return retList;
 		}
 
 		#endregion

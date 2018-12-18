@@ -1,25 +1,22 @@
-﻿using System;
+﻿using CommonUtility;
+using LogManager;
+using MIBDataParser;
+using MIBDataParser.JSONDataMgr;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
-using CommonUtility;
-using LmtbSnmp;
-using LogManager;
-using MIBDataParser;
-using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan
 {
 	public enum RecordDataType
 	{
-		Original = 1,		// 从enb中查到的原始值
-		NewAdd,			// 新增的信息
-		Modified,		// enb中查到的数据被修改
-		WaitDel			// enb中查到的数据被删除
+		Original = 1,       // 从enb中查到的原始值
+		NewAdd,         // 新增的信息
+		Modified,       // enb中查到的数据被修改
+		WaitDel         // enb中查到的数据被删除
 	}
 
 	public static class RdtHelper
@@ -37,15 +34,19 @@ namespace NetPlan
 				case RecordDataType.Original:
 					sct = EnumSnmpCmdType.Get;
 					break;
+
 				case RecordDataType.NewAdd:
 					sct = EnumSnmpCmdType.Add;
 					break;
+
 				case RecordDataType.Modified:
 					sct = EnumSnmpCmdType.Set;
 					break;
+
 				case RecordDataType.WaitDel:
 					sct = EnumSnmpCmdType.Del;
 					break;
+
 				default:
 					break;
 			}
@@ -60,12 +61,12 @@ namespace NetPlan
 	{
 		#region 公有属性
 
-		public EnumDevType m_enumDevType { get; set; }					// 设备类型枚举值
+		public EnumDevType m_enumDevType { get; set; }                  // 设备类型枚举值
 
-		#endregion
-
+		#endregion 公有属性
 
 		#region 公共接口
+
 		/// <summary>
 		/// 新增一个设备调用的构造函数
 		/// </summary>
@@ -161,7 +162,7 @@ namespace NetPlan
 			return true;
 		}
 
-		#endregion
+		#endregion 公共接口
 
 		#region 私有成员
 
@@ -268,7 +269,7 @@ namespace NetPlan
 			return true;
 		}
 
-		#endregion
+		#endregion 私有成员
 
 		//深拷贝
 		public new DevAttributeInfo DeepClone()
@@ -307,22 +308,16 @@ namespace NetPlan
 			m_strDevVersion = strDevVersion;
 		}
 
-		public RHubDevAttri(string strIndex, string strDevVersion)
-			: base(EnumDevType.rhub, strIndex)
-		{
-			m_strDevVersion = strDevVersion;
-		}
-
 		public string m_strDevVersion { get; }
 	}
 
 	// 连接的源端或者目的端
 	public class LinkEndpoint
 	{
-		public EnumDevType devType;		// 设备类型
-		public string strDevIndex;		// 设备索引
-		public EnumPortType portType;	// 端口类型
-		public int nPortNo;				// 端口号
+		public EnumDevType devType;     // 设备类型
+		public string strDevIndex;      // 设备索引
+		public EnumPortType portType;   // 端口类型
+		public int nPortNo;             // 端口号
 
 		public LinkEndpoint()
 		{
@@ -335,6 +330,43 @@ namespace NetPlan
 		public override string ToString()
 		{
 			return $"设备类型：{devType.ToString()},设备索引：{strDevIndex}，端口类型：{portType.ToString()}，端口号：{nPortNo}";
+		}
+
+		public override int GetHashCode()
+		{
+			var dtHc = devType.GetHashCode();
+			var diHc = strDevIndex.GetHashCode();
+			var ptHc = portType.GetHashCode();
+			var pnHc = nPortNo.GetHashCode();
+			return dtHc + diHc + ptHc + pnHc;
+		}
+
+		public override bool Equals(object obj)
+		{
+			var o = (LinkEndpoint)obj;
+			if (o == null)
+			{
+				return false;
+			}
+
+			return devType == o.devType && strDevIndex == o.strDevIndex && portType == o.portType &&
+				   nPortNo == o.nPortNo;
+		}
+
+		public bool IsMe(object obj)
+		{
+			var o = (LinkEndpoint)obj;
+			if (o == null)
+			{
+				return false;
+			}
+
+			return devType == o.devType && strDevIndex == o.strDevIndex && portType == o.portType;
+		}
+
+		public bool IsMe(EnumDevType dt, string strDevIdx, EnumPortType pt)
+		{
+			return strDevIndex != null && (devType == dt && strDevIndex.Equals(strDevIdx) && portType == pt);
 		}
 	}
 
@@ -356,6 +388,13 @@ namespace NetPlan
 			m_srcEndPoint = srcEndpoint;
 			m_dstEndPoint = dstEndpoint;
 			GetLinkType();
+		}
+
+		public WholeLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint, EnumDevType type)
+		{
+			m_srcEndPoint = srcEndpoint;
+			m_dstEndPoint = dstEndpoint;
+			m_linkType = type;
 		}
 
 		public EnumDevType GetLinkType()
@@ -450,7 +489,7 @@ namespace NetPlan
 			}
 
 			if (m_dstEndPoint.devType == devType &&
-			    m_dstEndPoint.portType == portType)
+				m_dstEndPoint.portType == portType)
 			{
 				return m_dstEndPoint.nPortNo;
 			}
@@ -458,10 +497,44 @@ namespace NetPlan
 			return -1;
 		}
 
-
 		public override string ToString()
 		{
 			return $"源端信息：{m_srcEndPoint},目的端信息：{m_dstEndPoint}";
+		}
+
+		/// <summary>
+		/// 除掉端口号的模糊匹配。
+		/// </summary>
+		/// <param name="devType"></param>
+		/// <param name="strDevIdx"></param>
+		/// <param name="portType"></param>
+		/// <returns></returns>
+		public bool IsContained(EnumDevType devType, string strDevIdx, EnumPortType portType)
+		{
+			return m_srcEndPoint.IsMe(devType, strDevIdx, portType) ||
+				   m_dstEndPoint.IsMe(devType, strDevIdx, portType);
+		}
+
+		public override bool Equals(object obj)
+		{
+			var anotherLink = (WholeLink)obj;
+			if (null == anotherLink)
+			{
+				return false;
+			}
+
+			if (m_linkType != anotherLink.m_linkType)
+			{
+				return false;
+			}
+
+			return (anotherLink.m_srcEndPoint == m_srcEndPoint && anotherLink.m_dstEndPoint == m_dstEndPoint) ||
+				   anotherLink.m_srcEndPoint == m_dstEndPoint && anotherLink.m_dstEndPoint == m_srcEndPoint;
+		}
+
+		public override int GetHashCode()
+		{
+			return m_dstEndPoint.GetHashCode() + m_srcEndPoint.GetHashCode();
 		}
 	}
 }

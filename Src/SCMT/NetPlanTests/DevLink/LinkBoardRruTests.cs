@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NetPlan.DevLink;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
 using MIBDataParser.JSONDataMgr;
+using NetPlan;
 
-namespace NetPlan.DevLink.Tests
+namespace NetPlan.Tests
 {
 	[TestClass()]
 	public class LinkBoardRruTests
@@ -55,7 +55,7 @@ namespace NetPlan.DevLink.Tests
 			Assert.IsNotNull(wholeLink);
 
 			var mapData = MibInfoMgr.GetInstance().GetAllEnbInfo();
-			result = btorLink.AddLink(wholeLink, ref mapData);
+			result = btorLink.AddLink(wholeLink, mapData);
 			Assert.IsTrue(result);
 		}
 	}

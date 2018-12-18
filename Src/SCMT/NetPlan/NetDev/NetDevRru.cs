@@ -3,7 +3,7 @@ using System.Linq;
 using CommonUtility;
 using LinkPath;
 using LogManager;
-using NetPlan.DevLink;
+using NetPlan;
 using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
@@ -42,12 +42,18 @@ namespace NetPlan
 			// 如果是删除的rru设备，先下发天线阵安装规划表
 			if (RecordDataType.WaitDel == dev.m_recordType)
 			{
-				if (!DisRelateRass(dev, m_mapOriginData))
+				if (!DisRelateRass(dev))
 				{
 					Log.Error($"和索引为{dev.m_strOidIndex}RRU设备相关的天线阵安装规划表下发失败");
 					return false;
 				}
 				Log.Debug($"和索引为{dev.m_strOidIndex}RRU设备相关的天线阵安装规划表下发成功");
+
+				if (!DistributeDownLinkRecord(dev))
+				{
+					Log.Error($"和索引为{dev.m_strOidIndex}RRU设备相关的IR口规划或以太网口规划下发失败");
+					return false;
+				}
 			}
 
 			// 特殊处理完成后，调用基类的函数下发rru的信息
@@ -63,8 +69,8 @@ namespace NetPlan
 		/// 从pico中查询连接的rhub的编号和端口号
 		/// </summary>
 		/// <param name="picoDev"></param>
-		/// <returns>key:pico连接rhub的端口号，value:rhub到pico的连接点信息</returns>
-		public static Dictionary<int, LinkEndpoint> GetLinkedRhubInfoFromPico(DevAttributeInfo picoDev)
+		/// <returns>key:pico连接rhub的端口号，value:rhub上的连接点信息</returns>
+		public static Dictionary<int, LinkEndpoint> GetLinkedRhubInfoFromPico(DevAttributeBase picoDev)
 		{
 			var rhubNoMib = "netRRUHubNo";
 			var rhubNo = picoDev.GetNeedUpdateValue(rhubNoMib);
@@ -105,6 +111,60 @@ namespace NetPlan
 			}
 
 			return epMap;
+		}
+
+		/// <summary>
+		/// 从rru属性中，找到连接的bbu的信息。 todo 小心级联的rru
+		/// </summary>
+		/// <param name="rruDev"></param>
+		/// <returns>null:rru没有连接到bbu;其他情况返回一个字典，key:rru的光口号，value:bbu端光口类型</returns>
+		public static Dictionary<int, LinkEndpoint> GetLinkedBbuPortEpFromRru(DevAttributeBase rruDev)
+		{
+			// 两种情况：1.先删除rru到bbu的连接，再删除rru，此时查到的值为-1；2.直接删除rru设备，此时能够查到bbu的信息
+			// 查询origin value，保证与基站中的一致，而不是使用latest value。
+			var boardTypeInRru = rruDev.GetFieldOriginValue("netRRUAccessBoardType");
+			if (null == boardTypeInRru || "-1" == boardTypeInRru)
+			{
+				// 说明rru没有连接到bbu  todo 部分数据下发失败，导致rru孤立的情况
+				return null;
+			}
+
+			// 级联模式的rru，连接的板卡的信息和第1级rru连接板卡信息一样
+			var resultMap = new Dictionary<int, LinkEndpoint>();
+
+			var rackNo = rruDev.GetFieldOriginValue("netRRUAccessRackNo");
+			var shelfNo = rruDev.GetFieldOriginValue("netRRUAccessShelfNo");
+			for (var i = 1; i <= MagicNum.RRU_TO_BBU_PORT_CNT; i++)
+			{
+				var slotMib = GetToBoardSlotMib(i);
+				var slotNo = rruDev.GetFieldOriginValue(slotMib);
+				if ("-1" == slotNo)
+				{
+					continue;
+				}
+
+				var ofpPortMib = GetToBoardOfpPortMib(i);
+				var ofpPort = rruDev.GetFieldOriginValue(ofpPortMib);
+				if ("-1" == ofpPort)
+				{
+					continue;
+				}
+
+				//var linePosMib = GetLinePosMib(i);		// todo 此处暂未考虑级联的rru
+
+				var boardIndex = $".{rackNo}.{shelfNo}.{slotNo}";
+				var endpoint = new LinkEndpoint
+				{
+					devType = EnumDevType.board,
+					strDevIndex = boardIndex,
+					portType = EnumPortType.bbu_to_rru,
+					nPortNo = int.Parse(ofpPort)
+				};
+
+				resultMap.Add(i, endpoint);
+			}
+
+			return resultMap;
 		}
 
 		#endregion
@@ -306,41 +366,146 @@ namespace NetPlan
 		/// <param name="waitDisDev"></param>
 		/// <param name="mapOriginData"></param>
 		/// <returns></returns>
-		private bool DisRelateRass(DevAttributeBase waitDisDev, MAP_DEVTYPE_DEVATTRI mapOriginData)
+		private bool DisRelateRass(DevAttributeBase waitDisDev)
 		{
-			if (!mapOriginData.ContainsKey(EnumDevType.rru_ant))
+			if (!m_mapOriginData.ContainsKey(EnumDevType.rru_ant))
 			{
 				return true;
 			}
 
 			var rruNo = waitDisDev.m_strOidIndex.Trim('.');
-			var listRas = mapOriginData[EnumDevType.rru_ant];
+			var listRas = m_mapOriginData[EnumDevType.rru_ant];
 			if (null == listRas || listRas.Count == 0)
 			{
 				return true;
 			}
 
 			var listRelateRas = LinkRruAnt.GetRecordsByRruNo(rruNo, listRas);
-			foreach (var item in listRelateRas)
-			{
-				// todo 如果RRU已经布配了本地小区，不允许直接删除RRU
-				// 此时需要两步操作：1.先下发修改，2.下发删除操作
-				if (item.m_recordType == RecordDataType.WaitDel)
-				{
-					NetDevLc.ResetNetLcConfig(item);
-					item.SetDevRecordType(RecordDataType.Modified);
-					if (!base.DistributeToEnb(item, "SetNetRRUAntennaLcID"))
-					{
-						Log.Error($"索引为{item.m_strOidIndex}的天线阵安装规划表记录下发失败");
-						item.SetDevRecordType(RecordDataType.WaitDel);
-						return false;
-					}
+			return PreDelAntSettingRecord(listRelateRas);
+		}
 
-					item.SetDevRecordType(RecordDataType.WaitDel);
+		/// <summary>
+		/// 下发和rru关联的ir口规划记录
+		/// </summary>
+		/// <param name="mapBoardLinkEp">和待删除RRU连接的board信息</param>
+		/// <returns></returns>
+		private bool DistributeRelateIrRecord(Dictionary<int, LinkEndpoint> mapBoardLinkEp)
+		{
+			if (null == mapBoardLinkEp)
+			{
+				return true;
+			}
+
+			foreach (var item in mapBoardLinkEp)
+			{
+				var irRecordIndex = $"{item.Value.strDevIndex}.{item.Value.nPortNo}";
+				var irRecord = GetDev(EnumDevType.board_rru, irRecordIndex);
+				if (null == irRecord)
+				{
+					continue;
 				}
+
+				if (irRecord.m_recordType != RecordDataType.WaitDel)
+				{
+					continue;
+				}
+
+				if (!DistributeToEnb(irRecord, "DelIROfpPortInfo", "6"))
+				{
+					Log.Error($"下发删除索引为{irRecord.m_strOidIndex}IR口规划操作失败");
+					return false;
+				}
+
+				m_mapOriginData[EnumDevType.board_rru].Remove((DevAttributeInfo)irRecord);
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// 下发和rru关联的以太网口规划记录
+		/// </summary>
+		/// <param name="mapRhubLinkEp"></param>
+		/// <returns></returns>
+		private bool DistributeRelateEthRecord(Dictionary<int, LinkEndpoint> mapRhubLinkEp, DevAttributeBase rruDev)
+		{
+			if (null == mapRhubLinkEp || mapRhubLinkEp.Count == 0)
+			{
+				return true;
+			}
+
+			foreach (var item in mapRhubLinkEp)
+			{
+				var rruPort = item.Key;
+				var slotMib = GetToBoardSlotMib(rruPort);
+				var slotNo = rruDev.GetFieldOriginValue(slotMib);
+				if (null == slotNo || "-1" == slotNo)
+				{
+					continue;
+				}
+
+				var ethRecordIdx = $".0.0.{slotNo}.{item.Value.strDevIndex.Trim('.')}.{item.Value.nPortNo}";
+				var ethRecord = GetDev(EnumDevType.rhub_prru, ethRecordIdx);
+				if (null == ethRecord || (ethRecord.m_recordType != RecordDataType.WaitDel))
+				{
+					continue;
+				}
+
+				if (!DistributeToEnb(ethRecord, "DelEthPortInfo", "6"))
+				{
+					Log.Error($"下发删除索引为{ethRecord.m_strOidIndex}以太网口规划信息失败");
+					return false;
+				}
+
+				m_mapOriginData[EnumDevType.rhub_prru].Remove((DevAttributeInfo)ethRecord);
+			}
+
+			return true;
+		}
+
+		/// <summary>
+		/// 下发和rru相关的南向连接（到rhub或bbu的连接）记录信息
+		/// </summary>
+		/// <param name="rruDev"></param>
+		/// <returns></returns>
+		private bool DistributeDownLinkRecord(DevAttributeBase rruDev)
+		{
+			var rruIndex = rruDev.m_strOidIndex;
+			int rruNo;
+			if (!int.TryParse(rruIndex.Trim('.'), out rruNo))
+			{
+				Log.Error($"待删除rru的索引值{rruIndex}无效，无法下发到rhub或bbu的连接");
+				return false;
+			}
+
+			//判断是否是pico设备
+			var bIsPico = NPERruHelper.GetInstance().IsPicoDevice(rruNo);
+			if (bIsPico)
+			{
+				var listEp = GetLinkedRhubInfoFromPico(rruDev);
+				return DistributeRelateEthRecord(listEp, rruDev);
+			}
+			else
+			{
+				var listEp = GetLinkedBbuPortEpFromRru(rruDev);
+				return DistributeRelateIrRecord(listEp);
+			}
+		}
+
+
+		private static string GetToBoardSlotMib(int i)
+		{
+			return (i == 1 ? "netRRUAccessSlotNo" : $"netRRUOfp{i}SlotNo");
+		}
+
+		private static string GetToBoardOfpPortMib(int i)
+		{
+			return $"netRRUOfp{i}AccessOfpPortNo";
+		}
+
+		private static string GetLinePosMib(int i)
+		{
+			return $"netRRUOfp{i}AccessLinePosition";
 		}
 
 		#endregion

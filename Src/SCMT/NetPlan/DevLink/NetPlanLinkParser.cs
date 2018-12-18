@@ -1,14 +1,12 @@
 ﻿using LogManager;
-using NetPlan.DevLink;
 using System.Collections.Generic;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
 	/// <summary>
-	/// 网规中连接的管理
+	/// 网规连接解析
 	/// </summary>
-	internal class NetPlanLinkMgr
+	internal class NetPlanLinkParser
 	{
 		#region 公共接口
 
@@ -25,7 +23,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="mapMibInfo"></param>
 		/// <returns></returns>
-		internal bool ParseLinksFromMibInfo(MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		internal bool ParseLinksFromMibInfo(NPDictionary mapMibInfo)
 		{
 			// 解析新的信息，删除旧的信息
 			Clear();
@@ -166,31 +164,9 @@ namespace NetPlan
 			}
 		}
 
-		internal NetPlanLinkMgr()
+		internal NetPlanLinkParser()
 		{
 			m_mapLinks = new Dictionary<EnumDevType, List<WholeLink>>();
-		}
-
-		/// <summary>
-		/// 增加连接到列表中
-		/// </summary>
-		/// <param name="linkType"></param>
-		/// <param name="linkList"></param>
-		internal void AddLinkToList(EnumDevType linkType, List<WholeLink> linkList)
-		{
-			lock (m_syncObj)
-			{
-				if (m_mapLinks.ContainsKey(linkType))
-				{
-					m_mapLinks[linkType].AddRange(linkList);
-				}
-				else
-				{
-					var listLink = new List<WholeLink>();
-					listLink.AddRange(linkList);
-					m_mapLinks[linkType] = listLink;
-				}
-			}
 		}
 
 		internal void AddLinkToList(EnumDevType linkType, WholeLink link)
@@ -212,6 +188,28 @@ namespace NetPlan
 		#endregion 公共接口
 
 		#region 私有数据区
+
+		/// <summary>
+		/// 增加连接到列表中
+		/// </summary>
+		/// <param name="linkType"></param>
+		/// <param name="linkList"></param>
+		private void AddLinkToList(EnumDevType linkType, List<WholeLink> linkList)
+		{
+			lock (m_syncObj)
+			{
+				if (m_mapLinks.ContainsKey(linkType))
+				{
+					m_mapLinks[linkType].AddRange(linkList);
+				}
+				else
+				{
+					var listLink = new List<WholeLink>();
+					listLink.AddRange(linkList);
+					m_mapLinks[linkType] = listLink;
+				}
+			}
+		}
 
 		private readonly Dictionary<EnumDevType, List<WholeLink>> m_mapLinks;
 

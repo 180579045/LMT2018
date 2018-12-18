@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
 	public static class LinkFactory
 	{
-		public static INetPlanLink CreateLinkHandler(EnumDevType linkType)
+		internal static INetPlanLink CreateLinkHandler(EnumDevType linkType)
 		{
 			INetPlanLink linkHandler = null;
 			switch (linkType)

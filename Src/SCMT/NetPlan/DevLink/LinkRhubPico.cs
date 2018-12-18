@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using LogManager;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
-	public sealed class LinkRhubPico : NetPlanLinkBase
+	internal sealed class LinkRhubPico : NetPlanLinkBase
 	{
-		public LinkRhubPico() : base()
+		public LinkRhubPico()
 		{
 			m_ethRecordType = EnumDevType.rhub_prru;
 		}
 
 		#region 虚函数区
 
-		public override bool AddLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -84,7 +84,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -135,7 +135,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo, IsRecordExist checkExist)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			var rhubIndex = wholeLink.GetDevIndex(EnumDevType.rhub);
 			if (null == rhubIndex)
@@ -182,7 +182,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override DevAttributeInfo GetRecord(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -215,7 +215,7 @@ namespace NetPlan.DevLink
 		/// <summary>
 		/// 增加rhub到pico之间的连接以太网连接
 		/// </summary>
-		public bool AddEthPlanRecord(DevAttributeInfo rhubDev, DevAttributeInfo picoDev, Dictionary<EnumDevType, List<DevAttributeInfo>> mapAllData)
+		public bool AddEthPlanRecord(DevAttributeInfo rhubDev, DevAttributeInfo picoDev, NPDictionary mapAllData)
 		{
 			if (!HasConnectedToBoard(rhubDev))
 			{
@@ -386,6 +386,12 @@ namespace NetPlan.DevLink
 			return link;
 		}
 
+
+		public static string GetRhubToPicoPort(DevAttributeBase ethRecord)
+		{
+			return ethRecord?.GetFieldOriginValue("netEthPortIndexOnHub");
+		}
+
 		#endregion
 
 
@@ -471,7 +477,7 @@ namespace NetPlan.DevLink
 		private static bool SetIrPortInfoInPico(DevAttributeInfo hubdev, DevAttributeInfo picoDev, int nPicoIrPort)
 		{
 			// 从hub设备中找到任何一个光口连接的板卡光口号
-			for (var i = 1; i < 5; i++)
+			for (var i = 1; i < MagicNum.RRU_TO_BBU_PORT_CNT; i++)
 			{
 				var mibName = $"netRHUBOfp{i}AccessOfpPortNo";
 				var value = hubdev.GetNeedUpdateValue(mibName);
@@ -487,6 +493,7 @@ namespace NetPlan.DevLink
 					continue;
 				}
 
+				// todo 下面是什么鬼操作
 				var picoSlotMib = $"netRRUOfp{nPicoIrPort}AccessOfpPortNo";
 				var picoAposMib = $"netRRUOfp{nPicoIrPort}AccessLinePosition";
 				picoDev.SetFieldLatestValue(picoSlotMib, value);
@@ -508,7 +515,7 @@ namespace NetPlan.DevLink
 		private DevAttributeInfo m_rhubDev;
 		private string m_strEthRecordIndex;
 
-		private EnumDevType m_ethRecordType;
+		private readonly EnumDevType m_ethRecordType;
 
 		#endregion 私有数据区
 	}
