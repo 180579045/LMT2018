@@ -28,7 +28,6 @@ namespace CfgFileOperation
         string m_strOID;                          //  OID
         bool m_isDyTable;                         //  是否是
 
-
         /// <summary>
         /// 叶子节点. string:MIBName, 
         /// </summary>
@@ -67,7 +66,38 @@ namespace CfgFileOperation
         //CDTMapTableInstInfo        m_mapInstInfo;   //索引和实例信息的映射
         //CDTCfgInsts m_cfgInsts;        //表实例
         //CDTIndexMibNodes m_MibNodes;        //读取数据库的信息
-
+        /// <summary>
+        /// 深度拷贝
+        /// </summary>
+        /// <returns></returns>
+        public object DeepCopy()
+        {
+            CfgTableOp s = new CfgTableOp();
+            // 9
+            s.u32CurTblOffset = this.u32CurTblOffset;
+            s.u32CurTblOffset_PDG = this.u32CurTblOffset_PDG;
+            s.m_isMibInfoInitial = this.m_isMibInfoInitial;
+            s.m_tabDimen = this.m_tabDimen;
+            s.m_dyTabContent = this.m_dyTabContent;
+            s.m_strChFriendName = this.m_strChFriendName;
+            s.m_strTableName = this.m_strTableName;
+            s.m_strOID = this.m_strOID;
+            s.m_isDyTable = this.m_isDyTable;
+            //
+            s.m_cfgFile_TblInfo = (StruCfgFileTblInfo)this.m_cfgFile_TblInfo.DeepCopy();
+            foreach (var leafnode in this.m_LeafNodes)
+            {
+                s.m_LeafNodes.Add((CfgFileLeafNodeOp)leafnode.DeepCopy());
+            }
+            //m_LeafNodes = new List<CfgFileLeafNodeOp>();
+            foreach (var inst in this.m_cfgInsts)
+            {
+                s.m_cfgInsts.Add((CfgTableInstanceInfos)inst.DeepCopy());
+            }
+            //m_cfgInsts = new List<CfgTableInstanceInfos>();
+            s.m_struIndex = (CfgFileLeafNodeIndexInfoOp)this.m_struIndex.DeepCopy() ;
+            return s;
+        }
         /*********************        reclist 解析后存在的变量                         ***************************/
         /// <summary>
         /// reclist 解析后存在的变量 用于记录补丁文件;
@@ -134,6 +164,27 @@ namespace CfgFileOperation
                 return false;
             }
         }
+        /// <summary>
+        /// 通过索引查找实例
+        /// </summary>
+        /// <param name="strIndex"></param>
+        /// <param name="InstInfoOp"></param>
+        /// <returns></returns>
+        public bool GetCfgInstsByIndexDeepCopy(string strIndex, out CfgTableInstanceInfos InstInfoOp, out int InstsPos)
+        {
+            InstsPos = m_cfgInsts.FindIndex(e => e.GetInstantNum() == strIndex);
+            if (InstsPos != -1)
+            {
+                InstInfoOp = (CfgTableInstanceInfos)m_cfgInsts[InstsPos].DeepCopy();// m_cfgInsts.Find(e => e.GetInstantNum() == strIndex);
+                return true;
+            }
+            else
+            {
+                InstInfoOp = null;
+                return false;
+            }
+        }
+
         /// <summary>
         /// 方便reclist修改指定值
         /// </summary>
@@ -272,7 +323,7 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="strTabName"></param>
         public void SetTabName(string strTabName){ m_strTableName = strTabName;}
-
+        
         /// <summary>
         /// 表实例,以字节的形式写入配置文件;(1.表头;2.叶子头;3.实例信息.)
         /// </summary>
