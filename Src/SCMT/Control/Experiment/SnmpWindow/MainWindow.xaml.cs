@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*----------------------------------------------------------------
+// Copyright (C) 2017 大唐移动通信设备有限公司 版权所有;
+//
+// 文件名：MainWindow.xaml.cs
+// 文件功能描述：这是SCMT新工具最最最初始版本，不要删除，留个纪念~~
+// 创建人：郭亮;
+// 版本：V1.0
+// 创建时间：2017-7-19
+//----------------------------------------------------------------*/
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
