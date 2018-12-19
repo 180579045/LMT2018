@@ -32,7 +32,7 @@ namespace UTestForAll.Tests
 		public void CheckMacAddrTest()
 		{
 
-			bool rs = SnmpMibUtil.CheckMacAddr("dd");
+			//bool rs = SnmpMibUtil.CheckMacAddr("dd");
 
 			Debug.WriteLine("=======");
 		}
