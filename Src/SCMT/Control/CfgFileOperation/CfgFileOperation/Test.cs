@@ -1782,8 +1782,8 @@ namespace CfgFileOperation
             //selfEx.ProcessingExcel(excelPath, strFileToDirectory, "init", cfgOp);
             //selfEx.ProcessingExcel(excelPath, strFileToDirectory, "patch", cfgOp);
             cfgOp.m_selfExcel = new CfgParseSelfExcel();
-            cfgOp.m_selfExcel.ProcessingExcel(excelPath, strFileToDirectory, "init", cfgOp);
-            cfgOp.m_selfExcel.ProcessingExcel(excelPath, strFileToDirectory, "patch", cfgOp);
+            cfgOp.m_selfExcel.ProcessingExcel(bw, excelPath, strFileToDirectory, "init", cfgOp);
+            cfgOp.m_selfExcel.ProcessingExcel(bw, excelPath, strFileToDirectory, "patch", cfgOp);
         }
 
         void testForReadRecList()

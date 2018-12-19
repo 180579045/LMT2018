@@ -72,38 +72,6 @@ namespace CfgFileOperation
             return pMapMibNodeByName[strNodeName].nIndexNum;
         }
 
-        /// <summary>
-        /// 连接获取数据库信息
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="sqlContent"></param>
-        /// <returns></returns>
-        //private DataSet RecordByAccessDb(string fileName, string sqlContent)
-        //{
-        //    DataSet dateSet = null;
-        //    AccessDBManager mdbData = null;//fileName = "D:\\C#\\SCMT\\lm.mdb";
-        //    try
-        //    {
-        //        dateSet = new DataSet();
-        //        mdbData = new AccessDBManager(fileName);
-
-        //        mdbData.Open();
-        //        dateSet = mdbData.GetDataSet(sqlContent);
-        //        mdbData.Close();
-        //    }
-        //    catch
-        //    {
-        //        dateSet = null;
-        //        mdbData = null;
-        //        Console.WriteLine(String.Format("RecordByAccessDb err, fileName({0}), sqlContent({1})", fileName, sqlContent));
-        //    }
-        //    finally
-        //    {
-        //        mdbData = null;
-        //    }
-        //    return dateSet;
-        //}
-
         // 解析处理
         private void ParseProcessing(DataSet MibdateSet)
         {
@@ -116,7 +84,11 @@ namespace CfgFileOperation
             for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
                 DataRow row = MibdateSet.Tables[0].Rows[loop];
-
+                if (row["MIBName"].ToString() == "nrCsiRsImEntry")
+                    Console.WriteLine("==");
+                if (row["MIBName"].ToString() == "nrCsiRsimLcId")
+                    Console.WriteLine("==");//"nrCsiRsImLcId"
+                Console.WriteLine(row["MIBName"].ToString());
                 // 处理每行的MIB数据
                 CfgParseDBMibTreeStrLineMib pTempNode = new CfgParseDBMibTreeStrLineMib(row, pMapMibNodeByName, pMapMibNodeByOID);//StruMibNode pTempNode = new StruMibNode();
 
@@ -126,6 +98,7 @@ namespace CfgFileOperation
                 {
                     Console.WriteLine(String.Format("Oid=({0} had same key, mibName=({1}).)", row["OID"].ToString(), row["MIBName"].ToString()));
                 }
+                
                 if (!pMapMibNodeByName.ContainsKey(row["MIBName"].ToString()))
                     pMapMibNodeByName.Add(row["MIBName"].ToString(), pTempNode);
                 else
@@ -133,8 +106,6 @@ namespace CfgFileOperation
                     Console.WriteLine(String.Format(" mibName=({0}),had same key.)", row["MIBName"].ToString()));
                 }
             }
-
-
         }
 
     }

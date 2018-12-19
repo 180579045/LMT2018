@@ -413,7 +413,7 @@ namespace SCMTMainWindow
             // 清理掉之前填入的Children节点;
             if ((items != null))
 			{
-                if(!(items.SubExpender is null))
+                if(!(items.SubExpender == null))
                 {
                     items.SubExpender.Children.Clear();
 

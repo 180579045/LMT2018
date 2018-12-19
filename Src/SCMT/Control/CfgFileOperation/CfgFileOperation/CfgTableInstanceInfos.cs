@@ -9,6 +9,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 每个表实例化后的结构
     /// </summary>
+    [Serializable]
     class CfgTableInstanceInfos
     {
         string strInstantNum;//实例化的索引
@@ -29,6 +30,10 @@ namespace CfgFileOperation
         public void ReclistSetInstMem(byte[] newMem)
         {
             Buffer.BlockCopy(newMem, 0, InstMem, 0, newMem.Length);
+        }
+        public object DeepCopy()
+        {
+            return new CfgTableInstanceInfos(this.strInstantNum, this.InstMem);
         }
     }
 }

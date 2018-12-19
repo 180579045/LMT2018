@@ -1457,6 +1457,29 @@ namespace NetPlan
             return EnumResultType.success_true;       
         }
 
+        private string ConvertDevTypeName(EnumDevType typeId)
+        {
+            Dictionary<EnumDevType, string> devType = new Dictionary<EnumDevType, string>();
+            devType.Add(EnumDevType.board, "netBoardEntry");
+            devType.Add(EnumDevType.rru, "netRRUEntry");
+            devType.Add(EnumDevType.rhub, "netRHUBEntry");
+            devType.Add(EnumDevType.ant, "netAntennaArrayEntry");
+            devType.Add(EnumDevType.nrNetLc, "nrNetLocalCellEntry");
+            devType.Add(EnumDevType.nrNetLcCtr, "netLocalCellPowerCtrlEntry");
+            devType.Add(EnumDevType.netLc, "netLocalCellEntry");
+            devType.Add(EnumDevType.netLcCtr, "netLocalCellCtrlEntry");
+            devType.Add(EnumDevType.board_rru, "netIROptPlanEntry");
+            devType.Add(EnumDevType.board_rhub, "netIROptPlanEntry");
+            devType.Add(EnumDevType.rru_ant, "netRRUAntennaSettingEntry");
+            devType.Add(EnumDevType.rhub_prru, "netEthPlanEntry");//??
+            string result;
+            if (devType.TryGetValue(typeId, out result))
+            {
+                return result;
+            }
+            return typeId.ToString();
+        }
+
         public bool CheckAllPlanData(out string falseTip)
         {
             falseTip = "";
@@ -1519,7 +1542,10 @@ namespace NetPlan
                         else if (result == EnumResultType.success_false)
                         {
                             //不满足校验的前提，进入下一条规则校验
-                            falseTip = oneCheck.false_tip;
+                            string checkRes = "Type: " + dataSrc.m_enumDevType.ToString() + " oid: " +dataSrc.m_strOidIndex +
+                                              " check "+ oneCheck.desc + " fail, " + oneCheck.false_tip;
+                            Log.Error(checkRes);
+                            falseTip = ConvertDevTypeName(dataSrc.m_enumDevType) + " oid: " + dataSrc.m_strOidIndex + oneCheck.false_tip;
                             return false;
                         }
                         else if (result == EnumResultType.success_true)

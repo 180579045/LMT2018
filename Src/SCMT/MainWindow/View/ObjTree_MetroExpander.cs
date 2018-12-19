@@ -45,7 +45,7 @@ namespace SCMTMainWindow.View
                     ObjNode temp = iter;
                     ret.Add(temp);
                 }
-                if ((iter.SubObj_Lsit is null))
+                if ((iter.SubObj_Lsit == null))
                 {
                     continue;
                 }
