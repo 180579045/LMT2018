@@ -49,7 +49,7 @@ namespace NetPlan
 			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"添加类型为：rru_ant，索引为：{newRecord.m_strOidIndex}的记录成功");
 
-			MibInfoMgr.InfoTip("添加连接成功");
+			//MibInfoMgr.InfoTip("添加连接成功");
 
 			return true;
 		}
