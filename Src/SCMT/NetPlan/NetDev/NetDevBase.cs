@@ -10,7 +10,6 @@ using LmtbSnmp;
 using LogManager;
 using MIBDataParser;
 using SCMTOperationCore.Elements;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
@@ -18,7 +17,7 @@ namespace NetPlan
 	{
 		#region 构造函数
 
-		internal NetDevBase(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData)
+		internal NetDevBase(string strTargetIp, NPDictionary mapOriginData)
 		{
 			m_strTargetIp = strTargetIp;
 			m_mapOriginData = mapOriginData;
@@ -95,7 +94,7 @@ namespace NetPlan
 				var ret = CDTCmdExecuteMgr.CmdSetSync(cmdName, name2Value, dev.m_strOidIndex, m_strTargetIp);
 				if (0 != ret)
 				{
-					Log.Error($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+					MibInfoMgr.ErrorTip($"下发命令{cmdName}失败，原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
 					return false;
 				}
 			}
@@ -132,7 +131,8 @@ namespace NetPlan
 			var ret = CDTCmdExecuteMgr.CmdSetSync(strCmdName, name2Value, dev.m_strOidIndex, m_strTargetIp);
 			if (0 != ret)
 			{
-				Log.Error($"下发命令{strCmdName}失败，{tmp}。原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+				MibInfoMgr.ErrorTip($"下发命令{strCmdName}失败。原因：{SnmpErrDescHelper.GetErrDescById(ret)}");
+				Log.Error($"下发命令{strCmdName}失败，{tmp}");
 				return false;
 			}
 
@@ -252,7 +252,7 @@ namespace NetPlan
 				return retList;
 			}
 
-			Log.Debug($"[NetPlan] start search type = {type.ToString()} and part index = {strPartIdx} records");
+			Log.Debug($"start search type = {type.ToString()} and part index = {strPartIdx} records");
 
 			if (m_mapOriginData.ContainsKey(type))
 			{
@@ -261,13 +261,13 @@ namespace NetPlan
 				{
 					if (dev.m_strOidIndex.Contains(strPartIdx))		// todo 如果传入的部分索引太短，可能引起错误
 					{
-						Log.Debug($"[NetPlan] found index = {dev.m_strOidIndex} record ");
+						Log.Debug($"found index = {dev.m_strOidIndex} record ");
 						retList.Add(dev);
 					}
 				}
 			}
 
-			Log.Debug($"[NetPlan] search completed, result count : {retList.Count}");
+			Log.Debug($"search completed, result count : {retList.Count}");
 
 			return retList;
 		}
@@ -276,7 +276,7 @@ namespace NetPlan
 
 		#region 内部数据
 
-		protected MAP_DEVTYPE_DEVATTRI m_mapOriginData;
+		protected NPDictionary m_mapOriginData;
 		protected string m_strTargetIp;
 
 		#endregion

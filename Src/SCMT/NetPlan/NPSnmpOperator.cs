@@ -235,6 +235,11 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool DistributeNetPlanData(bool bDlAntWcb)
 		{
+			if (!MibInfoMgr.GetInstance().CheckDataIsValid())
+			{
+				return false;
+			}
+
 			// 依次下发rHub,RRU,IR口，以太口速率，天线阵，天线权值，天线安装，本地小区布配，本地小区布配开关关闭
 			// 只下发查回的数据与规划数据不一致的数据，相同的数据不再下发
 			var result = MibInfoMgr.GetInstance().DistributeNetPlanInfoToEnb(EnumDevType.board);
@@ -310,10 +315,12 @@ namespace NetPlan
 				return null;
 			}
 
+			var realValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]);
 			// 该表项有值，就处理
 			var info = new MibLeafNodeInfo
 			{
-				m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]),
+				m_strOriginValue = realValue,
+				m_strLatestValue = realValue,
 				mibAttri = mibLeaf,
 				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),			// 索引只读
 				m_bVisible = !mibLeaf.IsRowStatus()					// 行状态不显示
@@ -397,6 +404,7 @@ namespace NetPlan
 					info = new MibLeafNodeInfo
 					{
 						m_strOriginValue = realValue,
+						m_strLatestValue = realValue,
 						mibAttri = childLeaf,
 						m_bReadOnly = !childLeaf.IsEmpoweredModify(),		// 索引只读
 						m_bVisible = !childLeaf.IsRowStatus()				// 行状态不显示

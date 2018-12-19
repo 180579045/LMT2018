@@ -14,11 +14,15 @@
 				case EnumDevType.ant:
 					handler = new NetDevAnt(strTargetIp, mapOriginData);
 					break;
-
+				case EnumDevType.rhub:
+					handler = new NetDevRhub(strTargetIp, mapOriginData);
+					break;
 				case EnumDevType.nrNetLc:
 					handler = new NetDevLc(strTargetIp, mapOriginData);
 					break;
-
+				case EnumDevType.board:
+					handler = new NetDevBoard(strTargetIp, mapOriginData);
+					break;
 				default:
 					handler = new NetDevBase(strTargetIp, mapOriginData);
 					break;

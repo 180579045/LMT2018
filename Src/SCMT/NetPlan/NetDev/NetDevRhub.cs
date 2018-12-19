@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
@@ -29,7 +28,7 @@ namespace NetPlan
 				}
 			}
 
-			return true;
+			return base.DistributeToEnb(dev, bDlAntWcb);
 		}
 
 		#endregion
@@ -44,10 +43,20 @@ namespace NetPlan
 		internal static List<string> GetRhubLinkToBoardSlotNo(DevAttributeInfo rhub)
 		{
 			var bbuSlotList = new List<string>();
+			var bIsNew = (rhub.m_recordType == RecordDataType.NewAdd);
 			for (var i = 1; i <= MagicNum.RRU_TO_BBU_PORT_CNT; i++)
 			{
 				var mibName = (i == 1) ? "netRHUBAccessSlotNo" : $"netRHUBOfp{i}SlotNo";
-				var boardSlot = rhub.GetNeedUpdateValue(mibName);	// todo 可能存在错误，需要替换成GetOriginValue
+
+				string boardSlot = "-1";
+				if (bIsNew)
+				{
+					boardSlot = rhub.GetNeedUpdateValue(mibName);
+				}
+				else
+				{
+					boardSlot = rhub.GetFieldOriginValue(mibName);
+				}
 				if (null != boardSlot && "-1" != boardSlot)
 				{
 					bbuSlotList.Add(boardSlot);
@@ -86,7 +95,7 @@ namespace NetPlan
 
 		#region 构造函数
 
-		internal NetDevRhub(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData) : base(strTargetIp, mapOriginData)
+		internal NetDevRhub(string strTargetIp, NPDictionary mapOriginData) : base(strTargetIp, mapOriginData)
 		{
 		}
 
@@ -116,33 +125,18 @@ namespace NetPlan
 
 				foreach (var item in ethRecordList)
 				{
-					var ethPort = LinkRhubPico.GetRhubToPicoPort(rhubDev);
-					if (null == ethPort || "-1" == ethPort)
-					{
-						Log.Error("[NetPlan] get rhub device to pico eth port failed, result is -1.");
-						continue;
-					}
-
-					var idx = $"{partIdx}.{ethPort}";
-					var ethRecord = GetDev(EnumDevType.rhub_prru, idx);
-					if (null == ethRecord)
-					{
-						Log.Error($"[NetPlan] get index = {idx} eth plan record failed");
-						continue;
-					}
-
-					if (ethRecord.m_recordType != RecordDataType.WaitDel)
+					if (item.m_recordType != RecordDataType.WaitDel)
 					{
 						continue;
 					}
 
-					if (!DistributeToEnb(ethRecord, "DelEthPortInfo", "6"))
+					if (!DistributeToEnb(item, "DelEthPortInfo", "6"))
 					{
-						Log.Error($"[NetPlan] send cmd DelEthPortInfo to delete index = {ethRecord.m_strOidIndex} eth plan record failed");
+						Log.Error($"[NetPlan] send cmd DelEthPortInfo to delete index = {item.m_strOidIndex} eth plan record failed");
 						return false;
 					}
 
-					m_mapOriginData[EnumDevType.rhub_prru].Remove((DevAttributeInfo)ethRecord);
+					m_mapOriginData[EnumDevType.rhub_prru].Remove((DevAttributeInfo)item);
 				}
 			}
 
@@ -170,7 +164,7 @@ namespace NetPlan
 				foreach (var item in mapToBbuPort)
 				{
 					var irRecordIdx = $"{partIdx}.{item.Value}";
-					var irRecord = GetDev(EnumDevType.board_rhub, irRecordIdx);
+					var irRecord = GetDev(EnumDevType.board_rru, irRecordIdx);		// board_rhub类型会找不到信息
 					if (null == irRecord)
 					{
 						Log.Error($"[NetPlan] get ir plan record by index {irRecordIdx} failed, result is null");
@@ -188,7 +182,7 @@ namespace NetPlan
 						return false;
 					}
 
-					m_mapOriginData[EnumDevType.board_rhub].Remove((DevAttributeInfo)irRecord);
+					m_mapOriginData[EnumDevType.board_rru].Remove((DevAttributeInfo)irRecord);
 				}
 			}
 

@@ -447,6 +447,11 @@ namespace NetPlan
 		private static List<WholeLink> HandleWaitPrevRruList()
 		{
 			var lw = new List<WholeLink>();
+			if (null == m_mapParsedRru)
+			{
+				return lw;
+			}
+
 			foreach (var kv in m_mapParsedRru)
 			{
 				var rruList = kv.Value;

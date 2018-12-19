@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
@@ -12,7 +11,7 @@ namespace NetPlan
 	{
 		#region 构造函数
 
-		internal NetDevLc(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData) : base(strTargetIp, mapOriginData)
+		internal NetDevLc(string strTargetIp, NPDictionary mapOriginData) : base(strTargetIp, mapOriginData)
 		{
 
 		}

@@ -8,7 +8,6 @@ namespace NetPlan
 	{
 		public LinkBoardRhub()
 		{
-			m_irRecordType = EnumDevType.board_rru;
 		}
 
 		#region 虚函数重载
@@ -59,8 +58,8 @@ namespace NetPlan
 			}
 
 			// 删除board与rhub之间的连接
-			var irRecord = GetDevAttributeInfo(m_strIrRecodeIndex, EnumDevType.board_rru);
-			MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.board_rru, irRecord);
+			var irRecord = GetDevAttributeInfo(m_strIrRecodeIndex, m_irRecordType);
+			MibInfoMgr.DelDevFromMap(mapMibInfo, m_irRecordType, irRecord);
 
 			mapMibInfo[EnumDevType.rhub].Remove(m_rhubDev);
 			mapMibInfo[EnumDevType.rhub].Add(rhubClone);
@@ -135,12 +134,12 @@ namespace NetPlan
 			// todo 当前尚未支持rhub级联的情况，rhub级联后需要计算后面rhub的接入级数、连接的板卡信息等
 
 			// 添加一条记录
-			var irRecord = new DevAttributeInfo(EnumDevType.board_rru, m_strIrRecodeIndex);     // 记录仍然是board_rru类型
+			var irRecord = new DevAttributeInfo(m_irRecordType, m_strIrRecodeIndex);
 
 			mapMibInfo[EnumDevType.rhub].Remove(m_rhubDev);
 			mapMibInfo[EnumDevType.rhub].Add(rhubClone);
 
-			AddDevToMap(mapMibInfo, EnumDevType.board_rru, irRecord);
+			AddDevToMap(mapMibInfo, m_irRecordType, irRecord);
 
 			Log.Debug($"添加连接成功，连接详细信息：{wholeLink}");
 			Log.Debug($"添加类型为：{m_irRecordType.ToString()}，索引为：{irRecord.m_strOidIndex}的记录成功");
@@ -196,7 +195,7 @@ namespace NetPlan
 
 			// 确定netIROptPlanEntry中是否已经存在对应的记录
 			m_strIrRecodeIndex = $"{boardIndex}.{m_nBoardPort}";
-			if (!checkExist.Invoke(m_strIrRecodeIndex, EnumDevType.board_rru))
+			if (!checkExist.Invoke(m_strIrRecodeIndex, m_irRecordType))
 			{
 				var tmp = checkExist == RecordExistInDel ? "不" : "已";
 				m_strLatestError = $"索引为{m_strIrRecodeIndex}的光口规划表记录{tmp}存在";
@@ -617,7 +616,7 @@ namespace NetPlan
 				portType = EnumPortType.rhub_to_bbu
 			};
 
-			return new WholeLink(boardEndpoint, rruEndPoint, EnumDevType.board_rhub);
+			return new WholeLink(boardEndpoint, rruEndPoint, EnumDevType.board_rru);
 		}
 
 		/// <summary>
@@ -698,6 +697,11 @@ namespace NetPlan
 		private static IEnumerable<WholeLink> HandleWaitPrevRhubList()
 		{
 			var lw = new List<WholeLink>();
+			if (null == m_mapParsedRhub)
+			{
+				return lw;
+			}
+
 			foreach (var kv in m_mapParsedRhub)
 			{
 				var rruList = kv.Value;
@@ -735,7 +739,7 @@ namespace NetPlan
 		private int m_nBoardPort;
 		private int m_nRhubPort;
 
-		private readonly EnumDevType m_irRecordType;
+		private static readonly EnumDevType m_irRecordType = EnumDevType.board_rru;
 
 		#endregion 私有数据区
 	}

@@ -25,11 +25,7 @@ namespace NetPlan.Tests
 			var newBoard = MibInfoMgr.GetInstance().AddNewBoard(5, "22", "LTE FDD", "cpri");
 			Assert.IsNotNull(newBoard);
 
-			var newRruList = MibInfoMgr.GetInstance().AddNewRru(new List<int>() {2}, 229, "级联模式");
-			Assert.IsNotNull(newRruList);
-			Assert.AreEqual(1, newRruList.Count);
-
-			var newRru = newRruList.First();
+			var newRru = MibInfoMgr.GetInstance().AddNewRru(2, 229, "级联模式");
 			Assert.IsNotNull(newRru);
 
 			var btorLink = new LinkBoardRru();

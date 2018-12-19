@@ -9,7 +9,6 @@ namespace NetPlan
 	{
 		public LinkRhubPico()
 		{
-			m_ethRecordType = EnumDevType.rhub_prru;
 		}
 
 		#region 虚函数区
@@ -68,8 +67,8 @@ namespace NetPlan
 					return false;
 				}
 
-				var newRecord = new DevAttributeInfo(EnumDevType.rhub_prru, m_strEthRecordIndex);
-				AddDevToMap(mapMibInfo, EnumDevType.rhub_prru, newRecord);
+				var newRecord = new DevAttributeInfo(m_ethRecordType, m_strEthRecordIndex);
+				AddDevToMap(mapMibInfo, m_ethRecordType, newRecord);
 
 				Log.Debug($"添加类型为：{m_ethRecordType.ToString()}，索引为：{newRecord.m_strOidIndex}的记录成功");
 			}
@@ -118,8 +117,8 @@ namespace NetPlan
 					return false;
 				}
 
-				var record = GetDevAttributeInfo(m_strEthRecordIndex, EnumDevType.rhub_prru);
-				MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.rhub_prru, record);
+				var record = GetDevAttributeInfo(m_strEthRecordIndex, m_ethRecordType);
+				MibInfoMgr.DelDevFromMap(mapMibInfo, m_ethRecordType, record);
 				Log.Debug($"删除类型为：{m_ethRecordType.ToString()}，索引为：{record.m_strOidIndex}的记录成功");
 			}
 
@@ -245,14 +244,14 @@ namespace NetPlan
 				foreach (var item in mapPicoToRhub)
 				{
 					var ridx = $"{bbuIdx}.{item.Value.strDevIndex.Trim('.')}.{item.Value.nPortNo}";
-					if (RecordExistInDel(ridx, EnumDevType.rhub_prru))
+					if (RecordExistInDel(ridx, m_ethRecordType))
 					{
 						Log.Error($"索引为{ridx}类型为rhub_prru的记录已经存在");
 						continue;
 					}
 
-					var newRecord = new DevAttributeInfo(EnumDevType.rhub_prru, ridx);
-					AddDevToMap(mapAllData, EnumDevType.rhub_prru, newRecord);
+					var newRecord = new DevAttributeInfo(m_ethRecordType, ridx);
+					AddDevToMap(mapAllData, m_ethRecordType, newRecord);
 
 					SetIrPortInfoInPico(rhubDev, picoDev, item.Key);
 				}
@@ -380,7 +379,7 @@ namespace NetPlan
 			{
 				m_srcEndPoint = hub,
 				m_dstEndPoint = pico,
-				m_linkType = EnumDevType.rhub_prru
+				m_linkType = m_ethRecordType
 			};
 
 			return link;
@@ -426,7 +425,7 @@ namespace NetPlan
 
 				// 查询以太网连接是否存在
 				m_strEthRecordIndex = $"{boardIndex}{m_rhubDev.m_strOidIndex}.{m_nRhubEthPort}";
-				if (!checkExist.Invoke(m_strEthRecordIndex, EnumDevType.rhub_prru))
+				if (!checkExist.Invoke(m_strEthRecordIndex, m_ethRecordType))
 				{
 					var tmp = checkExist == RecordExistInDel ? "不" : "已";
 					m_strLatestError = $"索引为{m_strEthRecordIndex}的以太网口规划表记录{tmp}存在";
@@ -515,7 +514,7 @@ namespace NetPlan
 		private DevAttributeInfo m_rhubDev;
 		private string m_strEthRecordIndex;
 
-		private readonly EnumDevType m_ethRecordType;
+		private static readonly EnumDevType m_ethRecordType = EnumDevType.rhub_prru;
 
 		#endregion 私有数据区
 	}

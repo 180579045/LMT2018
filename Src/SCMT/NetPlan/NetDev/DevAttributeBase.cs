@@ -498,7 +498,14 @@ namespace NetPlan
 		{
 			if (!m_mapAttributes.ContainsKey(rsMibLeaf.childNameMib))
 			{
-				var tmp = new MibLeafNodeInfo { m_bReadOnly = true, m_bVisible = false, m_strOriginValue = strValue, mibAttri = rsMibLeaf };
+				var tmp = new MibLeafNodeInfo
+				{
+					m_bReadOnly = true,
+					m_bVisible = false,
+					m_strOriginValue = strValue,
+					m_strLatestValue = strValue,
+					mibAttri = rsMibLeaf
+				};
 				m_mapAttributes[rsMibLeaf.childNameMib] = tmp;
 			}
 		}

@@ -165,56 +165,7 @@ namespace NetPlan
 
 		protected static BoardBaseInfo GetBoardBaseInfo(DevAttributeInfo board)
 		{
-			var boardRs = board.GetNeedUpdateValue("netBoardRowStatus");
-			if (null == boardRs)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardRowStatus属性值失败");
-				return null;
-			}
-
-			if ("6" == boardRs && board.m_recordType != RecordDataType.NewAdd)
-			{
-				Log.Error($"板卡{board.m_strOidIndex}处于待删除状态，所有属性值无效");
-				//return null;
-			}
-
-			var rackNo = board.GetNeedUpdateValue("netBoardRackNo");
-			if (null == rackNo)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardRackNo属性值失败");
-				return null;
-			}
-
-			var shelfNo = board.GetNeedUpdateValue("netBoardShelfNo");
-			if (null == shelfNo)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardShelfNo属性值失败");
-				return null;
-			}
-
-			var slotNo = board.GetNeedUpdateValue("netBoardSlotNo");
-			if (null == slotNo)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardSlotNo属性值失败");
-				return null;
-			}
-
-			var boardType = board.GetNeedUpdateValue("netBoardType");
-			if (null == boardType)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardType属性值失败");
-				return null;
-			}
-
-			var bbi = new BoardBaseInfo
-			{
-				strRackNo = rackNo,
-				strShelfNo = shelfNo,
-				strSlotNo = slotNo,
-				strBoardCode = boardType
-			};
-
-			return bbi;
+			return NetDevBoard.GetBoardBaseInfo(board);
 		}
 
 		/// <summary>

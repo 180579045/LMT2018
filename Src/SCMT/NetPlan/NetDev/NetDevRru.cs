@@ -4,7 +4,6 @@ using CommonUtility;
 using LinkPath;
 using LogManager;
 using NetPlan;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
@@ -12,7 +11,7 @@ namespace NetPlan
 	{
 		#region 构造函数
 
-		internal NetDevRru(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData) : base(strTargetIp, mapOriginData)
+		internal NetDevRru(string strTargetIp, NPDictionary mapOriginData) : base(strTargetIp, mapOriginData)
 		{
 
 		}
@@ -73,7 +72,7 @@ namespace NetPlan
 		public static Dictionary<int, LinkEndpoint> GetLinkedRhubInfoFromPico(DevAttributeBase picoDev)
 		{
 			var rhubNoMib = "netRRUHubNo";
-			var rhubNo = picoDev.GetNeedUpdateValue(rhubNoMib);
+			var rhubNo = picoDev.GetFieldOriginValue(rhubNoMib);
 			if (null == rhubNo || "-1" == rhubNo)
 			{
 				Log.Debug($"索引为{picoDev.m_strOidIndex}pico设备尚未连接到rhub，请确认是否存在错误");
@@ -85,7 +84,7 @@ namespace NetPlan
 			for (var i = 1; i <= MagicNum.PICO_TO_RHUB_PORT_CNT; i++)
 			{
 				var rhubEthMib = $"netRRUOfp{i}AccessEthernetPort";
-				var rhubEthNo = picoDev.GetNeedUpdateValue(rhubEthMib);
+				var rhubEthNo = picoDev.GetFieldOriginValue(rhubEthMib);
 				if (null == rhubEthNo || "-1" == rhubEthNo)
 				{
 					continue;
@@ -239,7 +238,6 @@ namespace NetPlan
 				return false;
 			}
 
-			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			// 下发参数
 			foreach (var item in rpiDevList)
 			{
@@ -470,16 +468,22 @@ namespace NetPlan
 		/// <returns></returns>
 		private bool DistributeDownLinkRecord(DevAttributeBase rruDev)
 		{
-			var rruIndex = rruDev.m_strOidIndex;
-			int rruNo;
-			if (!int.TryParse(rruIndex.Trim('.'), out rruNo))
+			var rruType = rruDev.GetFieldOriginValue("netRRUTypeIndex");
+			if (string.IsNullOrEmpty(rruType) || "-1" == rruType)
 			{
-				Log.Error($"待删除rru的索引值{rruIndex}无效，无法下发到rhub或bbu的连接");
+				Log.Error("待删除rru的类型索引值无效，无法下发到rhub或bbu的连接");
+				return false;
+			}
+
+			int rruT;
+			if (!int.TryParse(rruType, out rruT))
+			{
+				Log.Error("待删除rru的类型索引值无效，无法下发到rhub或bbu的连接");
 				return false;
 			}
 
 			//判断是否是pico设备
-			var bIsPico = NPERruHelper.GetInstance().IsPicoDevice(rruNo);
+			var bIsPico = NPERruHelper.GetInstance().IsPicoDevice(rruT);
 			if (bIsPico)
 			{
 				var listEp = GetLinkedRhubInfoFromPico(rruDev);

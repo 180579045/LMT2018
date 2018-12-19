@@ -72,15 +72,16 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="mEnumDevType">设备类型</param>
 		/// <param name="devIndex">设备的序号，用于生成索引</param>
-		public DevAttributeInfo(EnumDevType mEnumDevType, int devIndex, bool bIsScalar = false)
-		{
-			m_bIsScalar = bIsScalar;
-			m_enumDevType = mEnumDevType;
+		/// <param name="bIsScalar"></param>
+		//public DevAttributeInfo(EnumDevType mEnumDevType, int devIndex, bool bIsScalar = false)
+		//{
+		//	m_bIsScalar = bIsScalar;
+		//	m_enumDevType = mEnumDevType;
 
-			InitDevInfo(mEnumDevType, devIndex);
+		//	InitDevInfo(mEnumDevType, devIndex);
 
-			SetFieldLatestValue(m_strRsMibName, "4");
-		}
+		//	SetFieldLatestValue(m_strRsMibName, "4");
+		//}
 
 		/// <summary>
 		/// 从基站中查询MIB表得到一个设备属性
@@ -259,6 +260,7 @@ namespace NetPlan
 				var info = new MibLeafNodeInfo
 				{
 					m_strOriginValue = indexVale,
+					m_strLatestValue = indexVale,
 					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
 					m_bVisible = true,
 					mibAttri = indexColumn
@@ -302,8 +304,8 @@ namespace NetPlan
 	[Serializable]
 	public class RHubDevAttri : DevAttributeInfo
 	{
-		public RHubDevAttri(int devIndex, string strDevVersion)
-			: base(EnumDevType.rhub, devIndex)
+		public RHubDevAttri(string strDevIndex, string strDevVersion)
+			: base(EnumDevType.rhub, strDevIndex)
 		{
 			m_strDevVersion = strDevVersion;
 		}

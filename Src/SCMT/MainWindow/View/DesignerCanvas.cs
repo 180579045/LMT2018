@@ -185,11 +185,9 @@ namespace SCMTMainWindow.View
                 newItem.NPathNumber = nMaxRRUPath;
 
                 //添加 RRU 的时候需要给基站下发，然后获取设备信息
-                List<int> listIndex = new List<int>();
-                listIndex.Add(nRRUNo);
-                var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(listIndex, dlgChooseRRU.nRRUTypeIndex, dlgChooseRRU.strWorkModel);
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewRru(nRRUNo, dlgChooseRRU.nRRUTypeIndex, dlgChooseRRU.strWorkModel);
 
-                if(devRRUInfo == null || devRRUInfo.Count == 0)
+                if(devRRUInfo == null)
                 {
                     MessageBox.Show("MibInfoMgr.GetInstance().AddNewRru 返回为空");
                     return false;
@@ -197,17 +195,17 @@ namespace SCMTMainWindow.View
 
                 if(g_AllDevInfo.ContainsKey(EnumDevType.rru))
                 {
-                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
                 }
                 else
                 {
                     g_AllDevInfo.Add(EnumDevType.rru, new Dictionary<string, string>());
-                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo[0].m_strOidIndex);
+                    g_AllDevInfo[EnumDevType.rru].Add(strRRUFullName, devRRUInfo.m_strOidIndex);
                 }
 
                 //双击 RRU 绑定小区
                 newItem.MouseDoubleClick += NewItem_MouseDoubleClick;
-                newItem.DevIndex = devRRUInfo[0].m_strOidIndex;
+                newItem.DevIndex = devRRUInfo.m_strOidIndex;
                 newItem.DevType = EnumDevType.rru;
 
                 //var test = NPECmdHelper.GetInstance().GetDevAttributesFromMib("rru");
@@ -230,7 +228,7 @@ namespace SCMTMainWindow.View
                 this.SelectionService.SelectItem(newItem);
                 newItem.Focus();
 
-                CreateGirdForNetInfo(strRRUFullName, devRRUInfo[0]);
+                CreateGirdForNetInfo(strRRUFullName, devRRUInfo);
 
                 //查看 NetPlan中，是否点击连接线
 
