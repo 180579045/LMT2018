@@ -19,6 +19,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtility;
+using DataBaseUtil;
 using LmtbSnmp;
 using MIBDataParser.JSONDataMgr;
 
@@ -286,7 +287,7 @@ namespace LinkPath
 
 			if (lmtPdu.m_LastErrorStatus != 0)
 			{
-				Log.Error($"命令：{cmdName} 索引：{strIndex} 执行失败，Es：{lmtPdu.m_LastErrorStatus}");
+				Log.Error($"命令：{cmdName} 执行失败。附加参数：索引：{strIndex} ，error status：{lmtPdu.m_LastErrorStatus}-{SnmpErrDescHelper.GetErrDescById(lmtPdu.m_LastErrorStatus)}");
 			}
 
 			return (int)lmtPdu.m_LastErrorStatus;
@@ -294,6 +295,17 @@ namespace LinkPath
 
 		public static int CmdSetSync(string cmdName, Dictionary<string, string> name2Value, string strIndex, string targetIp)
 		{
+			// 输出参数，便于定位
+			var sb = new StringBuilder();
+			sb.Append($"cmd:{cmdName},oid and value:\n");
+			foreach (var item in name2Value)
+			{
+				sb.Append($"oid:{item.Key}, value:{item.Value}\n");
+			}
+
+			sb.Append($"target:{targetIp}");
+			Log.Info(sb.ToString());
+
 			long reqId;
 			var pdu = new CDTLmtbPdu();
 			return CmdSetSync(cmdName, out reqId, name2Value, strIndex, targetIp, ref pdu);
