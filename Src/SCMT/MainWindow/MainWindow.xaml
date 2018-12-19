@@ -161,7 +161,7 @@
             <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
                 <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                     <StackPanel>
-                        <View:GlobalSearchTextBox Width="200" x:Name="GlobalSearch" Text="搜索内容" Title="" InputHint="可搜索对象树节点与MIB节点..."
+                        <View:GlobalSearchTextBox Width="200" x:Name="GlobalSearch" Title="" InputHint="对象树与MIB节点..."
                                                   ButtonTitle="X" PopupHint="搜索结果最多显示50条" Icon="Resources/editIcon.png" />
                         
                         <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
