@@ -811,11 +811,12 @@ namespace LmtbSnmp
 			// 获取索引
 			var strIndex = strOidTmp;
 			strIndex = strIndex.Replace(mibObjInfo.childOid, "");
-			if (mibObjInfo.IsTable) // 是表显示取索引
-			{
+			// 无论是否为表暂时均显示索引
+			//if (mibObjInfo.IsTable) // 是表显示取索引
+			//{
 				strIndex = strIndex.TrimStart('.');
 				strName = $"{strName}{CommString.IDS_INSTANCE}{strIndex}";
-			}
+			//}
 
 			return true;
 		}
