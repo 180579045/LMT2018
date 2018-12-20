@@ -84,14 +84,14 @@ namespace CfgFileOperation
                 return false;
             }
             bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n").ToArray());
-            // 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
-            if (!CreatCfg_patch_ex_cfg(bw, paths))
-            {
-                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n").ToArray());
-                Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
-                return false;
-            }
-            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n").ToArray());
+            //// 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
+            //if (!CreatCfg_patch_ex_cfg(bw, paths))
+            //{
+            //    bw.Write(String.Format("CreatePatchAndInitCfg err: 生成patch_ex.cfg失败！\n").ToArray());
+            //    Console.WriteLine(String.Format("生成patch_ex.cfg失败！"));
+            //    return false;
+            //}
+            //bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_patch_ex_cfg OK.\n").ToArray());
             bw.Write(String.Format("CreatePatchAndInitCfg end.\n").ToArray());
             return true;
         }
@@ -255,6 +255,36 @@ namespace CfgFileOperation
             SaveFilePdg_eNB(paths["OutDir"] + "patch_ex.cfg");
             return true;
         }
+
+        void LogPrintByM_mibTreeMem()
+        {
+            // 打印 m_mibTreeMem 叶子名
+            FileStream fs2 = new FileStream("Log_m_mibTreeMem.txt", FileMode.OpenOrCreate);
+            BinaryWriter bw_2 = new BinaryWriter(fs2, Encoding.Default, true);
+            foreach (string name in m_mibTreeMem.pMapMibNodeByName.Keys)
+            {
+                var node = m_mibTreeMem.pMapMibNodeByName[name];
+                bw_2.Write(String.Format("m_mibTreeMem : key ({0}), table ({1}).\n", name, node.strTableName).ToArray());
+            }
+            bw_2.Flush();//清空缓冲区
+            bw_2.Close();//关闭流
+            fs2.Close();
+        }
+        void LogPrintByM_mapTableInfo()
+        {
+            // 打印 m_mapTableInfo 表名
+            FileStream fs2 = new FileStream("Log_m_mapTableInfo.txt", FileMode.OpenOrCreate);
+            BinaryWriter bw_2 = new BinaryWriter(fs2, Encoding.Default, true);
+            foreach (string tableName in m_mapTableInfo.Keys)
+            {
+                bw_2.Write(String.Format("m_mapTableInfo : key ({0}).\n", tableName).ToArray());
+            }
+            bw_2.Flush();//清空缓冲区
+            bw_2.Close();//关闭流
+            fs2.Close();
+        }
+
+
         /// <summary>
         /// 根据 5G patch_ex特性, 对表和实例进行修改
         /// </summary>
@@ -265,12 +295,17 @@ namespace CfgFileOperation
             m_mibTreeMem = new CfgParseDBMibTreeToMemory();
             if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
             {
-                bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.").ToArray());
+                bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.\n").ToArray());
                 return false;
             }
+            //LogPrintByM_mibTreeMem();
+            //LogPrintByM_mapTableInfo();
 
-            foreach (string UeType in new string[] { "0:升级发布", "1:展讯", "2:e500", "3:华为", "4:恢复默认配置" })
+            //
+            foreach (string UeType in new string[] { "3:华为", })// "0:升级发布", "1:展讯", "2:e500",  "4:恢复默认配置" })
             {
+                Console.WriteLine(String.Format("CfgParseReclistExcel ({0}) start...\n", UeType));
+                bw.Write(String.Format("CfgParseReclistExcel ({0}) start...\n", UeType).ToArray());
                 CfgParseReclistExcel5G m_reclist5G = new CfgParseReclistExcel5G(bw, paths["Reclist"], paths["DataMdb"]);
                 //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
                 if (!m_reclist5G.ProcessingExcel(UeType, this))
@@ -291,6 +326,8 @@ namespace CfgFileOperation
                 string strUeType = UeType.Substring(0, UeType.IndexOf(":"));
                 m_reclist5G.SaveFilePdg_eNB(paths["OutDir"] + strUeType + "patch_ex.cfg" );
                 m_reclist5G = null;
+                Console.WriteLine(String.Format("CfgParseReclistExcel ({0}) end.\n\n", UeType));
+                bw.Write(String.Format("CfgParseReclistExcel ({0}) end.\n\n", UeType).ToArray());
             }
             return true;
         }
@@ -304,10 +341,6 @@ namespace CfgFileOperation
         /// <param name="strDBName"></param>
         public bool CreateCfgFile(BinaryWriter bw, Dictionary<string, string> paths)//string strCfgFileName, string FileToDirectory, string strDBPath, string strDBName)
         {
-            // string FileToUnzip = currentPath + "\\Data\\lmdtz\\lm.dtz";//
-            // string FileToDirectory = currentPath + "\\Data\\lmdtz";
-            //string strFileToDirectory = strDBName.Substring(0, strDBName.Length - strDBName.IndexOf("lm")+1);
-
             WriteHeaderVersionInfo(paths["DataMdb"]);
             return CreateCfgFileBody(bw, paths);
         }
@@ -485,6 +518,8 @@ namespace CfgFileOperation
                 TableOffset = CreatCfgFile_tabInfo(bw, MibdateSet.Tables[0].Rows[loop], null, paths, TableOffset, out re);
                 if (re != true)
                 {
+                    Console.WriteLine(String.Format("Err : CreatCfgFile_tabInfo table({0}) return false.\n", MibdateSet.Tables[0].Rows[loop]["MIBName"].ToString()));
+                    bw.Write(String.Format("Err : CreatCfgFile_tabInfo table({0}) return false.\n", MibdateSet.Tables[0].Rows[loop]["MIBName"].ToString()).ToArray());
                     break;
                 }
             }
@@ -597,7 +632,9 @@ namespace CfgFileOperation
         {
             re = true;
             string strTableName = row["MIBName"].ToString();
-            //if (strTableName == "rruTypePortEntry")
+            //bw.Write(String.Format("CreatCfgFile_tabInfo : ({0}).\n", strTableName).ToArray());
+            //Console.WriteLine(String.Format("CreatCfgFile_tabInfo : ({0}).\n", strTableName));
+            //if (strTableName == "nrCellCfgEntry")
             //    Console.WriteLine("1111");
             string strTableContent = row["TableContent"].ToString();// 设置动态表的容量
             bool isDyTable = isDynamicTable(strTableContent);       // 是否为动态表
@@ -607,6 +644,9 @@ namespace CfgFileOperation
             int childcount = MibdateSet.Tables[0].Rows.Count;
             if (childcount > 0)
             {
+                //bw.Write(String.Format("CreatCfgFile_tabInfo : ({0}) have childcount.\n", strTableName).ToArray());
+                //Console.WriteLine(String.Format("CreatCfgFile_tabInfo : ({0}) have childcount.\n", strTableName));
+
                 tableOp = new CfgTableOp();
                 CreatCfgFile_leafsInfo( MibdateSet, tableOp);                                 // 计算 buflen
                 if (isSpecialTable(strTableName))                                             // 是否是告警,是否为RRUType表和RRUTypePort和antennaArrayTypeTable表
@@ -652,7 +692,7 @@ namespace CfgFileOperation
                     if (m_cfgInsts_num != DytabCont)
                     {
                         TotalRecorNum = m_cfgInsts_num > DytabCont ? DytabCont : m_cfgInsts_num;//动态表容量
-                        Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头(动态表容量) Num is {2}。。。。。。", tableOp.m_strTableName, m_cfgInsts_num, DytabCont));
+                        //Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头(动态表容量) Num is {2}。。。。。。", tableOp.m_strTableName, m_cfgInsts_num, DytabCont));
                     }
                     else
                         TotalRecorNum = DytabCont;
@@ -682,7 +722,7 @@ namespace CfgFileOperation
                     if (m_cfgInsts_num != DytabCont)
                     {
                         //TotalRecorNum = m_cfgInsts_num > DytabCont ? DytabCont : m_cfgInsts_num;//动态表容量
-                        Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头(动态表容量) Num is {2}。。。。。。", tableOp.m_strTableName, m_cfgInsts_num, DytabCont));
+                        //Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头(动态表容量) Num is {2}。。。。。。", tableOp.m_strTableName, m_cfgInsts_num, DytabCont));
                     }
                     //else
                     //    TotalRecorNum = DytabCont;
@@ -896,7 +936,12 @@ namespace CfgFileOperation
             }
             else if (string.Equals("rruTypeEntry", strTableName) && (isDyTable == true))//器件库表-射频单元设备类型
             {
-                return CreateSpecialTalbeRruTypeByEx(bw, tableRow, tableOp, leafNum);
+                if (!CreateSpecialTalbeRruTypeByEx(bw, tableRow, tableOp, leafNum))
+                {
+                    Console.WriteLine(String.Format("Err : CreateSpecialTalbeRruPortTypeByEx return false.\n"));
+                    bw.Write(String.Format("Err CreateSpecialTalbeRruTypeByEx return false.\n").ToArray());
+                    return false;
+                }
                 //string strSQLRruType = ("select  * from rruType");
                 //string rruTypePath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
                 //DataSet rruTypedateSet = CfgGetRecordByAccessDb(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
@@ -904,7 +949,12 @@ namespace CfgFileOperation
             }
             else if (string.Equals("rruTypePortEntry", strTableName) && (isDyTable == true))//器件库表-射频单元射频通道设备
             {
-                CreateSpecialTalbeRruPortTypeByEx(tableRow, tableOp, leafNum);
+                if (!CreateSpecialTalbeRruPortTypeByEx(bw, tableRow, tableOp, leafNum))
+                {
+                    Console.WriteLine(String.Format("Err CreateSpecialTalbeRruPortTypeByEx return false.\n"));
+                    bw.Write(String.Format("Err CreateSpecialTalbeRruPortTypeByEx return false.\n").ToArray());
+                    return false;
+                }
                 //string strSQLRruTypePort = ("select  * from rruTypePort");
                 //string rruTypePortPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
                 //DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
@@ -936,10 +986,12 @@ namespace CfgFileOperation
         /// <param name="tableRow"></param>
         /// <param name="tableOp"></param>
         /// <param name="leafNum"></param>
-        private void CreateSpecialTalbeRruPortTypeByEx(DataRow tableRow, CfgTableOp tableOp, int leafNum)
+        private bool CreateSpecialTalbeRruPortTypeByEx(BinaryWriter bw, DataRow tableRow, CfgTableOp tableOp, int leafNum)
         {
             List<RRuTypePortTabStru> rruPortL = m_rruExcel.GetRruTypePortInfoData();
-            SetBuffersInfoForRruTypePortByEx(tableRow, rruPortL, tableOp, leafNum);
+            if (null == rruPortL)
+                return false;
+            return SetBuffersInfoForRruTypePortByEx(bw,tableRow, rruPortL, tableOp, leafNum);
         }
         private void CreateSpecialTalbeRruPortTypeByMdb(DataRow tableRow, CfgTableOp tableOp, int leafNum, Dictionary<string, string> paths)
         {
@@ -1054,7 +1106,10 @@ namespace CfgFileOperation
                                 StruMibNode m_struMibNode = tableOp.m_LeafNodes[ileafNum].m_struMibNode;
                                 int typeSize = mibNode.m_struFieldInfo.u16FieldLen;//.typeSize;
                                 string strCurrentValue = vectRRUTypePortInfo[ileafNum].GetRRuTypePortValue(m_struMibNode.strMibName);
-                                WriteToBuffer(BuffArrL, strCurrentValue, posL, m_struMibNode.strOMType, typeSize, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax);
+                                if (!WriteToBuffer(BuffArrL, strCurrentValue, posL, m_struMibNode.strOMType, typeSize, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax))
+                                {
+                                    // err
+                                }
                             }
                             vectExitInstIndex.Add(stInstIndex);
                         }
@@ -1088,18 +1143,9 @@ namespace CfgFileOperation
             }
             //}
         }
-        private void SetBuffersInfoForRruTypePortByEx(DataRow tableRow, List<RRuTypePortTabStru> vectRRUTypePortInfo, CfgTableOp tableOp, int leafNum)
+        private bool SetBuffersInfoForRruTypePortByEx(BinaryWriter bw, DataRow tableRow, List<RRuTypePortTabStru> vectRRUTypePortInfo, CfgTableOp tableOp, int leafNum)
         {
-            //string strTableContent = tableRow["TableContent"].ToString();//表容量
-            //int rruTypePortCount = rruTypePortdateSet.Tables[0].Rows.Count; // 数据库中的行有效数据的个数
             int nTableNum = int.Parse(tableRow["TableContent"].ToString());//表容量
-            //List<RRuTypePortTabStru> vectRRUTypePortInfo = new List<RRuTypePortTabStru>();
-            //for (int loop = 0; loop < rruTypePortCount - 1; loop++)
-            //{  // 在表之间循环
-            //    if (loop == nTableNum)
-            //        break;
-            //    vectRRUTypePortInfo.Add(new RRuTypePortTabStru(rruTypePortdateSet.Tables[0].Rows[loop]));
-            //}
             int nVecSize = (int)vectRRUTypePortInfo.Count;
             int i = 0;
             ushort bufLens = tableOp.GetAllLeafsFieldLens();//字段总长
@@ -1113,7 +1159,7 @@ namespace CfgFileOperation
                     for (int index2 = 0; index2 < mibNodesStruIndex[2].indexNum; index2++)
                     {
                         if (i == nTableNum)
-                            return;
+                            return true;
                         List<byte[]> BuffArrL = new List<byte[]>() { new byte[bufLens] };
                         string stInstIndex;
                         if (i < nVecSize)
@@ -1135,7 +1181,14 @@ namespace CfgFileOperation
                                 StruMibNode m_struMibNode = tableOp.m_LeafNodes[ileafNum].m_struMibNode;
                                 int typeSize = mibNode.m_struFieldInfo.u16FieldLen;//.typeSize;
                                 string strCurrentValue = vectRRUTypePortInfo[i].GetRRuTypePortValue(m_struMibNode.strMibName);
-                                WriteToBuffer(BuffArrL, strCurrentValue, posL, m_struMibNode.strOMType, typeSize, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax);
+                                if (!WriteToBuffer(BuffArrL, strCurrentValue, posL, m_struMibNode.strOMType, typeSize, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibSyntax))
+                                {
+                                    bw.Write(String.Format("Err : RruTypePortByEx WriteToBuffer: index({0}),name({3}),《RRU基本信息表》Val({1}),不匹配《eNB_MIB》Val({2}).\n", 
+                                        stInstIndex, strCurrentValue, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibName).ToArray());
+                                    Console.WriteLine(String.Format("Err : RruTypePortByEx WriteToBuffer: index({0}),name({3}),《RRU基本信息表》Val({1}),不匹配《eNB_MIB》Val({2}).\n",
+                                        stInstIndex, strCurrentValue, m_struMibNode.strMIBVal_AllList, m_struMibNode.strMibName));
+                                    return false;
+                                }
                             }
                             vectExitInstIndex.Add(stInstIndex);
                         }
@@ -1154,12 +1207,29 @@ namespace CfgFileOperation
                             for (int k = 0; k < 3; k++)
                             {
                                 var LeafNode = tableOp.m_LeafNodes[k];
-                                WriteToBuffer(BuffArrL, "0", bytePosL, LeafNode.m_struMibNode.strOMType, LeafNode.m_struFieldInfo.u16FieldLen, "", LeafNode.m_struMibNode.strMibSyntax);
+                                if (!WriteToBuffer(BuffArrL, "0", bytePosL, LeafNode.m_struMibNode.strOMType, 
+                                    LeafNode.m_struFieldInfo.u16FieldLen, "", LeafNode.m_struMibNode.strMibSyntax))
+                                {
+                                    bw.Write(String.Format(
+                                        "Err : RruTypePortByEx WriteToBuffer: index({0}),name({1}),《RRU基本信息表》Val('0'),不匹配《eNB_MIB》Val('').\n",
+                                        stInstIndex,LeafNode.m_struMibNode.strMibName).ToArray());
+                                    Console.WriteLine(String.Format(
+                                        "Err : RruTypePortByEx WriteToBuffer: index({0}),name({1}),《RRU基本信息表》Val('0'),不匹配《eNB_MIB》Val('').\n",
+                                        stInstIndex, LeafNode.m_struMibNode.strMibName));
+                                    return false;
+                                }
                             }
                             for (int k = 3; k < leafNum - 1; k++)
                             {
-                                WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
-                                    tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax);
+                                if (!WriteToBuffer(BuffArrL, "", bytePosL, tableOp.m_LeafNodes[k].m_struMibNode.strOMType,
+                                    tableOp.m_LeafNodes[k].m_struFieldInfo.u16FieldLen, "", tableOp.m_LeafNodes[k].m_struMibNode.strMibSyntax))
+                                {
+                                    bw.Write(String.Format("Err : RruTypePortByEx WriteToBuffer: index({0}),name({1}),《RRU基本信息表》Val(''),不匹配《eNB_MIB》Val('').\n",
+                                        stInstIndex, tableOp.m_LeafNodes[k].m_struMibNode.strMibName).ToArray());
+                                    Console.WriteLine(String.Format("Err : RruTypePortByEx WriteToBuffer: index({0}),name({1}),《RRU基本信息表》Val(''),不匹配《eNB_MIB》Val('').\n",
+                                        stInstIndex, tableOp.m_LeafNodes[k].m_struMibNode.strMibName));
+                                    return false;
+                                }
                             }
                         }
                         tableOp.m_cfgInsts_add(stInstIndex, BuffArrL[0]);
@@ -1167,6 +1237,7 @@ namespace CfgFileOperation
                     }
                 }
             }
+            return true;
         }
         /// <summary>
         /// "alarmCauseEntry" 的实例处理
@@ -1822,7 +1893,7 @@ namespace CfgFileOperation
                                     {
                                         for (int i = 0; i < TableDimen; i++)
                                         {
-                                            string tempIndexNum;
+                                            //string tempIndexNum;
                                             if (isDyTable == true)//modify by yangyuming 增加对动态表的处理，动态表索引全部置成0 2012.3.23
                                             {
                                                 strInstantNum = strInstantNum + "." + "0";
@@ -1894,7 +1965,7 @@ namespace CfgFileOperation
         /// <param name="strLen"></param>
         /// <param name="strValList"></param>
         /// <param name="strAsnType"></param>
-        public void WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
+        public void WriteToBufferOld(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
         {
             int posStartF = bytePosL[0];
             if (null == byteArray)
@@ -2071,6 +2142,191 @@ namespace CfgFileOperation
             if (bytePosL[0] - posStartF < strLen)
                 bytePosL[0] = posStartF + strLen;
         }
+        public bool WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
+        {
+            bool re = true;
+            int posStartF = bytePosL[0];
+            if (null == byteArray)
+                return false;
+            else if (String.Empty == value.Trim(' '))
+            {
+                SetValueToByteArray(byteArray, bytePosL, (uint)0);
+                return true;
+            }
+            if (OMType == "s32" || (OMType == "u32"))    //s32,u32
+            {
+                uint omValue = 0;// 返回类型已经确定
+                if (String.Compare(strAsnType, "Bits", true) == 0)
+                {
+                    if (value.Contains("×") != false)
+                        omValue = (uint)0;
+                    else
+                    {
+                        if (!GetBitsTypeValueFromValue(value, strValList, out omValue))
+                        {
+                            re =  false;
+                        }
+                    }
+                }
+                else if ((String.Compare(strAsnType, "Integer32", true) == 0) && value.IndexOf(":") > 0)
+                {
+                    omValue = (uint)getEnumValue(value);
+                }
+                else if ((String.Compare(strAsnType, "INTEGER", true) == 0) && value.IndexOf(":") > 0)
+                {
+                    omValue = (uint)getEnumValue(value);
+                }
+                else
+                {
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (value.Contains("×") != false)
+                        omValue = (uint)0;
+                    else
+                    {
+                        omValue = (uint)long.Parse(value);//4294967295 必须用long.Parse
+                    }
+                }
+                if (OMType == "s32")
+                    SetValueToByteArray(byteArray, bytePosL, (int)omValue);
+                else if (OMType == "u32")
+                    SetValueToByteArray(byteArray, bytePosL, (uint)omValue);
+            }
+            else if (OMType == "u32[]")
+            {
+                int posStart = bytePosL[0];
+                if (value.Contains("×") != false)
+                {
+                    value = "0";
+                    //bytePosL[0] += strLen;
+                }
+                //else松懈
+                getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
+                if (bytePosL[0] - posStart < strLen)
+                    bytePosL[0] = posStart + strLen;
+            }
+            else if (OMType == "enum")   //enum,转换成u32
+            {
+                if (("×" == value))
+                    value = "0";
+                SetValueToByteArray(byteArray, bytePosL, (uint)getEnumValue(value));
+            }
+            else if (OMType == "s32[]")   //Oid
+            {
+                if (("×" == value))
+                    value = "0";
+                OM_OBJ_ID_T tmpOID = new OM_OBJ_ID_T(value);// OM_OBJ_ID_T(value);
+                SetValueToByteArray(byteArray, bytePosL, tmpOID.StruToByteArray());
+            }
+            else if (OMType == "s8[]")   //char *
+            {
+                value = value.Replace("\"", "");//value = value.Trim("\"");
+                if (("×" == value))
+                    value = "";
+                sbyte[] sbArray = (sbyte[])((Array)System.Text.Encoding.Default.GetBytes(value));
+                //byte[] mybyte = Encoding.Unicode.GetBytes(value);
+                byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
+                //string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
+                SetValueToByteArray(byteArray, bytePosL, sbArray);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
+                if (mybyte2.Length < strLen)
+                    bytePosL[0] += strLen - mybyte2.Length;
+
+            }
+            else if (OMType == "s8")   //char *
+            {
+                int omValue = 0;
+                if (value.Contains("0x") != false)
+                    omValue = (int)Convert.ToInt32(value, 16);
+                else if (("×" == value))
+                    omValue = 0;
+                else
+                    omValue = (int)int.Parse(value);
+                byte[] TypeToByteArr = BitConverter.GetBytes((int)omValue);
+                SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
+            }
+            else if (OMType == "u8")
+            {
+                uint omValue = 0;
+                if (value.Contains("0x") != false)
+                    omValue = (uint)Convert.ToInt32(value, 16);
+                else if (("×" == value))
+                    omValue = 0;
+                else
+                    omValue = (uint)int.Parse(value);
+                byte[] TypeToByteArr = BitConverter.GetBytes((ushort)omValue);
+                SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
+            }
+            else if (OMType == "u8[]")
+            {
+                if (0 == String.Compare("IpAddress", strAsnType, true))//sizeof(ipv4addr)
+                {
+                    uint IPAddr = getIPAddr(value);
+                    SetValueToByteArray(byteArray, bytePosL, IPAddr);
+                }
+                else if (String.Compare(strAsnType, "InetAddress", true) == 0)
+                {
+                    int posStart = bytePosL[0];
+                    value = value.Replace("\"", ""); //value.Trim("\"");
+                    GetInetAddressValue(byteArray, bytePosL, value);
+                    if (bytePosL[0] - posStart < strLen)
+                        bytePosL[0] = posStart + strLen;
+                }
+                else if (String.Compare(strAsnType, "MacAddress", true) == 0)
+                {
+                    getMacAddr(byteArray, bytePosL, value);
+                }
+                else if (String.Compare(strAsnType, "MncMccType", true) == 0)
+                {
+                    GetMncMccTypeValue(byteArray, bytePosL, value);
+                }
+                else     //其他的u8[] 2009-12-21
+                {
+                    value = value.Replace("\"", "");
+                    if (("×" == value))
+                        value = "0";
+                    if (String.Compare(strAsnType, "DateAndTime", true) == 0)
+                        GetDateAndTimeTypeValue(byteArray, bytePosL, value);
+                    else
+                        SetValueToByteArray(byteArray, bytePosL, value);
+                }
+            }
+            else if (OMType == "u16")   //u16,s16
+            {
+                uint omValue = 0;
+                if (value.Contains("0x") != false)
+                    omValue = (uint)Convert.ToInt32(value, 16);
+                else if (("×" == value))
+                    omValue = 0;
+                else
+                    omValue = (uint)int.Parse(value);
+                SetValueToByteArray(byteArray, bytePosL, (ushort)omValue);
+            }
+            else if (OMType == "s16")   //u16,s16
+            {
+                uint omValue = 0;
+                if (value.Contains("0x") != false)
+                    omValue = (uint)Convert.ToInt32(value, 16);
+                else if (("×" == value))
+                    omValue = 0;
+                else
+                    omValue = (uint)int.Parse(value);
+                SetValueToByteArray(byteArray, bytePosL, (short)omValue);
+            }
+            else
+            {
+                uint omValue = 0;
+                if (value.Contains("0x") != false)
+                    omValue = (uint)Convert.ToInt32(value, 16);
+                else
+                    omValue = (uint)int.Parse(value);
+                SetValueToByteArray(byteArray, bytePosL, omValue);
+            }
+
+            if (bytePosL[0] - posStartF < strLen)
+                bytePosL[0] = posStartF + strLen;
+            return re;
+        }
+
         /// <summary>
         /// 类型转换为byte[]
         /// </summary>
@@ -2206,8 +2462,16 @@ namespace CfgFileOperation
                 // mib 中的赋值，直接使用了bits变int得方式：例如(int)7=(2进制)0111，即第0,1,2位有效的意思。
                 if (!mapDesc2Value.ContainsKey(strCurValueDesc))// 不存在
                 {
-                    outValue = uint.Parse(strCurValueDesc);//"参数取值列表中不存在%s"
-                    return false;
+                    try
+                    {
+                        outValue = uint.Parse(strCurValueDesc);//"参数取值列表中不存在%s"
+                        return false;
+                    }
+                    catch
+                    {
+                        outValue = 0;
+                        return false;
+                    }
                 }
                 setOutValue.Add((uint)(mapDesc2Value[strCurValueDesc]));
                 strEach = GetNextDeck(strInputValue1, "/", out strInputValue1);// '/');
