@@ -19,10 +19,17 @@ namespace CfgFileOperation
     /// </summary>
     class Test
     {
-        static void Main(string[] args)
+        //static int Main(string[] args)
+        //{
+        //    Console.WriteLine("c#");
+        //    return 1;
+        //}
+        static int Main(string[] args)
         {
+            
             //string d = Console.ReadLine();
             int cmdNo = -1;
+            int iRet = 0;
             foreach (var arg in args)
             {
                 Console.WriteLine(String.Format("Main arg:({0})", arg));
@@ -47,13 +54,22 @@ namespace CfgFileOperation
                     // 命令行生成init
                     else if (string.Equals(strVal, "Cmdline"))
                     {
+                        Console.OutputEncoding = Encoding.UTF8;
                         cmdNo = 2;
-                        new Test().CmdlineCreateInitPatch(args);
+                        bool rer = new Test().CmdlineCreateInitPatch(args);
+                        if (!rer)
+                        {
+                            Console.WriteLine(String.Format("Err CmdlineCreateInitPatch CmdNo={0}.\n", cmdNo));
+                            iRet = 2;
+                        }
                         break;
                     }
                     else if (string.Equals(strVal, "BeyondComparePatch"))
                     {
                         cmdNo = 3;
+                        TestCfgForInitAndPatch patch = new TestCfgForInitAndPatch();
+                        patch.BeyondComparePatchExCfgMain(args);
+
                         break;
                     }
                     else if (string.Equals(strVal, "CreatePatch"))
@@ -70,7 +86,7 @@ namespace CfgFileOperation
                     }
                 }
             }
-            Console.WriteLine(String.Format("Main End CmdNo={0}.", cmdNo));
+            Console.WriteLine(String.Format("Main End CmdNo={0}, return {1}.\n", cmdNo,iRet));
             //new Test().CmdlineCreateInitPatch(args);
 
             //TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
@@ -99,7 +115,7 @@ namespace CfgFileOperation
             //test.testForOpReadExcelForCfg();
 
             //test.test4();
-
+            return iRet;
         }
 
         /// <summary>
@@ -1633,48 +1649,49 @@ namespace CfgFileOperation
         /// 命令行生成
         /// </summary>
         /// <param name="paths"></param>
-        void CmdlineCreateInitPatch(string[] args)
+        bool CmdlineCreateInitPatch(string[] args)
         {
-            string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string fileName = string.Format("LogInitPatch_{0}.txt", time);
-            FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
-            //实例化BinaryWriter
-
-            BinaryWriter bw = new BinaryWriter(fs, Encoding.Default,true);
-            bw.Write(String.Format("Cmdline CreateInitPatch Start... Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
-            Console.WriteLine(String.Format("....CmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
-
-            try
+            bool re = true;
+            if (args.Count() == 0)
             {
-                Dictionary<string, string> path = null;
-                if (args.Count() != 0)
+                Console.WriteLine("Err need input par Count is 0.\n");
+                return false;
+            }
+            Dictionary<string, string> path = new Dictionary<string, string>();
+            foreach (var par in args)
+            {
+                string par_str = par.ToString();
+                int pos = par_str.IndexOf(':');
+                if (pos != -1)
                 {
-                    path = new Dictionary<string, string>();
-                    foreach (var par in args)
-                    {
-                        string par_str = par.ToString();
-                        int pos = par_str.IndexOf(':');
-                        if (pos != -1)
-                        {
-                            string key = par_str.Substring(0, pos);
-                            string val = par_str.Substring(pos + 1);
-                            path.Add(key, val);
-                            bw.Write(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val).ToArray());
-                        }
-                    }
-                    new CfgOp().CreatePatchAndInitCfg(bw, path);
-                }
-                else
-                {
-                    bw.Write(String.Format("\nCmdline CreateInitPatch Err: need input par.\n").ToArray());
-                    Console.WriteLine(" need input par...");
+                    string key = par_str.Substring(0, pos);
+                    string val = par_str.Substring(pos + 1);
+                    path.Add(key, val);
+                    Console.WriteLine(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val));
                 }
             }
-            //catch
-            //{
-            //    //CfgExcelOp.GetInstance().Dispose();
-            //    bw.Write(String.Format("Cmdline CreateInitPatch Err. Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
-            //}
+            if (!path.ContainsKey("OutDir") || !Directory.Exists(path["OutDir"]))
+            {
+                Console.WriteLine("Err need output dir info...\n");
+                return false;
+            }
+
+            //string time = DateTime.Now.ToString("yyyyMMddHHmmss");
+            //string fileName = string.Format("LogInitPatch_{0}.txt", time);
+            string fileName = path["OutDir"]+"LogInitPatch.txt";
+            FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
+            //实例化BinaryWriter
+            BinaryWriter bw = new BinaryWriter(fs, Encoding.UTF8, true);
+            bw.Write(String.Format("Cmdline CreateInitPatch Start... Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
+            Console.WriteLine(String.Format("....CmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
+            try
+            {
+                re = new CfgOp().CreatePatchAndInitCfg(bw, path);
+            }
+            catch
+            {
+                Console.WriteLine("Err exe Death...");
+            }
             finally
             {
                 CfgExcelOp.GetInstance().Dispose();
@@ -1687,6 +1704,7 @@ namespace CfgFileOperation
             //关闭流
             bw.Close();
             fs.Close();
+            return re;
         }
 
         /// <summary>

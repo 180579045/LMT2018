@@ -84,11 +84,12 @@ namespace CfgFileOperation
             for (int loop = 0; loop < MibdateSet.Tables[0].Rows.Count - 1; loop++)//在表之间循环
             {
                 DataRow row = MibdateSet.Tables[0].Rows[loop];
-                if (row["MIBName"].ToString() == "nrCsiRsImEntry")
-                    Console.WriteLine("==");
-                if (row["MIBName"].ToString() == "nrCsiRsimLcId")
-                    Console.WriteLine("==");//"nrCsiRsImLcId"
-                Console.WriteLine(row["MIBName"].ToString());
+                //if (row["MIBName"].ToString() == "nrCsiRsImEntry")
+                //    Console.WriteLine("==");
+                //if (row["MIBName"].ToString() == "nrCsiRsimLcId")
+                //    Console.WriteLine("==");//"nrCsiRsImLcId"
+                //Console.WriteLine(row["MIBName"].ToString());
+                
                 // 处理每行的MIB数据
                 CfgParseDBMibTreeStrLineMib pTempNode = new CfgParseDBMibTreeStrLineMib(row, pMapMibNodeByName, pMapMibNodeByOID);//StruMibNode pTempNode = new StruMibNode();
 

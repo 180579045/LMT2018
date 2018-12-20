@@ -36,8 +36,8 @@ namespace CfgFileOperation
             bw.Write("beyond compare two patch_ex.cfg.\n");
 
             string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
-            string YSFilePath = dataBasePath + "5GCfg\\patch_ex_qyx.cfg";
-            string NewFilePath = dataBasePath + "5GCfg\\patch_ex.cfg";
+            string YSFilePath = dataBasePath + "5GCfg\\cfg_20181219\\patch_hw.cfg";
+            string NewFilePath = dataBasePath + "5GCfg\\3patch_ex.cfg";
 
             //1.文件头
             if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
@@ -242,7 +242,16 @@ namespace CfgFileOperation
             //->u32ReserveVer; 4 * 1:uint 初配文件小版本：用来区分相同大版本下的因取值不同造成的差异，现在这里是最小版本(版本号"5_65_3_6", 截取6)
             if (HeadA.u32ReserveVer != HeadB.u32ReserveVer)
             {
-                bug += String.Format("u32ReserveVer 不同。\n");
+                string verOld = HeadA.u32PublicMibVer.ToString() + "_" 
+                    + HeadA.u32MainMibVer.ToString() + "_" 
+                    + HeadA.u32SubMibVer.ToString() + "_" 
+                    + HeadA.u32ReserveVer;
+                string verNew = HeadB.u32PublicMibVer.ToString() + "_"
+                    + HeadB.u32MainMibVer.ToString() + "_"
+                    + HeadB.u32SubMibVer.ToString() + "_"
+                    + HeadB.u32ReserveVer;
+                bug += String.Format("u32ReserveVer old({0}), new({1}) 不同。\n", verOld, verNew);
+                Console.WriteLine(String.Format("u32ReserveVer old({0}), new({1}) 不同。\n", verOld, verNew));
                 re = false;
                 //return re;
             }
@@ -390,9 +399,31 @@ namespace CfgFileOperation
             List<uint> NewTablePos = GetTablesPos(NewFilePath, (int)NewDhead.u32TableCnt);
             List<string> NewTableNames = GetTableNamesByTablesPos(NewFilePath, NewTablePos);
 
-            return TestBeyondTableName(bw,YsTableNames, NewTableNames);
+            bool re = TestBeyondTableName(bw,YsTableNames, NewTableNames);
+            if (re == false)
+            {
+                PrintTableName("OldTableName.txt", YsTableNames);
+                PrintTableName("NewTableName.txt", NewTableNames);
+            }
+            return re;
         }
-
+        void PrintTableName(string fname, List<string> TableNames)
+        {
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\5GCfg\\";
+            string fileName = dataBasePath + fname;// "OldTableName.txt";
+            FileStream fs2 = new FileStream(fileName, FileMode.OpenOrCreate);
+            //实例化BinaryWriter
+            BinaryWriter bw2 = new BinaryWriter(fs2, Encoding.UTF8, true);
+            foreach (var tav in TableNames)
+            {
+                bw2.Write(String.Format(tav).ToArray());
+            }
+            //清空缓冲区
+            bw2.Flush();
+            //关闭流
+            bw2.Close();
+            fs2.Close();
+        }
 
         /// <summary>
         /// 比较 每个表的内容
@@ -554,6 +585,7 @@ namespace CfgFileOperation
                     re = false;
                 }
             }
+
             return re;
         }
 

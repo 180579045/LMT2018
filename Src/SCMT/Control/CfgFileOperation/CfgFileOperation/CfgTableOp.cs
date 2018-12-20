@@ -362,8 +362,8 @@ namespace CfgFileOperation
                     tableInfo.AddRange(lastByte.ToArray());
                 }
             }
-            if (instNum != m_cfgFile_TblInfo.u32RecNum)
-                Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头 Num is {2}。。。。。。", m_strTableName, instNum, m_cfgFile_TblInfo.u32RecNum));
+            //if (instNum != m_cfgFile_TblInfo.u32RecNum)
+            //    Console.WriteLine(String.Format("Err : {0} 实例计算错误 m_cfgInsts num is {1}, 表头 Num is {2}。。。。。。", m_strTableName, instNum, m_cfgFile_TblInfo.u32RecNum));
             
             return tableInfo;
         }
