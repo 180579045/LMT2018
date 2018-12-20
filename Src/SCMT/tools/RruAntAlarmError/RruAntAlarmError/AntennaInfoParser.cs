@@ -763,10 +763,29 @@ namespace RruAntAlarmError
             if (false == splitKeyValue(excelValue, ":", out key,
                     out value))
             {
+                recordLog("波束扫描原始值 sheet" + " Line " + line + "天线型号:antMode的格式填写不正确: " + excelValue);
                 return false;
             }
             bfscanTable.antArrayBfScanAntWeightTypeIndex = key;
             bfscanTable.antArrayBfScanNotMibTypeName = value;
+            return true;
+        }
+
+        private bool setBFScanLossFlagInfo(string excelValue, int line, AntennaBfScanWeightTable bfscanTable)
+        {
+            if (excelValue.Trim().Equals("有损"))
+            {
+                bfscanTable.antennaBfScanWeightIsLossFlag = "1";
+            }
+            else if(excelValue.Trim().Equals("无损"))
+            {
+                bfscanTable.antennaBfScanWeightIsLossFlag = "0";
+            }
+            else
+            {
+                recordLog("波束扫描原始值 sheet" + " Line " + line + "有损无损:antLossFlag的格式填写不正确: " + excelValue);
+                return false;
+            }
             return true;
         }
         private void AddBfScanOneRecord(AntennaBfScanWeightTable table)
@@ -798,7 +817,10 @@ namespace RruAntAlarmError
                 {"antennaBfScanWeightAmplitude7", table.antennaBfScanWeightAmplitude7},
                 {"antennaBfScanWeightPhase7", table.antennaBfScanWeightPhase7},
                 {"antennaBfScanWeightHorizonNum", table.antennaBfScanWeightHorizonNum},
-                {"antennaBfScanWeightVerticalNum", table.antennaBfScanWeightVerticalNum}
+                {"antennaBfScanWeightVerticalNum", table.antennaBfScanWeightVerticalNum},
+                {"antennaBfScanWeightHorizonDowntiltAngle", table.antennaBfScanWeightHorizonDowntiltAngle},
+                {"antennaBfScanWeightVerticalDowntiltAngle", table.antennaBfScanWeightVerticalDowntiltAngle},
+                {"antennaBfScanWeightIsLossFlag", table.antennaBfScanWeightIsLossFlag}
 
             };
             bfScanWeightArray.Add(tableObject);
@@ -874,6 +896,12 @@ namespace RruAntAlarmError
                     (round((double.Parse(rowRec[columnPhaName].ToString().Trim())))).ToString();
                 bfscanTable.antennaBfScanWeightHorizonNum = rowRec["水平方向波束个数:horBeamScanning"].ToString().Trim();
                 bfscanTable.antennaBfScanWeightVerticalNum = rowRec["垂直方向波束个数:verBeamScanning"].ToString().Trim();
+                bfscanTable.antennaBfScanWeightHorizonDowntiltAngle = rowRec["水平方向数字下倾角:horDowntiltAngle(单位º)"].ToString().Trim();
+                bfscanTable.antennaBfScanWeightVerticalDowntiltAngle = rowRec["垂直方向数字下倾角:verDowntiltAngle(单位º)"].ToString().Trim();
+                if (!setBFScanLossFlagInfo(rowRec["有损无损:antLossFlag"].ToString().Trim(), line, bfscanTable))
+                {
+                    return false;
+                }
                 AddBfScanOneRecord(bfscanTable);
             }
             return true;

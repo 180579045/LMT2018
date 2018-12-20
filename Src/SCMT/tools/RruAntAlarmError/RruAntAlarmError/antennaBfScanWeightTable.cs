@@ -43,5 +43,8 @@ namespace RruAntAlarmError
         public string antennaBfScanWeightPhase7 { get; set; }
         public string antennaBfScanWeightHorizonNum { get; set; }
         public string antennaBfScanWeightVerticalNum { get; set; }
+        public string antennaBfScanWeightHorizonDowntiltAngle { get; set; }
+        public string antennaBfScanWeightVerticalDowntiltAngle { get; set; }
+        public string antennaBfScanWeightIsLossFlag { get; set; }
     }
 }
