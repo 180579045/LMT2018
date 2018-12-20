@@ -11,6 +11,7 @@ using CommonUtility;
 using LogManager;
 using MsgQueue;
 using MsgDispatcher;
+using System.Windows.Threading;
 
 namespace SCMTMainWindow
 {
@@ -29,23 +30,48 @@ namespace SCMTMainWindow
 			MqInitial.Init();
 			ConnectWorker.GetInstance();
 			DoMsgDispatcher.GetInstance();
-			//AtpInitial.Init();
+            //AtpInitial.Init();
 
-			//NetElementConfig config = new NetElementConfig()
-			//{
-			//	TraceIp = "172.27.245.82",
-			//	AgentSlot = 2,
-			//	Index = 3,
-			//	FrameNo = 0,
-			//	SlotNo = 1,
-			//	TargetIp = "172.27.245.92",
-			//	conType = ConnectType.ATP_DIRECT_LINK
-			//};
+            //NetElementConfig config = new NetElementConfig()
+            //{
+            //	TraceIp = "172.27.245.82",
+            //	AgentSlot = 2,
+            //	Index = 3,
+            //	FrameNo = 0,
+            //	SlotNo = 1,
+            //	TargetIp = "172.27.245.92",
+            //	conType = ConnectType.ATP_DIRECT_LINK
+            //};
 
-			//LinkMgrActor.GetInstance().ConnectNetElement("172.27.245.92", config);
-		}
+            //LinkMgrActor.GetInstance().ConnectNetElement("172.27.245.92", config);
+            //异常捕获记录 
+            //捕获应用程序域中发生的异常（包括UI线程和非UI线程）
+            //AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+		    //UI线程
+		    //Application.Current.DispatcherUnhandledException += DispatcherOnUnhandledException;
+		    //TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
 
-		protected override void OnExit(ExitEventArgs e)
+        }
+	    private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs unobservedTaskExceptionEventArgs)
+	    {
+	        Log.Error(unobservedTaskExceptionEventArgs.Exception.ToString());
+
+	        Environment.Exit(0);
+	    }
+
+	    private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
+	    {
+	        Log.Error(dispatcherUnhandledExceptionEventArgs.Exception.ToString());
+	        
+	        Environment.Exit(0);
+	    }
+
+	    private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
+	    {
+	        Log.Error(((Exception)unhandledExceptionEventArgs.ExceptionObject).ToString());
+	        Environment.Exit(0);
+	    }
+        protected override void OnExit(ExitEventArgs e)
 		{
 			AtpInitial.Stop();
 			MqInitial.Stop();
