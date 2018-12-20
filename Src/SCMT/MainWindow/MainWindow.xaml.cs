@@ -549,13 +549,13 @@ namespace SCMTMainWindow
 				return;
 			}
 
-			node = ((NodeBArgs)e).m_NodeB;
+			var nodeB = ((NodeBArgs)e).m_NodeB;
 			ObjNode.main = this;
 			//ObjNode.datagrid = this.MibDataGrid;
 
 			// 向基站前端控件填入对应信息;
 			AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
-			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
+			AddNodeLabel(nodeB.FriendlyName, nodeB.NeAddress.ToString());
 		}
 
 		private void AddNodeLabel(string friendlyName, string Ip)
