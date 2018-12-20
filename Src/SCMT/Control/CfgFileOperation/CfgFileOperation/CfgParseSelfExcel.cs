@@ -62,7 +62,7 @@ namespace CfgFileOperation
             // "patch" 页
             if (0 == String.Compare("patch", strCon, true))
             {
-                ExportSelfExcelForPatch5G(bw, strExcel, strFile, cfgOp, reclist);
+                ExportSelfExcelForPatch5G(bw, strExcel, strCon, cfgOp, reclist);
             }
             return true;
         }
@@ -190,7 +190,7 @@ namespace CfgFileOperation
                     reclist.InsertPdgTab(strCurTableName, "1", cfgOp);                // 增加要写Patch的表名
                     if (0 == String.Compare("-1", Index, true))                       // 索引 == -1 相关的处理
                     {
-                        PatchNeedWritePatchTable(cfgOp, strCurTableName, reclist);             // 需要做补丁文件的表名和表下面的节点     
+                        PatchNeedWritePatchTable(cfgOp, strCurTableName, reclist);    // 需要做补丁文件的表名和表下面的节点     
                         continue;
                     }
                     else                                                              // 索引 剩下的不为空 相关处理
