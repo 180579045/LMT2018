@@ -12,6 +12,7 @@ using LogManager;
 using MsgQueue;
 using MsgDispatcher;
 using System.Windows.Threading;
+using System.Text;
 
 namespace SCMTMainWindow
 {
@@ -45,31 +46,55 @@ namespace SCMTMainWindow
 
             //LinkMgrActor.GetInstance().ConnectNetElement("172.27.245.92", config);
             //异常捕获记录 
-            //捕获应用程序域中发生的异常（包括UI线程和非UI线程）
-            //AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
 		    //UI线程
-		    //Application.Current.DispatcherUnhandledException += DispatcherOnUnhandledException;
-		    //TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
-
+		    Application.Current.DispatcherUnhandledException += DispatcherOnUnhandledException;
+            //捕获应用程序域中发生的异常（包括非UI线程）
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomainOnUnhandledException;
+            //Async await 异常
+            TaskScheduler.UnobservedTaskException += TaskSchedulerOnUnobservedTaskException;
         }
-	    private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs unobservedTaskExceptionEventArgs)
+        private void TaskSchedulerOnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs unobservedTaskExceptionEventArgs)
 	    {
-	        Log.Error(unobservedTaskExceptionEventArgs.Exception.ToString());
-
-	        Environment.Exit(0);
-	    }
+	        string errInfo = unobservedTaskExceptionEventArgs.Exception.ToString();
+            Log.Error(errInfo);
+	        MessageBox.Show("当前应用程序遇到一些问题,请提取相应日志文件联系研发" + Environment.NewLine + errInfo);
+            //Environment.Exit(0);
+        }
 
 	    private void DispatcherOnUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
 	    {
-	        Log.Error(dispatcherUnhandledExceptionEventArgs.Exception.ToString());
-	        
-	        Environment.Exit(0);
-	    }
+	        string errInfo = dispatcherUnhandledExceptionEventArgs.Exception.ToString();
+            Log.Error(errInfo);
+	        MessageBox.Show("当前应用程序遇到一些问题,请提取相应日志文件联系研发" + Environment.NewLine + errInfo);
+	        dispatcherUnhandledExceptionEventArgs.Handled = true;//告诉运行时，该异常被处理了，不再作为UnhandledException抛出了。 
+            //Environment.Exit(0);
+        }
 
 	    private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs unhandledExceptionEventArgs)
 	    {
-	        Log.Error(((Exception)unhandledExceptionEventArgs.ExceptionObject).ToString());
-	        Environment.Exit(0);
+	        bool existFlag = false;
+	        StringBuilder sbEx = new StringBuilder();
+	        if (unhandledExceptionEventArgs.IsTerminating)
+	        {
+	            sbEx.Append("程序发生致命错误，将终止，请提取相应日志文件联系研发！\n");
+                existFlag = true;
+            }
+	        sbEx.Append("捕获未处理异常：");
+	        if (unhandledExceptionEventArgs.ExceptionObject is Exception)
+	        {
+	            sbEx.Append(((Exception)unhandledExceptionEventArgs.ExceptionObject).Message);
+	        }
+	        else
+	        {
+	            sbEx.Append(unhandledExceptionEventArgs.ExceptionObject);
+	        }
+	        MessageBox.Show(sbEx.ToString());
+            string errInfo = ((Exception) unhandledExceptionEventArgs.ExceptionObject).ToString();
+            Log.Error(errInfo);
+	        if (existFlag)
+	        {
+	            Environment.Exit(0);
+	        }
 	    }
         protected override void OnExit(ExitEventArgs e)
 		{
