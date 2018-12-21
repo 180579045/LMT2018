@@ -35,24 +35,68 @@ namespace CfgFileOperation
             BinaryWriter bw = new BinaryWriter(fs);
             bw.Write("beyond compare two patch_ex.cfg.\n");
 
+            Dictionary<string, string> parInfo = new Dictionary<string, string>();
+            foreach (var arg in args)
+            {
+                string strArg = arg.ToString();
+                int pos = strArg.IndexOf(":");
+                if (-1 != pos)
+                {
+                    string strName = strArg.Substring(0, pos);
+                    string strInfo = strArg.Substring(pos + 1);
+                    parInfo.Add(strName, strInfo);
+                }
+            }
+
             string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
             string YSFilePath = dataBasePath + "5GCfg\\cfg_20181219\\patch_hw.cfg";
-            string NewFilePath = dataBasePath + "5GCfg\\3patch_ex.cfg";
+            string NewFilePath = dataBasePath + "5GCfg\\13patch_ex.cfg";
 
             //1.文件头
             if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
             {
-                Console.WriteLine("file head info not all same.");
-                bw.Write("file head info not all same.\n");
+                Console.WriteLine("file head info not all same.\n");
+                bw.Write("file head info not all same.\n".ToArray());
             }
 
             // 比较 表名是否一致
             if (!TestBeyondCompFileTableNameMain(bw, YSFilePath, NewFilePath))
             {
-                Console.WriteLine("tables name not all same.");
-                bw.Write("tables name not all same.\n");
+                Console.WriteLine("tables name not all same.\n");
+                bw.Write("tables name not all same.\n".ToArray());
             }
 
+            Dictionary<string, string> parInfo2 = new Dictionary<string, string>()
+            { { "FilePathA",YSFilePath},{ "FilePathB",NewFilePath},{ "DataMdb", parInfo[ "DataMdb"]},};
+            string err = "";
+            if (IsAllPathValid(parInfo2, out err))
+            {
+                // 文件的头比较
+                if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
+                {
+                    Console.WriteLine("file head info not all same.");
+                    bw.Write("file head info not all same.\n".ToArray());
+                    //re = false;
+                    //return re;
+                }
+                // 比较 表名是否一致
+                if (!TestBeyondCompFileTableNameMain(bw, YSFilePath, NewFilePath))
+                {
+                    Console.WriteLine("tables name not all same.");
+                    bw.Write("tables name not all same.\n");
+                    //re = false;
+                    //return re;
+                }
+                // 比较 每个表的内容
+                if (!TestBeyondComFileTableInfoMain(bw, YSFilePath, NewFilePath, parInfo2))
+                {
+                    Console.WriteLine("tables info not all same.");
+                    bw.Write("tables info not all same.\n");
+                    //re = false;
+                    //return re;
+                }
+                // re;
+            }
 
             //清空缓冲区
             bw.Flush();
@@ -416,7 +460,7 @@ namespace CfgFileOperation
             BinaryWriter bw2 = new BinaryWriter(fs2, Encoding.UTF8, true);
             foreach (var tav in TableNames)
             {
-                bw2.Write(String.Format(tav).ToArray());
+                bw2.Write(String.Format("{0}\n",tav).ToArray());
             }
             //清空缓冲区
             bw2.Flush();
@@ -559,13 +603,13 @@ namespace CfgFileOperation
             List<string> tablNamesLess;
             if (tablesPosLA.Count > tablesPosLB.Count)
             {
-                bw.Write("TestBeyondTableName a is more than b.\n.");
+                bw.Write("TestBeyondTableName a is more than b.\n.".ToArray());
                 tablNamesMore = tablesPosLA;
                 tablNamesLess = tablesPosLB;
             }
             else if (tablesPosLA.Count < tablesPosLB.Count)
             {
-                bw.Write("TestBeyondTableName b is more than a.\n.");
+                bw.Write("TestBeyondTableName b is more than a.\n.".ToArray());
                 tablNamesMore = tablesPosLB;
                 tablNamesLess = tablesPosLA;
             }
@@ -575,13 +619,26 @@ namespace CfgFileOperation
                 tablNamesMore = tablesPosLA;
                 tablNamesLess = tablesPosLB;
             }
-
+            bw.Write(String.Format("\n\n"));
+            bw.Write(String.Format("========== More Beyond Less  ============ \n\n"));
             foreach (var table in tablNamesMore)
             {
                 if (-1 == tablNamesLess.FindIndex(e => String.Equals(e, table)))
                 {
-                    bw.Write(String.Format("TestBeyondTableName not have {0}. \n.", table));
-                    Console.WriteLine(String.Format("not have {0}", table));
+                    bw.Write(String.Format("TestBeyondTableName not have {0}. \n.", table).ToArray());
+                    Console.WriteLine(String.Format("not have {0}.\n", table));
+                    re = false;
+                }
+            }
+
+            bw.Write(String.Format("\n\n"));
+            bw.Write(String.Format("========== Less Beyond More  ============ \n\n"));
+            foreach (var table in tablNamesLess)
+            {
+                if (-1 == tablNamesMore.FindIndex(e => String.Equals(e, table)))
+                {
+                    bw.Write(String.Format("TestBeyondTableName not have {0}. \n.", table).ToArray());
+                    Console.WriteLine(String.Format("not have {0}.\n", table));
                     re = false;
                 }
             }

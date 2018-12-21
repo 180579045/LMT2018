@@ -1188,7 +1188,8 @@ namespace CfgFileOpStruct
         {
             StruCfgFileTblInfo s = new StruCfgFileTblInfo("init");
             s.u16DataFmtVer = this.u16DataFmtVer;
-            Array.Copy(s.u8TblName, this.u8TblName, this.u8TblName.Length); 
+            Array.Copy(this.u8TblName, s.u8TblName, this.u8TblName.Length);
+            //Array.Copy(s.u8TblName, this.u8TblName, this.u8TblName.Length); 
             s.u16FieldNum = this.u16FieldNum;
             s.u16RecLen = this.u16RecLen;
             s.u32RecNum = this.u32RecNum;

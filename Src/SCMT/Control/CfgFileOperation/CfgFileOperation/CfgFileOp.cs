@@ -291,13 +291,16 @@ namespace CfgFileOperation
         /// <param name="paths"></param>
         bool CreatCfg_patch_ex_cfg_5G(BinaryWriter bw, Dictionary<string, string> paths)
         {
+            bool re = true;
             //patch-1. lm.mdb 以每行为单位加载, reclist使用 
             m_mibTreeMem = new CfgParseDBMibTreeToMemory();
             if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
             {
+                re = false;
                 bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.\n").ToArray());
-                return false;
+                return re;
             }
+            // 打印内存
             //LogPrintByM_mibTreeMem();
             //LogPrintByM_mapTableInfo();
 
@@ -310,26 +313,41 @@ namespace CfgFileOperation
                 //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
                 if (!m_reclist5G.ProcessingExcel(UeType, this))
                 {
-                    bw.Write(String.Format("Err CfgParseReclistExcel5G ({0}) return Err.\n", UeType).ToArray());
+                    bw.Write(String.Format("Err CfgParseReclistExcel5G ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
                     m_reclist5G = null;
+                    re = false;
                     continue;
                 }
                 //patch-3. 自定义 (patch)
-                if (!m_reclist5G.ProcessingSelfPatch(paths["SelfDef"], this))
+                if (!m_reclist5G.ProcessingSelfPatch(paths["SelfDef"], this, UeType))
                 {
-                    bw.Write(String.Format("Err ProcessingSelfPatch ({0}) return Err.\n", UeType).ToArray());
+                    re = false;
+                    bw.Write(String.Format("Err ProcessingSelfPatch ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
                     m_reclist5G = null;
                     continue;
                 }
                 //patch-4. 创建patch_ex.cfg
-                m_reclist5G.CreateFilePdg_eNB(this, "patch_ex.cfg", paths["DataMdb"]);
+                if (!m_reclist5G.CreateFilePdg_eNB(this, "patch_ex.cfg", paths["DataMdb"]))
+                {
+                    re = false;
+                    bw.Write(String.Format("Err CreateFilePdg_eNB ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
+                    m_reclist5G = null;
+                    continue;
+                }
+                //写文件
                 string strUeType = UeType.Substring(0, UeType.IndexOf(":"));
-                m_reclist5G.SaveFilePdg_eNB(paths["OutDir"] + strUeType + "patch_ex.cfg" );
+                if (!m_reclist5G.SaveFilePdg_eNB(paths["OutDir"] + strUeType + "patch_ex.cfg"))
+                {
+                    re = false;
+                    bw.Write(String.Format("Err SaveFilePdg_eNB ({0}) return Err, can not create ({1}).\n", UeType, strUeType + "patch_ex.cfg").ToArray());
+                    m_reclist5G = null;
+                    continue;
+                }
                 m_reclist5G = null;
                 Console.WriteLine(String.Format("CfgParseReclistExcel ({0}) end.\n\n", UeType));
                 bw.Write(String.Format("CfgParseReclistExcel ({0}) end.\n\n", UeType).ToArray());
             }
-            return true;
+            return re;
         }
 
         /// <summary>
