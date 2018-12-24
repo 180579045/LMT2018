@@ -74,7 +74,7 @@ namespace SCMTMainWindow
 		#region 公有属性
 
 		public static string m_strNodeName;
-		//public NodeB node;                         // 当前项目暂时先只连接一个基站;
+		//public NodeB node;                         // 当前项目暂时先只连接一个基站;TODO 改为支持多基站，废除此变量
 
 		#endregion 公有属性
 
