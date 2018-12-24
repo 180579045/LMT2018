@@ -34,8 +34,7 @@ namespace CfgFileOperation
         {
             CfgFileLeafNodeIndexInfoOp s = new CfgFileLeafNodeIndexInfoOp();
             s.indexNo = this.indexNo;
-            
-
+            Array.Copy(this.m_struIndex, s.m_struIndex, this.m_struIndex.Count());
             return s;
         }
     }

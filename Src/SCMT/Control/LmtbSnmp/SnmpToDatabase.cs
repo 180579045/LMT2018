@@ -422,7 +422,7 @@ namespace LmtbSnmp
 			else if (omType.Equals("enum"))
 			{
 				// 1.取出该节点的取值范围
-				var mvr = mibLeaf.managerValueRange;
+				var mvr = mibLeaf.mibValAllList;
 
 				// 2.分解取值范围
 				var mapKv = MibStringHelper.SplitManageValue(mvr);
@@ -430,7 +430,7 @@ namespace LmtbSnmp
 
 				if (strValue.Contains('|'))
 				{
-					// 3.处理strValue，有可能是hsctd|HSCTD板这种格式啊，泪奔~~~~，据说是为了支持中英文~~~ todo 目前先只使用|后面的值
+					// 3.处理strValue，有可能是hsctd|HSCTD板这种格式啊，据说是为了支持中英文~~~ todo 目前先只使用|后面的值
 					var vsMap = MibStringHelper.SplitMibEnumString(strValue);
 					if (vsMap.Count != 1)
 					{

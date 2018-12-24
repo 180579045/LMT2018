@@ -382,6 +382,8 @@ namespace LmtbSnmp
 				{
 					logMsg = $"SNMP响应返回错误， ErrorStatus: {response.Pdu.ErrorStatus}, ErrorIndex: {response.Pdu.ErrorIndex}";
 					Log.Error(logMsg);
+
+					SnmpErrorParser.PrintPduError(response.Pdu);
 				}
 				else
 				{

@@ -1,10 +1,6 @@
-﻿using System;
+﻿using MIBDataParser;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MIBDataParser;
-using MIBDataParser.JSONDataMgr;
 
 namespace NetPlan
 {
@@ -14,13 +10,13 @@ namespace NetPlan
 	{
 		public MibLeaf mibAttri;
 
-		public string m_strOriginValue { get; set; }				// 字段的原始值，用于判断该字段是否被修改过
+		public string m_strOriginValue { get; set; }                // 字段的原始值，用于判断该字段是否被修改过
 
-		public string m_strLatestValue { get; set; }				// 字段最后设置的值
+		public string m_strLatestValue { get; set; }                // 字段最后设置的值
 
-		public bool m_bReadOnly { get; set; }						// 属性栏是否只读
+		public bool m_bReadOnly { get; set; }                       // 属性栏是否只读
 
-		public bool m_bVisible { get; set; }							// 该属性是否可见
+		public bool m_bVisible { get; set; }                            // 该属性是否可见
 
 		//public string m_strIndex { get; set; }						// 保存该项的索引值
 
@@ -60,6 +56,17 @@ namespace NetPlan
 			}
 
 			return !m_strOriginValue.Equals(m_strLatestValue, StringComparison.OrdinalIgnoreCase);  // 忽略大小写
+		}
+
+		/// <summary>
+		/// 把original的值设置为latest
+		/// </summary>
+		public void SetOriginalValueToLatest()
+		{
+			if (IsModified())
+			{
+				m_strOriginValue = m_strLatestValue;
+			}
 		}
 	}
 

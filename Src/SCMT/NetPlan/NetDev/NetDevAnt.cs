@@ -4,7 +4,6 @@ using LogManager;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 
 namespace NetPlan
@@ -13,7 +12,7 @@ namespace NetPlan
 	{
 		#region 构造函数
 
-		internal NetDevAnt(string strTargetIp, MAP_DEVTYPE_DEVATTRI mapOriginData) : base(strTargetIp, mapOriginData)
+		internal NetDevAnt(string strTargetIp, NPDictionary mapOriginData) : base(strTargetIp, mapOriginData)
 		{
 
 		}
@@ -34,6 +33,15 @@ namespace NetPlan
 				if (!DistributeAntTypeInfo(dev))
 				{
 					Log.Error($"下发索引为{dev.m_strOidIndex}的天线阵器件库信息失败");
+					return false;
+				}
+			}
+
+			if (RecordDataType.WaitDel == dev.m_recordType)
+			{
+				if (!PreDistributeAntSettingDel(dev))
+				{
+					Log.Error($"下发删除索引为{dev.m_strOidIndex}天线阵关联的天线阵安装规划表记录失败");
 					return false;
 				}
 			}
@@ -473,6 +481,25 @@ namespace NetPlan
 			}
 
 			return true;
+		}
+
+		// 关于天线阵安装规划记录的特殊性：如果rru与ant没有连接，流程走不到这里，因为不可能删除不存在的rru
+		private bool PreDistributeAntSettingDel(DevAttributeBase waitDisDev)
+		{
+			if (!m_mapOriginData.ContainsKey(EnumDevType.rru_ant))
+			{
+				return true;
+			}
+
+			var antNo = waitDisDev.m_strOidIndex.Trim('.');
+			var listRas = m_mapOriginData[EnumDevType.rru_ant];
+			if (null == listRas || listRas.Count == 0)
+			{
+				return true;
+			}
+
+			var listRelateRas = LinkRruAnt.GetRecordsByAntNo(antNo, listRas);
+			return PreDelAntSettingRecord(listRelateRas);
 		}
 
 		#endregion 私有方法区

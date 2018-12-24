@@ -1,22 +1,16 @@
-﻿using System;
+﻿using CommonUtility;
+using LogManager;
+using MsgQueue;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CommonUtility;
-using DataBaseUtil;
-using LinkPath;
-using LogManager;
-using MsgQueue;
-using NetPlan.DevLink;
-using SCMTOperationCore.Elements;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
 namespace NetPlan
 {
 	// MIB信息管理类，单例
 	public class MibInfoMgr : Singleton<MibInfoMgr>
 	{
-		public delegate string GetMibValue(string strOriginValue, string strLatestValue);
 
 		#region 公共接口
 
@@ -25,7 +19,7 @@ namespace NetPlan
 		/// 调用时机：打开网规页面初始化成功后
 		/// </summary>
 		/// <returns></returns>
-		public MAP_DEVTYPE_DEVATTRI GetAllEnbInfo()
+		public NPDictionary GetAllEnbInfo()
 		{
 			lock (_syncObj)
 			{
@@ -94,14 +88,14 @@ namespace NetPlan
 		{
 			lock (_syncObj)
 			{
-				return m_linkMgr.ParseLinksFromMibInfo(m_mapAllMibData);
+				return _mLinkParser.ParseLinksFromMibInfo(m_mapAllMibData);
 			}
 		}
 
 		/// 获取所有的连接信息
 		public Dictionary<EnumDevType, List<WholeLink>> GetLinks()
 		{
-			return m_linkMgr.GetAllLink();
+			return _mLinkParser.GetAllLink();
 		}
 
 		/// <summary>
@@ -165,7 +159,10 @@ namespace NetPlan
 		public DevAttributeInfo AddNewAnt(int nIndex, string strVerdorName, string strAntTypeName)
 		{
 			const EnumDevType type = EnumDevType.ant;
-			var ant = GenerateNewDev(type, nIndex);
+
+			DevAttributeInfo deletedAnt;
+
+			var ant = GenerateNewDev(type, $".{nIndex}", out deletedAnt);
 			if (null == ant)
 			{
 				return null;
@@ -197,17 +194,17 @@ namespace NetPlan
 				return null;
 			}
 
-			//var antType = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(strVendorNo, strAntTypeNo);
-			//if (null == antType)
+			//if (!MoveDevFromWaitDelToModifyMap(type, ant, ant.m_strOidIndex))
 			//{
-			//	Log.Error($"根据天线阵的厂家索引{strVendorNo}和类型索引{strAntTypeNo}查询天线阵器件信息失败");
 			//	return null;
 			//}
 
-			//NetDevAnt.SetAntTypeInfo(ant, antType);
+			ExchangeSameTypeAndIndexDev(type, deletedAnt, ant);
 
-			if (!MoveDevFromWaitDelToModifyMap(type, ant, ant.m_strOidIndex))
+			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
+			if (!CheckDataIsValid())
 			{
+				ExchangeSameTypeAndIndexDev(type, ant, deletedAnt);
 				return null;
 			}
 
@@ -230,8 +227,10 @@ namespace NetPlan
 				throw new ArgumentNullException();
 			}
 
+			DevAttributeInfo oldBbu;
+
 			const EnumDevType type = EnumDevType.board;
-			var dev = GenerateNewDev(type, slot);
+			var dev = GenerateNewDev(type, $".0.0.{slot}", out oldBbu);
 			if (null == dev)
 			{
 				Log.Error("生成新设备属性失败，可能已经存在相同索引相同类型的设备");
@@ -246,8 +245,17 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!MoveDevFromWaitDelToModifyMap(type, dev, dev.m_strOidIndex))
+			//if (!MoveDevFromWaitDelToModifyMap(type, dev, dev.m_strOidIndex))
+			//{
+			//	return null;
+			//}
+
+			ExchangeSameTypeAndIndexDev(type, oldBbu, dev);
+
+			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
+			if (!CheckDataIsValid())
 			{
+				ExchangeSameTypeAndIndexDev(type, dev, oldBbu);
 				return null;
 			}
 
@@ -263,43 +271,44 @@ namespace NetPlan
 		/// <param name="nRruType">RRU设备类型索引</param>
 		/// <param name="strWorkMode">工作模式</param>
 		/// <returns></returns>
-		public List<DevAttributeInfo> AddNewRru(List<int> seqIndexList, int nRruType, string strWorkMode)
+		public DevAttributeInfo AddNewRru(int nRruNo, int nRruType, string strWorkMode)
 		{
-			if (null == seqIndexList || string.IsNullOrEmpty(strWorkMode))
+			if (string.IsNullOrEmpty(strWorkMode))
 			{
-				Log.Error("传入RRU索引列表为null；工作模式为null或空");
+				Log.Error("工作模式为null或空");
 				return null;
 			}
 
 			const EnumDevType type = EnumDevType.rru;
-			var rruList = new List<DevAttributeInfo>();
-			foreach (var seqIndex in seqIndexList)
+
+			DevAttributeInfo oldRru;
+
+			var newRru = GenerateNewDev(type, $".{nRruNo}", out oldRru);
+			if (null == newRru)
 			{
-				var newRru = GenerateNewDev(type, seqIndex);
-				if (null == newRru)
-				{
-					Log.Error($"根据RRU编号{seqIndex}生成新设备失败");
-					return null;
-				}
-
-				if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString()) ||
-					!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
-				{
-					ErrorTip($"设置索引为.{seqIndex}天线阵工作模式信息失败");
-					return null;
-				}
-
-				if (!MoveDevFromWaitDelToModifyMap(type, newRru, newRru.m_strOidIndex))
-				{
-					return null;
-				}
-
-				InfoTip($"添加索引为.{seqIndex}的天线阵成功");
-
-				rruList.Add(newRru);
+				Log.Error($"根据RRU编号{nRruNo}生成新设备失败");
+				return null;
 			}
 
-			return rruList;
+			if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString()) ||
+				!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
+			{
+				ErrorTip($"设置索引为.{nRruNo}天线阵工作模式信息失败");
+				return null;
+			}
+
+			ExchangeSameTypeAndIndexDev(type, oldRru, newRru);
+
+			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
+			if (!CheckDataIsValid())
+			{
+				ExchangeSameTypeAndIndexDev(type, newRru, oldRru);
+				return null;
+			}
+
+			InfoTip($"添加索引为.{nRruNo}的天线阵成功");
+
+			return newRru;
 		}
 
 		/// <summary>
@@ -325,7 +334,7 @@ namespace NetPlan
 
 			const EnumDevType type = EnumDevType.rhub;
 
-			var dev = new RHubDevAttri(nRhubNo, strDevVer);
+			var dev = new RHubDevAttri($".{nRhubNo}", strDevVer);
 			if (dev.m_mapAttributes.Count == 0)
 			{
 				ErrorTip($"新增编号为{nRhubNo}rhub设备出现未知错误");
@@ -353,8 +362,12 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!MoveDevFromWaitDelToModifyMap(type, dev, devIndex))
+			ExchangeSameTypeAndIndexDev(type, null, dev);
+
+			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
+			if (!CheckDataIsValid())
 			{
+				ExchangeSameTypeAndIndexDev(type, dev, null);
 				return null;
 			}
 
@@ -370,12 +383,18 @@ namespace NetPlan
 		/// <returns></returns>
 		public DevAttributeInfo AddNewLocalCell(int nLocalCellId)
 		{
+			if (!CheckDataIsValid())
+			{
+				return null;
+			}
+
 			const EnumDevType type = EnumDevType.nrNetLc;
 
 			var dev = GetDevAttributeInfo($".{nLocalCellId}", type);
 			if (null == dev)
 			{
-				dev = GenerateNewDev(type, nLocalCellId);
+				DevAttributeInfo oldLc;
+				dev = GenerateNewDev(type, $".{nLocalCellId}", out oldLc);
 				if (null == dev)
 				{
 					Log.Error($"生成本地小区{nLocalCellId}的属性失败");
@@ -402,6 +421,11 @@ namespace NetPlan
 		/// <returns></returns>
 		public DevAttributeInfo AddNewNetLcCtrlSwitch(string strIndex, string strSwitchValue)
 		{
+			if (!CheckDataIsValid())
+			{
+				return null;
+			}
+
 			var type = EnumDevType.nrNetLcCtr;
 			var dev = new DevAttributeInfo(type, strIndex);
 
@@ -445,8 +469,13 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				return handler.AddLink(wlink, ref m_mapAllMibData);
+				if (!handler.AddLink(wlink, m_mapAllMibData))
+				{
+					return false;
+				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -455,7 +484,7 @@ namespace NetPlan
 		/// <param name="mapData"></param>
 		/// <param name="devType"></param>
 		/// <param name="dev"></param>
-		public static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dev)
+		public static bool AddDevToMap(NPDictionary mapData, EnumDevType devType, DevAttributeInfo dev)
 		{
 			if (null == mapData || devType == EnumDevType.unknown || null == dev)
 			{
@@ -495,18 +524,27 @@ namespace NetPlan
 				return false;
 			}
 
+			var devClone = dev.DeepClone();
+
 			lock (_syncObj)
 			{
 				// 由于rru设备的特殊性，同时关系到本地小区映射关系和天线阵的连接，删除RRU设备时，需要删除天线阵安装规划表中的所有相关联的数据
-				if (EnumDevType.rru == devType)
-				{
-					if (!DelRecordFromRruAntSettingTblByRruIndex(strIndex))
-					{
-						return false;
-					}
-				}
+				// 在NetDevRru中统一处理
+				//if (EnumDevType.rru == devType)
+				//{
+				//	if (!DelRecordFromRruAntSettingTblByRruIndex(strIndex))
+				//	{
+				//		return false;
+				//	}
+				//}
 
 				DelDevFromMap(m_mapAllMibData, devType, dev);
+
+				if (!CheckDataIsValid())
+				{
+					ExchangeSameTypeAndIndexDev(devType, dev, devClone);
+					return false;
+				}
 			}
 
 			InfoTip($"删除索引为{strIndex}的{devType.ToString()}设备成功");
@@ -544,6 +582,11 @@ namespace NetPlan
 		/// <returns></returns>
 		public bool DelLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
 		{
+			if (!CheckDataIsValid())
+			{
+				return false;
+			}
+
 			var linkType = EnumDevType.unknown;
 			if (!GetLinkTypeBySrcDstEnd(srcEndpoint, dstEndpoint, ref linkType))
 			{
@@ -561,8 +604,13 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				return handler.DelLink(wlink, ref m_mapAllMibData);
+				if (!handler.DelLink(wlink, m_mapAllMibData))
+				{
+					return false;
+				}
 			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -609,18 +657,26 @@ namespace NetPlan
 
 			lock (_syncObj)
 			{
-				// 从基站中查询到设备修改属性，就需要移动到modify队列，等待参数下发
 				if (!m_mapAllMibData.ContainsKey(devType)) return false;
 
 				var devList = m_mapAllMibData[devType];
 				var dev = GetSameIndexDev(devList, strIndex);
 				if (null == dev) return false;
 
+				var oldValue = dev.GetFieldLatestValue(strFieldName);
 				dev.SetFieldLatestValue(strFieldName, strValue);
+
+				if (!CheckDataIsValid())
+				{
+					dev.SetFieldLatestValue(strFieldName, oldValue);
+					return false;
+				}
+
 				if (RecordDataType.NewAdd != dev.m_recordType)
 				{
 					dev.SetDevRecordType(RecordDataType.Modified);
 				}
+
 				return true;
 			}
 		}
@@ -629,7 +685,7 @@ namespace NetPlan
 		/// 下发网规信息
 		/// </summary>
 		/// <returns></returns>
-		private bool DistributeData(EnumDevType devType, MAP_DEVTYPE_DEVATTRI mapDataSource, bool bDlAntWcb = false)
+		private bool DistributeData(EnumDevType devType, NPDictionary mapDataSource, bool bDlAntWcb = false)
 		{
 			var targetIp = CSEnbHelper.GetCurEnbAddr();
 			if (null == targetIp)
@@ -684,7 +740,8 @@ namespace NetPlan
 				}
 				else
 				{
-					item.SetDevRecordType(RecordDataType.Original);		// 下发成功的都设置为原始数据
+					item.AdjustLatestValueToOriginal();                 // 把latest value设置为original value
+					item.SetDevRecordType(RecordDataType.Original);     // 下发成功的都设置为原始数据
 				}
 
 				// 收尾处理
@@ -716,6 +773,7 @@ namespace NetPlan
 			var result = DistributeData(devType, m_mapAllMibData, bDlAntWcb);
 
 			Log.Debug($"类型 {devType.ToString()} 的规划信息下发完成，结果为：{result}");
+
 			return result;
 		}
 
@@ -774,6 +832,11 @@ namespace NetPlan
 			if (null == targetIp)
 			{
 				throw new CustomException("尚未选中基站");
+			}
+
+			if (!CheckDataIsValid())
+			{
+				return false;
 			}
 
 			const EnumDevType devType = EnumDevType.rru_ant;
@@ -962,7 +1025,7 @@ namespace NetPlan
 			lock (_syncObj)
 			{
 				m_mapAllMibData.Clear();
-				m_linkMgr.Clear();
+				_mLinkParser.Clear();
 			}
 		}
 
@@ -978,15 +1041,14 @@ namespace NetPlan
 			ShowLogHelper.Show($"[网络规划] {strTip}", "SCMT", InfoTypeEnum.ENB_OTHER_INFO);
 		}
 
-
 		#endregion 公共接口
 
 		#region 私有接口
 
 		private MibInfoMgr()
 		{
-			m_mapAllMibData = new MAP_DEVTYPE_DEVATTRI();
-			m_linkMgr = new NetPlanLinkMgr();
+			m_mapAllMibData = new NPDictionary();
+			_mLinkParser = new NetPlanLinkParser();
 		}
 
 		/// <summary>
@@ -996,7 +1058,7 @@ namespace NetPlan
 		/// <param name="devType"></param>
 		/// <param name="strIndex"></param>
 		/// <returns></returns>
-		private static bool HasSameIndexDev(MAP_DEVTYPE_DEVATTRI mapMibInfo, EnumDevType devType, string strIndex)
+		private static bool HasSameIndexDev(NPDictionary mapMibInfo, EnumDevType devType, string strIndex)
 		{
 			if (!mapMibInfo.ContainsKey(devType)) return false;
 
@@ -1022,7 +1084,7 @@ namespace NetPlan
 		/// <param name="devType">设备类型</param>
 		/// <param name="dai">设备属性</param>
 		/// <param name="bDelReal">是否立即删除，不仅是设置记录类型</param>
-		public static void DelDevFromMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
+		public static void DelDevFromMap(NPDictionary mapData, EnumDevType devType, DevAttributeInfo dai, bool bDelReal = false)
 		{
 			if (null == mapData || null == dai)
 			{
@@ -1045,66 +1107,78 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 调整设备属性
+		/// 交换两个相同类型相同索引的dev
 		/// </summary>
-		/// <param name="type"></param>
-		/// <param name="newDev"></param>
-		/// <param name="devIndex"></param>
-		/// <returns></returns>
-		private bool MoveDevFromWaitDelToModifyMap(EnumDevType type, DevAttributeInfo newDev, string devIndex)
+		/// <param name="existedDev">在map中已经存在的dev，会被删掉</param>
+		/// <param name="newDev">需要新加入到map的dev</param>
+		private bool ExchangeSameTypeAndIndexDev(EnumDevType devType, DevAttributeInfo existedDev, DevAttributeInfo newDev)
 		{
-			// 新加的设备，要判断索引和待删除列表中的是否一致
-			// 目的：防止先删除所有的同类设备，然后重新添加，但是所有的属性设置的又相同的情况
-			lock (_syncObj)
+			if (null != existedDev)
 			{
-				if (!m_mapAllMibData.ContainsKey(type))
-				{
-					AddDevToMap(m_mapAllMibData, type, newDev);
-					return true;
-				}
+				DelDevFromMap(m_mapAllMibData, devType, existedDev, true);
+			}
 
-				var devList = m_mapAllMibData[type];
-				foreach (var dev in devList)
-				{
-					// 如果在待删除的列表中，就直接把新创建的设备放到已修改的列表中
-					if (dev.m_strOidIndex != devIndex) continue;
-
-					if (RecordDataType.WaitDel == dev.m_recordType)
-					{
-						devList.Remove(dev);
-
-						// 需要比对dev和newDev，把dev的值和newDev的信息合并到一起，并修改设备record类型为modify
-						newDev.AdjustOtherDevOriginValueToMyOrigin(dev);
-						AddDevToMap(m_mapAllMibData, type, newDev);
-					}
-
-					return true;
-				}
-
-				// 流程走到这里，肯定是在devList中没有找到索引相同的设备
-				AddDevToMap(m_mapAllMibData, type, newDev);
+			if (null != newDev)
+			{
+				AddDevToMap(m_mapAllMibData, devType, newDev);
 			}
 
 			return true;
 		}
 
 		/// <summary>
-		/// 生成一个指定类型和索引最后一级值的设备
+		/// 调整设备属性
 		/// </summary>
 		/// <param name="type"></param>
-		/// <param name="lastIndexValue"></param>
+		/// <param name="newDev"></param>
+		/// <param name="devIndex"></param>
 		/// <returns></returns>
-		private DevAttributeInfo GenerateNewDev(EnumDevType type, int lastIndexValue)
+		//private bool MoveDevFromWaitDelToModifyMap(EnumDevType type, DevAttributeInfo newDev, string devIndex)
+		//{
+		//	// 新加的设备，要判断索引和待删除列表中的是否一致
+		//	// 目的：防止先删除所有的同类设备，然后重新添加，但是所有的属性设置的又相同的情况
+		//	lock (_syncObj)
+		//	{
+		//		if (!m_mapAllMibData.ContainsKey(type))
+		//		{
+		//			AddDevToMap(m_mapAllMibData, type, newDev);
+		//			return true;
+		//		}
+
+		//		var devList = m_mapAllMibData[type];
+		//		foreach (var dev in devList)
+		//		{
+		//			// 如果在待删除的列表中，就直接把新创建的设备放到已修改的列表中
+		//			if (dev.m_strOidIndex != devIndex) continue;
+
+		//			if (RecordDataType.WaitDel == dev.m_recordType)
+		//			{
+		//				devList.Remove(dev);
+
+		//				// 需要比对dev和newDev，把dev的值和newDev的信息合并到一起，并修改设备record类型为modify
+		//				newDev.AdjustOtherDevOriginValueToMyOrigin(dev);
+		//				AddDevToMap(m_mapAllMibData, type, newDev);
+		//			}
+
+		//			return true;
+		//		}
+
+		//		// 流程走到这里，肯定是在devList中没有找到索引相同的设备
+		//		AddDevToMap(m_mapAllMibData, type, newDev);
+		//	}
+
+		//	return true;
+		//}
+
+		/// <summary>
+		/// 生成一个指定类型和索引最后一级值的设备
+		/// </summary>
+		/// <param name="type">设备类型</param>
+		/// <param name="strIndex">设备索引</param>
+		/// <param name="deletedDev">找到的已经删除的相同索引的设备。只有板卡可能存在相同的索引</param>
+		/// <returns></returns>
+		private DevAttributeInfo GenerateNewDev(EnumDevType type, string strIndex, out DevAttributeInfo deletedDev)
 		{
-			var dev = new DevAttributeInfo(type, lastIndexValue);
-			if (dev.m_mapAttributes.Count == 0)
-			{
-				Log.Error($"创建类型为{type.ToString()}最后一个索引值为{lastIndexValue}的新dev失败");
-				return null;
-			}
-
-			var devIndex = dev.m_strOidIndex;
-
 			List<DevAttributeInfo> devList = null;
 			lock (_syncObj)
 			{
@@ -1114,14 +1188,25 @@ namespace NetPlan
 				}
 			}
 
+			deletedDev = null;
+
 			if (null != devList)
 			{
-				var oldDev = GetSameIndexDev(devList, devIndex);
+				var oldDev = GetSameIndexDev(devList, strIndex);
 				if (null != oldDev && RecordDataType.WaitDel != oldDev.m_recordType)
 				{
-					ErrorTip($"已存在编号为{lastIndexValue}的{type.ToString()}设备");
+					ErrorTip($"已存在索引为{strIndex}的{type.ToString()}设备");
 					return null;
 				}
+
+				deletedDev = oldDev;
+			}
+
+			var dev = new DevAttributeInfo(type, strIndex);
+			if (dev.m_mapAttributes.Count == 0)
+			{
+				Log.Error($"创建类型为{type.ToString()}索引为{strIndex}的新dev失败");
+				return null;
 			}
 
 			dev.SetDevRecordType(RecordDataType.NewAdd);
@@ -1361,15 +1446,34 @@ namespace NetPlan
 			return (linkType != EnumDevType.unknown);
 		}
 
+		/// <summary>
+		/// 校验数据是否合法有效
+		/// </summary>
+		/// <returns></returns>
+		public bool CheckDataIsValid()
+		{
+			string errTip;
+			lock (_syncObj)
+			{
+				if (!NPECheckRulesHelper.CheckNetPlanData(m_mapAllMibData, 10, out errTip))
+				{
+					ErrorTip(errTip);
+					return false;
+				}
+
+				return true;
+			}
+		}
+
 		#endregion 私有接口
 
 		#region 私有成员、数据
 
 		// 保存所有的网规MIB数据。开始保存的是从设备中查询回来的信息，如果对这些信息进行了修改、删除，就从这个数据结构中移动到对应的结构中
 		// 最后下发网规信息时，就不再下发这个数据结构中的信息
-		private MAP_DEVTYPE_DEVATTRI m_mapAllMibData;
+		private NPDictionary m_mapAllMibData;
 
-		private readonly NetPlanLinkMgr m_linkMgr;
+		private readonly NetPlanLinkParser _mLinkParser;
 
 		private readonly object _syncObj = new object();
 

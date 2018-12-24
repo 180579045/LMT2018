@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using LogManager;
-using MAP_DEVTYPE_DEVATTRI = System.Collections.Generic.Dictionary<NetPlan.EnumDevType, System.Collections.Generic.List<NetPlan.DevAttributeInfo>>;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
 	public class NetPlanLinkBase : INetPlanLink
 	{
@@ -12,22 +11,22 @@ namespace NetPlan.DevLink
 
 		#region 公共接口
 
-		public virtual bool DelLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual bool AddLink(WholeLink wholeLink, ref MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual bool CheckLinkIsValid(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo, IsRecordExist checkExist)
+		public virtual bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual DevAttributeInfo GetRecord(WholeLink wholeLink, MAP_DEVTYPE_DEVATTRI mapMibInfo)
+		public virtual DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			return null;
 		}
@@ -144,7 +143,7 @@ namespace NetPlan.DevLink
 			return null;
 		}
 
-		protected static bool AddDevToMap(MAP_DEVTYPE_DEVATTRI mapData, EnumDevType type, DevAttributeInfo newDev)
+		protected static bool AddDevToMap(NPDictionary mapData, EnumDevType type, DevAttributeInfo newDev)
 		{
 			if (null == mapData || type == EnumDevType.unknown || null == newDev)
 			{
@@ -166,56 +165,7 @@ namespace NetPlan.DevLink
 
 		protected static BoardBaseInfo GetBoardBaseInfo(DevAttributeInfo board)
 		{
-			var boardRs = board.GetNeedUpdateValue("netBoardRowStatus");
-			if (null == boardRs)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardRowStatus属性值失败");
-				return null;
-			}
-
-			if ("6" == boardRs && board.m_recordType != RecordDataType.NewAdd)
-			{
-				Log.Error($"板卡{board.m_strOidIndex}处于待删除状态，所有属性值无效");
-				//return null;
-			}
-
-			var rackNo = board.GetNeedUpdateValue("netBoardRackNo");
-			if (null == rackNo)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardRackNo属性值失败");
-				return null;
-			}
-
-			var shelfNo = board.GetNeedUpdateValue("netBoardShelfNo");
-			if (null == shelfNo)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardShelfNo属性值失败");
-				return null;
-			}
-
-			var slotNo = board.GetNeedUpdateValue("netBoardSlotNo");
-			if (null == slotNo)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardSlotNo属性值失败");
-				return null;
-			}
-
-			var boardType = board.GetNeedUpdateValue("netBoardType");
-			if (null == boardType)
-			{
-				Log.Error($"从板卡{board.m_strOidIndex}查询netBoardType属性值失败");
-				return null;
-			}
-
-			var bbi = new BoardBaseInfo
-			{
-				strRackNo = rackNo,
-				strShelfNo = shelfNo,
-				strSlotNo = slotNo,
-				strBoardCode = boardType
-			};
-
-			return bbi;
+			return NetDevBoard.GetBoardBaseInfo(board);
 		}
 
 		/// <summary>
@@ -296,9 +246,7 @@ namespace NetPlan.DevLink
 
 		#region 私有数据区
 
-		private readonly object m_syncObj = new object();
-
-		public MAP_DEVTYPE_DEVATTRI mapOriginData;
+		public NPDictionary mapOriginData;
 
 		protected string m_strLatestError;
 

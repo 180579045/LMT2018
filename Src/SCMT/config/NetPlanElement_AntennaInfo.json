@@ -45488,7 +45488,10 @@
       "antennaBfScanWeightAmplitude7": "100",
       "antennaBfScanWeightPhase7": "-345",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45516,7 +45519,10 @@
       "antennaBfScanWeightAmplitude7": "100",
       "antennaBfScanWeightPhase7": "-265",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45544,7 +45550,10 @@
       "antennaBfScanWeightAmplitude7": "100",
       "antennaBfScanWeightPhase7": "-185",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45572,7 +45581,10 @@
       "antennaBfScanWeightAmplitude7": "100",
       "antennaBfScanWeightPhase7": "-105",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45600,7 +45612,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "231",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45628,7 +45643,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "311",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45656,7 +45674,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "391",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45684,7 +45705,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "471",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45712,7 +45736,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-44",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45740,7 +45767,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "36",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45768,7 +45798,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "116",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45796,7 +45829,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "196",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45824,7 +45860,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-436",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45852,7 +45891,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-356",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45880,7 +45922,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-276",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45908,7 +45953,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-196",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45936,7 +45984,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-959",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45964,7 +46015,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-879",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -45992,7 +46046,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-799",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46020,7 +46077,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-719",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46048,7 +46108,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "820",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46076,7 +46139,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "900",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46104,7 +46170,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "980",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46132,7 +46201,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "1060",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46160,7 +46232,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "580",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46188,7 +46263,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "660",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46216,7 +46294,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "740",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46244,7 +46325,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "820",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46272,7 +46356,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "250",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46300,7 +46387,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "330",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46328,7 +46418,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "410",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46356,7 +46449,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "490",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46384,7 +46480,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-110",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46412,7 +46511,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-30",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46440,7 +46542,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "50",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46468,7 +46573,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "130",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46496,7 +46604,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-450",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46524,7 +46635,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-370",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46552,7 +46666,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-290",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46580,7 +46697,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-210",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46608,7 +46728,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-820",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46636,7 +46759,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-740",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46664,7 +46790,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-660",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46692,7 +46821,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-580",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46720,7 +46852,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-1140",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46748,7 +46883,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-1060",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46776,7 +46914,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-980",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46804,7 +46945,10 @@
       "antennaBfScanWeightAmplitude7": "40",
       "antennaBfScanWeightPhase7": "-900",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46832,7 +46976,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "432",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46860,7 +47007,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "445",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46888,7 +47038,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "458",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46916,7 +47069,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "471",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46944,7 +47100,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "157",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -46972,7 +47131,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "170",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47000,7 +47162,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "183",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47028,7 +47193,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "196",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47056,7 +47224,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-235",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47084,7 +47255,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-222",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47112,7 +47286,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-209",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47140,7 +47317,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-196",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47168,7 +47348,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-758",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47196,7 +47379,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-745",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47224,7 +47410,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-732",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47252,7 +47441,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-719",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47280,7 +47472,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-28",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47308,7 +47503,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "112",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47336,7 +47534,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "252",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47364,7 +47565,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "392",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47392,7 +47596,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-812",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47420,7 +47627,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-672",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47448,7 +47658,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-532",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47476,7 +47689,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-392",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47504,7 +47720,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "432",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47532,7 +47751,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "445",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47560,7 +47782,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "458",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47588,7 +47813,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "471",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47616,7 +47844,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "157",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47644,7 +47875,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "170",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47672,7 +47906,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "183",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47700,7 +47937,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "196",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47728,7 +47968,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-235",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47756,7 +47999,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-222",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47784,7 +48030,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-209",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47812,7 +48061,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-196",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47840,7 +48092,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-758",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47868,7 +48123,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-745",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47896,7 +48154,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-732",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47924,7 +48185,10 @@
       "antennaBfScanWeightAmplitude7": "30",
       "antennaBfScanWeightPhase7": "-719",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47952,7 +48216,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "460",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -47980,7 +48247,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "600",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48008,7 +48278,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "740",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48036,7 +48309,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "880",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48064,7 +48340,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-290",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48092,7 +48371,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-150",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48120,7 +48402,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-10",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48148,7 +48433,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "130",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48176,7 +48464,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-1090",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48204,7 +48495,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-950",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48232,7 +48526,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-810",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "225",
@@ -48260,7 +48557,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-670",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "0"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48288,7 +48588,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "-45",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48316,7 +48619,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "30",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48344,7 +48650,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "105",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48372,7 +48681,10 @@
       "antennaBfScanWeightAmplitude7": "20",
       "antennaBfScanWeightPhase7": "180",
       "antennaBfScanWeightHorizonNum": "1",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48400,7 +48712,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "111",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48428,7 +48743,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "186",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48456,7 +48774,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "261",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48484,7 +48805,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "336",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48512,7 +48836,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-97",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48540,7 +48867,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-22",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48568,7 +48898,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "53",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48596,7 +48929,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "128",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48624,7 +48960,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-353",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48652,7 +48991,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-278",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48680,7 +49022,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-203",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48708,7 +49053,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-128",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48736,7 +49084,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-585",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48764,7 +49115,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-510",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48792,7 +49146,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-435",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48820,7 +49177,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-360",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48848,7 +49208,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "275",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48876,7 +49239,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "350",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48904,7 +49270,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "425",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48932,7 +49301,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "500",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48960,7 +49332,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "103",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -48988,7 +49363,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "178",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49016,7 +49394,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "253",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49044,7 +49425,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "328",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49072,7 +49456,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-61",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49100,7 +49487,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "14",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49128,7 +49518,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "89",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49156,7 +49549,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "164",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49184,7 +49580,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-225",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49212,7 +49611,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-150",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49240,7 +49642,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-75",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49268,7 +49673,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "0",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49296,7 +49704,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-389",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49324,7 +49735,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-314",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49352,7 +49766,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-239",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49380,7 +49797,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-164",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49408,7 +49828,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-553",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49436,7 +49859,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-478",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49464,7 +49890,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-403",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49492,7 +49921,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-328",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49520,7 +49952,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-725",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49548,7 +49983,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-650",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49576,7 +50014,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-575",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49604,7 +50045,10 @@
       "antennaBfScanWeightAmplitude7": "10",
       "antennaBfScanWeightPhase7": "-500",
       "antennaBfScanWeightHorizonNum": "7",
-      "antennaBfScanWeightVerticalNum": "0"
+      "antennaBfScanWeightVerticalNum": "0",
+      "antennaBfScanWeightHorizonDowntiltAngle": "6",
+      "antennaBfScanWeightVerticalDowntiltAngle": "0",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49632,7 +50076,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "321",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49660,7 +50107,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "334",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49688,7 +50138,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "347",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49716,7 +50169,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "360",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49744,7 +50200,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "97",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49772,7 +50231,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "110",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49800,7 +50262,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "123",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49828,7 +50293,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "136",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49856,7 +50324,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-175",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49884,7 +50355,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-162",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49912,7 +50386,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-149",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49940,7 +50417,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-136",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49968,7 +50448,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-399",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -49996,7 +50479,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-386",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50024,7 +50510,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-373",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50052,7 +50541,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-360",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50080,7 +50572,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-258",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50108,7 +50603,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-116",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50136,7 +50634,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "26",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50164,7 +50665,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "168",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50192,7 +50696,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-670",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50220,7 +50727,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-528",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50248,7 +50758,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-386",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50276,7 +50789,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-244",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "2"
+      "antennaBfScanWeightVerticalNum": "2",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50304,7 +50820,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "321",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50332,7 +50851,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "334",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50360,7 +50882,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "347",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50388,7 +50913,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "360",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50416,7 +50944,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "97",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50444,7 +50975,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "110",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50472,7 +51006,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "123",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50500,7 +51037,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "136",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50528,7 +51068,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-175",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50556,7 +51099,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-162",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50584,7 +51130,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-149",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50612,7 +51161,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-136",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50640,7 +51192,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-399",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50668,7 +51223,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-386",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50696,7 +51254,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-373",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50724,7 +51285,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-360",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50752,7 +51316,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-630",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50780,7 +51347,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-488",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50808,7 +51378,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-346",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50836,7 +51409,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-204",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50864,7 +51440,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-426",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50892,7 +51471,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-284",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50920,7 +51502,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-142",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50948,7 +51533,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "0",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -50976,7 +51564,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-222",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -51004,7 +51595,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "-80",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -51032,7 +51626,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "62",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     },
     {
       "antArrayNotMibNumber": "226",
@@ -51060,7 +51657,10 @@
       "antennaBfScanWeightAmplitude7": "1",
       "antennaBfScanWeightPhase7": "204",
       "antennaBfScanWeightHorizonNum": "4",
-      "antennaBfScanWeightVerticalNum": "3"
+      "antennaBfScanWeightVerticalNum": "3",
+      "antennaBfScanWeightHorizonDowntiltAngle": "1",
+      "antennaBfScanWeightVerticalDowntiltAngle": "11",
+      "antennaBfScanWeightIsLossFlag": "1"
     }
   ]
 }

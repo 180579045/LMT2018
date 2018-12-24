@@ -132,7 +132,7 @@ namespace SCMTMainWindow.View
                 ListTemRRUInfo.Add(rruTem);
 
                 //添加 RRU              
-                var devInfo = new DevAttributeInfo(EnumDevType.rru, nrruNo);
+                var devInfo = new DevAttributeInfo(EnumDevType.rru, $".{nrruNo}");
 
                 if (devInfo == null)
                     return false;
@@ -226,7 +226,7 @@ namespace SCMTMainWindow.View
                 ListTemrHUBInfo.Add(hubInfo);
 
                 //添加 rHUB 
-                var devrHuB = new RHubDevAttri(nrHUBNo, dlg.strrHUBType);
+                var devrHuB = new RHubDevAttri($".{nrHUBNo}", dlg.strrHUBType);
 
                 if (devrHuB == null)
                     return false;
@@ -319,7 +319,7 @@ namespace SCMTMainWindow.View
                 ListTemAntInfo.Add(temAntInfo);
 
                 //添加天线
-                var devAntInfo = new DevAttributeInfo(EnumDevType.ant, nAntNo);
+                var devAntInfo = new DevAttributeInfo(EnumDevType.ant, $".{nAntNo}");
 
                 if (devAntInfo == null)
                     return false;
@@ -612,7 +612,7 @@ namespace SCMTMainWindow.View
                     newItem.NPathNumber = rruInfo.rruPathNum;
 
                     //添加 RRU              
-                    var devInfo = new DevAttributeInfo(EnumDevType.rru, rruInfo.rruId);
+                    var devInfo = new DevAttributeInfo(EnumDevType.rru, $".{rruInfo.rruId}");
 
                     if (devInfo == null)
                         continue;
@@ -683,7 +683,7 @@ namespace SCMTMainWindow.View
                     newItem.ItemName = strrHUBFullName;
 
                     //添加 rHUB
-                    var devrHuB = new RHubDevAttri(rHub.rHUBId, rHub.rHUBName);
+                    var devrHuB = new RHubDevAttri($".{rHub.rHUBId}", rHub.rHUBName);
 
                     if (devrHuB == null)
                         continue;
@@ -750,7 +750,7 @@ namespace SCMTMainWindow.View
                     newItem.ItemName = strAntFullName;
 
                     //添加天线
-                    var devAntInfo = new DevAttributeInfo(EnumDevType.ant, ant.antId);
+                    var devAntInfo = new DevAttributeInfo(EnumDevType.ant, $".{ant.antId}");
 
                     if (devAntInfo == null)
                         continue;

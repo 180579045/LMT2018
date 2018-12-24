@@ -1567,16 +1567,32 @@ namespace SCMTMainWindow.View
             }
             if (allLink.ContainsKey(EnumDevType.rru_ant))
             {
+                int nCount = 0;
                 for(int i = 0; i < allLink[EnumDevType.rru_ant].Count; i++)
                 {
                     if(i < allLink[EnumDevType.rru_ant].Count-1)
                     {
                         if (allLink[EnumDevType.rru_ant][i].m_dstEndPoint.strDevIndex.Equals(allLink[EnumDevType.rru_ant][i + 1].m_dstEndPoint.strDevIndex))
                         {
+                            nCount++;
                             continue;
                         }
                     }
-                    InitRRUToAnt(allLink[EnumDevType.rru_ant][i]);
+                    //if (i == allLink[EnumDevType.rru_ant].Count && allLink[EnumDevType.rru_ant][i].m_dstEndPoint.strDevIndex.Equals(allLink[EnumDevType.rru_ant][i - 1].m_dstEndPoint.strDevIndex))
+                    //    nCount++;
+
+                    if (nCount <= 8)
+                    {
+                        for (int j = i; j >= i - nCount; j--)
+                        {
+                            InitRRUToAnt(allLink[EnumDevType.rru_ant][j]);
+                        }
+                        nCount = 0;
+                    }
+                    else
+                    {
+                        InitRRUToAnt(allLink[EnumDevType.rru_ant][i]);
+                    }
                 }
             }
         }

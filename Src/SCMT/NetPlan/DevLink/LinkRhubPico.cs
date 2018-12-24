@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LogManager;
 
-namespace NetPlan.DevLink
+namespace NetPlan
 {
-	public sealed class LinkRhubPico : NetPlanLinkBase
+	internal sealed class LinkRhubPico : NetPlanLinkBase
 	{
-		public LinkRhubPico() : base()
+		public LinkRhubPico()
 		{
-			m_ethRecordType = EnumDevType.rhub_prru;
 		}
 
 		#region 虚函数区
 
-		public override bool AddLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool AddLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -67,8 +67,8 @@ namespace NetPlan.DevLink
 					return false;
 				}
 
-				var newRecord = new DevAttributeInfo(EnumDevType.rhub_prru, m_strEthRecordIndex);
-				AddDevToMap(mapMibInfo, EnumDevType.rhub_prru, newRecord);
+				var newRecord = new DevAttributeInfo(m_ethRecordType, m_strEthRecordIndex);
+				AddDevToMap(mapMibInfo, m_ethRecordType, newRecord);
 
 				Log.Debug($"添加类型为：{m_ethRecordType.ToString()}，索引为：{newRecord.m_strOidIndex}的记录成功");
 			}
@@ -83,7 +83,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool DelLink(WholeLink wholeLink, ref Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override bool DelLink(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -107,6 +107,7 @@ namespace NetPlan.DevLink
 				return false;
 			}
 
+			// 只有rhub已经连接上板卡才会删除以太网口规划记录，因为只有rhub连到板卡，才会添加以太网口规划记录
 			if (HasConnectedToBoard(m_rhubDev))
 			{
 				bbi = GetBoardInfoFromRhub(RecordExistInDel);
@@ -116,15 +117,12 @@ namespace NetPlan.DevLink
 					return false;
 				}
 
-				var record = GetDevAttributeInfo(m_strEthRecordIndex, EnumDevType.rhub_prru);
-				MibInfoMgr.DelDevFromMap(mapMibInfo, EnumDevType.rhub_prru, record);
+				var record = GetDevAttributeInfo(m_strEthRecordIndex, m_ethRecordType);
+				MibInfoMgr.DelDevFromMap(mapMibInfo, m_ethRecordType, record);
 				Log.Debug($"删除类型为：{m_ethRecordType.ToString()}，索引为：{record.m_strOidIndex}的记录成功");
 			}
 
-			if (RecordDataType.NewAdd != picoClone.m_recordType)
-			{
-				picoClone.SetDevRecordType(RecordDataType.Modified);
-			}
+			ChangeDevRecordTypeToModify(picoClone);
 
 			mapMibInfo[EnumDevType.rru].Remove(m_picoDev);
 			mapMibInfo[EnumDevType.rru].Add(picoClone);
@@ -136,7 +134,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override bool CheckLinkIsValid(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo, IsRecordExist checkExist)
+		public override bool CheckLinkIsValid(WholeLink wholeLink, NPDictionary mapMibInfo, IsRecordExist checkExist)
 		{
 			var rhubIndex = wholeLink.GetDevIndex(EnumDevType.rhub);
 			if (null == rhubIndex)
@@ -183,7 +181,7 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		public override DevAttributeInfo GetRecord(WholeLink wholeLink, Dictionary<EnumDevType, List<DevAttributeInfo>> mapMibInfo)
+		public override DevAttributeInfo GetRecord(WholeLink wholeLink, NPDictionary mapMibInfo)
 		{
 			mapOriginData = mapMibInfo;
 
@@ -213,42 +211,232 @@ namespace NetPlan.DevLink
 			return null;
 		}
 
+		/// <summary>
+		/// 增加rhub到pico之间的连接以太网连接
+		/// </summary>
+		public bool AddEthPlanRecord(DevAttributeInfo rhubDev, DevAttributeInfo picoDev, NPDictionary mapAllData)
+		{
+			if (!HasConnectedToBoard(rhubDev))
+			{
+				Log.Error($"从索引为{rhubDev.m_strOidIndex}的rhub设备中查询rhub未连接到bbu");
+				return false;
+			}
+
+			var mapPicoToRhub = NetDevRru.GetLinkedRhubInfoFromPico(picoDev);
+			if (null == mapPicoToRhub || mapPicoToRhub.Count == 0)
+			{
+				Log.Error($"查询索引为{picoDev.m_strOidIndex}的pico设备连接rhub的连接信息为空");
+				return false;
+			}
+
+			var boardSlotList = NetDevRhub.GetRhubLinkToBoardSlotNo(rhubDev);
+			if (boardSlotList.Count == 0)
+			{
+				Log.Error($"从索引为{rhubDev.m_strOidIndex}的rhub设备中查询连接bbu端口号失败");
+				return false;
+			}
+
+			foreach (var boardSlot in boardSlotList)
+			{
+				var bbuIdx = $".0.0.{boardSlot}";
+				mapOriginData = mapAllData;
+
+				foreach (var item in mapPicoToRhub)
+				{
+					var ridx = $"{bbuIdx}.{item.Value.strDevIndex.Trim('.')}.{item.Value.nPortNo}";
+					if (RecordExistInDel(ridx, m_ethRecordType))
+					{
+						Log.Error($"索引为{ridx}类型为rhub_prru的记录已经存在");
+						continue;
+					}
+
+					var newRecord = new DevAttributeInfo(m_ethRecordType, ridx);
+					AddDevToMap(mapAllData, m_ethRecordType, newRecord);
+
+					SetIrPortInfoInPico(rhubDev, picoDev, item.Key);
+				}
+			}
+
+			return true;
+		}
+
+		#endregion 虚函数区
+
+		#region 静态接口
+
+		/// <summary>
+		/// 解析rhub到pico的连接
+		/// </summary>
+		/// <param name="rhubList"></param>
+		/// <param name="rruList"></param>
+		/// <param name="ethCfgList"></param>
+		/// <returns></returns>
+		public static List<WholeLink> ParseRhubToPicoLink(List<DevAttributeInfo> rhubList, IEnumerable<DevAttributeInfo> rruList, List<DevAttributeInfo> ethCfgList)
+		{
+			var ethLinkList = new List<WholeLink>();
+
+			if (null == rhubList || null == rruList || null == ethCfgList)
+			{
+				Log.Error("解析rhub到pico的连接，信息缺失");
+				return ethLinkList;
+			}
+
+			foreach (var rru in rruList)
+			{
+				var rruType = rru.GetFieldOriginValue("netRRUTypeIndex");
+				if (!NPERruHelper.GetInstance().IsPicoDevice(int.Parse(rruType)))
+				{
+					continue;
+				}
+
+				var picoPort = 1;
+				var hubPort = rru.GetFieldOriginValue("netRRUOfp1AccessEthernetPort");
+				if ("-1" == hubPort)
+				{
+					hubPort = rru.GetFieldOriginValue("netRRUOfp2AccessEthernetPort");
+					if ("-1" == hubPort)
+					{
+						Log.Error($"索引为{rru.m_strOidIndex}的pico设置未连接到rhub设备");
+						continue;
+					}
+					picoPort = 2;
+				}
+
+				var hubNo = rru.GetFieldOriginValue("netRRUHubNo");
+				if ("-1" == hubNo || "-1" == hubPort)
+				{
+					Log.Error("pico设备没有连接到任何hub设备");
+					continue;
+				}
+
+				var picoToHubIndex = $".{hubNo}";
+				var hubDev = rhubList.FirstOrDefault(rhub => rhub.m_strOidIndex == picoToHubIndex);
+				if (null == hubDev)
+				{
+					Log.Error($"根据索引{picoToHubIndex}未找到rhub设备");
+					continue;
+				}
+
+				var rackNo = hubDev.GetFieldOriginValue("netRHUBAccessRackNo");
+				var shelfNo = hubDev.GetFieldOriginValue("netRHUBAccessShelfNo");
+
+				var slotNoList = NetDevRhub.GetRhubLinkToBoardSlotNo(hubDev);
+				if (slotNoList.Count == 0)
+				{
+					Log.Debug($"索引为{picoToHubIndex}的RHUB设备没有连接到板卡");
+					continue;
+				}
+
+				// 此处不验证rhub连接的板卡是否存在，在上一步解析boardtohublink时已经验证过
+
+				foreach (var slotNo in slotNoList)
+				{
+					var ethRecordIndex = $".{rackNo}.{shelfNo}.{slotNo}.{hubNo}.{hubPort}";
+					if (null == ethCfgList.FirstOrDefault(ec => ec.m_strOidIndex == ethRecordIndex))
+					{
+						Log.Error($"根据索引{ethRecordIndex}未找到对应的以太网口配置信息");
+						continue;
+					}
+
+					var nhubPort = int.Parse(hubPort);
+
+					// 创建连接
+					var link = GenerateRhubToPicoLink(picoToHubIndex, nhubPort, rru.m_strOidIndex, picoPort);
+					ethLinkList.Add(link);
+				}
+			}
+
+			return ethLinkList;
+		}
+
+		/// <summary>
+		/// 生成一个hub到pico的连接
+		/// </summary>
+		/// <param name="strHubIndex"></param>
+		/// <param name="nHubEthPort"></param>
+		/// <param name="strPicoIndex"></param>
+		/// <param name="nPicoPort"></param>
+		/// <returns></returns>
+		private static WholeLink GenerateRhubToPicoLink(string strHubIndex, int nHubEthPort, string strPicoIndex, int nPicoPort)
+		{
+			var hub = new LinkEndpoint
+			{
+				devType = EnumDevType.rhub,
+				strDevIndex = strHubIndex,
+				nPortNo = nHubEthPort,
+				portType = EnumPortType.rhub_to_pico
+			};
+
+			var pico = new LinkEndpoint
+			{
+				devType = EnumDevType.rru,
+				strDevIndex = strPicoIndex,
+				nPortNo = nPicoPort,
+				portType = EnumPortType.pico_to_rhub
+			};
+
+			var link = new WholeLink
+			{
+				m_srcEndPoint = hub,
+				m_dstEndPoint = pico,
+				m_linkType = m_ethRecordType
+			};
+
+			return link;
+		}
+
+
+		public static string GetRhubToPicoPort(DevAttributeBase ethRecord)
+		{
+			return ethRecord?.GetFieldOriginValue("netEthPortIndexOnHub");
+		}
+
+		#endregion
+
+
+		#region 私有函数区
+
 		private BoardBaseInfo GetBoardInfoFromRhub(IsRecordExist checkExist)
 		{
-			var boardSlot = NetDevRhub.GetRhubLinkToBoardSlotNo(m_rhubDev);
-			if (null == boardSlot)
+			var boardSlotList = NetDevRhub.GetRhubLinkToBoardSlotNo(m_rhubDev);
+			if (boardSlotList.Count == 0)
 			{
 				m_strLatestError = $"获取索引为{m_rhubDev.m_strOidIndex}的rhub设备连接的板卡插槽号失败";
 				return null;
 			}
 
-			// 查询板卡相关的信息
-			var boardIndex = $".0.0.{boardSlot}";
-			var board = GetDevAttributeInfo(boardIndex, EnumDevType.board);
-			if (null == board)
+			foreach (var boardSlot in boardSlotList)
 			{
-				m_strLatestError = $"根据索引{boardIndex}未找到对应的板卡信息";
-				return null;
+				// 查询板卡相关的信息
+				var boardIndex = $".0.0.{boardSlot}";
+				var board = GetDevAttributeInfo(boardIndex, EnumDevType.board);
+				if (null == board)
+				{
+					m_strLatestError = $"根据索引{boardIndex}未找到对应的板卡信息";
+					return null;
+				}
+
+				var boardType = board.GetNeedUpdateValue("netBoardType");
+				if (null == boardType || "-1" == boardType)
+				{
+					m_strLatestError = $"获取索引为{boardIndex}的板卡字段netBoardType值信息失败";
+					return null;
+				}
+
+				// 查询以太网连接是否存在
+				m_strEthRecordIndex = $"{boardIndex}{m_rhubDev.m_strOidIndex}.{m_nRhubEthPort}";
+				if (!checkExist.Invoke(m_strEthRecordIndex, m_ethRecordType))
+				{
+					var tmp = checkExist == RecordExistInDel ? "不" : "已";
+					m_strLatestError = $"索引为{m_strEthRecordIndex}的以太网口规划表记录{tmp}存在";
+					return null;
+				}
+
+				var bbi = new BoardBaseInfo("0", "0", boardSlot, boardType);	// todo 此处应该返回多个bbi
+				return bbi;
 			}
 
-			var boardType = board.GetNeedUpdateValue("netBoardType");
-			if (null == boardType || "-1" == boardType)
-			{
-				m_strLatestError = $"获取索引为{boardIndex}的板卡字段netBoardType值信息失败";
-				return null;
-			}
-
-			// 查询以太网连接是否存在
-			m_strEthRecordIndex = $"{boardIndex}{m_rhubDev.m_strOidIndex}.{m_nRhubEthPort}";
-			if (!checkExist.Invoke(m_strEthRecordIndex, EnumDevType.rhub_prru))
-			{
-				var tmp = checkExist == RecordExistInDel ? "不" : "已";
-				m_strLatestError = $"索引为{m_strEthRecordIndex}的以太网口规划表记录{tmp}存在";
-				return null;
-			}
-
-			var bbi = new BoardBaseInfo("0", "0", boardSlot, boardType);
-			return bbi;
+			return null;
 		}
 
 		private static bool HasConnectedToBoard(DevAttributeInfo rhub)
@@ -259,10 +447,11 @@ namespace NetPlan.DevLink
 			}
 
 			// 查询rhub设备是否已经建立到board的连接
-			var boardSlot = NetDevRhub.GetRhubLinkToBoardSlotNo(rhub);
-			return "-1" != boardSlot;
+			var boardSlotList = NetDevRhub.GetRhubLinkToBoardSlotNo(rhub);
+			return boardSlotList.Count > 0;
 		}
 
+		// todo 放到NetDevRru中
 		private bool SetRhubInfoInPico(DevAttributeInfo dev, int nEthPort, int nHubNo)
 		{
 			var mibName = $"netRRUOfp{m_nPicoPort}AccessEthernetPort";
@@ -287,7 +476,7 @@ namespace NetPlan.DevLink
 		private static bool SetIrPortInfoInPico(DevAttributeInfo hubdev, DevAttributeInfo picoDev, int nPicoIrPort)
 		{
 			// 从hub设备中找到任何一个光口连接的板卡光口号
-			for (var i = 1; i < 5; i++)
+			for (var i = 1; i < MagicNum.RRU_TO_BBU_PORT_CNT; i++)
 			{
 				var mibName = $"netRHUBOfp{i}AccessOfpPortNo";
 				var value = hubdev.GetNeedUpdateValue(mibName);
@@ -303,6 +492,7 @@ namespace NetPlan.DevLink
 					continue;
 				}
 
+				// todo 下面是什么鬼操作
 				var picoSlotMib = $"netRRUOfp{nPicoIrPort}AccessOfpPortNo";
 				var picoAposMib = $"netRRUOfp{nPicoIrPort}AccessLinePosition";
 				picoDev.SetFieldLatestValue(picoSlotMib, value);
@@ -313,53 +503,8 @@ namespace NetPlan.DevLink
 			return true;
 		}
 
-		/// <summary>
-		/// 增加rhub到pico之间的连接以太网连接
-		/// </summary>
-		public bool AddEthPlanRecord(DevAttributeInfo rhubDev, DevAttributeInfo picoDev, Dictionary<EnumDevType, List<DevAttributeInfo>> mapAllData)
-		{
-			if (!HasConnectedToBoard(rhubDev))
-			{
-				Log.Error($"从索引为{rhubDev.m_strOidIndex}的rhub设备中查询rhub未连接到bbu");
-				return false;
-			}
+		#endregion
 
-			var mapPicoToRhub = NetDevRru.GetLinkedRhubInfoFromPico(picoDev);
-			if (null == mapPicoToRhub || mapPicoToRhub.Count == 0)
-			{
-				Log.Error($"查询索引为{picoDev.m_strOidIndex}的pico设备连接rhub的连接信息为空");
-				return false;
-			}
-
-			var boardSlot = NetDevRhub.GetRhubLinkToBoardSlotNo(rhubDev);
-			if ("-1" == boardSlot)
-			{
-				Log.Error($"从索引为{rhubDev.m_strOidIndex}的rhub设备中查询连接bbu端口号返回-1");
-				return false;
-			}
-
-			var bbuIdx = $".0.0.{boardSlot}";
-			mapOriginData = mapAllData;
-
-			foreach (var item in mapPicoToRhub)
-			{
-				var ridx = $"{bbuIdx}.{item.Value.strDevIndex.Trim('.')}.{item.Value.nPortNo}";
-				if (RecordExistInDel(ridx, EnumDevType.rhub_prru))
-				{
-					Log.Error($"索引为{ridx}类型为rhub_prru的记录已经存在");
-					continue;
-				}
-
-				var newRecord = new DevAttributeInfo(EnumDevType.rhub_prru, ridx);
-				AddDevToMap(mapAllData, EnumDevType.rhub_prru, newRecord);
-
-				SetIrPortInfoInPico(rhubDev, picoDev, item.Key);
-			}
-
-			return true;
-		}
-
-		#endregion 虚函数区
 
 		#region 私有数据区
 
@@ -369,7 +514,7 @@ namespace NetPlan.DevLink
 		private DevAttributeInfo m_rhubDev;
 		private string m_strEthRecordIndex;
 
-		private EnumDevType m_ethRecordType;
+		private static readonly EnumDevType m_ethRecordType = EnumDevType.rhub_prru;
 
 		#endregion 私有数据区
 	}

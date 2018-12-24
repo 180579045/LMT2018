@@ -55,16 +55,28 @@ namespace CfgFileOperation
         /// <param name="strExcelPath"></param>
         /// <param name="strFileToDirectory"></param>
         /// <param name="strUeType"></param>
-        public bool ProcessingExcel5G(BinaryWriter bw, string strExcel, string strFile, string strCon, CfgOp cfgOp, CfgParseReclistExcel5G reclist)
+        public bool ProcessingExcel5G(BinaryWriter bw, string strExcel, string strFile, string strCon, 
+            CfgOp cfgOp, CfgParseReclistExcel5G reclist, string strUeType)
         {
-            if ((String.Empty == strExcel) || (String.Empty == strFile) || (null == reclist))
+            if ((String.Empty == strExcel) || (String.Empty == strFile) || (null == reclist)
+                || (String.Empty == strUeType) || (String.Empty == strCon) || (null == cfgOp))
                 return false;
+            bool re = true;
             // "patch" 页
             if (0 == String.Compare("patch", strCon, true))
             {
-                ExportSelfExcelForPatch5G(bw, strExcel, strFile, cfgOp, reclist);
+                if (!ExportSelfExcelForPatch5G(bw, strExcel, strCon, cfgOp, reclist, strUeType))
+                {
+                    re = false;
+                    bw.Write(String.Format("Err CfgParseSelfExcel 5G patch, return err.\n").ToArray());
+                }
             }
-            return true;
+            else
+            {
+                bw.Write(String.Format("Err CfgParseSelfExcel 5G patch, Condition({0}) is not 'patch'.\n", strCon).ToArray());
+                re = false;
+            }
+            return re;
         }
 
         /// <summary>
@@ -160,7 +172,8 @@ namespace CfgFileOperation
         /// </summary>
         /// <param name="wks"></param>
         /// <param name="cfgOp"></param>
-        bool ExportSelfExcelForPatch5G(BinaryWriter bw, string FilePath, string sheetName, CfgOp cfgOp, CfgParseReclistExcel5G reclist)
+        bool ExportSelfExcelForPatch5G(BinaryWriter bw, string FilePath, string sheetName, 
+            CfgOp cfgOp, CfgParseReclistExcel5G reclist, string strUeType)
         {
             var excelOp = CfgExcelOp.GetInstance();
             int rowCount = GetEndLineNum(FilePath, sheetName);                     // 获取行数
@@ -182,6 +195,7 @@ namespace CfgFileOperation
                 string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     // 叶子名
                 string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   // 叶子值
                 strCurTableName = SetCurTableName(TableName, strCurTableName);        // 更新表名
+                if (!bIsSpecialScenc(strCurTableName,  strUeType)) { continue; }      // 特殊处理
 
                 // 标记 表名和实例信息
                 if (0 != String.Compare("", Index, true))
@@ -190,16 +204,42 @@ namespace CfgFileOperation
                     reclist.InsertPdgTab(strCurTableName, "1", cfgOp);                // 增加要写Patch的表名
                     if (0 == String.Compare("-1", Index, true))                       // 索引 == -1 相关的处理
                     {
-                        PatchNeedWritePatchTable(cfgOp, strCurTableName, reclist);             // 需要做补丁文件的表名和表下面的节点     
+                        PatchNeedWritePatchTable(cfgOp, strCurTableName, reclist);    // 需要做补丁文件的表名和表下面的节点     
                         continue;
                     }
                     else                                                              // 索引 剩下的不为空 相关处理
                         strCurIndex = SetCurIndex(Index, strCurIndex);                // 更新索引
                 }
-
-                if (!WriteValueToBuffer(reclist.GetReclistTableByName(strCurTableName).tableInfo,        // 更新节点值
-                    strCurIndex, NodeName, NodeValue))
+                // 5G 索引和节点键值对，需要保存新的位置
+                var recTable = reclist.GetReclistTableByName(strCurTableName);
+                if (!recTable.tableInfo.IsExistInstsByIndex(strCurIndex))//是否存在这个索引值的实例
                     continue;
+                recTable.AddLeafNameByIndex(strCurIndex, NodeName);
+                // 更新节点值
+                if (!WriteValueToBuffer(recTable.tableInfo, strCurIndex, NodeName, NodeValue))
+                    continue;
+            }
+            return true;
+        }
+        /// <summary>
+        ///  "1:展讯" , "2:e500" , "3:华为" 模式下的 5个表不处理
+        /// </summary>
+        /// <param name="TableName"></param>
+        /// <param name="strUeType"></param>
+        /// <returns></returns>
+        bool bIsSpecialScenc(string TableName, string strUeType)
+        {
+            //2018-11-16 quyaxin 根据场景支持个性化配置是否写入告警\RRU相关信息
+            List<string> specicalTable = new List<string>() { "alarmCauseEntry", "rruTypeEntry" ,"rruTypePortEntry",
+                "packStoreOptimizeControl" , "antennaBfScanWeightEntry" };
+            List<string> specicalType = new List<string>() { "1:展讯" , "2:e500" , "3:华为" };
+
+            if (-1 != specicalType.IndexOf(strUeType))// 先筛选 uetype, 在选表
+            {
+                if (-1 != specicalTable.IndexOf(TableName))
+                {
+                    return false;
+                }
             }
             return true;
         }
