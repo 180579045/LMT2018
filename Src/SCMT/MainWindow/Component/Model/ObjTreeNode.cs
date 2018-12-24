@@ -494,33 +494,44 @@ namespace SCMTMainWindow
 		{
 			contentlist.Clear();
 
-			// 异步获取数据，避免UI卡死
-			Task tk = new Task(() =>
+			try
 			{
-				Action<ObjNode> ac = (nodeInfo) => GetParentNodeDatasThd(nodeInfo);
-				GetParentNodeDatas(ac, node);
-			});
-			// 启动任务
-			tk.Start();
+				// 异步获取数据，避免UI卡死
+				Task tk = new Task(() =>
+				{
+					Action<ObjNode> ac = (nodeInfo) => GetParentNodeDatasThd(nodeInfo);
+					GetParentNodeDatas(ac, node);
+				});
+				// 启动任务
+				tk.Start();
 
-			// 任务列表，用于检查任务是否结束
-			List<Task> taskList = new List<Task>();
-			taskList.Add(tk);
+				// 任务列表，用于检查任务是否结束
+				List<Task> taskList = new List<Task>();
+				taskList.Add(tk);
 
-			// 设置任务标识为进行中
-			isGetParaTaskRunning = true;
+				// 设置任务标识为进行中
+				isGetParaTaskRunning = true;
 
-			// 异步等待任务完成
-			Task.Factory.StartNew(x =>
+				// 异步等待任务完成
+				Task.Factory.StartNew(x =>
+				{
+					// 等待任务完成
+					Task.WaitAll(taskList.ToArray());
+					// 任务完成，设置任务完成标识
+					isGetParaTaskRunning = false;
+
+					Log.Info("Snmp Get任务完成...");
+					Console.WriteLine("Get任务完成...");
+				}, null);
+
+			}
+			catch (Exception ex)
 			{
-				// 等待任务完成
-				Task.WaitAll(taskList.ToArray());
 				// 任务完成，设置任务完成标识
 				isGetParaTaskRunning = false;
-
-				Log.Info("Snmp Get任务完成...");
-				Console.WriteLine("Get任务完成...");
-			}, null);
+				Log.Error(ex.Message);
+				throw;
+			}
 
 			Console.WriteLine("YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY");
 		}
@@ -647,9 +658,13 @@ namespace SCMTMainWindow
 						{
 							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
 							MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByOid(oid, CSEnbHelper.GetCurEnbAddr());
-							// 保存中文名称等信息
-							oid2en.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameMib);
-							oid2cn.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameCh);
+							
+							if (!oid2en.ContainsKey(SnmpToDatabase.GetMibPrefix() + oid))
+							{
+								// 保存中文名称等信息
+								oid2en.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameMib);
+								oid2cn.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameCh);
+							}
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -674,6 +689,7 @@ namespace SCMTMainWindow
 					}
 					catch (Exception ex)
 					{
+						Console.WriteLine(ex.Message);
 						Log.Error(ex.Message);
 						throw;
 					}
@@ -920,9 +936,12 @@ namespace SCMTMainWindow
 						{
 							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
 							MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByOid(oid, CSEnbHelper.GetCurEnbAddr());
-							// 保存中文名称等信息，此处添加的是非索引节点
-							oid2en.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameMib);
-							oid2cn.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameCh);
+							if (!oid2en.ContainsKey(SnmpToDatabase.GetMibPrefix() + oid))
+							{
+								// 保存中文名称等信息，此处添加的是非索引节点
+								oid2en.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameMib);
+								oid2cn.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameCh);
+							}
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
