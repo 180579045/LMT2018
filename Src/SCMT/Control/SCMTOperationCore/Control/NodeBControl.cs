@@ -398,7 +398,7 @@ namespace SCMTOperationCore.Control
 		}
 
 		// 根据网元IP获取网元节点
-		private Element GetNodeByIp(string ip)
+		public Element GetNodeByIp(string ip)
 		{
 			Element nodeb = null;
 			lock (lockObj)

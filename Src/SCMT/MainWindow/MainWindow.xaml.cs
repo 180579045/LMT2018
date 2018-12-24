@@ -74,7 +74,7 @@ namespace SCMTMainWindow
 		#region 公有属性
 
 		public static string m_strNodeName;
-		public NodeB node;                         // 当前项目暂时先只连接一个基站;
+		//public NodeB node;                         // 当前项目暂时先只连接一个基站;
 
 		#endregion 公有属性
 
@@ -225,19 +225,21 @@ namespace SCMTMainWindow
 		/// 调用时机：单机调试；连接基站成功；
 		/// </summary>
 		/// TODO 连接多个基站时，这个方案需要改
-		private async Task<bool> InitDataBase()
+		/// TODO 为了支持多站，添加基站ip参数
+		private async Task<bool> InitDataBase(string strIp)
 		{
-			node.db = Database.GetInstance();
-			CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
+			// 获取nodeB信息
+			NodeB nodeB = NodeBControl.GetInstance().GetNodeByIp(strIp) as NodeB;
+			CSEnbHelper.SetCurEnbAddr(strIp);
 
 			// TODO 需要同步等待数据库初始化完成后才能进行其他操作
-			var result = await node.db.initDatabase(node.NeAddress.ToString());
+			var result = await Database.GetInstance().initDatabase(strIp);
 
 			if (result)
 			{
 				Dispatcher.Invoke(() =>
 				{
-					var Ctrl = new ObjNodeControl(node);        // 初始化象树树信息,Ctrl.m_RootNode即全部对象树信息;
+					var Ctrl = new ObjNodeControl(nodeB);        // 初始化象树树信息,Ctrl.m_RootNode即全部对象树信息;
 					RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
                     this.Obj_Root.m_RootNode = Ctrl.m_RootNode;
 
@@ -549,13 +551,13 @@ namespace SCMTMainWindow
 				return;
 			}
 
-			node = ((NodeBArgs)e).m_NodeB;
+			var nodeB = ((NodeBArgs)e).m_NodeB;
 			ObjNode.main = this;
 			//ObjNode.datagrid = this.MibDataGrid;
 
 			// 向基站前端控件填入对应信息;
 			AddNodeBPageToWindow();                    // 将基站添加到窗口页签中;
-			AddNodeLabel(node.FriendlyName, node.NeAddress.ToString());
+			AddNodeLabel(nodeB.FriendlyName, nodeB.NeAddress.ToString());
 		}
 
 		private void AddNodeLabel(string friendlyName, string Ip)
@@ -686,12 +688,12 @@ namespace SCMTMainWindow
 			var target = sender as MetroExpander;
 			if (null != target)
 			{
-				node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+				var nodeB = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
 
 				// 只有已经连接的基站进行点击切换时，才修改当前基站的IP
-				if (node.HasConnected())
+				if (nodeB.HasConnected())
 				{
-					CSEnbHelper.SetCurEnbAddr(node.NeAddress.ToString());
+					CSEnbHelper.SetCurEnbAddr(nodeB.NeAddress.ToString());
 				}
 
 				//改变被点击的 node，还原之前的 node
@@ -706,7 +708,7 @@ namespace SCMTMainWindow
 				//target.Opacity = 50;
 				if (m_bIsSingleMachineDebug)
 				{
-					InitDataBase();
+					InitDataBase(nodeB.NeAddress.ToString());
 				}
 			}
 		}
@@ -1667,7 +1669,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-			var result = await InitDataBase();      // todo lm.dtz文件不存在时，这里抛出异常
+			var result = await InitDataBase(ip);      // todo lm.dtz文件不存在时，这里抛出异常
 
 			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
 			EnableMenu(ip, "连接基站", false);
@@ -1813,7 +1815,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 
-			var result = await InitDataBase();
+			var result = await InitDataBase(ip);
 
 			if (result)
 			{
