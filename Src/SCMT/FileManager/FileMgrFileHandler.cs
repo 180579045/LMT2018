@@ -10,6 +10,7 @@ using MsgQueue;
 using SCMTOperationCore.Message.SI;
 using LinkPath;
 using LmtbSnmp;
+using SCMTOperationCore.Control;
 
 namespace FileManager
 {
@@ -64,6 +65,13 @@ namespace FileManager
 		//发送文件到远端。localFilePath和remotePath等参数已经处理好
 		public bool SendFileToRemote(string localFilePath, string remotePath)
 		{
+			// 检测localFilePath是否是目录
+			if (FilePathHelper.IsFolderPath(localFilePath))
+			{
+				Log.Error($"每次只能下载一个文件到基站，传入的是一个目录 {localFilePath}");
+				return false;
+			}
+
 			//校验基站端是否允许升级
 			if (!CanUpdate())
 			{
@@ -73,17 +81,24 @@ namespace FileManager
 			//判断是否存在其他正在进行的任务
 			if (HasRunningTask())
 			{
-				throw new CustomException("有正在进行传输的文件或正在升级的任务");
+				Log.Error("有正在进行传输的文件或正在升级的任务");
+				return false;
 			}
 
 			//创建临时目录等操作
 			var dstFullPath = CreateTempFile(localFilePath, _boardIp);
+			if (string.IsNullOrEmpty(dstFullPath.Trim()))
+			{
+				Log.Error("下载文件目的路径处理失败");
+				return false;
+			}
 
 			// 使用工厂模式，创建不同文件的处理对象，在处理对象中进行文件处理
 			var ext = FilePathHelper.GetFileExt(dstFullPath);
 			if (null == ext)
 			{
-				throw new CustomException($"从文件路径{dstFullPath}获取扩展名失败");
+				Log.Error($"从文件路径{dstFullPath}获取扩展名失败");
+				return false;
 			}
 
 			var handler = FileHandlerFactory.CreateHandler(ext, _boardIp);
@@ -125,7 +140,8 @@ namespace FileManager
 			//判断是否存在其他正在进行的任务
 			if (HasRunningTask())
 			{
-				throw new CustomException("有正在进行传输的文件或正在升级的任务");
+				Log.Error("有正在进行传输的文件或正在升级的任务");
+				return false;
 			}
 
 			// 打印消息
@@ -410,6 +426,12 @@ namespace FileManager
 		// 定时器处理函数
 		private void timerCallback(object obj)
 		{
+			// todo 判断基站的连接状态，如果已经断开连接，就取消定时器相关的工作
+			//if (!NodeBControl.GetInstance().NodeHasConnected(_boardIp))
+			//{
+				
+			//}
+
 			if (_workingForUpgrade)
 			{
 				SwPackPlanFileDownLoadProcDeal();
@@ -917,25 +939,29 @@ namespace FileManager
 		{
 			if (!IsValidPath(srcFile))
 			{
-				throw new CustomException($"文件路径{srcFile}有非法字符&");
+				Log.Error($"文件路径{srcFile}有非法字符&");
+				return null;
 			}
 
 			var dstDirPath = FilePathHelper.GetTempFilesPath() + $"{targetIp}/DTZ/";
 
 			if (!FilePathHelper.DeleteFolder(dstDirPath))
 			{
-				throw new CustomException($"删除临时目录{dstDirPath}失败");
+				Log.Error($"删除临时目录{dstDirPath}失败");
+				return null;
 			}
 
 			if (!FilePathHelper.CreateFolder(dstDirPath))
 			{
-				throw new CustomException($"创建临时目录{dstDirPath}失败");
+				Log.Error($"创建临时目录{dstDirPath}失败");
+				return null;
 			}
 
 			var srcFileName = FilePathHelper.GetFileNameFromFullPath(srcFile);
 			if (null == srcFileName)
 			{
-				throw new CustomException($"从路径{srcFile}中获取文件名失败，文件不存在");
+				Log.Error($"从路径{srcFile}中获取文件名失败，文件不存在");
+				return null;
 			}
 
 			var dstFilePath = $"{dstDirPath}{srcFileName}";
@@ -944,7 +970,8 @@ namespace FileManager
 
 			if (!FilePathHelper.CopyFile(srcFullPath, dstFullPath))
 			{
-				throw new CustomException($"复制文件{srcFile}到{dstFilePath}失败！");
+				Log.Error($"复制文件{srcFile}到{dstFilePath}失败！");
+				return null;
 			}
 
 			return dstFullPath;

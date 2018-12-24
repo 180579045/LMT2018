@@ -261,5 +261,10 @@ namespace CommonUtility
         {
             return $"{GetDataPath()}NetPlanTemplate/";
         }
+
+		public static bool IsFolderPath(string strPath)
+		{
+			return Directory.Exists(strPath);
+		}
     }
 }

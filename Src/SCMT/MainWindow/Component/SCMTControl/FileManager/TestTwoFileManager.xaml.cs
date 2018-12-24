@@ -1135,7 +1135,11 @@ namespace SCMTMainWindow.Component.SCMTControl.FileManager
 
                 //获取被拖拽过来的文件信息
                 FileInfoEnb dropFileInfo = e.Data.GetData(typeof(FileInfoEnb)) as FileInfoEnb;
-
+	            if (null == dropFileInfo)
+	            {
+		            Log.Error("选择上传的文件信息为null");
+		            return;
+	            }
                 var ret = ShowTip_Confirm($"确定上传文件{dropFileInfo.FileName}到管理侧{localDirName}？");
                 if (MessageBoxResult.Yes != ret)
                 {

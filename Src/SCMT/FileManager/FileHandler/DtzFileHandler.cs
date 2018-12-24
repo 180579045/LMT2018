@@ -26,13 +26,15 @@ namespace FileManager.FileHandler
 		{
 			if (!IsValidPath(srcFileFullName) || !IsValidPath(dstFilePath))
 			{
-				throw new CustomException("传入的路径错误");
+				Log.Error("传入的路径错误");
+				return ExecuteResult.UpgradeFailed;
 			}
 
 			TswPackInfo head = new TswPackInfo();
 			if (!GetDtzFileDetailInfo(srcFileFullName, ref head))
 			{
-				throw new CustomException("解析压缩包头出现错误");
+				Log.Error("解析压缩包头出现错误");
+				return ExecuteResult.UpgradeFailed;
 			}
 
 			_bDetailFlag = IsExistVerDetailNode(boardAddr);
@@ -140,7 +142,8 @@ namespace FileManager.FileHandler
 			var nRezCode = DtzFileHelper.Aom_Zip_GetFileHead_OupPut(srcFileFullName, ref zipFileHeader);
 			//if (0 != nRezCode)
 			//{
-			//	throw new CustomException("获取文件头信息失败");
+			//	Log.Error("获取文件头信息失败");
+				//return ExecuteResult.UpgradeFailed;
 			//}
 
 			var csRelayVersion = new string(zipFileHeader.u8ZipFileRelayVersion).Trim('\0');
@@ -165,7 +168,8 @@ namespace FileManager.FileHandler
 					//判断冷补丁的依赖与running目录下主设备版本是否一致
 					if (!runningSwPackVer.Equals(head.csSWPackRelayVersion))
 					{
-						throw new CustomException("冷补丁依赖的版本与running目录下运行的主设备版本不符合，请选择正确的冷补丁包！");
+						Log.Error($"冷补丁依赖的版本 {head.csSWPackRelayVersion} 与running目录下运行的主设备版本 {runningSwPackVer} 不符合，请选择正确的冷补丁包！");
+						return ExecuteResult.UpgradeFailed;
 					}
 
 					if (nbArrayCP.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
@@ -183,7 +187,8 @@ namespace FileManager.FileHandler
 					//判断热补丁的依赖与running目录下主设备版本是否一致
 					if (!runningSwPackVer.Equals(head.csSWPackRelayVersion))
 					{
-						throw new CustomException("热补丁依赖的版本与running目录下运行的主设备版本不符合，请选择正确的热补丁包！");
+						Log.Error($"热补丁依赖的版本 {head.csSWPackRelayVersion} 与running目录下运行的主设备版本 {runningSwPackVer} 不符合，请选择正确的热补丁包！");
+						return ExecuteResult.UpgradeFailed;
 					}
 
 					if (nbArrayHP.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
@@ -247,7 +252,8 @@ namespace FileManager.FileHandler
 			{
 				if (!confirmDlg.CmdSucceedFlag)
 				{
-					throw new CustomException("命令执行失败");
+					Log.Error("命令执行失败");
+					return ExecuteResult.UpgradeFailed;
 				}
 			}
 			else

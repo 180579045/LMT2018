@@ -115,7 +115,7 @@ namespace SCMTMainWindow.Component.SCMTControl
                             while (GettingValue)
                             {
 								// ！！！后续需要扩展功能，保存日志文件;
-								SnmpSessionWorker.SnmpGetSync(CSEnbHelper.GetCurEnbAddr(), inputoid, out Ret); // TODO 需要确定真正的板卡地址
+								SnmpSessionWorker.SnmpGetSync(CSEnbHelper.GetCurEnbAddr(), inputoid, out Ret);
 
 								double temp = 0;
 

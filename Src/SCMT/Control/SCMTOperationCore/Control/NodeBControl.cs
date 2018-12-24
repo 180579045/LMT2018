@@ -331,11 +331,19 @@ namespace SCMTOperationCore.Control
 			return el?.NodeType ?? EnbTypeEnum.ENB_NULL;
 		}
 
-
 		public void SetNodebGridByIp(string targetIp, EnbTypeEnum st)
 		{
 			var el = GetNodeByIp(targetIp) as NodeB;
 			el?.SetType(st);
+		}
+
+		//判断节点的连接状态
+		public bool NodeHasConnected(string ip)
+		{
+			lock (lockObj)
+			{
+				return mapElements[ip] is NodeB node && node.HasConnected();
+			}
 		}
 
 		#endregion
@@ -369,16 +377,6 @@ namespace SCMTOperationCore.Control
 				{
 					mapElements.Remove(key);
 				}
-			}
-		}
-
-		//判断节点的连接状态
-		private bool NodeHasConnected(string ip)
-		{
-			lock (lockObj)
-			{
-				var node = mapElements[ip] as NodeB;
-				return node.HasConnected();
 			}
 		}
 

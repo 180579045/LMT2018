@@ -21,7 +21,7 @@ namespace SCMTOperationCore.Connection.Tcp
 		/// <summary>
 		///     Lock for the socket.
 		/// </summary>
-		private Object socketLock = new Object();
+		private readonly Object socketLock = new Object();
 
 		private IAsyncResult _result;
 
@@ -32,13 +32,13 @@ namespace SCMTOperationCore.Connection.Tcp
 		internal TcpConnection(Socket socket)
 		{
 			//Check it's a TCP socket
-			if (socket.ProtocolType != System.Net.Sockets.ProtocolType.Tcp)
+			if (socket.ProtocolType != ProtocolType.Tcp)
 				throw new ArgumentException("A TcpConnection requires a TCP socket.");
 
-			lock (this.socketLock)
+			lock (socketLock)
 			{
-				this.EndPoint = new NetworkEndPoint(socket.RemoteEndPoint);
-				this.RemoteEndPoint = socket.RemoteEndPoint;
+				EndPoint = new NetworkEndPoint(socket.RemoteEndPoint);
+				RemoteEndPoint = socket.RemoteEndPoint;
 
 				this.socket = socket;
 				this.socket.NoDelay = true;
@@ -58,19 +58,19 @@ namespace SCMTOperationCore.Connection.Tcp
 				if (State != ConnectionState.NotConnected)
 					throw new InvalidOperationException("Cannot connect as the Connection is already connected.");
 
-				this.EndPoint = remoteEndPoint;
-				this.RemoteEndPoint = remoteEndPoint.EndPoint;
-				this.IPMode = remoteEndPoint.IPMode;
+				EndPoint = remoteEndPoint;
+				RemoteEndPoint = remoteEndPoint.EndPoint;
+				IPMode = remoteEndPoint.IPMode;
 
 				//Create a socket
 				if (remoteEndPoint.IPMode == IPMode.IPv4)
-					socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+					socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				else
 				{
 					if (!Socket.OSSupportsIPv6)
 						throw new HazelException("IPV6 not supported!");
 
-					socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
+					socket = new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
 					socket.SetSocketOption(SocketOptionLevel.IPv6, (SocketOptionName)27, false);
 				}
 
@@ -104,9 +104,9 @@ namespace SCMTOperationCore.Connection.Tcp
 					{
 						socket.EndConnect(_result);
 					}
-					catch (Exception e)
+					catch (Exception)
 					{
-						Console.WriteLine($"{DateTime.Now.ToString()} 连接失败");
+						Console.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)} 连接失败");
 					}
 					finally
 					{
@@ -165,13 +165,13 @@ namespace SCMTOperationCore.Connection.Tcp
 				//Start receiving data
 				try
 				{
-					Debug.WriteLine($"Connect:waiting data ...");
+					Debug.WriteLine("Connect:waiting data ...");
 					//StartWaitingForHeader(BodyReadCallback);
 					StartReceiving();
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine("An exception occured while initiating the first receive operation.", e);
+					Console.WriteLine($"An exception occured while initiating the first receive operation.{e.Message}");
 					return false;
 				}
 
@@ -450,7 +450,7 @@ namespace SCMTOperationCore.Connection.Tcp
 					}
 					catch (Exception exception)
 					{
-						Console.WriteLine($"{DateTime.Now.ToString()} cancel connect ");
+						Console.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)} cancel connect.{exception.Message}");
 					}
 					finally
 					{
@@ -475,7 +475,7 @@ namespace SCMTOperationCore.Connection.Tcp
 
 			if (invoke)
 			{
-				Debug.WriteLine($"HandleConnect:connect succeed");
+				Debug.WriteLine("HandleConnect:connect succeed");
 				InvokeConnected(e);
 			}
 		}
