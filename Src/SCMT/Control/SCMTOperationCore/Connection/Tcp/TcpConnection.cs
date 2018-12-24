@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace SCMTOperationCore.Connection.Tcp
 {
@@ -11,10 +13,10 @@ namespace SCMTOperationCore.Connection.Tcp
 	/// <inheritdoc />
 	public sealed class TcpConnection : NetworkConnection
 	{
-		/// <summary>
-		///     The socket we're managing.
-		/// </summary>
-		private Socket socket;
+	/// <summary>
+	///     The socket we're managing.
+	/// </summary>
+	private Socket socket;
 
 		/// <summary>
 		///     Lock for the socket.
@@ -76,6 +78,15 @@ namespace SCMTOperationCore.Connection.Tcp
 			}
 		}
 
+		/*
+		 * struct tcp_keepalive
+		 * { 
+		 *		u_long  onoff; //是否启用Keep-Alive
+		 *		u_long  keepalivetime; //多长时间后开始第一次探测（单位：毫秒）
+		 *		u_long  keepaliveinterval; //探测时间间隔（单位：毫秒）
+		 * };
+		 */
+
 		/// <inheritdoc />
 		public override bool Connect(byte[] bytes = null, int timeout = 2000)
 		{
@@ -107,7 +118,7 @@ namespace SCMTOperationCore.Connection.Tcp
 					State = ConnectionState.Connecting;
 				try
 				{
-					Console.WriteLine($"{DateTime.Now.ToString()} 开始连接....");
+					Console.WriteLine($"{DateTime.Now.ToString(CultureInfo.InvariantCulture)} 开始连接....");
 
 					_result = socket.BeginConnect(RemoteEndPoint, null, null);
 					bool bSucceed = _result.AsyncWaitHandle.WaitOne(timeout);
@@ -115,6 +126,17 @@ namespace SCMTOperationCore.Connection.Tcp
 					if (bSucceed)
 					{
 						socket.EndConnect(_result);
+
+						uint dummy = 0;
+						byte[] inOptionValues = new byte[Marshal.SizeOf(dummy) * 3];
+						BitConverter.GetBytes((uint)1).CopyTo(inOptionValues, 0);
+						BitConverter.GetBytes((uint)2000).CopyTo(inOptionValues, Marshal.SizeOf(dummy));
+						BitConverter.GetBytes((uint)1000).CopyTo(inOptionValues, Marshal.SizeOf(dummy) * 2);
+
+						// 设置TCP协议自保活。scmt与基站之间没有保活操作
+						socket.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.KeepAlive, 1);
+						socket.IOControl(IOControlCode.KeepAliveValues, inOptionValues, null);
+
 						HandleConnect();
 					}
 					else
@@ -126,17 +148,17 @@ namespace SCMTOperationCore.Connection.Tcp
 				}
 				catch (InvalidOperationException e)
 				{
-					Console.WriteLine($"Could not connect as an exception occured.\r\n{e.Message}");
+					Console.WriteLine($"Could not connect as an exception occured.(invalid operation)\r\n{e.Message}");
 					return false;
 				}
 				catch (SocketException e)
 				{
-					Console.WriteLine($"Could not connect as an exception occured.\r\n{e.Message}");
+					Console.WriteLine($"Could not connect as an exception occured.(socket exception)\r\n{e.Message}");
 					return false;
 				}
 				catch (Exception e)
 				{
-					Console.WriteLine($"Could not connect as an exception occured.\r\n{e.Message}");
+					Console.WriteLine($"Could not connect as an exception occured.(other exception)\r\n{e.Message}");
 					return false;
 				}
 
