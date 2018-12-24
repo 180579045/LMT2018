@@ -204,6 +204,7 @@ namespace CfgFileOperation
         /// <returns></returns>
         public bool ProcessingExcel(string strUeType, CfgOp cfgOp)
         {
+            bool re = true;
             if ((String.Empty == strUeType) || (null == cfgOp) )
                 return false;
             Dictionary<string, string> CellCol = new Dictionary<string, string>();// "Cell参数表"
@@ -251,6 +252,7 @@ namespace CfgFileOperation
                 Console.WriteLine("CfgParseReclistExcel5G ({0}) ({1}) DealReclist start...\n", strUeType, type);
                 if (!DealReclist(type, CellCol, cfgOp))
                 {
+                    re = false;
                     g_bw.Write(String.Format("Err CfgParseReclistExcel5G ({0}) ({1}) DealReclist Err.\n", strUeType, type).ToArray());
                     Console.WriteLine("Err CfgParseReclistExcel5G ({0}) ({1}) DealReclist Err.\n", strUeType, type);
                     break;
@@ -259,7 +261,7 @@ namespace CfgFileOperation
                 Console.WriteLine("CfgParseReclistExcel5G ({0}) ({1}) DealReclist end.\n", strUeType, type);
             }
             CellCol.Clear();
-            return true;
+            return re;
         }
         /// <summary>
         /// 自定义 (patch)
@@ -270,10 +272,10 @@ namespace CfgFileOperation
         /// <param name="strCondition"></param>
         /// <param name="cfgOp"></param>
         /// <returns></returns>
-        public bool ProcessingSelfPatch(string strExcelPath, CfgOp cfgOp)
+        public bool ProcessingSelfPatch(string strExcelPath, CfgOp cfgOp, string strUeType)
         {
             CfgParseSelfExcel selfExcel = new CfgParseSelfExcel();
-            return selfExcel.ProcessingExcel5G(g_bw, strExcelPath, g_mdbPath, "patch", cfgOp, this);
+            return selfExcel.ProcessingExcel5G(g_bw, strExcelPath, g_mdbPath, "patch", cfgOp, this, strUeType);
         }
         /// <summary>
         /// 统一处理规则
@@ -298,17 +300,16 @@ namespace CfgFileOperation
             string m_strCurTableName = ""; // 当前处理的表名 
             int m_iCurTabIndexNum = -1;  // 2014-2-12 luoxin 当前表索引个数
             bool m_bIsMoreInsts = false; // 2014-2-12 luoxin 是否多实例配置
-            //string m_strPlanIndex = "";  // 2014-2-12 luoxin 多实例配置的规划索引
-            //List<string> m_vectIndexScope = new List<string>();//存索引真实应该取得值，如果0-1取默认值，2取推荐值
-            //List<string> m_vectIndexName = new List<string>();
             List<Dictionary<string, string>> m_indexInfo = new List<Dictionary<string, string>>();
             for (int iLine = 4; iLine < rEndNo + 1; iLine++)
             {
-                bool bIsIndex = false;//是否是索引节点
+                bool bIsIndex = false;    //是否是索引节点
                 string strFlag = "";      //根据patch标识进行处理
                 string nodeName = "";     //节点名NodeName, 
                 string nodeValue = "";    //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                 string strTableName = ""; //节点所属于的table
+                //if (iLine == 718)
+                //    Console.WriteLine("===");
                 if (isEndLine(ColVals, iLine))                     // 是否结束行
                     break;
                 if (!isEffectiveLine(ColVals, iLine, out strFlag)) // 是否有效行
@@ -550,6 +551,7 @@ namespace CfgFileOperation
                     bug += String.Format("{0},", index.Keys.ToList()[0]);
                 bug = bug.TrimEnd(',') + ").\n";
                 g_bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
                 return false;
             }
             //一维索引
@@ -1265,8 +1267,12 @@ namespace CfgFileOperation
             //  表块 实例 : 序列化
             foreach (var tabName in GetVectPDGTabName())
             {
-                CfgTableOp tableOp = GetCfgTableOpByName(tabName);
-                allBuff.AddRange(tableOp.WriteTofilePDG());
+                //if (String.Equals("acCfgEntry", tabName))
+                //{
+                //    Console.WriteLine("\n");
+                //}
+                //allBuff.AddRange(tableOp.WriteTofilePDG());
+                allBuff.AddRange(GetReclistTableByName(tabName).WriteTofilePDG());
             }
             new CfgOp().CfgWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
@@ -1333,6 +1339,73 @@ namespace CfgFileOperation
         public int GetInstNum()
         {
             return m_InstIndexLeafName.Count();
+        }
+
+        /// <summary>
+        /// 表块 的序列化: patch_ex
+        /// </summary>
+        /// <returns></returns>
+        public List<byte> WriteTofilePDG()
+        {
+            List<byte> tableBytes = new List<byte>();
+
+            //1.表头  StruCfgFileTblInfo
+            tableInfo.m_cfgFile_TblInfo.u32RecNum = (uint)GetInstNum();
+            if ("nodeBInfo" == tableName)
+            {
+                tableInfo.m_cfgFile_TblInfo.u16FieldNum = 1;
+                tableInfo.m_cfgFile_TblInfo.u16RecLen = 4;
+            }
+            tableBytes.AddRange(tableInfo.m_cfgFile_TblInfo.StruToByteArray());
+
+            //2.每个叶子的头
+            foreach (var leaf in tableInfo.m_LeafNodes)
+            {
+                // 标记 节点是否可配置
+                SetLeafFieldConfigFlagPDG(leaf.m_struFieldInfo, leaf.m_struMibNode.strMibName);
+                // 每个叶子节点的头
+                tableBytes.AddRange(leaf.m_struFieldInfo.StruToByteArray());
+            }
+
+            //3. 表实例 : 表的每个叶子的内容 * 每个表实例
+            foreach (var InstleafName in m_InstIndexLeafName)
+            {
+                string strInstIndex = InstleafName.Key;
+                CfgTableInstanceInfos inst = tableInfo.m_cfgInsts.Find(e => String.Compare(e.GetInstantNum(), strInstIndex, true) == 0);
+                if (null != inst)
+                    tableBytes.AddRange(inst.GetInstMem());
+            }
+            return tableBytes;
+        }
+        void SetLeafFieldConfigFlagPDG(StruCfgFileFieldInfo FieldInfo, string strNodeName)
+        {
+            bool bFind = false;
+            foreach (var leafNames in m_InstIndexLeafName.Values)
+            {
+                if (-1 != leafNames.FindIndex(e => String.Compare(e, strNodeName, true) == 0))
+                {
+                    bFind = true;
+                    break;
+                }
+            }
+
+            //如果节点本身是不可配置的即使被选中也是不可配置的，如果是可配置的节点在没有被选中的情况下
+            //也是不可配置的。索引字段全部为可配置的。add by yangyuming
+            if (true == bFind)
+            {
+                if (FieldInfo.u8ConfigFlag != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
+                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+            }
+            else
+            {
+                if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
+                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE;
+                else if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE && FieldInfo.u8FieldTag == 'Y')
+                {
+                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+                }
+            }
+
         }
     }
     //class ReclistIndex

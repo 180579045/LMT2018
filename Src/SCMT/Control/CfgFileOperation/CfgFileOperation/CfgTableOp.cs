@@ -165,6 +165,17 @@ namespace CfgFileOperation
             }
         }
         /// <summary>
+        /// 是否存在 strIndex索引值的实例
+        /// </summary>
+        /// <param name="strIndex"></param>
+        /// <returns></returns>
+        public bool IsExistInstsByIndex(string strIndex)
+        {
+            if ( -1 != m_cfgInsts.FindIndex(e => e.GetInstantNum() == strIndex))
+                return true;
+            return false;
+        }
+        /// <summary>
         /// 通过索引查找实例
         /// </summary>
         /// <param name="strIndex"></param>

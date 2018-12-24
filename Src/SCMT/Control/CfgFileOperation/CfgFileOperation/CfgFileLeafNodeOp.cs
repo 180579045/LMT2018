@@ -543,7 +543,7 @@ namespace CfgFileOperation
             s.u8FieldTag = this.u8FieldTag;
             s.u8SaveTag = this.u8SaveTag;
             s.u8ConfigFlag = this.u8ConfigFlag;
-            Array.Copy(s.u8FieldName, this.u8FieldName, this.u8FieldName.Length);
+            Array.Copy(this.u8FieldName, s.u8FieldName,  this.u8FieldName.Length);
             return s;
         }
     }

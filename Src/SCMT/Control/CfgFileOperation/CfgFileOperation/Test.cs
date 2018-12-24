@@ -19,74 +19,55 @@ namespace CfgFileOperation
     /// </summary>
     class Test
     {
-        //static int Main(string[] args)
-        //{
-        //    Console.WriteLine("c#");
-        //    return 1;
-        //}
         static int Main(string[] args)
         {
-            
             //string d = Console.ReadLine();
-            int cmdNo = -1;
             int iRet = 0;
-            foreach (var arg in args)
+            string strVal = "";
+            if (!new Test().GetCommandInfo(args, out strVal))
             {
-                Console.WriteLine(String.Format("Main arg:({0})", arg));
-                int pos = arg.ToString().IndexOf(':');// arg.ToString().IndexOfAny("Command".ToCharArray());
-                if (-1 == pos)
-                    continue;
-
-                string strKey = arg.ToString().Substring(0, pos);
-                string strVal = arg.ToString().Substring(pos + 1);
-                // 命令行
-                if (String.Equals(strKey, "Command"))
+                Console.WriteLine(String.Format("Err: Para not have 'Command'.\n"));
+                return 9;
+            }
+            Console.WriteLine(String.Format("Command : {0}.\n", strVal));
+            // beyond compare : 比较 两个文件
+            if (string.Equals(strVal, "BeyondCompare"))
+            {
+                TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
+                initPath.BeyondCompareInitCfgMain(args);
+            }
+            // 命令行生成init
+            else if (string.Equals(strVal, "Cmdline"))
+            {
+                //Console.OutputEncoding = Encoding.ASCII;
+                if (!new Test().CmdlineCreateInitPatch(args))
                 {
-                    // beyond compare : 比较 两个文件
-                    if (string.Equals(strVal, "BeyondCompare"))
-                    {
-                        cmdNo = 1;
-                        TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
-                        //initPath.Main();
-                        initPath.BeyondCompareInitCfgMain(args);
-                        break;
-                    }
-                    // 命令行生成init
-                    else if (string.Equals(strVal, "Cmdline"))
-                    {
-                        Console.OutputEncoding = Encoding.UTF8;
-                        cmdNo = 2;
-                        bool rer = new Test().CmdlineCreateInitPatch(args);
-                        if (!rer)
-                        {
-                            Console.WriteLine(String.Format("Err CmdlineCreateInitPatch CmdNo={0}.\n", cmdNo));
-                            iRet = 2;
-                        }
-                        break;
-                    }
-                    else if (string.Equals(strVal, "BeyondComparePatch"))
-                    {
-                        cmdNo = 3;
-                        TestCfgForInitAndPatch patch = new TestCfgForInitAndPatch();
-                        patch.BeyondComparePatchExCfgMain(args);
-
-                        break;
-                    }
-                    else if (string.Equals(strVal, "CreatePatch"))
-                    {
-                        cmdNo = 4;
-                        //initPath.Main();
-                        new Test().CmdlineCreatePatch(args);
-                        break;
-                    }
-                    else
-                    {
-                        cmdNo = 5;
-                        break;
-                    }
+                    Console.WriteLine(String.Format("Err CmdlineCreateInitPatch Cmd={0}.\n", strVal));
+                    iRet = 2;
                 }
             }
-            Console.WriteLine(String.Format("Main End CmdNo={0}, return {1}.\n", cmdNo,iRet));
+            else if (string.Equals(strVal, "BeyondComparePatch"))
+            {
+                new TestCfgForInitAndPatch().BeyondComparePatchExCfgMain(args);
+            }
+            // 命令行生成 patch
+            else if (string.Equals(strVal, "CreatePatch"))
+            {
+                if (!new Test().CmdlineCreatePatch(args))
+                {
+                    Console.WriteLine(String.Format("Err CmdlineCreatePatch Cmd={0}.\n", strVal));
+                    iRet = 3;
+                }
+            }
+            else
+            {
+            }
+            Console.WriteLine(String.Format("Main End Cmd={0}, return {1}.\n", strVal, iRet));
+            
+            return iRet;
+        }
+        void MainOld()
+        {
             //new Test().CmdlineCreateInitPatch(args);
 
             //TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
@@ -115,7 +96,34 @@ namespace CfgFileOperation
             //test.testForOpReadExcelForCfg();
 
             //test.test4();
-            return iRet;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="strComInfo"></param>
+        /// <returns></returns>
+        bool GetCommandInfo(string[] args, out string strComInfo)
+        {
+            string strKey = "";
+            string strVal = "";
+            strComInfo = "";
+            foreach (var arg in args)
+            {
+                Console.WriteLine(String.Format("Main arg:({0})", arg));
+                int pos = arg.ToString().IndexOf(':');// arg.ToString().IndexOfAny("Command".ToCharArray());
+                if (-1 == pos)
+                    continue;
+                strKey = arg.ToString().Substring(0, pos);
+                strVal = arg.ToString().Substring(pos + 1);
+                if (String.Equals(strKey, "Command"))// 命令行
+                {
+                    strComInfo = strVal;
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -1675,9 +1683,6 @@ namespace CfgFileOperation
                 Console.WriteLine("Err need output dir info...\n");
                 return false;
             }
-
-            //string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-            //string fileName = string.Format("LogInitPatch_{0}.txt", time);
             string fileName = path["OutDir"]+"LogInitPatch.txt";
             FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
             //实例化BinaryWriter
@@ -1711,8 +1716,34 @@ namespace CfgFileOperation
         /// 命令行生成
         /// </summary>
         /// <param name="paths"></param>
-        void CmdlineCreatePatch(string[] args)
+        bool CmdlineCreatePatch(string[] args)
         {
+            //////////////
+            bool re = true;
+            if (args.Count() == 0)
+            {
+                Console.WriteLine("Err need input par Count is 0.\n");
+                return false;
+            }
+            Dictionary<string, string> path = new Dictionary<string, string>();
+            foreach (var par in args)
+            {
+                string par_str = par.ToString();
+                int pos = par_str.IndexOf(':');
+                if (pos != -1)
+                {
+                    string key = par_str.Substring(0, pos);
+                    string val = par_str.Substring(pos + 1);
+                    path.Add(key, val);
+                    Console.WriteLine(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val));
+                }
+            }
+            if (!path.ContainsKey("OutDir") || !Directory.Exists(path["OutDir"]))
+            {
+                Console.WriteLine("Err need output dir info...\n");
+                return false;
+            }
+
             string time = DateTime.Now.ToString("yyyyMMddHHmmss");
             string fileName = string.Format("LogPatch_{0}.txt", time);
             FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
@@ -1724,35 +1755,12 @@ namespace CfgFileOperation
 
             try
             {
-                Dictionary<string, string> path = null;
-                if (args.Count() != 0)
-                {
-                    path = new Dictionary<string, string>();
-                    foreach (var par in args)
-                    {
-                        string par_str = par.ToString();
-                        int pos = par_str.IndexOf(':');
-                        if (pos != -1)
-                        {
-                            string key = par_str.Substring(0, pos);
-                            string val = par_str.Substring(pos + 1);
-                            path.Add(key, val);
-                            bw.Write(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val).ToArray());
-                        }
-                    }
-                    new CfgOp().CreatePatchCfg(bw, path);
-                }
-                else
-                {
-                    bw.Write(String.Format("\nCmdline CreateInitPatch Err: need input par.\n").ToArray());
-                    Console.WriteLine(" need input par...");
-                }
+                re = new CfgOp().CreatePatchCfg(bw, path);
             }
-            //catch
-            //{
-            //    //CfgExcelOp.GetInstance().Dispose();
-            //    bw.Write(String.Format("Cmdline CreateInitPatch Err. Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
-            //}
+            catch
+            {
+                Console.WriteLine("Err exe Death...");
+            }
             finally
             {
                 CfgExcelOp.GetInstance().Dispose();
@@ -1765,6 +1773,7 @@ namespace CfgFileOperation
             //关闭流
             bw.Close();
             fs.Close();
+            return re;
         }
 
         void testForParseAlarmEx()
