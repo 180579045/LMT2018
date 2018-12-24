@@ -561,7 +561,6 @@ namespace SCMTMainWindow
 			// 填写SNMP模块需要的OIDList;
 			var oidlist = new List<string>();             
 			// 每个节点都有自己的表数据结构;
-			Dictionary<string, string> name2cn = new Dictionary<string, string>();
 			Dictionary<string, string> oid2cn = new Dictionary<string, string>();
 			Dictionary<string, string> oid2en = new Dictionary<string, string>();
 
@@ -601,10 +600,12 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				// 保存中文名称等信息
-				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
-				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
-				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
+				if ("True".Equals(iter.IsIndex, StringComparison.OrdinalIgnoreCase))
+				{
+					// 保存中文名称等信息
+					oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+					oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
+				}
 			}
 
 			// 数据的最终结果
@@ -645,6 +646,10 @@ namespace SCMTMainWindow
 						foreach (string oid in cmdItem.m_leaflist)
 						{
 							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
+							MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByOid(oid, CSEnbHelper.GetCurEnbAddr());
+							// 保存中文名称等信息
+							oid2en.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameMib);
+							oid2cn.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameCh);
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -669,7 +674,8 @@ namespace SCMTMainWindow
 					}
 					catch (Exception ex)
 					{
-						throw ex;
+						Log.Error(ex.Message);
+						throw;
 					}
 				}
 
@@ -827,7 +833,6 @@ namespace SCMTMainWindow
 			// 填写SNMP模块需要的OIDList;
 			var oidlist = new List<string>();             
 			// 每个节点都有自己的表数据结构;         
-			Dictionary<string, string> name2cn = new Dictionary<string, string>();
 			Dictionary<string, string> oid2cn = new Dictionary<string, string>();
 			Dictionary<string, string> oid2en = new Dictionary<string, string>();
 
@@ -868,10 +873,12 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				// 保存中文名称等信息
-				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
-				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
-				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
+				if (string.Equals("True", iter.IsIndex, StringComparison.OrdinalIgnoreCase))
+				{
+					// 保存中文名称等信息，此处添加的是索引节点
+					oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
+					oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
+				}
 			}
 
 			// 数据的最终结果
@@ -912,6 +919,10 @@ namespace SCMTMainWindow
 						foreach (string oid in cmdItem.m_leaflist)
 						{
 							getNextOidList.Add(SnmpToDatabase.GetMibPrefix() + oid);
+							MibLeaf mibLeaf = SnmpToDatabase.GetMibNodeInfoByOid(oid, CSEnbHelper.GetCurEnbAddr());
+							// 保存中文名称等信息，此处添加的是非索引节点
+							oid2en.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameMib);
+							oid2cn.Add(SnmpToDatabase.GetMibPrefix() + oid, mibLeaf.childNameCh);
 						}
 						// GetNext结果
 						List<Dictionary<string, string>> oidAndValTableTmp = null;
@@ -939,7 +950,8 @@ namespace SCMTMainWindow
 					}
 					catch (Exception ex)
 					{
-						throw ex;
+						Log.Error(ex.Message);
+						throw;
 					}
 				}
                 double proBarValue = (i / (double)cmdMibInfoList.Count) * 100;
@@ -962,21 +974,6 @@ namespace SCMTMainWindow
 			, Dictionary<string, string> oid2en, string objParentOID, MibTable nodeMibTable)
 		{
 			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
-		}
-
-		/// <summary>
-		/// ReceiveResBySingleNode的GetNext函数收集完成之后，调用主界面更新DataGrid
-		/// </summary>
-		/// <param name="ar"></param>
-		private void NotifyMainUpdateDataGrid(IAsyncResult ar)
-		{
-			LastColumn++;
-
-			// 全部节点都已经收集完毕;
-			if (LastColumn == ChildCount)
-			{
-				//main.UpdateAllMibDataGrid(GetNextResList, oid_cn, oid_en, contentlist, ObjParentOID, IndexCount, nodeMibTable);
-			}
 		}
 
 		public override void Add(ObjNode obj)

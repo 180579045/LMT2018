@@ -545,7 +545,7 @@ namespace SCMTMainWindow.View
 
                         if(!bisDefault)
                         {
-                            if (temdicValue.ContainsKey(mibLeaf.childNameMib))
+                            if (temdicValue.ContainsKey(mibLeaf.childNameMib) && !string.IsNullOrWhiteSpace(temdicValue[mibLeaf.childNameMib]))
                                 devalue = temdicValue[mibLeaf.childNameMib];
                             else
                                 devalue = SnmpToDatabase.GetDefaultValue(mibLeaf) ;

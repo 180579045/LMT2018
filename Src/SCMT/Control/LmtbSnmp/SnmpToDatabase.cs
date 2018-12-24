@@ -356,7 +356,7 @@ namespace LmtbSnmp
 				var value = int.Parse(strValue);
 
 				// 3.比对是否存在对应的枚举值
-				return mapKv.ContainsKey(value) ? mapKv[value] : null;
+				return mapKv.ContainsKey(value) ? mapKv[value] : strValue;
 			}
 			//else if (omType.Equals("s8[]"))
 			//{

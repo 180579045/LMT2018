@@ -595,8 +595,19 @@ namespace LmtbSnmp
 					{
 
 					}
-					// 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
-					if (reqResult.Pdu.ErrorIndex == 0)
+
+					// 第一个Vb的值
+					string firstVbVal = reqResult.Pdu.VbList.ElementAt(0).Value.ToString();
+					// 响应的Oid中有一个Oid的类型为ENDOFMIBVIEW即表示到达Mib结尾，结束检索
+					foreach (var vb in reqResult.Pdu.VbList)
+					{
+						if (vb.Value.Type == SnmpConstants.SMI_ENDOFMIBVIEW)
+						{
+							return true;
+						}
+					}
+
+					if (reqResult.Pdu.ErrorIndex == 0) // 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
 					{
 						foreach (var vb in reqResult.Pdu.VbList)
 						{
@@ -616,25 +627,12 @@ namespace LmtbSnmp
 						}
 						return true;
 					}
-
-					if (reqResult.Pdu.VbList.Count > 0)
+					else // 其他错误
 					{
-						// 第一个Vb的值
-						string firstVbVal = reqResult.Pdu.VbList.ElementAt(0).Value.ToString();
-						// 只有状态码为13并且错误索引为1并且第一个vb的值为endOfMibView，才表示检索结束
-						if (reqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable 
-							&& firstVbVal.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
-						{
-							return true;
-						}
-						else // 其他错误
-						{
-							logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", reqResult.Pdu.ErrorIndex, firstVbVal);
-							Log.Error(logMsg);
-							return false;
-						}
+						logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", reqResult.Pdu.ErrorIndex, firstVbVal);
+						Log.Error(logMsg);
+						return false;
 					}
-					
 				}
 				else
 				{
