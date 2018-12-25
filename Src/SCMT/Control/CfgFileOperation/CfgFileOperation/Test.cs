@@ -19,6 +19,13 @@ namespace CfgFileOperation
     /// </summary>
     class Test
     {
+        //static void Main()
+        //{
+        //    string dfd = "D:\\Git_pro\\mib_parser_5g\\src\\net\\EMB6116_5G_GNB_PZ_V0.99.00_feature\\RecList_V6.00.50.05.40.07.01.xls";
+        //    var d = CfgExcelOp.GetInstance();
+        //    d.GetSheetEndRow(dfd, "Cell参数表", "end");
+        //    d.Dispose();
+        //}
         static int Main(string[] args)
         {
             //string d = Console.ReadLine();
@@ -1743,9 +1750,8 @@ namespace CfgFileOperation
                 Console.WriteLine("Err need output dir info...\n");
                 return false;
             }
-
-            string time = DateTime.Now.ToString("yyyyMMddHHmmss");
-            string fileName = string.Format("LogPatch_{0}.txt", time);
+            
+            string fileName = path["OutDir"] +"\\\\"+ "LogPatch.txt";
             FileStream fs = new FileStream(fileName, FileMode.OpenOrCreate);
             //实例化BinaryWriter
 
@@ -1753,16 +1759,18 @@ namespace CfgFileOperation
             bw.Write(String.Format("Cmdline CreatePatch Start... Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());
             Console.WriteLine(String.Format("....CmdlineCreatePatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
 
-            try
+            //try
             {
-                re = new CfgOp().CreatePatchCfg(bw, path);
+                CfgOp cf = new CfgOp();
+                re = cf.CreatePatchCfg(bw, path);
             }
-            catch
+            //catch
             {
                 Console.WriteLine("Err exe Death...");
             }
-            finally
+            //finally
             {
+                Console.WriteLine("excel dispose.");
                 CfgExcelOp.GetInstance().Dispose();
             }
             bw.Write(String.Format("Cmdline CreateInitPatch End. Time is {0}. \n", DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒")).ToArray());

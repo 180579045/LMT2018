@@ -30,10 +30,13 @@ namespace CfgFileOperation
         /// <param name="args"></param>
         public void BeyondComparePatchExCfgMain(string[] args)
         {
-            FileStream fs = new FileStream("BeyondCompareWritePatchBuf.txt", FileMode.Create);
+            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
+
+            string writelog = dataBasePath+"5GCfg\\80patch20181224\\output\\" + "BeyondCompareWritePatchBuf.txt";
+            FileStream fs = new FileStream( writelog, FileMode.Create);
             //实例化BinaryWriter
             BinaryWriter bw = new BinaryWriter(fs);
-            bw.Write("beyond compare two patch_ex.cfg.\n");
+            bw.Write("beyond compare two patch_ex.cfg.\n".ToArray());
 
             Dictionary<string, string> parInfo = new Dictionary<string, string>();
             foreach (var arg in args)
@@ -48,30 +51,16 @@ namespace CfgFileOperation
                 }
             }
 
-            string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
+            //string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
             string YSFilePath = dataBasePath + "5GCfg\\cfg_20181219\\patch_hw.cfg";
-            string NewFilePath = dataBasePath + "5GCfg\\13patch_ex.cfg";
-
-            //1.文件头
-            if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
-            {
-                Console.WriteLine("file head info not all same.\n");
-                bw.Write("file head info not all same.\n".ToArray());
-            }
-
-            // 比较 表名是否一致
-            if (!TestBeyondCompFileTableNameMain(bw, YSFilePath, NewFilePath))
-            {
-                Console.WriteLine("tables name not all same.\n");
-                bw.Write("tables name not all same.\n".ToArray());
-            }
+            string NewFilePath = dataBasePath + "5GCfg\\80patch20181224\\31patch_ex.cfg";
 
             Dictionary<string, string> parInfo2 = new Dictionary<string, string>()
             { { "FilePathA",YSFilePath},{ "FilePathB",NewFilePath},{ "DataMdb", parInfo[ "DataMdb"]},};
             string err = "";
             if (IsAllPathValid(parInfo2, out err))
             {
-                // 文件的头比较
+                //// 文件的头比较
                 if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
                 {
                     Console.WriteLine("file head info not all same.");
@@ -619,30 +608,26 @@ namespace CfgFileOperation
                 tablNamesMore = tablesPosLA;
                 tablNamesLess = tablesPosLB;
             }
-            bw.Write(String.Format("\n\n"));
-            bw.Write(String.Format("========== More Beyond Less  ============ \n\n"));
+            bw.Write(String.Format("========== More Beyond Less  ============\n").ToArray());
             foreach (var table in tablNamesMore)
             {
                 if (-1 == tablNamesLess.FindIndex(e => String.Equals(e, table)))
                 {
-                    bw.Write(String.Format("TestBeyondTableName not have {0}. \n.", table).ToArray());
+                    bw.Write(String.Format("TestBeyondTableName not have {0}.\n.", table).ToArray());
                     Console.WriteLine(String.Format("not have {0}.\n", table));
                     re = false;
                 }
             }
-
-            bw.Write(String.Format("\n\n"));
-            bw.Write(String.Format("========== Less Beyond More  ============ \n\n"));
+            bw.Write(String.Format("========== Less Beyond More  ============\n").ToArray());
             foreach (var table in tablNamesLess)
             {
                 if (-1 == tablNamesMore.FindIndex(e => String.Equals(e, table)))
                 {
-                    bw.Write(String.Format("TestBeyondTableName not have {0}. \n.", table).ToArray());
+                    bw.Write(String.Format("TestBeyondTableName not have {0}.\n.", table).ToArray());
                     Console.WriteLine(String.Format("not have {0}.\n", table));
                     re = false;
                 }
             }
-
             return re;
         }
 
@@ -864,7 +849,8 @@ namespace CfgFileOperation
         /// <param name="InstsAList"></param>
         /// <param name="InstsBList"></param>
         /// <returns></returns>
-        bool TestIsSameByIndexMain(BinaryWriter bw, string tableName, int u32RecNum, Dictionary<string, StruCfgFileFieldInfo> LeafHead, List<byte[]> InstsAList, List<byte[]> InstsBList, Dictionary<string, string> parInfo)
+        bool TestIsSameByIndexMain(BinaryWriter bw, string tableName, int u32RecNum, Dictionary<string, StruCfgFileFieldInfo> LeafHead, 
+            List<byte[]> InstsAList, List<byte[]> InstsBList, Dictionary<string, string> parInfo)
         {
             //通过 索引的顺序，来判断每个实例是否相同
             bool re = true;
@@ -1501,7 +1487,7 @@ namespace CfgFileOperation
                 if (!TestIsSameInst(strIndex, bw, tableName, LeafHead, instA, instB))
                 {
                     re = false;
-                    bw.Write(String.Format("({0}),index({1}) inst info no same。\n", tableName, strIndex));
+                    bw.Write(String.Format("({0}),index({1}) inst info no same。\n", tableName, strIndex).ToArray());
                     Console.WriteLine(String.Format("({0}),index({1}) inst info no same。", tableName, strIndex));
                     if (tableName.Contains("nr"))
                     {
@@ -1551,12 +1537,12 @@ namespace CfgFileOperation
                 //int b = GetBytesValToInt(InB);
                 if (!BytesCompare_Base64(InA, InB))
                 {
-                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) not bugWrire.\n", tableName, leafName, strIndex, inAstr, inAstr));
+                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) not bugWrire.\n", tableName, leafName, strIndex, inAstr, inBstr));
                     Console.WriteLine(String.Format("table({0}),index({2}),leafName({1}),info:a.({3}),b.({4}).", tableName, leafName, strIndex, inAstr, inBstr));//, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
                 }
                 else
                 {
-                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) yes bugWrire.\n", tableName, leafName, strIndex, inAstr, inAstr));
+                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) yes bugWrire.\n", tableName, leafName, strIndex, inAstr, inBstr));
                     Console.WriteLine(String.Format("table({0}),index({2}),leafName({1}),info:a.({3}),b.({4}).", tableName, leafName, strIndex, inAstr, inBstr));//, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
                 }
             }

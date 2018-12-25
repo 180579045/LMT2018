@@ -61,6 +61,7 @@ namespace CfgFileOperation
         {
             string err;
             bw.Write(String.Format("CreatePatchAndInitCfg start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg start ...\n"));
             // 校验文件地址
             if (!IsAllPathValid(paths, out err))
             {
@@ -68,21 +69,29 @@ namespace CfgFileOperation
                 Console.WriteLine(String.Format("{0}, 不能生成init和patch", err));
                 return false;
             }
+
             //public RRU信息、告警信息、天线信息、lm.mdb
+            bw.Write(String.Format("CreatCfg_public start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg_public start ...\n"));
             if (!CreatCfg_public(bw, paths))
             {
                 bw.Write(String.Format("CreatePatchAndInitCfg err: 生成公共数据部分失败！\n").ToArray());
                 Console.WriteLine(String.Format("生成公共数据部分失败！"));
                 return false;
             }
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n"));
             bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n").ToArray());
+
             // 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
+            bw.Write(String.Format("CreatePatchAndInitCfg start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg start ...\n"));
             if (!CreatCfg_init_cfg(bw, paths))
             {
                 bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n").ToArray());
                 Console.WriteLine(String.Format("生成init.cfg失败！"));
                 return false;
             }
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n"));
             bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n").ToArray());
             //// 生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义 (patch)，生成patch_ex.cfg
             //if (!CreatCfg_patch_ex_cfg(bw, paths))
@@ -191,26 +200,47 @@ namespace CfgFileOperation
         /// <param name="paths"></param>
         bool CreatCfg_public(BinaryWriter bw, Dictionary<string, string> paths)
         {
+            bool re = true;
             //public-1. RRU信息
-            m_rruExcel = new CfgParseRruExcel();
-            if (false == m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表"))
-                return false;
+            bw.Write(String.Format("Parsing rru({0})..\n", paths["RruInfo"]).ToArray());
+            Console.WriteLine(String.Format("Parsing rru({0})..\n", paths["RruInfo"]));
+            try {
+                m_rruExcel = new CfgParseRruExcel();
+                if (false == m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表"))
+                    return false;
+            }
+            catch {
+                re = false;
+                bw.Write(String.Format("Parsed rru Death.\n").ToArray());
+                return re;
+            }
+            bw.Write(String.Format("Parsed rru end.\n").ToArray());
+            Console.WriteLine(String.Format("Parsed rru end.\n"));
 
             //public-2. 告警信息
             //在CreateCfgFile中就解析了
+            bw.Write(String.Format("Parsing alarm({0})..\n", paths["Alarm"]).ToArray());
+            Console.WriteLine(String.Format("Parsing alarm({0})..\n", paths["Alarm"]));
             m_alarmExcel = new CfgParseAlarmExecl();
             m_alarmExcel.ParseExcel(paths["Alarm"]);
+            bw.Write(String.Format("Parsed alarm end.\n").ToArray());
+            Console.WriteLine(String.Format("Parsed alarm end.\n"));
 
             //public-3. 天线信息
             m_antennaExcel = new CfgParseAntennaExcel();
 
             //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
-            bool re = CreateCfgFile(bw, paths);
-            if (re == false)
+            bw.Write(String.Format("Parsing Create public file....\n").ToArray());
+            Console.WriteLine(String.Format("Parsing Create public file....\n"));
+            if (false == CreateCfgFile(bw, paths))
             {
+                re = false;
                 bw.Write(String.Format("Err CreateCfgFile, stop.\n").ToArray());
                 Console.WriteLine(String.Format("Err CreateCfgFile, stop."));
+                return false;
             }
+            bw.Write(String.Format("Parsed Create public file end.\n").ToArray());
+            Console.WriteLine(String.Format("Parsed Create public file end.\n"));
             return re;
         }
         /// <summary>
@@ -293,6 +323,8 @@ namespace CfgFileOperation
         {
             bool re = true;
             //patch-1. lm.mdb 以每行为单位加载, reclist使用 
+            Console.WriteLine(String.Format("Parsing ReadMibTreeToMemory ..\n"));
+            bw.Write(String.Format("Parsing ReadMibTreeToMemory ..\n").ToArray());
             m_mibTreeMem = new CfgParseDBMibTreeToMemory();
             if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
             {
@@ -300,6 +332,8 @@ namespace CfgFileOperation
                 bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.\n").ToArray());
                 return re;
             }
+            Console.WriteLine(String.Format("Parsed ReadMibTreeToMemory end .\n"));
+            bw.Write(String.Format("Parsed ReadMibTreeToMemory end .\n").ToArray());
             // 打印内存
             //LogPrintByM_mibTreeMem();
             //LogPrintByM_mapTableInfo();
@@ -960,10 +994,6 @@ namespace CfgFileOperation
                     bw.Write(String.Format("Err CreateSpecialTalbeRruTypeByEx return false.\n").ToArray());
                     return false;
                 }
-                //string strSQLRruType = ("select  * from rruType");
-                //string rruTypePath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-                //DataSet rruTypedateSet = CfgGetRecordByAccessDb(rruTypePath + "\\LMTDBENODEB70.mdb", strSQLRruType);
-                //SetBuffersInfoForRruType(tableRow, rruTypedateSet, tableOp, leafNum);
             }
             else if (string.Equals("rruTypePortEntry", strTableName) && (isDyTable == true))//器件库表-射频单元射频通道设备
             {
@@ -973,10 +1003,6 @@ namespace CfgFileOperation
                     bw.Write(String.Format("Err CreateSpecialTalbeRruPortTypeByEx return false.\n").ToArray());
                     return false;
                 }
-                //string strSQLRruTypePort = ("select  * from rruTypePort");
-                //string rruTypePortPath = strFileToDirectory.Substring(0, strFileToDirectory.Length - strFileToDirectory.IndexOf("lmdtz"));
-                //DataSet rruTypePortdateSet = CfgGetRecordByAccessDb(rruTypePortPath + "\\LMTDBENODEB70.mdb", strSQLRruTypePort);
-                //SetBuffersInfoForRruTypePort(tableRow, rruTypePortdateSet, tableOp, leafNum);
             }
             else if (string.Equals("antennaBfScanWeightEntry", strTableName))
             {
@@ -2164,184 +2190,194 @@ namespace CfgFileOperation
         {
             bool re = true;
             int posStartF = bytePosL[0];
-            if (null == byteArray)
-                return false;
-            else if (String.Empty == value.Trim(' '))
-            {
-                SetValueToByteArray(byteArray, bytePosL, (uint)0);
-                return true;
-            }
-            if (OMType == "s32" || (OMType == "u32"))    //s32,u32
-            {
-                uint omValue = 0;// 返回类型已经确定
-                if (String.Compare(strAsnType, "Bits", true) == 0)
+            try {
+                if (null == byteArray)
+                    return false;
+                else if (String.Empty == value.Trim(' '))
                 {
-                    if (value.Contains("×") != false)
-                        omValue = (uint)0;
-                    else
+                    SetValueToByteArray(byteArray, bytePosL, (uint)0);
+                    return true;
+                }
+                if (OMType == "s32" || (OMType == "u32"))    //s32,u32
+                {
+                    uint omValue = 0;// 返回类型已经确定
+                    if (String.Compare(strAsnType, "Bits", true) == 0)
                     {
-                        if (!GetBitsTypeValueFromValue(value, strValList, out omValue))
+                        if (value.Contains("×") != false)
+                            omValue = (uint)0;
+                        else
                         {
-                            re =  false;
+                            if (!GetBitsTypeValueFromValue(value, strValList, out omValue))
+                            {
+                                re = false;
+                            }
                         }
                     }
-                }
-                else if ((String.Compare(strAsnType, "Integer32", true) == 0) && value.IndexOf(":") > 0)
-                {
-                    omValue = (uint)getEnumValue(value);
-                }
-                else if ((String.Compare(strAsnType, "INTEGER", true) == 0) && value.IndexOf(":") > 0)
-                {
-                    omValue = (uint)getEnumValue(value);
-                }
-                else
-                {
-                    if (value.Contains("0x") != false)
-                        omValue = (uint)Convert.ToInt32(value, 16);
-                    else if (value.Contains("×") != false)
-                        omValue = (uint)0;
+                    else if ((String.Compare(strAsnType, "Integer32", true) == 0) && value.IndexOf(":") > 0)
+                    {
+                        omValue = (uint)getEnumValue(value);
+                    }
+                    else if ((String.Compare(strAsnType, "INTEGER", true) == 0) && value.IndexOf(":") > 0)
+                    {
+                        omValue = (uint)getEnumValue(value);
+                    }
                     else
                     {
-                        omValue = (uint)long.Parse(value);//4294967295 必须用long.Parse
+                        if (value.Contains("0x") != false)
+                            omValue = (uint)Convert.ToInt32(value, 16);
+                        else if (value.Contains("×") != false)
+                            omValue = (uint)0;
+                        else
+                        {
+                            omValue = (uint)long.Parse(value);//4294967295 必须用long.Parse
+                        }
                     }
+                    if (OMType == "s32")
+                        SetValueToByteArray(byteArray, bytePosL, (int)omValue);
+                    else if (OMType == "u32")
+                        SetValueToByteArray(byteArray, bytePosL, (uint)omValue);
                 }
-                if (OMType == "s32")
-                    SetValueToByteArray(byteArray, bytePosL, (int)omValue);
-                else if (OMType == "u32")
-                    SetValueToByteArray(byteArray, bytePosL, (uint)omValue);
-            }
-            else if (OMType == "u32[]")
-            {
-                int posStart = bytePosL[0];
-                if (value.Contains("×") != false)
-                {
-                    value = "0";
-                    //bytePosL[0] += strLen;
-                }
-                //else松懈
-                getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
-                if (bytePosL[0] - posStart < strLen)
-                    bytePosL[0] = posStart + strLen;
-            }
-            else if (OMType == "enum")   //enum,转换成u32
-            {
-                if (("×" == value))
-                    value = "0";
-                SetValueToByteArray(byteArray, bytePosL, (uint)getEnumValue(value));
-            }
-            else if (OMType == "s32[]")   //Oid
-            {
-                if (("×" == value))
-                    value = "0";
-                OM_OBJ_ID_T tmpOID = new OM_OBJ_ID_T(value);// OM_OBJ_ID_T(value);
-                SetValueToByteArray(byteArray, bytePosL, tmpOID.StruToByteArray());
-            }
-            else if (OMType == "s8[]")   //char *
-            {
-                value = value.Replace("\"", "");//value = value.Trim("\"");
-                if (("×" == value))
-                    value = "";
-                sbyte[] sbArray = (sbyte[])((Array)System.Text.Encoding.Default.GetBytes(value));
-                //byte[] mybyte = Encoding.Unicode.GetBytes(value);
-                byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
-                //string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
-                SetValueToByteArray(byteArray, bytePosL, sbArray);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
-                if (mybyte2.Length < strLen)
-                    bytePosL[0] += strLen - mybyte2.Length;
-
-            }
-            else if (OMType == "s8")   //char *
-            {
-                int omValue = 0;
-                if (value.Contains("0x") != false)
-                    omValue = (int)Convert.ToInt32(value, 16);
-                else if (("×" == value))
-                    omValue = 0;
-                else
-                    omValue = (int)int.Parse(value);
-                byte[] TypeToByteArr = BitConverter.GetBytes((int)omValue);
-                SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
-            }
-            else if (OMType == "u8")
-            {
-                uint omValue = 0;
-                if (value.Contains("0x") != false)
-                    omValue = (uint)Convert.ToInt32(value, 16);
-                else if (("×" == value))
-                    omValue = 0;
-                else
-                    omValue = (uint)int.Parse(value);
-                byte[] TypeToByteArr = BitConverter.GetBytes((ushort)omValue);
-                SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
-            }
-            else if (OMType == "u8[]")
-            {
-                if (0 == String.Compare("IpAddress", strAsnType, true))//sizeof(ipv4addr)
-                {
-                    uint IPAddr = getIPAddr(value);
-                    SetValueToByteArray(byteArray, bytePosL, IPAddr);
-                }
-                else if (String.Compare(strAsnType, "InetAddress", true) == 0)
+                else if (OMType == "u32[]")
                 {
                     int posStart = bytePosL[0];
-                    value = value.Replace("\"", ""); //value.Trim("\"");
-                    GetInetAddressValue(byteArray, bytePosL, value);
+                    if (value.Contains("×") != false)
+                    {
+                        value = "0";
+                        //bytePosL[0] += strLen;
+                    }
+                    //else松懈
+                    getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
                     if (bytePosL[0] - posStart < strLen)
                         bytePosL[0] = posStart + strLen;
                 }
-                else if (String.Compare(strAsnType, "MacAddress", true) == 0)
+                else if (OMType == "enum")   //enum,转换成u32
                 {
-                    getMacAddr(byteArray, bytePosL, value);
-                }
-                else if (String.Compare(strAsnType, "MncMccType", true) == 0)
-                {
-                    GetMncMccTypeValue(byteArray, bytePosL, value);
-                }
-                else     //其他的u8[] 2009-12-21
-                {
-                    value = value.Replace("\"", "");
                     if (("×" == value))
                         value = "0";
-                    if (String.Compare(strAsnType, "DateAndTime", true) == 0)
-                        GetDateAndTimeTypeValue(byteArray, bytePosL, value);
-                    else
-                        SetValueToByteArray(byteArray, bytePosL, value);
+                    SetValueToByteArray(byteArray, bytePosL, (uint)getEnumValue(value));
                 }
-            }
-            else if (OMType == "u16")   //u16,s16
-            {
-                uint omValue = 0;
-                if (value.Contains("0x") != false)
-                    omValue = (uint)Convert.ToInt32(value, 16);
-                else if (("×" == value))
-                    omValue = 0;
-                else
-                    omValue = (uint)int.Parse(value);
-                SetValueToByteArray(byteArray, bytePosL, (ushort)omValue);
-            }
-            else if (OMType == "s16")   //u16,s16
-            {
-                uint omValue = 0;
-                if (value.Contains("0x") != false)
-                    omValue = (uint)Convert.ToInt32(value, 16);
-                else if (("×" == value))
-                    omValue = 0;
-                else
-                    omValue = (uint)int.Parse(value);
-                SetValueToByteArray(byteArray, bytePosL, (short)omValue);
-            }
-            else
-            {
-                uint omValue = 0;
-                if (value.Contains("0x") != false)
-                    omValue = (uint)Convert.ToInt32(value, 16);
-                else
-                    omValue = (uint)int.Parse(value);
-                SetValueToByteArray(byteArray, bytePosL, omValue);
-            }
+                else if (OMType == "s32[]")   //Oid
+                {
+                    if (("×" == value))
+                        value = "0";
+                    OM_OBJ_ID_T tmpOID = new OM_OBJ_ID_T(value);// OM_OBJ_ID_T(value);
+                    SetValueToByteArray(byteArray, bytePosL, tmpOID.StruToByteArray());
+                }
+                else if (OMType == "s8[]")   //char *
+                {
+                    value = value.Replace("\"", "");//value = value.Trim("\"");
+                    if (("×" == value))
+                        value = "";
+                    sbyte[] sbArray = (sbyte[])((Array)System.Text.Encoding.Default.GetBytes(value));
+                    //byte[] mybyte = Encoding.Unicode.GetBytes(value);
+                    byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
+                    //string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
+                    SetValueToByteArray(byteArray, bytePosL, sbArray);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
+                    if (mybyte2.Length < strLen)
+                        bytePosL[0] += strLen - mybyte2.Length;
 
-            if (bytePosL[0] - posStartF < strLen)
-                bytePosL[0] = posStartF + strLen;
+                }
+                else if (OMType == "s8")   //char *
+                {
+                    int omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (int)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (int)int.Parse(value);
+                    byte[] TypeToByteArr = BitConverter.GetBytes((int)omValue);
+                    SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
+                }
+                else if (OMType == "u8")
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (uint)int.Parse(value);
+                    byte[] TypeToByteArr = BitConverter.GetBytes((ushort)omValue);
+                    SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
+                }
+                else if (OMType == "u8[]")
+                {
+                    if (0 == String.Compare("IpAddress", strAsnType, true))//sizeof(ipv4addr)
+                    {
+                        uint IPAddr = getIPAddr(value);
+                        SetValueToByteArray(byteArray, bytePosL, IPAddr);
+                    }
+                    else if (String.Compare(strAsnType, "InetAddress", true) == 0)
+                    {
+                        int posStart = bytePosL[0];
+                        value = value.Replace("\"", ""); //value.Trim("\"");
+                        GetInetAddressValue(byteArray, bytePosL, value);
+                        if (bytePosL[0] - posStart < strLen)
+                            bytePosL[0] = posStart + strLen;
+                    }
+                    else if (String.Compare(strAsnType, "MacAddress", true) == 0)
+                    {
+                        getMacAddr(byteArray, bytePosL, value);
+                    }
+                    else if (String.Compare(strAsnType, "MncMccType", true) == 0)
+                    {
+                        GetMncMccTypeValue(byteArray, bytePosL, value);
+                    }
+                    else     //其他的u8[] 2009-12-21
+                    {
+                        value = value.Replace("\"", "");
+                        if (("×" == value))
+                            value = "0";
+                        if (String.Compare(strAsnType, "DateAndTime", true) == 0)
+                            GetDateAndTimeTypeValue(byteArray, bytePosL, value);
+                        else
+                            SetValueToByteArray(byteArray, bytePosL, value);
+                    }
+                }
+                else if (OMType == "u16")   //u16,s16
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (uint)int.Parse(value);
+                    SetValueToByteArray(byteArray, bytePosL, (ushort)omValue);
+                }
+                else if (OMType == "s16")   //u16,s16
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (uint)int.Parse(value);
+                    SetValueToByteArray(byteArray, bytePosL, (short)omValue);
+                }
+                else
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else
+                        omValue = (uint)int.Parse(value);
+                    SetValueToByteArray(byteArray, bytePosL, omValue);
+                }
+
+                if (bytePosL[0] - posStartF < strLen)
+                    bytePosL[0] = posStartF + strLen;
+            }
+            catch {
+                re = false;
+                Console.WriteLine(String.Format("Err Death : WriteToBuffer: OMType({0}) value({1}), valList({2}).\n", OMType, value, strValList).ToArray());
+            }
+            //finally {
+            //    re = false;
+            //}
+            
             return re;
         }
 

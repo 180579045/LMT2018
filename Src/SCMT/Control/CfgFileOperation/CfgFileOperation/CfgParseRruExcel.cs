@@ -100,7 +100,8 @@ namespace CfgFileOperation
                 bw.Write(String.Format("Err:ProcessingExcelRru ({0}):({1}), get row count err.", strExcelPath, strSheet));
                 return false;
             }
-
+            int colsCount = excelOp.GetColCount(strExcelPath, strSheet);
+            
             // 获取所有sheet 每col的数据
             Dictionary<string, object[,]> ColVals = new Dictionary<string, object[,]>();
             foreach (var colName in ColsInfoRru.Keys)//colName=A,..,Z,AA,...,AZ,BA,...,BW.
@@ -114,6 +115,7 @@ namespace CfgFileOperation
 
             // 处理每行的内容
             // 先处理第一行(即从 line=2开始)
+            Console.WriteLine(String.Format("Parsing rru Pro info...\n"));
             Dictionary<string, string> PreInfo = new Dictionary<string, string>();//当下一行有cell为null时，用来获取上一行的数据填充
             int currentLine = 2;
             foreach (var colNameEn in ColsInfoRru.Keys)
@@ -123,7 +125,8 @@ namespace CfgFileOperation
                 PreInfo.Add(colNameEn, cellVal);
             }
             RruInfo.Add(PreInfo);
-            
+
+            Console.WriteLine(String.Format("Parsing rru line3... info...\n"));
             for (currentLine = 3; currentLine < rowCountTrue + 1; currentLine++)
             {
                 Dictionary<string, string> CurInfo = new Dictionary<string, string>();//处理当前数据

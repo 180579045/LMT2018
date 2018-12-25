@@ -195,6 +195,10 @@ namespace CfgFileOperation
                 string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     // 叶子名
                 string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   // 叶子值
                 strCurTableName = SetCurTableName(TableName, strCurTableName);        // 更新表名
+                if (String.Equals("logFileConfigurationEntry", strCurTableName))
+                {
+                    Console.WriteLine("==");
+                }
                 if (!bIsSpecialScenc(strCurTableName,  strUeType)) { continue; }      // 特殊处理
 
                 // 标记 表名和实例信息
@@ -324,6 +328,9 @@ namespace CfgFileOperation
             List<int> bytePosL = new List<int>() { u16FieldOffset };
             new CfgOp().WriteToBuffer(byteArray, strDefaultValue, bytePosL, strOMType, u16FieldLen, "", asnType);
 
+            // 重新写回去,实验证明数据已经修改，而且不会修改其他字段
+            // 在patch写的时候，需要再次写回去。。。
+            curtable.SetInstsInfoValueByIndex(InstsPos, byteArray[0]);
             return true;
         }
 
