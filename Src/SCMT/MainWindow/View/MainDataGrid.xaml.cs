@@ -1336,6 +1336,9 @@ namespace SCMTMainWindow.View
         {
             if (LineDataList.Count == 0)
                 return;
+			// 存储索引Oid
+			List<string> indexOidList = new List<string>();
+
             tbkCurrentPage.Text = curentPage.ToString();
 
             DynamicDataGrid.DataContext = null;
@@ -1373,8 +1376,10 @@ namespace SCMTMainWindow.View
                     var IndexContent = "";
                     for (int i = 0; i < IndexCount; i++)
                     {
-                        string IndexOIDTemp = SnmpToDatabase.GetMibPrefix() + mibTable.oid + "." + (i + 1);
+						string index = mibTable.oid + "." + (i + 1);
+						string IndexOIDTemp = SnmpToDatabase.GetMibPrefix() + index;
                         IndexContent += oid_cn[IndexOIDTemp] + temp[i];
+						indexOidList.Add(IndexOIDTemp);
                     }
 
                     // 如下DataGrid_Cell_MIB中的 oid暂时填写成这样;
@@ -1396,28 +1401,67 @@ namespace SCMTMainWindow.View
                     model.AddTableProperty(mibTable);
                 }
 
-                foreach (var iter in LineDataList[key])
+                foreach (var item in oid_cn)
                 {
-                    string temp_compare = iter.Key.Remove(iter.Key.Length - key.Length);
+					string oid = item.Key;
+					string cnName = item.Value;
+					string enName = oid_en[oid];
+					string oidAndIndex = oid + key; // 加上索引的oid
+                    var lineData = LineDataList[key];
+					if (indexOidList.Contains(oid))
+					{
+						continue;
+					}
 
-                    // 如果OID匹配;
-                    if (oid_cn.ContainsKey(temp_compare))
+					// 如果OID匹配;
+					if (lineData.ContainsKey(oidAndIndex)) // 取到值的列显示相应的值
                     {
-                        Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter.Value + " and Header is:" + oid_cn[temp_compare]);
+                        Debug.WriteLine("Add Property:" + enName + " Value:" + lineData[oidAndIndex] + " and Header is:" + cnName);
 
                         // 在这里要区分DataGrid要显示的数据类型;
-                        var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare]
-                            , iter.Value, iter.Key, CSEnbHelper.GetCurEnbAddr());
+                        var dgm = DataGridCellFactory.CreateGridCell(enName, cnName
+							, lineData[oidAndIndex], oidAndIndex, CSEnbHelper.GetCurEnbAddr());
 
                         // 第一个参数：属性的名称——节点英文名称;
                         // 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
                         // 第三个参数：列要显示的中文名——节点的中文友好名;
-                        model.AddProperty(oid_en[temp_compare], dgm, oid_cn[temp_compare]);
+                        model.AddProperty(enName, dgm, cnName);
                     }
+					else // 未取到值的列显示为空
+					{
+						model.AddProperty(enName, new DataGrid_Cell_MIB()
+						{
+							m_Content = "",
+							oid = oidAndIndex,
+							m_bIsReadOnly = true,
+							MibName_CN = cnName,
+							MibName_EN = enName
+						}, cnName);
+					}
                 }
+				/*
+				foreach (var iter in LineDataList[key])
+				{
+					string temp_compare = iter.Key.Remove(iter.Key.Length - key.Length);
 
-                // 将这个整行数据填入List;
-                if (model.Properties.Count != 0)
+					// 如果OID匹配;
+					if (oid_cn.ContainsKey(temp_compare))
+					{
+						Debug.WriteLine("Add Property:" + oid_en[temp_compare] + " Value:" + iter.Value + " and Header is:" + oid_cn[temp_compare]);
+
+						// 在这里要区分DataGrid要显示的数据类型;
+						var dgm = DataGridCellFactory.CreateGridCell(oid_en[temp_compare], oid_cn[temp_compare]
+							, iter.Value, iter.Key, CSEnbHelper.GetCurEnbAddr());
+
+						// 第一个参数：属性的名称——节点英文名称;
+						// 第二个参数：属性的实例——DataGrid_Cell_MIB实例;
+						// 第三个参数：列要显示的中文名——节点的中文友好名;
+						model.AddProperty(oid_en[temp_compare], dgm, oid_cn[temp_compare]);
+					}
+				}
+				*/
+				// 将这个整行数据填入List;
+				if (model.Properties.Count != 0)
                 {
                     // 向单元格内添加内容;
                     contentlist.Add(model);

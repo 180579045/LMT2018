@@ -20,6 +20,9 @@ namespace LmtbSnmp
 
 		bool GetNextRequest(string strIpAddr, List<CDTLmtbVb> queryVbs, out Dictionary<string, string> result, long timeout);
 
+		bool GetNextRequest(string strIpAddr, List<string> reqOidList, out Dictionary<string, string> oidValue
+			, out List<string> lastOidList);
+
 		int SnmpSetSync(CDTLmtbPdu lmtPdu, out long requestId, string strIpAddr, long timeOut);
 
 		bool SnmpSetSync(string strIpAddr, List<CDTLmtbVb> setVbs, long timeOut);

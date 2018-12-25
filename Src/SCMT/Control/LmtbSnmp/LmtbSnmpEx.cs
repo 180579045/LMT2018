@@ -591,8 +591,17 @@ namespace LmtbSnmp
 					if (reqResult.Pdu.ErrorStatus == 106)
 					{
 					}
-					// 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
-					if (reqResult.Pdu.ErrorIndex == 0)
+
+					// 响应的Oid中有一个Oid的类型为ENDOFMIBVIEW即表示到达Mib结尾，结束检索
+					foreach (var vb in reqResult.Pdu.VbList)
+					{
+						if (vb.Value.Type == SnmpConstants.SMI_ENDOFMIBVIEW)
+						{
+							return true;
+						}
+					}
+
+					if (reqResult.Pdu.ErrorIndex == 0) // 如果ErrorStatus!=0且ErrorIndex=0就表示检索没有结束，就要组装新的Oid
 					{
 						foreach (var vb in reqResult.Pdu.VbList)
 						{
@@ -625,7 +634,7 @@ namespace LmtbSnmp
 						}
 						else // 其他错误
 						{
-							logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", reqResult.Pdu.ErrorIndex, firstVbVal);
+							logMsg = $"SNMP GetNext错误！ ErrorIndex:{reqResult.Pdu.ErrorIndex}, Value:{firstVbVal}";
 							Log.Error(logMsg);
 							return false;
 						}
