@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using CommonUtility;
+﻿using CommonUtility;
 using FileManager.FileHandler;
+using LinkPath;
+using LmtbSnmp;
 using LogManager;
 using MsgQueue;
 using SCMTOperationCore.Message.SI;
-using LinkPath;
-using LmtbSnmp;
-using SCMTOperationCore.Control;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace FileManager
 {
-	public delegate void GetFileInfoRspHandler(byte[] rspData);		// 获取文件信息事件
+	public delegate void GetFileInfoRspHandler(byte[] rspData);     // 获取文件信息事件
 
 	public delegate void UpdateProcessBar(TProgressBarInfo pbInfo);
 
@@ -26,11 +24,16 @@ namespace FileManager
 		#region 委托、事件
 
 		public event GetFileInfoRspHandler GetFileInfoRspArrived;
-		public event UpdateProcessBar UpdateProgressEvent;				// 更新进度条事件
-		public event UpdateProcessBar NewProgressEvent;					// 增加一个新的进度条
-		public event UpdateProcessBar EndProgressEvent;					// 销毁进度条
-		public event MenuClickHandler MenuClickRspEvent;				// 右键菜单响应
-		#endregion
+
+		public event UpdateProcessBar UpdateProgressEvent;              // 更新进度条事件
+
+		public event UpdateProcessBar NewProgressEvent;                 // 增加一个新的进度条
+
+		public event UpdateProcessBar EndProgressEvent;                 // 销毁进度条
+
+		public event MenuClickHandler MenuClickRspEvent;                // 右键菜单响应
+
+		#endregion 委托、事件
 
 		#region 构造、析构
 
@@ -46,13 +49,7 @@ namespace FileManager
 			SubscribeHelper.AddSubscribe(TopicHelper.QueryEnbCapacityRsp, OnGetCapacityRsp);
 		}
 
-
-		~FileMgrFileHandler()
-		{
-			
-		}
-
-		#endregion
+		#endregion 构造、析构
 
 		#region 公有接口
 
@@ -63,12 +60,14 @@ namespace FileManager
 		}
 
 		//发送文件到远端。localFilePath和remotePath等参数已经处理好
-		public bool SendFileToRemote(string localFilePath, string remotePath)
+		public bool SendFileToRemote(string localFilePath, string remotePath, out string strErrMsg)
 		{
+			strErrMsg = null;
 			// 检测localFilePath是否是目录
 			if (FilePathHelper.IsFolderPath(localFilePath))
 			{
-				Log.Error($"每次只能下载一个文件到基站，传入的是一个目录 {localFilePath}");
+				strErrMsg = $"每次只能下载一个文件到基站，传入的是一个目录 {localFilePath}";
+				Log.Error(strErrMsg);
 				return false;
 			}
 
@@ -81,7 +80,8 @@ namespace FileManager
 			//判断是否存在其他正在进行的任务
 			if (HasRunningTask())
 			{
-				Log.Error("有正在进行传输的文件或正在升级的任务");
+				strErrMsg = "有正在进行传输的文件或正在升级的任务，请等待传输完成后再进行操作";
+				Log.Error(strErrMsg);
 				return false;
 			}
 
@@ -89,7 +89,8 @@ namespace FileManager
 			var dstFullPath = CreateTempFile(localFilePath, _boardIp);
 			if (string.IsNullOrEmpty(dstFullPath.Trim()))
 			{
-				Log.Error("下载文件目的路径处理失败");
+				strErrMsg = $"下载文件目的路径 {dstFullPath} 处理失败";
+				Log.Error(strErrMsg);
 				return false;
 			}
 
@@ -97,25 +98,27 @@ namespace FileManager
 			var ext = FilePathHelper.GetFileExt(dstFullPath);
 			if (null == ext)
 			{
-				Log.Error($"从文件路径{dstFullPath}获取扩展名失败");
+				strErrMsg = $"从文件路径 {dstFullPath} 获取扩展名失败";
+				Log.Error(strErrMsg);
 				return false;
 			}
 
 			var handler = FileHandlerFactory.CreateHandler(ext, _boardIp);
-			var result = handler.DoPutFile(dstFullPath, remotePath);
+			var result = handler.DoPutFile(dstFullPath, remotePath, out strErrMsg);
 			if (ExecuteResult.UpgradeFailed == result)
 			{
-				Log.Error("升级失败");
+				Log.Error(strErrMsg);
 				return false;
 			}
 
 			if (ExecuteResult.UserCancel == result)
 			{
-				Log.Info("升级过程中用户主动取消");
+				strErrMsg = "升级过程中用户主动取消";
+				Log.Info(strErrMsg);
 				return true;
 			}
 
-			var baseHandler = (BaseFileHandler) handler;
+			var baseHandler = (BaseFileHandler)handler;
 			_workingForUpgrade = baseHandler.WorkingForUpgrade;
 			_workingForFileTrans = baseHandler.WorkingForFileTrans;
 
@@ -135,12 +138,13 @@ namespace FileManager
 		}
 
 		// 上传文件到本地
-		public bool UploadFileToLocal(string localFilePath, string remoteFilePath)
+		public bool UploadFileToLocal(string localFilePath, string remoteFilePath, out string strErrMsg)
 		{
 			//判断是否存在其他正在进行的任务
 			if (HasRunningTask())
 			{
-				Log.Error("有正在进行传输的文件或正在升级的任务");
+				strErrMsg = "有正在进行传输的文件或正在升级的任务";
+				Log.Error(strErrMsg);
 				return false;
 			}
 
@@ -148,10 +152,10 @@ namespace FileManager
 			ShowLogHelper.Show($"远程文件路径：{remoteFilePath}", _boardIp, InfoTypeEnum.OM_EVENT_NOTIFY_INFO);
 
 			var handler = FileHandlerFactory.CreateHandler("gen", _boardIp);
-			var result = handler.DoGetFile(localFilePath, remoteFilePath);
+			var result = handler.DoGetFile(localFilePath, remoteFilePath, out strErrMsg);
 			if (ExecuteResult.UpgradeFailed == result)
 			{
-				Log.Error($"上传文件{remoteFilePath}到本地{localFilePath}失败");
+				Log.Error($"上传文件 {remoteFilePath} 到本地 {localFilePath} 失败");
 				return false;
 			}
 
@@ -173,7 +177,7 @@ namespace FileManager
 
 			return true;
 		}
-		
+
 		// rru日志上传操作
 		public SENDFILETASKRES RruLogUpload(string dstPath, uint nRruIndexNo, uint nLogFileType, string remoteIp)
 		{
@@ -221,17 +225,17 @@ namespace FileManager
 				title = $"{tranFileFullPath}({GetFileTypeText(transFile.FileTransFileType)})";
 			}
 
-			_mapTraningFileTask[taskId] = ftd;		// 保存进行中的任务
+			_mapTraningFileTask[taskId] = ftd;      // 保存进行中的任务
 			SetProcInit(title, ftd);
 		}
 
 		// 触发进度条初始化
 		private void SetProcInit(string showName, StruFileTransDes ftd)
 		{
-			var state = FILETRANSSTATE.TRANSSTATE_UNKNOWN;
-			var op = OPERTYPE.OPERTYPE_UNKNOWN;
-			var opText = "";
-			var stateText = "";
+			FILETRANSSTATE state;
+			OPERTYPE op;
+			string opText;
+			string stateText;
 
 			var dd = ftd.enumFileTransOp;
 			if (dd == FILETRANSOPER.DownLoading)
@@ -328,7 +332,7 @@ namespace FileManager
 			UpdateProgressEvent?.Invoke(pbInfo);
 		}
 
-		#endregion
+		#endregion 公有接口
 
 		#region 软件包相关的操作
 
@@ -413,7 +417,7 @@ namespace FileManager
 			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
 
-		#endregion
+		#endregion 软件包相关的操作
 
 		#region 订阅事件处理方法、定时器回调
 
@@ -429,7 +433,6 @@ namespace FileManager
 			// todo 判断基站的连接状态，如果已经断开连接，就取消定时器相关的工作
 			//if (!NodeBControl.GetInstance().NodeHasConnected(_boardIp))
 			//{
-				
 			//}
 
 			if (_workingForUpgrade)
@@ -469,10 +472,10 @@ namespace FileManager
 			string swPackPlanUpgradeState;
 			string swPackPlanUpgradePercent;
 			string swPackPlanUpgradeResult;
-			var swPackPlanUpgradeResult2 = "";		//外设软件包要有连个字段来表示结果
+			var swPackPlanUpgradeResult2 = "";      //外设软件包要有连个字段来表示结果
 			string csGetCmd;
-			string PackPlanOpEndingCmd;				//获取全部结束节点值的命令
-			string swPackPlanOpEndingIndicator;		//是否全部结束节点：0未结束，1全部结束
+			string PackPlanOpEndingCmd;             //获取全部结束节点值的命令
+			string swPackPlanOpEndingIndicator;     //是否全部结束节点：0未结束，1全部结束
 
 			if (_upgradePackInfo.IsMainEqpSw())
 			{
@@ -574,7 +577,7 @@ namespace FileManager
 					}
 				}
 			}
-			else if (swPackPlanUpgradeStateValue.Equals(FileTransMacro.STR_ACTIVATING))		// 正在激活
+			else if (swPackPlanUpgradeStateValue.Equals(FileTransMacro.STR_ACTIVATING))     // 正在激活
 			{
 				if (FILETRANSOPER.UnKnown == _upgradePackInfo.GetFileTransStatus())
 				{
@@ -590,19 +593,19 @@ namespace FileManager
 
 				//激活进行结果判断
 				var nRezlt1 = int.Parse(swPackPlanUpgradeResultValue);
-				if (0 != nRezlt1)	//有一位不是0就是失败
+				if (0 != nRezlt1)   //有一位不是0就是失败
 				{
 					Log.Info("获取软件包激活结果1失败!");
 					_upgradePackInfo.MakeInvalid();
 					return;
 				}
 
-				if (!_upgradePackInfo.IsMainEqpSw())	//外设软件包
+				if (!_upgradePackInfo.IsMainEqpSw())    //外设软件包
 				{
 					if (pdu.GetValueByMibName(_boardIp, swPackPlanUpgradeResult2, out swPackPlanUpgradeResultValue2))
 					{
 						var nRezlt2 = int.Parse(swPackPlanUpgradeResultValue2);
-						if (0 != nRezlt2)		//有一位不是0就是失败
+						if (0 != nRezlt2)       //有一位不是0就是失败
 						{
 							Log.Info("软件包激活失败!");
 							_upgradePackInfo.MakeInvalid();
@@ -627,7 +630,7 @@ namespace FileManager
 			var EndInOutPdu = new CDTLmtbPdu();
 			string swPackPlanOpEndingIndicatorValue;
 
-			var EndResult = CDTCmdExecuteMgr.GetInstance().CmdGetSync(PackPlanOpEndingCmd, out reqId , index, _boardIp, ref EndInOutPdu);
+			var EndResult = CDTCmdExecuteMgr.GetInstance().CmdGetSync(PackPlanOpEndingCmd, out reqId, index, _boardIp, ref EndInOutPdu);
 			if (0 != EndResult)
 			{
 				if (_operaFailCount++ > 3)
@@ -671,7 +674,7 @@ namespace FileManager
 				Log.Info($"查询索引为{csIndex}文件传输进度");
 
 				long lrequestId = 0;
-				var nGetCmdRezlt = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransPercent", out lrequestId, csIndex, _boardIp, ref inOutPdu, true);
+				var nGetCmdRezlt = CDTCmdExecuteMgr.GetInstance().CmdGetSync("GetFileTransPercent", out lrequestId, csIndex, _boardIp, ref inOutPdu);
 				if (0 == nGetCmdRezlt)
 				{
 					var nFileTransTaskId = taskId;
@@ -773,7 +776,7 @@ namespace FileManager
 		// 更新当前进度条的信息。只有拖包升级才调用这个方法
 		private void SetProcessInfo(TProgressBarInfo progressBarInfo)
 		{
-			if (null == _swUpgradePbBarInfo)	// 没有的时候要新增一个进度条
+			if (null == _swUpgradePbBarInfo)    // 没有的时候要新增一个进度条
 			{
 				_swUpgradePbBarInfo = progressBarInfo;
 				NewProgressEvent?.Invoke(_swUpgradePbBarInfo);
@@ -808,6 +811,7 @@ namespace FileManager
 						stateText = "下载失败";
 					}
 					break;
+
 				case OPERTYPE.OPERTYPE_UNZIP:       //解压
 					if (bEndWork)
 					{
@@ -820,6 +824,7 @@ namespace FileManager
 						stateText = "解压失败";
 					}
 					break;
+
 				case OPERTYPE.OPERTYPE_ACTIVE:      //激活
 					if (bEndWork)
 					{
@@ -832,6 +837,7 @@ namespace FileManager
 						stateText = "激活失败";
 					}
 					break;
+
 				case OPERTYPE.OPERTYPE_SYN:     //同步
 					if (bEndWork)
 					{
@@ -857,16 +863,14 @@ namespace FileManager
 		//删除未完成任务
 		public void DeleteUnFinishedTransTask(long lTaskID)
 		{
-			if(_mapTraningFileTask.ContainsKey(lTaskID))
+			if (_mapTraningFileTask.ContainsKey(lTaskID))
 			{
 				_mapTraningFileTask.Remove(lTaskID);
 			}
 
 			_workingForFileTrans = false;
-
 		}
 
-		
 		//停止文件传输操作。taskId作为索引使用
 		public static SENDFILETASKRES CancelTransFileTask(long taskId, string targetIp)
 		{
@@ -883,7 +887,6 @@ namespace FileManager
 
 			return SENDFILETASKRES.TRANSFILE_TASK_FAILED;
 		}
-
 
 		private void OnGetCapacityRsp(SubscribeMsg msg)
 		{
@@ -907,7 +910,7 @@ namespace FileManager
 			}
 		}
 
-		#endregion
+		#endregion 订阅事件处理方法、定时器回调
 
 		#region 私有方法
 
@@ -1005,7 +1008,7 @@ namespace FileManager
 			return (null != _mapTransFileType);
 		}
 
-		#endregion
+		#endregion 私有方法
 
 		#region 私有成员、属性
 
@@ -1013,29 +1016,28 @@ namespace FileManager
 		private Dictionary<int, string> _mapTransFileType;
 		private bool _workingForUpgrade;
 		private bool _workingForFileTrans;
-		private CDTCommonFileTrans _commonFileTransInfo;
+		//private CDTCommonFileTrans _commonFileTransInfo;
 		private CSWPackPlanProcInfoMgr _upgradePackInfo;
 		private Timer _timer;
 		private int _operaFailCount;
 		private int _nGetSnmpFailCount;
-		private Dictionary<long, StruFileTransDes> _mapTraningFileTask;		// 传输中的任务，key : taskid
+		private Dictionary<long, StruFileTransDes> _mapTraningFileTask;     // 传输中的任务，key : taskid
 		private TProgressBarInfo _swUpgradePbBarInfo;
 
-		#endregion
-
+		#endregion 私有成员、属性
 	}
 
 	public class TProgressBarInfo
 	{
 		public string m_csNEInfo;                   //网元信息
-		public string m_csFileName;					//文件信息
+		public string m_csFileName;                 //文件信息
 		public int m_nPercent;                      //操作完成百分比
 		public FILETRANSSTATE m_eStatus;            //状态
 		public OPERTYPE m_eOperationType;           //操作类型
-		public string strOperationType;				//操作类型文本描述
+		public string strOperationType;             //操作类型文本描述
 
-		public long m_lTaskID;						//任务ID
+		public long m_lTaskID;                      //任务ID
 
-		public string m_strStatus;					//状态的文本描述
+		public string m_strStatus;                  //状态的文本描述
 	};
 }

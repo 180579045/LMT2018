@@ -15,7 +15,8 @@ namespace FileManager.FileHandler.Tests
 		public void DoPutFileTest()
 		{
 			var cfgHandler = new CfgFileHandler("172.27.245.92");
-			cfgHandler.DoPutFile("e:/cur.cfg", "/ata2/VER/CFG/cur.cfg");
+			string strErrMsg;
+			cfgHandler.DoPutFile("e:/cur.cfg", "/ata2/VER/CFG/cur.cfg", out strErrMsg);
 		}
 
 		[TestMethod()]

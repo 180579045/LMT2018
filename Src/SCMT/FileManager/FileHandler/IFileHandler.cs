@@ -11,9 +11,9 @@ namespace FileManager.FileHandler
 	public interface IFileHandler
 	{
 		// 本地文件到远端
-		ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath);
+		ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath, out string strErrMsg);
 
 		// 远端文件到本地
-		ExecuteResult DoGetFile(string localPath, string remoteFullPath);
+		ExecuteResult DoGetFile(string localPath, string remoteFullPath, out string strErrMsg);
 	}
 }
