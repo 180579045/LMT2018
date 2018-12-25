@@ -769,7 +769,17 @@ namespace SCMTMainWindow
 			Task.Factory.StartNew(x =>
 			{
 				// 等待任务结束
-				Task.WaitAll(taskList.ToArray());
+				try
+				{
+					Task.WaitAll(taskList.ToArray());
+				}
+				catch (AggregateException)
+				{
+					//aggregateException.Flatten();
+					isGetParaTaskRunning = false;
+					throw;
+				}
+
 				// 任务结束，设置任务标识为完成
 				isGetParaTaskRunning = false;
 
@@ -811,18 +821,13 @@ namespace SCMTMainWindow
 
 			if (ret == null)
 			{
-				Log.Error("获取不到该节点的表信息");
-				return;
-			}
-
-			nodeMibTable = ret;
-			if (ret == null)
-			{
-				strMsg = string.Format("使用Mib表名获取到的Mib表信息为空（Mib表名：{0}）", ObjTableName);
+				strMsg = $"使用Mib表名获取到的Mib表信息为空（Mib表名：{ObjTableName}）";
 				Log.Error(strMsg);
 				MessageBox.Show(strMsg);
 				return;
 			}
+
+			nodeMibTable = ret;
 
 			// 填写SNMP模块需要的OIDList;
 			var oidlist = new List<string>();             
@@ -853,6 +858,8 @@ namespace SCMTMainWindow
 				}
 			}
 
+			var prefixOid = SnmpToDatabase.GetMibPrefix();
+
 			// 循环MIb表，组装列名称
 			foreach (var iter in ret.childList)
 			{
@@ -868,10 +875,19 @@ namespace SCMTMainWindow
 					continue;
 				}
 
-				// 保存中文名称等信息
-				name2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childNameMib, iter.childNameCh);
-				oid2en.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameMib);
-				oid2cn.Add(SnmpToDatabase.GetMibPrefix() + iter.childOid, iter.childNameCh);
+				// 保存中文名称等信息.如果存在相同的oid，这里会抛出异常
+				try
+				{
+					name2cn.Add(prefixOid + iter.childNameMib, iter.childNameCh);
+					oid2en.Add(prefixOid + iter.childOid, iter.childNameMib);
+					oid2cn.Add(prefixOid + iter.childOid, iter.childNameCh);
+				}
+				catch (Exception e)
+				{
+					strMsg = $"名为：{iter.childNameMib}，OID为：{iter.childOid}的节点已经存在，请检查MIB是否存在重复OID错误！";
+					MessageBox.Show(strMsg, "SCMT", MessageBoxButton.OK, MessageBoxImage.Error);
+					throw;
+				}
 			}
 
 			// 数据的最终结果
