@@ -346,6 +346,21 @@ namespace SCMTOperationCore.Control
 			}
 		}
 
+		// 根据网元IP获取网元节点
+		public Element GetNodeByIp(string ip)
+		{
+			Element nodeb = null;
+			lock (lockObj)
+			{
+				if (mapElements.ContainsKey(ip))
+				{
+					nodeb = mapElements[ip] as NodeB;
+				}
+			}
+
+			return nodeb;
+		}
+
 		#endregion
 
 		#region 私有函数区
@@ -393,21 +408,6 @@ namespace SCMTOperationCore.Control
 				var nodeb = mapElements[nodeIp] as NodeB;
 				return nodeb.SendSiMsg(dataBytes);
 			}
-		}
-
-		// 根据网元IP获取网元节点
-		private Element GetNodeByIp(string ip)
-		{
-			Element nodeb = null;
-			lock (lockObj)
-			{
-				if (mapElements.ContainsKey(ip))
-				{
-					nodeb = mapElements[ip] as NodeB;
-				}
-			}
-
-			return nodeb;
 		}
 
 		#endregion

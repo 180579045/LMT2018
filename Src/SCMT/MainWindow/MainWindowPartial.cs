@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using CommonUtility;
 using LinkPath;
@@ -121,22 +122,31 @@ namespace SCMTMainWindow
 			var target = GetTargetMenu(sender);
 			if (target == null) return;
 
-			node = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
-			var menuItem = GetMenuItemByIp(node.NeAddress.ToString(), "连接基站");
+			var tnode = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+			ConnectAction(tnode);
+		}
+
+		public void ConnectAction(NodeB gNB)
+		{
+			if (null == gNB)
+			{
+				return;
+			}
+
+			var menuItem = GetMenuItemByIp(gNB.NeAddress.ToString(), "连接基站");
 			if (null != menuItem)
 			{
-				//NodeBControl.GetInstance().ConnectNodeb(target.Header);
-				ShowLogHelper.Show($"开始连接基站：{node.FriendlyName}-{node.NeAddress}", "SCMT");
-				node.ConnectAsync();
+				ShowLogHelper.Show($"开始连接基站：{gNB.FriendlyName}-{gNB.NeAddress}", "SCMT");
+				gNB.ConnectAsync();
 				ObjNode.main = this;
-				ChangeMenuHeader(node.NeAddress.ToString(), "连接基站", "取消连接");
+				ChangeMenuHeader(gNB.NeAddress.ToString(), "连接基站", "取消连接");
 			}
 			else
 			{
-				ShowLogHelper.Show($"取消连接：{node.FriendlyName}-{node.NeAddress}", "SCMT");
+				ShowLogHelper.Show($"取消连接：{gNB.FriendlyName}-{gNB.NeAddress}", "SCMT");
 
-				node.DisConnect();
-				ChangeMenuHeader(node.NeAddress.ToString(), "取消连接", "连接基站");
+				gNB.DisConnect();
+				ChangeMenuHeader(gNB.NeAddress.ToString(), "取消连接", "连接基站");
 			}
 		}
 

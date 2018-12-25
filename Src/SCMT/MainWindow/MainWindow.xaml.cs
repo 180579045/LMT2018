@@ -57,6 +57,7 @@ using dict_d_string = System.Collections.Generic.Dictionary<string, string>;
 
 namespace SCMTMainWindow
 {
+	/// <inheritdoc />
 	/// <summary>
 	/// MainWindow.xaml 的交互逻辑;
 	/// </summary>
@@ -141,9 +142,9 @@ namespace SCMTMainWindow
 
 			// 解析保存的基站节点信息
 			var nodeList = NodeBControl.GetInstance().GetNodebInfo();
-			foreach (var node in nodeList)
+			foreach (var item in nodeList)
 			{
-				AddNodeLabel(node.Key, node.Value);
+				AddNodeLabel(item.Key, item.Value);
 			}
 		}
 
@@ -157,12 +158,12 @@ namespace SCMTMainWindow
 				// 注册Trap监听
 				if (LmtTrapMgr.GetInstance().StartLmtTrap() == false)
 				{
-					Log.Error(String.Format("Trap监听启动错误！"));
+					Log.Error("Trap监听启动错误！");
 				}
 			}
 			catch (SocketException e)
 			{
-				Log.Error(String.Format("Trap监听启动错误！"));
+				Log.Error("Trap监听启动错误！");
 				MessageBox.Show("Trap监听启动错误，无法接收Trap消息，请确认162端口是否已被占用！");
 			}
 
@@ -767,8 +768,9 @@ namespace SCMTMainWindow
 
 		private MenuItem GetMenuItemByIp(string ip, string menuText)
 		{
-			if (String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(menuText))
+			if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(menuText))
 				return null;
+
 			var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			MenuItem retMenu = null;
 			var children = ExistedNodebList.Children;
@@ -1630,6 +1632,7 @@ namespace SCMTMainWindow
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbConnectedMsg, OnConnect);
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbOfflineMsg, OnDisconnect);
 			SubscribeHelper.AddSubscribe(TopicHelper.LoadLmdtzToVersionDb, OnLoadLmdtzToVersionDb);
+			SubscribeHelper.AddSubscribe(TopicHelper.ReconnectGnb, OnReconnGnb);
 		}
 
 		// 打印日志
@@ -1757,6 +1760,16 @@ namespace SCMTMainWindow
 
 			Log.Info($"基站设备类型是{equipType}");
 			return (EnbTypeEnum)Convert.ToInt32(equipType);
+		}
+
+		private void OnReconnGnb(SubscribeMsg msg)
+		{
+			var targetIp = Encoding.UTF8.GetString(msg.Data);
+			var gnb = NodeBControl.GetInstance().GetNodeByIp(targetIp) as NodeB;
+			if (null != node)
+			{
+				Dispatcher.BeginInvoke(new Action(() => ConnectAction(gnb)));
+			}
 		}
 
 		#endregion 订阅消息及处理
