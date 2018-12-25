@@ -156,6 +156,30 @@ namespace LinkPath
 		}
 
 		/// <summary>
+		/// SNMP GetNext同步操作
+		/// </summary>
+		/// <param name="strIpAddr"></param>
+		/// <param name="reqOidList"></param>
+		/// <param name="oidValue"></param>
+		/// <param name="lastOidList"></param>
+		/// <returns></returns>
+		public static bool SnmpGetNextSync(string strIpAddr, List<string> reqOidList, out Dictionary<string, string> oidValue
+			, out List<string> lastOidList)
+		{
+			oidValue = new Dictionary<string, string>();
+			lastOidList = new List<string>();
+
+			ILmtbSnmp lmtbSnmp = DTLinkPathMgr.GetSnmpInstance(strIpAddr);
+			if (null == lmtbSnmp)
+			{
+				Log.Error("获取lmtbSnmp实例错误");
+				return false;
+			}
+
+			return lmtbSnmp.GetNextRequest(strIpAddr, reqOidList, out oidValue, out lastOidList);
+		}
+
+		/// <summary>
 		/// 根据oid获取其值
 		/// </summary>
 		/// <param name="oid"></param>

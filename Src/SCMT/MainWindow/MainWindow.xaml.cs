@@ -66,6 +66,7 @@ namespace SCMTMainWindow
 
 		private bool m_bIsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
 		private bool m_bIsRepeat;
+		private bool is4GConn = true; // 是否连接4G基站，测试多站连接用
 
 		private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 
@@ -241,7 +242,7 @@ namespace SCMTMainWindow
 				{
 					var Ctrl = new ObjNodeControl(nodeB);        // 初始化象树树信息,Ctrl.m_RootNode即全部对象树信息;
 					RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
-                    this.Obj_Root.m_RootNode = Ctrl.m_RootNode;
+                    //this.Obj_Root.m_RootNode = Ctrl.m_RootNode;
 
 					TabControlEnable(true);
 					ExpanderBaseInfo.IsEnabled = true;
@@ -1688,11 +1689,14 @@ namespace SCMTMainWindow
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
 			st = GetEquipType(ip);
-			if (st != EnbTypeEnum.ENB_EMB6116)
+			if (is4GConn == false)
 			{
-				ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
-				NodeBControl.GetInstance().DisConnectNodeb(fname);
-				return;
+				if (st != EnbTypeEnum.ENB_EMB6116)
+				{
+					ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
+					NodeBControl.GetInstance().DisConnectNodeb(fname);
+					return;
+				}
 			}
 
 			NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
