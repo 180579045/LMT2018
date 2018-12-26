@@ -1652,7 +1652,7 @@ namespace CfgFileOperation
                 { "SelfDef" ,dataBasePath+selfDefExPath},
                 { "OutDir" , dataBasePath },
             };
-            cfgOp.CreatePatchAndInitCfg(bw, paths);
+            cfgOp.CreatePatchAndInitCfg4G(bw, paths);
 
             //清空缓冲区
             bw.Flush();
@@ -1698,7 +1698,7 @@ namespace CfgFileOperation
             Console.WriteLine(String.Format("....CmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             try
             {
-                re = new CfgOp().CreatePatchAndInitCfg(bw, path);
+                re = new CfgOp().CreatePatchAndInitCfg5G(bw, path);
             }
             catch
             {
