@@ -137,7 +137,7 @@ namespace SCMTOperationCore.Elements
 
 		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
-			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
+			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, NeAddress.ToString());
 
 			// 断开连接了，但不是手动取消的，应该是非自然断开
 			if (!IsCancelConnect())

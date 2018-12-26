@@ -1668,8 +1668,11 @@ namespace SCMTMainWindow
 		// 连接成功
 		private async void OnConnect(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
-			var ip = netAddr.TargetIp;
+			var ip = Encoding.UTF8.GetString(msg.Data);
+			if (string.IsNullOrEmpty(ip))
+			{
+				throw new ArgumentNullException();
+			}
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
@@ -1708,8 +1711,11 @@ namespace SCMTMainWindow
 		// 断开连接
 		private void OnDisconnect(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
-			var ip = netAddr.TargetIp;
+			var ip = Encoding.UTF8.GetString(msg.Data);
+			if (string.IsNullOrEmpty(ip))
+			{
+				throw new ArgumentNullException();
+			}
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
@@ -1771,6 +1777,11 @@ namespace SCMTMainWindow
 		private void OnReconnGnb(SubscribeMsg msg)
 		{
 			var targetIp = Encoding.UTF8.GetString(msg.Data);
+			if (string.IsNullOrEmpty(targetIp))
+			{
+				throw new ArgumentNullException();
+			}
+
 			var gnb = NodeBControl.GetInstance().GetNodeByIp(targetIp) as NodeB;
 			if (null != gnb)
 			{
@@ -1824,9 +1835,11 @@ namespace SCMTMainWindow
 		//解析lm.dtz文件
 		private async void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 
 			return;     // todo 下面的流程不执行
+
+			// 不能用netaddr反解析，不包含路径信息
+			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 
 			var ip = netAddr.TargetIp;
 
