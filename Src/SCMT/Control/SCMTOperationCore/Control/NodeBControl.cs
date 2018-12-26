@@ -340,10 +340,12 @@ namespace SCMTOperationCore.Control
 		//判断节点的连接状态
 		public bool NodeHasConnected(string ip)
 		{
-			lock (lockObj)
-			{
-				return mapElements[ip] is NodeB node && node.HasConnected();
-			}
+                var node = GetNodeByIp(ip) as NodeB;
+                if (null != node)
+                {
+                    return node.HasConnected();
+                }
+                return false;
 		}
 
 		// 根据网元IP获取网元节点
