@@ -205,7 +205,10 @@
                                             <DataGrid x:Name="MibDataGrid" ItemsSource="{Binding Path=.}" SelectionUnit="Cell" CanUserAddRows="False"
                                                       SelectionMode="Single" HorizontalGridLinesBrush="#CCCCCC" VerticalGridLinesBrush="#CCCCCC"/>
                                             -->
-                                            <View:MainDataGrid x:Name="Main_Dynamic_DataGrid"></View:MainDataGrid>
+
+                                            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                                <View:MainDataGrid x:Name="Main_Dynamic_DataGrid"></View:MainDataGrid>
+                                            </ScrollViewer>
                                         </xcad:LayoutAnchorable>
                                     </xcad:LayoutAnchorablePane>
                                 </xcad:LayoutPanel>
