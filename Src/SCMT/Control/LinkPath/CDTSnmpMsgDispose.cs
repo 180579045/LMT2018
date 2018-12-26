@@ -507,6 +507,7 @@ namespace LinkPath
 			{
 				// 通用事件中载波状态上报事件不需要处理
 				lmtPdu.GetValueByMibName(strNodeBIp, "eventGeneralEventType", out strValue);
+
 				// 8:carrierCheck|载波状态上报
 				if (Convert.ToInt32(strValue) == 8)
 				{
@@ -532,12 +533,6 @@ namespace LinkPath
 				DealFileTransTrap(lmtPdu);
 			}
 
-			// 向消息分发中心发送变更通知
-			// TODO
-			/*
-			LRESULT lt;
-			CDtMsgDispCenter::Initstance().ProcessWindowMessage(NULL, WM_APPEVENTTRAP, (WPARAM)iTrapType, (LPARAM)pLmtbPdu, lt);
-			*/
 			// 将lmtPdu转换为string以便传递
 			var strLmtPdu = JsonHelper.SerializeObjectToString(lmtPdu);
 			var strPars = $"{{'TrapType' : {intTrapType}, 'LmtPdu' : {strLmtPdu} }}";
@@ -571,7 +566,7 @@ namespace LinkPath
 			var strIPAddr = lmtPdu.m_SourceIp;
 
 			string strValue;
-			// 文件传输结果
+			// 文件传输结果	0:success|成功/3:failure|失败
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiResult", out strValue);
 			if (!string.IsNullOrEmpty(strValue) && Convert.ToInt32(strValue) != 0)
 			{
@@ -579,10 +574,8 @@ namespace LinkPath
 				return;
 			}
 
-			// 文件传输类型
+			// 文件传输类型	1:upload|上传/2:download|下载
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiIndicator", out strValue);
-			// ForTest
-			// strValue = "1";
 			if (string.IsNullOrEmpty(strValue) || Convert.ToInt32(strValue) != 1)
 			{
 				Log.Error("不是文件上传.");
@@ -590,6 +583,52 @@ namespace LinkPath
 			}
 
 			// 上传的文件类型
+			// 1:operationLog|操作日志/
+			// 2:alterLog|变更日志/
+			// 3:omSecurityLog|安全日志/
+			// 4:alarmLog|告警日志文件/
+			// 5:omKeyLog|重要过程日志/
+			// 6:updateLog|升级日志/
+			// 7:debugLog|黑匣子日志/
+			// 8:statelessAlarmLog|异常日志/
+			// 9:eventLog|事件日志/
+			// 10:userLog|用户日志/
+			// 11:cfgDataConsistency|配置数据一致性文件/
+			// 12:stateDataConsistency|状态数据一致性文件/
+			// 13:dataConsistency|数据一致性文件/
+			// 14:curConfig|当前运行配置文件/
+			// 15:planConfig|期望配置文件/
+			// 16:equipSoftwarePack|主设备软件包/
+			// 17:coldPatchPack|主设备冷补丁包/
+			// 18:hotPatchPack|主设备热补丁包/
+			// 19:rruEquipSoftwarePack|RRU软件包/
+			// 20:relantEquipSoftwarePack|电调天线软件包/
+			// 21:enviromentEquipSoftwarePackPack|环境监控软件包/
+			// 22:gpsEquipSoftwarePack|GPS软件包/
+			// 23:equip1588SoftwarePack|1588软件包/
+			// 24:cnssEquipSoftwarePackPack|北斗软件包/
+			// 25:generalFile|普通文件/
+			// 26:lmtMDBFile|数据库文件/
+			// 27:activeAlarmFile|活跃告警文件/
+			// 28:performanceFile|性能文件/
+			// 29:cfgPatchFile|数据补丁文件/
+			// 30:snapshotFile|快照配置文件/
+			// 31:cdlFile|CDL文件/
+			// 32:sctpLogFile|sctp快照日志文件/
+			// 33:dumpLogFile|dump快照日志文件/
+			// 34:ocuEquipSoftwarePack|ocu软件包/
+			// 35:servicecdlFile|业务CDL文件/
+			// 36:mroFile|MRO文件/37:mrsFile|MRS文件/
+			// 38:mreFile|MRE文件/39:mmlOpLog|直连接口操作日志/
+			// 40:mmlPmFile|直连接口性能文件/
+			// 42:iotLog|IOT测量日志/
+			// 43:traceUserLog|跟踪用户日志/
+			// 45:immediatMdt|ImmediatMdt文件/
+			// 46:loggedMdt|LoggedMdt文件/
+			// 47:rlf|RlfMdt文件/
+			// 48:ripLog|RIP测量日志/
+			// 49:rncDisa|RNC容灾配置数据文件/
+			// 50:raeFile|RAE相关文件
 			lmtPdu.GetValueByMibName(strIPAddr, "fileTransNotiFileType", out strValue);
 			var uploadFileType = 0;
 			if (!string.IsNullOrEmpty(strValue))

@@ -1,14 +1,12 @@
-﻿using System;
+﻿using CommonUtility;
+using FileManager.FileHandler;
+using LinkPath;
+using LmtbSnmp;
+using LogManager;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using CommonUtility;
-using FileManager.FileHandler;
-using LogManager;
-using MIBDataParser;
-using MIBDataParser.JSONDataMgr;
-using LinkPath;
-using LmtbSnmp;
 
 namespace FileManager
 {
@@ -30,6 +28,8 @@ namespace FileManager
 
 		public bool ForceDlFlag { get; set; }
 
+		public string ErrorMsg { get; private set; }
+
 		/// <summary>
 		/// 命令执行成功与否
 		/// </summary>
@@ -40,10 +40,11 @@ namespace FileManager
 		{
 			_mTSwPackInfo = packInfo;
 
-			_mTInfo = new TswPackDlProcInfo();
-
-			_mTInfo.FileTypeName = _mTSwPackInfo.csSWPackTypeName;
-			_mTInfo.FileName = _mTSwPackInfo.csSWPackName;
+			_mTInfo = new TswPackDlProcInfo
+			{
+				FileTypeName = _mTSwPackInfo.csSWPackTypeName,
+				FileName = _mTSwPackInfo.csSWPackName
+			};
 
 			var fileInfo = new FileInfo($"{DtzFilePath.TrimEnd('\\', '/')}/{_mTInfo.FileName}");
 			_mTInfo.FileSize = (ulong)fileInfo.Length;
@@ -54,7 +55,7 @@ namespace FileManager
 			return _mTInfo;
 		}
 
-		#endregion
+		#endregion 公共方法、属性
 
 		#region 系统事件处理
 
@@ -68,12 +69,12 @@ namespace FileManager
 		private void IDOK_Click(object sender, EventArgs e)
 		{
 			CmdSucceedFlag = InitCmdInfoAndSend();
-			this.Close();
+			Close();
 		}
 
 		private void IDCANCEL_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		// 加载窗体事件处理。在此事件中控件的初始化。
@@ -81,17 +82,24 @@ namespace FileManager
 		{
 			var mibname = "swPackPlanActivateIndicator";
 
-			var bIsPeripheral = (FileTransMacro.SWPACK_ENB_PERIPHERAL_TYPE == _mTSwPackInfo.nSWEqpType) ;
+			var bIsPeripheral = (FileTransMacro.SWPACK_ENB_PERIPHERAL_TYPE == _mTSwPackInfo.nSWEqpType);
 			if (bIsPeripheral)
 			{
 				mibname = "peripheralPackPlanActivateIndicator";
 			}
 
+			Log.Info($"[FileMgr] get sw pack activate type mib name : {mibname}");
+
 			// 激活类型
 			var activeTypeMap = SnmpToDatabase.GetValueRangeByMibName(mibname, TargetIp);
 			if (null == activeTypeMap)
 			{
-				throw new CustomException("获取软件包激活类型失败");
+				ErrorMsg = "获取软件包激活类型失败";
+				Log.Error(ErrorMsg);
+
+				MessageBox.Show(ErrorMsg, "文件管理", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+				Close();
 			}
 
 			var bHasRelay = _mTSwPackInfo.csSWPackRelayVersion.Equals("null");
@@ -103,7 +111,7 @@ namespace FileManager
 				{
 					if (at.Value.Equals("去激活"))
 					{
-						continue;       //只有补订包才有去激活
+						continue; //只有补订包才有去激活
 					}
 				}
 
@@ -130,15 +138,18 @@ namespace FileManager
 			var bIsPatch = ((FileTransMacro.EQUIP_SWPACK_BBU_COLDPATCH == _mTSwPackInfo.nSWPackType) ||
 							 (FileTransMacro.EQUIP_SWPACK_HOTPATCH == _mTSwPackInfo.nSWPackType));
 
-			if (!bHasRelay && bIsPatch)		//是冷热补丁的
+			if (!bHasRelay && bIsPatch)     //是冷热补丁的
 			{
-				IDC_COMBO_FWACTIVEFLAG.Enabled = false;	//固件激活
+				IDC_COMBO_FWACTIVEFLAG.Enabled = false; //固件激活
 			}
 
 			var fwActive = SnmpToDatabase.GetValueRangeByMibName("swPackPlanFwActiveIndicator", TargetIp);
 			if (null == fwActive)
 			{
-				throw new CustomException("获取软件包固件激活指示失败");
+				ErrorMsg = "获取软件包固件激活指示失败";
+				Log.Error(ErrorMsg);
+				MessageBox.Show(ErrorMsg, "文件管理", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Close();
 			}
 
 			foreach (var mv in fwActive)
@@ -170,8 +181,7 @@ namespace FileManager
 			textBox4.Text = _mTSwPackInfo.csSWPackVersion;
 		}
 
-		#endregion
-
+		#endregion 系统事件处理
 
 		#region 私有方法
 
@@ -180,7 +190,7 @@ namespace FileManager
 		{
 			string csCmdName;
 			string csRowStatus;
-			string csIndexToJudgeRowStatus;		//用来判断是否有效，用以区分命令类型
+			string csIndexToJudgeRowStatus;     //用来判断是否有效，用以区分命令类型
 
 			var bHasDelay = _mTSwPackInfo.csSWPackRelayVersion.ToLower().Equals("null");
 			var bIsColdPatch = (FileTransMacro.EQUIP_SWPACK_BBU_COLDPATCH == _mTSwPackInfo.nSWPackType);
@@ -227,8 +237,8 @@ namespace FileManager
 			var unpackRet = DtzFileHelper.UnpackZipPackageSplitForDTFile(filePath, dstPath, ref subFileNum);
 			//if (0 != unpackRet)
 			//{
-   //             //throw new CustomException("解压缩失败，请检查磁盘空间和压缩文件！");
-   //             return true;
+			//             //throw new CustomException("解压缩失败，请检查磁盘空间和压缩文件！");
+			//             return true;
 			//}
 
 			var subFileCount = Convert.ToString(subFileNum);
@@ -239,7 +249,7 @@ namespace FileManager
 			// 外设的
 			if (FileTransMacro.SWPACK_ENB_PERIPHERAL_TYPE == _mTSwPackInfo.nSWEqpType)
 			{
-				var index = $".{_mTSwPackInfo.nSWPackType}.1";		// 第二维是厂家索引，固定填1
+				var index = $".{_mTSwPackInfo.nSWPackType}.1";      // 第二维是厂家索引，固定填1
 				_mTInfo.Index = index;
 
 				csCmdName = "SetPeripheralPackPlan";
@@ -253,18 +263,18 @@ namespace FileManager
 				}
 
 				mapName2Value.Add("peripheralPackPlanPackName", _mTSwPackInfo.csSWPackName);
-				mapName2Value.Add("peripheralPackPlanVendor", IDC_EDIT_SOFTPACKFACINFO.Text);		//厂家信息
-				mapName2Value.Add("peripheralPackPlanVersion", _mTSwPackInfo.csSWPackVersion);		//软件包版本
+				mapName2Value.Add("peripheralPackPlanVendor", IDC_EDIT_SOFTPACKFACINFO.Text);       //厂家信息
+				mapName2Value.Add("peripheralPackPlanVersion", _mTSwPackInfo.csSWPackVersion);      //软件包版本
 
 				// 3:强制下载；1：立即下载
 				mapName2Value.Add("peripheralPackPlanDownloadIndicator", ForceDlFlag ? "3" : "1");
 
 				var csCurTime = TimeHelper.GetCurrentTime();
-				mapName2Value.Add("peripheralPackPlanScheduleDownloadTime", csCurTime);		//使用目前的时间
+				mapName2Value.Add("peripheralPackPlanScheduleDownloadTime", csCurTime);     //使用目前的时间
 				mapName2Value.Add("peripheralPackPlanDownloadDirectory", DtzFilePath);
 
 				var actFlagIndex = Convert.ToString(IDC_COMBO_ACTIVEFLAG.SelectedIndex);
-				_mTInfo.ActiveIndValue = actFlagIndex;			//激活标志
+				_mTInfo.ActiveIndValue = actFlagIndex;          //激活标志
 				mapName2Value.Add("peripheralPackPlanActivateIndicator", actFlagIndex);
 				mapName2Value.Add("peripheralPackPlanScheduleActivateTime", GetActiveTimeString(ForceDlFlag));
 
@@ -282,7 +292,8 @@ namespace FileManager
 					return true;
 				}
 
-				Log.Error("外设软件规划命令下发失败!\n");
+				ErrorMsg = "外设软件规划命令下发失败!";
+				Log.Error(ErrorMsg);
 				return false;
 			}
 			else
@@ -292,12 +303,11 @@ namespace FileManager
 
 				if (bHasDelay)
 				{
-					long lReqId;
 					csswPackPlanTypeIndex = ".2";
 					csCmdName = "DelSWPackPlan";
 
 					mapName2Value.Add("swPackPlanRowStatus", "6"); //6是无效
-					lReqId = 0;
+					long lReqId = 0;
 					var ret = CDTCmdExecuteMgr.CmdSetAsync(csCmdName, out lReqId, mapName2Value, csswPackPlanTypeIndex, TargetIp);
 					if (0 == ret)
 					{
@@ -345,8 +355,8 @@ namespace FileManager
 
 				mapName2Value.Add(csRowStatus, FileTransMacro.STR_CREATANDGO);
 				mapName2Value.Add("swPackPlanPackName", _mTSwPackInfo.csSWPackName);
-				mapName2Value.Add("swPackPlanVendor", IDC_EDIT_SOFTPACKFACINFO.Text);		//厂家信息
-				mapName2Value.Add("swPackPlanVersion", _mTSwPackInfo.csSWPackVersion);		//软件包版本
+				mapName2Value.Add("swPackPlanVendor", IDC_EDIT_SOFTPACKFACINFO.Text);       //厂家信息
+				mapName2Value.Add("swPackPlanVersion", _mTSwPackInfo.csSWPackVersion);      //软件包版本
 
 				// 3:强制下载;1:立即下载
 				mapName2Value.Add("swPackPlanDownloadIndicator", ForceDlFlag ? "3" : "1");
@@ -356,7 +366,7 @@ namespace FileManager
 				mapName2Value.Add("swPackPlanDownloadDirectory", DtzFilePath);
 
 				var actFlagIndex = Convert.ToString(IDC_COMBO_ACTIVEFLAG.SelectedIndex);
-				_mTInfo.ActiveIndValue = actFlagIndex;						//激活标志
+				_mTInfo.ActiveIndValue = actFlagIndex;                      //激活标志
 				mapName2Value.Add("swPackPlanActivateIndicator", actFlagIndex);
 				mapName2Value.Add("swPackPlanScheduleActivateTime", GetActiveTimeString(ForceDlFlag));
 				mapName2Value.Add("swPackPlanRelyVesion", _mTSwPackInfo.csSWPackRelayVersion);
@@ -375,10 +385,10 @@ namespace FileManager
 				{
 					Log.Info("软件规划命令下发成功!");
 					return true;
-
 				}
 
-				Log.Error("软件规划命令下发失败!\n");
+				ErrorMsg = "软件规划命令下发失败!";
+				Log.Error(ErrorMsg);
 				return false;
 			}
 		}
@@ -402,13 +412,13 @@ namespace FileManager
 			return $"{dateTimePicker1.Text} {dateTimePicker2.Text}";
 		}
 
-		#endregion
+		#endregion 私有方法
 
 		#region 私有属性
 
 		private TswPackInfo _mTSwPackInfo;
 		private TswPackDlProcInfo _mTInfo;
 
-		#endregion
+		#endregion 私有属性
 	}
 }

@@ -11,17 +11,16 @@
 * 修改时间     修 改 人         修改内容：
 * 2018.10.xx  XXXX            XXXXX
 *************************************************************************************/
-using LogManager;
-using SnmpSharpNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using CommonUtility;
 using DataBaseUtil;
 using LmtbSnmp;
+using LogManager;
 using MIBDataParser.JSONDataMgr;
+using SnmpSharpNet;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace LinkPath
 {
@@ -36,9 +35,7 @@ namespace LinkPath
 
 		public void Initialize()
 		{
-			
 		}
-
 
 		/// <summary>
 		/// 执行一条类型为Get的同步操作命令
@@ -48,6 +45,8 @@ namespace LinkPath
 		/// <param name="strIndex"></param>
 		/// <param name="strIpAddr"></param>
 		/// <param name="lmtPdu">传出的PDU。可以用于获取oid对应的值</param>
+		/// <param name="needCheck"></param>
+		/// <param name="timeOut"></param>
 		/// <returns></returns>
 		public int CmdGetSync(string cmdName, out long requestId, string strIndex
 							  , string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
@@ -77,7 +76,7 @@ namespace LinkPath
 				return rs;
 			}
 
-			return 0;
+			return rs;
 		}
 
 		/// <summary>
@@ -87,7 +86,8 @@ namespace LinkPath
 		/// <param name="requestId"></param>
 		/// <param name="strIndex"></param>
 		/// <param name="strIpAddr"></param>
-		/// <param name="lmtPdu"></param>
+		/// <param name="isPrint"></param>
+		/// <param name="needCheck"></param>
 		/// <returns></returns>
 		public int CmdGetAsync(string cmdName, out long requestId, string strIndex
 							  , string strIpAddr, bool isPrint = true, bool needCheck = false)
@@ -233,15 +233,13 @@ namespace LinkPath
 					results.Add(fulloid, item.Value);
 
 					// 组装新的查询oid
-					var lmtVb = new CDTLmtbVb {Oid = fulloid};
+					var lmtVb = new CDTLmtbVb { Oid = fulloid };
 					lmtbVbs.Add(lmtVb);
 				}
 			} //end while
 
 			return 0;
 		}
-
-
 
 		/// <summary>
 		/// 执行一条类型为Set的同步操作命令
@@ -261,7 +259,7 @@ namespace LinkPath
 		/// <param name="needCheck"></param>
 		/// <param name="timeOut"></param>
 		/// <returns>返回errorstatus值</returns>
-		public static int CmdSetSync(string cmdName, out long requestId, Dictionary<string,string> name2Value
+		public static int CmdSetSync(string cmdName, out long requestId, Dictionary<string, string> name2Value
 			, string strIndex, string strIpAddr, ref CDTLmtbPdu lmtPdu, bool isPrint = true
 			, bool needCheck = false, long timeOut = 0)
 		{
@@ -339,7 +337,7 @@ namespace LinkPath
 			foreach (CDTLmtbVb lmtVb in setVbs)
 			{
 				lmtPdu.AddVb(lmtVb);
-            }
+			}
 
 			lmtPdu.m_bIsNeedPrint = isPrint;
 			lmtPdu.SetSyncId(true);
@@ -403,7 +401,6 @@ namespace LinkPath
 			MibNodeInfoTest b = new MibNodeInfoTest(oid, strType, strMibName);
 			mibNodeInfoList.Add(oid, b);
 
-
 			oid = "100.1.2.2.2.1.4";
 			strType = "LONG";
 			strMibName = "fileTransIndicator";
@@ -429,7 +426,6 @@ namespace LinkPath
 			mibNodeInfoList.Add(oid, f);
 
 			return mibNodeInfoList[strMibOid];
-
 		}
 
 		public SNMP_SYNTAX_TYPE GetAsnTypeByMibType(string strMibType)
@@ -437,9 +433,10 @@ namespace LinkPath
 			if ("OCTETS".Equals(strMibType))
 			{
 				return (SNMP_SYNTAX_TYPE)AsnType.OCTETSTRING;
-			} else if ("LONG".Equals(strMibType))
+			}
+			else if ("LONG".Equals(strMibType))
 			{
-				return (SNMP_SYNTAX_TYPE)AsnType.INTEGER ;
+				return (SNMP_SYNTAX_TYPE)AsnType.INTEGER;
 			}
 
 			return (SNMP_SYNTAX_TYPE)AsnType.OCTETSTRING;
@@ -519,10 +516,10 @@ namespace LinkPath
 			return true;
 		}
 
-		#endregion
+		#endregion 私有方法
 	}
 
-	class MibNodeInfoTest
+	internal class MibNodeInfoTest
 	{
 		public string oid { get; set; }
 		public string strType { get; set; }
@@ -533,7 +530,6 @@ namespace LinkPath
 			this.oid = oid;
 			this.strType = strType;
 			this.strMibName = strMibName;
-
 		}
 	}
 }

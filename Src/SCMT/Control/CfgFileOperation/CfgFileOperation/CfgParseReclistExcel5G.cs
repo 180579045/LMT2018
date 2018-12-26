@@ -182,7 +182,7 @@ namespace CfgFileOperation
         Dictionary<string, string> SameCol = new Dictionary<string, string>(){
             { "NodeName", "A"},          // 节点名
             { "DefaultValue", "E"},      // 默认值     标识为1使用
-            { "End","O"},                // 结束标志 
+            //{ "End","O"},                // 结束标志 
         };
 
         /// <summary>
@@ -308,21 +308,20 @@ namespace CfgFileOperation
                 string nodeName = "";     //节点名NodeName, 
                 string nodeValue = "";    //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                 string strTableName = ""; //节点所属于的table
-                //if (iLine == 718)
+                //if (iLine == 31)
                 //    Console.WriteLine("===");
-                if (isEndLine(ColVals, iLine))                     // 是否结束行
-                    break;
+                //if (isEndLine(ColVals, iLine))                     // 是否结束行
+                //    break;
                 if (!isEffectiveLine(ColVals, iLine, out strFlag)) // 是否有效行
                     continue;
                 if (!GetNodeName(ColVals, iLine, strFlag, out nodeName, out bIsIndex))// 是否为索引节点bIsIndex, 如果是索引节点是否为flag为2。
                     return false;
-                //if ("nrCsiRsimLcId" == nodeName)
+                //if ("nrCellCfgPdcchDmrsPower" == nodeName)
                 //    Console.WriteLine("");
                 if (!GetNodeValueByFlag(ColVals, iLine, strFlag, out nodeValue))     //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                     continue;
                 if (!GetTableName(cfgOp, nodeName, out strTableName)) //节点所属于的table
                     continue;
-
 
                 if (0 != String.Compare(m_strCurTableName, strTableName, true)) // 是否是新表
                 {
@@ -920,7 +919,8 @@ namespace CfgFileOperation
             new CfgOp().WriteToBuffer(byteArray, strDefaultValue, bytePosL, strOMType, u16FieldLen, "", asnType);
 
             // 重新写回去,实验证明数据已经修改，而且不会修改其他字段
-            //curtable.SetInstsInfoValueByIndex(InstsPos, byteArray[0]);
+            // 在patch写的时候，需要再次写回去。。。
+            curtable.SetInstsInfoValueByIndex(InstsPos, byteArray[0]);
 
             return true;
         }
@@ -1103,17 +1103,18 @@ namespace CfgFileOperation
         /// <param name="wks"></param>
         /// <param name="ColName"></param>
         /// <returns></returns>
-        int GetEndLineNum(string strPageName, Dictionary<string, string> ColName)
+        int GetEndLineNumOld(string strPageName, Dictionary<string, string> ColName)
         {
             //int rowCount = wks.UsedRange.Rows.Count;
             var exop = CfgExcelOp.GetInstance();
             int rowCount = exop.GetRowCount(g_strExcelPath, strPageName);
-            if (-1 == rowCount)
+            int colsCount = exop.GetColCount(g_strExcelPath, strPageName);
+            if (-1 == rowCount || -1 == colsCount)
             {
-                g_bw.Write(String.Format("Err GetEndLineNum:({0}):({1}), get row count err.", g_strExcelPath, strPageName).ToArray());
+                g_bw.Write(String.Format("Err GetEndLineNum:({0}):({1}), get row count({2}) or col count({3}) err.", 
+                    g_strExcelPath, strPageName, rowCount, colsCount).ToArray());
                 return -1;// false;
             }
-
             object[,] arry = exop.GetRangeVal(g_strExcelPath, strPageName, ColName["End"] + "1", ColName["End"] + (rowCount + 1));
             for (int row = 1; row < rowCount + 1; row++)
             {
@@ -1125,6 +1126,17 @@ namespace CfgFileOperation
 
             g_bw.Write(String.Format("Err GetEndLineNum:({0}):({1}), not exist 'end'.", g_strExcelPath, strPageName).ToArray());
             return -2;// false;
+        }
+        int GetEndLineNum(string strPageName, Dictionary<string, string> ColName)
+        {
+            var exop = CfgExcelOp.GetInstance();
+            int rowEnd = exop.GetSheetEndRow(g_strExcelPath, strPageName, "end");
+            if (-1 == rowEnd )
+            {
+                g_bw.Write(String.Format("Err GetEndLineNum:({0}):({1}),not exist 'end' or get num err.", g_strExcelPath, strPageName).ToArray());
+                return -1;// false;
+            }
+            return rowEnd;// false;
         }
         /// <summary>
         /// 是否是有效行： 0,1,2 三种标识需要处理
@@ -1267,7 +1279,7 @@ namespace CfgFileOperation
             //  表块 实例 : 序列化
             foreach (var tabName in GetVectPDGTabName())
             {
-                //if (String.Equals("acCfgEntry", tabName))
+                //if (String.Equals("nrCellCfgEntry", tabName))
                 //{
                 //    Console.WriteLine("\n");
                 //}

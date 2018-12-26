@@ -118,7 +118,7 @@ namespace MsgDispatcher
 					{
 						// TODO 如果需要硬件版本号，在此处添加
 						// c#中大括号的转义：需要连续两个{{或}}才会生成一个{或}
-						PublishHelper.PublishMsg(TopicHelper.EnbConnectedMsg, $"{{\"TargetIp\" : \"{targetIp}\"}}");
+						PublishHelper.PublishMsg(TopicHelper.EnbConnectedMsg, targetIp);
 					}
 					else
 					{

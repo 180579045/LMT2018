@@ -259,7 +259,7 @@ namespace NetPlan
 				var devList = m_mapOriginData[type];
 				foreach (var dev in devList)
 				{
-					if (dev.m_strOidIndex.Contains(strPartIdx))		// todo 如果传入的部分索引太短，可能引起错误
+					if (dev.m_strOidIndex.Contains(strPartIdx))		// 如果传入的部分索引太短，可能引起错误
 					{
 						Log.Debug($"found index = {dev.m_strOidIndex} record ");
 						retList.Add(dev);

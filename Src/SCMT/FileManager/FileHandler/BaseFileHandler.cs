@@ -27,10 +27,12 @@ namespace FileManager.FileHandler
 		/// </summary>
 		/// <param name="srcFileFullName">源文件名，包括绝对路径</param>
 		/// <param name="dstFilePath">目的路径</param>
+		/// <param name="strErrMsg"></param>
 		/// <returns>执行结果。成功，失败，用户取消</returns>
-		public virtual ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath)
+		public virtual ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath, out string strErrMsg)
 		{
 			Transfiletype5216 type = GetTransFileType();
+			strErrMsg = null;
 
 			if (Transfiletype5216.TRANSFILE_equipSoftwarePack != type)
 			{
@@ -51,6 +53,7 @@ namespace FileManager.FileHandler
 			var result = FileTransTaskMgr.SendTransFileTask(boardAddr, transFileObj, ref taskId, ref reqId);
 			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == result)
 			{
+				strErrMsg = "获取文件传输任务ID失败";
 				return ExecuteResult.UpgradeFailed;
 			}
 
@@ -72,10 +75,11 @@ namespace FileManager.FileHandler
 		/// <param name="localPath">本地路径</param>
 		/// <param name="remoteFullPath">板卡上文件路径</param>
 		/// <returns>操作结果</returns>
-		public virtual ExecuteResult DoGetFile(string localPath, string remoteFullPath)
+		public virtual ExecuteResult DoGetFile(string localPath, string remoteFullPath, out string strErrMsg)
 		{
 			long reqId = 0;
 			long taskId = 0;
+			strErrMsg = null;
 
 			var type = GetTransFileType();
 			var tfo = FileTransTaskMgr.FormatTransInfo(localPath, remoteFullPath, type, TRANSDIRECTION.TRANS_UPLOAD);
@@ -83,6 +87,7 @@ namespace FileManager.FileHandler
 			var result = FileTransTaskMgr.SendTransFileTask(boardAddr, tfo, ref taskId, ref reqId);
 			if (SENDFILETASKRES.TRANSFILE_TASK_FAILED == result)
 			{
+				strErrMsg = "获取文件传输任务ID失败";
 				return ExecuteResult.UpgradeFailed;
 			}
 

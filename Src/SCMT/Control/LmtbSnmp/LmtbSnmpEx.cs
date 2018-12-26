@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using CommonUtility;
+﻿using CommonUtility;
 using DataBaseUtil;
 using LogManager;
 using MsgQueue;
 using SnmpSharpNet;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace LmtbSnmp
 {
@@ -65,7 +65,7 @@ namespace LmtbSnmp
 		public LmtbSnmpEx()
 		{
 		}
-	
+
 		/// <summary>
 		/// 功能描述：Snmp的初始化工作，包括：
 		/// 1，socket初始化
@@ -159,13 +159,14 @@ namespace LmtbSnmp
 			try
 			{
 				result = snmp.GetRequest(pdu);
-
 			}
 			catch (Exception ex)
 			{
 				Log.Error(ex.Message);
-				throw;
+				//throw;					// 此处不再throw异常，在各个模块的定时器中进行处理
+				return -1;
 			}
+
 			if (result == null)
 			{
 				Log.Error("SNMP request error, response is null.");
@@ -234,9 +235,8 @@ namespace LmtbSnmp
 			try
 			{
 				reqResult = snmp.GetRequest(pdu);
-
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				Log.Error(ex.Message);
 				throw;
@@ -307,11 +307,10 @@ namespace LmtbSnmp
 			Pdu pdu;
 			PacketQueryPdu(queryVbs, out pdu);
 
-			SnmpPacket reqResult = null; 
+			SnmpPacket reqResult = null;
 			try
 			{
 				reqResult = snmp.GetRequest(pdu);
-
 			}
 			catch (Exception ex)
 			{
@@ -350,8 +349,6 @@ namespace LmtbSnmp
 
 			return status;
 		}
-
-		
 
 		/// <summary>
 		/// 异步Get操作
@@ -541,7 +538,7 @@ namespace LmtbSnmp
 		/// 是否获取到数据要根据oidValue.count()判断，而不是函数的返回值来判断
 		/// </returns>
 		public bool GetNextRequest(string strIpAddr, List<string> reqOidList, out Dictionary<string, string> oidValue
-			,out List<string> lastOidList)
+			, out List<string> lastOidList)
 		{
 			// 是否获取到数据要根据oidValue.count()判断，而不是函数的返回值来判断
 
@@ -593,11 +590,8 @@ namespace LmtbSnmp
 					// 状态码为106 下发报文中绑定变量个数不应大于60个，此时要返回
 					if (reqResult.Pdu.ErrorStatus == 106)
 					{
-
 					}
 
-					// 第一个Vb的值
-					string firstVbVal = reqResult.Pdu.VbList.ElementAt(0).Value.ToString();
 					// 响应的Oid中有一个Oid的类型为ENDOFMIBVIEW即表示到达Mib结尾，结束检索
 					foreach (var vb in reqResult.Pdu.VbList)
 					{
@@ -627,11 +621,23 @@ namespace LmtbSnmp
 						}
 						return true;
 					}
-					else // 其他错误
+
+					if (reqResult.Pdu.VbList.Count > 0)
 					{
-						logMsg = string.Format("SNMP GetNext错误！ ErrorIndex:{0}, Value:{1}", reqResult.Pdu.ErrorIndex, firstVbVal);
-						Log.Error(logMsg);
-						return false;
+						// 第一个Vb的值
+						string firstVbVal = reqResult.Pdu.VbList.ElementAt(0).Value.ToString();
+						// 只有状态码为13并且错误索引为1并且第一个vb的值为endOfMibView，才表示检索结束
+						if (reqResult.Pdu.ErrorStatus == SnmpConstants.ErrResourceUnavailable
+							&& firstVbVal.IndexOf("end-of-mib-view", StringComparison.OrdinalIgnoreCase) >= 0)
+						{
+							return true;
+						}
+						else // 其他错误
+						{
+							logMsg = $"SNMP GetNext错误！ ErrorIndex:{reqResult.Pdu.ErrorIndex}, Value:{firstVbVal}";
+							Log.Error(logMsg);
+							return false;
+						}
 					}
 				}
 				else
@@ -684,12 +690,11 @@ namespace LmtbSnmp
 			// 一行数据
 			Dictionary<string, string> oidValueLine = null;
 			// 循环获取每一行数据，直至结束
-			while(true)
+			while (true)
 			{
 				try
 				{
 					GetNextRequest(strIpAddr, oidListTmp, out oidValueLine, out lastOidValue);
-
 				}
 				catch (Exception ex)
 				{
@@ -712,7 +717,6 @@ namespace LmtbSnmp
 
 			return true;
 		}
-
 
 		/// <summary>
 		/// 同步Set操作
@@ -929,7 +933,7 @@ namespace LmtbSnmp
 			{
 				var cDTLmtbVb = lmtPdu.GetVbByIndexEx(i);
 
-				strTmpOid = cDTLmtbVb.Oid;	// todo 存在问题：当oid最后索引是0..35这种值时，出现崩溃
+				strTmpOid = cDTLmtbVb.Oid;  // todo 存在问题：当oid最后索引是0..35这种值时，出现崩溃
 				strSyntaxType = cDTLmtbVb.SnmpSyntax;
 				strValue = cDTLmtbVb.Value;
 
@@ -1065,7 +1069,6 @@ namespace LmtbSnmp
 
 				lmtVb.Value = strValue;
 				lmtPdu.AddVb(lmtVb);
-
 			} // end foreach
 
 			//如果得到的LmtbPdu对象里的vb个数为0，说明是是getbulk响应，并且没有任何实例

@@ -21,18 +21,23 @@ namespace FileManager.FileHandler
 		/// </summary>
 		/// <param name="srcFileFullName"></param>
 		/// <param name="dstFilePath"></param>
+		/// <param name="strErrMsg"></param>
 		/// <returns></returns>
-		public override ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath)
+		public override ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath, out string strErrMsg)
 		{
 			if (!IsValidPath(srcFileFullName) || !IsValidPath(dstFilePath))
 			{
-				throw new CustomException("传入的路径错误");
+				strErrMsg = $"传入的路径错误，源文件路径：{srcFileFullName}，目的路径：{dstFilePath}";
+				Log.Error(strErrMsg);
+				return ExecuteResult.UpgradeFailed;
 			}
 
 			TswPackInfo head = new TswPackInfo();
 			if (!GetDtzFileDetailInfo(srcFileFullName, ref head))
 			{
-				throw new CustomException("解析压缩包头出现错误");
+				strErrMsg = "解析压缩包头出现错误";
+				Log.Error(strErrMsg);
+				return ExecuteResult.UpgradeFailed;
 			}
 
 			_bDetailFlag = IsExistVerDetailNode(boardAddr);
@@ -41,24 +46,24 @@ namespace FileManager.FileHandler
 			var runningSwPackVer = GetRunningSwPackVer(".1");       // 软件包版本
 			if (_bDetailFlag)
 			{
-				var runningSwPackVerDetail = GetRunningSwPackVerDetail(".1");
+				//var runningSwPackVerDetail = GetRunningSwPackVerDetail(".1");
 			}
 
 			var runningSwPackVerCP = GetRunningSwPackVer(".2");     // 冷补丁版本
 			if (_bDetailFlag)
 			{
-				var runningSwPackVerCPDetail = GetRunningSwPackVerDetail(".2");
+				//var runningSwPackVerCPDetail = GetRunningSwPackVerDetail(".2");
 			}
 
 			var runningSwPackVerHP = GetRunningSwPackVer(".3");     // 热补丁版本
 			if (_bDetailFlag)
 			{
-				var runningSwPackVerHPDetail = GetRunningSwPackVerDetail(".3");
+				//var runningSwPackVerHPDetail = GetRunningSwPackVerDetail(".3");
 			}
 			var PPRunningVer = GetRunningPeripheralVer(".1.1");     // 外设版本
 			if (_bDetailFlag)
 			{
-				var PPRunningVerDetail = GetRunningPeripheraVerDetail(".1.1");
+				//var PPRunningVerDetail = GetRunningPeripheraVerDetail(".1.1");
 			}
 
 			List<string> nbArray = new List<string>();
@@ -67,7 +72,7 @@ namespace FileManager.FileHandler
 				string ver = GetSwPackVersion($".1.{i}");
 				if (!string.IsNullOrEmpty(ver))
 				{
-					nbArray.Add(GetSwPackVersion($".1.{i}"));
+					nbArray.Add(ver);
 				}
 				if (_bDetailFlag)
 				{
@@ -138,10 +143,11 @@ namespace FileManager.FileHandler
 
 			CompressFileHead zipFileHeader = new CompressFileHead();
 			var nRezCode = DtzFileHelper.Aom_Zip_GetFileHead_OupPut(srcFileFullName, ref zipFileHeader);
-			//if (0 != nRezCode)
-			//{
-			//	throw new CustomException("获取文件头信息失败");
-			//}
+			if (0 != nRezCode)
+			{
+				Log.Error("Aom_Zip_GetFileHead_OupPut执行失败，获取文件头信息失败");
+				//return ExecuteResult.UpgradeFailed;
+			}
 
 			var csRelayVersion = new string(zipFileHeader.u8ZipFileRelayVersion).Trim('\0');
 
@@ -165,7 +171,10 @@ namespace FileManager.FileHandler
 					//判断冷补丁的依赖与running目录下主设备版本是否一致
 					if (!runningSwPackVer.Equals(head.csSWPackRelayVersion))
 					{
-						throw new CustomException("冷补丁依赖的版本与running目录下运行的主设备版本不符合，请选择正确的冷补丁包！");
+						strErrMsg =
+							$"冷补丁依赖的版本 {head.csSWPackRelayVersion} 与running目录下运行的主设备版本 {runningSwPackVer} 不符合，请选择正确的冷补丁包！";
+						Log.Error(strErrMsg);
+						return ExecuteResult.UpgradeFailed;
 					}
 
 					if (nbArrayCP.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
@@ -183,7 +192,10 @@ namespace FileManager.FileHandler
 					//判断热补丁的依赖与running目录下主设备版本是否一致
 					if (!runningSwPackVer.Equals(head.csSWPackRelayVersion))
 					{
-						throw new CustomException("热补丁依赖的版本与running目录下运行的主设备版本不符合，请选择正确的热补丁包！");
+						strErrMsg =
+							$"热补丁依赖的版本 {head.csSWPackRelayVersion} 与running目录下运行的主设备版本 {runningSwPackVer} 不符合，请选择正确的热补丁包！";
+						Log.Error(strErrMsg);
+						return ExecuteResult.UpgradeFailed;
 					}
 
 					if (nbArrayHP.Any(itemVer => itemVer.Equals(head.csSWPackVersion)))
@@ -202,6 +214,7 @@ namespace FileManager.FileHandler
 					if (DialogResult.OK != MessageBox.Show("要升级软件包版本与目前基站内的软件包版本相同，是否强制下载？", "强制下载确认",
 							MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
 					{
+						strErrMsg = null;
 						return ExecuteResult.UserCancel;
 					}
 					bTipForceFlag = true;
@@ -226,6 +239,7 @@ namespace FileManager.FileHandler
 						if (DialogResult.OK != MessageBox.Show("要升级外设软件包版本与目前基站内外设的软件包版本相同，是否强制下载？", "强制下载确认",
 								MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
 						{
+							strErrMsg = null;
 							return ExecuteResult.UserCancel;
 						}
 						bTipForceFlag = true;
@@ -247,11 +261,14 @@ namespace FileManager.FileHandler
 			{
 				if (!confirmDlg.CmdSucceedFlag)
 				{
-					throw new CustomException("命令执行失败");
+					strErrMsg = confirmDlg.ErrorMsg;
+					Log.Error(strErrMsg);
+					return ExecuteResult.UpgradeFailed;
 				}
 			}
 			else
 			{
+				strErrMsg = null;
 				return ExecuteResult.UserCancel;
 			}
 
@@ -260,6 +277,7 @@ namespace FileManager.FileHandler
 			WorkingForUpgrade = true;
 			UFO = swPackInfo;
 
+			strErrMsg = null;
 			return ExecuteResult.UpgradeFinish;
 		}
 

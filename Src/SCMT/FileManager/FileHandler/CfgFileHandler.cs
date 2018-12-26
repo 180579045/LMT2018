@@ -30,8 +30,10 @@ namespace FileManager.FileHandler
 
 		#region 虚函数区
 
-		public override ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath)
+		public override ExecuteResult DoPutFile(string srcFileFullName, string dstFilePath, out string strErrMsg)
 		{
+			strErrMsg = null;
+
 			CfgFileSelDlg dlg = new CfgFileSelDlg();
 			var ret = dlg.ShowDialog();
 			if (DialogResult.OK != ret)
@@ -81,7 +83,7 @@ namespace FileManager.FileHandler
 				dstPath = FileTransMacro.STR_FILEPATH_RNC;
 			}
 
-			return base.DoPutFile(srcFileFullName, dstPath);
+			return base.DoPutFile(srcFileFullName, dstPath, out strErrMsg);
 		}
 
 		protected override Transfiletype5216 GetTransFileType()

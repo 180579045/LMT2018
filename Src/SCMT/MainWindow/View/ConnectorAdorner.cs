@@ -186,6 +186,8 @@ namespace SCMTMainWindow.View
                         }
                     }
 
+					MibInfoMgr.InfoTip("添加连接成功");
+
                     Connection newConnection = new Connection(sourceConnector, sinkConnector);
                     Canvas.SetZIndex(newConnection, designerCanvas.Children.Count);
                     this.designerCanvas.Children.Add(newConnection);

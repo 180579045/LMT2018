@@ -57,6 +57,7 @@ using dict_d_string = System.Collections.Generic.Dictionary<string, string>;
 
 namespace SCMTMainWindow
 {
+	/// <inheritdoc />
 	/// <summary>
 	/// MainWindow.xaml 的交互逻辑;
 	/// </summary>
@@ -66,6 +67,7 @@ namespace SCMTMainWindow
 
 		private bool m_bIsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
 		private bool m_bIsRepeat;
+		private bool is4GConn = true; // 是否连接4G基站，测试多站连接用
 
 		private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
 
@@ -141,9 +143,9 @@ namespace SCMTMainWindow
 
 			// 解析保存的基站节点信息
 			var nodeList = NodeBControl.GetInstance().GetNodebInfo();
-			foreach (var node in nodeList)
+			foreach (var item in nodeList)
 			{
-				AddNodeLabel(node.Key, node.Value);
+				AddNodeLabel(item.Key, item.Value);
 			}
 		}
 
@@ -157,12 +159,12 @@ namespace SCMTMainWindow
 				// 注册Trap监听
 				if (LmtTrapMgr.GetInstance().StartLmtTrap() == false)
 				{
-					Log.Error(String.Format("Trap监听启动错误！"));
+					Log.Error("Trap监听启动错误！");
 				}
 			}
 			catch (SocketException e)
 			{
-				Log.Error(String.Format("Trap监听启动错误！"));
+				Log.Error("Trap监听启动错误！");
 				MessageBox.Show("Trap监听启动错误，无法接收Trap消息，请确认162端口是否已被占用！");
 			}
 
@@ -241,7 +243,7 @@ namespace SCMTMainWindow
 				{
 					var Ctrl = new ObjNodeControl(nodeB);        // 初始化象树树信息,Ctrl.m_RootNode即全部对象树信息;
 					RefreshObj(Ctrl.m_RootNode);                // 向控件更新对象树;
-                    this.Obj_Root.m_RootNode = Ctrl.m_RootNode;
+                    //this.Obj_Root.m_RootNode = Ctrl.m_RootNode;
 
 					TabControlEnable(true);
 					ExpanderBaseInfo.IsEnabled = true;
@@ -769,8 +771,9 @@ namespace SCMTMainWindow
 
 		private MenuItem GetMenuItemByIp(string ip, string menuText)
 		{
-			if (String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(menuText))
+			if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(menuText))
 				return null;
+
 			var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			MenuItem retMenu = null;
 			var children = ExistedNodebList.Children;
@@ -1632,6 +1635,7 @@ namespace SCMTMainWindow
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbConnectedMsg, OnConnect);
 			SubscribeHelper.AddSubscribe(TopicHelper.EnbOfflineMsg, OnDisconnect);
 			SubscribeHelper.AddSubscribe(TopicHelper.LoadLmdtzToVersionDb, OnLoadLmdtzToVersionDb);
+			SubscribeHelper.AddSubscribe(TopicHelper.ReconnectGnb, OnReconnGnb);
 		}
 
 		// 打印日志
@@ -1664,8 +1668,11 @@ namespace SCMTMainWindow
 		// 连接成功
 		private async void OnConnect(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
-			var ip = netAddr.TargetIp;
+			var ip = Encoding.UTF8.GetString(msg.Data);
+			if (string.IsNullOrEmpty(ip))
+			{
+				throw new ArgumentNullException();
+			}
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
@@ -1688,11 +1695,14 @@ namespace SCMTMainWindow
 			// 查询基站类型是4G还是5G基站
 			var st = EnbTypeEnum.ENB_EMB5116;
 			st = GetEquipType(ip);
-			if (st != EnbTypeEnum.ENB_EMB6116)
+			if (is4GConn == false)
 			{
-				ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
-				NodeBControl.GetInstance().DisConnectNodeb(fname);
-				return;
+				if (st != EnbTypeEnum.ENB_EMB6116)
+				{
+					ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
+					NodeBControl.GetInstance().DisConnectNodeb(fname);
+					return;
+				}
 			}
 
 			NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
@@ -1701,8 +1711,11 @@ namespace SCMTMainWindow
 		// 断开连接
 		private void OnDisconnect(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
-			var ip = netAddr.TargetIp;
+			var ip = Encoding.UTF8.GetString(msg.Data);
+			if (string.IsNullOrEmpty(ip))
+			{
+				throw new ArgumentNullException();
+			}
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
@@ -1761,6 +1774,21 @@ namespace SCMTMainWindow
 			return (EnbTypeEnum)Convert.ToInt32(equipType);
 		}
 
+		private void OnReconnGnb(SubscribeMsg msg)
+		{
+			var targetIp = Encoding.UTF8.GetString(msg.Data);
+			if (string.IsNullOrEmpty(targetIp))
+			{
+				throw new ArgumentNullException();
+			}
+
+			var gnb = NodeBControl.GetInstance().GetNodeByIp(targetIp) as NodeB;
+			if (null != gnb)
+			{
+				Dispatcher.BeginInvoke(new Action(() => ConnectAction(gnb)));
+			}
+		}
+
 		#endregion 订阅消息及处理
 
 		// 关闭文件管理的窗口
@@ -1807,9 +1835,11 @@ namespace SCMTMainWindow
 		//解析lm.dtz文件
 		private async void OnLoadLmdtzToVersionDb(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 
 			return;     // todo 下面的流程不执行
+
+			// 不能用netaddr反解析，不包含路径信息
+			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
 
 			var ip = netAddr.TargetIp;
 

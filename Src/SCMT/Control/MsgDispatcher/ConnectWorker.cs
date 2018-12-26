@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using CommonUtility;
 using LogManager;
 using MsgQueue;
@@ -39,9 +40,7 @@ namespace MsgDispatcher
 		// 消息处理事件
 		private void OnConnect(SubscribeMsg msg)
 		{
-			var netAddr = JsonHelper.SerializeJsonToObject<NetAddr>(msg.Data);
-			var ip = netAddr.TargetIp;
-
+			var ip = Encoding.UTF8.GetString(msg.Data);
 
 			//Step 1.设置MIB前缀
 			//SetMibPrefix(ip);

@@ -1,10 +1,10 @@
-﻿using System;
+﻿using CommonUtility;
+using LogManager;
+using MsgQueue;
+using SnmpSharpNet;
+using System;
 using System.Net;
 using System.Net.Sockets;
-using LogManager;
-using SnmpSharpNet;
-using MsgQueue;
-using CommonUtility;
 
 namespace LmtbSnmp
 {
@@ -15,8 +15,10 @@ namespace LmtbSnmp
 	{
 		// Trap socket for IPV4
 		protected Socket _socketIpv4;
+
 		// Trap socket for IPV6
 		protected Socket _socketIpv6;
+
 		// Trap端口号
 		protected int m_port = 162;
 
@@ -55,7 +57,7 @@ namespace LmtbSnmp
 			}
 			catch (Exception ex)
 			{
-				Log.Error(ex.Message.ToString());
+				Log.Error(ex.Message);
 				// there is no need to close the socket because it was never correctly created
 				_socketIpv4 = null;
 			}
@@ -74,10 +76,10 @@ namespace LmtbSnmp
 			}
 			catch (SocketException ex)
 			{
-				Log.Error(ex.Message.ToString());
+				Log.Error(ex.Message);
 				_socketIpv4.Close();
 				_socketIpv4 = null;
-				 throw ex;
+				throw ex;
 			}
 
 			if (_socketIpv4 == null)
@@ -114,7 +116,7 @@ namespace LmtbSnmp
 			}
 			catch (Exception ex)
 			{
-				Log.Error(ex.Message.ToString());
+				Log.Error(ex.Message);
 				// there is no need to close the socket because it was never correctly created
 				_socketIpv6 = null;
 			}
@@ -134,7 +136,7 @@ namespace LmtbSnmp
 			}
 			catch (SocketException ex)
 			{
-				Log.Error(ex.Message.ToString());
+				Log.Error(ex.Message);
 				_socketIpv6.Close();
 				_socketIpv6 = null;
 				throw ex;
@@ -173,7 +175,6 @@ namespace LmtbSnmp
 				if (socket.AddressFamily == AddressFamily.InterNetwork) // IPV4
 				{
 					ep = new IPEndPoint(IPAddress.Any, 0);
-
 				}
 				else if (socket.AddressFamily == AddressFamily.InterNetworkV6) // IPV6
 				{
@@ -188,11 +189,11 @@ namespace LmtbSnmp
 				stateObject.workSocket = socket;
 				// 接收消息
 				socket.BeginReceiveFrom(stateObject.buffer, 0, 64 * 1024, SocketFlags.None
-					, ref ep, new AsyncCallback(ReceiveCallback), stateObject);
+					, ref ep, ReceiveCallback, stateObject);
 			}
-			catch ( Exception ex)
+			catch (Exception ex)
 			{
-				Log.Error(ex.Message.ToString());
+				Log.Error(ex.Message);
 				socket.Close();
 				socket = null;
 				throw ex;
@@ -240,7 +241,7 @@ namespace LmtbSnmp
 			}
 			catch (Exception ex)
 			{
-				Log.Error(ex.Message.ToString());
+				Log.Error(ex.Message);
 				intLen = -1;
 			}
 
@@ -260,8 +261,7 @@ namespace LmtbSnmp
 			int packetVersion = SnmpPacket.GetProtocolVersion(buffer, intLen);
 			if (packetVersion == (int)SnmpVersion.Ver1)
 			{
-
-				 Log.Error("接收到的SNMP Trap消息版本为V1");
+				Log.Error("接收到的SNMP Trap消息版本为V1");
 			}
 			else if (packetVersion == (int)SnmpVersion.Ver2)
 			{
@@ -272,7 +272,7 @@ namespace LmtbSnmp
 				}
 				catch (Exception ex)
 				{
-					Log.Error(ex.Message.ToString());
+					Log.Error(ex.Message);
 					pkt = null;
 				}
 
@@ -280,29 +280,29 @@ namespace LmtbSnmp
 				{
 					if (pkt.Pdu.Type == PduType.V2Trap) // trap
 					{
-						Log.Info(string.Format("** SNMPv2 Trap from {0}", ep.ToString()));
+						Log.Info(string.Format("** SNMPv2 Trap from {0}", ep));
 					}
 					else if (pkt.Pdu.Type == PduType.Inform) // inform
 					{
-						Log.Info(string.Format("** SNMPv2 Trap from {0}", ep.ToString()));
+						Log.Info(string.Format("** SNMPv2 Trap from {0}", ep));
 					}
 					else
 					{
-						Log.Error(string.Format("Invalid SNMPv2 packet from {0}", ep.ToString()));
+						Log.Error(string.Format("Invalid SNMPv2 packet from {0}", ep));
 						pkt = null;
 					}
 
 					if (pkt != null)
 					{
 						Log.Debug(string.Format("*** community: {0}, sysUpTime: {1}, trapObjectID: {2}"
-							, pkt.Community, pkt.Pdu.TrapSysUpTime.ToString(), pkt.Pdu.TrapObjectID.ToString()));
+							, pkt.Community, pkt.Pdu.TrapSysUpTime, pkt.Pdu.TrapObjectID));
 
 						Log.Debug(string.Format("*** PDU count: {0}", pkt.Pdu.VbCount));
 
 						foreach (Vb vb in pkt.Pdu.VbList)
 						{
 							Log.Debug(string.Format("**** Trap Vb oid: {0}, type: {1}, value: {2}"
-								,vb.Oid.ToString(), SnmpConstants.GetTypeName(vb.Value.Type), vb.Value.ToString()));
+								, vb.Oid, SnmpConstants.GetTypeName(vb.Value.Type), vb.Value));
 						}
 
 						if (pkt.Pdu.Type == PduType.V2Trap)
@@ -333,7 +333,6 @@ namespace LmtbSnmp
 							PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_OnTrap, bytes);
 						}
 					}
-
 				}
 			}
 
@@ -358,7 +357,6 @@ namespace LmtbSnmp
 			}
 		}
 
-
 		/// <summary>
 		/// 将Trap的snmp类型的pdu转换为LmtSnmp的pdu
 		/// </summary>
@@ -381,7 +379,7 @@ namespace LmtbSnmp
 				return false;
 			}
 
-			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo {m_bIsSync = !isAsync};
+			stru_LmtbPduAppendInfo appendInfo = new stru_LmtbPduAppendInfo { m_bIsSync = !isAsync };
 
 			var logMsg = $"snmpPackage.Pdu.Type = {pdu.Type}";
 			Log.Debug(logMsg);
@@ -417,7 +415,7 @@ namespace LmtbSnmp
 				return false;
 			}
 
-			// 对于Trap消息,我们自己额外构造两个Vb，用来装载时间戳和trap Id 
+			// 对于Trap消息,我们自己额外构造两个Vb，用来装载时间戳和trap Id
 			if (pdu.Type == PduType.V2Trap) // Trap
 			{
 				// 构造时间戳Vb
@@ -443,7 +441,7 @@ namespace LmtbSnmp
 					, vb.Oid, SnmpConstants.GetTypeName(vb.Value.Type), vb.Value);
 				Log.Debug(logMsg);
 
-				CDTLmtbVb lmtVb = new CDTLmtbVb {Oid = vb.Oid.ToString()};
+				CDTLmtbVb lmtVb = new CDTLmtbVb { Oid = vb.Oid.ToString() };
 				string strValue = vb.Value.ToString();
 				lmtVb.SnmpSyntax = (SNMP_SYNTAX_TYPE)vb.Value.Type;
 
@@ -461,7 +459,6 @@ namespace LmtbSnmp
 				lmtPdu.AddVb(lmtVb);
 			} // end foreach
 
-
 			//如果得到的LmtbPdu对象里的vb个数为0，说明是是getbulk响应，并且没有任何实例
 			//为方便后面统一处理，将错误码设为资源不可得
 			if (lmtPdu.VbCount() == 0)
@@ -472,7 +469,5 @@ namespace LmtbSnmp
 
 			return true;
 		}
-
-
 	}
 }

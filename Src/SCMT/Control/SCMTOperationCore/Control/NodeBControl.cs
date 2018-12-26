@@ -331,11 +331,34 @@ namespace SCMTOperationCore.Control
 			return el?.NodeType ?? EnbTypeEnum.ENB_NULL;
 		}
 
-
 		public void SetNodebGridByIp(string targetIp, EnbTypeEnum st)
 		{
 			var el = GetNodeByIp(targetIp) as NodeB;
 			el?.SetType(st);
+		}
+
+		//判断节点的连接状态
+		public bool NodeHasConnected(string ip)
+		{
+			lock (lockObj)
+			{
+				return mapElements[ip] is NodeB node && node.HasConnected();
+			}
+		}
+
+		// 根据网元IP获取网元节点
+		public Element GetNodeByIp(string ip)
+		{
+			Element nodeb = null;
+			lock (lockObj)
+			{
+				if (mapElements.ContainsKey(ip))
+				{
+					nodeb = mapElements[ip] as NodeB;
+				}
+			}
+
+			return nodeb;
 		}
 
 		#endregion
@@ -372,16 +395,6 @@ namespace SCMTOperationCore.Control
 			}
 		}
 
-		//判断节点的连接状态
-		private bool NodeHasConnected(string ip)
-		{
-			lock (lockObj)
-			{
-				var node = mapElements[ip] as NodeB;
-				return node.HasConnected();
-			}
-		}
-
 		private bool SendSiMsgToTarget(string nodeIp, byte[] dataBytes)
 		{
 			if (!HasSameIpAddr(nodeIp))
@@ -395,21 +408,6 @@ namespace SCMTOperationCore.Control
 				var nodeb = mapElements[nodeIp] as NodeB;
 				return nodeb.SendSiMsg(dataBytes);
 			}
-		}
-
-		// 根据网元IP获取网元节点
-		public Element GetNodeByIp(string ip)
-		{
-			Element nodeb = null;
-			lock (lockObj)
-			{
-				if (mapElements.ContainsKey(ip))
-				{
-					nodeb = mapElements[ip] as NodeB;
-				}
-			}
-
-			return nodeb;
 		}
 
 		#endregion

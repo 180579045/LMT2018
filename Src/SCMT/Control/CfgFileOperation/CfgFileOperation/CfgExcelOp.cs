@@ -179,8 +179,47 @@ namespace CfgFileOperation
             Excel.Worksheet wks = ReadExcelSheet(FilePath, sheetName);
             if (wks == null)
                 return null;
+            
             return (object[,])wks.Cells.get_Range(From, End).Value2;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public int GetSheetEndRow(string FilePath, string sheetName, string strEnd)
+        {
+            int rowEnd = -1;
+            Excel.Worksheet wks = ReadExcelSheet(FilePath, sheetName);
+            if (wks == null)
+                return rowEnd;
+            int col = wks.UsedRange.Columns.Count;
+            try
+            {
+                for (int iRow = wks.UsedRange.Rows.Count; iRow > 0; iRow--)
+                {
+                    for (int iCol = 1; iCol < col; iCol++)
+                    {
+                        string cellVal = wks.Cells[iRow, iCol].Text.ToString().Trim();
+                        //if (0 == String.Compare(cellVal, "end", true))//bool IgnoreCase默认为false,如果是true，则不区分大小写的比较
+                        if (0 == String.Compare(cellVal, strEnd, true))
+                        {
+                            rowEnd = iRow;
+                            return rowEnd;
+                        }
+                    }
+                }
+            }
+            catch
+            {
+                Console.WriteLine("GetSheetEndRow err.==");
+            }
+
+            return rowEnd;
+        }
+
+
         /// <summary>
         /// 获取 地址(FilePath)excel中(sheetName)页的行数 
         /// </summary>
@@ -193,6 +232,19 @@ namespace CfgFileOperation
             if (wks == null)
                 return -1;
             return wks.UsedRange.Rows.Count;                  // 获取行数
+        }
+        /// <summary>
+        /// 获取 地址(FilePath)excel中(sheetName)页的列数 
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <param name="sheetName"></param>
+        /// <returns></returns>
+        public int GetColCount(string FilePath, string sheetName)
+        {
+            Excel.Worksheet wks = ReadExcelSheet(FilePath, sheetName);
+            if (wks == null)
+                return -1;
+            return wks.UsedRange.Columns.Count;                // 获取列数
         }
 
         /// <summary>

@@ -75,13 +75,13 @@ namespace SCMTOperationCore.Elements
 							if (!connection.Connect())
 							{
 								Log.Debug("连接基站失败，1s后重连...");
-								Thread.Sleep(1000);
+								Task.Delay(1000);
 							}
 						}
 						catch
 						{
 							// ignored
-							Thread.Sleep(1000);
+							Task.Delay(1000);
 						}
 					}
 				});
@@ -137,7 +137,13 @@ namespace SCMTOperationCore.Elements
 
 		private void OnDisconnected(object sender, DisconnectedEventArgs e)
 		{
-			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, $"{{\"TargetIp\" : \"{NeAddress.ToString()}\"}}");
+			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, NeAddress.ToString());
+
+			// 断开连接了，但不是手动取消的，应该是非自然断开
+			if (!IsCancelConnect())
+			{
+				PublishHelper.PublishMsg(TopicHelper.ReconnectGnb, NeAddress.ToString());
+			}
 		}
 
 		private void OnDataReceived(object sender, DataReceivedEventArgs e)
