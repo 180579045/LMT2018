@@ -752,7 +752,7 @@ namespace SCMTMainWindow.View
                         cbValue.Margin = new Thickness(1);
                         cbValue.Height = 25;
 
-                        var valueInfo = MibStringHelper.SplitManageValue(item.Value.mibAttri.managerValueRange);
+                        var valueInfo = MibStringHelper.SplitManageValue(item.Value.mibAttri.mibValAllList);
 
                         for (int j = 0; j < valueInfo.Count; j++)
                         {
