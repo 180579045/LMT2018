@@ -208,7 +208,7 @@ namespace NetPlan
 		/// <param name="strOriginValue"></param>
 		/// <param name="bConvertToEnum">枚举值是否转为int型值，也就是 : 前面的数字</param>
 		/// <returns></returns>
-		public bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = false)
+		private bool SetFieldOriginValue(string strFieldName, string strOriginValue, bool bConvertToEnum = false)
 		{
 			if (string.IsNullOrEmpty(strFieldName) || string.IsNullOrEmpty(strOriginValue))
 			{
@@ -237,11 +237,6 @@ namespace NetPlan
 			}
 
 			return field.SetOriginValue(strValue);
-		}
-
-		public bool SetFieldOriginValue(string strFieldName, int nOriginValue, bool bConvertToEnum = false)
-		{
-			return SetFieldOriginValue(strFieldName, nOriginValue.ToString(), bConvertToEnum);
 		}
 
 		public bool SetFieldOlValue(string strFieldName, string strOriginValue, bool bConvertToEnum = false)
@@ -464,14 +459,7 @@ namespace NetPlan
 				}
 
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
-				var info = new MibLeafNodeInfo
-				{
-					m_strLatestValue = indexVale,//索引不会变化，将m_strLatestValue赋值
-					m_strOriginValue = indexVale,
-					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
-					m_bVisible = true,
-					mibAttri = indexColumn
-				};
+				var info = new MibLeafNodeInfo(indexVale, !indexColumn.IsEmpoweredModify(), true, indexColumn);
 
 				m_mapAttributes.Add(indexColumn.childNameMib, info);
 			}
@@ -506,14 +494,7 @@ namespace NetPlan
 
 			if (!m_mapAttributes.ContainsKey(rsMibLeaf.childNameMib))
 			{
-				var tmp = new MibLeafNodeInfo
-				{
-					m_bReadOnly = true,
-					m_bVisible = false,
-					m_strOriginValue = strRs,
-					m_strLatestValue = strRs,
-					mibAttri = rsMibLeaf
-				};
+				var tmp = new MibLeafNodeInfo(strRs, true, false, rsMibLeaf);
 				m_mapAttributes[rsMibLeaf.childNameMib] = tmp;
 			}
 			else

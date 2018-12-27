@@ -92,21 +92,16 @@ namespace NetPlan
 
 					var defaultValue = MibStringHelper.GetMibDefaultValue(mibLeaf.defaultValue);
 					var originValue = SnmpToDatabase.ConvertValueToString(mibLeaf, defaultValue); // 原始值设置为默认值
-					var info = new MibLeafNodeInfo
-					{
-						mibAttri = mibLeaf,
-						m_strOriginValue = originValue,
-						m_strLatestValue = originValue,
-						m_bReadOnly = !mibLeaf.IsEmpoweredModify(),
-						m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
-					};
 
 					// todo netRRUEntry表存在问题：默认值为0：unknown，但取值范围中没有0，会设置为null
-					if (null == info.m_strOriginValue)
+					if (null == originValue)
 					{
 						Log.Error($"字段{mibLeaf.childNameMib}的默认值{mibLeaf.defaultValue}在取值范围{mibLeaf.managerValueRange}中不存在");
-						info.m_strOriginValue = "-1";
+						//info.m_strOriginValue = "-1";
 					}
+
+					var info = new MibLeafNodeInfo(originValue, !mibLeaf.IsEmpoweredModify(), !mibLeaf.IsRowStatus(),
+						mibLeaf);
 
 					if (!ret.ContainsKey(mibLeaf.childNameMib))
 					{

@@ -161,6 +161,31 @@ namespace NetPlan
 			return atList.FirstOrDefault(item => item.antArrayIndex.ToString() == strTypeIdx && item.antArrayVendor.ToString() == strVendorIdx);
 		}
 
+		#region 波束扫描相关
+
+		/// <summary>
+		/// 根据厂家和类型索引查询波束扫描值信息
+		/// </summary>
+		/// <param name="strVendorIdx">厂家索引</param>
+		/// <param name="strTypeIdx">类型索引</param>
+		/// <returns></returns>
+		public List<BfScanData> GetAntBfsDataByVendorAndTypeIdx(string strVendorIdx, string strTypeIdx)
+		{
+			var retList = new List<BfScanData>();
+			var bfsList = _antInfo.bfScanWeightTable;
+			foreach (var item in bfsList)
+			{
+				if (item.antArrayBfScanAntWeightVendorIndex == strVendorIdx && item.antArrayBfScanAntWeightTypeIndex == strTypeIdx)
+				{
+					retList.Add(item);
+				}
+			}
+
+			return retList;
+		}
+
+		#endregion
+
 		#endregion 公共接口
 
 		#region 私有接口、数据区
@@ -222,12 +247,14 @@ namespace NetPlan
 		public List<AntType> antennaTypeTable;              // 天线类型
 		public List<AntWeight> antennaWeightTable;          // 天线权重
 		public List<AntCoupCoe> couplingCoeffctTable;       // 耦合系数
+		public List<BfScanData> bfScanWeightTable;			// 波束扫面
 
 		public WholeAntInfo()
 		{
 			antennaTypeTable = new List<AntType>();
 			antennaWeightTable = new List<AntWeight>();
 			couplingCoeffctTable = new List<AntCoupCoe>();
+			bfScanWeightTable = new List<BfScanData>();
 		}
 	}
 
@@ -383,6 +410,50 @@ namespace NetPlan
 		public int antCouplCoeffPhase6 { get; set; }
 		public int antCouplCoeffAmplitude7 { get; set; }
 		public int antCouplCoeffPhase7 { get; set; }
+	}
+
+	// 波束扫描数据
+	public struct BfScanData
+	{
+		public string antArrayNotMibNumber;
+		public string antArrayBfScanAntWeightVendorIndex;
+		public string antArrayBfScanNotMibVendorName;
+		public string antArrayBfScanAntWeightTypeIndex;
+		public string antArrayBfScanNotMibTypeName;
+		public string antArrayBfScanAntWeightIndex;
+		public string antennaBfScanWeightBFScanGrpNo;
+		public string antArrayBfScanAntWeightAntGrpNo;
+		public string antennaBfScanWeightAmplitude0 { get; set; }
+		public string antennaBfScanWeightPhase0 { get; set; }
+		public string antennaBfScanWeightAmplitude1 { get; set; }
+		public string antennaBfScanWeightPhase1 { get; set; }
+		public string antennaBfScanWeightAmplitude2 { get; set; }
+		public string antennaBfScanWeightPhase2 { get; set; }
+		public string antennaBfScanWeightAmplitude3 { get; set; }
+		public string antennaBfScanWeightPhase3 { get; set; }
+		public string antennaBfScanWeightAmplitude4 { get; set; }
+		public string antennaBfScanWeightPhase4 { get; set; }
+		public string antennaBfScanWeightAmplitude5 { get; set; }
+		public string antennaBfScanWeightPhase5 { get; set; }
+		public string antennaBfScanWeightAmplitude6 { get; set; }
+		public string antennaBfScanWeightPhase6 { get; set; }
+		public string antennaBfScanWeightAmplitude7 { get; set; }
+		public string antennaBfScanWeightPhase7 { get; set; }
+		public string antennaBfScanWeightHorizonNum;
+		public string antennaBfScanWeightVerticalNum;
+		public string antennaBfScanWeightHorizonDowntiltAngle;
+		public string antennaBfScanWeightVerticalDowntiltAngle;
+		public string antennaBfScanWeightIsLossFlag;
+	}
+
+	public class SimpleBfsData
+	{
+		public List<BfScanData> listDataOrigin;
+
+		public SimpleBfsData()
+		{
+			listDataOrigin = new List<BfScanData>();
+		}
 	}
 
 	#endregion 天线阵解析相关类型定义

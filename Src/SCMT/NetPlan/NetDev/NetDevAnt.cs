@@ -56,7 +56,7 @@ namespace NetPlan
 			// 下发天线阵权重信息
 			if (bDlAntWcb && RecordDataType.NewAdd == dev.m_recordType)
 			{
-				if (!DistributeDevToEnb(dev, bDlAntWcb))
+				if (!DistributeAntWcbToEnb(dev, bDlAntWcb))
 				{
 					Log.Error($"下发索引为{dev.m_strOidIndex}的天线阵权重、耦合系数、波束扫描信息失败");
 					return false;
@@ -76,7 +76,7 @@ namespace NetPlan
 		/// <param name="ant">天线阵设备</param>
 		/// <param name="bSendWcb">是否下发天线阵权重、耦合系数、波束扫描等信息</param>
 		/// <returns></returns>
-		internal bool DistributeDevToEnb(DevAttributeBase ant, bool bSendWcb)
+		internal bool DistributeAntWcbToEnb(DevAttributeBase ant, bool bSendWcb)
 		{
 			if (bSendWcb)
 			{
@@ -161,16 +161,16 @@ namespace NetPlan
 		/// <returns></returns>
 		public static bool SetAntTypeInfo(DevAttributeBase ant, AntType at)
 		{
-			ant.SetFieldOriginValue("netAntArrayVendorName", at.antArrayNotMibVendorName);
-			ant.SetFieldOriginValue("netAntArrayModel", at.antArrayModelName);
+			ant.SetFieldLatestValue("netAntArrayVendorName", at.antArrayNotMibVendorName);
+			ant.SetFieldLatestValue("netAntArrayModel", at.antArrayModelName);
 
 			if (at.antArrayType.Count > 0)
 			{
-				ant.SetFieldOriginValue("netAntArrayType", at.antArrayType.First().value, true);
+				ant.SetFieldLatestValue("netAntArrayType", at.antArrayType.First().value, true);
 			}
 
-			ant.SetFieldOriginValue("netAntArrayNum", at.antArrayNum);
-			ant.SetFieldOriginValue("netAntArrayDistance", at.antArrayDistance);
+			ant.SetFieldLatestValue("netAntArrayNum", at.antArrayNum.ToString());
+			ant.SetFieldLatestValue("netAntArrayDistance", at.antArrayDistance.ToString());
 
 			return true;
 		}
@@ -206,10 +206,10 @@ namespace NetPlan
 				return null;
 			}
 
-			dev.SetFieldOriginValue("antArrayModelName", at.antArrayModelName);
-			dev.SetFieldOriginValue("antArrayType", CalculateBitsValue(at.antArrayType).ToString());
-			dev.SetFieldOriginValue("antArrayNum", at.antArrayNum.ToString());
-			dev.SetFieldOriginValue("antArrayDistance", at.antArrayDistance.ToString());
+			dev.SetFieldOlValue("antArrayModelName", at.antArrayModelName);
+			dev.SetFieldOlValue("antArrayType", CalculateBitsValue(at.antArrayType).ToString());
+			dev.SetFieldOlValue("antArrayNum", at.antArrayNum.ToString());
+			dev.SetFieldOlValue("antArrayDistance", at.antArrayDistance.ToString());
 
 			return dev;
 		}
@@ -325,6 +325,7 @@ namespace NetPlan
 
 			// todo 波束宽度扫描信息后续添加
 
+
 			return 0;
 		}
 
@@ -350,8 +351,8 @@ namespace NetPlan
 					continue;
 				}
 
-				dev.SetFieldOriginValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
-				dev.SetFieldOriginValue("antennaWeightMultAntVerHalfPowerBeamWidth", item.antennaWeightMultAntVerHalfPowerBeamWidth.ToString());
+				dev.SetFieldLatestValue("antennaWeightMultAntHalfPowerBeamWidth", item.antennaWeightMultAntHalfPowerBeamWidth.ToString());
+				dev.SetFieldLatestValue("antennaWeightMultAntVerHalfPowerBeamWidth", item.antennaWeightMultAntVerHalfPowerBeamWidth.ToString());
 
 				dynamic amplitudeValue;
 				dynamic phaseValue;
@@ -366,8 +367,8 @@ namespace NetPlan
 						break;
 					}
 
-					dev.SetFieldOriginValue(amp, amplitudeValue.ToString());
-					dev.SetFieldOriginValue(pha, phaseValue.ToString());
+					dev.SetFieldLatestValue(amp, amplitudeValue.ToString());
+					dev.SetFieldLatestValue(pha, phaseValue.ToString());
 				}
 
 				SaveWcbDev(EnumDevType.antWeight, dev);
@@ -378,8 +379,8 @@ namespace NetPlan
 		/// 生成天线阵的耦合系数
 		/// </summary>
 		/// <param name="coupCoe"></param>
-		/// <param name="strAnoNo"></param>
-		private void GenerateAntCoupling(AntCoupCoe coupCoe, string strAnoNo)
+		/// <param name="strAntNo"></param>
+		private void GenerateAntCoupling(AntCoupCoe coupCoe, string strAntNo)
 		{
 			var coupList = coupCoe.antArrayCouplingCoeffctInfo;
 
@@ -387,7 +388,7 @@ namespace NetPlan
 			{
 				var fb = item.antCouplCoeffFreq;
 				var gi = item.antCouplCoeffAntGrpIndex;
-				var idx = $".{strAnoNo}.{fb}.{gi}";
+				var idx = $".{strAntNo}.{fb}.{gi}";
 
 				var dev = new DevAttributeInfo(EnumDevType.antCoup, idx);
 				if (dev.m_mapAttributes.Count == 0)
@@ -402,14 +403,14 @@ namespace NetPlan
 				{
 					var amp = $"antCouplCoeffAmplitude{i}";
 					var pha = $"antCouplCoeffPhase{i}";
-					if (!UtilityHelper.GetFieldValueOfType<Weight>(item, amp, out amplitudeValue) ||
-						!UtilityHelper.GetFieldValueOfType<Weight>(item, pha, out phaseValue))
+					if (!UtilityHelper.GetFieldValueOfType<CoupCoe>(item, amp, out amplitudeValue) ||
+						!UtilityHelper.GetFieldValueOfType<CoupCoe>(item, pha, out phaseValue))
 					{
 						break;
 					}
 
-					dev.SetFieldOriginValue(amp, amplitudeValue.ToString());
-					dev.SetFieldOriginValue(pha, phaseValue.ToString());
+					dev.SetFieldLatestValue(amp, amplitudeValue.ToString());
+					dev.SetFieldLatestValue(pha, phaseValue.ToString());
 				}
 
 				SaveWcbDev(EnumDevType.antCoup, dev);
@@ -445,7 +446,7 @@ namespace NetPlan
 		/// <summary>
 		/// 下发天线阵的wcb信息到基站
 		/// </summary>
-		/// <param name="opType"></param>
+		/// <param name="cmdType"></param>
 		/// <returns></returns>
 		private bool SendWcbInfoToEnb(EnumSnmpCmdType cmdType)
 		{

@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using CommonUtility;
 using LinkPath;
 using LogManager;
-using NetPlan;
 
 namespace NetPlan
 {
@@ -244,7 +242,7 @@ namespace NetPlan
 				if (!base.DistributeToEnb(item))
 				{
 					Log.Error($"索引为{item.m_strOidIndex}的RRU端口器件库信息下发失败");
-					continue;	// 此处使用continue而不是return，是因为判断端口器件库信息是否存在时，只判断了端口1的信息，不能保证所有的信息都已经被删除
+					//continue;	// 此处使用continue而不是return，是因为判断端口器件库信息是否存在时，只判断了端口1的信息，不能保证所有的信息都已经被删除
 				}
 			}
 
@@ -284,6 +282,7 @@ namespace NetPlan
 		/// </summary>
 		/// <param name="strVendorIdx"></param>
 		/// <param name="strTypeIdx"></param>
+		/// <param name="nPortNo"></param>
 		/// <returns></returns>
 		private static bool IsExistRruPortType(string strVendorIdx, string strTypeIdx, int nPortNo = 1)
 		{
@@ -307,13 +306,13 @@ namespace NetPlan
 				return null;
 			}
 
-			newRruType.SetFieldOriginValue("rruTypeName", ri.rruTypeName);
-			newRruType.SetFieldOriginValue("rruTypeMaxAntPathNum", ri.rruTypeMaxAntPathNum.ToString());
-			newRruType.SetFieldOriginValue("rruTypeMaxTxPower", ri.rruTypeMaxTxPower.ToString());
-			newRruType.SetFieldOriginValue("rruTypeBandWidth", ri.rruTypeBandWidth.ToString());
-			newRruType.SetFieldOriginValue("rruTypeFiberLength", CalculateBitsValue(ri.rruTypeFiberLength).ToString());
-			newRruType.SetFieldOriginValue("rruTypeIrCompressMode", CalculateBitsValue(ri.rruTypeIrCompressMode).ToString());
-			newRruType.SetFieldOriginValue("rruTypeSupportCellWorkMode", CalculateBitsValue(ri.rruTypeSupportCellWorkMode).ToString());
+			newRruType.SetFieldLatestValue("rruTypeName", ri.rruTypeName);
+			newRruType.SetFieldLatestValue("rruTypeMaxAntPathNum", ri.rruTypeMaxAntPathNum.ToString());
+			newRruType.SetFieldLatestValue("rruTypeMaxTxPower", ri.rruTypeMaxTxPower.ToString());
+			newRruType.SetFieldLatestValue("rruTypeBandWidth", ri.rruTypeBandWidth.ToString());
+			newRruType.SetFieldLatestValue("rruTypeFiberLength", CalculateBitsValue(ri.rruTypeFiberLength).ToString());
+			newRruType.SetFieldLatestValue("rruTypeIrCompressMode", CalculateBitsValue(ri.rruTypeIrCompressMode).ToString());
+			newRruType.SetFieldLatestValue("rruTypeSupportCellWorkMode", CalculateBitsValue(ri.rruTypeSupportCellWorkMode).ToString());
 
 			return newRruType;
 		}
@@ -321,7 +320,6 @@ namespace NetPlan
 		/// <summary>
 		/// 生成一个rru端口类型实例
 		/// </summary>
-		/// <param name="rpi"></param>
 		/// <returns></returns>
 		private static List<DevAttributeBase> GenerateRruPortTypeDev(IEnumerable<RruPortInfo> rpiList)
 		{
@@ -335,16 +333,16 @@ namespace NetPlan
 					continue;
 				}
 
-				newRpt.SetFieldOriginValue("rruTypePortPathNo", rpi.rruTypePortPathNo.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortSupportFreqBand", CalculateBitsValue(rpi.rruTypePortSupportFreqBand).ToString());
-				newRpt.SetFieldOriginValue("rruTypePortSupportFreqBandWidth", rpi.rruTypePortSupportFreqBandWidth.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortSupportAbandTdsCarrierNum", rpi.rruTypePortSupportAbandTdsCarrierNum.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortSupportFBandTdsCarrierNum", rpi.rruTypePortSupportFBandTdsCarrierNum.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortCalAIqTxNom", rpi.rruTypePortCalAIqTxNom.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortCalAIqRxNom", rpi.rruTypePortCalAIqRxNom.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortCalPoutTxNom", rpi.rruTypePortCalPoutTxNom.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortCalPinRxNom", rpi.rruTypePortCalPinRxNom.ToString());
-				newRpt.SetFieldOriginValue("rruTypePortAntMaxPower", rpi.rruTypePortAntMaxPower.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortPathNo", rpi.rruTypePortPathNo.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortSupportFreqBand", CalculateBitsValue(rpi.rruTypePortSupportFreqBand).ToString());
+				newRpt.SetFieldLatestValue("rruTypePortSupportFreqBandWidth", rpi.rruTypePortSupportFreqBandWidth.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortSupportAbandTdsCarrierNum", rpi.rruTypePortSupportAbandTdsCarrierNum.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortSupportFBandTdsCarrierNum", rpi.rruTypePortSupportFBandTdsCarrierNum.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortCalAIqTxNom", rpi.rruTypePortCalAIqTxNom.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortCalAIqRxNom", rpi.rruTypePortCalAIqRxNom.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortCalPoutTxNom", rpi.rruTypePortCalPoutTxNom.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortCalPinRxNom", rpi.rruTypePortCalPinRxNom.ToString());
+				newRpt.SetFieldLatestValue("rruTypePortAntMaxPower", rpi.rruTypePortAntMaxPower.ToString());
 
 				ndabList.Add(newRpt);
 			}
@@ -362,7 +360,6 @@ namespace NetPlan
 		/// 1.先删除了本地小区规划，未下发；2.删除天线阵，下发参数。下发失败，原因：该射频通道已经布配本地小区
 		/// </summary>
 		/// <param name="waitDisDev"></param>
-		/// <param name="mapOriginData"></param>
 		/// <returns></returns>
 		private bool DisRelateRass(DevAttributeBase waitDisDev)
 		{
@@ -424,6 +421,7 @@ namespace NetPlan
 		/// 下发和rru关联的以太网口规划记录
 		/// </summary>
 		/// <param name="mapRhubLinkEp"></param>
+		/// <param name="rruDev"></param>
 		/// <returns></returns>
 		private bool DistributeRelateEthRecord(Dictionary<int, LinkEndpoint> mapRhubLinkEp, DevAttributeBase rruDev)
 		{

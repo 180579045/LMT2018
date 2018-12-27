@@ -766,6 +766,11 @@ namespace SCMTMainWindow.View
                         var strItem = mibInfo.GetNeedUpdateValue(item.Key, false);
                         if(strItem != null)
                         {
+	                        if (strItem.Contains('|'))
+	                        {
+		                        strItem = strItem.Substring(strItem.IndexOf('|') + 1);
+	                        }
+
                             if (cbValue.Items.Contains(strItem))
                             {
                                 cbValue.SelectedIndex = cbValue.Items.IndexOf(strItem);

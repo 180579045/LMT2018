@@ -193,10 +193,10 @@ namespace NetPlan
 				return null;
 			}
 
-			//if (!MoveDevFromWaitDelToModifyMap(type, ant, ant.m_strOidIndex))
-			//{
-			//	return null;
-			//}
+			if (null != deletedAnt && deletedAnt.m_recordType == RecordDataType.WaitDel)
+			{
+				ant.SetDevRecordType(RecordDataType.Modified);
+			}
 
 			ExchangeSameTypeAndIndexDev(type, deletedAnt, ant);
 
@@ -244,10 +244,10 @@ namespace NetPlan
 				return null;
 			}
 
-			//if (!MoveDevFromWaitDelToModifyMap(type, dev, dev.m_strOidIndex))
-			//{
-			//	return null;
-			//}
+			if (null != oldBbu && oldBbu.m_recordType == RecordDataType.WaitDel)
+			{
+				dev.SetDevRecordType(RecordDataType.Modified);
+			}
 
 			ExchangeSameTypeAndIndexDev(type, oldBbu, dev);
 
@@ -258,7 +258,7 @@ namespace NetPlan
 				return null;
 			}
 
-			InfoTip($"添加索引为.{slot}的{strBoardType}板卡成功");
+			InfoTip($"添加索引为.0.0.{slot}的board设备成功");
 
 			return dev;
 		}
@@ -296,6 +296,11 @@ namespace NetPlan
 				return null;
 			}
 
+			if (null != oldRru && oldRru.m_recordType == RecordDataType.WaitDel)
+			{
+				newRru.SetDevRecordType(RecordDataType.Modified);
+			}
+
 			ExchangeSameTypeAndIndexDev(type, oldRru, newRru);
 
 			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
@@ -305,7 +310,7 @@ namespace NetPlan
 				return null;
 			}
 
-			InfoTip($"添加索引为.{nRruNo}的天线阵成功");
+			InfoTip($"添加索引为.{nRruNo}的rru设备成功");
 
 			return newRru;
 		}
@@ -1226,58 +1231,6 @@ namespace NetPlan
 		}
 
 		/// <summary>
-		/// 获取需要更新的值
-		/// </summary>
-		/// <param name="strOriginValue"></param>
-		/// <param name="strLatestValue"></param>
-		/// <returns></returns>
-		private static string GetNeedUpdateValue(string strOriginValue, string strLatestValue)
-		{
-			if (string.IsNullOrEmpty(strOriginValue))
-			{
-				return null;
-			}
-
-			if (null == strLatestValue || strLatestValue == strOriginValue)
-			{
-				return strOriginValue;
-			}
-
-			return strLatestValue;
-		}
-
-		/// <summary>
-		/// 从DevAttributeInfo的m_mapAttributes数据结构中取出strMibName对应的值
-		/// 如果是枚举值就转换为字符串
-		/// </summary>
-		/// <param name="mapInfos"></param>
-		/// <param name="strMibName"></param>
-		/// <returns></returns>
-		private static string GetEnumStringByMibName(IReadOnlyDictionary<string, MibLeafNodeInfo> mapInfos, string strMibName)
-		{
-			if (null == mapInfos || string.IsNullOrEmpty(strMibName))
-			{
-				return null;
-			}
-
-			if (!mapInfos.ContainsKey(strMibName))
-			{
-				return null;
-			}
-
-			var attri = mapInfos[strMibName];
-			if (null == attri)
-			{
-				return null;
-			}
-
-			// 现在m_strOriginValue和m_strLatestValue存的是数字对应的字符串，无需转换
-			var ret = GetNeedUpdateValue(attri.m_strOriginValue, attri.m_strLatestValue);
-
-			return ret;
-		}
-
-		/// <summary>
 		/// 获取RRU通道对应的小区信息
 		/// </summary>
 		/// <param name="dev"></param>
@@ -1301,7 +1254,7 @@ namespace NetPlan
 
 			var mapAttri = dev.m_mapAttributes;
 
-			var rtxv = GetEnumStringByMibName(mapAttri, "netSetRRUPortTxRxStatus");
+			var rtxv = dev.GetNeedUpdateValue("netSetRRUPortTxRxStatus", false);
 			if (null == rtxv)
 			{
 				if (rtc.SupportTxRxStatus.Count > 0)
@@ -1314,7 +1267,7 @@ namespace NetPlan
 				rtc.RealTRx = rtxv;
 			}
 
-			var cellId1 = GetEnumStringByMibName(mapAttri, "netSetRRUPortSubtoLocalCellId");
+			var cellId1 = dev.GetNeedUpdateValue("netSetRRUPortSubtoLocalCellId");
 			if (null != cellId1 && -1 != int.Parse(cellId1))
 			{
 				bool bCellFix;
@@ -1335,7 +1288,7 @@ namespace NetPlan
 			for (var i = 2; i <= 4; i++)
 			{
 				var mibName = $"netSetRRUPortSubtoLocalCellId{i}";
-				var cellId = GetEnumStringByMibName(mapAttri, mibName);
+				var cellId = dev.GetNeedUpdateValue(mibName);
 				if (null != cellId && "-1" != cellId)
 				{
 					bool bCellFix;
@@ -1352,7 +1305,7 @@ namespace NetPlan
 				}
 			}
 
-			var portNo = GetEnumStringByMibName(mapAttri, "netSetRRUPortNo");
+			var portNo = dev.GetNeedUpdateValue("netSetRRUPortNo");
 			if (null == portNo)
 			{
 				return false;

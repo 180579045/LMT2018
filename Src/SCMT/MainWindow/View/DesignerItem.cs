@@ -6,6 +6,7 @@ using System.Windows.Media;
 using SCMTMainWindow.View.Controls;
 using NetPlan;
 using System.Collections.Generic;
+using LogManager;
 
 namespace SCMTMainWindow.View
 {
@@ -237,18 +238,26 @@ namespace SCMTMainWindow.View
                     this.Template.FindName("PART_ContentPresenter", this) as ContentPresenter;
                 if (contentPresenter != null)
                 {
-                    UIElement contentVisual = VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement;
-                    if (contentVisual != null)
-                    {
-                        DragThumb thumb = this.Template.FindName("PART_DragThumb", this) as DragThumb;
-                        if (thumb != null)
-                        {
-                            ControlTemplate template =
-                                DesignerItem.GetDragThumbTemplate(contentVisual) as ControlTemplate;
-                            if (template != null)
-                                thumb.Template = template;
-                        }
-                    }
+	                try
+	                {
+		                UIElement contentVisual = VisualTreeHelper.GetChild(contentPresenter, 0) as UIElement;
+		                if (contentVisual != null)
+		                {
+			                DragThumb thumb = this.Template.FindName("PART_DragThumb", this) as DragThumb;
+			                if (thumb != null)
+			                {
+				                ControlTemplate template =
+					                GetDragThumbTemplate(contentVisual) as ControlTemplate;
+				                if (template != null)
+					                thumb.Template = template;
+			                }
+		                }
+	                }
+	                catch (Exception exception)
+	                {
+		                Log.Error(exception.ToString());
+		                //throw;
+	                }
                 }
             }
         }

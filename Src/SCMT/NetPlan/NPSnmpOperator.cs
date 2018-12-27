@@ -324,14 +324,7 @@ namespace NetPlan
 
 			var realValue = SnmpToDatabase.ConvertValueToString(mibLeaf, strRv);
 			// 该表项有值，就处理
-			var info = new MibLeafNodeInfo
-			{
-				m_strOriginValue = realValue,
-				m_strLatestValue = realValue,
-				mibAttri = mibLeaf,
-				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),			// 索引只读
-				m_bVisible = !mibLeaf.IsRowStatus()					// 行状态不显示
-			};
+			var info = new MibLeafNodeInfo(realValue, !mibLeaf.IsEmpoweredModify(), !mibLeaf.IsRowStatus(), mibLeaf);
 
 			return info;
 		}
@@ -408,14 +401,7 @@ namespace NetPlan
 						continue;
 					}
 
-					info = new MibLeafNodeInfo
-					{
-						m_strOriginValue = realValue,
-						m_strLatestValue = realValue,
-						mibAttri = childLeaf,
-						m_bReadOnly = true,
-						m_bVisible = true
-					};
+					info = new MibLeafNodeInfo(realValue, true, true, childLeaf);
 				}
 				else
 				{
