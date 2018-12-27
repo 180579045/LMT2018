@@ -62,8 +62,12 @@ namespace CfgFileOperation
             g_strExcelPath = strExcelPath;
             g_mdbPath = strMdb;
         }
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strTabName"></param>
+        /// <param name="strFlag"></param>
+        /// <param name="cfgOp"></param>
         public void InsertPdgTab(string strTabName, string strFlag, CfgOp cfgOp)
         {
             if ("1" == strFlag || "2" == strFlag)
@@ -308,7 +312,7 @@ namespace CfgFileOperation
                 string nodeName = "";     //节点名NodeName, 
                 string nodeValue = "";    //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                 string strTableName = ""; //节点所属于的table
-                //if (iLine == 31)
+                //if (iLine == 693)
                 //    Console.WriteLine("===");
                 //if (isEndLine(ColVals, iLine))                     // 是否结束行
                 //    break;
@@ -316,7 +320,7 @@ namespace CfgFileOperation
                     continue;
                 if (!GetNodeName(ColVals, iLine, strFlag, out nodeName, out bIsIndex))// 是否为索引节点bIsIndex, 如果是索引节点是否为flag为2。
                     return false;
-                //if ("nrCellCfgPdcchDmrsPower" == nodeName)
+                //if ("nrSearchSpaceLcId" == nodeName)
                 //    Console.WriteLine("");
                 if (!GetNodeValueByFlag(ColVals, iLine, strFlag, out nodeValue))     //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                     continue;
@@ -1227,11 +1231,10 @@ namespace CfgFileOperation
         /// <summary>
         /// 写文件前的一些处理
         /// </summary>
-        /// <param name="cfgOp"></param>
         /// <param name="newFilePath"></param>
         /// <param name="strDBPath"></param>
         /// <returns></returns>
-        public bool CreateFilePdg_eNB(CfgOp cfgOp, string newFilePath, string strDBPath)
+        public bool CreateFilePdg_eNB( string newFilePath, string strDBPath)
         {
             WriteHeaderVersionInfoPDG(strDBPath);//Pdg文件头结构
             WriteDataHeadInfoPDG();              // 数据块头
@@ -1300,7 +1303,7 @@ namespace CfgFileOperation
             //  表块 实例 : 序列化
             foreach (var tabName in GetVectPDGTabName())
             {
-                //if (String.Equals("nrPdcpCfgEntry", tabName))
+                //if (String.Equals("nrSearchSpaceEntry", tabName))
                 //{
                 //    Console.WriteLine("\n");
                 //}

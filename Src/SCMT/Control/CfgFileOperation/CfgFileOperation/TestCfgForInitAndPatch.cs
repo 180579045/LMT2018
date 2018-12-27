@@ -61,6 +61,11 @@ namespace CfgFileOperation
                     //re = false;
                     //return re;
                 }
+                else
+                {
+                    Console.WriteLine("file head info all same.\n");
+                    bw.Write("file head info all same.\n".ToArray());
+                }
                 // 比较 表名是否一致
                 if (!TestBeyondCompFileTableNameMain(bw, parInfo["FilePathA"], parInfo["FilePathB"]))
                 {
@@ -69,15 +74,25 @@ namespace CfgFileOperation
                     //re = false;
                     //return re;
                 }
-                TestGetTableInfo(bw, parInfo["FilePathA"], parInfo["FilePathB"], parInfo);
-                //// 比较 每个表的内容
-                //if (!TestBeyondComFileTableInfoMain(bw, parInfo["FilePathA"], parInfo["FilePathB"], parInfo))
-                //{
-                //    Console.WriteLine("tables info not all same.");
-                //    bw.Write("tables info not all same.\n");
-                //    //re = false;
-                //    //return re;
-                //}
+                else
+                {
+                    Console.WriteLine("tables name all same.\n");
+                    bw.Write("tables name all same.\n".ToArray());
+                }
+                //TestGetTableInfo(bw, parInfo["FilePathA"], parInfo["FilePathB"], parInfo);
+                // 比较 每个表的内容
+                if (!TestBeyondComFileTableInfoMain(bw, parInfo["FilePathA"], parInfo["FilePathB"], parInfo))
+                {
+                    Console.WriteLine("tables info not all same.");
+                    bw.Write("tables info not all same.\n".ToArray());
+                    //re = false;
+                    //return re;
+                }
+                else
+                {
+                    Console.WriteLine("tables info all same.\n");
+                    bw.Write("tables info all same.\n");
+                }
                 // re;
             }
 
@@ -467,7 +482,7 @@ namespace CfgFileOperation
             // 根据文件头，获取每个表的内容，进行比较
             foreach (string table in YsTableNamePosDict.Keys)
             {
-                re = true;
+                //re = true;
                 //if (!String.Equals(table, "rruTypePortEntry"))
                 //{
                 //    //bw.Write("antennaBfScanWeightEntry continue.\n");
@@ -482,7 +497,7 @@ namespace CfgFileOperation
                 StruCfgFileTblInfo newTblInfo = TestGetTableHeadInfo(NewFilePath, offsetNew);
 
                 // 1. 每个表的表头是否相同 : StruCfgFileTblInfo
-                if (!TestIsSameTableHeadField(table, ysTblInfo, newTblInfo))
+                if (!TestIsSameTableHeadField(bw,table, ysTblInfo, newTblInfo))
                 {
                     bw.Write(String.Format("tableName={0}, table head info not all same.\n", table).ToArray());
                     Console.WriteLine(String.Format("tableName={0}, table head info not all same.", table));
@@ -708,35 +723,46 @@ namespace CfgFileOperation
         /// <param name="tblFieldA"></param>
         /// <param name="tblFieldB"></param>
         /// <returns></returns>
-        bool TestIsSameTableHeadField(string tableName, StruCfgFileTblInfo tblFieldA, StruCfgFileTblInfo tblFieldB)
+        bool TestIsSameTableHeadField(BinaryWriter bw, string tableName, StruCfgFileTblInfo tblFieldA, StruCfgFileTblInfo tblFieldB)
         {
             bool re = true;
+            string bug = "";
             string tablNameA = Encoding.GetEncoding("GB2312").GetString(tblFieldA.u8TblName).TrimEnd('\0');
             string tablNameB = Encoding.GetEncoding("GB2312").GetString(tblFieldB.u8TblName).TrimEnd('\0');
             if (-1 == String.Compare(tablNameA, tablNameB))
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; tableName(a,{1},b.{2}) no same", tableName, tablNameA, tablNameB));
+                bug = String.Format("TableHead:TableName={0}; tableName(a,{1},b.{2}) no same.\n", tableName, tablNameA, tablNameB);
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u16DataFmtVer != tblFieldB.u16DataFmtVer)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u16DataFmtVer(a,{1},b.{2}) no same", tableName, tblFieldA.u16DataFmtVer, tblFieldB.u16DataFmtVer));
+                bug = (String.Format("TableHead:TableName={0}; u16DataFmtVer(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u16DataFmtVer, tblFieldB.u16DataFmtVer));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u16FieldNum != tblFieldB.u16FieldNum)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u16FieldNum(a,{1},b.{2}) no same", tableName, tblFieldA.u16FieldNum, tblFieldB.u16FieldNum));
+                bug = (String.Format("TableHead:TableName={0}; u16FieldNum(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u16FieldNum, tblFieldB.u16FieldNum));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u16RecLen != tblFieldB.u16RecLen)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u16RecLen(a,{1},b.{2}) no same", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
+                bug = (String.Format("TableHead:TableName={0}; u16RecLen(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u32RecNum != tblFieldB.u32RecNum)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u32RecNum(a,{1},b.{2}) no same", tableName, tblFieldA.u32RecNum, tblFieldB.u32RecNum));
+                bug = (String.Format("TableHead:TableName={0}; u32RecNum(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u32RecNum, tblFieldB.u32RecNum));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             //Console.WriteLine(String.Format("**** TableHead:TableName={0}; 记录有效长度 u16RecLen (a,{1},b.{2})", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
             return re;

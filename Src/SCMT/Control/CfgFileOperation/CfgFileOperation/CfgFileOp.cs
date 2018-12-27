@@ -96,6 +96,12 @@ namespace CfgFileOperation
             bw.Write(String.Format("CreatePatchAndInitCfg end.\n").ToArray());
             return true;
         }
+        /// <summary>
+        /// 5G规则 : 制作 init,patch
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="paths"></param>
+        /// <returns></returns>
         public bool CreatePatchAndInitCfg5G(BinaryWriter bw, Dictionary<string, string> paths)
         {
             string err;
@@ -385,7 +391,9 @@ namespace CfgFileOperation
             SaveFilePdg_eNB(paths["OutDir"] + "patch_ex.cfg");
             return true;
         }
-
+        /// <summary>
+        /// log : lm.mdb : Mib Tree
+        /// </summary>
         void LogPrintByM_mibTreeMem()
         {
             // 打印 m_mibTreeMem 叶子名
@@ -400,6 +408,9 @@ namespace CfgFileOperation
             bw_2.Close();//关闭流
             fs2.Close();
         }
+        /// <summary>
+        /// CfgFileOp : m_mapTableInfo
+        /// </summary>
         void LogPrintByM_mapTableInfo()
         {
             // 打印 m_mapTableInfo 表名
@@ -413,7 +424,6 @@ namespace CfgFileOperation
             bw_2.Close();//关闭流
             fs2.Close();
         }
-
 
         /// <summary>
         /// 根据 5G patch_ex特性, 对表和实例进行修改
@@ -442,8 +452,8 @@ namespace CfgFileOperation
 
             foreach (string UeType in new string[] { "3:华为", })// "0:升级发布", "1:展讯", "2:e500",  "4:恢复默认配置" })
             {
-                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : CfgParseReclistExcel ({0}) start...\n", UeType));
-                bw.Write(String.Format("CreatCfg 5G [patch info] : CfgParseReclistExcel ({0}) start...\n", UeType).ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : CfgParseReclistExcel({0})-({1}) start...\n", paths["Reclist"], UeType));
+                bw.Write(String.Format("CreatCfg 5G [patch info] : CfgParseReclistExcel({0})-({1}) start...\n", paths["Reclist"], UeType).ToArray());
 
                 CfgParseReclistExcel5G m_reclist5G = new CfgParseReclistExcel5G(bw, paths["Reclist"], paths["DataMdb"]);
                 //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
@@ -468,7 +478,7 @@ namespace CfgFileOperation
                     continue;
                 }
                 //patch-4. 创建patch_ex.cfg
-                if (!m_reclist5G.CreateFilePdg_eNB(this, "patch_ex.cfg", paths["DataMdb"]))
+                if (!m_reclist5G.CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]))
                 {
                     re = false;
                     bw.Write(String.Format("Err CreateFilePdg_eNB ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
@@ -2509,7 +2519,6 @@ namespace CfgFileOperation
             
             return re;
         }
-
         /// <summary>
         /// 类型转换为byte[]
         /// </summary>
@@ -2941,7 +2950,12 @@ namespace CfgFileOperation
             a.u32IcFileVer = 12;
             Console.WriteLine(System.Runtime.InteropServices.Marshal.SizeOf(a));
         }
-
+        /// <summary>
+        /// 例子
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static T DeepCopy<T>(T obj)
         {
             object retval;

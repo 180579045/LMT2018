@@ -29,76 +29,23 @@ namespace CfgFileOperation
         bool m_isDyTable;                         //  是否是
 
         /// <summary>
+        /// 表信息
+        /// </summary>
+        public StruCfgFileTblInfo m_cfgFile_TblInfo;   // 表信息
+        /// <summary>
         /// 叶子节点. string:MIBName, 
         /// </summary>
-        public List<CfgFileLeafNodeOp> m_LeafNodes;//MIBName
-        public CfgFileLeafNodeIndexInfoOp m_struIndex;
+        public List<CfgFileLeafNodeOp> m_LeafNodes;    // MIBName 叶子节点信息
         /// <summary>
-        /// 告警
+        /// 索引的取值范围信息
         /// </summary>
-        //SetValueToByteArrayReverse
+        public CfgFileLeafNodeIndexInfoOp m_struIndex; // 索引的取值范围信息
         /// <summary>
         /// 表中每个实例的
         /// </summary>
-        public List<CfgTableInstanceInfos> m_cfgInsts; //表中每个实例的
-        public void m_cfgInsts_add(string strInstantNumVal, byte[] InstMemVal){ m_cfgInsts.Add(new CfgTableInstanceInfos( strInstantNumVal,  InstMemVal));}
-        /// <summary>
-        /// 获取实例的个数
-        /// </summary>
-        /// <returns></returns>
-        public uint get_m_cfgInsts_num() { return (uint)m_cfgInsts.LongCount(); }
-        /// <summary>
-        /// 获取所有实例的索引值
-        /// </summary>
-        /// <returns></returns>
-        public List<string> GetCfgInstsInstantNum()
-        {
-            List<string> strIndexL = new List<string>();
-            foreach (var info in m_cfgInsts)
-                strIndexL.Add(info.GetInstantNum());
-            return strIndexL;
-        }
-        /// <summary>
-        /// 表信息
-        /// </summary>
-        public StruCfgFileTblInfo  m_cfgFile_TblInfo;    //  表信息
-        //CDTMapNodesInfo m_mapNodesInfo;    //叶子名和其信息的映射
-        //CDTMapTableInstInfo        m_mapInstInfo;   //索引和实例信息的映射
-        //CDTCfgInsts m_cfgInsts;        //表实例
-        //CDTIndexMibNodes m_MibNodes;        //读取数据库的信息
-        /// <summary>
-        /// 深度拷贝
-        /// </summary>
-        /// <returns></returns>
-        public object DeepCopy()
-        {
-            CfgTableOp s = new CfgTableOp();
-            // 9
-            s.u32CurTblOffset = this.u32CurTblOffset;
-            s.u32CurTblOffset_PDG = this.u32CurTblOffset_PDG;
-            s.m_isMibInfoInitial = this.m_isMibInfoInitial;
-            s.m_tabDimen = this.m_tabDimen;
-            s.m_dyTabContent = this.m_dyTabContent;
-            s.m_strChFriendName = this.m_strChFriendName;
-            s.m_strTableName = this.m_strTableName;
-            s.m_strOID = this.m_strOID;
-            s.m_isDyTable = this.m_isDyTable;
-            //
-            s.m_cfgFile_TblInfo = (StruCfgFileTblInfo)this.m_cfgFile_TblInfo.DeepCopy();
-            foreach (var leafnode in this.m_LeafNodes)
-            {
-                s.m_LeafNodes.Add((CfgFileLeafNodeOp)leafnode.DeepCopy());
-            }
-            //m_LeafNodes = new List<CfgFileLeafNodeOp>();
-            foreach (var inst in this.m_cfgInsts)
-            {
-                s.m_cfgInsts.Add((CfgTableInstanceInfos)inst.DeepCopy());
-            }
-            //m_cfgInsts = new List<CfgTableInstanceInfos>();
-            s.m_struIndex = (CfgFileLeafNodeIndexInfoOp)this.m_struIndex.DeepCopy() ;
-            return s;
-        }
-        /*********************        reclist 解析后存在的变量                         ***************************/
+        public List<CfgTableInstanceInfos> m_cfgInsts; // 表中每个实例的
+        
+        /*********************     4G reclist 解析后存在的变量                         ***************************/
         /// <summary>
         /// reclist 解析后存在的变量 用于记录补丁文件;
         /// key : 索引，value ：表实例,即所有叶子节点实例取值.
@@ -195,7 +142,6 @@ namespace CfgFileOperation
                 return false;
             }
         }
-
         /// <summary>
         /// 方便reclist修改指定值
         /// </summary>
@@ -225,11 +171,14 @@ namespace CfgFileOperation
             else
                 m_InstIndex2LeafName.Add(RecordIndex, new List<string>() { strLeafName });
         }
-        
-        /*********************        reclist 解析后存在的变量                         ***************************/
+
+        /*********************     4G reclist 解析后存在的变量                         ***************************/
 
 
         /*********************        功能函数(公有)               **************************/
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public CfgTableOp()
         {
             m_isMibInfoInitial = false;
@@ -242,9 +191,63 @@ namespace CfgFileOperation
             m_cfgInsts = new List<CfgTableInstanceInfos>();
             m_struIndex = new CfgFileLeafNodeIndexInfoOp();
         }
+        /// <summary>
+        /// 深度拷贝
+        /// </summary>
+        /// <returns></returns>
+        public object DeepCopy()
+        {
+            CfgTableOp s = new CfgTableOp();
+            // 9
+            s.u32CurTblOffset = this.u32CurTblOffset;
+            s.u32CurTblOffset_PDG = this.u32CurTblOffset_PDG;
+            s.m_isMibInfoInitial = this.m_isMibInfoInitial;
+            s.m_tabDimen = this.m_tabDimen;
+            s.m_dyTabContent = this.m_dyTabContent;
+            s.m_strChFriendName = this.m_strChFriendName;
+            s.m_strTableName = this.m_strTableName;
+            s.m_strOID = this.m_strOID;
+            s.m_isDyTable = this.m_isDyTable;
+            //
+            s.m_cfgFile_TblInfo = (StruCfgFileTblInfo)this.m_cfgFile_TblInfo.DeepCopy();
+            foreach (var leafnode in this.m_LeafNodes)
+            {
+                s.m_LeafNodes.Add((CfgFileLeafNodeOp)leafnode.DeepCopy());
+            }
+            //m_LeafNodes = new List<CfgFileLeafNodeOp>();
+            foreach (var inst in this.m_cfgInsts)
+            {
+                s.m_cfgInsts.Add((CfgTableInstanceInfos)inst.DeepCopy());
+            }
+            //m_cfgInsts = new List<CfgTableInstanceInfos>();
+            s.m_struIndex = (CfgFileLeafNodeIndexInfoOp)this.m_struIndex.DeepCopy();
+            return s;
+        }
 
         ////////////////////////////////////////
         // 函数
+        /// <summary>
+        /// 增加实例对
+        /// </summary>
+        /// <param name="strInstantNumVal"></param>
+        /// <param name="InstMemVal"></param>
+        public void m_cfgInsts_add(string strInstantNumVal, byte[] InstMemVal) { m_cfgInsts.Add(new CfgTableInstanceInfos(strInstantNumVal, InstMemVal)); }
+        /// <summary>
+        /// 获取实例的个数
+        /// </summary>
+        /// <returns></returns>
+        public uint get_m_cfgInsts_num() { return (uint)m_cfgInsts.LongCount(); }
+        /// <summary>
+        /// 获取所有实例的索引值
+        /// </summary>
+        /// <returns></returns>
+        public List<string> GetCfgInstsInstantNum()
+        {
+            List<string> strIndexL = new List<string>();
+            foreach (var info in m_cfgInsts)
+                strIndexL.Add(info.GetInstantNum());
+            return strIndexL;
+        }
         /// <summary>
         /// 获取 表的偏移量
         /// </summary>
