@@ -91,10 +91,12 @@ namespace NetPlan
 						continue;
 
 					var defaultValue = MibStringHelper.GetMibDefaultValue(mibLeaf.defaultValue);
+					var originValue = SnmpToDatabase.ConvertValueToString(mibLeaf, defaultValue); // 原始值设置为默认值
 					var info = new MibLeafNodeInfo
 					{
 						mibAttri = mibLeaf,
-						m_strOriginValue = SnmpToDatabase.ConvertValueToString(mibLeaf, defaultValue), // 原始值设置为默认值
+						m_strOriginValue = originValue,
+						m_strLatestValue = originValue,
 						m_bReadOnly = !mibLeaf.IsEmpoweredModify(),
 						m_bVisible = (mibLeaf.ASNType != "RowStatus")   // 行状态不显示
 					};

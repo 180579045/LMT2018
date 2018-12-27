@@ -206,7 +206,7 @@ namespace NetPlan
 			m_mapAttributes = attributes;
 			m_strRsMibName = rsMl.childNameMib;
 
-			AddRowStatusToAttributeMap(rsMl, "6");
+			AddRowStatusToAttributeMap(rsMl, "4");
 
 			// 还需要加上索引列
 			if (!m_bIsScalar)

@@ -11,7 +11,6 @@ namespace NetPlan
 	// MIB信息管理类，单例
 	public class MibInfoMgr : Singleton<MibInfoMgr>
 	{
-
 		#region 公共接口
 
 		/// <summary>
@@ -114,11 +113,11 @@ namespace NetPlan
 			{
 				if (m_mapAllMibData.ContainsKey(type))
 				{
-					m_mapAllMibData[type].AddRange(listDevInfo);    // 已经存在同类的设备信息，直接添加
+					m_mapAllMibData[type].AddRange(listDevInfo); // 已经存在同类的设备信息，直接添加
 				}
 				else
 				{
-					m_mapAllMibData[type] = listDevInfo;            // 还不存在同类的设备信息，直接保存
+					m_mapAllMibData[type] = listDevInfo; // 还不存在同类的设备信息，直接保存
 				}
 			}
 		}
@@ -143,7 +142,7 @@ namespace NetPlan
 				}
 				else
 				{
-					var listDev = new List<DevAttributeInfo> { devInfo };
+					var listDev = new List<DevAttributeInfo> {devInfo};
 					m_mapAllMibData[type] = listDev;
 				}
 			}
@@ -182,13 +181,13 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!ant.SetFieldOriginValue("netAntArrayVendorIndex", strVendorNo))
+			if (!ant.SetFieldOlValue("netAntArrayVendorIndex", strVendorNo))
 			{
 				Log.Error($"设置字段netAntArrayVendorIndex的值{strVendorNo}失败");
 				return null;
 			}
 
-			if (!ant.SetFieldOriginValue("netAntArrayTypeIndex", strAntTypeNo))
+			if (!ant.SetFieldOlValue("netAntArrayTypeIndex", strAntTypeNo))
 			{
 				Log.Error($"设置字段netAntArrayTypeIndex的值{strAntTypeNo}失败");
 				return null;
@@ -222,7 +221,7 @@ namespace NetPlan
 		public DevAttributeInfo AddNewBoard(int slot, string strBoardType, string strWorkMode, string strIrFrameType)
 		{
 			if (string.IsNullOrEmpty(strBoardType) || string.IsNullOrEmpty(strWorkMode) ||
-				string.IsNullOrEmpty(strIrFrameType))
+			    string.IsNullOrEmpty(strIrFrameType))
 			{
 				throw new ArgumentNullException();
 			}
@@ -237,9 +236,9 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!dev.SetFieldOriginValue("netBoardType", strBoardType) ||
-				!dev.SetFieldOriginValue("netBoardWorkMode", strWorkMode) ||
-				!dev.SetFieldOriginValue("netBoardIrFrameType", strIrFrameType))
+			if (!dev.SetFieldOlValue("netBoardType", strBoardType) ||
+			    !dev.SetFieldOlValue("netBoardWorkMode", strWorkMode) ||
+			    !dev.SetFieldOlValue("netBoardIrFrameType", strIrFrameType))
 			{
 				Log.Error("设置新板卡属性失败");
 				return null;
@@ -290,8 +289,8 @@ namespace NetPlan
 				return null;
 			}
 
-			if (!newRru.SetFieldOriginValue("netRRUTypeIndex", nRruType.ToString()) ||
-				!newRru.SetFieldOriginValue("netRRUOfpWorkMode", strWorkMode))
+			if (!newRru.SetFieldOlValue("netRRUTypeIndex", nRruType.ToString()) ||
+			    !newRru.SetFieldOlValue("netRRUOfpWorkMode", strWorkMode))
 			{
 				ErrorTip($"设置索引为.{nRruNo}天线阵工作模式信息失败");
 				return null;
@@ -350,13 +349,13 @@ namespace NetPlan
 
 			dev.SetDevRecordType(RecordDataType.NewAdd);
 
-			if (!dev.SetFieldOriginValue("netRHUBOfpWorkMode", strWorkMode))
+			if (!dev.SetFieldOlValue("netRHUBOfpWorkMode", strWorkMode))
 			{
 				ErrorTip($"设置编号为{nRhubNo}的rhub设备工作模式参数失败");
 				return null;
 			}
 
-			if (!dev.SetFieldOriginValue("netRHUBType", strDevVer))
+			if (!dev.SetFieldOlValue("netRHUBType", strDevVer))
 			{
 				ErrorTip($"设置编号为{nRhubNo}的rhub设备类型参数失败");
 				return null;
@@ -400,6 +399,7 @@ namespace NetPlan
 					Log.Error($"生成本地小区{nLocalCellId}的属性失败");
 					return null;
 				}
+
 				Log.Debug($"生成本地小区{nLocalCellId}属性信息成功");
 
 				AddDevToMap(m_mapAllMibData, type, dev);
@@ -429,7 +429,7 @@ namespace NetPlan
 			var type = EnumDevType.nrNetLcCtr;
 			var dev = new DevAttributeInfo(type, strIndex);
 
-			if (!dev.SetFieldOriginValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue, true))
+			if (!dev.SetFieldOlValue("nrNetLocalCellCtrlConfigSwitch", strSwitchValue, true))
 			{
 				Log.Error($"设置字段 nrNetLocalCellCtrlConfigSwitch 的 OriginValue 为{strSwitchValue}失败");
 				return null;
@@ -440,6 +440,7 @@ namespace NetPlan
 			{
 				AddDevToMap(m_mapAllMibData, type, dev);
 			}
+
 			return dev;
 		}
 
@@ -497,7 +498,7 @@ namespace NetPlan
 			}
 			else
 			{
-				var devList = new List<DevAttributeInfo> { dev };
+				var devList = new List<DevAttributeInfo> {dev};
 				mapData[devType] = devList;
 			}
 
@@ -637,6 +638,7 @@ namespace NetPlan
 			{
 				DelDevFromMap(m_mapAllMibData, devType, dev, true);
 			}
+
 			return true;
 		}
 
@@ -736,12 +738,12 @@ namespace NetPlan
 
 				if (item.m_recordType == RecordDataType.WaitDel)
 				{
-					waitRmList.Add(item);       // 如果是要删除的设备，参数下发后，直接删除内存中的数据
+					waitRmList.Add(item); // 如果是要删除的设备，参数下发后，直接删除内存中的数据
 				}
 				else
 				{
-					item.AdjustLatestValueToOriginal();                 // 把latest value设置为original value
-					item.SetDevRecordType(RecordDataType.Original);     // 下发成功的都设置为原始数据
+					item.AdjustLatestValueToOriginal(); // 把latest value设置为original value
+					item.SetDevRecordType(RecordDataType.Original); // 下发成功的都设置为原始数据
 				}
 
 				// 收尾处理
@@ -803,14 +805,14 @@ namespace NetPlan
 			// 遍历rru通道信息
 			foreach (var pathInfo in rruPathInfoList)
 			{
-				var pathNo = pathInfo.rruTypePortNo;        // rru通道编号
+				var pathNo = pathInfo.rruTypePortNo; // rru通道编号
 				var tmpIdx = $"{strIndex}.{pathNo}";
 
 				// 查找是否存在天线阵安装规划表信息
 				var rai = GetDevAttributeInfo(tmpIdx, EnumDevType.rru_ant);
 				if (null == rai)
 				{
-					rai = new DevAttributeInfo(EnumDevType.rru_ant, tmpIdx);    // 删除天线阵时，才删除所有的天线阵安装规划表信息
+					rai = new DevAttributeInfo(EnumDevType.rru_ant, tmpIdx); // 删除天线阵时，才删除所有的天线阵安装规划表信息
 					AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, rai);
 				}
 
@@ -850,6 +852,7 @@ namespace NetPlan
 					Log.Error("新加天线阵安装规划表实例失败");
 					return false;
 				}
+
 				AddDevToMap(m_mapAllMibData, EnumDevType.rru_ant, newDev);
 				return true;
 			};
@@ -1029,7 +1032,15 @@ namespace NetPlan
 			}
 		}
 
-		public static void ErrorTip(string strTip)
+		/// <summary>
+		/// 判断数据是否有变化，用于在刷新页面之前进行提示
+		/// </summary>
+		public string GetChangedDataInfo()
+		{
+			throw new NotImplementedException();
+		}
+
+	public static void ErrorTip(string strTip)
 		{
 			var msg = $"[网络规划] {strTip}";
 			ShowLogHelper.Show(msg, "SCMT", InfoTypeEnum.ENB_OTHER_INFO_IMPORT);

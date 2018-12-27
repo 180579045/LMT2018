@@ -72,7 +72,7 @@ namespace NetPlan
 			if (null != rsMl)
 			{
 				m_strRsMibName = rsMl.childNameMib;
-				AddRowStatusToAttributeMap(rsMl, "6");
+				AddRowStatusToAttributeMap(rsMl, "4");
 			}
 			// 还需要加上索引列
 			if (indexGrade > 0)
@@ -242,6 +242,12 @@ namespace NetPlan
 		public bool SetFieldOriginValue(string strFieldName, int nOriginValue, bool bConvertToEnum = false)
 		{
 			return SetFieldOriginValue(strFieldName, nOriginValue.ToString(), bConvertToEnum);
+		}
+
+		public bool SetFieldOlValue(string strFieldName, string strOriginValue, bool bConvertToEnum = false)
+		{
+			return SetFieldOriginValue(strFieldName, strOriginValue, bConvertToEnum) &&
+			       SetFieldLatestValue(strFieldName, strOriginValue, bConvertToEnum);
 		}
 
 		//深拷贝
@@ -496,17 +502,23 @@ namespace NetPlan
 
 		protected void AddRowStatusToAttributeMap(MibLeaf rsMibLeaf, string strValue)
 		{
+			var strRs = strValue == "4" ? "行有效" : "行无效";
+
 			if (!m_mapAttributes.ContainsKey(rsMibLeaf.childNameMib))
 			{
 				var tmp = new MibLeafNodeInfo
 				{
 					m_bReadOnly = true,
 					m_bVisible = false,
-					m_strOriginValue = strValue,
-					m_strLatestValue = strValue,
+					m_strOriginValue = strRs,
+					m_strLatestValue = strRs,
 					mibAttri = rsMibLeaf
 				};
 				m_mapAttributes[rsMibLeaf.childNameMib] = tmp;
+			}
+			else
+			{
+				SetFieldOriginValue(rsMibLeaf.childNameMib, strValue, true);
 			}
 		}
 
