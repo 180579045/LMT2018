@@ -49,6 +49,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using UICore.Controls.Metro;
 using Xceed.Wpf.AvalonDock.Layout;
@@ -576,6 +578,7 @@ namespace SCMTMainWindow
 			var menu = CreateNodebMenu();   // 每个基站创建一个右键菜单，都有自己的状态
 
 			nodeLabel.ContextMenu = menu;
+            nodeLabel.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/unconnect.png"));
 			ExistedNodebList.Children.Add(nodeLabel);
 		}
 
@@ -794,7 +797,7 @@ namespace SCMTMainWindow
 			return retMenu;
 		}
 
-		private bool ChangeMenuHeaderAsync(string ip, string oldText, string newText)
+		private bool ChangeMenuHeaderAsync(string ip, string oldText, string newText, bool connectOrdisconnect)
 		{
 			if (String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(oldText) || String.IsNullOrEmpty(newText))
 				return false;
@@ -810,7 +813,12 @@ namespace SCMTMainWindow
 					if (target != null && target.Header.Equals(header))
 					{
 						contextMenu = target.ContextMenu;
-						break;
+                        target.Background = new SolidColorBrush(Colors.White);
+                        if(connectOrdisconnect)
+                            target.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/connected.png", UriKind.Absolute));
+                        else
+                            target.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/unconnect.png", UriKind.Absolute));
+                        break;
 					}
 				}
 				if (contextMenu == null)
@@ -828,13 +836,41 @@ namespace SCMTMainWindow
 			return true;
 		}
 
-		private bool ChangeMenuHeader(string ip, string oldText, string newText)
+		private bool ChangeMenuHeader(string ip, string oldText, string newText, bool connectOrcancelconnect)
 		{
 			var item = GetMenuItemByIp(ip, oldText);
 			if (null == item)
 				return false;
 			item.Header = newText;
-			return true;
+
+            var target = item.Parent as ContextMenu;
+            var targetMetro = target.PlacementTarget as MetroExpander;
+            if (connectOrcancelconnect)
+            {
+                //连接基站的时候创建一个动画，动态改变背景颜色
+                DoubleAnimation anima = new DoubleAnimation();
+                anima.Duration = new Duration(TimeSpan.FromMilliseconds(2000));
+                anima.From = 0;
+                anima.To = 2;
+                anima.RepeatBehavior = RepeatBehavior.Forever;
+
+                GradientStopCollection colorsLiner = new GradientStopCollection();
+
+                GradientStop colorsStop = new GradientStop(Colors.White, 1);
+                colorsLiner.Add(new GradientStop(Colors.LightGreen, 0.0));
+                colorsLiner.Add(colorsStop);
+                LinearGradientBrush linerBrush = new LinearGradientBrush(colorsLiner, 0);
+                targetMetro.Background = linerBrush;
+
+                colorsStop.BeginAnimation(GradientStop.OffsetProperty, anima);
+            }
+            else
+            {
+                targetMetro.Background = new SolidColorBrush(Colors.White);
+                //targetMetro.Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/unconnect.png", UriKind.Absolute));
+            }
+
+            return true;
 		}
 
 		#endregion 添加基站
@@ -1678,7 +1714,7 @@ namespace SCMTMainWindow
 			ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
 			var result = await InitDataBase(ip);      // todo lm.dtz文件不存在时，这里抛出异常
 
-			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
+			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站", true);
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
 			EnableMenu(ip, "数据同步");
@@ -1719,7 +1755,7 @@ namespace SCMTMainWindow
 
 			var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
 			ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
-			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
+			ChangeMenuHeaderAsync(ip, "取消连接", "连接基站", false);
 			EnableMenu(ip, "连接基站");
 			EnableMenu(ip, "断开连接", false);
 			EnableMenu(ip, "数据同步", false);

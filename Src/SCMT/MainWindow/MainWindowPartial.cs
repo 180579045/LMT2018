@@ -8,6 +8,9 @@ using SCMTMainWindow.Pages;
 using SCMTOperationCore.Control;
 using SCMTOperationCore.Elements;
 using UICore.Controls.Metro;
+using System.Windows.Media.Animation;
+using System;
+using System.Windows.Media;
 
 namespace SCMTMainWindow
 {
@@ -121,8 +124,7 @@ namespace SCMTMainWindow
 		{
 			var target = GetTargetMenu(sender);
 			if (target == null) return;
-
-			var tnode = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+            var tnode = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
 			ConnectAction(tnode);
 		}
 
@@ -139,14 +141,14 @@ namespace SCMTMainWindow
 				ShowLogHelper.Show($"开始连接基站：{gNB.FriendlyName}-{gNB.NeAddress}", "SCMT");
 				gNB.ConnectAsync();
 				ObjNode.main = this;
-				ChangeMenuHeader(gNB.NeAddress.ToString(), "连接基站", "取消连接");
+				ChangeMenuHeader(gNB.NeAddress.ToString(), "连接基站", "取消连接", true);
 			}
 			else
 			{
 				ShowLogHelper.Show($"取消连接：{gNB.FriendlyName}-{gNB.NeAddress}", "SCMT");
 
 				gNB.DisConnect();
-				ChangeMenuHeader(gNB.NeAddress.ToString(), "取消连接", "连接基站");
+				ChangeMenuHeader(gNB.NeAddress.ToString(), "取消连接", "连接基站", false);
 			}
 		}
 

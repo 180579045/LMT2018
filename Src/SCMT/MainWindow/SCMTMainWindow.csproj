@@ -517,6 +517,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Resources\connected.png" />
+    <Resource Include="Resources\unconnect.png" />
     <Resource Include="Resources\cellstatuslist.png" />
     <Resource Include="Resources\chart.png" />
     <Resource Include="Resources\add.png" />
