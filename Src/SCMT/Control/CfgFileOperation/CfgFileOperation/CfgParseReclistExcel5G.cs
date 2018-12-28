@@ -1295,6 +1295,7 @@ namespace CfgFileOperation
             // 偏移块头 : 序列化
             foreach (var tabName in GetVectPDGTabName())
             {
+
                 byte[] tableOffset = BitConverter.GetBytes((uint)GetCfgTableOpByName(tabName).GetTableOffsetPDG());
                 //Array.Reverse(tableOffset);
                 allBuff.AddRange(tableOffset);
