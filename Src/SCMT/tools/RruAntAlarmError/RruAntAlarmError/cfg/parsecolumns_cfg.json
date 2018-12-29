@@ -1,4 +1,5 @@
 {
+  "languageVersion":"English",
   "rruFileColumnHeader":"RRU型号编号&RRU厂家名称&RRU硬件类型&RRU名称&支持的天线根数&通道的最大发射功率&支持的频带总宽度（M）&支持的工作模式&支持建立的小区类型&射频通道数&射频通道编号&通道支持频段&各频段支持的载波数&各射频通道支持的载波数&通道支持带宽（M）&所属天线编号&通道支持的最大发送功率&通道TX基带信号的标定振幅&通道RX基带信号的标定振幅&通道天线单元的标定输出(1/256dbm)&通道天线单元的标定输入(1/256dbm)&拉远属性&压缩属性&支持的IR口速率&压缩属性与带宽约束关系&通道收发",
   "rruTypeManufacturerIndex":"4:datang|大唐",
   "rruTypeFiberLength":"1:ten|10km/2:twenty|20km/4:forty|40km",

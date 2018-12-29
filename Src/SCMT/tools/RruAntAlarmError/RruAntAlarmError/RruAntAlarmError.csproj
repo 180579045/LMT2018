@@ -91,6 +91,7 @@
     <Compile Include="AntennaInfoParser.cs" />
     <Compile Include="AntennaWeightTable.cs" />
     <Compile Include="AlarmInfoParser.cs" />
+    <Compile Include="CommFunction.cs" />
     <Compile Include="ErrorCodeParser.cs" />
     <Compile Include="JsonFile.cs" />
     <Compile Include="NetPlanElement.cs" />

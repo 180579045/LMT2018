@@ -15,11 +15,12 @@ namespace RruAntAlarmError
     {
         JObject infoJObect;
         JObject jCfgObject;
-
+        public string languageVersion;
         public NetPlanElementsParser()
         {
             JsonFile jsonFile = new JsonFile();
             this.jCfgObject = jsonFile.ReadJsonFileForJObject(@".\cfg\parsecolumns_cfg.json");
+            languageVersion = jCfgObject["languageVersion"].ToString();
             infoJObect = new JObject() { };
         }
         public bool parseNetPlanElementToJsonFile(bool isFirstRowColumn, string fileName)
@@ -137,8 +138,19 @@ namespace RruAntAlarmError
                     return false;
                 }
                 shelfEquipment.number = int.Parse(rowRec["编号"].ToString());
-                shelfEquipment.equipNEType = int.Parse(equipNETypeTemp.Substring(0, equipNETypeTemp.IndexOf(":")));
-                shelfEquipment.equipNETypeName = equipNETypeTemp.Substring(equipNETypeTemp.IndexOf(":") + 1);
+                string key;
+                string value;
+                if (false == CommFunction.splitKeyLanguageValue(equipNETypeTemp, languageVersion, out key,
+                        out value))
+                {
+                    string result = "Line:"+ line + "设备型号 content is invalid," + equipNETypeTemp;
+                    Log.Error(result);
+                    MessageBox.Show(result);
+                    return false;
+                }
+
+                shelfEquipment.equipNEType = int.Parse(key);
+                shelfEquipment.equipNETypeName = value;
                 shelfEquipment.totalSlotNum = int.Parse(rowRec["总槽位数"].ToString());
                 shelfEquipment.supportPlanSlotNum = int.Parse(rowRec["可规划槽位数"].ToString());
                 shelfEquipment.columnsUI = int.Parse(rowRec["图形列数"].ToString());
@@ -320,16 +332,16 @@ namespace RruAntAlarmError
                 }
                 if ("" != validContent)
                 {
-                    int indexsplit = validContent.IndexOf(":");
-                    if (-1 == indexsplit)
+                    string key;
+                    string value;
+                    if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                            out value))
                     {
                         result = result + " content in cfgFile is invalid, please check parsecolumns_cfg.json: " + managerRange;
                         Log.Error(result);
                         MessageBox.Show(result);
                         return null;
                     }
-                    string key = validContent.Substring(0, indexsplit);
-                    string value = validContent.Substring(indexsplit + 1);
                     objRec = new JObject{
                               { "value", key},
                               { "desc", value}
@@ -400,16 +412,16 @@ namespace RruAntAlarmError
                 }
                 if ("" != validContent)
                 {
-                    int indexsplit = validContent.IndexOf(":");
-                    if (-1 == indexsplit)
+                    string key;
+                    string value;
+                    if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                            out value))
                     {
-                        result = " netBoardType content in cfgFile is invalid " + managerRange;
+                        result = result + " content in cfgFile is invalid, please check parsecolumns_cfg.json: " + managerRange;
                         Log.Error(result);
                         MessageBox.Show(result);
                         return null;
-                    }
-                    string key = validContent.Substring(0, indexsplit);
-                    string value = validContent.Substring(indexsplit + 1);
+                    }                   
                     objRec = new JObject{
                               { "value", key},
                               { "desc", value}

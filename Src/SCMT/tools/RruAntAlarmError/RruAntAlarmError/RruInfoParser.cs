@@ -25,26 +25,40 @@ namespace RruAntAlarmError
     {
         string headercfg;
         JObject jCfgObject;
+        public string languageVersion;
         public RruInfoParser()
         {
             JsonFile jsonFile = new JsonFile();
             this.jCfgObject = jsonFile.ReadJsonFileForJObject(@".\cfg\parsecolumns_cfg.json");
             this.headercfg = jCfgObject["rruFileColumnHeader"].ToString();
+            languageVersion = jCfgObject["languageVersion"].ToString();
         }
-        private string ManufacturerIndexExcelValueToMib(int line, string excelValue, out string result)
+        private string ManufacturerIndexExcelValueToMib(int line, string excelValue, out string name)
         {
             string split = excelValue.Substring(0, excelValue.IndexOf(":"));
             //存储为MIB取值4:datang|大唐 这种格式
             string managerRange = jCfgObject["rruTypeManufacturerIndex"].ToString();
-            int manufacturerIndex = int.Parse(split);
             string[] managerRangeArray = managerRange.Split('/');
+            string result;
+            name = "";
             foreach (string temp in managerRangeArray)
             {
-                int tempIndex = int.Parse(temp.Substring(0, excelValue.IndexOf(":")));
-                if(manufacturerIndex == tempIndex)
+                string key;
+                string value;
+                if (false == CommFunction.splitKeyLanguageValue(temp, languageVersion, out key,
+                        out value))
+                {
+                    result = " cfg file property rruTypeManufacturerIndex is invalid " + temp;
+                    MessageBox.Show(result);
+                    Log.Debug(result);
+                    return null;
+                }
+
+                if(key.Equals(split))
                 {
                     result = "";
-                    return temp;
+                    name = value;
+                    return key;
                 }
             }
             result = "rru excel Line " + line + " value is not in rruTypeManufacturerIndex, excel is " + excelValue;
@@ -91,14 +105,24 @@ namespace RruAntAlarmError
             foreach (string temp in managerRangeArray)
             {
                 //注意，mib中该节点是bit类型，在配置文件中转换成了10进制，目前所有的RRU还不支持多种拉远距离，暂时
-                int tempIndex = int.Parse(temp.Substring(0, temp.IndexOf(":")));
+                string key;
+                string value;
+                if (false == CommFunction.splitKeyLanguageValue(temp, languageVersion, out key,
+                        out value))
+                {
+                    result = "rru excel Line " + line + ",rruTypeFiberLength manegerRange is invalid:" + temp;
+                    MessageBox.Show(result);
+                    Log.Debug(result);
+                    return null;
+                }
+                int tempIndex = int.Parse(key);
                 if (fileIndex == tempIndex)
                 {
                     result = "";
                     JArray objJArray = new JArray() { };
                     JObject objRec = new JObject{
-                              { "value", tempIndex.ToString() },
-                              { "desc", temp.Substring(temp.IndexOf(":") + 1)}
+                              { "value", key},
+                              { "desc", value}
                              };
                     objJArray.Add(objRec);
                     return objJArray.ToString();
@@ -110,6 +134,47 @@ namespace RruAntAlarmError
             return null;
         }
 
+        private JObject SetCompressMode(string type)
+        {
+            JObject objRec = null;
+            if (type.Equals("不压缩"))
+            {
+                if (languageVersion.Equals("Chinese"))
+                {
+                    objRec = new JObject{
+                        { "value","0" },
+                        { "desc","不压缩"}
+                    };
+                }
+                else
+                {
+                    objRec = new JObject{
+                        { "value","0" },
+                        { "desc","notCompress"}
+                    };
+                }
+            }
+            else
+            {
+                if (languageVersion.Equals("Chinese"))
+                {
+                    objRec = new JObject{
+                        { "value","1" },
+                        { "desc","压缩"}
+                    };
+                }
+                else
+                {
+                    objRec = new JObject{
+                        { "value","1" },
+                        { "desc","compress"}
+                    };
+                }
+            }
+            return objRec;
+
+        }
+
         private string IrCompressModeExcelValueToMib(int line, string excelValue, out string result)
         {
             //bit表示,该属性基站不会有修改，可以不使用配置文件中的值，直接代码写死
@@ -118,29 +183,15 @@ namespace RruAntAlarmError
             JObject objRec = null;
             foreach (string item in split)
             {
-                if (item.Equals("不压缩"))
-                {
-                    objRec = new JObject{
-                              { "value","0" },
-                              { "desc","notCompress|不压缩"} 
-                             };
-                    fileValueJArray.Add(objRec);
-                }
-                else if (item.Equals("压缩"))
-                {
-                    objRec = new JObject{
-                              { "value","1" },
-                              { "desc","compress|压缩"}
-                             };
-                    fileValueJArray.Add(objRec);
-                }
-                else
+                //做保护
+                if (!item.Equals("不压缩") && !item.Equals("压缩"))
                 {
                     result = "rru excel Line " + line + " value is invalid, 压缩属性 is " + excelValue;
                     Log.Debug(result);
                     MessageBox.Show(result);
                     return null;
                 }
+                fileValueJArray.Add(SetCompressMode(item));
             }
             result = "";
             return fileValueJArray.ToString();
@@ -160,30 +211,14 @@ namespace RruAntAlarmError
                 {
                     temp = temp.Substring(0, item.IndexOf(':'));
                 }
-                if (temp == "不压缩")
-                {
-                    objRec = new JObject{
-                              { "value","0" },
-                              { "desc","notCompress|不压缩"}
-                             };
-                }
-                else if (temp == "压缩")
-                {
-                    objRec = new JObject{
-                              { "value","1" },
-                              { "desc","compress|压缩"}
-                             };
-                }
-                else
+                if (!temp.Equals("不压缩") && !temp.Equals("压缩"))
                 {
                     //考虑到TDRRU压缩属性填写的为空,此处处理不返回空
-                    result = "rru excel Line " + line + " value is invalid, 压缩属性 is " + excelValue;
+                    result = "rru excel Line " + line + " 压缩属性 is " + excelValue + " ，按照压缩处理";
                     Log.Debug(result);
-                    objRec = new JObject{
-                              { "value","1" },
-                              { "desc","compress|压缩"}
-                             };
                 }
+                objRec = SetCompressMode(temp);
+
                 JArray bandwidthJArray = new JArray();
                 //取带宽
                 int startIndex = item.IndexOf(':');
@@ -202,16 +237,17 @@ namespace RruAntAlarmError
                     }
                     if ("" != validContent)
                     {
-                        int indexsplit = validContent.IndexOf(":");
-                        if (-1 == indexsplit)
+                        string key;
+                        string value;
+                        if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                                out value))
                         {
-                            result = "netLcFreqBandWidth content in cfgFile is invalid, please check parsecolumns_cfg.json： "+ managerRange;
+                            result = "netLcFreqBandWidth content in cfgFile is invalid, please check parsecolumns_cfg.json： " + managerRange;
                             Log.Error(result);
                             MessageBox.Show(result);
                             return null;
+
                         }
-                        string key = validContent.Substring(0, indexsplit);
-                        string value = validContent.Substring(indexsplit + 1);
                         JObject objRecBand = new JObject{
                               { "value", key },
                               { "desc",value}
@@ -296,16 +332,17 @@ namespace RruAntAlarmError
                 }
                 if("" != validContent)
                 {
-                    int indexsplit = validContent.IndexOf(":");
-                    if (-1 == indexsplit)
+                    string key;
+                    string value;
+                    if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                            out value))
                     {
                         result = "rruTypeSupportCellWorkMode content in cfgFile is invalid, please check parsecolumns_cfg.json: " + managerRange;
                         Log.Error(result);
                         MessageBox.Show(result);
                         return null;
+
                     }
-                    string key = validContent.Substring(0, indexsplit);
-                    string value = validContent.Substring(indexsplit + 1);
                     objRec = new JObject{
                               { "value", key},
                               { "desc", value}
@@ -345,16 +382,16 @@ namespace RruAntAlarmError
                 }
                 if ("" != validContent)
                 {
-                    int indexsplit = validContent.IndexOf(":");
-                    if (-1 == indexsplit)
+                    string key;
+                    string value;
+                    if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                            out value))
                     {
                         result = "netRRUOfpWorkMode content in cfgFile is invalid, please check parsecolumns_cfg.json: " + managerRange;
                         Log.Error(result);
                         MessageBox.Show(result);
                         return null;
                     }
-                    string key = validContent.Substring(0, indexsplit);
-                    string value = validContent.Substring(indexsplit + 1);
                     objRec = new JObject{
                               { "value", key},
                               { "desc", value}
@@ -400,16 +437,16 @@ namespace RruAntAlarmError
                 }
                 if ("" != validContent)
                 {
-                    int indexsplit = validContent.IndexOf(":");
-                    if (-1 == indexsplit)
+                    string key;
+                    string value;
+                    if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                            out value))
                     {
                         result = "netIROfpTransPlanSpeed/netEthTransPlanSpeed content in cfgFile is invalid, please check parsecolumns_cfg.json: " + managerRange;
                         Log.Error(result);
                         MessageBox.Show(result);
                         return null;
                     }
-                    string key = validContent.Substring(0, indexsplit);
-                    string value = validContent.Substring(indexsplit + 1);
                     objRec = new JObject{
                               { "value", key},
                               { "desc", value}
@@ -461,16 +498,16 @@ namespace RruAntAlarmError
                 }
                 if ("" != validContent)
                 {
-                    indexsplit = validContent.IndexOf(":");
-                    if (-1 == indexsplit)
+                    string key;
+                    string value;
+                    if (false == CommFunction.splitKeyLanguageValue(validContent, languageVersion, out key,
+                            out value))
                     {
                         result = "rruTypePortSupportFreqBand content in cfgFile is invalid, please check parsecolumns_cfg.json: " + managerRange;
                         Log.Error(result);
                         MessageBox.Show(result);
                         return null;
                     }
-                    string key = validContent.Substring(0, indexsplit);
-                    string value = validContent.Substring(indexsplit + 1);
                     objRec = new JObject{
                               { "value", key},
                               { "desc", value}
@@ -557,38 +594,42 @@ namespace RruAntAlarmError
             JObject objRec = null;
             //此参数在MIB中较稳定，代码写死枚举值，不读取配置文件中参数
             //"1:rx|接收有效/2:tx|发送有效/3:rxAndTx|接收发送均有效/4:invalid|无效"
-            if(excelValue.Contains("收"))
+            if (excelValue.Contains("收"))
             {
+                string desc = languageVersion.Equals("Chinese") ? "接收有效":"rx";
                 objRec = new JObject{
                               { "value", "1"},
-                              { "desc",  "rx|接收有效"}
+                              { "desc",  desc}
                              };
                 fileValueJArray.Add(objRec);
             }
             if (excelValue.Contains("发"))
             {
+                string desc = languageVersion.Equals("Chinese") ? "发送有效" : "tx";
                 objRec = new JObject{
                               { "value", "2"},
-                              { "desc",  "tx|发送有效"}
+                              { "desc",  desc}
                              };
                 fileValueJArray.Add(objRec);
             }
             if (excelValue.Contains("收") && excelValue.Contains("发"))
             {
+                string desc = languageVersion.Equals("Chinese") ? "接收发送均有效" : "rxAndTx";
                 objRec = new JObject{
                               { "value", "3"},
-                              { "desc",  "rxAndTx|接收发送均有效"}
+                              { "desc",  desc}
                              };
                 fileValueJArray.Add(objRec);
             }
             //excel表中不填写则填写为接收发送均有效
             if ("" == excelValue.Trim(' '))
             {
+                string desc = languageVersion.Equals("Chinese") ? "接收发送均有效" : "rxAndTx";
                 result = "rru excel Line " + line + " 通道收发 " + excelValue + " is null";
                 Log.Warn(result);
                 objRec = new JObject{
                               { "value", "3"},
-                              { "desc",  "rxAndTx|接收发送均有效"}
+                              { "desc", desc}
                              };
                 fileValueJArray.Add(objRec);
             }
@@ -693,13 +734,14 @@ namespace RruAntAlarmError
             {
                 RruTypeTable rruTypeItem = new RruTypeTable();
                 RruTypePortTble rruTypePortItem = new RruTypePortTble();
-                string mibValue = ManufacturerIndexExcelValueToMib(line, rowRec["RRU厂家名称"].ToString(), out result);
+                string name;
+                string mibValue = ManufacturerIndexExcelValueToMib(line, rowRec["RRU厂家名称"].ToString(), out name);
                 if(null == mibValue)
                 {
                     return false;
                 }
-                rruTypeItem.rruTypeManufacturerIndex = int.Parse(mibValue.Substring(0, mibValue.IndexOf(":")));
-                rruTypeItem.rruTypeNotMibManufacturerName = mibValue.Substring(mibValue.IndexOf(":") + 1);
+                rruTypeItem.rruTypeManufacturerIndex = int.Parse(mibValue);
+                rruTypeItem.rruTypeNotMibManufacturerName = name;
                 rruTypeItem.rruTypeIndex = int.Parse(rowRec["RRU硬件类型"].ToString());
                 rruTypeItem.rruTypeName = rowRec["RRU名称"].ToString();
                 rruTypeItem.rruTypeMaxAntPathNum = int.Parse(rowRec["支持的天线根数"].ToString());

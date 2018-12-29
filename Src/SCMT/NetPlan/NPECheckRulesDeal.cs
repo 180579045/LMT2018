@@ -177,7 +177,7 @@ namespace NetPlan
             //校验规则中，填写对应需要遍历校验的集合
             _dicRuleNameUIPara.Add("netBoardCheck", _npedata_this._netBoard);
             _dicRuleNameUIPara.Add("netRRUCheck", _npedata_this._netRRU);
-            _dicRuleNameUIPara.Add("netRHUBcheck", _npedata_this._netRHUB);
+            _dicRuleNameUIPara.Add("netRHUBCheck", _npedata_this._netRHUB);
             _dicRuleNameUIPara.Add("netPRRUCheck", _npedata_this._netRRU);
             _dicRuleNameUIPara.Add("netIROptPlanCheck", _npedata_this._netIROptPlan);
             _dicRuleNameUIPara.Add("netEthPlanCheck", _npedata_this._netEthPlan);
@@ -378,6 +378,61 @@ namespace NetPlan
             }
         }
 
+        public EnumResultType GetMibParaValue(DevAttributeInfo record, string name, out string value)
+        {
+            value = "";
+            if (!name.StartsWith("cur.") && !name.StartsWith("old.")
+                && !name.StartsWith("mib.") && !name.StartsWith("this."))
+            {
+                Log.Error("name is not mib para : " + name);
+                return EnumResultType.fail;
+            }
+            //取叶子节点名称
+            //考虑到不同的版本，其mib参数可能不一样，对于在本版本中不存在的校验参数，直接返回false_continue
+            string leafName = name.Substring(name.LastIndexOf('.') + 1);
+            if (leafName.Equals("操作类型"))
+            {
+                //理论上该参数只会出现在校验规则的property中
+                RecordDataType recordType = record.m_recordType;
+                //例如配置文件/当前基站已经存在的数据，虽然没有修改没有变化，此处也做一些校验保护，故未变化的参数设置为"添加"
+                if (recordType == RecordDataType.Original || recordType == RecordDataType.NewAdd)
+                {
+                    value = "添加";
+                }
+                else if(recordType == RecordDataType.Modified)
+                {
+                    value = "修改";
+                }
+                else if (recordType == RecordDataType.WaitDel)
+                {
+                    value = "删除";
+                }
+                else
+                {
+                    Log.Error(name + "mib para  recordType is not support: " + recordType);
+                    return EnumResultType.fail;
+                }
+            }
+            else
+            {
+                MibLeafNodeInfo leafValue;
+                if (!record.m_mapAttributes.TryGetValue(leafName, out leafValue))
+                {
+                    Log.Warn(name + " leaf is not in mib!");
+                    return EnumResultType.fail_continue;
+                }
+                if (name.StartsWith("cur.") || name.StartsWith("this."))
+                {
+                    value = leafValue.m_strLatestValue;
+                }
+                else if (name.StartsWith("old.") || name.StartsWith("mib."))
+                {
+                    value = leafValue.m_strOriginValue;
+                }
+            }
+            return EnumResultType.success_true;
+        }
+
         public EnumResultType GetPropertyConditionValue(string property, DevAttributeInfo curRecord)
         {
             List<string> propertyNameList;
@@ -408,17 +463,20 @@ namespace NetPlan
                     Log.Error(property + " is not start with cur. or old.!");
                     return EnumResultType.fail;
                 }
-                //只有mib参数才会填写在property中，故取具体节点名称只需要取第二个.后面的参数
-                //考虑到不同的版本，其mib参数可能不一样，对于在本版本中不存在的校验参数，直接返回false_continue
-                string leafName = name.Substring(name.LastIndexOf('.') + 1);
-                MibLeafNodeInfo leafValue;
-                if (!curRecord.m_mapAttributes.TryGetValue(leafName, out leafValue))
+                string value;
+                EnumResultType mibRes = GetMibParaValue(curRecord, name, out value);
+                if (mibRes == EnumResultType.fail_continue)
                 {
-                    Log.Warn(name + " leaf is not in mib!");
                     return EnumResultType.fail_continue;
                 }
-                propertyValueDic.Add(name,
-                    name.StartsWith("cur.") ? leafValue.m_strLatestValue : leafValue.m_strOriginValue);
+                else if (mibRes == EnumResultType.success_true)
+                {
+                    propertyValueDic.Add(name, value);
+                }
+                else
+                {
+                    return EnumResultType.fail;
+                }
             }
             //计算最终的结果，条件表达式进行运算
             string result;
@@ -486,6 +544,8 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<VD>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type VD");
+                return EnumResultType.fail;
             }
             else if (queryValue is EnumerableQuery<IrBand> || queryValue is List<IrBand>)
             {
@@ -495,6 +555,8 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<IrBand>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type IrBand");
+                return EnumResultType.fail;
             }
             else if (queryValue is EnumerableQuery<ShelfSlotInfo> || queryValue is List<ShelfSlotInfo>)
             {
@@ -504,6 +566,9 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<ShelfSlotInfo>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type ShelfSlotInfo");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<OfpPortInfo> || queryValue is List<OfpPortInfo>)
             {
@@ -513,6 +578,9 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<OfpPortInfo>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type OfpPortInfo");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<RruInfo> || queryValue is List<RruInfo>)
             {
@@ -523,6 +591,9 @@ namespace NetPlan
                     //取list中的第一个元素返回
                     return GetFieldValueOfType<RruInfo>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type RruInfo");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<RruPortInfo> || queryValue is List<RruPortInfo>)
             {
@@ -532,6 +603,9 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<RruPortInfo>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type RruPortInfo");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<NetPlanElementType> || queryValue is List<NetPlanElementType>)
             {
@@ -541,6 +615,9 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<NetPlanElementType>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type NetPlanElementType");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<Shelf> || queryValue is List<Shelf>)
             {
@@ -550,6 +627,9 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<Shelf>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type Shelf");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<BoardEquipment> || queryValue is List<BoardEquipment>)
             {
@@ -559,6 +639,9 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<BoardEquipment>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type BoardEquipment");
+                return EnumResultType.fail;
+
             }
             else if (queryValue is EnumerableQuery<RHUBEquipment> || queryValue is List<RHUBEquipment>)
             {
@@ -568,9 +651,11 @@ namespace NetPlan
                 {
                     return GetFieldValueOfType<RHUBEquipment>(tmp, leafName, out objValue);
                 }
+                Log.Error(preQueryName + " query_value is null, type RHUBEquipment");
+                return EnumResultType.fail;
             }
 
-            Log.Error(preQueryName + " type is not support, leafName is " + leafName);
+            Log.Error(preQueryName + " TYPE is not support, leafName is " + leafName);
             return EnumResultType.fail;
         }
 

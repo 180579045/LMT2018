@@ -45,7 +45,7 @@
     {
       "number": 1,
       "equipNEType": 5,
-      "equipNETypeName": "emb5116|EMB5116",
+      "equipNETypeName": "EMB5116",
       "totalSlotNum": 12,
       "supportPlanSlotNum": 8,
       "columnsUI": 2,
@@ -59,11 +59,11 @@
           "supportBoardType": [
             {
               "value": "178",
-              "desc": "scte|SCTE板"
+              "desc": "SCTE板"
             },
             {
               "value": "240",
-              "desc": "sctf|SCTF板"
+              "desc": "SCTF板"
             }
           ]
         },
@@ -72,19 +72,19 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "bpog|BPOG板"
+              "desc": "BPOG板"
             },
             {
               "value": "177",
-              "desc": "bpoh|BPOH板"
+              "desc": "BPOH板"
             },
             {
               "value": "241",
-              "desc": "bpoi|BPOI板"
+              "desc": "BPOI板"
             },
             {
               "value": "243",
-              "desc": "bpok|BPOK板"
+              "desc": "BPOK板"
             }
           ]
         },
@@ -93,15 +93,15 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "bpog|BPOG板"
+              "desc": "BPOG板"
             },
             {
               "value": "177",
-              "desc": "bpoh|BPOH板"
+              "desc": "BPOH板"
             },
             {
               "value": "241",
-              "desc": "bpoi|BPOI板"
+              "desc": "BPOI板"
             }
           ]
         },
@@ -110,19 +110,19 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "bpog|BPOG板"
+              "desc": "BPOG板"
             },
             {
               "value": "177",
-              "desc": "bpoh|BPOH板"
+              "desc": "BPOH板"
             },
             {
               "value": "241",
-              "desc": "bpoi|BPOI板"
+              "desc": "BPOI板"
             },
             {
               "value": "243",
-              "desc": "bpok|BPOK板"
+              "desc": "BPOK板"
             }
           ]
         },
@@ -131,15 +131,15 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "bpog|BPOG板"
+              "desc": "BPOG板"
             },
             {
               "value": "177",
-              "desc": "bpoh|BPOH板"
+              "desc": "BPOH板"
             },
             {
               "value": "241",
-              "desc": "bpoi|BPOI板"
+              "desc": "BPOI板"
             }
           ]
         },
@@ -148,19 +148,19 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "bpog|BPOG板"
+              "desc": "BPOG板"
             },
             {
               "value": "177",
-              "desc": "bpoh|BPOH板"
+              "desc": "BPOH板"
             },
             {
               "value": "241",
-              "desc": "bpoi|BPOI板"
+              "desc": "BPOI板"
             },
             {
               "value": "243",
-              "desc": "bpok|BPOK板"
+              "desc": "BPOK板"
             }
           ]
         },
@@ -169,15 +169,15 @@
           "supportBoardType": [
             {
               "value": "143",
-              "desc": "bpog|BPOG板"
+              "desc": "BPOG板"
             },
             {
               "value": "177",
-              "desc": "bpoh|BPOH板"
+              "desc": "BPOH板"
             },
             {
               "value": "241",
-              "desc": "bpoi|BPOI板"
+              "desc": "BPOI板"
             }
           ]
         }
@@ -186,7 +186,7 @@
     {
       "number": 2,
       "equipNEType": 10,
-      "equipNETypeName": "emb6116|EMB6116",
+      "equipNETypeName": "EMB6116",
       "totalSlotNum": 13,
       "supportPlanSlotNum": 12,
       "columnsUI": 2,
@@ -196,7 +196,7 @@
           "supportBoardType": [
             {
               "value": "23",
-              "desc": "hsctd|HSCTD板"
+              "desc": "HSCTD板"
             }
           ]
         },
@@ -205,7 +205,7 @@
           "supportBoardType": [
             {
               "value": "23",
-              "desc": "hsctd|HSCTD板"
+              "desc": "HSCTD板"
             }
           ]
         },
@@ -230,7 +230,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "hbpod|HBPOD板"
+              "desc": "HBPOD板"
             }
           ]
         },
@@ -239,7 +239,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "hbpod|HBPOD板"
+              "desc": "HBPOD板"
             }
           ]
         },
@@ -248,7 +248,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "hbpod|HBPOD板"
+              "desc": "HBPOD板"
             }
           ]
         },
@@ -257,7 +257,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "hbpod|HBPOD板"
+              "desc": "HBPOD板"
             }
           ]
         },
@@ -266,7 +266,7 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "hbpod|HBPOD板"
+              "desc": "HBPOD板"
             }
           ]
         },
@@ -275,7 +275,16 @@
           "supportBoardType": [
             {
               "value": "22",
-              "desc": "hbpod|HBPOD板"
+              "desc": "HBPOD板"
+            }
+          ]
+        },
+        {
+          "slotIndex": 12,
+          "supportBoardType": [
+            {
+              "value": "107",
+              "desc": "FCU板"
             }
           ]
         }
@@ -301,11 +310,11 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             }
           ]
         },
@@ -314,11 +323,11 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             }
           ]
         },
@@ -327,11 +336,11 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             }
           ]
         }
@@ -359,15 +368,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -376,15 +385,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -393,15 +402,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -410,15 +419,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -427,15 +436,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -444,15 +453,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         }
@@ -498,15 +507,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -515,15 +524,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -532,15 +541,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -549,15 +558,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -566,15 +575,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         },
@@ -583,15 +592,15 @@
           "irOfpPortTransSpeed": [
             {
               "value": "0",
-              "desc": "mbps2500|2.5G"
+              "desc": "2.5G"
             },
             {
               "value": "1",
-              "desc": "mbps5000|5G"
+              "desc": "5G"
             },
             {
               "value": "3",
-              "desc": "mbps10000|10G"
+              "desc": "10G"
             }
           ]
         }
@@ -615,7 +624,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -624,7 +633,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -633,7 +642,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -642,7 +651,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -651,7 +660,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -660,7 +669,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         }
@@ -688,7 +697,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "5",
-              "desc": "mbps100000|100G"
+              "desc": "100G"
             }
           ]
         },
@@ -697,7 +706,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "5",
-              "desc": "mbps100000|100G"
+              "desc": "100G"
             }
           ]
         },
@@ -706,7 +715,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -715,7 +724,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -724,7 +733,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -733,7 +742,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -742,7 +751,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         },
@@ -751,7 +760,7 @@
           "irOfpPortTransSpeed": [
             {
               "value": "4",
-              "desc": "mbps25000|25G"
+              "desc": "25G"
             }
           ]
         }
@@ -776,22 +785,22 @@
       "irOfpPortTransSpeed": [
         {
           "value": "3",
-          "desc": "mbps10000|10G"
+          "desc": "10G"
         }
       ],
       "ethPortRNum": 8,
       "ethPortTransSpeed": [
         {
           "value": "0",
-          "desc": "mbps1250|1.25G"
+          "desc": "1.25G"
         },
         {
           "value": "1",
-          "desc": "mbps2500|2.5G"
+          "desc": "2.5G"
         },
         {
           "value": "2",
-          "desc": "mbps5000|5G"
+          "desc": "5G"
         }
       ]
     },
@@ -803,22 +812,22 @@
       "irOfpPortTransSpeed": [
         {
           "value": "3",
-          "desc": "mbps10000|10G"
+          "desc": "10G"
         }
       ],
       "ethPortRNum": 8,
       "ethPortTransSpeed": [
         {
           "value": "0",
-          "desc": "mbps1250|1.25G"
+          "desc": "1.25G"
         },
         {
           "value": "1",
-          "desc": "mbps2500|2.5G"
+          "desc": "2.5G"
         },
         {
           "value": "2",
-          "desc": "mbps5000|5G"
+          "desc": "5G"
         }
       ]
     },
@@ -830,14 +839,14 @@
       "irOfpPortTransSpeed": [
         {
           "value": "4",
-          "desc": "mbps25000|25G"
+          "desc": "25G"
         }
       ],
       "ethPortRNum": 8,
       "ethPortTransSpeed": [
         {
           "value": "3",
-          "desc": "mbps10000|10G"
+          "desc": "10G"
         }
       ]
     }

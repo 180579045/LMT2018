@@ -11,7 +11,7 @@ namespace NetPlan
     {
         public static bool CheckNetPlanData(MAP_DEVTYPE_DEVATTRI mapMib_this, int equipType, out string falseTip)
         {
-            NPECheckRulesDeal rulesHelper = new NPECheckRulesDeal(mapMib_this, 5);
+            NPECheckRulesDeal rulesHelper = new NPECheckRulesDeal(mapMib_this, equipType);
             bool res = rulesHelper.CheckAllPlanData(out falseTip);
             return res;
         }

@@ -4,7 +4,7 @@
     {
       "id": 1, 
       "desc" : "添加/修改板卡校验槽位是否支持板型", 
-      "property":"where cur.netBoardEntry.netBoardRowStatus == 4",
+      "property":"where cur.netBoardEntry.操作类型 == 添加 || cur.netBoardEntry.操作类型 == 修改",
       "exp":[
           {
               "round":"1",
@@ -16,7 +16,7 @@
               "outvar":"query2"
           },{
               "round":"3",
-              "rules":"from it in query2.supportBoardType where it.value == cur.netBoardEntry.netBoardType select it",
+              "rules":"from it in query2.supportBoardType where it.desc == cur.netBoardEntry.netBoardType select it",
               "outvar":"query3"
           },{
               "round":"4",
@@ -28,12 +28,12 @@
       {
       "id": 1, 
       "desc" : "修改板卡类型校验/删除规划板卡校验小区状态", 
-      "property":"where (cur.netBoardEntry.netBoardRowStatus == 4 && old.netBoardEntry.netBoardRowStatus == 4 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.netBoardRowStatus == 6 && old.netBoardEntry.netBoardRowStatus == 4)",
+      "property":"where (cur.netBoardEntry.操作类型 == 修改 && cur.netBoardEntry.netBoardType != old.netBoardEntry.netBoardType) || (cur.netBoardEntry.操作类型 == 删除)",
       "exp":[
           {
               "round":"1",
               "rules":"from it in mib.baseBandwidthEntry 
-                       where it.baseBandwidthRackNo == cur.netBoardEntry.netBoardRackNo && it.baseBandwidthShelfNo == cur.netBoardEntry.netBoardShelfNo && it.baseBandwidthSlotNo == cur.netBoardEntry.netBoardSlotNo && it.baseBandwidthLcId != -1 && it.baseBandwidthEngagedState != 0
+                       where it.baseBandwidthRackNo == cur.netBoardEntry.netBoardRackNo && it.baseBandwidthShelfNo == cur.netBoardEntry.netBoardShelfNo && it.baseBandwidthSlotNo == cur.netBoardEntry.netBoardSlotNo && it.baseBandwidthLcId != -1 && it.baseBandwidthEngagedState != 空闲
                        select it",
               "outvar":"query1"
           },{
@@ -41,13 +41,13 @@
               "rules":"where query1.Count == 0",
               "outvar":""
           }],
-       "false_tip":"该板卡上已经建立本地小区,不允许修改或者删除"
+       "false_tip":"该板卡上已经建立本地小区,不允许修改板卡类型或者删除"
     }],
   "_netRHUBCheck":[
     {
        "id": 3, 
        "desc" : "RHUB校验是否连接板卡", 
-       "property":"where cur.netRHUBEntry.netRHUBRowStatus == 4",
+       "property":"where cur.netRHUBEntry.操作类型 == 添加",
        "exp":[
           {
               "round":"1",
@@ -58,12 +58,12 @@
     },{
        "id": 4, 
        "desc" : "RHUB校验连接的板卡是否已经规划", 
-       "property":"where cur.netRHUBEntry.netRHUBRowStatus == 4",
+       "property":"where (cur.netRHUBEntry.操作类型 == 添加 || cur.netRHUBEntry.操作类型 == 修改)",
         "exp":[
           {
               "round":"1",
               "rules":"from it in this.netBoardEntry 
-                       where it.netBoardRackNo == cur.netRHUBEntry.netRHUBAccessRackNo && it.netBoardShelfNo == cur.netRHUBEntry.netRHUBAccessShelfNo && it.netBoardSlotNo == cur.netRHUBEntry.netRHUBAccessSlotNo && it.netBoardRowStatus == 4
+                       where it.netBoardRackNo == cur.netRHUBEntry.netRHUBAccessRackNo && it.netBoardShelfNo == cur.netRHUBEntry.netRHUBAccessShelfNo && it.netBoardSlotNo == cur.netRHUBEntry.netRHUBAccessSlotNo && it.netBoardRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
@@ -75,7 +75,7 @@
     },{
        "id": 5, 
        "desc" : "删除RHUB校验连接的RRU上是否有建立本地小区", 
-       "property":"where cur.netRHUBEntry.netRHUBRowStatus == 6 && old.netRHUBEntry.netRHUBRowStatus == 4",
+       "property":"where cur.netRHUBEntry.操作类型 == 删除",
         "exp":[
           {
               "round":"1",
@@ -86,44 +86,1318 @@
           },{
               "round":"2",
               "rules":"from it in this.netRRUAntennaSettingEntry 
-                       where (query1 Contains it.netSetRRUNo) && it.netSetRRUPortWithAntennaRowStatus == 4 && netSetRRUPortSubtoLocalCellId != -1
+                       where (query1 Contains it.netSetRRUNo) && it.netSetRRUPortWithAntennaRowStatus == 行有效 && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
                        select it.netSetRRUNo",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
               "outvar":""
           }],
-       "false_tip":"该RHUB上承载的本地小区已经建立不允许删除"
+       "false_tip":"该RHUB上连接的RRU已经配置了归属的本地小区，不允许删除RHUB设备"
     }
   ],
-  "_netRRUCheck":[],
-  "_netAntennaArrayCheck":[],
-  "_netIROptPlanCheck":[],
-  "_netEthPlanCheck":[],
-  "_netPRRUCheck":[],
-  "_netRRUAntennaSettingCheck":[
-  {
-      "id": 1, 
-       "desc" : "删除RRU布配校验小区1", 
-       "property":"where cur.netRRUAntennaSettingEntry.netRRURowStatus == 6",
-        "exp":[
+  "_netRRUCheck":[
+    {
+       "id": 6, 
+       "desc" : "RRU校验是否可以连接rHUB(此校验建议放在最前面)", 
+       "property":"where cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改",
+       "exp":[
           {
               "round":"1",
-              "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId != -1",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where (query1.rruTypeNotMibIsPico == 0 && cur.netRRUEntry.netRRUHubNo == -1 && cur.netRRUEntry.netRRUOfp1AccessEthernetPort == -1 &&  cur.netRRUEntry.netRRUOfp2AccessEthernetPort == -1) || (query1.rruTypeNotMibIsPico == 1 && cur.netRRUEntry.netRRUHubNo != -1)",
               "outvar":""
           }],
-         "false_tip":"该RRU上已经有归属的小区,则不允许删除"
+       "false_tip":"普通RRU不允许连接到RHUB设备上, pRRU只能连接到rHUB上"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验工作模式", 
+       "property":"where cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in query1.rruTypeNotMibSupportNetWorkMode 
+                       where it.desc == cur.netRRUEntry.netRRUOfpWorkMode
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"该RRU不支持该工作模式"
+    },{
+       "id": 6, 
+       "desc" : "普通RRU校验不允许跨板连接(建立在最前面校验的基础之上)", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUHubNo == -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUAccessRackNo != -1 && cur.netRRUEntry.netRRUAccessShelfNo != -1 &&  cur.netRRUEntry.netRRUAccessSlotNo != -1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"where cur.netRRUEntry.netRRUOfp2SlotNo != -1 && cur.netRRUEntry.netRRUOfp2SlotNo == cur.netRRUEntry.netRRUAccessSlotNo",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"where cur.netRRUEntry.netRRUOfp3SlotNo != -1 && cur.netRRUEntry.netRRUOfp3SlotNo == cur.netRRUEntry.netRRUAccessSlotNo",
+              "outvar":""
+          },{
+              "round":"4",
+              "rules":"where cur.netRRUEntry.netRRUOfp4SlotNo != -1 && cur.netRRUEntry.netRRUOfp4SlotNo == cur.netRRUEntry.netRRUAccessSlotNo",
+              "outvar":""
+          }],
+       "false_tip":"普通RRU不允许跨板连接"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验光口1是否连接板卡，且连接的板卡是否有规划", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUAccessRackNo != -1 && cur.netRRUEntry.netRRUAccessShelfNo != -1 &&  cur.netRRUEntry.netRRUAccessSlotNo != -1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"from it in this.netBoardEntry 
+                       where it.netBoardRackNo == cur.netRRUEntry.netRRUAccessRackNo && it.netBoardShelfNo == cur.netRRUEntry.netRRUAccessShelfNo && it.netBoardSlotNo == cur.netRRUEntry.netRRUAccessSlotNo && it.netBoardRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"3",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"该RRU光口1未连接到板卡上,或者连接的板卡未规划"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验是光口2连接的板卡是否有规划", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUOfp2SlotNo != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netBoardEntry 
+                       where it.netBoardRackNo == cur.netRRUEntry.netRRUAccessRackNo && it.netBoardShelfNo == cur.netRRUEntry.netRRUAccessShelfNo && it.netBoardSlotNo == cur.netRRUEntry.netRRUOfp2SlotNo && it.netBoardRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"该RRU光口2连接的板卡未规划"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验是光口3连接的板卡是否有规划", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUOfp3SlotNo != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netBoardEntry 
+                       where it.netBoardRackNo == cur.netRRUEntry.netRRUAccessRackNo && it.netBoardShelfNo == cur.netRRUEntry.netRRUAccessShelfNo && it.netBoardSlotNo == cur.netRRUEntry.netRRUOfp3SlotNo && it.netBoardRowStatus == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"2",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"该RRU光口3连接的板卡未规划"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验是光口4连接的板卡是否有规划", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUOfp4SlotNo != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netBoardEntry 
+                       where it.netBoardRackNo == cur.netRRUEntry.netRRUAccessRackNo && it.netBoardShelfNo == cur.netRRUEntry.netRRUAccessShelfNo && it.netBoardSlotNo == cur.netRRUEntry.netRRUOfp4SlotNo && it.netBoardRowStatus == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"2",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"该RRU光口4连接的板卡未规划"
+    },{
+       "id": 6, 
+       "desc" : "RRU删除时校验是否已经规划本地小区", 
+       "property":"where cur.netRRUEntry.操作类型 == 删除",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"该RRU已经配置了归属的本地小区，不允许删除RRU设备"
+    },{
+       "id": 6, 
+       "desc" : "RRU正常模式时的级数校验", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改)&& cur.netRRUEntry.netRRUOfpWorkMode == 正常模式",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUOfp1AccessOfpPortNo != -1 && cur.netRRUEntry.netRRUOfp1AccessLinePosition == 1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"where cur.netRRUEntry.netRRUOfp2AccessOfpPortNo == -1 && cur.netRRUEntry.netRRUOfp2AccessLinePosition == -1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"where cur.netRRUEntry.netRRUOfp3AccessOfpPortNo == -1 && cur.netRRUEntry.netRRUOfp3AccessLinePosition == -1",
+              "outvar":""
+          },{
+              "round":"4",
+              "rules":"where cur.netRRUEntry.netRRUOfp4AccessOfpPortNo == -1 && cur.netRRUEntry.netRRUOfp4AccessLinePosition == -1",
+              "outvar":""
+          }],
+       "false_tip":"RRU为正常模式时，光口1接入板光口号须为有效值且级数为1，其它的光口接入板的光口号及级数必须为无效"
+    },{
+       "id": 6, 
+       "desc" : "RRU级联模式时的校验自已的光口号与级数", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUOfpWorkMode == 级联模式",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUOfp1AccessOfpPortNo != -1 && cur.netRRUEntry.netRRUOfp1AccessLinePosition != -1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"where cur.netRRUEntry.netRRUOfp2AccessOfpPortNo == -1 && cur.netRRUEntry.netRRUOfp2AccessLinePosition == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"where cur.netRRUEntry.netRRUOfp3AccessOfpPortNo == -1 && cur.netRRUEntry.netRRUOfp3AccessLinePosition == 1",
+              "outvar":""
+          },{
+              "round":"4",
+              "rules":"where cur.netRRUEntry.netRRUOfp4AccessOfpPortNo == -1 && cur.netRRUEntry.netRRUOfp4AccessLinePosition == 1",
+              "outvar":""
+          }],
+       "false_tip":"RRU为级联模式时，光口1接入板光口号及级数须为有效值，其它的光口接入板的光口号及级数必须为无效"
+    },{
+       "id": 6, 
+       "desc" : "RRU级联模式时的校验必须存在前一级RRU", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUOfpWorkMode == 级联模式 && cur.netRRUEntry.netRRUOfp1AccessLinePosition != 1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUOfp1AccessOfpPortNo != -1 && cur.netRRUEntry.netRRUOfp1AccessLinePosition != -1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo != cur.netRRUEntry.netRRUNo && it.netRRURowStatus == 行有效 && it.netRRUOfp1AccessLinePosition == (cur.netRRUEntry.netRRUOfp1AccessLinePosition - 1)
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"3",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"RRU为级联模式时，不存在前一级RRU"
+    },{
+       "id": 6, 
+       "desc" : "RRU主备或分担模式时的校验接口板光口号与级数", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && (cur.netRRUEntry.netRRUOfpWorkMode == 主备模式 || cur.netRRUEntry.netRRUOfpWorkMode == 负荷分担模式)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUOfp1AccessOfpPortNo != -1 && cur.netRRUEntry.netRRUOfp1AccessLinePosition == 1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"where cur.netRRUEntry.netRRUOfp2AccessOfpPortNo != -1 && cur.netRRUEntry.netRRUOfp2AccessLinePosition == 1",
+              "outvar":""
+          }],
+       "false_tip":"RRU为负荷分担或者主备模式时，光口1、光口2的级数须为1且接口板光口号须为有效值"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验修改参数RRU类型与工作模式", 
+       "property":"where cur.netRRUEntry.操作类型 == 修改 && (cur.netRRUEntry.netRRUManufacturerIndex != old.netRRUEntry.netRRUManufacturerIndex || cur.netRRUEntry.netRRUTypeIndex != old.netRRUEntry.netRRUTypeIndex || cur.netRRUEntry.netRRUOfpWorkMode != old.netRRUEntry.netRRUOfpWorkMode)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"RRU有归属小区时不允许修改RRU类型与工作模式"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验修改光口1的接入位置", 
+       "property":"where cur.netRRUEntry.操作类型 == 修改 && (cur.netRRUEntry.netRRUAccessRackNo != old.netRRUEntry.netRRUAccessRackNo || cur.netRRUEntry.netRRUAccessShelfNo != old.netRRUEntry.netRRUAccessShelfNo || cur.netRRUEntry.netRRUAccessSlotNo != old.netRRUEntry.netRRUAccessSlotNo  || cur.netRRUEntry.netRRUOfp1AccessOfpPortNo != old.netRRUEntry.netRRUOfp1AccessOfpPortNo || cur.netRRUEntry.netRRUOfp1AccessLinePosition != old.netRRUEntry.netRRUOfp1AccessLinePosition)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"RRU有归属小区时不允许修改光口1的接入位置"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验修改光口2的接入位置", 
+       "property":"where cur.netRRUEntry.操作类型 == 修改 && (cur.netRRUEntry.netRRUOfp2AccessOfpPortNo != old.netRRUEntry.netRRUOfp2AccessOfpPortNo  || cur.netRRUEntry.netRRUOfp2AccessLinePosition != old.netRRUEntry.netRRUOfp2AccessLinePosition || cur.netRRUEntry.netRRUOfp2SlotNo != old.netRRUEntry.netRRUOfp2SlotNo)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"RRU有归属小区时不允许修改光口3的接入位置"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验修改光口3的接入位置", 
+       "property":"where cur.netRRUEntry.操作类型 == 修改 && (cur.netRRUEntry.netRRUOfp3AccessOfpPortNo != old.netRRUEntry.netRRUOfp3AccessOfpPortNo  || cur.netRRUEntry.netRRUOfp3AccessLinePosition != old.netRRUEntry.netRRUOfp3AccessLinePosition || cur.netRRUEntry.netRRUOfp3SlotNo != old.netRRUEntry.netRRUOfp3SlotNo)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"RRU有归属小区时不允许修改光口3的接入位置"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验修改光口4的接入位置", 
+       "property":"where cur.netRRUEntry.操作类型 == 修改 && (cur.netRRUEntry.netRRUOfp4AccessOfpPortNo != old.netRRUEntry.netRRUOfp4AccessOfpPortNo  || cur.netRRUEntry.netRRUOfp4AccessLinePosition != old.netRRUEntry.netRRUOfp4AccessLinePosition || cur.netRRUEntry.netRRUOfp4SlotNo != old.netRRUEntry.netRRUOfp4SlotNo)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"RRU有归属小区时不允许修改光口4的接入位置"
+    },{
+       "id": 6, 
+       "desc" : "RRU校验修改连接的HUB信息以太口信息", 
+       "property":"where cur.netRRUEntry.操作类型 == 修改 && (cur.netRRUEntry.netRRUHubNo != old.netRRUEntry.netRRUHubNo  || cur.netRRUEntry.netRRUOfp1AccessEthernetPort != old.netRRUEntry.netRRUOfp1AccessEthernetPort || cur.netRRUEntry.netRRUOfp2AccessEthernetPort != old.netRRUEntry.netRRUOfp2AccessEthernetPort)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUNo == cur.netRRUEntry.netRRUNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"RRU有归属小区时不允许修改连接的HUB位置信息"
+    }
+    ],
+  "_netAntennaArrayCheck":[
+    {
+       "id": 6, 
+       "desc" : "天线阵删除时校验是否已经对应规划本地小区", 
+       "property":"where cur.netAntennaArrayEntry.操作类型 == 删除",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUPortAntArrayNo == cur.netAntennaArrayEntry.netAntArrayNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"3",
+              "rules":"where query1.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"存在使用该天线阵的RRU，且已经配置了归属的本地小区，不允许删除天线阵设备"
+    },{
+       "id": 6, 
+       "desc" : "天线阵修改时校验类型不允许修改", 
+       "property":"where cur.netAntennaArrayEntry.操作类型 == 修改 && (cur.netAntennaArrayEntry.netAntArrayVendorIndex != old.netAntennaArrayEntry.netAntArrayVendorIndex || cur.netAntennaArrayEntry.netAntArrayTypeIndex != old.netAntennaArrayEntry.netAntArrayTypeIndex)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUPortAntArrayNo == cur.netAntennaArrayEntry.netAntArrayNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"3",
+              "rules":"where query1.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"存在使用该天线阵的RRU，且已经配置了归属的本地小区，不允许修改天线阵类型"
+    },{
+       "id": 6, 
+       "desc" : "天线阵修改时校验不允许修改电调天线、天线阵规划波束宽度", 
+       "property":"where cur.netAntennaArrayEntry.操作类型 == 修改 && (cur.netAntennaArrayEntry.netAntArrayIsRet != old.netAntennaArrayEntry.netAntArrayIsRet || cur.netAntennaArrayEntry.netAntArrayHalfPowerBeamWidth != old.netAntennaArrayEntry.netAntArrayHalfPowerBeamWidth)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUPortAntArrayNo == cur.netAntennaArrayEntry.netAntArrayNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"3",
+              "rules":"where query1.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"存在使用该天线阵的RRU，且已经配置了归属的本地小区，不允许修改是否支持电调天线、天线阵规划波束宽度参数"
+    },{
+       "id": 6, 
+       "desc" : "天线阵修改时校验不允许修改5G关键参数", 
+       "property":"where cur.netAntennaArrayEntry.操作类型 == 修改 && (cur.netAntennaArrayEntry.netAntArrayHorBeamScanning != old.netAntennaArrayEntry.netAntArrayHorBeamScanning || cur.netAntennaArrayEntry.netAntArrayHorDowntiltAngle != old.netAntennaArrayEntry.netAntArrayHorDowntiltAngle || cur.netAntennaArrayEntry.netAntArrayVerBeamScanning != old.netAntennaArrayEntry.netAntArrayVerBeamScanning || cur.netAntennaArrayEntry.netAntArrayVerDowntiltAngle != old.netAntennaArrayEntry.netAntArrayVerDowntiltAngle || cur.netAntennaArrayEntry.netAntArrayLossFlag != old.netAntennaArrayEntry.netAntArrayLossFlag || cur.netAntennaArrayEntry.netAntArrayVerHalfPowerBeamWidth != old.netAntennaArrayEntry.netAntArrayVerHalfPowerBeamWidth)",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUAntennaSettingEntry 
+                       where it.netSetRRUPortAntArrayNo == cur.netAntennaArrayEntry.netAntArrayNo && (it.netSetRRUPortSubtoLocalCellId != -1 || it.netSetRRUPortSubtoLocalCellId2 != -1 || it.netSetRRUPortSubtoLocalCellId3 != -1 || it.netSetRRUPortSubtoLocalCellId4 != -1)
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"3",
+              "rules":"where query1.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"存在使用该天线阵的RRU，且已经配置了归属的本地小区，不允许是否5G天线阵关键参数"
+    }
+    ],
+  "_netIROptPlanCheck":[
+    {
+       "id": 6, 
+       "desc" : "板卡光口支持的速率校验", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 || cur.netIROptPlanEntry.操作类型 == 修改",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netBoardEntry 
+                       where it.netBoardRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netBoardShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netBoardSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in lib.boardEquipment 
+                       where it.boardType == query1.netBoardType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in query2.irOfpPortInfo 
+                       where it.ofpIndex == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"qeury3"
+          },{
+              "round":"4",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in query3.irOfpPortTransSpeed 
+                       where it.desc == cur.netIROptPlanEntry.netIROfpTransPlanSpeed
+                       select it",
+              "outvar":"qeury4"
+          },{
+              "round":"4",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"IR口规划表对应板光口不支持此速率"
     },{
        "id": 2, 
-       "desc" : "删除RRU布配校验小区2", 
-       "property":"where cur.netRRUAntennaSettingEntry.netRRURowStatus == 6",
+       "desc" : "校验是否RHUB支持配置的光口1速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
         "exp":[
           {
               "round":"1",
-              "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId1 != -1",
+              "rules":"from it in this.netRHUBEntry 
+                       where it.netRHUBAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRHUBAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRHUBAccessSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRHUBOfp1AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rHubEquipment 
+                       where it.rHubType == query1.netRHUBType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.irOfpPortTransSpeed
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
               "outvar":""
           }],
-         "false_tip":"该RRU上已经有归属的小区2,则不允许删除"
+       "false_tip":"RHUB光口1不支持配置的IR口速率"
+    },{
+       "id": 2,
+       "desc" : "校验是否RHUB支持配置的光口2速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRHUBEntry 
+                       where it.netRHUBAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRHUBAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRHUBOfp2SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRHUBOfp2AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rHubEquipment 
+                       where it.rHubType == query1.netRHUBType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.irOfpPortTransSpeed
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RHUB光口2不支持配置的IR口速率"
+    },{
+       "id": 2,
+       "desc" : "校验是否RHUB支持配置的光口2速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRHUBEntry 
+                       where it.netRHUBAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRHUBAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRHUBOfp2SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRHUBOfp2AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rHubEquipment 
+                       where it.rHubType == query1.netRHUBType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.irOfpPortTransSpeed
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RHUB光口2不支持配置的IR口速率"
+    },{
+       "id": 3,
+       "desc" : "校验是否RHUB支持配置的光口3速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRHUBEntry 
+                       where it.netRHUBAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRHUBAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRHUBOfp3SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRHUBOfp3AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rHubEquipment 
+                       where it.rHubType == query1.netRHUBType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.irOfpPortTransSpeed
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RHUB光口3不支持配置的IR口速率"
+    },{
+       "id": 3,
+       "desc" : "校验是否RHUB支持配置的光口4速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRHUBEntry 
+                       where it.netRHUBAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRHUBAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRHUBOfp4SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRHUBOfp4AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rHubEquipment 
+                       where it.rHubType == query1.netRHUBType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.irOfpPortTransSpeed
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RHUB光口4不支持配置的IR口速率"
+    },{
+       "id": 3,
+       "desc" : "校验是否RRU支持配置的光口1速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRRUAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRRUAccessSlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRRUOfp1AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.rruTypeNotMibIrRate
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RRU光口1不支持配置的IR口速率"
+    },{
+       "id": 3,
+       "desc" : "校验是否RRU支持配置的光口2速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRRUAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRRUOfp2SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRRUOfp2AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.rruTypeNotMibIrRate
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RRU光口2不支持配置的IR口速率"
+    },{
+       "id": 3,
+       "desc" : "校验是否RRU支持配置的光口3速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRRUAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRRUOfp3SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRRUOfp3AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.rruTypeNotMibIrRate
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RRU光口3不支持配置的IR口速率"
+    },{
+       "id": 3,
+       "desc" : "校验是否RRU支持配置的光口4速率", 
+       "property":"where cur.netIROptPlanEntry.操作类型 == 添加 && cur.netIROptPlanEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUAccessRackNo == cur.netIROptPlanEntry.netIROfpPortRackNo && it.netRRUAccessShelfNo == cur.netIROptPlanEntry.netIROfpPortShelfNo && it.netRRUOfp4SlotNo == cur.netIROptPlanEntry.netIROfpPortSlotNo && it.netRRUOfp4AccessOfpPortNo == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"from it in query2.rruTypeNotMibIrRate
+                       select it.desc",
+              "outvar":"query3"
+          },{
+              "round":"4",
+              "rules":"where (query1.Count == 1 && (query3 Contains cur.netIROptPlanEntry.netIROfpTransPlanSpeed)) || (query1.Count == 0)",
+              "outvar":""
+          }],
+       "false_tip":"RRU光口4不支持配置的IR口速率"
+    }],
+  "_netEthPlanCheck":[{
+       "id": 6, 
+       "desc" : "RHUB以太口支持的速率校验", 
+       "property":"where cur.netEthPlanEntry.操作类型 == 添加 || cur.netEthPlanEntry.操作类型 == 修改",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRHUBEntry 
+                       where it.netRHUBNo == cur.netEthPlanEntry.netEthRHUBNo
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in lib.rHubEquipment 
+                       where it.rHubType == query1.netRHUBType
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in query2.ethPortTransSpeed 
+                       where it.desc == cur.netEthPlanEntry.netEthTransPlanSpeed
+                       select it",
+              "outvar":"qeury3"
+          },{
+              "round":"4",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          }],
+         "false_tip":"RHUB以太口不支持此速率"
+    }],
+  "_netRRUAntennaSettingCheck":[
+    {
+      "id": 1, 
+       "desc" : "天线安装规划表校验netRRU表是否存在", 
+       "property":"where cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          }],
+         "false_tip":"该天线安装规划表对应的RRU未规划"
+    },{
+      "id": 1, 
+       "desc" : "天线安装规划表校验射频通道号是否存在", 
+       "property":"where cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in lib.rruTypePortInfo 
+                       where it.rruTypePortManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypePortIndex  == query1.netRRUTypeIndex && it.rruTypePortNo == cur.netAntennaArrayEntry.netSetRRUPortNo
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"3",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          }],
+         "false_tip":"该天线安装规划表对应远端射频单元上端口编号不在RRU器件库的有效范围内"
+    },{
+      "id": 1, 
+       "desc" : "天线安装规划表校验netAntennaArrayEntry表是否存在", 
+       "property":"where cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netAntennaArrayEntry 
+                       where it.netAntArrayNo == cur.netRRUAntennaSettingEntry.netSetRRUPortAntArrayNo && it.netAntArrayRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          }],
+         "false_tip":"该天线安装规划表对应的天线阵在netAntennaArrayEntry未规划"
+    },{
+       "id": 1, 
+       "desc" : "天线安装规划表校验netSetRRUPortAntArrayPathNo是否存在", 
+       "property":"where cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.netAntennaArrayEntry 
+                       where it.netAntArrayNo == cur.netRRUAntennaSettingEntry.netSetRRUPortAntArrayNo && it.netAntArrayRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in lib.antennaTypeTable 
+                       where it.antArrayVendor == query1.netAntArrayVendorIndex && it.antArrayIndex == query1.netAntArrayTypeIndex
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"where query2.antArrayNum >= cur.netRRUAntennaSettingEntry.netSetRRUPortAntArrayPathNo",
+              "outvar":""
+          }],
+         "false_tip":"该天线安装规划表对应的天线通道编号不在器件库的有效范围内"
+    },{
+       "id": 1, 
+       "desc" : "天线安装规划表校验修改参数", 
+       "property":"where cur.netRRUAntennaSettingEntry.操作类型 == 修改 && (cur.netRRUAntennaSettingEntry.netSetRRUPortAntArrayNo != old.netRRUAntennaSettingEntry.netSetRRUPortAntArrayNo || cur.netRRUAntennaSettingEntry.netSetRRUPortAntArrayPathNo != old.netRRUAntennaSettingEntry.netSetRRUPortAntArrayPathNo)",
+        "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId == -1 && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 == -1 && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 == -1 && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 == -1",
+              "outvar":""
+          }],
+         "false_tip":"该天线安装规划表对应的RRU上已经有归属的小区,则不允许修改"
+    },{
+       "id": 2, 
+       "desc" : "删除天线安装规划表校验小区", 
+       "property":"where cur.netRRUAntennaSettingEntry.操作类型 == 删除",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId == -1 && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 == -1 && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 == -1 && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 == -1",
+              "outvar":""
+          }],
+       "false_tip":"该天线安装规划表对应的RRU上已经有归属的小区,则不允许删除,如果要删除请先清除归属的本地小区信息"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识1的频段", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId && it.nrNetLocalCellRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypePortInfo 
+                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypePortSupportFreqBand 
+                       where it.desc == query1.nrNetLocalCellFreqBand
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识1配置的频段"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识2的频段", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypePortInfo 
+                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypePortSupportFreqBand 
+                       where it.desc == query1.nrNetLocalCellFreqBand
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识2配置的频段"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识3的频段", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypePortInfo 
+                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypePortSupportFreqBand 
+                       where it.desc == query1.nrNetLocalCellFreqBand
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识3配置的频段"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识4的频段", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypePortInfo 
+                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypePortSupportFreqBand 
+                       where it.desc == query1.nrNetLocalCellFreqBand
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识4配置的频段"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识1的带宽、压缩属性", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypeNotMibIrBand 
+                       where it.desc == query1.netLcIrCompressMode
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          },{
+              "round":"9",
+              "rules":"from it in query4.bandwidth 
+                       where it.desc == query1.nrNetLocalCellFreqBandWidth
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"10",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识1配置的带宽或压缩属性"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识2的带宽、压缩属性", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCell2 != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypeNotMibIrBand 
+                       where it.desc == query1.netLcIrCompressMode
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          },{
+              "round":"9",
+              "rules":"from it in query4.bandwidth 
+                       where it.desc == query1.nrNetLocalCellFreqBandWidth
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"10",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识2配置的带宽或压缩属性"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识3的带宽、压缩属性", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCell3 != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypeNotMibIrBand 
+                       where it.desc == query1.netLcIrCompressMode
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          },{
+              "round":"9",
+              "rules":"from it in query4.bandwidth 
+                       where it.desc == query1.nrNetLocalCellFreqBandWidth
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"10",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识3配置的带宽或压缩属性"
+    },{
+       "id": 2, 
+       "desc" : "校验本地小区标识4的带宽、压缩属性", 
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCell4 != -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrNetLocalCellEntry 
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 && it.netLcRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"query1.Count == 1",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"from it in this.netRRUEntry 
+                       where it.netRRUNo == cur.netAntennaArrayEntry.netSetRRUNo && it.netRRURowStatus  == 行有效
+                       select it",
+              "outvar":"query2"
+          },{
+              "round":"4",
+              "rules":"where query2.Count == 1",
+              "outvar":""
+          },{
+              "round":"5",
+              "rules":"from it in lib.rruTypeInfo 
+                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       select it",
+              "outvar":"query3"
+          },{
+              "round":"6",
+              "rules":"where query3.Count == 1",
+              "outvar":""
+          },{
+              "round":"7",
+              "rules":"from it in query3.rruTypeNotMibIrBand 
+                       where it.desc == query1.netLcIrCompressMode
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"8",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          },{
+              "round":"9",
+              "rules":"from it in query4.bandwidth 
+                       where it.desc == query1.nrNetLocalCellFreqBandWidth
+                       select it",
+              "outvar":"query4"
+          },{
+              "round":"10",
+              "rules":"where query4.Count == 1",
+              "outvar":""
+          }],
+       "false_tip":"对应RRU不支持本地小区标识4配置的带宽或压缩属性"
     }],
   "_netLocalCellCheck":[],
   "_nrNetLocalCellCheck":[],
   "_netLocalCellCtrlCheck":[],
-  "_nrNetLocalCellCtrlCheck":[],
+  "_nrNetLocalCellCtrlCheck":[
+    {
+       "id": 2, 
+       "desc" : "打开NR布配开关校验", 
+       "property":"where cur.nrNetLocalCellCtrlEntry.nrNetLocalCellCtrlConfigSwitch == 打开",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"from it in this.nrLocalCellEntry 
+                       where it.nrLocalCellId == nrNetLocalCellCtrlEntry.nrNetLocalCellCtrlLcId && it.nrLocalCellRowStatus == 行有效
+                       select it",
+              "outvar":"query1"
+          },{
+              "round":"2",
+              "rules":"where query1.Count == 0",
+              "outvar":""
+          }],
+       "false_tip":"对应本地小区必须为行无效才允许打开布配开关"
+    }],
 }

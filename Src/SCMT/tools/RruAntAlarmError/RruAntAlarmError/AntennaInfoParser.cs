@@ -14,6 +14,7 @@ namespace RruAntAlarmError
 {
     class AntennaInfoParser
     {
+        public string languageVersion;
         JObject jCfgObject;
         JObject infoJObect;
         JArray antennaTypeJArray;
@@ -25,6 +26,7 @@ namespace RruAntAlarmError
         {
             JsonFile jsonFile = new JsonFile();
             this.jCfgObject = jsonFile.ReadJsonFileForJObject(@".\cfg\parsecolumns_cfg.json");
+            languageVersion = jCfgObject["languageVersion"].ToString();
             antennaTypeJArray = new JArray();
             antennaWeightJArray = new JArray();
             couplingCoeffctJArray = new JArray();
@@ -709,20 +711,6 @@ namespace RruAntAlarmError
             return true;
         }
 
-        private bool splitKeyValue(string excelValue, string sign, out string key, out string value)
-        {
-            key = "";
-            value = "";
-            if (-1 == excelValue.IndexOf(sign))
-            {
-                return false;
-            }
-            key = excelValue.Substring(0, excelValue.IndexOf(sign));
-            value = excelValue.Substring(excelValue.IndexOf(sign) + sign.Length);
-
-            return true;
-        }
-
         private bool checkBfScanExist(int line, AntennaBfScanWeightTable bfscanTable)
         {
             foreach (var antType in antennaTypeJArray)
@@ -747,9 +735,10 @@ namespace RruAntAlarmError
         private bool setBFScanVendorInfo(string excelValue, int line, AntennaBfScanWeightTable bfscanTable)
         {
             string key, value;
-            if (false == splitKeyValue(excelValue, ":", out key,
+            if (false == CommFunction.splitKeyValue(excelValue, ":", out key,
                     out value))
             {
+                recordLog("波束扫描原始值 sheet" + " Line " + line + "天线厂家名称:antVendorName的格式填写不正确: " + excelValue);
                 return false;
             }
             bfscanTable.antArrayBfScanAntWeightVendorIndex = key;
@@ -760,7 +749,7 @@ namespace RruAntAlarmError
         private bool setBFScanAntTypeInfo(string excelValue, int line, AntennaBfScanWeightTable bfscanTable)
         {
             string key, value;
-            if (false == splitKeyValue(excelValue, ":", out key,
+            if (false == CommFunction.splitKeyValue(excelValue, ":", out key,
                     out value))
             {
                 recordLog("波束扫描原始值 sheet" + " Line " + line + "天线型号:antMode的格式填写不正确: " + excelValue);
