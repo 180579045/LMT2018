@@ -143,22 +143,22 @@ namespace NetPlan
 		public bool AdjustOtherDevOriginValueToMyOrigin(DevAttributeInfo oldDev)
 		{
 			// 如果index不同不做调整
-			if (null == oldDev || !m_strOidIndex.Equals(oldDev.m_strOidIndex))
-			{
-				return false;
-			}
+			//if (null == oldDev || !m_strOidIndex.Equals(oldDev.m_strOidIndex))
+			//{
+			//	return false;
+			//}
 
-			var oldAttriMap = oldDev.m_mapAttributes;
-			foreach (var attribute in m_mapAttributes)
-			{
-				var mibName = attribute.Key;
-				var mli = attribute.Value;
-				if (oldAttriMap.ContainsKey(mibName))
-				{
-					mli.m_strLatestValue = mli.m_strOriginValue;
-					mli.m_strOriginValue = oldAttriMap[mibName].m_strOriginValue;
-				}
-			}
+			//var oldAttriMap = oldDev.m_mapAttributes;
+			//foreach (var attribute in m_mapAttributes)
+			//{
+			//	var mibName = attribute.Key;
+			//	var mli = attribute.Value;
+			//	if (oldAttriMap.ContainsKey(mibName))
+			//	{
+			//		mli.m_strLatestValue = mli.m_strOriginValue;
+			//		mli.m_strOriginValue = oldAttriMap[mibName].m_strOriginValue;
+			//	}
+			//}
 
 			return true;
 		}
@@ -206,7 +206,7 @@ namespace NetPlan
 			m_mapAttributes = attributes;
 			m_strRsMibName = rsMl.childNameMib;
 
-			AddRowStatusToAttributeMap(rsMl, "6");
+			AddRowStatusToAttributeMap(rsMl, "4");
 
 			// 还需要加上索引列
 			if (!m_bIsScalar)
@@ -257,15 +257,7 @@ namespace NetPlan
 					return false;
 				}
 				var indexVale = MibStringHelper.GetRealValueFromIndex(m_strOidIndex, i);
-				var info = new MibLeafNodeInfo
-				{
-					m_strOriginValue = indexVale,
-					m_strLatestValue = indexVale,
-					m_bReadOnly = !indexColumn.IsEmpoweredModify(),
-					m_bVisible = true,
-					mibAttri = indexColumn
-				};
-
+				var info = new MibLeafNodeInfo(indexVale, !indexColumn.IsEmpoweredModify(), true, indexColumn);
 				m_mapAttributes.Add(indexColumn.childNameMib, info);
 			}
 			return true;

@@ -62,8 +62,12 @@ namespace CfgFileOperation
             g_strExcelPath = strExcelPath;
             g_mdbPath = strMdb;
         }
-
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strTabName"></param>
+        /// <param name="strFlag"></param>
+        /// <param name="cfgOp"></param>
         public void InsertPdgTab(string strTabName, string strFlag, CfgOp cfgOp)
         {
             if ("1" == strFlag || "2" == strFlag)
@@ -308,7 +312,7 @@ namespace CfgFileOperation
                 string nodeName = "";     //节点名NodeName, 
                 string nodeValue = "";    //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                 string strTableName = ""; //节点所属于的table
-                //if (iLine == 31)
+                //if (iLine == 693)
                 //    Console.WriteLine("===");
                 //if (isEndLine(ColVals, iLine))                     // 是否结束行
                 //    break;
@@ -316,7 +320,7 @@ namespace CfgFileOperation
                     continue;
                 if (!GetNodeName(ColVals, iLine, strFlag, out nodeName, out bIsIndex))// 是否为索引节点bIsIndex, 如果是索引节点是否为flag为2。
                     return false;
-                //if ("nrCellCfgPdcchDmrsPower" == nodeName)
+                //if ("nrSearchSpaceLcId" == nodeName)
                 //    Console.WriteLine("");
                 if (!GetNodeValueByFlag(ColVals, iLine, strFlag, out nodeValue))     //根据 Flag 取不同的值, 0,1取默认值，2取推荐值
                     continue;
@@ -337,7 +341,12 @@ namespace CfgFileOperation
                         Console.WriteLine("Err: 自相矛盾。标量表不能有索引节点");
                     }
                 }
-                
+                //List<string> logTableName = new List<string>() { "nrCsiRsCqiEntry", "nrCsiRsImEntry", };
+                //if (-1 != logTableName.FindIndex(e => String.Equals(e, m_strCurTableName) == true))
+                //{
+                //    Console.WriteLine("");
+                //}
+
                 //if ("nrCsiRsImEntry" == m_strCurTableName)
                 //    Console.WriteLine("");
 
@@ -500,7 +509,7 @@ namespace CfgFileOperation
             return true;
         }
         //2014-2-12 luoxin 处理多实例配置表节点
-        bool DealMoreConfigTable(string strNodeName, string strNodeValue, string strFlag, string strCurTableName,
+        bool DealMoreConfigTableOld(string strNodeName, string strNodeValue, string strFlag, string strCurTableName,
             int m_iCurTabIndexNum, string strPageName, List<string> m_vectIndexScope, List<string> m_vectIndexName)//, string m_strPlanIndex)
         {
             //string strIndex = "";
@@ -517,23 +526,156 @@ namespace CfgFileOperation
             //一维索引
             if (1 == m_iCurTabIndexNum)
             {
-                if (!DealMoreConfigTable1(strNodeName, strNodeValue, strFlag, strCurTableName,
+                if (!DealMoreConfigTable1Old(strNodeName, strNodeValue, strFlag, strCurTableName,
                     strPageName, m_vectIndexScope))
                     return false;
             }
             //二维索引
             if (2 == m_iCurTabIndexNum)
             {
-                DealMoreConfigTable2(strNodeName, strNodeValue, strFlag, strCurTableName,
+                DealMoreConfigTable2Old(strNodeName, strNodeValue, strFlag, strCurTableName,
                     strPageName, m_vectIndexScope);
             }
             //二维索引
             if (3 == m_iCurTabIndexNum)
             {
-                DealMoreConfigTable3(strNodeName, strNodeValue, strFlag, strCurTableName,
+                DealMoreConfigTable3Old(strNodeName, strNodeValue, strFlag, strCurTableName,
                     strPageName, m_vectIndexScope);
             }
 
+            return true;
+        }
+        /// <summary>
+        /// 一维索引 处理
+        /// </summary>
+        /// <param name="strNodeName"></param>
+        /// <param name="strNodeValue"></param>
+        /// <param name="strFlag"></param>
+        /// <param name="strCurTableName"></param>
+        /// <param name="strPageName"></param>
+        /// <returns></returns>
+        bool DealMoreConfigTable1Old(string strNodeName, string strNodeValue, string strFlag,
+            string strCurTableName, string strPageName, List<string> m_vectIndexScope)//, string m_strPlanIndex)
+        {
+            string strIndex = "." + m_vectIndexScope.Last();//一维索引
+
+            //2016-06-27 luoxin 判断实例是否在配置文件中存在
+            if (!InstanceIsExist(strIndex, strCurTableName))
+                return false;
+            //2016-06-27 luoxin end
+
+            //"gNB参数表"页的一维索引多配置全部表需要增加行状态
+            CfgTableOp curtable = m_reclTable[strCurTableName].tableInfo;
+            if (0 == String.Compare(strPageName, "gNB参数表", true))
+            {
+                string strTabAndIndex = strCurTableName + strIndex;
+                string strRowStatusName = curtable.GetRowStatusName();
+
+                //每条实例只增加一次行状态
+                if (0 != String.Compare(strTabAndIndex, m_strCurTabAndIndex, true))
+                {
+                    if (!WriteValueToBuffer(curtable, strIndex, strRowStatusName, "4"))//设置行有效
+                        return false;
+                    m_strCurTabAndIndex = strTabAndIndex;//记录当前的索引
+                }
+
+                //2014-4-23 luoxin DTMUC00212701 行状态需要增加到补丁文件中
+                if (strFlag == "1" || strFlag == "2")
+                {
+                    curtable.InsertInstOrLeaf(strIndex, strRowStatusName);
+                }
+                //2014-4-23 luoxin end
+            }
+
+            if (strFlag == "1" || strFlag == "2")
+            {
+                curtable.InsertInstOrLeaf(strIndex, strNodeName);
+            }
+
+            //更新节点值
+            if (!WriteValueToBuffer(curtable, strIndex, strNodeName, strNodeValue))
+                return false;
+
+            return true;
+        }
+        /// <summary>
+        /// 二维索引 处理
+        /// </summary>
+        /// <param name="strNodeName"></param>
+        /// <param name="strNodeValue"></param>
+        /// <param name="strFlag"></param>
+        /// <param name="strCurTableName"></param>
+        /// <param name="strPageName"></param>
+        /// <returns></returns>
+        bool DealMoreConfigTable2Old(string strNodeName, string strNodeValue, string strFlag,
+            string strCurTableName, string strPageName, List<string> m_vectIndexScope)//, string m_strPlanIndex)
+        {
+            string index1str = m_vectIndexScope[0];
+            string index2str = m_vectIndexScope[1];
+
+            Dictionary<int, List<int>> ValStrToInt = new Dictionary<int, List<int>>();
+            ParseIndexStrToInt(m_vectIndexScope, ValStrToInt);
+            for (int index1 = ValStrToInt[0][0]; index1 <= ValStrToInt[0][1]; index1++)
+            {
+                for (int index2 = ValStrToInt[1][0]; index2 <= ValStrToInt[1][1]; index2++)
+                {
+                    string strIndex = "." + index1 + "." + index2;
+                    //2016-06-27 luoxin 判断实例是否在配置文件中存在
+                    if (!InstanceIsExist(strIndex, strCurTableName))
+                        return false;
+                    //2016-06-27 luoxin end
+                    if (strFlag == "1" || strFlag == "2")
+                    {
+                        m_reclTable[strCurTableName].tableInfo.InsertInstOrLeaf(strIndex, strNodeName);
+                    }
+
+                    //更新节点值
+                    if (!WriteValueToBuffer(m_reclTable[strCurTableName].tableInfo, strIndex, strNodeName, strNodeValue))
+                        continue;
+                }
+            }
+            return true;
+        }
+        /// <summary>
+        /// 三维索引
+        /// </summary>
+        /// <param name="strNodeName"></param>
+        /// <param name="strNodeValue"></param>
+        /// <param name="strFlag"></param>
+        /// <param name="strCurTableName"></param>
+        /// <param name="strPageName"></param>
+        /// <param name="m_vectIndexScope"></param>
+        /// <returns></returns>
+        bool DealMoreConfigTable3Old(string strNodeName, string strNodeValue, string strFlag,
+            string strCurTableName, string strPageName, List<string> m_vectIndexScope)//, string m_strPlanIndex)
+        {
+            Dictionary<int, List<int>> ValStrToInt = new Dictionary<int, List<int>>();
+            ParseIndexStrToInt(m_vectIndexScope, ValStrToInt);
+
+            for (int index1 = ValStrToInt[0][0]; index1 <= ValStrToInt[0][1]; index1++)
+            {
+                for (int index2 = ValStrToInt[1][0]; index2 <= ValStrToInt[1][1]; index2++)
+                {
+                    for (int index3 = ValStrToInt[2][0]; index3 <= ValStrToInt[2][1]; index3++)
+                    {
+                        string strIndex = "." + index1 + "." + index2 + "." + index3;
+
+                        //2016-06-27 luoxin 判断实例是否在配置文件中存在
+                        if (!InstanceIsExist(strIndex, strCurTableName))
+                            return false;
+                        //2016-06-27 luoxin end
+
+                        if (strFlag == "1" || strFlag == "2")
+                        {
+                            m_reclTable[strCurTableName].tableInfo.InsertInstOrLeaf(strIndex, strNodeName);
+                        }
+
+                        //更新节点值
+                        if (!WriteValueToBuffer(m_reclTable[strCurTableName].tableInfo, strIndex, strNodeName, strNodeValue))
+                            continue;
+                    }
+                }
+            }
             return true;
         }
         //2014-2-12 luoxin 处理多实例配置表节点
@@ -585,60 +727,7 @@ namespace CfgFileOperation
         /// <param name="strPageName"></param>
         /// <returns></returns>
         bool DealMoreConfigTable1(string strNodeName, string strNodeValue, string strFlag,
-            string strCurTableName, string strPageName, List<string> m_vectIndexScope)//, string m_strPlanIndex)
-        {
-            string strIndex = "." + m_vectIndexScope.Last();//一维索引
-
-            //2016-06-27 luoxin 判断实例是否在配置文件中存在
-            if (!InstanceIsExist(strIndex, strCurTableName))
-                return false;
-            //2016-06-27 luoxin end
-
-            //"gNB参数表"页的一维索引多配置全部表需要增加行状态
-            CfgTableOp curtable = m_reclTable[strCurTableName].tableInfo;
-            if (0 == String.Compare(strPageName, "gNB参数表", true))
-            {
-                string strTabAndIndex = strCurTableName + strIndex;
-                string strRowStatusName = curtable.GetRowStatusName();
-
-                //每条实例只增加一次行状态
-                if (0 != String.Compare(strTabAndIndex, m_strCurTabAndIndex, true))
-                {
-                    if (!WriteValueToBuffer(curtable, strIndex, strRowStatusName, "4"))//设置行有效
-                        return false;
-                    m_strCurTabAndIndex = strTabAndIndex;//记录当前的索引
-                }
-
-                //2014-4-23 luoxin DTMUC00212701 行状态需要增加到补丁文件中
-                if (strFlag == "1" || strFlag == "2")
-                {
-                    curtable.InsertInstOrLeaf(strIndex, strRowStatusName);
-                }
-                //2014-4-23 luoxin end
-            }
-
-            if (strFlag == "1" || strFlag == "2")
-            {
-                curtable.InsertInstOrLeaf(strIndex, strNodeName);
-            }
-
-            //更新节点值
-            if (!WriteValueToBuffer(curtable, strIndex, strNodeName, strNodeValue))
-                return false;
-
-            return true;
-        }
-        /// <summary>
-        /// 一维索引 处理
-        /// </summary>
-        /// <param name="strNodeName"></param>
-        /// <param name="strNodeValue"></param>
-        /// <param name="strFlag"></param>
-        /// <param name="strCurTableName"></param>
-        /// <param name="strPageName"></param>
-        /// <returns></returns>
-        bool DealMoreConfigTable1(string strNodeName, string strNodeValue, string strFlag,
-            string strCurTableName, string strPageName, 
+            string strCurTableName, string strPageName,
             List<Dictionary<string, string>> m_indexInfo)//, string m_strPlanIndex)
         {
             string strIndex = "." + m_indexInfo[0].Values.ToList()[0];//一维索引
@@ -666,7 +755,11 @@ namespace CfgFileOperation
                 //2014-4-23 luoxin DTMUC00212701 行状态需要增加到补丁文件中
                 if (strFlag == "1" || strFlag == "2")
                 {
-                    curtable.InsertInstOrLeaf(strIndex, strRowStatusName);
+                    //curtable.InsertInstOrLeaf(strIndex, strRowStatusName);
+                    if (!SaveTableNodeByIndex(strCurTableName, strRowStatusName, strIndex))//找到每个实例下的所有叶子,做补丁文件
+                    {
+                        return false;
+                    }
                 }
                 //2014-4-23 luoxin end
             }
@@ -674,6 +767,10 @@ namespace CfgFileOperation
             if (strFlag == "1" || strFlag == "2")
             {
                 curtable.InsertInstOrLeaf(strIndex, strNodeName);
+                if (!SaveTableNodeByIndex(strCurTableName, strNodeName, strIndex))//找到每个实例下的所有叶子,做补丁文件
+                {
+                    return false;
+                }
             }
 
             //更新节点值
@@ -692,13 +789,11 @@ namespace CfgFileOperation
         /// <param name="strPageName"></param>
         /// <returns></returns>
         bool DealMoreConfigTable2(string strNodeName, string strNodeValue, string strFlag,
-            string strCurTableName, string strPageName, List<string> m_vectIndexScope)//, string m_strPlanIndex)
+            string strCurTableName, string strPageName,
+            List<Dictionary<string, string>> m_indexInfo)//, string m_strPlanIndex)
         {
-            string index1str = m_vectIndexScope[0];
-            string index2str = m_vectIndexScope[1];
-
             Dictionary<int, List<int>> ValStrToInt = new Dictionary<int, List<int>>();
-            ParseIndexStrToInt(m_vectIndexScope, ValStrToInt);
+            ParseIndexInfoStrToInt(m_indexInfo, ValStrToInt);
             for (int index1 = ValStrToInt[0][0]; index1 <= ValStrToInt[0][1]; index1++)
             {
                 for (int index2 = ValStrToInt[1][0]; index2 <= ValStrToInt[1][1]; index2++)
@@ -711,84 +806,10 @@ namespace CfgFileOperation
                     if (strFlag == "1" || strFlag == "2")
                     {
                         m_reclTable[strCurTableName].tableInfo.InsertInstOrLeaf(strIndex, strNodeName);
-                    }
-
-                    //更新节点值
-                    if (!WriteValueToBuffer(m_reclTable[strCurTableName].tableInfo, strIndex, strNodeName, strNodeValue))
-                        continue;
-                }
-            }
-            return true;
-        }
-        /// <summary>
-        /// 三维索引
-        /// </summary>
-        /// <param name="strNodeName"></param>
-        /// <param name="strNodeValue"></param>
-        /// <param name="strFlag"></param>
-        /// <param name="strCurTableName"></param>
-        /// <param name="strPageName"></param>
-        /// <param name="m_vectIndexScope"></param>
-        /// <returns></returns>
-        bool DealMoreConfigTable3(string strNodeName, string strNodeValue, string strFlag,
-            string strCurTableName, string strPageName, List<string> m_vectIndexScope)//, string m_strPlanIndex)
-        {
-            Dictionary<int, List<int>> ValStrToInt = new Dictionary<int, List<int>>();
-            ParseIndexStrToInt(m_vectIndexScope, ValStrToInt);
-
-            for (int index1 = ValStrToInt[0][0]; index1 <= ValStrToInt[0][1]; index1++)
-            {
-                for (int index2 = ValStrToInt[1][0]; index2 <= ValStrToInt[1][1]; index2++)
-                {
-                    for (int index3 = ValStrToInt[2][0]; index3 <= ValStrToInt[2][1]; index3++)
-                    {
-                        string strIndex = "." + index1 + "." + index2 + "." + index3;
-
-                        //2016-06-27 luoxin 判断实例是否在配置文件中存在
-                        if (!InstanceIsExist(strIndex, strCurTableName))
-                            return false;
-                        //2016-06-27 luoxin end
-
-                        if (strFlag == "1" || strFlag == "2")
+                        if (!SaveTableNodeByIndex(strCurTableName, strNodeName, strIndex))//找到每个实例下的所有叶子,做补丁文件
                         {
-                            m_reclTable[strCurTableName].tableInfo.InsertInstOrLeaf(strIndex, strNodeName);
+                            return false;
                         }
-
-                        //更新节点值
-                        if (!WriteValueToBuffer(m_reclTable[strCurTableName].tableInfo, strIndex, strNodeName, strNodeValue))
-                            continue;
-                    }
-                }
-            }
-            return true;
-        }
-        /// <summary>
-        /// 二维索引 处理
-        /// </summary>
-        /// <param name="strNodeName"></param>
-        /// <param name="strNodeValue"></param>
-        /// <param name="strFlag"></param>
-        /// <param name="strCurTableName"></param>
-        /// <param name="strPageName"></param>
-        /// <returns></returns>
-        bool DealMoreConfigTable2(string strNodeName, string strNodeValue, string strFlag,
-            string strCurTableName, string strPageName,
-            List<Dictionary<string, string>> m_indexInfo)//, string m_strPlanIndex)
-        {
-            Dictionary<int, List<int>> ValStrToInt = new Dictionary<int, List<int>>();
-            ParseIndexInfoStrToInt(m_indexInfo, ValStrToInt);
-            for (int index1 = ValStrToInt[0][0]; index1 <= ValStrToInt[0][1]; index1++)
-            {
-                for (int index2 = ValStrToInt[1][0]; index2 <= ValStrToInt[1][1]; index2++)
-                {
-                    string strIndex = "." + index1 + "." + index2;
-                    //2016-06-27 luoxin 判断实例是否在配置文件中存在
-                    if (!InstanceIsExist(strIndex, strCurTableName))
-                        return false;
-                    //2016-06-27 luoxin end
-                    if (strFlag == "1" || strFlag == "2")
-                    {
-                        m_reclTable[strCurTableName].tableInfo.InsertInstOrLeaf(strIndex, strNodeName);
                     }
 
                     //更新节点值
@@ -831,6 +852,10 @@ namespace CfgFileOperation
                         if (strFlag == "1" || strFlag == "2")
                         {
                             m_reclTable[strCurTableName].tableInfo.InsertInstOrLeaf(strIndex, strNodeName);
+                            if (!SaveTableNodeByIndex(strCurTableName, strNodeName, strIndex))//找到每个实例下的所有叶子,做补丁文件
+                            {
+                                return false;
+                            }
                         }
 
                         //更新节点值
@@ -946,15 +971,15 @@ namespace CfgFileOperation
             if (String.Empty == strTableName || "" == strTableName)
             {
                 Console.WriteLine(String.Format(
-                    "Err ({0}) m_mibTreeMem GetTableName({1}) from m_mibTreeMem is null, continue.(Mib中是否存在或其他原因).\n",
+                    "Err : ({0}) m_mibTreeMem GetTableName({1}) from m_mibTreeMem is null, continue.(Mib中是否存在或其他原因).\n",
                     nodeName, strTableName));
-                g_bw.Write(String.Format("Err ({0}) m_mibTreeMem GetTableName({1}) from m_mibTreeMem is null, continue.(Mib中是否存在或其他原因).\n", nodeName, strTableName).ToArray());
+                g_bw.Write(String.Format("Err : ({0}) m_mibTreeMem GetTableName({1}) from m_mibTreeMem is null, continue.(Mib中是否存在或其他原因).\n", nodeName, strTableName).ToArray());
                 return false;//continue;
             }
             if (!cfgOp.m_mapTableInfo.ContainsKey(strTableName))
             {
-                Console.WriteLine(String.Format("Err ({0}) m_mapTableInfo GetTableName({1}) null, continue.(Mib中'配置文件'是否有修改权限或其他原因).\n", nodeName, strTableName));
-                g_bw.Write(String.Format("Err ({0}) m_mapTableInfo GetTableName({1}) null, continue.(Mib中'配置文件'是否有修改权限或其他原因).\n", nodeName, strTableName).ToArray());
+                Console.WriteLine(String.Format("Err : ({0}) m_mapTableInfo GetTableName({1}) null, continue.(Mib中'配置文件'是否有修改权限或其他原因).\n", nodeName, strTableName));
+                g_bw.Write(String.Format("Err : ({0}) m_mapTableInfo GetTableName({1}) null, continue.(Mib中'配置文件'是否有修改权限或其他原因).\n", nodeName, strTableName).ToArray());
                 return false;
             }
             return true;
@@ -1047,7 +1072,7 @@ namespace CfgFileOperation
 
             if (nodeValue == "")
             {
-                g_bw.Write(String.Format("GetNodeValueByFlag lineNo({0}) nodeval is null, flag({1}).\n", 
+                g_bw.Write(String.Format("Err : GetNodeValueByFlag lineNo({0}) nodeval is null, flag({1}).\n", 
                     lineNo, strFlag).ToArray());
                 return false;
             }
@@ -1206,11 +1231,10 @@ namespace CfgFileOperation
         /// <summary>
         /// 写文件前的一些处理
         /// </summary>
-        /// <param name="cfgOp"></param>
         /// <param name="newFilePath"></param>
         /// <param name="strDBPath"></param>
         /// <returns></returns>
-        public bool CreateFilePdg_eNB(CfgOp cfgOp, string newFilePath, string strDBPath)
+        public bool CreateFilePdg_eNB( string newFilePath, string strDBPath)
         {
             WriteHeaderVersionInfoPDG(strDBPath);//Pdg文件头结构
             WriteDataHeadInfoPDG();              // 数据块头
@@ -1271,6 +1295,7 @@ namespace CfgFileOperation
             // 偏移块头 : 序列化
             foreach (var tabName in GetVectPDGTabName())
             {
+
                 byte[] tableOffset = BitConverter.GetBytes((uint)GetCfgTableOpByName(tabName).GetTableOffsetPDG());
                 //Array.Reverse(tableOffset);
                 allBuff.AddRange(tableOffset);
@@ -1279,7 +1304,7 @@ namespace CfgFileOperation
             //  表块 实例 : 序列化
             foreach (var tabName in GetVectPDGTabName())
             {
-                //if (String.Equals("nrCellCfgEntry", tabName))
+                //if (String.Equals("nrSearchSpaceEntry", tabName))
                 //{
                 //    Console.WriteLine("\n");
                 //}

@@ -66,6 +66,11 @@ namespace CfgFileOperation
                     iRet = 3;
                 }
             }
+            else if (string.Equals(strVal, "ParseCfgAndWrite"))
+            {
+                TestCfgParseFileToShow testToShow = new TestCfgParseFileToShow();
+                testToShow.TestMain(args);
+            }
             else
             {
             }
@@ -132,7 +137,6 @@ namespace CfgFileOperation
 
             return false;
         }
-
         /// <summary>
         /// 获取 数据块 的头
         /// </summary>
@@ -1652,7 +1656,7 @@ namespace CfgFileOperation
                 { "SelfDef" ,dataBasePath+selfDefExPath},
                 { "OutDir" , dataBasePath },
             };
-            cfgOp.CreatePatchAndInitCfg(bw, paths);
+            cfgOp.CreatePatchAndInitCfg4G(bw, paths);
 
             //清空缓冲区
             bw.Flush();
@@ -1661,17 +1665,12 @@ namespace CfgFileOperation
             fs.Close();
         }
         /// <summary>
-        /// 命令行生成
+        /// 解析参数成固定格式
         /// </summary>
-        /// <param name="paths"></param>
-        bool CmdlineCreateInitPatch(string[] args)
+        /// <param name="args"></param>
+        /// <returns></returns>
+        Dictionary<string, string> GetParamPath(string[] args)
         {
-            bool re = true;
-            if (args.Count() == 0)
-            {
-                Console.WriteLine("Err need input par Count is 0.\n");
-                return false;
-            }
             Dictionary<string, string> path = new Dictionary<string, string>();
             foreach (var par in args)
             {
@@ -1685,6 +1684,21 @@ namespace CfgFileOperation
                     Console.WriteLine(String.Format("Cmdline CreateInitPatch par: key({0}), val({1}).\n", key, val));
                 }
             }
+            return path;
+        }
+        /// <summary>
+        /// 命令行生成
+        /// </summary>
+        /// <param name="paths"></param>
+        bool CmdlineCreateInitPatch(string[] args)
+        {
+            bool re = true;
+            if (args.Count() == 0)
+            {
+                Console.WriteLine("Err need input par Count is 0.\n");
+                return false;
+            }
+            Dictionary<string, string> path = GetParamPath(args);
             if (!path.ContainsKey("OutDir") || !Directory.Exists(path["OutDir"]))
             {
                 Console.WriteLine("Err need output dir info...\n");
@@ -1698,7 +1712,7 @@ namespace CfgFileOperation
             Console.WriteLine(String.Format("....CmdlineCreateInitPatch Start... Time is ") + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒"));
             try
             {
-                re = new CfgOp().CreatePatchAndInitCfg(bw, path);
+                re = new CfgOp().CreatePatchAndInitCfg5G(bw, path);
             }
             catch
             {

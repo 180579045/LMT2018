@@ -54,10 +54,109 @@ namespace CfgFileOperation
             //m_dataHeadInfo = new StruDataHead("init");
             m_bEmptyCfg = true;// 初始化为空cfg
         }
+        #region 生成配置文件 4G,5G,init,patch
         /// <summary>
-        /// 创建 init.cfg path_ex.cfg
+        /// 创建4G init.cfg path_ex.cfg
         /// </summary>
-        public bool CreatePatchAndInitCfg(BinaryWriter bw, Dictionary<string, string> paths)
+        public bool CreatePatchAndInitCfg4G(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            string err;
+            bw.Write(String.Format("CreatePatchAndInitCfg start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg start ...\n"));
+            // 校验文件地址
+            if (!IsAllPathValid(paths, out err))
+            {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: {0}, 不能生成init和patch.\n", err).ToArray());
+                Console.WriteLine(String.Format("{0}, 不能生成init和patch", err));
+                return false;
+            }
+
+            //public RRU信息、告警信息、天线信息、lm.mdb
+            bw.Write(String.Format("CreatCfg_public start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg_public start ...\n"));
+            if (!CreatCfg_public(bw, paths))
+            {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成公共数据部分失败！\n").ToArray());
+                Console.WriteLine(String.Format("生成公共数据部分失败！"));
+                return false;
+            }
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_public OK.\n").ToArray());
+
+            // 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
+            bw.Write(String.Format("CreatePatchAndInitCfg start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg start ...\n"));
+            if (!CreatCfg_init_cfg(bw, paths))
+            {
+                bw.Write(String.Format("CreatePatchAndInitCfg err: 生成init.cfg失败！\n").ToArray());
+                Console.WriteLine(String.Format("生成init.cfg失败！"));
+                return false;
+            }
+            Console.WriteLine(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n"));
+            bw.Write(String.Format("CreatePatchAndInitCfg : CreatCfg_init_cfg OK.\n").ToArray());
+            bw.Write(String.Format("CreatePatchAndInitCfg end.\n").ToArray());
+            return true;
+        }
+        /// <summary>
+        /// 5G规则 : 制作 init,patch
+        /// </summary>
+        /// <param name="bw"></param>
+        /// <param name="paths"></param>
+        /// <returns></returns>
+        public bool CreatePatchAndInitCfg5G(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            string err;
+            bw.Write(String.Format("Create 5G cfg(init,patch) file, start ...\n").ToArray());
+            Console.WriteLine(String.Format("Create 5G cfg(init,patch) file, start ...\n"));
+            // 校验文件地址
+            if (!IsAllPathValid(paths, out err))
+            {
+                bw.Write(String.Format("Create 5G Cfg err: {0}, not create init and patch files.\n", err).ToArray());
+                Console.WriteLine(String.Format("Create 5G Cfg err: {0}, not create init and patch files.\n", err));
+                return false;
+            }
+
+            //public RRU信息、告警信息、天线信息、lm.mdb
+            bw.Write(String.Format("CreatCfg 5G [public info]: start ...\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: start ...\n"));
+            if (!CreatCfg_public(bw, paths))
+            {
+                bw.Write(String.Format("CreatCfg 5G [public info] : err, create public info falsed!\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [public info] : err, create public info falsed!"));
+                return false;
+            }
+            Console.WriteLine(String.Format("CreatCfg 5G [public info] : create public info success.\n"));
+            bw.Write(String.Format("CreatCfg 5G [public info] : create public info success.\n").ToArray());
+
+            // 生成init.cfg    : 自定义(init)、 生成 init.cfg 文件 
+            bw.Write(String.Format("CreatCfg 5G [init info] : start...\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : start ...\n"));
+            if (!CreatCfg_init_cfg(bw, paths))
+            {
+                bw.Write(String.Format("CreatCfg 5G [init info] : err, create init.cfg falsed!\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [init info] : err, create init.cfg falsed!\n"));
+                return false;
+            }
+            bw.Write(String.Format("CreatCfg 5G [init info] : end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : end.\n"));
+
+            //生成patch_ex.cfg : lm.mdb 以每行为单位加载、reclist、自定义(patch)，生成patch_ex.cfg
+            bw.Write(String.Format("CreatCfg 5G [patch info] : start...\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [patch info] : start ...\n"));
+            if (!CreatCfg_patch_ex_cfg_5G(bw, paths))
+            {
+                bw.Write(String.Format("CreatCfg 5G [init info] : err, create patch_ex.cfg falsed!\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [init info] : err, create patch_ex.cfg falsed!\n"));
+                return false;
+            }
+            bw.Write(String.Format("CreatCfg 5G [patch info] : end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [patch info] : end.\n"));
+            return true;
+        }
+        /// <summary>
+        /// 创建 init.cfg
+        /// </summary>
+        public bool CreateInitCfg(BinaryWriter bw, Dictionary<string, string> paths)
         {
             string err;
             bw.Write(String.Format("CreatePatchAndInitCfg start ...\n").ToArray());
@@ -104,7 +203,6 @@ namespace CfgFileOperation
             bw.Write(String.Format("CreatePatchAndInitCfg end.\n").ToArray());
             return true;
         }
-
         /// <summary>
         /// 创建 init.cfg path_ex.cfg
         /// </summary>
@@ -146,6 +244,85 @@ namespace CfgFileOperation
             bw.Write(String.Format("CreatePatch end.\n").ToArray());
             return true;
         }
+        /// <summary>
+        /// 根据 5G patch_ex特性, 对表和实例进行修改
+        /// </summary>
+        /// <param name="paths"></param>
+        bool CreatCfg_patch_ex_cfg_5G(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            bool re = true;
+            //patch-1. lm.mdb 以每行为单位加载, reclist使用 
+            Console.WriteLine(String.Format("CreatCfg 5G [patch info] : Parsing ReadMibTreeToMemory ..\n"));
+            bw.Write(String.Format("CreatCfg 5G [patch info] : Parsing ReadMibTreeToMemory ..\n").ToArray());
+            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
+            if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
+            {
+                re = false;
+                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.\n"));
+                bw.Write(String.Format("CreatCfg 5G [patch info] : Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.\n").ToArray());
+                return re;
+            }
+            Console.WriteLine(String.Format("CreatCfg 5G [patch info] : Parsed ReadMibTreeToMemory end .\n"));
+            bw.Write(String.Format("CreatCfg 5G [patch info] : Parsed ReadMibTreeToMemory end .\n").ToArray());
+
+            // 打印内存
+            //LogPrintByM_mibTreeMem();
+            //LogPrintByM_mapTableInfo();
+
+            foreach (string UeType in new string[] { "3:华为", })// "0:升级发布", "1:展讯", "2:e500",  "4:恢复默认配置" })
+            {
+                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : CfgParseReclistExcel({0})-({1}) start...\n", paths["Reclist"], UeType));
+                bw.Write(String.Format("CreatCfg 5G [patch info] : CfgParseReclistExcel({0})-({1}) start...\n", paths["Reclist"], UeType).ToArray());
+
+                CfgParseReclistExcel5G m_reclist5G = new CfgParseReclistExcel5G(bw, paths["Reclist"], paths["DataMdb"]);
+                //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
+                if (!m_reclist5G.ProcessingExcel(UeType, this))
+                {
+                    bw.Write(String.Format("CreatCfg 5G [patch info] : Err CfgParseReclistExcel5G ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
+                    Console.WriteLine(String.Format("CreatCfg 5G [patch info] : Err CfgParseReclistExcel5G ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType));
+                    m_reclist5G = null;
+                    re = false;
+                    continue;
+                }
+
+                //patch-3. 自定义 (patch)
+                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : ProcessingSelfPatch-patch({0}) start...\n", paths["SelfDef"]));
+                bw.Write(String.Format("CreatCfg 5G [patch info] : ProcessingSelfPatch-patch({0}) start...\n", paths["SelfDef"]).ToArray());
+                if (!m_reclist5G.ProcessingSelfPatch(paths["SelfDef"], this, UeType))
+                {
+                    re = false;
+                    Console.WriteLine(String.Format("CreatCfg 5G [patch info] : Err ProcessingSelfPatch ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType));
+                    bw.Write(String.Format("CreatCfg 5G [patch info] : Err ProcessingSelfPatch ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
+                    m_reclist5G = null;
+                    continue;
+                }
+                //patch-4. 创建patch_ex.cfg
+                if (!m_reclist5G.CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]))
+                {
+                    re = false;
+                    bw.Write(String.Format("Err CreateFilePdg_eNB ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
+                    m_reclist5G = null;
+                    continue;
+                }
+                //写文件
+                string strUeType = UeType.Substring(0, UeType.IndexOf(":"));
+                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : write patch({0}) start...\n", paths["OutDir"] + strUeType + "patch_ex.cfg"));
+                bw.Write(String.Format("CreatCfg 5G [patch info] : write patch({0}) start...\n", paths["OutDir"] + strUeType + "patch_ex.cfg").ToArray());
+                if (!m_reclist5G.SaveFilePdg_eNB(paths["OutDir"] + strUeType + "patch_ex.cfg"))
+                {
+                    re = false;
+                    bw.Write(String.Format("Err SaveFilePdg_eNB ({0}) return Err, can not create ({1}).\n", UeType, strUeType + "patch_ex.cfg").ToArray());
+                    m_reclist5G = null;
+                    continue;
+                }
+                m_reclist5G = null;
+                Console.WriteLine(String.Format("CreatCfg 5G [patch info] : write patch end.\n"));
+                bw.Write(String.Format("CreatCfg 5G [patch info] : write patch end.\n").ToArray());
+            }
+            return re;
+        }
+        #endregion
+
         /// <summary>
         /// 验证每个文件是否存在
         /// </summary>
@@ -202,8 +379,8 @@ namespace CfgFileOperation
         {
             bool re = true;
             //public-1. RRU信息
-            bw.Write(String.Format("Parsing rru({0})..\n", paths["RruInfo"]).ToArray());
-            Console.WriteLine(String.Format("Parsing rru({0})..\n", paths["RruInfo"]));
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing rru({0})...\n", paths["RruInfo"]).ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing rru({0})...\n", paths["RruInfo"]));
             try {
                 m_rruExcel = new CfgParseRruExcel();
                 if (false == m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表"))
@@ -211,36 +388,36 @@ namespace CfgFileOperation
             }
             catch {
                 re = false;
-                bw.Write(String.Format("Parsed rru Death.\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: Parsed rru Death.\n").ToArray());
                 return re;
             }
-            bw.Write(String.Format("Parsed rru end.\n").ToArray());
-            Console.WriteLine(String.Format("Parsed rru end.\n"));
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed rru end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed rru end.\n"));
 
             //public-2. 告警信息
             //在CreateCfgFile中就解析了
-            bw.Write(String.Format("Parsing alarm({0})..\n", paths["Alarm"]).ToArray());
-            Console.WriteLine(String.Format("Parsing alarm({0})..\n", paths["Alarm"]));
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing alarm({0})..\n", paths["Alarm"]).ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing alarm({0})..\n", paths["Alarm"]));
             m_alarmExcel = new CfgParseAlarmExecl();
             m_alarmExcel.ParseExcel(paths["Alarm"]);
-            bw.Write(String.Format("Parsed alarm end.\n").ToArray());
-            Console.WriteLine(String.Format("Parsed alarm end.\n"));
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed alarm end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed alarm end.\n"));
 
             //public-3. 天线信息
             m_antennaExcel = new CfgParseAntennaExcel();
 
             //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
-            bw.Write(String.Format("Parsing Create public file....\n").ToArray());
-            Console.WriteLine(String.Format("Parsing Create public file....\n"));
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing Create public file body....\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing Create public file body....\n"));
             if (false == CreateCfgFile(bw, paths))
             {
                 re = false;
-                bw.Write(String.Format("Err CreateCfgFile, stop.\n").ToArray());
-                Console.WriteLine(String.Format("Err CreateCfgFile, stop."));
+                bw.Write(String.Format("CreatCfg 5G [public info]: Err parsing Create public file body err, stop.\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [public info]: Err parsing Create public file body err, stop.\n"));
                 return false;
             }
-            bw.Write(String.Format("Parsed Create public file end.\n").ToArray());
-            Console.WriteLine(String.Format("Parsed Create public file end.\n"));
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed Create public file end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed Create public file end.\n"));
             return re;
         }
         /// <summary>
@@ -250,11 +427,19 @@ namespace CfgFileOperation
         bool CreatCfg_init_cfg(BinaryWriter bw, Dictionary<string, string> paths)
         {
             //init-1. 自定义 (init)
+            bw.Write(String.Format("CreatCfg 5G [init info] : parsing selfDef-init({0}) start...\n", paths["SelfDef"]).ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : parsing selfDef-init({0}) start...\n", paths["SelfDef"]));
             m_selfExcel = new CfgParseSelfExcel();
             m_selfExcel.ProcessingExcel(bw ,paths["SelfDef"], paths["DataMdb"], "init", this);
+            bw.Write(String.Format("CreatCfg 5G [init info] : parsed selfDef-init.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : parsed selfDef-init.\n"));
 
             //init-2. 生成 init.cfg 文件
+            bw.Write(String.Format("CreatCfg 5G [init info] : write init.cfg({0}) start...\n", paths["OutDir"] + "init.cfg").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : write init.cfg({0}) start...\n", paths["OutDir"] + "init.cfg"));
             SaveFile_eNB(paths["OutDir"] + "init.cfg");
+            bw.Write(String.Format("CreatCfg 5G [init info] : write init.cfg end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : write init.cfg end.\n"));
             return true;
         }
         /// <summary>
@@ -285,7 +470,9 @@ namespace CfgFileOperation
             SaveFilePdg_eNB(paths["OutDir"] + "patch_ex.cfg");
             return true;
         }
-
+        /// <summary>
+        /// log : lm.mdb : Mib Tree
+        /// </summary>
         void LogPrintByM_mibTreeMem()
         {
             // 打印 m_mibTreeMem 叶子名
@@ -300,6 +487,9 @@ namespace CfgFileOperation
             bw_2.Close();//关闭流
             fs2.Close();
         }
+        /// <summary>
+        /// CfgFileOp : m_mapTableInfo
+        /// </summary>
         void LogPrintByM_mapTableInfo()
         {
             // 打印 m_mapTableInfo 表名
@@ -314,76 +504,7 @@ namespace CfgFileOperation
             fs2.Close();
         }
 
-
-        /// <summary>
-        /// 根据 5G patch_ex特性, 对表和实例进行修改
-        /// </summary>
-        /// <param name="paths"></param>
-        bool CreatCfg_patch_ex_cfg_5G(BinaryWriter bw, Dictionary<string, string> paths)
-        {
-            bool re = true;
-            //patch-1. lm.mdb 以每行为单位加载, reclist使用 
-            Console.WriteLine(String.Format("Parsing ReadMibTreeToMemory ..\n"));
-            bw.Write(String.Format("Parsing ReadMibTreeToMemory ..\n").ToArray());
-            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
-            {
-                re = false;
-                bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.\n").ToArray());
-                return re;
-            }
-            Console.WriteLine(String.Format("Parsed ReadMibTreeToMemory end .\n"));
-            bw.Write(String.Format("Parsed ReadMibTreeToMemory end .\n").ToArray());
-            // 打印内存
-            //LogPrintByM_mibTreeMem();
-            //LogPrintByM_mapTableInfo();
-
-            //
-            foreach (string UeType in new string[] { "3:华为", })// "0:升级发布", "1:展讯", "2:e500",  "4:恢复默认配置" })
-            {
-                Console.WriteLine(String.Format("CfgParseReclistExcel ({0}) start...\n", UeType));
-                bw.Write(String.Format("CfgParseReclistExcel ({0}) start...\n", UeType).ToArray());
-                CfgParseReclistExcel5G m_reclist5G = new CfgParseReclistExcel5G(bw, paths["Reclist"], paths["DataMdb"]);
-                //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
-                if (!m_reclist5G.ProcessingExcel(UeType, this))
-                {
-                    bw.Write(String.Format("Err CfgParseReclistExcel5G ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
-                    m_reclist5G = null;
-                    re = false;
-                    continue;
-                }
-                //patch-3. 自定义 (patch)
-                if (!m_reclist5G.ProcessingSelfPatch(paths["SelfDef"], this, UeType))
-                {
-                    re = false;
-                    bw.Write(String.Format("Err ProcessingSelfPatch ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
-                    m_reclist5G = null;
-                    continue;
-                }
-                //patch-4. 创建patch_ex.cfg
-                if (!m_reclist5G.CreateFilePdg_eNB(this, "patch_ex.cfg", paths["DataMdb"]))
-                {
-                    re = false;
-                    bw.Write(String.Format("Err CreateFilePdg_eNB ({0}) return Err, can not create ({0})patch_ex.cfg.\n", UeType).ToArray());
-                    m_reclist5G = null;
-                    continue;
-                }
-                //写文件
-                string strUeType = UeType.Substring(0, UeType.IndexOf(":"));
-                if (!m_reclist5G.SaveFilePdg_eNB(paths["OutDir"] + strUeType + "patch_ex.cfg"))
-                {
-                    re = false;
-                    bw.Write(String.Format("Err SaveFilePdg_eNB ({0}) return Err, can not create ({1}).\n", UeType, strUeType + "patch_ex.cfg").ToArray());
-                    m_reclist5G = null;
-                    continue;
-                }
-                m_reclist5G = null;
-                Console.WriteLine(String.Format("CfgParseReclistExcel ({0}) end.\n\n", UeType));
-                bw.Write(String.Format("CfgParseReclistExcel ({0}) end.\n\n", UeType).ToArray());
-            }
-            return re;
-        }
-
+        
         /// <summary>
         /// lm.mdb 更新加载数据，整理成表和表实例的结构
         /// </summary>
@@ -570,8 +691,8 @@ namespace CfgFileOperation
                 TableOffset = CreatCfgFile_tabInfo(bw, MibdateSet.Tables[0].Rows[loop], null, paths, TableOffset, out re);
                 if (re != true)
                 {
-                    Console.WriteLine(String.Format("Err : CreatCfgFile_tabInfo table({0}) return false.\n", MibdateSet.Tables[0].Rows[loop]["MIBName"].ToString()));
-                    bw.Write(String.Format("Err : CreatCfgFile_tabInfo table({0}) return false.\n", MibdateSet.Tables[0].Rows[loop]["MIBName"].ToString()).ToArray());
+                    Console.WriteLine(String.Format("CreatCfg 5G [public info]: Err, CreatCfgFile_tabInfo table({0}) return false.\n", MibdateSet.Tables[0].Rows[loop]["MIBName"].ToString()));
+                    bw.Write(String.Format("CreatCfg 5G [public info]: Err, CreatCfgFile_tabInfo table({0}) return false.\n", MibdateSet.Tables[0].Rows[loop]["MIBName"].ToString()).ToArray());
                     break;
                 }
             }
@@ -628,28 +749,6 @@ namespace CfgFileOperation
             }
             return true;
         }
-        /// <summary>
-        /// 根据 sql 获取数据库信息
-        /// </summary>
-        /// <param name="fileName"></param>
-        /// <param name="sqlContent"></param>
-        /// <returns></returns>
-        //public DataSet CfgGetRecordByAccessDb(string fileName, string sqlContent)
-        //{
-        //    DataSet dateSet = new DataSet();
-        //    AccessDBManager mdbData = new AccessDBManager(fileName);//fileName = "D:\\C#\\SCMT\\lm.mdb";
-        //    try
-        //    {
-        //        mdbData.Open();
-        //        dateSet = mdbData.GetDataSet(sqlContent);
-        //        mdbData.Close();
-        //    }
-        //    finally
-        //    {
-        //        mdbData = null;
-        //    }
-        //    return dateSet;
-        //}
         /// <summary>
         /// 数据块的头
         /// </summary>
@@ -980,33 +1079,53 @@ namespace CfgFileOperation
             int[] indexValue = new int[6];//索引值
             if (string.Equals("alarmCauseEntry", strTableName) && (isDyTable == true))//告警原因 // alarm info
             {
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing alarmCauseEntry...\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [public info]: parsing alarmCauseEntry...\n"));
                 CreateSpecialTalbeAlarmCauseEntryByExcel(tableRow, tableOp, paths["Alarm"], leafNum);
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed alarmCauseEntry.\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [public info]: parsed alarmCauseEntry...\n"));
             }
             else if (string.Equals("antennaArrayTypeEntry", strTableName))//天线器件库信息-天线阵//2012-06-25 luoxin DTMUC00104224 创建配置文件时器件库表下天线阵类型表不做动态表处理，记录设为空
             {
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing antennaArrayTypeEntry...\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing antennaArrayTypeEntry...\n").ToArray());
                 RecordInstanceMain(tableOp, isDyTable, strTableContent);//实例信息
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed antennaArrayTypeEntry.\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed antennaArrayTypeEntry...\n").ToArray());
             }
             else if (string.Equals("rruTypeEntry", strTableName) && (isDyTable == true))//器件库表-射频单元设备类型
             {
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing rruTypeEntry...\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing rruTypeEntry...\n").ToArray());
                 if (!CreateSpecialTalbeRruTypeByEx(bw, tableRow, tableOp, leafNum))
                 {
-                    Console.WriteLine(String.Format("Err : CreateSpecialTalbeRruPortTypeByEx return false.\n"));
-                    bw.Write(String.Format("Err CreateSpecialTalbeRruTypeByEx return false.\n").ToArray());
+                    Console.WriteLine(String.Format("CreatCfg 5G [public info]: Err, rruTypePortEntry return false.\n"));
+                    bw.Write(String.Format("CreatCfg 5G [public info]: Err rruTypePortEntry return false.\n").ToArray());
                     return false;
                 }
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed rruTypeEntry.\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed rruTypeEntry...\n").ToArray());
             }
             else if (string.Equals("rruTypePortEntry", strTableName) && (isDyTable == true))//器件库表-射频单元射频通道设备
             {
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing rruTypePortEntry...\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing rruTypePortEntry...\n").ToArray());
                 if (!CreateSpecialTalbeRruPortTypeByEx(bw, tableRow, tableOp, leafNum))
                 {
-                    Console.WriteLine(String.Format("Err CreateSpecialTalbeRruPortTypeByEx return false.\n"));
-                    bw.Write(String.Format("Err CreateSpecialTalbeRruPortTypeByEx return false.\n").ToArray());
+                    Console.WriteLine(String.Format("CreatCfg 5G [public info]: Err, rruTypePortEntry return false.\n"));
+                    bw.Write(String.Format("CreatCfg 5G [public info]: Err rruTypePortEntry return false.\n").ToArray());
                     return false;
                 }
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed rruTypePortEntry.\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed rruTypePortEntry...\n").ToArray());
             }
             else if (string.Equals("antennaBfScanWeightEntry", strTableName))
             {
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing antennaBfScanWeightEntry...\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsing antennaBfScanWeightEntry...\n").ToArray());
                 CreateSpecialTalbeAntennaBfScanByEx(tableRow, tableOp, paths["Antenna"], leafNum);
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed antennaBfScanWeightEntry.\n").ToArray());
+                bw.Write(String.Format("CreatCfg 5G [public info]: parsed antennaBfScanWeightEntry...\n").ToArray());
             }
             return true;
         }
@@ -2380,7 +2499,6 @@ namespace CfgFileOperation
             
             return re;
         }
-
         /// <summary>
         /// 类型转换为byte[]
         /// </summary>
@@ -2812,7 +2930,12 @@ namespace CfgFileOperation
             a.u32IcFileVer = 12;
             Console.WriteLine(System.Runtime.InteropServices.Marshal.SizeOf(a));
         }
-
+        /// <summary>
+        /// 例子
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
         public static T DeepCopy<T>(T obj)
         {
             object retval;

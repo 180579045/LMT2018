@@ -17,6 +17,11 @@ namespace CfgFileOperation
         public StruCfgFileFieldInfo m_struFieldInfo;
         public StruMibNode m_struMibNode;
         
+        /// <summary>
+        /// 生成文件公共信息时使用
+        /// </summary>
+        /// <param name="leafRow"></param>
+        /// <param name="buflen"></param>
         public CfgFileLeafNodeOp(DataRow leafRow, ushort buflen)
         {
             m_struFieldInfo = new StruCfgFileFieldInfo("init");
@@ -24,6 +29,14 @@ namespace CfgFileOperation
 
             m_struFieldInfo.SetAllParmsInfo(leafRow, buflen);
             m_struMibNode.SetAllParmsInfo(leafRow);// 叶子节点 StruMibNode m_struMibNode
+        }
+        /// <summary>
+        /// 把文件解析到内存结构时用
+        /// </summary>
+        /// <param name="struFieldInfo"></param>
+        public CfgFileLeafNodeOp(StruCfgFileFieldInfo struFieldInfo) {
+            m_struFieldInfo = (StruCfgFileFieldInfo)struFieldInfo.DeepCopy();
+            m_struMibNode = new StruMibNode();
         }
         private CfgFileLeafNodeOp() { }
         /// <summary>

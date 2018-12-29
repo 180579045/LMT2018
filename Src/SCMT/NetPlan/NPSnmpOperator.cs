@@ -310,21 +310,21 @@ namespace NetPlan
 			}
 
 			// 判断是否存在于result中
-			if (!mapOidAndValue.ContainsKey(strOid))
+			if (!mapOidAndValue.ContainsKey(strOid) && !mibLeaf.IsRowStatus())
 			{
+				Log.Error($"当前不包含 {strOid}，mib name {mibLeaf.childNameMib}。可能是Get命令中不包含这一项");
 				return null;
 			}
 
-			var realValue = SnmpToDatabase.ConvertValueToString(mibLeaf, mapOidAndValue[strOid]);
-			// 该表项有值，就处理
-			var info = new MibLeafNodeInfo
+			var strRv = "4";
+			if (mapOidAndValue.ContainsKey(strOid))
 			{
-				m_strOriginValue = realValue,
-				m_strLatestValue = realValue,
-				mibAttri = mibLeaf,
-				m_bReadOnly = !mibLeaf.IsEmpoweredModify(),			// 索引只读
-				m_bVisible = !mibLeaf.IsRowStatus()					// 行状态不显示
-			};
+				strRv = mapOidAndValue[strOid];
+			}
+
+			var realValue = SnmpToDatabase.ConvertValueToString(mibLeaf, strRv);
+			// 该表项有值，就处理
+			var info = new MibLeafNodeInfo(realValue, !mibLeaf.IsEmpoweredModify(), !mibLeaf.IsRowStatus(), mibLeaf);
 
 			return info;
 		}
@@ -401,14 +401,7 @@ namespace NetPlan
 						continue;
 					}
 
-					info = new MibLeafNodeInfo
-					{
-						m_strOriginValue = realValue,
-						m_strLatestValue = realValue,
-						mibAttri = childLeaf,
-						m_bReadOnly = !childLeaf.IsEmpoweredModify(),		// 索引只读
-						m_bVisible = !childLeaf.IsRowStatus()				// 行状态不显示
-					};
+					info = new MibLeafNodeInfo(realValue, true, true, childLeaf);
 				}
 				else
 				{

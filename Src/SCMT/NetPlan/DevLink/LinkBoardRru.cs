@@ -484,8 +484,8 @@ namespace NetPlan
 		/// <returns></returns>
 		private bool SetRruToBoardInfo(DevAttributeInfo rruDev, int nRruPort, DevAttributeInfo boardDev, int nBoardPort)
 		{
-			if (null == rruDev || nRruPort < 0 || nRruPort > MagicNum.RRU_TO_BBU_PORT_CNT - 1 ||
-				null == boardDev || nBoardPort < 0 || nBoardPort > MagicNum.BBU_IR_PORT_CNT - 1)
+			if (null == rruDev || nRruPort < 0 || nRruPort >= MagicNum.RRU_TO_BBU_PORT_CNT ||
+				null == boardDev || nBoardPort < 0 || nBoardPort >= MagicNum.BBU_IR_PORT_CNT)
 			{
 				return false;
 			}

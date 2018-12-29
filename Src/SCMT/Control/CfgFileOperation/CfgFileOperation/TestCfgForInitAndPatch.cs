@@ -31,8 +31,7 @@ namespace CfgFileOperation
         public void BeyondComparePatchExCfgMain(string[] args)
         {
             string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
-
-            string writelog = dataBasePath+"5GCfg\\80patch20181224\\output\\" + "BeyondCompareWritePatchBuf.txt";
+            string writelog = dataBasePath+"5GCfg\\80patch20181224\\output\\" + "LogBeCompPatch.txt";
             FileStream fs = new FileStream( writelog, FileMode.Create);
             //实例化BinaryWriter
             BinaryWriter bw = new BinaryWriter(fs);
@@ -50,39 +49,61 @@ namespace CfgFileOperation
                     parInfo.Add(strName, strInfo);
                 }
             }
-
-            //string dataBasePath = "D:\\Git_pro\\SCMT\\Src\\SCMT\\Control\\CfgFileOperation\\CfgFileOperation\\bin\\Debug\\";
-            string YSFilePath = dataBasePath + "5GCfg\\cfg_20181219\\patch_hw.cfg";
-            string NewFilePath = dataBasePath + "5GCfg\\80patch20181224\\31patch_ex.cfg";
-
-            Dictionary<string, string> parInfo2 = new Dictionary<string, string>()
-            { { "FilePathA",YSFilePath},{ "FilePathB",NewFilePath},{ "DataMdb", parInfo[ "DataMdb"]},};
+            
             string err = "";
-            if (IsAllPathValid(parInfo2, out err))
+            if (IsAllPathValid(parInfo, out err))
             {
                 //// 文件的头比较
-                if (!ByCpFileHeadInfo(bw, YSFilePath, NewFilePath))
+                if (!ByCpFileHeadInfo(bw, parInfo["FilePathA"], parInfo["FilePathB"]))
                 {
-                    Console.WriteLine("file head info not all same.");
-                    bw.Write("file head info not all same.\n".ToArray());
+                    Console.WriteLine("Err : file head info not all same.");
+                    bw.Write("Err : file head info not all same.\n".ToArray());
                     //re = false;
                     //return re;
                 }
+                else
+                {
+                    Console.WriteLine("file head info all same.\n");
+                    bw.Write("file head info all same.\n".ToArray());
+                }
+                // 少数据块的比较
+                if (!TestBeyondCompFileDataHead(bw, parInfo["FilePathA"], parInfo["FilePathB"]))
+                {
+                    Console.WriteLine("DataHead info not all same.\n");
+                    bw.Write("DataHead info not all same.\n".ToArray());
+                }
+                else
+                {
+                    Console.WriteLine("DataHead info all same.\n");
+                    bw.Write("DataHead info all same.\n".ToArray());
+                }
+
                 // 比较 表名是否一致
-                if (!TestBeyondCompFileTableNameMain(bw, YSFilePath, NewFilePath))
+                if (!TestBeyondCompFileTableNameMain(bw, parInfo["FilePathA"], parInfo["FilePathB"]))
                 {
                     Console.WriteLine("tables name not all same.");
-                    bw.Write("tables name not all same.\n");
+                    bw.Write("tables name not all same.\n".ToArray());
                     //re = false;
                     //return re;
                 }
+                else
+                {
+                    Console.WriteLine("tables name all same.\n");
+                    bw.Write("tables name all same.\n".ToArray());
+                }
+                //TestGetTableInfo(bw, parInfo["FilePathA"], parInfo["FilePathB"], parInfo);
                 // 比较 每个表的内容
-                if (!TestBeyondComFileTableInfoMain(bw, YSFilePath, NewFilePath, parInfo2))
+                if (!TestBeyondComFileTableInfoMain(bw, parInfo["FilePathA"], parInfo["FilePathB"], parInfo))
                 {
                     Console.WriteLine("tables info not all same.");
-                    bw.Write("tables info not all same.\n");
+                    bw.Write("tables info not all same.\n".ToArray());
                     //re = false;
                     //return re;
+                }
+                else
+                {
+                    Console.WriteLine("tables info all same.\n");
+                    bw.Write("tables info all same.\n");
                 }
                 // re;
             }
@@ -223,7 +244,7 @@ namespace CfgFileOperation
         /// <param name="HeadA"></param>
         /// <param name="HeadB"></param>
         /// <returns></returns>
-        bool IsSameStruCfgFileHeader(BinaryWriter bw, StruCfgFileHeader HeadA, StruCfgFileHeader HeadB)
+        public bool IsSameStruCfgFileHeader(BinaryWriter bw, StruCfgFileHeader HeadA, StruCfgFileHeader HeadB)
         {
             bool re = true;
             // 只比较意义的字段
@@ -415,6 +436,36 @@ namespace CfgFileOperation
             //-> Reserved[4]  1 * 4:byte[4][4] 保留字段
             return re;
         }
+        bool TestBeyondCompFileDataHead(BinaryWriter bw, string YSFilePath, string NewFilePath)
+        {
+            StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);
+            StruDataHead NewDhead = GetDataHeadFromFile(NewFilePath);
+            bool re = true;
+            string strBug = "";
+            if (!BytesCompare_Base64(YsDhead.u8VerifyStr, NewDhead.u8VerifyStr))
+            {
+                re = false;
+                strBug += "TestBeyondCompFileDataHead u8VerifyStr not same.\n.";
+            }
+            else if (YsDhead.u32DatType != NewDhead.u32DatType)
+            {
+                re = false;
+                strBug += String.Format("TestBeyondCompFileDataHead u32DatType a({0}),b({1}) not same.\n.", YsDhead.u32DatType ,NewDhead.u32DatType);
+            }
+            else if (YsDhead.u32DatVer != NewDhead.u32DatVer)
+            {
+                re = false;
+                strBug += String.Format("TestBeyondCompFileDataHead u32DatVer a({0}),b({1}) not same.\n.", YsDhead.u32DatVer, NewDhead.u32DatVer);
+            }
+            else if (YsDhead.u32TableCnt != NewDhead.u32TableCnt)
+            {
+                re = false;
+                strBug += String.Format("TestBeyondCompFileDataHead u32TableCnt a({0}),b({1}) not same.\n.", YsDhead.u32TableCnt, NewDhead.u32TableCnt);
+            }
+            Console.WriteLine(strBug);
+            bw.Write(strBug.ToArray());
+            return re;
+        }
 
         /// <summary>
         /// 包含的表是否相同
@@ -473,7 +524,7 @@ namespace CfgFileOperation
             // 根据文件头，获取每个表的内容，进行比较
             foreach (string table in YsTableNamePosDict.Keys)
             {
-                re = true;
+                //re = true;
                 //if (!String.Equals(table, "rruTypePortEntry"))
                 //{
                 //    //bw.Write("antennaBfScanWeightEntry continue.\n");
@@ -488,7 +539,7 @@ namespace CfgFileOperation
                 StruCfgFileTblInfo newTblInfo = TestGetTableHeadInfo(NewFilePath, offsetNew);
 
                 // 1. 每个表的表头是否相同 : StruCfgFileTblInfo
-                if (!TestIsSameTableHeadField(table, ysTblInfo, newTblInfo))
+                if (!TestIsSameTableHeadField(bw,table, ysTblInfo, newTblInfo))
                 {
                     bw.Write(String.Format("tableName={0}, table head info not all same.\n", table).ToArray());
                     Console.WriteLine(String.Format("tableName={0}, table head info not all same.", table));
@@ -499,7 +550,7 @@ namespace CfgFileOperation
                 // 2. 每个表的叶子的头是否相同 : StruCfgFileFieldInfo[u16FieldNum];
                 Dictionary<string, StruCfgFileFieldInfo> YsLeafHeadL = TestGetLeafHeadFieldInfo(YSFilePath, ysTblInfo.u16FieldNum, offsetYs);
                 Dictionary<string, StruCfgFileFieldInfo> NewLeafHeadL = TestGetLeafHeadFieldInfo(NewFilePath, newTblInfo.u16FieldNum, offsetNew);
-                if (!TestIsSameLeafHeadInfoList(YsLeafHeadL, NewLeafHeadL))
+                if (!TestIsSameLeafHeadInfoList( bw, YsLeafHeadL, NewLeafHeadL))
                 {
                     bw.Write(String.Format("tableName={0}, Leaf head info not all same.\n", table).ToArray());
                     Console.WriteLine(String.Format("tableName={0}, Leaf head info not all same.", table));
@@ -520,7 +571,41 @@ namespace CfgFileOperation
             }
             return re;
         }
+        bool TestGetTableInfo(BinaryWriter bw, string YSFilePath, string NewFilePath, Dictionary<string, string> parInfo)
+        {
+            bool re = true;
+            // 获取每个表的偏移位置
+            //Dictionary<string, uint> YsTableNamePosDict = GetTableNamesDictByTablesPos(YSFilePath);
+            Dictionary<string, uint> NewTableNamePosDict = GetTableNamesDictByTablesPos(NewFilePath);
+            // 根据文件头，获取每个表的内容，进行比较
+            foreach (string table in NewTableNamePosDict.Keys)
+            {
+                re = true;
+                if (!String.Equals(table, "nrPdcpCfgEntry"))
+                {
+                    //bw.Write("antennaBfScanWeightEntry continue.\n");
+                    //Console.WriteLine("antennaBfScanWeightEntry continue");
+                    continue;
+                }
 
+                // 0. 获取tableInfo表块介绍
+                //uint offsetYs = YsTableNamePosDict[table];  //表的偏移位置
+                uint offsetNew = NewTableNamePosDict[table];//表的偏移位置
+                //StruCfgFileTblInfo ysTblInfo = TestGetTableHeadInfo(YSFilePath, offsetYs); //获取tableInfo表块介绍                
+                StruCfgFileTblInfo newTblInfo = TestGetTableHeadInfo(NewFilePath, offsetNew);
+
+                // 2. 每个表的叶子的头是否相同 : StruCfgFileFieldInfo[u16FieldNum];
+                //Dictionary<string, StruCfgFileFieldInfo> YsLeafHeadL = TestGetLeafHeadFieldInfo(YSFilePath, ysTblInfo.u16FieldNum, offsetYs);
+                Dictionary<string, StruCfgFileFieldInfo> NewLeafHeadL = TestGetLeafHeadFieldInfo(NewFilePath, newTblInfo.u16FieldNum, offsetNew);
+                
+                // 3. 每个表的实例是否一致
+                //List<byte[]> YsInsts = GetInstsData(YSFilePath, offsetYs, (int)ysTblInfo.u32RecNum, (int)ysTblInfo.u16FieldNum, ysTblInfo.u16RecLen);
+                List<byte[]> NewInsts = GetInstsData(NewFilePath, offsetNew, (int)newTblInfo.u32RecNum, (int)newTblInfo.u16FieldNum, newTblInfo.u16RecLen);
+                
+                //Console.WriteLine("netLocalCellRruPowerEntry end, time is" + DateTime.Now.ToString("yyyy年MM月dd日HH时mm分ss秒fff毫秒") + "\n");
+            }
+            return re;
+        }
 
         /// <summary>
         /// 获取 数据块 的头
@@ -680,35 +765,46 @@ namespace CfgFileOperation
         /// <param name="tblFieldA"></param>
         /// <param name="tblFieldB"></param>
         /// <returns></returns>
-        bool TestIsSameTableHeadField(string tableName, StruCfgFileTblInfo tblFieldA, StruCfgFileTblInfo tblFieldB)
+        bool TestIsSameTableHeadField(BinaryWriter bw, string tableName, StruCfgFileTblInfo tblFieldA, StruCfgFileTblInfo tblFieldB)
         {
             bool re = true;
+            string bug = "";
             string tablNameA = Encoding.GetEncoding("GB2312").GetString(tblFieldA.u8TblName).TrimEnd('\0');
             string tablNameB = Encoding.GetEncoding("GB2312").GetString(tblFieldB.u8TblName).TrimEnd('\0');
             if (-1 == String.Compare(tablNameA, tablNameB))
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; tableName(a,{1},b.{2}) no same", tableName, tablNameA, tablNameB));
+                bug = String.Format("TableHead:TableName={0}; tableName(a,{1},b.{2}) no same.\n", tableName, tablNameA, tablNameB);
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u16DataFmtVer != tblFieldB.u16DataFmtVer)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u16DataFmtVer(a,{1},b.{2}) no same", tableName, tblFieldA.u16DataFmtVer, tblFieldB.u16DataFmtVer));
+                bug = (String.Format("TableHead:TableName={0}; u16DataFmtVer(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u16DataFmtVer, tblFieldB.u16DataFmtVer));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u16FieldNum != tblFieldB.u16FieldNum)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u16FieldNum(a,{1},b.{2}) no same", tableName, tblFieldA.u16FieldNum, tblFieldB.u16FieldNum));
+                bug = (String.Format("TableHead:TableName={0}; u16FieldNum(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u16FieldNum, tblFieldB.u16FieldNum));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u16RecLen != tblFieldB.u16RecLen)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u16RecLen(a,{1},b.{2}) no same", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
+                bug = (String.Format("TableHead:TableName={0}; u16RecLen(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             else if (tblFieldA.u32RecNum != tblFieldB.u32RecNum)
             {
                 re = false;
-                Console.WriteLine(String.Format("TableHead:TableName={0}; u32RecNum(a,{1},b.{2}) no same", tableName, tblFieldA.u32RecNum, tblFieldB.u32RecNum));
+                bug = (String.Format("TableHead:TableName={0}; u32RecNum(a,{1},b.{2}) no same.\n", tableName, tblFieldA.u32RecNum, tblFieldB.u32RecNum));
+                bw.Write(bug.ToArray());
+                Console.WriteLine(bug);
             }
             //Console.WriteLine(String.Format("**** TableHead:TableName={0}; 记录有效长度 u16RecLen (a,{1},b.{2})", tableName, tblFieldA.u16RecLen, tblFieldB.u16RecLen));
             return re;
@@ -746,18 +842,21 @@ namespace CfgFileOperation
         /// <param name="leafHLA"></param>
         /// <param name="leafHLB"></param>
         /// <returns></returns>
-        bool TestIsSameLeafHeadInfoList(Dictionary<string, StruCfgFileFieldInfo> leafHLA, Dictionary<string, StruCfgFileFieldInfo> leafHLB)
+        bool TestIsSameLeafHeadInfoList(BinaryWriter bw, Dictionary<string, StruCfgFileFieldInfo> leafHLA, Dictionary<string, StruCfgFileFieldInfo> leafHLB)
         {
             bool re = true;
+            //string strBug = "";
             foreach (string leafName in leafHLA.Keys)
             {
                 StruCfgFileFieldInfo leafHA = leafHLA[leafName];
                 StruCfgFileFieldInfo leafHB = leafHLB[leafName];
-                if (!TestIsSameLeafHeadInfo(leafName, leafHA, leafHB))
+                if (!TestIsSameLeafHeadInfo(bw, leafName, leafHA, leafHB))
                 {
                     re = false;
-                    Console.WriteLine(String.Format("leafname={0}, leafHeadInfo not all same.", leafName));
-                    break;
+                    //strBug = (String.Format("leafname={0}, leafHeadInfo not all same.\n", leafName));
+                    //Console.WriteLine(strBug);
+                    //bw.Write(strBug.ToArray());
+                    //break;
                 }
             }
             return re;
@@ -769,47 +868,50 @@ namespace CfgFileOperation
         /// <param name="leafHA"></param>
         /// <param name="leafHB"></param>
         /// <returns></returns>
-        bool TestIsSameLeafHeadInfo(string leafName, StruCfgFileFieldInfo leafHA, StruCfgFileFieldInfo leafHB)
+        bool TestIsSameLeafHeadInfo(BinaryWriter bw, string leafName, StruCfgFileFieldInfo leafHA, StruCfgFileFieldInfo leafHB)
         {
             bool re = true;
+            string strBug = "";
             /* [48] 字段名 */
             string strFieldNameA = Encoding.GetEncoding("GB2312").GetString(leafHA.Getu8FieldName()).TrimEnd('\0');
             string strFieldNameB = Encoding.GetEncoding("GB2312").GetString(leafHB.Getu8FieldName()).TrimEnd('\0');
             if (-1 == String.Compare(strFieldNameA, strFieldNameB))
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; leafName(a,{1},b.{2}) no same", leafName, strFieldNameA, strFieldNameB));
+                strBug += (String.Format("FieldName={0}; leafName(a,{1},b.{2}) no same.\n", leafName, strFieldNameA, strFieldNameB));
             }
             else if (leafHA.u16FieldOffset != leafHB.u16FieldOffset)/* 字段相对记录头偏移量*/
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}) no same", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
+                strBug += (String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}) no same.\n", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
             }
             else if (leafHA.u16FieldLen != leafHB.u16FieldLen)/* 字段长度 单位：字节 */
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) no same", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
+                strBug += (String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) no same.\n", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
             }
             else if (leafHA.u8FieldType != leafHB.u8FieldType)/* 字段类型 */
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; u8FieldType(a,{1},b.{2}) no same", leafName, leafHA.u8FieldType, leafHB.u8FieldType));
+                strBug += (String.Format("FieldName={0}; u8FieldType(a,{1},b.{2}) no same.\n", leafName, leafHA.u8FieldType, leafHB.u8FieldType));
             }
             else if (leafHA.u8FieldTag != leafHB.u8FieldTag)/* 字段是否为关键字 */
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; u8FieldTag(a,{1},b.{2}) no same", leafName, leafHA.u8FieldTag, leafHB.u8FieldTag));
+                strBug += (String.Format("FieldName={0}; u8FieldTag(a,{1},b.{2}) no same.\n", leafName, leafHA.u8FieldTag, leafHB.u8FieldTag));
             }
             else if (leafHA.u8SaveTag != leafHB.u8SaveTag)/* 字段是否需要存盘 */
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; u8SaveTag(a,{1},b.{2}) no same", leafName, leafHA.u8SaveTag, leafHB.u8SaveTag));
+                strBug += (String.Format("FieldName={0}; u8SaveTag(a,{1},b.{2}) no same.\n", leafName, leafHA.u8SaveTag, leafHB.u8SaveTag));
             }
             else if (leafHA.u8ConfigFlag != leafHB.u8ConfigFlag)/* 字段是否可(需要)配置,0:不可配，1：可配*/
             {
                 re = false;
-                Console.WriteLine(String.Format("FieldName={0}; u8ConfigFlag(a,{1},b.{2}) no same", leafName, leafHA.u8ConfigFlag, leafHB.u8ConfigFlag));
+                strBug += (String.Format("FieldName={0}; u8ConfigFlag(a,{1},b.{2}) no same.\n", leafName, leafHA.u8ConfigFlag, leafHB.u8ConfigFlag));
             }
+            Console.WriteLine(strBug);
+            bw.Write(strBug.ToArray());
             //Console.WriteLine(String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}) ", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
             //Console.WriteLine(String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) ", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
             return re;
@@ -1489,11 +1591,11 @@ namespace CfgFileOperation
                     re = false;
                     bw.Write(String.Format("({0}),index({1}) inst info no same。\n", tableName, strIndex).ToArray());
                     Console.WriteLine(String.Format("({0}),index({1}) inst info no same。", tableName, strIndex));
-                    if (tableName.Contains("nr"))
-                    {
-                        bw.Write(String.Format("{0} not same, break.", tableName));
-                        break;
-                    }
+                    //if (tableName.Contains("nr"))
+                    //{
+                    //    bw.Write(String.Format("{0} not same, break.", tableName));
+                    //    break;
+                    //}
                     TestIsSameInstDebugWrite(strIndex, bw, tableName, LeafHead, instA, instB);
                     //break;
                 }
@@ -1537,16 +1639,16 @@ namespace CfgFileOperation
                 //int b = GetBytesValToInt(InB);
                 if (!BytesCompare_Base64(InA, InB))
                 {
-                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) not bugWrire.\n", tableName, leafName, strIndex, inAstr, inBstr));
+                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) error bugWrire.\n", tableName, leafName, strIndex, inAstr, inBstr).ToArray());
                     Console.WriteLine(String.Format("table({0}),index({2}),leafName({1}),info:a.({3}),b.({4}).", tableName, leafName, strIndex, inAstr, inBstr));//, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
                 }
                 else
                 {
-                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) yes bugWrire.\n", tableName, leafName, strIndex, inAstr, inBstr));
+                    bw.Write(String.Format("({0}),index({2}),({1}),info:a.(0x{3}),b.(0x{4}) right bugWrire.\n", tableName, leafName, strIndex, inAstr, inBstr).ToArray());
                     Console.WriteLine(String.Format("table({0}),index({2}),leafName({1}),info:a.({3}),b.({4}).", tableName, leafName, strIndex, inAstr, inBstr));//, Encoding.ASCII.GetString(InA), Encoding.Default.GetString(InB)));
                 }
             }
-            bw.Write(String.Format("\n"));
+            bw.Write(String.Format("\n").ToArray());
         }
 
 

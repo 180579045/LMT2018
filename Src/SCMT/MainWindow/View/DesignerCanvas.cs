@@ -752,7 +752,7 @@ namespace SCMTMainWindow.View
                         cbValue.Margin = new Thickness(1);
                         cbValue.Height = 25;
 
-                        var valueInfo = MibStringHelper.SplitManageValue(item.Value.mibAttri.managerValueRange);
+                        var valueInfo = MibStringHelper.SplitManageValue(item.Value.mibAttri.mibValAllList);
 
                         for (int j = 0; j < valueInfo.Count; j++)
                         {
@@ -766,6 +766,11 @@ namespace SCMTMainWindow.View
                         var strItem = mibInfo.GetNeedUpdateValue(item.Key, false);
                         if(strItem != null)
                         {
+	                        if (strItem.Contains('|'))
+	                        {
+		                        strItem = strItem.Substring(strItem.IndexOf('|') + 1);
+	                        }
+
                             if (cbValue.Items.Contains(strItem))
                             {
                                 cbValue.SelectedIndex = cbValue.Items.IndexOf(strItem);

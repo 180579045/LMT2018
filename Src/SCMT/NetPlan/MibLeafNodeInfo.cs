@@ -27,6 +27,15 @@ namespace NetPlan
 			m_bVisible = true;
 		}
 
+		public MibLeafNodeInfo(string strValue, bool bIsRo, bool bIsVisible, MibLeaf leaf)
+		{
+			mibAttri = leaf;
+			m_strOriginValue = strValue;
+			m_strLatestValue = strValue;
+			m_bReadOnly = bIsRo;
+			m_bVisible = bIsVisible;
+		}
+
 		/// <summary>
 		/// 设置字段的值，TODO 需要判断范围什么的是否合法
 		/// </summary>
