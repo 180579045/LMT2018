@@ -67,16 +67,24 @@ namespace CommonUtility
 					continue;
 				}
 
-				// 用分隔符/分割后再用：进行分割
-				var temp = mv.Split('|');
-				if (temp.Length != 2)
+				var pos = mv.IndexOf('|');
+				if (pos < 0)
 				{
-					//Log.Error($"值：{mv}格式错误");
-					continue;
+					retData[mv] = mv;
 				}
+				else
+				{
+					// 用分隔符/分割后再用：进行分割
+					var temp = mv.Split('|');
+					if (temp.Length != 2)
+					{
+						//Log.Error($"值：{mv}格式错误");
+						continue;
+					}
 
-				var key = temp[0];
-				retData[key] = temp[1];
+					var key = temp[0];
+					retData[key] = temp[1];
+				}
 			}
 
 			return retData;

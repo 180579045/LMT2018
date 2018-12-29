@@ -201,11 +201,11 @@ namespace NetPlan
 			ExchangeSameTypeAndIndexDev(type, deletedAnt, ant);
 
 			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
-			if (!CheckDataIsValid())
-			{
-				ExchangeSameTypeAndIndexDev(type, ant, deletedAnt);
-				return null;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	ExchangeSameTypeAndIndexDev(type, ant, deletedAnt);
+			//	return null;
+			//}
 
 			return ant;
 		}
@@ -252,11 +252,11 @@ namespace NetPlan
 			ExchangeSameTypeAndIndexDev(type, oldBbu, dev);
 
 			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
-			if (!CheckDataIsValid())
-			{
-				ExchangeSameTypeAndIndexDev(type, dev, oldBbu);
-				return null;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	ExchangeSameTypeAndIndexDev(type, dev, oldBbu);
+			//	return null;
+			//}
 
 			InfoTip($"添加索引为.0.0.{slot}的board设备成功");
 
@@ -304,11 +304,11 @@ namespace NetPlan
 			ExchangeSameTypeAndIndexDev(type, oldRru, newRru);
 
 			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
-			if (!CheckDataIsValid())
-			{
-				ExchangeSameTypeAndIndexDev(type, newRru, oldRru);
-				return null;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	ExchangeSameTypeAndIndexDev(type, newRru, oldRru);
+			//	return null;
+			//}
 
 			InfoTip($"添加索引为.{nRruNo}的rru设备成功");
 
@@ -369,11 +369,11 @@ namespace NetPlan
 			ExchangeSameTypeAndIndexDev(type, null, dev);
 
 			// 在此处进行校验。如果校验失败了，还要回退设备信息前面的操作
-			if (!CheckDataIsValid())
-			{
-				ExchangeSameTypeAndIndexDev(type, dev, null);
-				return null;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	ExchangeSameTypeAndIndexDev(type, dev, null);
+			//	return null;
+			//}
 
 			Log.Debug($"新增编号为{nRhubNo}的rhub设备成功");
 
