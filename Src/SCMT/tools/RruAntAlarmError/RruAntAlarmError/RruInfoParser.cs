@@ -799,7 +799,7 @@ namespace RruAntAlarmError
                 }        
                 rruTypeItem.rruTypeNotMibIrBand = mibValue;
                 //增加是否为pico的属性
-                rruTypeItem.rruTypeNotMibIsPico = rruTypeItem.rruTypeName.StartsWith("p") ? 1 : 0;
+                rruTypeItem.rruTypeNotMibIsPico = rruTypeItem.rruTypeName.StartsWith("p") ? "yes" : "no";
                 AddRruTypeElement(rruTypeJArray, rruTypeItem);
 
                 //通道信息

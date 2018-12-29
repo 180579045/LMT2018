@@ -1439,6 +1439,7 @@ namespace NetPlan
             //如果以query\d开头，但是无.，使用场合是集合进行遍历
             if (Regex.Matches(outvar, pattern).Count <= 0)
             {
+                Log.Warn(outvar + " is not match format query+数字");
                 return false;
             }
 
@@ -1627,10 +1628,10 @@ namespace NetPlan
                         else if (result == EnumResultType.success_false)
                         {
                             //不满足校验的前提，进入下一条规则校验
-                            string checkRes = "Type: " + dataSrc.m_enumDevType.ToString() + " oid: " +dataSrc.m_strOidIndex +
-                                              " check "+ oneCheck.desc + " fail, " + oneCheck.false_tip;
+                            string checkRes = "Type: " + dataSrc.m_enumDevType.ToString() + "(实例" +dataSrc.m_strOidIndex +
+                                              ") check "+ oneCheck.desc + " fail, " + oneCheck.false_tip;
                             Log.Error(checkRes);
-                            falseTip = ConvertDevTypeName(dataSrc.m_enumDevType) + " oid: " + dataSrc.m_strOidIndex + oneCheck.false_tip;
+                            falseTip = ConvertDevTypeName(dataSrc.m_enumDevType) + " (实例" + dataSrc.m_strOidIndex + ") :" + oneCheck.false_tip;
                             return false;
                         }
                         else if (result == EnumResultType.success_true)

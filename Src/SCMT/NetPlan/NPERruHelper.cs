@@ -78,7 +78,7 @@ namespace NetPlan
 				return false;
 			}
 
-			return 1 == rruInfo.rruTypeNotMibIsPico;
+			return "yes".Equals(rruInfo.rruTypeNotMibIsPico);
 		}
 
 		/// <summary>
@@ -192,7 +192,7 @@ namespace NetPlan
         public List<VD> rruTypeNotMibSupportNetWorkMode { get; set; }
         public List<VD> rruTypeNotMibIrRate { get; set; }
         public List<IrBand> rruTypeNotMibIrBand { get; set; }
-        public int rruTypeNotMibIsPico { get; set; }
+        public string rruTypeNotMibIsPico { get; set; }
 
         public RruInfo()
 		{

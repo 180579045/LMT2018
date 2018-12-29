@@ -231,8 +231,19 @@ namespace RruAntAlarmError
                     return false;
                 }
                 string temp = rowRec["板卡类型"].ToString();
-                boardEquipment.boardType = int.Parse(temp.Substring(0, temp.IndexOf(':')));
-                boardEquipment.boardTypeName = temp.Substring(temp.IndexOf(':') + 1);
+
+                string key;
+                string value;
+                if (false == CommFunction.splitKeyLanguageValue(temp, languageVersion, out key,
+                        out value))
+                {
+                    string result = "Line " + line + " 板卡类型  value is invalid " + temp;
+                    MessageBox.Show(result);
+                    Log.Debug(result);
+                    return false;
+                }
+                boardEquipment.boardType = int.Parse(key);
+                boardEquipment.boardTypeName = value;
                 boardEquipment.supportEquipType = int.Parse(rowRec["支持的设备类型"].ToString());
                 boardEquipment.supportConnectElement = connectElementsToArray(line, rowRec["可连接的器件类型"].ToString());
                 boardEquipment.irOfpNum = int.Parse(rowRec["支持的光口数"].ToString());

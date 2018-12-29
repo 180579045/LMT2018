@@ -54,7 +54,7 @@
               "rules":"where cur.netRHUBEntry.netRHUBAccessRackNo != -1 && cur.netRHUBEntry.netRHUBAccessShelfNo != -1 && cur.netRHUBEntry.netRHUBAccessSlotNo != -1 ",
               "outvar":""
           }],
-       "false_tip":"该板卡未连接到板卡上"
+       "false_tip":"该RHUB未连接到板卡上"
     },{
        "id": 4, 
        "desc" : "RHUB校验连接的板卡是否已经规划", 
@@ -106,12 +106,12 @@
           {
               "round":"1",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex
+                       where it.rruTypeNotMibManufacturerName == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"where (query1.rruTypeNotMibIsPico == 0 && cur.netRRUEntry.netRRUHubNo == -1 && cur.netRRUEntry.netRRUOfp1AccessEthernetPort == -1 &&  cur.netRRUEntry.netRRUOfp2AccessEthernetPort == -1) || (query1.rruTypeNotMibIsPico == 1 && cur.netRRUEntry.netRRUHubNo != -1)",
+              "rules":"where (query1.rruTypeNotMibIsPico == no && cur.netRRUEntry.netRRUHubNo == -1 && cur.netRRUEntry.netRRUOfp1AccessEthernetPort == 无效 &&  cur.netRRUEntry.netRRUOfp2AccessEthernetPort == 无效) || (query1.rruTypeNotMibIsPico == yes && cur.netRRUEntry.netRRUHubNo != -1)",
               "outvar":""
           }],
        "false_tip":"普通RRU不允许连接到RHUB设备上, pRRU只能连接到rHUB上"
@@ -123,7 +123,7 @@
           {
               "round":"1",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex
+                       where it.rruTypeNotMibManufacturerName == cur.netRRUEntry.netRRUManufacturerIndex && it.rruTypeIndex == cur.netRRUEntry.netRRUTypeIndex
                        select it",
               "outvar":"query1"
           },{
@@ -138,29 +138,6 @@
               "outvar":""
           }],
        "false_tip":"该RRU不支持该工作模式"
-    },{
-       "id": 6, 
-       "desc" : "普通RRU校验不允许跨板连接(建立在最前面校验的基础之上)", 
-       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUHubNo == -1",
-       "exp":[
-          {
-              "round":"1",
-              "rules":"where cur.netRRUEntry.netRRUAccessRackNo != -1 && cur.netRRUEntry.netRRUAccessShelfNo != -1 &&  cur.netRRUEntry.netRRUAccessSlotNo != -1",
-              "outvar":""
-          },{
-              "round":"2",
-              "rules":"where cur.netRRUEntry.netRRUOfp2SlotNo != -1 && cur.netRRUEntry.netRRUOfp2SlotNo == cur.netRRUEntry.netRRUAccessSlotNo",
-              "outvar":""
-          },{
-              "round":"3",
-              "rules":"where cur.netRRUEntry.netRRUOfp3SlotNo != -1 && cur.netRRUEntry.netRRUOfp3SlotNo == cur.netRRUEntry.netRRUAccessSlotNo",
-              "outvar":""
-          },{
-              "round":"4",
-              "rules":"where cur.netRRUEntry.netRRUOfp4SlotNo != -1 && cur.netRRUEntry.netRRUOfp4SlotNo == cur.netRRUEntry.netRRUAccessSlotNo",
-              "outvar":""
-          }],
-       "false_tip":"普通RRU不允许跨板连接"
     },{
        "id": 6, 
        "desc" : "RRU校验光口1是否连接板卡，且连接的板卡是否有规划", 
@@ -182,6 +159,29 @@
               "outvar":""
           }],
        "false_tip":"该RRU光口1未连接到板卡上,或者连接的板卡未规划"
+    },{
+       "id": 6, 
+       "desc" : "普通RRU校验不允许跨板连接(建立在最前面校验的基础之上)", 
+       "property":"where (cur.netRRUEntry.操作类型 == 添加 || cur.netRRUEntry.操作类型 == 修改) && cur.netRRUEntry.netRRUHubNo == -1",
+       "exp":[
+          {
+              "round":"1",
+              "rules":"where cur.netRRUEntry.netRRUAccessRackNo != -1 && cur.netRRUEntry.netRRUAccessShelfNo != -1 &&  cur.netRRUEntry.netRRUAccessSlotNo != -1",
+              "outvar":""
+          },{
+              "round":"2",
+              "rules":"where (cur.netRRUEntry.netRRUOfp2SlotNo != -1 && cur.netRRUEntry.netRRUOfp2SlotNo == cur.netRRUEntry.netRRUAccessSlotNo) || (cur.netRRUEntry.netRRUOfp2SlotNo == -1)",
+              "outvar":""
+          },{
+              "round":"3",
+              "rules":"where (cur.netRRUEntry.netRRUOfp3SlotNo != -1 && cur.netRRUEntry.netRRUOfp3SlotNo == cur.netRRUEntry.netRRUAccessSlotNo) || (cur.netRRUEntry.netRRUOfp3SlotNo == -1)",
+              "outvar":""
+          },{
+              "round":"4",
+              "rules":"where (cur.netRRUEntry.netRRUOfp4SlotNo != -1 && cur.netRRUEntry.netRRUOfp4SlotNo == cur.netRRUEntry.netRRUAccessSlotNo) || (cur.netRRUEntry.netRRUOfp4SlotNo == -1)",
+              "outvar":""
+          }],
+       "false_tip":"普通RRU不允许跨板连接"
     },{
        "id": 6, 
        "desc" : "RRU校验是光口2连接的板卡是否有规划", 
@@ -526,7 +526,7 @@
           },{
               "round":"3",
               "rules":"from it in lib.boardEquipment 
-                       where it.boardType == query1.netBoardType
+                       where it.boardTypeName == query1.netBoardType
                        select it",
               "outvar":"query2"
           },{
@@ -538,7 +538,7 @@
               "rules":"from it in query2.irOfpPortInfo 
                        where it.ofpIndex == cur.netIROptPlanEntry.netIROfpPortIndexOnBoard
                        select it",
-              "outvar":"qeury3"
+              "outvar":"query3"
           },{
               "round":"4",
               "rules":"where query3.Count == 1",
@@ -548,7 +548,7 @@
               "rules":"from it in query3.irOfpPortTransSpeed 
                        where it.desc == cur.netIROptPlanEntry.netIROfpTransPlanSpeed
                        select it",
-              "outvar":"qeury4"
+              "outvar":"query4"
           },{
               "round":"4",
               "rules":"where query4.Count == 1",
@@ -709,7 +709,7 @@
           },{
               "round":"2",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       where it.rruTypeNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == no
                        select it",
               "outvar":"query2"
           },{
@@ -737,7 +737,7 @@
           },{
               "round":"2",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       where it.rruTypeNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == no
                        select it",
               "outvar":"query2"
           },{
@@ -765,7 +765,7 @@
           },{
               "round":"2",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       where it.rruTypeNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == no
                        select it",
               "outvar":"query2"
           },{
@@ -793,7 +793,7 @@
           },{
               "round":"2",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == 0
+                       where it.rruTypeNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypeIndex == query1.netRRUTypeIndex && it.rruTypeNotMibIsPico == no
                        select it",
               "outvar":"query2"
           },{
@@ -882,7 +882,7 @@
           },{
               "round":"3",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypePortManufacturerIndex == query1.netRRUManufacturerIndex && it.rruTypePortIndex  == query1.netRRUTypeIndex && it.rruTypePortNo == cur.netAntennaArrayEntry.netSetRRUPortNo
+                       where it.rruTypeNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypePortIndex  == query1.netRRUTypeIndex && it.rruTypePortNo == cur.netAntennaArrayEntry.netSetRRUPortNo
                        select it",
               "outvar":"query2"
           },{
@@ -989,7 +989,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1036,7 +1036,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1083,7 +1083,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1130,7 +1130,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypePortManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1177,7 +1177,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
                        select it",
               "outvar":"query3"
           },{
@@ -1234,7 +1234,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
                        select it",
               "outvar":"query3"
           },{
@@ -1291,7 +1291,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
                        select it",
               "outvar":"query3"
           },{
@@ -1348,7 +1348,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypeInfo 
-                       where it.rruTypeManufacturerIndex == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
+                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypeIndex == query2.netRRUTypeIndex
                        select it",
               "outvar":"query3"
           },{

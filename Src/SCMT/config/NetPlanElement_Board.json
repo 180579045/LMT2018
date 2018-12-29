@@ -295,7 +295,7 @@
     {
       "number": 0,
       "boardType": 143,
-      "boardTypeName": "bpog|BPOG板",
+      "boardTypeName": "BPOG板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -349,7 +349,7 @@
     {
       "number": 1,
       "boardType": 177,
-      "boardTypeName": "bpoh|BPOH板",
+      "boardTypeName": "BPOH板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -470,7 +470,7 @@
     {
       "number": 2,
       "boardType": 178,
-      "boardTypeName": "scte|SCTE板",
+      "boardTypeName": "SCTE板",
       "supportEquipType": 5,
       "supportConnectElement": [],
       "irOfpNum": 0,
@@ -479,7 +479,7 @@
     {
       "number": 3,
       "boardType": 240,
-      "boardTypeName": "sctf|SCTF板",
+      "boardTypeName": "SCTF板",
       "supportEquipType": 5,
       "supportConnectElement": [],
       "irOfpNum": 0,
@@ -488,7 +488,7 @@
     {
       "number": 4,
       "boardType": 241,
-      "boardTypeName": "bpoi|BPOI板",
+      "boardTypeName": "BPOI板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -609,7 +609,7 @@
     {
       "number": 5,
       "boardType": 243,
-      "boardTypeName": "bpok|BPOK板",
+      "boardTypeName": "BPOK板",
       "supportEquipType": 5,
       "supportConnectElement": [
         {
@@ -678,7 +678,7 @@
     {
       "number": 6,
       "boardType": 22,
-      "boardTypeName": "hbpod|HBPOD板",
+      "boardTypeName": "HBPOD板",
       "supportEquipType": 10,
       "supportConnectElement": [
         {
@@ -769,7 +769,7 @@
     {
       "number": 7,
       "boardType": 23,
-      "boardTypeName": "hsctd|HSCTD板",
+      "boardTypeName": "HSCTD板",
       "supportEquipType": 10,
       "supportConnectElement": [],
       "irOfpNum": 0,
