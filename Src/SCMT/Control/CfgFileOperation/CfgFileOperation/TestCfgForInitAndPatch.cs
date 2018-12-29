@@ -67,12 +67,22 @@ namespace CfgFileOperation
                     bw.Write("file head info all same.\n".ToArray());
                 }
                 // 少数据块的比较
+                if (!TestBeyondCompFileDataHead(bw, parInfo["FilePathA"], parInfo["FilePathB"]))
+                {
+                    Console.WriteLine("DataHead info not all same.\n");
+                    bw.Write("DataHead info not all same.\n".ToArray());
+                }
+                else
+                {
+                    Console.WriteLine("DataHead info all same.\n");
+                    bw.Write("DataHead info all same.\n".ToArray());
+                }
 
                 // 比较 表名是否一致
                 if (!TestBeyondCompFileTableNameMain(bw, parInfo["FilePathA"], parInfo["FilePathB"]))
                 {
                     Console.WriteLine("tables name not all same.");
-                    bw.Write("tables name not all same.\n");
+                    bw.Write("tables name not all same.\n".ToArray());
                     //re = false;
                     //return re;
                 }
@@ -424,6 +434,36 @@ namespace CfgFileOperation
 
             //  ->u32TblOffset[150]    4 * 150:uint[150][150] 每个表的数据在文件中的起始位置（相对文件头）  
             //-> Reserved[4]  1 * 4:byte[4][4] 保留字段
+            return re;
+        }
+        bool TestBeyondCompFileDataHead(BinaryWriter bw, string YSFilePath, string NewFilePath)
+        {
+            StruDataHead YsDhead = GetDataHeadFromFile(YSFilePath);
+            StruDataHead NewDhead = GetDataHeadFromFile(NewFilePath);
+            bool re = true;
+            string strBug = "";
+            if (!BytesCompare_Base64(YsDhead.u8VerifyStr, NewDhead.u8VerifyStr))
+            {
+                re = false;
+                strBug += "TestBeyondCompFileDataHead u8VerifyStr not same.\n.";
+            }
+            else if (YsDhead.u32DatType != NewDhead.u32DatType)
+            {
+                re = false;
+                strBug += String.Format("TestBeyondCompFileDataHead u32DatType a({0}),b({1}) not same.\n.", YsDhead.u32DatType ,NewDhead.u32DatType);
+            }
+            else if (YsDhead.u32DatVer != NewDhead.u32DatVer)
+            {
+                re = false;
+                strBug += String.Format("TestBeyondCompFileDataHead u32DatVer a({0}),b({1}) not same.\n.", YsDhead.u32DatVer, NewDhead.u32DatVer);
+            }
+            else if (YsDhead.u32TableCnt != NewDhead.u32TableCnt)
+            {
+                re = false;
+                strBug += String.Format("TestBeyondCompFileDataHead u32TableCnt a({0}),b({1}) not same.\n.", YsDhead.u32TableCnt, NewDhead.u32TableCnt);
+            }
+            Console.WriteLine(strBug);
+            bw.Write(strBug.ToArray());
             return re;
         }
 
