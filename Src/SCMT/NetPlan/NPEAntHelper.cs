@@ -208,7 +208,12 @@ namespace NetPlan
 			}
 		}
 
-		private readonly WholeAntInfo _antInfo;
+	    public WholeAntInfo GetWholeAntInfo()
+	    {
+	        return _antInfo;
+	    }
+
+        private readonly WholeAntInfo _antInfo;
 
 		public WholeAntInfo GetAntInfo()
 		{

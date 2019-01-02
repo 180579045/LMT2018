@@ -882,7 +882,7 @@
           },{
               "round":"3",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypeNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypePortIndex  == query1.netRRUTypeIndex && it.rruTypePortNo == cur.netAntennaArrayEntry.netSetRRUPortNo
+                       where it.rruTypePortNotMibManufacturerName == query1.netRRUManufacturerIndex && it.rruTypePortIndex  == query1.netRRUTypeIndex && it.rruTypePortNo == cur.netAntennaArrayEntry.netSetRRUPortNo
                        select it",
               "outvar":"query2"
           },{
@@ -989,7 +989,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypePortNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1036,7 +1036,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypePortNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1083,7 +1083,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypePortNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1130,7 +1130,7 @@
           },{
               "round":"5",
               "rules":"from it in lib.rruTypePortInfo 
-                       where it.rruTypeNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
+                       where it.rruTypePortNotMibManufacturerName == query2.netRRUManufacturerIndex && it.rruTypePortIndex == query2.netRRUTypeIndex && it.rruTypePortNo == cur.netRRUAntennaSettingEntry.netSetRRUPortNo
                        select it",
               "outvar":"query3"
           },{
@@ -1209,7 +1209,7 @@
     },{
        "id": 2, 
        "desc" : "校验本地小区标识2的带宽、压缩属性", 
-       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCell2 != -1",
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 != -1",
        "exp":[
           {
               "round":"1",
@@ -1266,7 +1266,7 @@
     },{
        "id": 2, 
        "desc" : "校验本地小区标识3的带宽、压缩属性", 
-       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCell3 != -1",
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 != -1",
        "exp":[
           {
               "round":"1",
@@ -1323,7 +1323,7 @@
     },{
        "id": 2, 
        "desc" : "校验本地小区标识4的带宽、压缩属性", 
-       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCell4 != -1",
+       "property":"where (cur.netRRUAntennaSettingEntry.操作类型 == 添加 || cur.netRRUAntennaSettingEntry.操作类型 == 修改) && cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 != -1",
        "exp":[
           {
               "round":"1",
@@ -1389,7 +1389,7 @@
        "exp":[
           {
               "round":"1",
-              "rules":"from it in this.nrLocalCellEntry 
+              "rules":"from it in mib.nrLocalCellEntry 
                        where it.nrLocalCellId == nrNetLocalCellCtrlEntry.nrNetLocalCellCtrlLcId && it.nrLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"

@@ -105,6 +105,7 @@ namespace NetPlan
         public List<Shelf> _shelfEquipment_lib;
         public List<BoardEquipment> _boardEquipment_lib;
         public List<RHUBEquipment> _rHubEquipment_lib;
+        public List<AntType> _antType_lib;
 
         public NPELibData()
         {
@@ -114,6 +115,7 @@ namespace NetPlan
             _shelfEquipment_lib = new List<Shelf>();
             _boardEquipment_lib = new List<BoardEquipment>();
             _rHubEquipment_lib = new List<RHUBEquipment>();
+            _antType_lib = new List<AntType>();
         }
     }
     public class NPECheckRulesDeal
@@ -148,12 +150,13 @@ namespace NetPlan
             _dicDatasrcUIPara.Add("this.nrNetLocalCellEntry", _npedata_this._nrNetLocalCell);
             _dicDatasrcUIPara.Add("this.nrNetLocalCellCtrlEntry", _npedata_this._nrNetLocalCellCtrl);
             _dicDatasrcUIPara.Add("this.netLocalCellCtrlEntry", _npedata_this._netLocalCellCtrl);
-            _dicDatasrcUIPara.Add("lib.rruTypeInfo", _npedata_lib._rruTypeInfo_lib);
+            _dicDatasrcUIPara.Add("lib.rruTypeInfo", _npedata_lib._rruTypeInfo_lib);//注意，key值"lib.XX"需要与NetPlan_CheckRules.json文件中使用到的器件名一致
             _dicDatasrcUIPara.Add("lib.rruTypePortInfo", _npedata_lib._rruTypePortInfo_lib);
             _dicDatasrcUIPara.Add("lib.netPlanElements", _npedata_lib._netPlanElements_lib);
             _dicDatasrcUIPara.Add("lib.shelfEquipment", _npedata_lib._shelfEquipment_lib);
             _dicDatasrcUIPara.Add("lib.boardEquipment", _npedata_lib._boardEquipment_lib);
             _dicDatasrcUIPara.Add("lib.rHubEquipment", _npedata_lib._rHubEquipment_lib);
+            _dicDatasrcUIPara.Add("lib.antennaTypeTable", _npedata_lib._antType_lib);
             _dicDatasrcUIPara.Add("mib.netBoardEntry", _npedata_this._netBoard);
             _dicDatasrcUIPara.Add("mib.netRRUEntry", _npedata_this._netRRU);
             _dicDatasrcUIPara.Add("mib.netAntennaArrayEntry", _npedata_this._netAntennaArray);
@@ -319,6 +322,7 @@ namespace NetPlan
             _npedata_lib._shelfEquipment_lib = npeElement_lib.shelfEquipment;
             _npedata_lib._boardEquipment_lib = npeElement_lib.boardEquipment;
             _npedata_lib._rHubEquipment_lib = npeElement_lib.rHubEquipment;
+            _npedata_lib._antType_lib = NPEAntHelper.GetInstance().GetWholeAntInfo().antennaTypeTable;
         }
         private void InitCheckRulesData()
         {
@@ -654,6 +658,17 @@ namespace NetPlan
                 Log.Error(preQueryName + " query_value is null, type RHUBEquipment");
                 return EnumResultType.fail;
             }
+            else if (queryValue is EnumerableQuery<AntType> || queryValue is List<AntType>)
+            {
+                //"lib.antennaTypeTable"
+                IEnumerable list = queryValue as IEnumerable;
+                foreach (AntType tmp in list)
+                {
+                    return GetFieldValueOfType<AntType>(tmp, leafName, out objValue);
+                }
+                Log.Error(preQueryName + " query_value is null, type AntType");
+                return EnumResultType.fail;
+            }
 
             Log.Error(preQueryName + " TYPE is not support, leafName is " + leafName);
             return EnumResultType.fail;
@@ -908,7 +923,6 @@ namespace NetPlan
                     return true;
                 }
             }
-            Log.Warn(exptr + " :exptr can not find father queryName!");
             return false;
         }
 
@@ -932,6 +946,7 @@ namespace NetPlan
 
             if (!GetQueryFatherName(query1, queryDic, out fatherFullName))
             {
+                Log.Warn(query1 + " -- exptr can not find father queryName!");
                 return EnumResultType.fail;
             }
             object fatherValue;
@@ -1145,6 +1160,82 @@ namespace NetPlan
             return IsMibTable(realQueryName);
         }
 
+        public EnumResultType CheckItPartParaValid(string fromName, object fromValue, Dictionary<string, object> queryDic,
+            List<string> whereNameList)
+        {
+            //进行保护，考虑到linq查询中不会进行校验，在表达式where,select中是否MIB表中存在该叶子节点，是否器件库存在该节点
+            string realFatherName = fromName;
+            bool isTable = false;
+
+            //from语句是否为MIB类表,需要综合考虑from语句是query\d的可能性
+            isTable = (IsMibTable(fromName) || IsMibTableOfQueryName(fromName, queryDic, out realFatherName));
+            
+            DevAttributeInfo record = null;
+            if (fromValue is EnumerableQuery<DevAttributeInfo> || fromValue is List<DevAttributeInfo>)
+            {
+                IEnumerable list = fromValue as IEnumerable;
+                foreach (DevAttributeInfo tmp in list)
+                {
+                    //取第一条记录意思意思
+                    record = tmp;
+                    break;
+                }
+                //说明该from对象为空，所以直接返回??
+                if (record == null)
+                {
+                    return EnumResultType.success_true;
+                }
+            }
+            foreach (var name in whereNameList)
+            {
+                if (name.StartsWith("it."))
+                {
+                    string[] split = name.Split('.');
+                    if (isTable)
+                    {
+                        //1.针对MIB
+                        if (split.Length != 2)
+                        {
+                            Log.Warn("select sentence format is error : " + name);
+                            return EnumResultType.fail;
+                        }
+                        if (split[1].Equals(""))
+                        {
+                            Log.Warn("select sentence format is error : " + name);
+                            return EnumResultType.fail;
+                        }
+                        //取叶子节点
+                        string leafName = realFatherName + "." + split[1];
+                        string leafValue;
+                        return GetMibParaValue(record, leafName, out leafValue);
+
+                    }
+                    //2.针对器件库参数lib.
+                    string queryPre;
+                    if (realFatherName.StartsWith("lib."))
+                    {
+                        int length;
+                        int index = CommCheckRuleDeal.GetIndex(name, ".", out length);
+                        if (index == -1)
+                        {
+                            return EnumResultType.success_true;
+                        }
+                        string leafName = name.Substring(index + length);
+                        //特殊处理
+                        if (leafName.Equals("Count"))
+                        {
+                            return EnumResultType.success_true;
+                        }
+                        object objResult;
+                        EnumResultType convertRes = MapLibQueryOfDataType(fromName, fromValue, leafName, out objResult);
+                        return convertRes;
+                    }
+
+                }
+            }
+            return EnumResultType.success_true;
+        }
+
         public bool ConvertNameInWhere(string fromName, string wherePart, Dictionary<string, object> queryDic, List<string> whereNameList, out string whereLastPart)
         {
             whereLastPart = wherePart;
@@ -1186,7 +1277,9 @@ namespace NetPlan
                     //针对MIB
                     if (split.Length != 2)
                     {
-                        continue;
+                        //原来写的是continue
+                        Log.Warn("select sentence format is error : " + name);
+                        return false;
                     }
                     if (split[1].Equals(""))
                     {
@@ -1195,14 +1288,14 @@ namespace NetPlan
                     }
                     //取叶子节点
                     string leafName = split[1];
-                    string afterIt = name;
+                    string afterIt = name;                    
                     //只有this.XX, mib.XX的即UI、基站的MIB数据才需要进行转换
                     afterIt = realFatherName.StartsWith("this.")
                         ? @" it.m_mapAttributes[""" + leafName + @"""].m_strLatestValue"
                         : @" it.m_mapAttributes[""" + leafName + @"""].m_strOriginValue";
                     //将it.leafName替换,为避免叶子节点名有包含关系的名称，例如boardType, boardTypeName而替换错误，增加一个保护
                     //只替换一个
-                    string pattern = @"\s\b" + name + @"\b";
+                    string pattern = @"\s?\b" + name + @"\b";
                     Regex regex = new Regex(pattern);
                     //只替换一个
                     whereLastPart = regex.Replace(whereLastPart, afterIt, 1);
@@ -1320,6 +1413,13 @@ namespace NetPlan
                 {
                     Log.Error("Get wherePart error!");
                     return EnumResultType.fail;
+                }
+                //参数校验是否有效,有可查询字段
+                res = CheckItPartParaValid(key, fromCollection, queryDic, whereParaList);
+                if (res != EnumResultType.success_true)
+                {
+                    Log.Warn(wherePart + "-- wherePart have it para is invalid");
+                    return res;
                 }
                 List<object> realWhereParaList;
                 //@"it.m_mapAttributes[""workMode""].m_strLatestValue==@0 "
@@ -1463,6 +1563,7 @@ namespace NetPlan
                 }
                 if (!GetQueryFatherName(fatherPre, queryDic, out fatherFatherName))
                 {
+                    Log.Warn(fatherPre + " is not exist in queryDic!");
                     return false;
                 }
                 string middle1 = "";
@@ -1596,7 +1697,7 @@ namespace NetPlan
                         {
                             //中止所有的校验，返回失败，暂时先严格处理
                             Log.Error("stop all netplan check");
-                            falseTip = "please check json check file!";
+                            falseTip = "NetPlan_CheckRules.json 校验规则填写有问题，出现此情况请联系tangyun看下!";
                             return false;
                         }
                         else if (result == EnumResultType.fail_continue)
@@ -1616,7 +1717,7 @@ namespace NetPlan
                         {
                             //中止所有的校验，返回失败，暂时先严格处理
                             Log.Error("stop all netplan check");
-                            falseTip = "please check json check file!";
+                            falseTip = "NetPlan_CheckRules.json 校验规则填写有问题，出现此情况请联系tangyun看下!";
                             return false;
                         }
                         else if (result == EnumResultType.fail_continue)
