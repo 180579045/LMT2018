@@ -23,10 +23,12 @@ namespace NetPlan.Tests
 			var result = await db.initDatabase("172.27.245.92");
 			Assert.IsTrue(result);
 
-			var ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
+			var param = new AddAntParameters(vendor: "大唐", type:"TDAE-F02");
+
+			var ant = MibInfoMgr.GetInstance().AddNewAnt(0, param);
 			Assert.IsNotNull(ant);
 
-			ant = MibInfoMgr.GetInstance().AddNewAnt(0, "大唐", "TDAE-F02");
+			ant = MibInfoMgr.GetInstance().AddNewAnt(0, param);
 			Assert.IsNull(ant);
 		}
 

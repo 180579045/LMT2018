@@ -153,6 +153,8 @@ namespace NetPlan
 
 		#endregion
 
+		#region 静态接口
+
 		/// <summary>
 		/// 在ant中填入天线阵的信息
 		/// </summary>
@@ -175,7 +177,96 @@ namespace NetPlan
 			return true;
 		}
 
+		/// <summary>
+		/// 设置天线阵的波束扫描相关的值
+		/// </summary>
+		/// <param name="ant">天线阵设备</param>
+		/// <param name="parameters">波束扫描数据</param>
+		/// <param name="strErrMsg">错误信息输出</param>
+		/// <returns>true:参数设置成功，false:参数设置失败</returns>
+		public static bool SetAntBfsValue(DevAttributeBase ant, AddAntParameters parameters, out string strErrMsg)
+		{
+			var strVendorNo = NPEAntHelper.GetInstance().GetVendorIndexByName(parameters.vendorName);
+			if (null == strVendorNo)
+			{
+				strErrMsg = $"根据厂家名{parameters.vendorName}获取厂家索引失败";
+				return false;
+			}
 
+			var strAntTypeNo = NPEAntHelper.GetInstance().GetTypeIndexByModelName(parameters.typeName);
+			if (null == strAntTypeNo)
+			{
+				strErrMsg = $"根据类型名{parameters.typeName}获取类型编号失败";
+				return false;
+			}
+
+			if (!ant.SetFieldOlValue("netAntArrayVendorIndex", strVendorNo))
+			{
+				strErrMsg = $"设置字段netAntArrayVendorIndex的值{strVendorNo}失败";
+				return false;
+			}
+
+			if (!ant.SetFieldOlValue("netAntArrayTypeIndex", strAntTypeNo))
+			{
+				strErrMsg = $"设置字段netAntArrayTypeIndex的值{strAntTypeNo}失败";
+				return false;
+			}
+
+			var mibName = "antennaBfScanWeightHorizonNum";
+			if (ant.IsExistField(mibName))
+			{
+				if (!ant.SetFieldOlValue(mibName, parameters.horBeamScanCount))
+				{
+					strErrMsg = $"设置字段{mibName}的值{parameters.horBeamScanCount}失败";
+					return false;
+				}
+			}
+
+			mibName = "antennaBfScanWeightHorizonDowntiltAngle";
+			if (ant.IsExistField(mibName))
+			{
+				if (!ant.SetFieldOlValue(mibName, parameters.horBeamScanAngle))
+				{
+					strErrMsg = $"设置字段{mibName}的值{parameters.horBeamScanAngle}失败";
+					return false;
+				}
+			}
+
+			mibName = "antennaBfScanWeightVerticalNum";
+			if (ant.IsExistField(mibName))
+			{
+				if (!ant.SetFieldOlValue(mibName, parameters.verBeamScanCount))
+				{
+					strErrMsg = $"设置字段{mibName}的值{parameters.verBeamScanCount}失败";
+					return false;
+				}
+			}
+
+			mibName = "antennaBfScanWeightVerticalDowntiltAngle";
+			if (ant.IsExistField(mibName))
+			{
+				if (!ant.SetFieldOlValue(mibName, parameters.verBeamScanAngle))
+				{
+					strErrMsg = $"设置字段{mibName}的值{parameters.verBeamScanAngle}失败";
+					return false;
+				}
+			}
+
+			mibName = "antennaBfScanWeightIsLossFlag";
+			if (ant.IsExistField(mibName))
+			{
+				if (!ant.SetFieldOlValue(mibName, parameters.lossFlag))
+				{
+					strErrMsg = $"设置字段{mibName}的值{parameters.lossFlag}失败";
+					return false;
+				}
+			}
+
+			strErrMsg = null;
+			return true;
+		}
+
+		#endregion
 
 		#region 私有方法区
 

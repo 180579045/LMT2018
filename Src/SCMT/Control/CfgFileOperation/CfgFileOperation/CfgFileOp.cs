@@ -579,7 +579,7 @@ namespace CfgFileOperation
             return true;
         }
         /// <summary>
-        /// 写 patch_ex 文件
+        /// 写 4G patch_ex 文件
         /// </summary>
         /// <param name="newFilePath"></param>
         public bool SaveFilePdg_eNB(string newFilePath)
