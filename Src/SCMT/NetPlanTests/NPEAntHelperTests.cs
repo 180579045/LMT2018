@@ -17,5 +17,19 @@ namespace NetPlan.Tests
 			var ret = NPEAntHelper.GetInstance().GetAllAntTypeInfo();
 			Assert.IsNotNull(ret);
 		}
+
+		[TestMethod()]
+		public void GetAntBfsDataByVendorTypeIdxTest()
+		{
+			var ret = NPEAntHelper.GetInstance().GetAntBfsDataByVendorTypeIdx("3", "40");
+			Assert.IsTrue(ret.Count > 0);
+		}
+
+		[TestMethod()]
+		public void GetAntBfsDataByVendorAndTypeIdxTest()
+		{
+			var ret = NPEAntHelper.GetInstance().GetAntBfsDataByVendorAndTypeIdx("3", "40");
+			Assert.IsTrue(ret.Count > 0);
+		}
 	}
 }
