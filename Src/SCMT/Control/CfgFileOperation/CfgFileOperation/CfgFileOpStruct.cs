@@ -81,8 +81,17 @@ namespace CfgFileOpStruct
         /// </summary>
         public enum CONFIGFILEORNOT
         {
+            /// <summary>
+            /// 不需要:0(false)
+            /// </summary>
             OM_IS_NOT_CONFIG_FILE = 0,                                    /*不需要:0(false)*/
+            /// <summary>
+            /// init需要:1(true)
+            /// </summary>
             OM_IS_CONFIG_FILE = 1,                                        /*需要:1(true)*/
+            /// <summary>
+            /// patch需要:2(true)
+            /// </summary>
             OM_IS_PDGFILE = 2,                                            /*需要:2(true)*/
         };
         /// <summary>
@@ -1139,6 +1148,32 @@ namespace CfgFileOpStruct
             fromOf += lenSize;
             lenSize = Marshal.SizeOf(new StruDataHead().u32DatType);
             byte[] bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatType = GetBytesValToUint(bytes);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatVer);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32DatVer = GetBytesValToUint(bytes);
+
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32TableCnt);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u32TableCnt = GetBytesValToUint(bytes);
+        }
+        public void SetValueByBytesByBigEndian(byte[] data)
+        {
+            int fromOf = 0;
+            int lenSize = 0;
+            //
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new byte()) * 4;
+            byte[] bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            Buffer.BlockCopy((byte[])bytes, 0, (byte[])u8VerifyStr, 0, ((byte[])bytes).Length);
+            //
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new StruDataHead().u32DatType);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
             u32DatType = GetBytesValToUint(bytes);
             //
             fromOf += lenSize;

@@ -1377,6 +1377,24 @@ namespace CfgFileOperation
         {
             return m_InstIndexLeafName.Count();
         }
+        /// <summary>
+        /// m_InstIndexLeafName  是否存在节点 strNodeName
+        /// </summary>
+        /// <param name="strNodeName"></param>
+        /// <returns></returns>
+        public bool InstIndexLeafIsExistLeafByName(string strNodeName)
+        {
+            bool bFind = false;
+            foreach (var leafNames in m_InstIndexLeafName.Values)
+            {
+                if (-1 != leafNames.FindIndex(e => String.Compare(e, strNodeName, true) == 0))
+                {
+                    bFind = true;
+                    break;
+                }
+            }
+            return bFind;
+        }
 
         /// <summary>
         /// 表块 的序列化: patch_ex
@@ -1399,7 +1417,10 @@ namespace CfgFileOperation
             foreach (var leaf in tableInfo.m_LeafNodes)
             {
                 // 标记 节点是否可配置
-                SetLeafFieldConfigFlagPDG(leaf.m_struFieldInfo, leaf.m_struMibNode.strMibName);
+                //if (leaf.m_struMibNode.strMibName == "acCfgLcId")
+                //    Console.WriteLine("==");
+                bool bFind = InstIndexLeafIsExistLeafByName(leaf.m_struMibNode.strMibName);
+                leaf.SetLeafFieldConfigFlagPDG(bFind);
                 // 每个叶子节点的头
                 tableBytes.AddRange(leaf.m_struFieldInfo.StruToByteArray());
             }
@@ -1414,9 +1435,16 @@ namespace CfgFileOperation
             }
             return tableBytes;
         }
+        /// <summary>
+        /// 5g patch 写叶子头
+        /// </summary>
+        /// <param name="FieldInfo"></param>
+        /// <param name="strNodeName"></param>
         void SetLeafFieldConfigFlagPDG(StruCfgFileFieldInfo FieldInfo, string strNodeName)
         {
             bool bFind = false;
+            if (strNodeName == "acCfgLcId")
+                Console.WriteLine("==");
             foreach (var leafNames in m_InstIndexLeafName.Values)
             {
                 if (-1 != leafNames.FindIndex(e => String.Compare(e, strNodeName, true) == 0))
@@ -1430,19 +1458,20 @@ namespace CfgFileOperation
             //也是不可配置的。索引字段全部为可配置的。add by yangyuming
             if (true == bFind)
             {
-                if (FieldInfo.u8ConfigFlag != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
-                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+                if (FieldInfo.Getu8ConfigFlag() != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
+                    FieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
             }
             else
             {
-                if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
-                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE;
-                else if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE && FieldInfo.u8FieldTag == 'Y')
+                if (FieldInfo.Getu8ConfigFlag() == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
+                    FieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE);
+                else if (FieldInfo.Getu8ConfigFlag() == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE 
+                    && FieldInfo.u8FieldTag == 'Y')
                 {
-                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+                    FieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
                 }
             }
-
+            
         }
     }
     //class ReclistIndex

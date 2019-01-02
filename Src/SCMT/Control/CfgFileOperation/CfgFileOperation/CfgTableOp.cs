@@ -395,7 +395,7 @@ namespace CfgFileOperation
             //2.每个叶子的头
             foreach (var leaf in m_LeafNodes)
             {
-                // 标记 节点是否可配置
+                // 标记 节点是否可配置 : 注意参数是否被修改,可能存在bug,有待验证；5g用的其他函数
                 SetLeafFieldConfigFlagPDG(leaf.m_struFieldInfo, leaf.m_struMibNode.strMibName);
                 // 每个叶子节点的头
                 tableInfo.AddRange(leaf.m_struFieldInfo.StruToByteArray());
@@ -411,7 +411,11 @@ namespace CfgFileOperation
             }
             return tableInfo;
         }
-        
+        /// <summary>
+        /// 4G patch 写叶子头
+        /// </summary>
+        /// <param name="FieldInfo"></param>
+        /// <param name="strNodeName"></param>
         void SetLeafFieldConfigFlagPDG(StruCfgFileFieldInfo FieldInfo, string strNodeName)
         {
             bool bFind = false;
@@ -428,16 +432,16 @@ namespace CfgFileOperation
             //也是不可配置的。索引字段全部为可配置的。add by yangyuming
             if (true == bFind)
             {
-                if (FieldInfo.u8ConfigFlag != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
-                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+                if (FieldInfo.Getu8ConfigFlag() != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
+                    FieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
             }
             else
             {
-                if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
-                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE;
-                else if (FieldInfo.u8ConfigFlag == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE && FieldInfo.u8FieldTag == 'Y')
+                if (FieldInfo.Getu8ConfigFlag() == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
+                    FieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE);
+                else if (FieldInfo.Getu8ConfigFlag() == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE && FieldInfo.u8FieldTag == 'Y')
                 {
-                    FieldInfo.u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+                    FieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
                 }
             }
 
