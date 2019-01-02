@@ -1687,6 +1687,7 @@ namespace NetPlan
                     //没有对应的规划数据，则结束本次循环
                     continue;
                 }
+                Log.Info("!!start to " + key + ", data record num is " + dataSrcList.Count);
                 foreach (var dataSrc in dataSrcList)
                 {
                     foreach (var oneCheck in whoRule)
@@ -1696,7 +1697,7 @@ namespace NetPlan
                         if (result == EnumResultType.fail)
                         {
                             //中止所有的校验，返回失败，暂时先严格处理
-                            Log.Error("stop all netplan check");
+                            Log.Error("stop all netplan check ");
                             falseTip = "NetPlan_CheckRules.json 校验规则填写有问题，出现此情况请联系tangyun看下!";
                             return false;
                         }
@@ -1743,6 +1744,7 @@ namespace NetPlan
                     }
                 }
             }
+            Log.Info("!!all netplan check is ok");
             return true;
         }
     }
