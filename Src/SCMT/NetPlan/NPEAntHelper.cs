@@ -304,7 +304,7 @@ namespace NetPlan
 		{
 			var sb = new StringBuilder();
 			sb.AppendFormat("{0}天线信息简述：\n", antArrayModelName);
-			sb.AppendFormat("天线阵厂家：{0}\n", antArrayNotMibVendorName);
+			//sb.AppendFormat("天线阵厂家：{0}\n", antArrayNotMibVendorName);
 			sb.AppendFormat("天线阵根数：{0:d}\n", antArrayNum);
 			sb.AppendFormat("天线阵间距：{0:d} (精度：0.1mm)\n", antArrayDistance);
 
