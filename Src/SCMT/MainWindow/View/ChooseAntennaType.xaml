@@ -5,37 +5,74 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SCMTMainWindow.View"
              mc:Ignorable="d" Title="天线阵属性"
-             Width="300" Height="300" WindowStartupLocation="CenterScreen">
+             Width="600" Height="370" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="40"></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
-        <!--rHUB类型-->
+        <!--Antenna类型-->
         <Label Grid.Row="1" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">厂家名称</Label>
-        <ComboBox Name="cbAntennaType" Width="150" Height="30" Grid.Row="1" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbAntennaType_SelectionChanged"></ComboBox>
+        <ComboBox Name="cbAntennaType" Width="150" Height="25" Grid.Row="1" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbAntennaType_SelectionChanged"></ComboBox>
 
-        <!--rHUB 光口工作模式-->
-        <Label Grid.Row="2" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">天线类型</Label>
-        <ComboBox Name="cbAntennaWorkModel" Width="150" Height="30" Grid.Row="2" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbAntennaWorkModel_SelectionChanged"></ComboBox>
+        <!--Antenna 光口工作模式-->
+        <Label Grid.Row="2"  VerticalAlignment="Center" Width="80" Margin="30,0,180,0">天线类型</Label>
+        <ComboBox Name="cbAntennaWorkModel"  Width="150" Height="25" Grid.Row="2" VerticalAlignment="Center" Margin="80,0,20,0" VerticalContentAlignment="Center" SelectionChanged="cbAntennaWorkModel_SelectionChanged"></ComboBox>
+                
+        <!--添加的 Antenna 的数量-->
+        <Label Grid.Row="3" VerticalAlignment="Center" Width="80" Margin="30,0,180,0">数  量：</Label>
+        <TextBox Grid.Row="3" Width="100" Height="30" Margin="80,0,70,0" Name="txtAntennaNumber" TextChanged="txtAntennaNumber_TextChanged"></TextBox>
 
-        <!--添加的 rHUB 的数量-->
-        <Label Grid.Row="3" VerticalAlignment="Center" Width="80" Margin="40,0,180,0">数量：</Label>
-        <TextBox Grid.Row="3" Width="100" Height="30" Margin="80,0,80,0" Name="txtAntennaNumber" TextChanged="txtAntennaNumber_TextChanged"></TextBox>
-
-        <!--rHUB 类型描述-->
+        <!--Antenna 类型描述-->
         <ScrollViewer Grid.Row="4">
-            <Label  VerticalAlignment="Center" Width="220" Margin="30,0,0,0" Name="txtRRUdescription"></Label>
+            <Label  VerticalAlignment="Center"  Margin="20,0,0,0" Name="txtRRUdescription"></Label>
         </ScrollViewer>
 
-        <Button Name="btnOK" Click="btnOK_Click"  Width="70" Height="30" Grid.Row="5" Margin="50,0,150,0">确定</Button>
-        <Button Name="btnCancle" Click="btnCancle_Click"  Width="70" Height="30" Margin="150,0,50,0" Grid.Row="5">取消</Button>
+        <Button Name="btnOK" Click="btnOK_Click"  Width="70" Height="30" Grid.Row="5" Margin="150,10,0,0">确定</Button>
+        <Button Name="btnCancle" Click="btnCancle_Click"  Width="70" Height="30" Margin="0,10,150,0" Grid.Row="5" Grid.Column="1">取消</Button>
 
+        <GroupBox Grid.Column="1" Grid.RowSpan="5">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                    <RowDefinition Height="40"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <!--水平波束个数-->
+                <Label Grid.Row="1" VerticalAlignment="Center" Width="85" Margin="0,0,180,0">水平波束个数</Label>
+                <ComboBox Grid.Row="1" Name="cbAntennaHorizontalNum" Width="150" Height="25" VerticalAlignment="Center" Margin="90,0,10,0" SelectionChanged="cbAntennaHorizontalNum_SelectionChanged"></ComboBox>
+
+                <!--水平方向下倾角-->
+                <Label Grid.Row="2" VerticalAlignment="Center" Width="95" Margin="0,0,170,0">水平方向下倾角</Label>
+                <ComboBox Grid.Row="2"  Name="cbAntennaHorizontalAngle" Width="150" Height="25" VerticalAlignment="Center" Margin="90,0,10,0" SelectionChanged="cbAntennaHorizontalAngle_SelectionChanged"></ComboBox>
+
+                <!--垂直波束个数-->
+                <Label Grid.Row="3" VerticalAlignment="Center" Width="85" Margin="0,0,180,0">垂直波束个数</Label>
+                <ComboBox Grid.Row="3" Name="cbAntennaVerticalNum" Width="150" Height="25" VerticalAlignment="Center" Margin="90,0,10,0" SelectionChanged="cbAntennaVerticalNum_SelectionChanged"></ComboBox>
+
+                <!--垂直方向下倾角-->
+                <Label Grid.Row="4"  VerticalAlignment="Center" Width="95" Margin="0,0,170,0">垂直方向下倾角</Label>
+                <ComboBox Grid.Row="4"  Name="cbAntennaVerticalAngle" Width="150" Height="25" VerticalAlignment="Center" Margin="90,0,10,0" SelectionChanged="cbAntennaVerticalAngle_SelectionChanged"></ComboBox>
+
+                <!--有损无损-->
+                <Label Grid.Row="5" VerticalAlignment="Center" Width="80" Margin="0,0,185,0">有损无损</Label>
+                <ComboBox Grid.Row="5" Name="cbAntennaLossFlag" Width="150" Height="25" VerticalAlignment="Center" Margin="90,0,10,0" SelectionChanged="cbAntennaLossFlag_SelectionChanged"></ComboBox>
+
+            </Grid>
+        </GroupBox>
     </Grid>
 </Window>
