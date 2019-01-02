@@ -25,6 +25,7 @@ namespace SCMTMainWindow.View
     public partial class ChooseAntennaType : Window
     {
         private Dictionary<string, List<AntType>> allAntInfo = new Dictionary<string, List<AntType>>();
+        private List<SimpleBfScanData> allSimpleData;
         public AntType currentSelectedAntType;
         private int nMaxAntNum = 0;
         public int nAntNo = 1;
@@ -97,6 +98,28 @@ namespace SCMTMainWindow.View
                         {
                             currentSelectedAntType = item;
                             txtRRUdescription.Content = item.antInfoDesc;
+
+                            allSimpleData = NPEAntHelper.GetInstance().GetAntBfsDataByVendorAndTypeIdx(item.antArrayVendor.ToString(), item.antArrayIndex.ToString());
+
+                            ClearSimpleData();
+                            foreach(var simpleItem in allSimpleData)
+                            {
+                                if(!this.cbAntennaHorizontalNum.Items.Contains(simpleItem.horBeamScanCount))
+                                    this.cbAntennaHorizontalNum.Items.Add(simpleItem.horBeamScanCount);
+                                if(!this.cbAntennaHorizontalAngle.Items.Contains(simpleItem.horBeamScanAngle))
+                                    this.cbAntennaHorizontalAngle.Items.Add(simpleItem.horBeamScanAngle);
+                                if(!this.cbAntennaVerticalNum.Items.Contains(simpleItem.verBeamScanCount))
+                                    this.cbAntennaVerticalNum.Items.Add(simpleItem.verBeamScanCount);
+                                if(!this.cbAntennaVerticalAngle.Items.Contains(simpleItem.verBeamScanAngle))
+                                    this.cbAntennaVerticalAngle.Items.Add(simpleItem.verBeamScanAngle);
+                                if(!this.cbAntennaLossFlag.Items.Contains(simpleItem.lossFlag))
+                                    this.cbAntennaLossFlag.Items.Add(simpleItem.lossFlag);
+                            }
+
+                            if (this.cbAntennaHorizontalNum.Items.Count > 0)
+                                this.cbAntennaHorizontalNum.SelectedIndex = 0;
+
+                            return;
                         }
                     }
 
@@ -144,6 +167,115 @@ namespace SCMTMainWindow.View
         {
             bOK = false;
             this.Close();
+        }
+
+        /// <summary>
+        /// 水平波束个数改变的时候，需要确定别的选项的可选值
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cbAntennaHorizontalNum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.cbAntennaHorizontalNum.SelectedItem == null)
+                return;
+            string strItem = this.cbAntennaHorizontalNum.SelectedItem.ToString();
+
+            if (this.cbAntennaHorizontalAngle.Items.Count > 0)
+                this.cbAntennaHorizontalAngle.Items.Clear();
+            if (this.cbAntennaVerticalNum.Items.Count > 0)
+                this.cbAntennaVerticalNum.Items.Clear();
+            if (this.cbAntennaVerticalAngle.Items.Count > 0)
+                this.cbAntennaVerticalAngle.Items.Clear();
+            if (this.cbAntennaLossFlag.Items.Count > 0)
+                this.cbAntennaLossFlag.Items.Clear();
+
+            foreach (var simpleItem in allSimpleData)
+            {
+                if(simpleItem.horBeamScanCount == strItem)
+                {
+                    if (!this.cbAntennaHorizontalAngle.Items.Contains(simpleItem.horBeamScanAngle))
+                        this.cbAntennaHorizontalAngle.Items.Add(simpleItem.horBeamScanAngle);
+                    if (!this.cbAntennaVerticalNum.Items.Contains(simpleItem.verBeamScanCount))
+                        this.cbAntennaVerticalNum.Items.Add(simpleItem.verBeamScanCount);
+                    if (!this.cbAntennaVerticalAngle.Items.Contains(simpleItem.verBeamScanAngle))
+                        this.cbAntennaVerticalAngle.Items.Add(simpleItem.verBeamScanAngle);
+                    if (!this.cbAntennaLossFlag.Items.Contains(simpleItem.lossFlag))
+                        this.cbAntennaLossFlag.Items.Add(simpleItem.lossFlag);
+                }
+            }
+            
+            if (this.cbAntennaHorizontalAngle.Items.Count > 0)
+                this.cbAntennaHorizontalAngle.SelectedIndex = 0;
+            if (this.cbAntennaVerticalNum.Items.Count > 0)
+                this.cbAntennaVerticalNum.SelectedIndex = 0;
+            if (this.cbAntennaVerticalAngle.Items.Count > 0)
+                this.cbAntennaVerticalAngle.SelectedIndex = 0;
+            if (this.cbAntennaLossFlag.Items.Count > 0)
+                this.cbAntennaLossFlag.SelectedIndex = 0;
+        }
+
+        private void ClearSimpleData()
+        {
+            if (this.cbAntennaHorizontalNum.Items.Count > 0)
+                this.cbAntennaHorizontalNum.Items.Clear();
+            if (this.cbAntennaHorizontalAngle.Items.Count > 0)
+                this.cbAntennaHorizontalAngle.Items.Clear();
+            if (this.cbAntennaVerticalNum.Items.Count > 0)
+                this.cbAntennaVerticalNum.Items.Clear();
+            if (this.cbAntennaVerticalAngle.Items.Count > 0)
+                this.cbAntennaVerticalAngle.Items.Clear();
+            if (this.cbAntennaLossFlag.Items.Count > 0)
+                this.cbAntennaLossFlag.Items.Clear();
+        }
+
+        private void cbAntennaHorizontalAngle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+        }
+
+        private void cbAntennaVerticalNum_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.cbAntennaVerticalNum.SelectedItem == null)
+                return;
+            string strItem = this.cbAntennaVerticalNum.SelectedItem.ToString();
+
+            if (this.cbAntennaHorizontalAngle.Items.Count > 0)
+                this.cbAntennaHorizontalAngle.Items.Clear();
+            if (this.cbAntennaVerticalAngle.Items.Count > 0)
+                this.cbAntennaVerticalAngle.Items.Clear();
+            if (this.cbAntennaLossFlag.Items.Count > 0)
+                this.cbAntennaLossFlag.Items.Clear();
+
+            foreach (var simpleItem in allSimpleData)
+            {
+                if (simpleItem.verBeamScanCount == strItem)
+                {
+                    if (!this.cbAntennaHorizontalAngle.Items.Contains(simpleItem.horBeamScanAngle))
+                        this.cbAntennaHorizontalAngle.Items.Add(simpleItem.horBeamScanAngle);
+                    if (!this.cbAntennaVerticalAngle.Items.Contains(simpleItem.verBeamScanAngle))
+                        this.cbAntennaVerticalAngle.Items.Add(simpleItem.verBeamScanAngle);
+                    if (!this.cbAntennaLossFlag.Items.Contains(simpleItem.lossFlag))
+                        this.cbAntennaLossFlag.Items.Add(simpleItem.lossFlag);
+                }
+            }
+
+            if (this.cbAntennaHorizontalAngle.Items.Count > 0)
+                this.cbAntennaHorizontalAngle.SelectedIndex = 0;
+            if (this.cbAntennaVerticalAngle.Items.Count > 0)
+                this.cbAntennaVerticalAngle.SelectedIndex = 0;
+            if (this.cbAntennaLossFlag.Items.Count > 0)
+                this.cbAntennaLossFlag.SelectedIndex = 0;
+
+
+        }
+
+        private void cbAntennaVerticalAngle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void cbAntennaLossFlag_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
