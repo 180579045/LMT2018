@@ -45,22 +45,23 @@ namespace CfgFileOperation
             {
                 // 1. 文件头
                 m_cfgFile_Header = GetStruCfgFileHeaderInfoByBigEndian(m_filePath);
+                // 2. 数据块头
+                m_dataHeadInfo = GetDataHeadFromFileByBigEndian(m_filePath);
             }
             else//小端解析
             {
-
+                m_cfgFile_Header = GetStruCfgFileHeaderInfo(m_filePath);
+                // 2. 数据块头
+                m_dataHeadInfo = GetDataHeadFromFile(m_filePath);
             }
             
-            
-            // 2. 数据块头
-            m_dataHeadInfo   = GetDataHeadFromFile(m_filePath);
             // 3. 每个表的偏移量
             List<uint> TablesOffsetPos = GetTablesOffsetPos(m_filePath, (int)m_dataHeadInfo.u32TableCnt);
 
             // 4. 处理每张表：所有表的内容(实例、叶子节点等信息)
             foreach (var iTablePos in TablesOffsetPos)
             {
-                CfgTableOp table = GetTableInfoFromFile(m_filePath, iTablePos);
+                CfgTableOp table = GetTableInfoFromFileByBigEndian(m_filePath, iTablePos);
                 m_mapTableInfo.Add(table.m_strTableName, table);// 保存表信息
             }
         }
@@ -119,6 +120,15 @@ namespace CfgFileOperation
             ysD.SetValueByBytes(Ysdata);
             return ysD;
         }
+        private StruDataHead GetDataHeadFromFileByBigEndian(string filePath)
+        {
+            int offset = 956;
+            int readCount = 24;
+            byte[] Ysdata = CfgReadFile(filePath, offset, readCount);
+            StruDataHead ysD = new StruDataHead("");
+            ysD.SetValueByBytesByBigEndian(Ysdata);
+            return ysD;
+        }
         /// <summary>
         /// 获取每个表的偏移量;OM_STRU_IcfIdxTableItem;4字节*表数
         /// </summary>
@@ -166,6 +176,33 @@ namespace CfgFileOperation
             table.m_tabDimen = GetIndexNodeNum(leafsHead);      // 索引的个数
             return table;
         }
+        private CfgTableOp GetTableInfoFromFileByBigEndian(string filePath, uint iTablePos)
+        {
+            // 4.1 表的信息: 44 字节
+            StruCfgFileTblInfo tblInfo = GetTableHeadInfo(filePath, iTablePos);
+            string tableName = Encoding.GetEncoding("GB2312").GetString(tblInfo.u8TblName).TrimEnd('\0');
+            //if (string.Equals(tableName, "nrCellCfgEntry"))
+            //{
+            //    Console.WriteLine("bug.\n");
+            //}
+            // 4.2 叶子节点信息: 60字节 * 叶子个数
+            List<StruCfgFileFieldInfo> leafsHead = GetLeafHeadFieldInfoByBigEndian(filePath, tblInfo.u16FieldNum, iTablePos);
+            // 4.3. 每个表的实例  解析成索引和实例的模式
+            List<byte[]> YsInsts = GetInstsData(filePath, iTablePos, (int)tblInfo.u32RecNum, (int)tblInfo.u16FieldNum, tblInfo.u16RecLen);
+
+            // 保存表信息
+            CfgTableOp table = new CfgTableOp();
+            table.m_cfgFile_TblInfo = tblInfo;   // 4.1 表的信息: 44 字节
+            table.m_strTableName = tableName;    // 表名
+            foreach (var fileField in leafsHead)
+            {// 4.2 叶子节点信息
+                table.m_LeafNodes.Add(new CfgFileLeafNodeOp(fileField));
+            }
+            table.m_cfgInsts = GetCfgInsts(YsInsts, leafsHead); // 4.3. 每个表的实例
+            table.SetTableOffset(iTablePos);                    // 设置偏移 init.cfg
+            table.m_tabDimen = GetIndexNodeNum(leafsHead);      // 索引的个数
+            return table;//ByBigEndian
+        }
         /// <summary>
         /// 获取每个表的头
         /// </summary>
@@ -204,6 +241,29 @@ namespace CfgFileOperation
                 Ysdata = CfgReadFile(filePath, fristLeafFieldInfoPos, readCount);
                 leafFieldInfo.SetValueByBytes(Ysdata);
                 //string leafName = Encoding.GetEncoding("GB2312").GetString(leafFieldInfo.Getu8FieldName()).TrimEnd('\0');
+                leafFieldL.Add(leafFieldInfo);
+            }
+            return leafFieldL;
+        }
+        private List<StruCfgFileFieldInfo> GetLeafHeadFieldInfoByBigEndian(string filePath, ushort u16FieldNumYs, uint offset)
+        {
+            int readCount = 0;
+            byte[] Ysdata;
+            List<StruCfgFileFieldInfo> leafFieldL = new List<StruCfgFileFieldInfo>();
+            // 从文件中获取
+            for (int i = 0; i < u16FieldNumYs; i++)
+            {
+                StruCfgFileFieldInfo leafFieldInfo = new StruCfgFileFieldInfo("");
+                uint fristLeafFieldInfoPos = offset +
+                    (uint)Marshal.SizeOf(new StruCfgFileTblInfo("")) +
+                    (uint)Marshal.SizeOf(new StruCfgFileFieldInfo("")) * (uint)i;// 第一个叶子头的位置
+                readCount = Marshal.SizeOf(new StruCfgFileFieldInfo(""));// 60
+                Ysdata = CfgReadFile(filePath, fristLeafFieldInfoPos, readCount);
+                
+                leafFieldInfo.SetValueByBytes(Ysdata);
+                //string leafName = Encoding.GetEncoding("GB2312").GetString(leafFieldInfo.Getu8FieldName()).TrimEnd('\0');
+                //string inAstr = BitConverter.ToString(Ysdata);
+                //Console.WriteLine(String.Format("{0}:{1}\n", leafName, inAstr));
                 leafFieldL.Add(leafFieldInfo);
             }
             return leafFieldL;
@@ -455,7 +515,7 @@ namespace CfgFileOperation
             //  表块 实例 : 序列化
             foreach (var tabName in m_mapTableInfo.Keys.ToList())
             {
-                //if (String.Equals("nrSearchSpaceEntry", tabName))
+                //if (String.Equals("nrCellCfgEntry", tabName))
                 //{
                 //    Console.WriteLine("\n");
                 //}

@@ -31,6 +31,33 @@ namespace CfgFileOperation
             m_struMibNode.SetAllParmsInfo(leafRow);// 叶子节点 StruMibNode m_struMibNode
         }
         /// <summary>
+        /// 5g patch 写叶子头
+        /// </summary>
+        /// <param name="FieldInfo"></param>
+        /// <param name="strNodeName"></param>
+        public void SetLeafFieldConfigFlagPDG(bool bFind)
+        {
+            //如果节点本身是不可配置的即使被选中也是不可配置的，如果是可配置的节点在没有被选中的情况下
+            //也是不可配置的。索引字段全部为可配置的。add by yangyuming
+            if (true == bFind)
+            {
+                if (m_struFieldInfo.Getu8ConfigFlag() != (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE)
+                    m_struFieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
+            }
+            else
+            {
+                if (m_struFieldInfo.Getu8ConfigFlag() == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE)
+                    m_struFieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE);
+                else if (m_struFieldInfo.Getu8ConfigFlag() == (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_NOT_CONFIG_FILE
+                    && m_struFieldInfo.u8FieldTag == 'Y')
+                {
+                    m_struFieldInfo.Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
+                }
+            }
+
+        }
+
+        /// <summary>
         /// 把文件解析到内存结构时用
         /// </summary>
         /// <param name="struFieldInfo"></param>
@@ -74,7 +101,10 @@ namespace CfgFileOperation
         /// </summary>
         public byte u8FieldTag;                /* 字段是否为关键字 : 是否为索引 'Y' or 'N'*/
         public byte u8SaveTag;                 /* 字段是否需要存盘 */
-        public byte u8ConfigFlag;              /* 字段是否可(需要)配置,0:不可配，1：可配*/
+        /// <summary>
+        /// 字段是否可(需要)配置,0:不可配，1：可配
+        /// </summary>
+        byte u8ConfigFlag;                     /* 字段是否可(需要)配置,0:不可配，1：可配*/
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         byte[] u8Pad;                          /* [4] 保留*/
         /*********************        功能函数(结构转byte序等)      ***************************/
@@ -97,7 +127,7 @@ namespace CfgFileOperation
         {
             // 数据文件表字段信息 StruCfgFileFieldInfo
             Set_u8FieldName(leafRow["MIBName"].ToString()); // u8FieldName
-            u8ConfigFlag = (byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE;
+            Setu8ConfigFlag((byte)MacroDefinition.CONFIGFILEORNOT.OM_IS_CONFIG_FILE);
             u8SaveTag = Convert.ToByte('Y');
             u16FieldOffset = buflen;
             u8FieldTag = Convert.ToByte(((bool)leafRow["IsIndex"] == true) ? 'Y' : 'N');//是否为索引
@@ -115,6 +145,8 @@ namespace CfgFileOperation
             List<byte[]> byteAL = new List<byte[]>() { byteArray };
             List<int> bytePosL = new List<int>() { bytePos };
             // 按照顺序转换
+            string leafName = Encoding.GetEncoding("GB2312").GetString(u8FieldName).TrimEnd('\0');
+
             SetValueToByteArray(byteAL, bytePosL, u8FieldName);
             SetValueToByteArray(byteAL, bytePosL, u16FieldOffset);
             SetValueToByteArray(byteAL, bytePosL, u16FieldLen);
@@ -123,6 +155,9 @@ namespace CfgFileOperation
             SetValueToByteArray(byteAL, bytePosL, u8SaveTag);
             SetValueToByteArray(byteAL, bytePosL, u8ConfigFlag);
             SetValueToByteArray(byteAL, bytePosL, u8Pad);
+            
+            //string inAstr = BitConverter.ToString(byteAL[0]);
+            //Console.WriteLine(String.Format("{0}:{1}\n", leafName, inAstr));
             return byteArray;
         }
         public byte[] StruToByteArrayReverse()
@@ -156,6 +191,14 @@ namespace CfgFileOperation
         public byte[] Getu8FieldName()
         {
             return u8FieldName;
+        }
+        public void Setu8ConfigFlag(byte setU8ConfigFlag)
+        {
+            u8ConfigFlag = setU8ConfigFlag;
+        }
+        public byte Getu8ConfigFlag()
+        {
+            return u8ConfigFlag;
         }
         /*********************        功能函数(私有)             ***************************/
         /// <summary>
@@ -496,16 +539,60 @@ namespace CfgFileOperation
             bytes = data.Skip(fromOf).Take(lenSize).ToArray();
             u16FieldLen = GetBytesValToU16(bytes);
             //u8FieldType
-            fromOf += Marshal.SizeOf(new byte());
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
             u8FieldType = data[fromOf];
             //u8FieldTag
-            fromOf += Marshal.SizeOf(new byte());
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
             u8FieldTag = data[fromOf];
             //u8SaveTag
-            fromOf += Marshal.SizeOf(new byte());
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
             u8SaveTag = data[fromOf];
             //u8ConfigFlag
-            fromOf += Marshal.SizeOf(new byte());
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
+            u8ConfigFlag = data[fromOf];
+        }
+        public void SetValueByBytesByBigEndian(byte[] data)
+        {
+            u8Pad = new byte[4];           /* [4] 保留*/
+
+            int fromOf = 0;
+            int lenSize = 0;
+            byte[] bytes;
+            //u8FieldName
+            fromOf = 0;
+            lenSize = Marshal.SizeOf(new byte()) * 48;
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u8FieldName = GetBytesValue(bytes);
+            string leafName = Encoding.GetEncoding("GB2312").GetString(u8FieldName).TrimEnd('\0');
+            //u16FieldOffset
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16FieldOffset);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16FieldOffset = GetBytesValToU16(bytes);
+            //u16FieldLen
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(u16FieldLen);
+            bytes = data.Skip(fromOf).Take(lenSize).ToArray();
+            u16FieldLen = GetBytesValToU16(bytes);
+            //u8FieldType
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
+            u8FieldType = data[fromOf];
+            //u8FieldTag
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
+            u8FieldTag = data[fromOf];
+            //u8SaveTag
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
+            u8SaveTag = data[fromOf];
+            //u8ConfigFlag
+            fromOf += lenSize;
+            lenSize = Marshal.SizeOf(new byte());
             u8ConfigFlag = data[fromOf];
         }
         uint GetBytesValToUint(byte[] bytes)

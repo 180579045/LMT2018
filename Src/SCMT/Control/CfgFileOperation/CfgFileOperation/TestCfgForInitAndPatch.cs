@@ -447,17 +447,17 @@ namespace CfgFileOperation
                 re = false;
                 strBug += "TestBeyondCompFileDataHead u8VerifyStr not same.\n.";
             }
-            else if (YsDhead.u32DatType != NewDhead.u32DatType)
+            if (YsDhead.u32DatType != NewDhead.u32DatType)
             {
                 re = false;
                 strBug += String.Format("TestBeyondCompFileDataHead u32DatType a({0}),b({1}) not same.\n.", YsDhead.u32DatType ,NewDhead.u32DatType);
             }
-            else if (YsDhead.u32DatVer != NewDhead.u32DatVer)
+            if (YsDhead.u32DatVer != NewDhead.u32DatVer)
             {
                 re = false;
                 strBug += String.Format("TestBeyondCompFileDataHead u32DatVer a({0}),b({1}) not same.\n.", YsDhead.u32DatVer, NewDhead.u32DatVer);
             }
-            else if (YsDhead.u32TableCnt != NewDhead.u32TableCnt)
+            if (YsDhead.u32TableCnt != NewDhead.u32TableCnt)
             {
                 re = false;
                 strBug += String.Format("TestBeyondCompFileDataHead u32TableCnt a({0}),b({1}) not same.\n.", YsDhead.u32TableCnt, NewDhead.u32TableCnt);
@@ -853,6 +853,7 @@ namespace CfgFileOperation
                 if (!TestIsSameLeafHeadInfo(bw, leafName, leafHA, leafHB))
                 {
                     re = false;
+                    TestPrintLeafHeadInfo(bw, leafName, leafHA, leafHB);
                     //strBug = (String.Format("leafname={0}, leafHeadInfo not all same.\n", leafName));
                     //Console.WriteLine(strBug);
                     //bw.Write(strBug.ToArray());
@@ -880,35 +881,35 @@ namespace CfgFileOperation
                 re = false;
                 strBug += (String.Format("FieldName={0}; leafName(a,{1},b.{2}) no same.\n", leafName, strFieldNameA, strFieldNameB));
             }
-            else if (leafHA.u16FieldOffset != leafHB.u16FieldOffset)/* 字段相对记录头偏移量*/
+            if (leafHA.u16FieldOffset != leafHB.u16FieldOffset)/* 字段相对记录头偏移量*/
             {
                 re = false;
                 strBug += (String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}) no same.\n", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
             }
-            else if (leafHA.u16FieldLen != leafHB.u16FieldLen)/* 字段长度 单位：字节 */
+            if (leafHA.u16FieldLen != leafHB.u16FieldLen)/* 字段长度 单位：字节 */
             {
                 re = false;
                 strBug += (String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) no same.\n", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
             }
-            else if (leafHA.u8FieldType != leafHB.u8FieldType)/* 字段类型 */
+            if (leafHA.u8FieldType != leafHB.u8FieldType)/* 字段类型 */
             {
                 re = false;
                 strBug += (String.Format("FieldName={0}; u8FieldType(a,{1},b.{2}) no same.\n", leafName, leafHA.u8FieldType, leafHB.u8FieldType));
             }
-            else if (leafHA.u8FieldTag != leafHB.u8FieldTag)/* 字段是否为关键字 */
+            if (leafHA.u8FieldTag != leafHB.u8FieldTag)/* 字段是否为关键字 */
             {
                 re = false;
                 strBug += (String.Format("FieldName={0}; u8FieldTag(a,{1},b.{2}) no same.\n", leafName, leafHA.u8FieldTag, leafHB.u8FieldTag));
             }
-            else if (leafHA.u8SaveTag != leafHB.u8SaveTag)/* 字段是否需要存盘 */
+            if (leafHA.u8SaveTag != leafHB.u8SaveTag)/* 字段是否需要存盘 */
             {
                 re = false;
                 strBug += (String.Format("FieldName={0}; u8SaveTag(a,{1},b.{2}) no same.\n", leafName, leafHA.u8SaveTag, leafHB.u8SaveTag));
             }
-            else if (leafHA.u8ConfigFlag != leafHB.u8ConfigFlag)/* 字段是否可(需要)配置,0:不可配，1：可配*/
+            if (leafHA.Getu8ConfigFlag() != leafHB.Getu8ConfigFlag())/* 字段是否可(需要)配置,0:不可配，1：可配*/
             {
                 re = false;
-                strBug += (String.Format("FieldName={0}; u8ConfigFlag(a,{1},b.{2}) no same.\n", leafName, leafHA.u8ConfigFlag, leafHB.u8ConfigFlag));
+                strBug += (String.Format("FieldName={0}; u8ConfigFlag(a,{1},b.{2}) no same.\n", leafName, leafHA.Getu8ConfigFlag(), leafHB.Getu8ConfigFlag()));
             }
             Console.WriteLine(strBug);
             bw.Write(strBug.ToArray());
@@ -916,7 +917,56 @@ namespace CfgFileOperation
             //Console.WriteLine(String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) ", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
             return re;
         }
-        
+        void TestPrintLeafHeadInfo(BinaryWriter bw, string leafName, StruCfgFileFieldInfo leafHA, StruCfgFileFieldInfo leafHB)
+        {
+            bool re = true;
+            string strBug = (String.Format("FieldName={0}; ====info not all some.====.\n", leafName));
+            /* [48] 字段名 */
+            string strFieldNameA = Encoding.GetEncoding("GB2312").GetString(leafHA.Getu8FieldName()).TrimEnd('\0');
+            string strFieldNameB = Encoding.GetEncoding("GB2312").GetString(leafHB.Getu8FieldName()).TrimEnd('\0');
+            //if (-1 == String.Compare(strFieldNameA, strFieldNameB))
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; leafName(a,{1},b.{2}).\n", leafName, strFieldNameA, strFieldNameB));
+            }
+            //if (leafHA.u16FieldOffset != leafHB.u16FieldOffset)/* 字段相对记录头偏移量*/
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}).\n", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
+            }
+            //if (leafHA.u16FieldLen != leafHB.u16FieldLen)/* 字段长度 单位：字节 */
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}).\n", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
+            }
+            //if (leafHA.u8FieldType != leafHB.u8FieldType)/* 字段类型 */
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; u8FieldType(a,{1},b.{2}).\n", leafName, leafHA.u8FieldType, leafHB.u8FieldType));
+            }
+            //if (leafHA.u8FieldTag != leafHB.u8FieldTag)/* 字段是否为关键字 */
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; u8FieldTag(a,{1},b.{2}).\n", leafName, leafHA.u8FieldTag, leafHB.u8FieldTag));
+            }
+            //if (leafHA.u8SaveTag != leafHB.u8SaveTag)/* 字段是否需要存盘 */
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; u8SaveTag(a,{1},b.{2}).\n", leafName, leafHA.u8SaveTag, leafHB.u8SaveTag));
+            }
+            //if (leafHA.u8ConfigFlag != leafHB.u8ConfigFlag)/* 字段是否可(需要)配置,0:不可配，1：可配*/
+            {
+                re = false;
+                strBug += (String.Format("FieldName={0}; u8ConfigFlag(a,{1},b.{2}).\n", leafName, leafHA.Getu8ConfigFlag(), leafHB.Getu8ConfigFlag()));
+            }
+            Console.WriteLine(strBug);
+            bw.Write(strBug.ToArray());
+            //Console.WriteLine(String.Format("FieldName={0}; u16FieldOffset(a,{1},b.{2}) ", leafName, leafHA.u16FieldOffset, leafHB.u16FieldOffset));
+            //Console.WriteLine(String.Format("FieldName={0}; u16FieldLen(a,{1},b.{2}) ", leafName, leafHA.u16FieldLen, leafHB.u16FieldLen));
+            return ;
+        }
+
+
         /// <summary>
         /// 获取表的所有实例
         /// </summary>
