@@ -169,19 +169,19 @@ namespace NetPlan
 		/// <param name="strVendorIdx">厂家索引</param>
 		/// <param name="strTypeIdx">类型索引</param>
 		/// <returns></returns>
-		public List<BfScanData> GetAntBfsDataByVendorAndTypeIdx(string strVendorIdx, string strTypeIdx)
+		public List<SimpleBfScanData> GetAntBfsDataByVendorAndTypeIdx(string strVendorIdx, string strTypeIdx)
 		{
-			var retList = new List<BfScanData>();
+			var retList = new List<SimpleBfScanData>();
 			var bfsList = _antInfo.bfScanWeightTable;
 			foreach (var item in bfsList)
 			{
 				if (item.antArrayBfScanAntWeightVendorIndex == strVendorIdx && item.antArrayBfScanAntWeightTypeIndex == strTypeIdx)
 				{
-					retList.Add(item);
+					retList.Add(new SimpleBfScanData(item));
 				}
 			}
 
-			return retList;
+			return retList.Distinct().ToList();
 		}
 
 		#endregion
@@ -247,7 +247,7 @@ namespace NetPlan
 		public List<AntType> antennaTypeTable;              // 天线类型
 		public List<AntWeight> antennaWeightTable;          // 天线权重
 		public List<AntCoupCoe> couplingCoeffctTable;       // 耦合系数
-		public List<BfScanData> bfScanWeightTable;			// 波束扫面
+		public List<BfScanData> bfScanWeightTable;			// 波束扫描
 
 		public WholeAntInfo()
 		{
@@ -446,13 +446,48 @@ namespace NetPlan
 		public string antennaBfScanWeightIsLossFlag;
 	}
 
-	public class SimpleBfsData
+	public struct SimpleBfScanData
 	{
-		public List<BfScanData> listDataOrigin;
+		public readonly string horBeamScanCount;
+		public readonly string horBeamScanAngle;
+		public readonly string verBeamScanCount;
+		public readonly string verBeamScanAngle;
+		public readonly string lossFlag;
 
-		public SimpleBfsData()
+		public SimpleBfScanData(BfScanData allBfsData)
 		{
-			listDataOrigin = new List<BfScanData>();
+			horBeamScanCount = allBfsData.antennaBfScanWeightHorizonNum;
+			horBeamScanAngle = allBfsData.antennaBfScanWeightHorizonDowntiltAngle;
+			verBeamScanCount = allBfsData.antennaBfScanWeightVerticalNum;
+			verBeamScanAngle = allBfsData.antennaBfScanWeightVerticalDowntiltAngle;
+			lossFlag = (allBfsData.antennaBfScanWeightIsLossFlag == "1") ? "有损" : "无损";
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (null == obj || GetType() != obj.GetType())
+			{
+				return false;
+			}
+
+			var newObjc = (SimpleBfScanData) obj;
+			return (newObjc.horBeamScanAngle == horBeamScanAngle &&
+			        newObjc.horBeamScanCount == horBeamScanCount &&
+			        newObjc.verBeamScanCount == verBeamScanCount &&
+			        newObjc.verBeamScanAngle == verBeamScanAngle &&
+			        newObjc.lossFlag == lossFlag);
+		}
+
+		public override int GetHashCode()
+		{
+			var hashCode = 1374738992;
+			hashCode = hashCode * -1521134295 + base.GetHashCode();
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(horBeamScanCount);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(horBeamScanAngle);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(verBeamScanCount);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(verBeamScanAngle);
+			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(lossFlag);
+			return hashCode;
 		}
 	}
 
