@@ -527,8 +527,9 @@ namespace SCMTMainWindow.View
                 newItem.NPathNumber = antInfo.antArrayNum;
 
                 //添加 ant 的时候需要给基站下发，然后获取设备信息
-                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo, antInfo.antArrayNotMibVendorName, antInfo.antArrayModelName);
-
+				var param = new AddAntParameters(antInfo.antArrayNotMibVendorName, antInfo.antArrayModelName);
+				// todo @马毅 如果有波束扫描信息，需要注意设置param中的数据
+                var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo, param);
                 if (devRRUInfo == null)
                 {
                     MessageBox.Show("MibInfoMgr.GetInstance().AddNewAnt 返回为空");

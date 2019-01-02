@@ -184,6 +184,22 @@ namespace NetPlan
 			return retList.Distinct().ToList();
 		}
 
+		public bool IsExistBfsData(string strVendorIdx, string strTypeIdx)
+		{
+			var bfsList = _antInfo.bfScanWeightTable;
+			//foreach (var item in bfsList)
+			//{
+			//	if (item.antArrayBfScanAntWeightVendorIndex == strVendorIdx && item.antArrayBfScanAntWeightTypeIndex == strTypeIdx)
+			//	{
+			//		return true;
+			//	}
+			//}
+
+			return bfsList.Exists(item =>
+				item.antArrayBfScanAntWeightVendorIndex == strVendorIdx &&
+				item.antArrayBfScanAntWeightTypeIndex == strTypeIdx);
+		}
+
 		#endregion
 
 		#endregion 公共接口
@@ -446,21 +462,30 @@ namespace NetPlan
 		public string antennaBfScanWeightIsLossFlag;
 	}
 
-	public struct SimpleBfScanData
+	public class SimpleBfScanData
 	{
-		public readonly string horBeamScanCount;
-		public readonly string horBeamScanAngle;
-		public readonly string verBeamScanCount;
-		public readonly string verBeamScanAngle;
-		public readonly string lossFlag;
+		public string horBeamScanCount;
+		public string horBeamScanAngle;
+		public string verBeamScanCount;
+		public string verBeamScanAngle;
+		public string lossFlag;
 
 		public SimpleBfScanData(BfScanData allBfsData)
 		{
-			horBeamScanCount = allBfsData.antennaBfScanWeightHorizonNum;
+			horBeamScanCount = allBfsData.antennaBfScanWeightHorizonNum + "组";
 			horBeamScanAngle = allBfsData.antennaBfScanWeightHorizonDowntiltAngle;
-			verBeamScanCount = allBfsData.antennaBfScanWeightVerticalNum;
+			verBeamScanCount = allBfsData.antennaBfScanWeightVerticalNum + "组";
 			verBeamScanAngle = allBfsData.antennaBfScanWeightVerticalDowntiltAngle;
 			lossFlag = (allBfsData.antennaBfScanWeightIsLossFlag == "1") ? "有损" : "无损";
+		}
+
+		public SimpleBfScanData()
+		{
+			horBeamScanCount = "7组";
+			verBeamScanCount = "0组";
+			horBeamScanAngle = "6";
+			verBeamScanAngle = "0";
+			lossFlag = "无损";
 		}
 
 		public override bool Equals(object obj)
@@ -488,6 +513,18 @@ namespace NetPlan
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(verBeamScanAngle);
 			hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(lossFlag);
 			return hashCode;
+		}
+	}
+
+	public class AddAntParameters : SimpleBfScanData
+	{
+		public string vendorName;		// 厂家名
+		public string typeName;			// 类型名
+
+		public AddAntParameters(string vendor, string type)
+		{
+			vendorName = vendor;
+			typeName = type;
 		}
 	}
 

@@ -152,10 +152,9 @@ namespace NetPlan
 		/// 增加一个新的天线设备
 		/// </summary>
 		/// <param name="nIndex">设备序号</param>
-		/// <param name="strVerdorName">厂家名称</param>
-		/// <param name="strAntTypeName">天线阵类型名</param>
+		/// <param name="parameters">添加天线阵所需参数</param>
 		/// <returns>null:添加失败</returns>
-		public DevAttributeInfo AddNewAnt(int nIndex, string strVerdorName, string strAntTypeName)
+		public DevAttributeInfo AddNewAnt(int nIndex, AddAntParameters parameters)
 		{
 			const EnumDevType type = EnumDevType.ant;
 
@@ -167,29 +166,10 @@ namespace NetPlan
 				return null;
 			}
 
-			var strVendorNo = NPEAntHelper.GetInstance().GetVendorIndexByName(strVerdorName);
-			if (null == strVendorNo)
+			string strErrMsg;
+			if (!NetDevAnt.SetAntBfsValue(ant, parameters, out strErrMsg))
 			{
-				Log.Error($"根据厂家名{strVerdorName}获取厂家索引失败");
-				return null;
-			}
-
-			var strAntTypeNo = NPEAntHelper.GetInstance().GetTypeIndexByModelName(strAntTypeName);
-			if (null == strAntTypeNo)
-			{
-				Log.Error($"根据类型名{strAntTypeName}获取类型编号失败");
-				return null;
-			}
-
-			if (!ant.SetFieldOlValue("netAntArrayVendorIndex", strVendorNo))
-			{
-				Log.Error($"设置字段netAntArrayVendorIndex的值{strVendorNo}失败");
-				return null;
-			}
-
-			if (!ant.SetFieldOlValue("netAntArrayTypeIndex", strAntTypeNo))
-			{
-				Log.Error($"设置字段netAntArrayTypeIndex的值{strAntTypeNo}失败");
+				ErrorTip($"添加编号为{nIndex}失败，原因：{strErrMsg}");
 				return null;
 			}
 
@@ -1045,7 +1025,7 @@ namespace NetPlan
 			throw new NotImplementedException();
 		}
 
-	public static void ErrorTip(string strTip)
+		public static void ErrorTip(string strTip)
 		{
 			var msg = $"[网络规划] {strTip}";
 			ShowLogHelper.Show(msg, "SCMT", InfoTypeEnum.ENB_OTHER_INFO_IMPORT);
