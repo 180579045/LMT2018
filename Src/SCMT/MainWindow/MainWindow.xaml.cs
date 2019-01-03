@@ -1978,5 +1978,12 @@ namespace SCMTMainWindow
                 progressBar.Visibility = showstatus;
             });
         }
+
+        private void MetroMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            View.ConfigFileOperate dlgConfigFile = new View.ConfigFileOperate();
+            dlgConfigFile.ShowDialog();
+
+        }
     }
 }
