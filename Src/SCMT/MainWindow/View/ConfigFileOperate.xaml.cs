@@ -144,9 +144,11 @@ namespace SCMTMainWindow.View
             {
                 CfgOp cfgOperation = new CfgOp();
                 re = new CfgOp().CreatePatchAndInitCfg5G(bw, path);
+                
             }
             catch
             {
+                re = false;
                 bw.Write("Err exe Death...\n".ToArray());
                 Log.Debug("UI-CreateInitPatch Err exe Death.");
             }
@@ -161,6 +163,11 @@ namespace SCMTMainWindow.View
             //关闭流
             bw.Close();
             fs.Close();
+
+            if(re)
+                MessageBox.Show("   解析成功！");
+            else
+                MessageBox.Show("   解析失败！查看保存文件下的log.");
             return;
         }
         private bool parseInputPath(Dictionary<string, string> path, out string err)
