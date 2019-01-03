@@ -11,7 +11,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 自定义_初配数据文件
     /// </summary>
-    class CfgParseSelfExcel
+    public class CfgParseSelfExcel
     {
 
         Dictionary<string, string> SheetCellCol = null;

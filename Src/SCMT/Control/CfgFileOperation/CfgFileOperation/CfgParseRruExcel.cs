@@ -13,7 +13,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 解析《RRU基本信息表.xls》 rruTypeEntry、rruTypePortEntry
     /// </summary>
-    class CfgParseRruExcel
+    public class CfgParseRruExcel
     {
         private List<Dictionary<string, string>> RruInfo = null;//总的东西
         /// <summary>

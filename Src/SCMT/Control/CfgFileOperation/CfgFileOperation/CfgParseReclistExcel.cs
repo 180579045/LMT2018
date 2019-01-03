@@ -15,7 +15,7 @@ namespace CfgFileOperation
     /// 5G ： 解析 《参数标定手册》 文件
     /// 格式和逻辑相近
     /// </summary>
-    class CfgParseReclistExcel
+    public class CfgParseReclistExcel
     {
         //List<string> m_vectIndexScope = null;// new List<string>();//2014-2-12 luoxin 索引取值范围
 

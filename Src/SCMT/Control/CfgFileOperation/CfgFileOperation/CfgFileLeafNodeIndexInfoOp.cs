@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CfgFileOperation
 {
-    class CfgFileLeafNodeIndexInfoOp
+    public class CfgFileLeafNodeIndexInfoOp
     {
         public struIndexInfoCFG[] m_struIndex;
         private int indexNo ;// 赋值几个index了？
@@ -39,7 +39,7 @@ namespace CfgFileOperation
         }
     }
     //索引结构体
-    struct struIndexInfoCFG
+    public struct struIndexInfoCFG
     {
         public uint indexNum;                 //索引
         public uint IndexMinValue;            //索引的最小值
