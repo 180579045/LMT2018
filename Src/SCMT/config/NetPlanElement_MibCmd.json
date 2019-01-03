@@ -33,7 +33,7 @@
 				"MibEntry" : "netAntennaArrayEntry",
 				"Alias" : "ant",
 				"InitQuery" : "true",
-				"Get" : ["GetNetAntennaArray", "GetTDSInheritNetAntennaArray"],
+				"Get" : ["GetNetAntennaArray"],
 				"Set" : ["SetNetAntennaArray", "SetNetAntRAEScan"],
 				"Add" : ["AddNetAntennaArray"],
 				"Del" : ["DelNetAntennaArray"]	
