@@ -143,7 +143,7 @@ namespace SCMTMainWindow.View
             try
             {
                 CfgOp cfgOperation = new CfgOp();
-                re = new CfgOp().CreatePatchAndInitCfg5G(bw, path);
+                re = cfgOperation.CreatePatchAndInitCfg5G(bw, path);
                 
             }
             catch
