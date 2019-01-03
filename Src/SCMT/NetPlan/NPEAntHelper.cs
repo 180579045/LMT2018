@@ -486,19 +486,19 @@ namespace NetPlan
 
 		public SimpleBfScanData(BfScanData allBfsData)
 		{
-			horBeamScanCount = allBfsData.antennaBfScanWeightHorizonNum + "组";
+			horBeamScanCount = allBfsData.antennaBfScanWeightHorizonNum;
 			horBeamScanAngle = allBfsData.antennaBfScanWeightHorizonDowntiltAngle;
-			verBeamScanCount = allBfsData.antennaBfScanWeightVerticalNum + "组";
+			verBeamScanCount = allBfsData.antennaBfScanWeightVerticalNum;
 			verBeamScanAngle = allBfsData.antennaBfScanWeightVerticalDowntiltAngle;
 			lossFlag = (allBfsData.antennaBfScanWeightIsLossFlag == "1") ? "有损" : "无损";
 		}
 
 		public SimpleBfScanData()
 		{
-			horBeamScanCount = "7组";
-			verBeamScanCount = "0组";
-			horBeamScanAngle = "6";
-			verBeamScanAngle = "0";
+			horBeamScanCount = "-1";
+			verBeamScanCount = "-1";
+			horBeamScanAngle = "-1";
+			verBeamScanAngle = "-1";
 			lossFlag = "无损";
 		}
 
@@ -548,7 +548,7 @@ namespace NetPlan
 		public string vendorName;		// 厂家名
 		public string typeName;			// 类型名
 
-		public AddAntParameters(string vendor, string type)
+		public AddAntParameters(string vendor, string type) : base()
 		{
 			vendorName = vendor;
 			typeName = type;
