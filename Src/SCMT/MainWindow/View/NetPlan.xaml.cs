@@ -1453,37 +1453,26 @@ namespace SCMTMainWindow.View
 
                 //获取类型信息
                 string strrHUBType = item.m_mapAttributes["netRHUBType"].m_strOriginValue;
-
+	            var uiName = "rhub1.0";
                 if(strrHUBType == "null")
                 {
-                    strrHUBType = "rhub1.0";
+                    strrHUBType = "pRHB3112";
                 }
 
-	            strrHUBType = strrHUBType.ToLower();
-
 				int nMaxRHUBPath = 2;
-	            switch (strrHUBType)
-				{
-					case "rhub1.0":
-						nMaxRHUBPath = 2;
-						break;
-					case "rhub2.0":
-						nMaxRHUBPath = 4;
-						break;
-					case "rhub3.0":
-						nMaxRHUBPath = 6;
-						break;
-					default:
-						nMaxRHUBPath = 2;
-						break;
+				var staticRe = NPEBoardHelper.GetInstance().GetRhubEquipmentByType(strrHUBType);
+	            if (null != staticRe)
+	            {
+		            nMaxRHUBPath = staticRe.irOfpNum;
+		            uiName = staticRe.friendlyUIName;
+	            }
 
-				}
-                DesignerItem newItem = new DesignerItem();
+				DesignerItem newItem = new DesignerItem();
 
                 //从xml 中获取 rru 元素并创建
                 string strXAML = string.Empty;
                 Size newSize;
-                string strName = strrHUBType + "-" + nRHUBid.ToString();
+                string strName = uiName + "-" + nRHUBid.ToString();
                 strXAML = MyDesigner.GetrHUBFromXML(nMaxRHUBPath, strXAML, out newSize);
                 string strXAML1 = string.Format("Text=\"{0}\"", strName);
                 strXAML = strXAML.Replace("Text=\"rHUB\"", strXAML1);

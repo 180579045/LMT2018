@@ -308,7 +308,7 @@ namespace NetPlan
 		/// <param name="strDevVer">设备版本。rhub分1.0和2.0两个版本，用于UI绘图</param>
 		/// <param name="strWorkMode"></param>
 		/// <returns>null:添加rhub设备失败；</returns>
-		public RHubDevAttri AddNewRhub(int nRhubNo, string strDevVer, string strWorkMode)
+		public DevAttributeInfo AddNewRhub(int nRhubNo, string strDevVer, string strWorkMode)
 		{
 			if (string.IsNullOrEmpty(strWorkMode) || string.IsNullOrEmpty(strDevVer))
 			{
@@ -316,19 +316,13 @@ namespace NetPlan
 				return null;
 			}
 
+			DevAttributeInfo oldDev;
+
 			const EnumDevType type = EnumDevType.rhub;
-
-			var dev = new RHubDevAttri($".{nRhubNo}", strDevVer);
-			if (dev.m_mapAttributes.Count == 0)
+			var dev = GenerateNewDev(type, $".{nRhubNo}", out oldDev);
+			if (null == dev)
 			{
-				ErrorTip($"新增编号为{nRhubNo}rhub设备出现未知错误");
-				return null;
-			}
-
-			var devIndex = dev.m_strOidIndex;
-			if (HasSameIndexDev(m_mapAllMibData, type, devIndex))
-			{
-				ErrorTip($"已经存在编号为{nRhubNo}的rhub设备，操作失败");
+				Log.Error($"根RHUB编号{nRhubNo}生成新设备失败");
 				return null;
 			}
 
@@ -336,13 +330,20 @@ namespace NetPlan
 
 			if (!dev.SetFieldOlValue("netRHUBOfpWorkMode", strWorkMode))
 			{
-				ErrorTip($"设置编号为{nRhubNo}的rhub设备工作模式参数失败");
+				ErrorTip($"设置编号为{nRhubNo}的RHUB设备工作模式参数失败");
 				return null;
 			}
 
-			if (!dev.SetFieldOlValue("netRHUBType", strDevVer))
+			var staticRe = NPEBoardHelper.GetInstance().GetRhubEquipmentByUIFriendlyName(strDevVer);
+			if (null == staticRe)
 			{
-				ErrorTip($"设置编号为{nRhubNo}的rhub设备类型参数失败");
+				ErrorTip($"根据{strDevVer}查询RHUB器件信息失败");
+				return null;
+			}
+
+			if (!dev.SetFieldOlValue("netRHUBType", staticRe.rHubType))
+			{
+				ErrorTip($"设置编号为{nRhubNo}的RHUB设备类型参数失败");
 				return null;
 			}
 
@@ -355,7 +356,7 @@ namespace NetPlan
 			//	return null;
 			//}
 
-			Log.Debug($"新增编号为{nRhubNo}的rhub设备成功");
+			Log.Debug($"新增编号为{nRhubNo}的RHUB设备成功");
 
 			return dev;
 		}
