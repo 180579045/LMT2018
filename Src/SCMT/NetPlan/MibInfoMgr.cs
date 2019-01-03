@@ -367,10 +367,10 @@ namespace NetPlan
 		/// <returns></returns>
 		public DevAttributeInfo AddNewLocalCell(int nLocalCellId)
 		{
-			if (!CheckDataIsValid())
-			{
-				return null;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	return null;
+			//}
 
 			const EnumDevType type = EnumDevType.nrNetLc;
 
@@ -406,10 +406,10 @@ namespace NetPlan
 		/// <returns></returns>
 		public DevAttributeInfo AddNewNetLcCtrlSwitch(string strIndex, string strSwitchValue)
 		{
-			if (!CheckDataIsValid())
-			{
-				return null;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	return null;
+			//}
 
 			var type = EnumDevType.nrNetLcCtr;
 			var dev = new DevAttributeInfo(type, strIndex);
@@ -526,11 +526,11 @@ namespace NetPlan
 
 				DelDevFromMap(m_mapAllMibData, devType, dev);
 
-				if (!CheckDataIsValid())
-				{
-					ExchangeSameTypeAndIndexDev(devType, dev, devClone);
-					return false;
-				}
+				//if (!CheckDataIsValid())
+				//{
+				//	ExchangeSameTypeAndIndexDev(devType, dev, devClone);
+				//	return false;
+				//}
 			}
 
 			InfoTip($"删除索引为{strIndex}的{devType.ToString()}设备成功");
@@ -568,11 +568,6 @@ namespace NetPlan
 		/// <returns></returns>
 		public bool DelLink(LinkEndpoint srcEndpoint, LinkEndpoint dstEndpoint)
 		{
-			if (!CheckDataIsValid())
-			{
-				return false;
-			}
-
 			var linkType = EnumDevType.unknown;
 			if (!GetLinkTypeBySrcDstEnd(srcEndpoint, dstEndpoint, ref linkType))
 			{
@@ -595,6 +590,12 @@ namespace NetPlan
 					return false;
 				}
 			}
+
+			//if (!CheckDataIsValid())
+			//{
+			//	handler.AddLink(wlink, m_mapAllMibData);
+			//	return false;
+			//}
 
 			return true;
 		}
@@ -821,10 +822,10 @@ namespace NetPlan
 				throw new CustomException("尚未选中基站");
 			}
 
-			if (!CheckDataIsValid())
-			{
-				return false;
-			}
+			//if (!CheckDataIsValid())
+			//{
+			//	return false;
+			//}
 
 			const EnumDevType devType = EnumDevType.rru_ant;
 			var rruNo = strRruIndex.Trim('.');
