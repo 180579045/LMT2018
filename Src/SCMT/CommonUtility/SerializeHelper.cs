@@ -259,8 +259,9 @@ namespace CommonUtility
 		/// <param name="ret">原始数据</param>
 		/// <param name="offset">字节数组偏移量，也就是从偏移量位置开始取数据</param>
 		/// <param name="value">保存转后的数据</param>
+        /// <param name="isReverse">是否反转字节（默认为true，针对UE小端字节不需要反转，故添加该默认参数）</param>
 		/// <returns>序列化数据的字节数</returns>
-		public static int DeserializeUshort(byte[] ret, int offset, ref ushort value)
+		public static int DeserializeUshort(byte[] ret, int offset, ref ushort value, bool isReverse = true)
 		{
 			if (ret.Length - offset < sizeof(ushort))
 			{
@@ -268,7 +269,10 @@ namespace CommonUtility
 			}
 
 			var data = BitConverter.ToUInt16(ret, offset);
-			value = ReverseUshort(data);
+            if (isReverse)
+            {
+                value = ReverseUshort(data);
+            }
 			return sizeof(ushort);
 		}
 		
@@ -314,8 +318,9 @@ namespace CommonUtility
 		/// <param name="ret">原始数据</param>
 		/// <param name="offset">字节数组偏移量，也就是从偏移量位置开始取数据</param>
 		/// <param name="value">保存转后的数据</param>
+        /// <param name="isReverse">是否反转字节（默认为true，针对UE小端字节不需要反转，故添加该默认参数）</param>
 		/// <returns>序列化数据的字节数</returns>
-		public static int DeserializeInt32(byte[] ret, int offset, ref uint value)
+		public static int DeserializeInt32(byte[] ret, int offset, ref uint value, bool isReverse = true)
 		{
 			if (ret.Length - offset < sizeof(uint))
 			{
@@ -323,30 +328,75 @@ namespace CommonUtility
 			}
 
 			var data = BitConverter.ToUInt32(ret, offset);
-			value = ReverseFourBytesData(data);
+            if (isReverse)
+            {
+                value = ReverseFourBytesData(data);
+            }
 			return sizeof(uint);
 		}
-		
-		/// <summary>
-		/// 八字节数据反转字节序
-		/// </summary>
-		/// <param name="value">原始数据</param>
-		/// <returns>翻转后的数据</returns>
-		public static ulong ReverseEightBytesData(ulong value)
+        /// <summary>
+        /// 四字节数据反序列化
+        /// </summary>
+        /// <param name="ret">原始数据</param>
+        /// <param name="offset">字节数组偏移量，也就是从偏移量位置开始取数据</param>
+        /// <param name="value">保存转后的数据</param>
+        /// <param name="isReverse">是否反转字节（默认为true，针对UE小端字节不需要反转，故添加该默认参数）</param>
+        /// <returns></returns>
+        public static int DeserializeInt32(byte[] ret, int offset, ref int value, bool isReverse = true)
+        {
+            if (ret.Length - offset < sizeof(int))
+            {
+                return -1;
+            }
+
+            var data = BitConverter.ToInt32(ret, offset);
+            if (isReverse)
+            {
+                value = ReverseFourBytesData(data);
+            }
+            return sizeof(int);
+        }
+        /// <summary>
+        /// 八字节数据反转字节序
+        /// </summary>
+        /// <param name="value">原始数据</param>
+        /// <returns>翻转后的数据</returns>
+        public static ulong ReverseEightBytesData(ulong value)
 		{
 			return (value & 0x00000000000000FFUL) << 56 | (value & 0x000000000000FF00UL) << 40 |
 				   (value & 0x0000000000FF0000UL) << 24 | (value & 0x00000000FF000000UL) << 8 |
 				   (value & 0x000000FF00000000UL) >> 8 | (value & 0x0000FF0000000000UL) >> 24 |
 				   (value & 0x00FF000000000000UL) >> 40 | (value & 0xFF00000000000000UL) >> 56;
 		}
+        /// <summary>
+        /// 八字节数据反序列化
+        /// </summary>
+        /// <param name="ret">原始顺</param>
+        /// <param name="offset">字节数组偏移量，也就是从偏移量位置开始取数据</param>
+        /// <param name="value">保存翻转后的数据</param>
+        /// <param name="isReverse">是否反转字节（默认为true，针对UE小端字节不需要反转，故添加该默认参数）</param>
+        /// <returns></returns>
+        public static int DeserializeInt64(byte[] ret, int offset, ref ulong value, bool isReverse = true)
+        {
+            if (ret.Length - offset < sizeof(ulong))
+            {
+                return -1;
+            }
 
-		/// <summary>
-		/// 把给定的结构体序列化为字节数组，然后通过网络发送
-		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="obj"></param>
-		/// <returns></returns>
-		public static byte[] SerializeStructToBytes<T>(T obj)
+            var data = BitConverter.ToUInt64(ret, offset);
+            if (isReverse)
+            {
+                value = ReverseEightBytesData(data);
+            }
+            return sizeof(ulong);
+        }
+        /// <summary>
+        /// 把给定的结构体序列化为字节数组，然后通过网络发送
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static byte[] SerializeStructToBytes<T>(T obj)
 			where T : IASerialize
 		{
 			if (null == obj)

@@ -1,0 +1,180 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<MAP>
+  <MapValueToDescI>
+    <!--测量算法类型枚举值-->
+    <MeasAlgoType>
+      <item ID="0">接纳控制</item>
+      <item ID="1">切换算法</item>
+      <item ID="2">小区间干扰协调算法</item>
+      <item ID="3">小区间干扰协调或接纳控制</item>
+      <item ID="4">自动邻区建立</item>
+      <item ID="5">MR算法</item>
+      <item ID="6">无效算法</item>
+    </MeasAlgoType>
+    <!--RAT类型枚举-->
+    <MeasChoice>
+      <item ID="0">EUTRA</item>
+      <item ID="1">UTRA</item>
+      <item ID="2">GERAN</item>
+      <item ID="3">CDMA2000</item>
+      <item ID="4">INTERRAT</item>
+      <item ID="5">无效系统对象</item>
+    </MeasChoice>
+    <!--测量目的枚举值-->
+    <MeasPurpose>
+      <item ID="0">计算PRB数目</item>
+      <item ID="1">切换</item>
+      <item ID="2">用于UE位置信息</item>
+      <item ID="3">用于自动邻区建立</item>
+      <item ID="4">用于PCI检测</item>
+      <item ID="5">相同频率优先级切换</item>
+      <item ID="6">高频率优先级切换</item>
+      <item ID="7">低频率优先级切换</item>
+      <item ID="8">启动异频测量</item>
+      <item ID="9">停止异频测量</item>
+      <item ID="10">CSFB</item>
+      <item ID="11">小区shuttingdown</item>
+      <item ID="12">用于上报最强小区</item>
+      <item ID="13">负荷均衡A4测量</item>
+      <item ID="14">无效目的</item>
+    </MeasPurpose>
+    <!--报告配置枚举值-->
+    <ReportConfig>
+      <item ID="0">A1事件</item>
+      <item ID="1">A2事件</item>
+      <item ID="2">A3事件</item>
+      <item ID="3">A4事件</item>
+      <item ID="4">A5事件</item>
+      <item ID="5">B1事件</item>
+      <item ID="6">B2事件</item>
+      <item ID="7">周期上报</item>
+      <item ID="8">无效报告配置</item>
+    </ReportConfig>
+  </MapValueToDescI>
+  <MapValueToDescII>
+    <!--测量算法类型枚举值-->
+    <MeasAlgoType>
+      <item ID="0">接纳控制</item>
+      <item ID="1">切换算法</item>
+      <item ID="2">小区间干扰协调算法</item>
+      <item ID="3">小区间干扰协调或接纳控制</item>
+      <item ID="4">自动邻区建立</item>
+      <item ID="5">MR算法</item>
+      <item ID="6">聚合载波算法</item>
+      <item ID="7">多点协作</item>
+      <item ID="8">定位算法</item>
+      <item ID="9">上行功控</item>
+      <item ID="10">MLB邻区选择算法</item>
+      <item ID="11">高速切换算法</item>
+      <item ID="12">Relay算法</item>
+      <item ID="13">降低功率</item>
+      <item ID="14">DC算法</item>
+      <item ID="255">无效算法</item>
+    </MeasAlgoType>
+    <!--RAT类型枚举-->
+    <MeasChoice>
+      <item ID="0">EUTRA</item>
+      <item ID="1">UTRA</item>
+      <item ID="2">GERAN</item>
+      <item ID="3">CDMA2000</item>
+      <item ID="4">INTERRAT</item>
+      <item ID="5">NGRAN</item>
+      <item ID="255">无效系统对象</item>
+    </MeasChoice>
+    <!--测量目的枚举值-->
+    <MeasPurpose>
+      <item ID="0">计算PRB数目</item>
+      <item ID="1">切换</item>
+      <item ID="2">用于UE位置信息</item>
+      <item ID="3">用于自动邻区建立</item>
+      <item ID="4">用于PCI检测</item>
+      <item ID="5">相同频率优先级切换</item>
+      <item ID="6">高频率优先级切换</item>
+      <item ID="7">低频率优先级切换</item>
+      <item ID="8">启动异频测量</item>
+      <item ID="9">停止异频测量</item>
+      <item ID="10">CSFB</item>
+      <item ID="11">小区shuttingdown</item>
+      <item ID="12">用于上报最强小区</item>
+      <item ID="13">负荷均衡A4测量</item>
+      <item ID="14">辅小区修改</item>
+      <item ID="15">辅小区配置</item>
+      <item ID="16">多点协作</item>
+      <item ID="17">启动异系统测量</item>
+      <item ID="18">盲重定向</item>
+      <item ID="19">负载均衡乒乓抑制A5</item>
+      <item ID="20">启动异系统数据测量</item>
+      <item ID="21">启动异系统语音测量</item>
+      <item ID="22">负荷均衡B1</item>
+      <item ID="23">MDT A2</item>
+      <item ID="24">用于上报UE收发时间差</item>
+      <item ID="25">用于单PRB接收功率上限</item>
+      <item ID="26">停止异系统语音测量</item>
+      <item ID="27">停止异系统数据测量</item>
+      <item ID="28">用于MLB的邻区选择</item>
+      <item ID="29">ANR邻小区发现</item>
+      <item ID="30">高速的相同频率优先级切换</item>
+      <item ID="31">基于速率的切换</item>
+      <item ID="32">系统间数据互操作</item>
+      <item ID="33">系统间语音互操作</item>
+      <item ID="34">弱覆盖拒绝语音承载建立</item>
+      <item ID="35">用于RUE的RSRP上报</item>
+      <item ID="36">指定语音频点A4</item>
+      <item ID="37">指定语音抑制乒乓切换A5</item>
+      <item ID="38">启动emtc同频测量</item>
+      <item ID="39">停止emtc同频测量</item>
+      <item ID="40">QCI8指定频点A4</item>
+      <item ID="41">QCI8指定频点抑制乒乓切换A5</item>
+      <item ID="42">语音业务停止EUTRA异频测量</item>
+      <item ID="43">语音业务启动EUTRA异频测量</item>
+      <item ID="44">语音业务切换</item>
+      <item ID="45">金牌用户指定频点A4测量</item>
+      <item ID="46">金牌用户指定频点A5测量</item>
+      <item ID="47">金牌用户指定频点归属频点A1测量</item>
+      <item ID="48">金牌用户指定频点非归属频点A1测量</item>
+      <item ID="49">金牌用户指定频点归属频点A2测量</item>
+      <item ID="50">金牌用户指定频点非归属频点A2测量</item>
+      <item ID="51">系统间互操作</item>
+      <item ID="52">指定业务频率切换A4测量</item>
+      <item ID="53">指定业务频率乒乓抑制A5测量</item>
+      <item ID="54">语音质量切换A4</item>
+      <item ID="55">语音质量切换抑制乒乓切换A5</item>
+      <item ID="56">vip归属用户停止异频a1</item>
+      <item ID="57">vip非归属用户停止异频a1</item>
+      <item ID="58">vip归属用户启动异频a2</item>
+      <item ID="59">vip非归属用户启动异频a2</item>
+      <item ID="60">vip用户指定业务切换a4</item>
+      <item ID="61">vip用户指定业务乒乓切换抑制a5</item>
+      <item ID="62">用于邻区降功率</item>
+      <item ID="63">语音业务指定频率切换</item>
+      <item ID="64">指定语音频率乒乓抑制</item>
+      <item ID="65">金牌语音归属用户停止异频a1</item>
+      <item ID="66">金牌语音非归属用户停止异频a1</item>
+      <item ID="67">金牌语音归属用户启动异频a2</item>
+      <item ID="68">金牌语音非归属用户启动异频a2</item>
+      <item ID="69">金牌语音用户指定业务切换a4</item>
+      <item ID="70">金牌语音用户指定业务乒乓切换抑制a5</item>
+      <item ID="71">基于语音的系统内切换A4</item>
+      <item ID="72">基于语音的系统内切换抑制A5</item>
+      <item ID="73">异频过滤频段A2</item>
+      <item ID="74">上行功控优化</item>
+      <item ID="75">DC算法B1</item>
+      <item ID="76">用于上行大业务量均衡A4类型的测量</item>
+      <item ID="255">无效目的</item>
+    </MeasPurpose>
+    <!--报告配置枚举值-->
+    <ReportConfig>
+      <item ID="0">A1事件</item>
+      <item ID="1">A2事件</item>
+      <item ID="2">A3事件</item>
+      <item ID="3">A4事件</item>
+      <item ID="4">A5事件</item>
+      <item ID="5">B1事件</item>
+      <item ID="6">B2事件</item>
+      <item ID="7">周期上报</item>
+      <item ID="8">A6事件</item>
+      <item ID="9">B1NR事件</item>
+      <item ID="255">无效报告配置</item>
+    </ReportConfig>
+  </MapValueToDescII>
+</MAP>

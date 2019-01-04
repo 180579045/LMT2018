@@ -556,6 +556,9 @@
     <Content Include="Component\Configration\opcode.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Component\Configration\Resource.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Component\Configration\traceswitch.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -719,6 +722,10 @@
     <ProjectReference Include="..\ParseMessage\SuperLMT.Utils\SuperLMT.Utils.csproj">
       <Project>{24D21FC0-59B8-4208-AA1D-1B30D3F3C101}</Project>
       <Name>SuperLMT.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UEData\UEData.csproj">
+      <Project>{8aafe084-be54-485a-bdda-03e6bc744363}</Project>
+      <Name>UEData</Name>
     </ProjectReference>
     <ProjectReference Include="..\UI\DataGrid\Xceed.Wpf.DataGrid\Xceed.Wpf.DataGrid.csproj">
       <Project>{63648392-6ce9-4a60-96d4-f9fd718d29b0}</Project>

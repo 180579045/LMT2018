@@ -101,7 +101,7 @@ namespace SCMTMainWindow
 			InitView();                                                       // 初始化界面;
 			RegisterFunction();                                               // 注册功能;
 
-			TabControlEnable(false);
+			TabControlEnable(true);
 
 			// 启动线程，后台处理一些初始化功能
 			Task.Factory.StartNew(new Action(() =>

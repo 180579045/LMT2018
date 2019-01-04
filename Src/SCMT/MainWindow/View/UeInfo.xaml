@@ -172,9 +172,9 @@
                             <ColumnDefinition Width="3*"/>
                             <ColumnDefinition Width="2*"/>
                         </Grid.ColumnDefinitions>
-                        <DataGrid Grid.Column="0"></DataGrid>
+                        <DataGrid x:Name="dataGrid0" Grid.Column="0" ItemsSource="{Binding}" ></DataGrid>
 
-                        <DataGrid Grid.Column="1"></DataGrid>
+                        <DataGrid x:Name="dataGrid1" Grid.Column="1" ItemsSource="{Binding}" ></DataGrid>
                         <GroupBox   Background="#6E8298" Grid.Column="2">
 
                             <Grid>
@@ -182,44 +182,110 @@
                                     <ColumnDefinition Width="1*"/>
                                     <ColumnDefinition Width="1*"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Content="查询" Width="50" Height="30" Grid.Column="0" HorizontalAlignment="Right"></Button>
-                                <Button Content="导出" Width="50" Height="30" Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Center"></Button>
+                                <Button Content="查询" Width="50" Height="30" Grid.Column="0" Click="Query_Click" HorizontalAlignment="Right"></Button>
+                                <Button Content="导出" Width="50" Height="30" Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Center" Click="Export_Click"></Button>
                             </Grid>
 
                         </GroupBox>
                     </Grid>
                     <GridSplitter Height="3" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"/>
-                    <DataGrid x:Name="dataGrid"  HorizontalAlignment="Left" Grid.Row="1" ItemsSource="{Binding UeInfos}" Margin="0,0,0,0" VerticalAlignment="Top"  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" >
+                    <DataGrid x:Name="dataGrid"  HorizontalAlignment="Center" Grid.Row="1" ItemsSource="{Binding UeInfos}" Margin="0,0,0,0" VerticalAlignment="Top"  AutoGenerateColumns="False" IsReadOnly="True" CanUserAddRows="False" >
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="编辑列" Click="MenuItem_Click"></MenuItem>
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Num" Binding="{Binding Path=Num}"/>
-                            <DataGridTextColumn Header="Info1" Binding="{Binding Path=Info1}"/>
-                            <DataGridTextColumn Header="Info2" Binding="{Binding Path=Info2}" />
-                            <DataGridTextColumn Header="Info3" Binding="{Binding Path=Info3}" />
-                            <DataGridTemplateColumn Header="Info4" Width="*" >
+                            <DataGridTextColumn Header="小区" Binding="{Binding Path=SpcellLocalCellId}"/>
+                            <DataGridTextColumn Header="辅小区ID" Binding="{Binding Path=ScellLocalCellId}" ClipboardContentBinding="{x:Null}" />
+                            <DataGridTextColumn Header="小区UE索引" Binding="{Binding Path=u16UeIndexCell}"/>
+                            <DataGridTextColumn Header="站内UE索引" Binding="{Binding Path=u32UeIndexGnb}" />
+                            <DataGridTextColumn Header="Crint" Binding="{Binding Path=u16Crint}" />
+                            <DataGridTextColumn Binding="{Binding Path=u32RanNgapId}" ClipboardContentBinding="{x:Null}" Header="Ran侧NgapID"/>
+                            <DataGridTextColumn Binding="{Binding Path=u32AmfNgapId}" ClipboardContentBinding="{x:Null}" Header="Amf侧NgapID"/>
+                            <DataGridTextColumn Binding="{Binding Path=u64AmbrDownlink}" ClipboardContentBinding="{x:Null}" Header="AMBR下行"/>
+                            <DataGridTextColumn Binding="{Binding Path=u64AmbrUplink}" ClipboardContentBinding="{x:Null}" Header="AMBR上行"/>
+                            <DataGridTextColumn Binding="{Binding Path=u8ValidNofDrb}" ClipboardContentBinding="{x:Null}" Header="DRB个数"/>
+                            <DataGridTemplateColumn Header="DRB信息" Width="*" >
                                 <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>                                        
-                                            <TreeView  ItemsSource="{Binding Path=Info4}">
+                                    <DataTemplate>
+                                        <Expander >
+                                            <TreeView  ItemsSource="{Binding struDrbInfo}">
                                                 <TreeView.ItemTemplate>
-                                                    <HierarchicalDataTemplate DataType="{x:Type local2:ChildrenUeInfo}" ItemsSource="{Binding Children}">
+                                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+
                                                         <StackPanel Orientation="Horizontal">
-                                                            <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"></TextBlock>
+                                                            <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"/>
                                                         </StackPanel>
                                                     </HierarchicalDataTemplate>
                                                 </TreeView.ItemTemplate>
-                                            </TreeView>                                       
-                                        <!--<DataGrid  ItemsSource="{Binding Path=Info4}"  AutoGenerateColumns="False"></DataGrid>-->
-
+                                            </TreeView>
+                                        </Expander>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+                            <DataGridTextColumn Binding="{Binding Path=u8ValidNofPdusession}" ClipboardContentBinding="{x:Null}" Header="Pdusession个数"/>
+                            <DataGridTemplateColumn Header="Pdusession信息" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander >
+                                            <TreeView  ItemsSource="{Binding struPdusessionInfo}">
+                                                <TreeView.ItemTemplate>
+                                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"/>
+                                                        </StackPanel>
+                                                    </HierarchicalDataTemplate>
+                                                </TreeView.ItemTemplate>
+                                            </TreeView>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Gumai（MCC）" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander >
+                                            <TreeView  ItemsSource="{Binding u8Mcc}">
+                                                <TreeView.ItemTemplate>
+                                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"/>
+                                                        </StackPanel>
+                                                    </HierarchicalDataTemplate>
+                                                </TreeView.ItemTemplate>
+                                            </TreeView>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="gumai(MNC)" Width="*" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Expander >
+                                            <TreeView  ItemsSource="{Binding u8Mnc}">
+                                                <TreeView.ItemTemplate>
+                                                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock VerticalAlignment="Center" Text="{Binding UeInfoChildren}"/>
+                                                        </StackPanel>
+                                                    </HierarchicalDataTemplate>
+                                                </TreeView.ItemTemplate>
+                                            </TreeView>
+                                        </Expander>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Binding="{Binding Path=u8AmfRegionId}" ClipboardContentBinding="{x:Null}" Header="gumai(AmfRegID)"/>
+                            <DataGridTextColumn Binding="{Binding Path=u8AmfPoniter}" ClipboardContentBinding="{x:Null}" Header="gumai(AmfPoniter)"/>
+                            <DataGridTextColumn Binding="{Binding Path=u16AmfSetId}" ClipboardContentBinding="{x:Null}" Header="gumai(AmfSetId)"/>
                         </DataGrid.Columns>
 
                     </DataGrid>
+
                 </Grid>
             </TabItem>
             <TabItem Header="UE业务&#13;面查询" Cursor="Hand" Height="auto" RenderTransformOrigin="0.5,0.5" >
@@ -242,17 +308,50 @@
                         <TextBox x:Name="CellIndex" Width="60" ></TextBox>
                         <Label x:Name="UeIndexTest" Content="用户索引：" ></Label>
                         <TextBox x:Name="UeIndex" Width="60" ></TextBox>
-                        <Button Content="查询" Margin="40,0,0,0"></Button>
-                        <Button Content="导出" Margin="10,0,0,0"></Button>
+                        <Button Content="查询" Margin="40,0,0,0" Click="UeBusiness_Query"></Button>
+                        <Button Content="导出" Margin="10,0,0,0" Click="UeBusiness_Put"></Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="2">
                         <Label Content="提示信息:"/>
                         <Label x:Name="QueryResultInfo" Content="显示查询成功或失败"/>
 
                     </StackPanel>
-                    <DataGrid   Grid.Row="3">                        
+                    <DataGrid x:Name="DataGrid_Cell" IsReadOnly="True"  Grid.Row="3" AutoGenerateColumns="False" ItemsSource="{Binding UeIpCellInfos}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=BbuCellIndex}" ClipboardContentBinding="{x:Null}" Header="BBU小区索引" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=CellIndexEnb}" ClipboardContentBinding="{x:Null}" Header="站内小区索引" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=SlotId}" ClipboardContentBinding="{x:Null}" Header="BPOG板" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=ProcId}" ClipboardContentBinding="{x:Null}" Header="处理器号" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=ValidNofUeInEnb}" ClipboardContentBinding="{x:Null}" Header="用户数量" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=UlSpsActiveUeNum}" ClipboardContentBinding="{x:Null}" Header="上行用户数量" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=DlSpsActiveUeNum}" ClipboardContentBinding="{x:Null}" Header="下行用户数量" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=nAmrNBNum}" ClipboardContentBinding="{x:Null}" Header="AMR-NB" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=AmrWBNum}" ClipboardContentBinding="{x:Null}" Header="AMR-WB" MinWidth="100"/>
+                        </DataGrid.Columns>
                     </DataGrid>
-                    <DataGrid Grid.Row="4">                        
+                    <DataGrid x:Name="DataGrid_Ue" IsReadOnly="True" Grid.Row="4" AutoGenerateColumns="False" ItemsSource="{Binding UeIpInfos}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=UeIndexCell}" ClipboardContentBinding="{x:Null}" Header="索引" MinWidth="50"/>
+                            <DataGridTextColumn Binding="{Binding Path=UeIpInfo}" ClipboardContentBinding="{x:Null}" Header="IP地址" MinWidth="50"/>
+                            <DataGridTextColumn Binding="{Binding Path=HlMacUeLocation}" ClipboardContentBinding="{x:Null}" Header="UE位置(HL)" MinWidth="130"/>
+                            <DataGridTextColumn Binding="{Binding Path=MacUeLocation}" ClipboardContentBinding="{x:Null}" Header="UE位置(MAC)" MinWidth="130"/>
+                            <DataGridTextColumn Binding="{Binding Path=MacTA}" ClipboardContentBinding="{x:Null}" Header="TA信息" MinWidth="50"/>
+                            <DataGridTextColumn Binding="{Binding Path=MacTmMode}" ClipboardContentBinding="{x:Null}" Header="MAC下行传输模式" MinWidth="120"/>
+                            <DataGridTextColumn Binding="{Binding Path=UeCapability}" ClipboardContentBinding="{x:Null}" Header="UE等级能力" MinWidth="50"/>
+                            <DataGridTextColumn Binding="{Binding Path=FlowType}" ClipboardContentBinding="{x:Null}" Header="语音编码格式" MinWidth="120"/>
+                            <DataGridTextColumn Binding="{Binding Path=UlSpsActiveFlag}" ClipboardContentBinding="{x:Null}" Header="上行sps激活" MinWidth="50"/>
+                            <DataGridTextColumn Binding="{Binding Path=DlSpsActiveFlag}" ClipboardContentBinding="{x:Null}" Header="下行sps激活" MinWidth="50"/>
+                            <DataGridTextColumn Binding="{Binding Path=CaActiveFlag}" ClipboardContentBinding="{x:Null}" Header="载波聚合小区状态" MinWidth="140"/>
+                            <DataGridTextColumn Binding="{Binding Path=ScellCellIndexEnb}" ClipboardContentBinding="{x:Null}" Header="辅小区ENB索引" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=ScellUeIndex}" ClipboardContentBinding="{x:Null}" Header="辅小区用户索引" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=UIRruInfo}" ClipboardContentBinding="{x:Null}" Header="上行通道状态" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=DIRruInfo}" ClipboardContentBinding="{x:Null}" Header="下行通道状态" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=UeUlMcl}" ClipboardContentBinding="{x:Null}" Header="上行MCL" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=UeDlMcl}" ClipboardContentBinding="{x:Null}" Header="下行MCL" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=UlSinr}" ClipboardContentBinding="{x:Null}" Header="上行CQI修正后Sinr" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=DlSinr}" ClipboardContentBinding="{x:Null}" Header="下行CQI修正后Sinr" MinWidth="100"/>
+                        </DataGrid.Columns>
+
                     </DataGrid>
 
                 </Grid>
@@ -266,15 +365,26 @@
                     </Grid.RowDefinitions>
                     <StackPanel Orientation="Horizontal" Grid.Row="0">
                         <Label Content="UE基站索引："/>
-                        <TextBox Width="60"></TextBox>
-                        <Button Content="查询" Margin="40,0,0,0"></Button>
+                        <TextBox x:Name="eNBIndex" Width="60"></TextBox>
+                        <Button Content="查询" Margin="40,0,0,0" Click="Mcf_Click" Height="26" VerticalAlignment="Bottom"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="1">
                     <Label Content="提示信息:"/>
                     <Label x:Name="QueryResultInfo1" Content="显示查询成功或失败"/>
                     </StackPanel>
-                    <DataGrid Grid.Row="2">
-                        
+                    <DataGrid x:Name="DataGrid_Meas" Grid.Row="2" ItemsSource="{Binding UeMeasInfos}" AutoGenerateColumns="False" HorizontalContentAlignment="Center" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Binding="{Binding Path=MeasId}" ClipboardContentBinding="{x:Null}" Header="测量ID" MinWidth="100" />
+                            <DataGridTextColumn Binding="{Binding Path=MeasObjectId}" ClipboardContentBinding="{x:Null}" Header="测量对象ID" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=CarrierFreq}" ClipboardContentBinding="{x:Null}" Header="Carrier Frequency" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=MeasObjectChoice}" ClipboardContentBinding="{x:Null}" Header="MeasObjectChoice" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=ReportConfigId}" ClipboardContentBinding="{x:Null}" Header="测量报告配置ID" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=ReportCfgChoice}" ClipboardContentBinding="{x:Null}" Header="测量报告配置RAT" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=ReportConfig}" ClipboardContentBinding="{x:Null}" Header="测量报告配置" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=MeasPurpose}" ClipboardContentBinding="{x:Null}" Header="测量目的" MinWidth="100"/>
+                            <DataGridTextColumn Binding="{Binding Path=AlgorithmType}" ClipboardContentBinding="{x:Null}" Header="触发算法" MinWidth="100"/>
+                        </DataGrid.Columns>
+
                     </DataGrid>
                 </Grid>
             </TabItem>
