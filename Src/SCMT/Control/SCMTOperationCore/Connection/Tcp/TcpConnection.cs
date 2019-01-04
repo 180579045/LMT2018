@@ -194,10 +194,10 @@ namespace SCMTOperationCore.Connection.Tcp
 		///         communication, specifying anything else will have no effect.
 		///     </para>
 		/// </remarks>
+		// ReSharper disable once OptionalParameterHierarchyMismatch
 		public override void SendBytes(byte[] bytes, SendOption sendOption = SendOption.FragmentedReliable)
 		{
 			//Get bytes for length
-			//byte[] fullBytes = AppendLengthHeader(bytes);		//TODO 追加信息是个什么鬼
 			Debug.WriteLine($"SendBytes: send data length {bytes.Length}");
 
 			//Write the bytes to the socket
@@ -213,8 +213,8 @@ namespace SCMTOperationCore.Connection.Tcp
 				catch (Exception e)
 				{
 					HazelException he = new HazelException("Could not send data as an occured.", e);
-					HandleDisconnect(he);
-					throw he;
+					HandleDisconnect(BreakLinkReason.LinkReallyBreak, he);
+					return;
 				}
 			}
 
@@ -239,7 +239,7 @@ namespace SCMTOperationCore.Connection.Tcp
 			}
 			catch (Exception e)
 			{
-				HandleDisconnect(new HazelException("An exception occured while initiating a body receive operation.", e));
+				HandleDisconnect(BreakLinkReason.LinkReallyBreak, new HazelException("An exception occured while initiating a body receive operation.", e));
 			}
 		}
 
@@ -281,7 +281,7 @@ namespace SCMTOperationCore.Connection.Tcp
 			}
 			catch (Exception e)
 			{
-				HandleDisconnect(new HazelException("An exception occured while initiating the first receive operation.", e));
+				HandleDisconnect(BreakLinkReason.LinkReallyBreak, new HazelException("An exception occured while initiating the first receive operation.", e));
 			}
 		}
 
@@ -307,7 +307,7 @@ namespace SCMTOperationCore.Connection.Tcp
 			}
 			catch (Exception e)
 			{
-				HandleDisconnect(new HazelException("An exception occured while initiating the first receive operation.", e));
+				HandleDisconnect(BreakLinkReason.LinkReallyBreak, new HazelException("An exception occured while initiating the first receive operation.", e));
 			}
 		}
 
@@ -343,7 +343,15 @@ namespace SCMTOperationCore.Connection.Tcp
 				//Double check we've not disconnected then begin receiving
 				if (State == ConnectionState.Connected || State == ConnectionState.Connecting)
 				{
-					socket.BeginReceive(state.buffer, state.totalBytesReceived, state.buffer.Length - state.totalBytesReceived, SocketFlags.None, ChunkReadCallback, state);
+					try
+					{
+						socket.BeginReceive(state.buffer, state.totalBytesReceived, state.buffer.Length - state.totalBytesReceived, SocketFlags.None, ChunkReadCallback, state);
+					}
+					catch (SocketException e)
+					{
+						Console.WriteLine("StartWaitingForChunk:+++++" + e);
+						//throw;
+					}
 				}
 			}
 		}
@@ -369,7 +377,7 @@ namespace SCMTOperationCore.Connection.Tcp
 			}
 			catch (Exception e)
 			{
-				HandleDisconnect(new HazelException("An exception occured while completing a chunk read operation.", e));
+				HandleDisconnect(BreakLinkReason.LinkReallyBreak, new HazelException("An exception occured while completing a chunk read operation.", e));
 				return;
 			}
 
@@ -382,7 +390,7 @@ namespace SCMTOperationCore.Connection.Tcp
 			if (bytesReceived == 0)
 			{
 				Debug.WriteLine("ChunkReadCallback:recv nothing, disconnect");
-				HandleDisconnect();
+				HandleDisconnect(BreakLinkReason.ReceivedZeroData);
 				return;
 			}
 
@@ -401,27 +409,27 @@ namespace SCMTOperationCore.Connection.Tcp
 			//            }
 			//        }
 			//        else
+
+			Debug.WriteLine($"ChunkReadCallback:invoke callback, buffer length {state.buffer.Length}");
+			state.callback.Invoke(state.buffer.Take(bytesReceived).ToArray());
+			state.totalBytesReceived = 0;
+			state.buffer = new byte[state.buffer.Length];   // 重新申请空间，丢弃原来的数据
+			try
 			{
-				Debug.WriteLine($"ChunkReadCallback:invoke callback, buffer length {state.buffer.Length}");
-				state.callback.Invoke(state.buffer.Take(bytesReceived).ToArray());
-				state.totalBytesReceived = 0;
-				state.buffer = new byte[state.buffer.Length];   // 重新申请空间，丢弃原来的数据
-				try
-				{
-					StartWaitingForChunk(state);
-				}
-				catch (Exception e)
-				{
-					HandleDisconnect(new HazelException("An exception occured while initiating a chunk receive operation.", e));
-				}
+				StartWaitingForChunk(state);
+			}
+			catch (Exception e)
+			{
+				HandleDisconnect(BreakLinkReason.LinkReallyBreak, new HazelException("An exception occured while initiating a chunk receive operation.", e));
 			}
 		}
 
 		/// <summary>
 		///     Called when the socket has been disconnected at the remote host.
 		/// </summary>
+		/// <param name="nErrorCode">用于区分断开连接的不同情况</param>
 		/// <param name="e">The exception if one was the cause.</param>
-		private void HandleDisconnect(HazelException e = null)
+		private void HandleDisconnect(BreakLinkReason nErrorCode, HazelException e = null)
 		{
 			lock (socketLock)
 			{
@@ -429,7 +437,7 @@ namespace SCMTOperationCore.Connection.Tcp
 				if (State != ConnectionState.NotConnected)
 				{
 					State = ConnectionState.NotConnected;
-					InvokeDisconnected(e);
+					InvokeDisconnected(nErrorCode, e);
 				}
 
 				try
@@ -481,27 +489,6 @@ namespace SCMTOperationCore.Connection.Tcp
 		}
 
 		/// <summary>
-		///     Appends the length header to the bytes.
-		/// </summary>
-		/// <param name="bytes">The source bytes.</param>
-		/// <returns>The new bytes.</returns>
-		private static byte[] AppendLengthHeader(byte[] bytes)
-		{
-			byte[] fullBytes = new byte[bytes.Length + 4];
-
-			//Append length
-			fullBytes[0] = (byte)(((uint)bytes.Length >> 24) & 0xFF);
-			fullBytes[1] = (byte)(((uint)bytes.Length >> 16) & 0xFF);
-			fullBytes[2] = (byte)(((uint)bytes.Length >> 8) & 0xFF);
-			fullBytes[3] = (byte)(uint)bytes.Length;
-
-			//Add rest of bytes
-			Buffer.BlockCopy(bytes, 0, fullBytes, 4, bytes.Length);
-
-			return fullBytes;
-		}
-
-		/// <summary>
 		///     Returns the length from a length header.
 		/// </summary>
 		/// <param name="bytes">The bytes received.</param>
@@ -534,7 +521,7 @@ namespace SCMTOperationCore.Connection.Tcp
 
 		public override void Close()
 		{
-			HandleDisconnect();
+			HandleDisconnect(BreakLinkReason.ManualBreakLink);
 		}
 	}
 }

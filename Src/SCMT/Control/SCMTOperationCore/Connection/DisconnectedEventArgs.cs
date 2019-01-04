@@ -43,6 +43,8 @@ namespace SCMTOperationCore.Connection
         /// </remarks>
         public Exception Exception { get; private set; }
 
+		public BreakLinkReason BreakReason { get; set; }
+
         /// <summary>
         ///     Private constructor for object pool.
         /// </summary>
