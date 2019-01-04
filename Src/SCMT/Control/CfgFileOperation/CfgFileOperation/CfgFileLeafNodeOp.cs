@@ -12,7 +12,7 @@ namespace CfgFileOperation
     /// <summary>
     /// mib 叶子节点
     /// </summary>
-    class CfgFileLeafNodeOp
+    public class CfgFileLeafNodeOp
     {
         public StruCfgFileFieldInfo m_struFieldInfo;
         public StruMibNode m_struMibNode;
@@ -86,7 +86,7 @@ namespace CfgFileOperation
     /// sizeof : 60
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    struct StruCfgFileFieldInfo // OM_STRU_CfgFile_FieldInfo
+    public struct StruCfgFileFieldInfo // OM_STRU_CfgFile_FieldInfo
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 48)]
         byte[] u8FieldName;                    /* [48] 字段名 */

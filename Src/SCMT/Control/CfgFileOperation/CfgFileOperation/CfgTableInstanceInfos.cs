@@ -10,7 +10,7 @@ namespace CfgFileOperation
     /// 每个表实例化后的结构
     /// </summary>
     [Serializable]
-    class CfgTableInstanceInfos
+    public class CfgTableInstanceInfos
     {
         string strInstantNum;//实例化的索引
         byte[] InstMem;//实例化后依次排列的内容

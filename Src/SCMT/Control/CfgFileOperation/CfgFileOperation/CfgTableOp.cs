@@ -12,7 +12,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 
     /// </summary>
-    class CfgTableOp
+    public class CfgTableOp
     {
         /*********************        变量                         ***************************/
         uint u32CurTblOffset;                     //  每个索引项 每个表的数据在文件中的起始位置（相对文件头） init.cfg中使用        

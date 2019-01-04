@@ -13,7 +13,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 解析天线《LTE_基站天线广播波束权值参数配置表_5G.xls》 ：antennaArrayTypeEntry
     /// </summary>
-    class CfgParseAntennaExcel
+    public class CfgParseAntennaExcel
     {
         /// <summary>
         /// 保存每条天线权值内容的内存

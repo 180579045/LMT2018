@@ -268,6 +268,8 @@ namespace CfgFileOperation
                 System.Runtime.InteropServices.Marshal.ReleaseComObject((Object)excel);
 
                 System.GC.Collect();
+
+                excel = null;
             }
 
         }

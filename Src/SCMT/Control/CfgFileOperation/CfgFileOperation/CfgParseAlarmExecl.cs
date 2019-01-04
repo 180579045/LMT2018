@@ -14,7 +14,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 解析告警《eNB告警信息表.xls》 alarmCauseEntry
     /// </summary>
-    class CfgParseAlarmExecl
+    public class CfgParseAlarmExecl
     {
         /// <summary>
         /// 保存每条告警内容的内存

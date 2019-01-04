@@ -501,6 +501,7 @@ namespace CommonUtility
 
 		/// <summary>
 		/// 将二进制数据反序列化
+		/// todo 出现bytes长度为8，抛出异常的错误
 		/// </summary>
 		/// <param name="bytes"></param>
 		/// <returns></returns>
@@ -508,11 +509,19 @@ namespace CommonUtility
 		{
 			MemoryStream stream = new MemoryStream();
 			stream.Write(bytes, 0 , bytes.Length);
-			stream.Position = 0;
+			stream.Seek(0, SeekOrigin.Begin);
 			BinaryFormatter bf = new BinaryFormatter();
-			object obj = bf.Deserialize(stream);
 
-			stream.Close();
+			object obj = null;
+			try
+			{
+				obj = bf.Deserialize(stream);
+				stream.Close();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
 
 			return obj;
 		}

@@ -16,10 +16,10 @@ namespace CfgFileOperation
     /// <summary>
     /// .cfg 文件所有的相关操作，对外的接口
     /// </summary>
-    class CfgOp
+    public class CfgOp
     {
         //public CfgParseDBMibTreeToMemory mibTreeLineMen = null;
-
+        #region 公共变量
         public CfgParseAlarmExecl m_alarmExcel = null;
         public CfgParseAntennaExcel m_antennaExcel = null;
         public CfgParseReclistExcel m_reclistExcel = null;// 4G
@@ -27,7 +27,6 @@ namespace CfgFileOperation
         public CfgParseSelfExcel m_selfExcel = null;
         //mibTreeMem = new CfgParseDBMibTreeToMemory();
         public CfgParseDBMibTreeToMemory m_mibTreeMem = null;
-
         /// <summary>
         /// key:tableName; value : ClassCfgTableOp>
         /// </summary>
@@ -35,17 +34,17 @@ namespace CfgFileOperation
         /// <summary>
         /// 
         /// </summary>
-        StruCfgFileHeader m_cfgFile_Header;            // init Cfg文件头结构
-        StruCfgFileHeader m_eNB_pdgFile_Header;        // 4G path Cfg文件头结构 专用
+        public StruCfgFileHeader m_cfgFile_Header;            // init Cfg文件头结构
+        public StruCfgFileHeader m_eNB_pdgFile_Header;        // 4G path Cfg文件头结构 专用
         /// <summary>
         /// 
         /// </summary>
-        StruDataHead m_dataHeadInfo;                   // init 数据块的头 ，为将来堆叠准备
-        StruDataHead m_dataheadInfo_PDG;               // 4G path 数据块的头 专用
+        public StruDataHead m_dataHeadInfo;                   // init 数据块的头 ，为将来堆叠准备
+        public StruDataHead m_dataheadInfo_PDG;               // 4G path 数据块的头 专用
         /// <summary>
         /// 
         /// </summary>
-        bool m_bEmptyCfg ;                             // 是否是空cfg
+        public bool m_bEmptyCfg ;                             // 是否是空cfg
         /// 
         /// </summary>
         public CfgOp()
@@ -54,7 +53,9 @@ namespace CfgFileOperation
             //m_dataHeadInfo = new StruDataHead("init");
             m_bEmptyCfg = true;// 初始化为空cfg
         }
-        #region 生成配置文件 4G,5G,init,patch
+        #endregion
+
+        #region 公共-生成配置文件 4G,5G,init,patch
         /// <summary>
         /// 创建4G init.cfg path_ex.cfg
         /// </summary>
@@ -248,7 +249,7 @@ namespace CfgFileOperation
         /// 根据 5G patch_ex特性, 对表和实例进行修改
         /// </summary>
         /// <param name="paths"></param>
-        bool CreatCfg_patch_ex_cfg_5G(BinaryWriter bw, Dictionary<string, string> paths)
+        public bool CreatCfg_patch_ex_cfg_5G(BinaryWriter bw, Dictionary<string, string> paths)
         {
             bool re = true;
             //patch-1. lm.mdb 以每行为单位加载, reclist使用 
@@ -321,190 +322,6 @@ namespace CfgFileOperation
             }
             return re;
         }
-        #endregion
-
-        /// <summary>
-        /// 验证每个文件是否存在
-        /// </summary>
-        /// <param name="paths"></param>
-        /// <returns></returns>
-        bool IsAllPathValid(Dictionary<string, string> paths, out string err)
-        {
-            err = "";
-            //string filePath = paths["DataMdb"];
-            if (!File.Exists(paths["DataMdb"]))
-            {
-                err = "DataMdb: " + paths["DataMdb"] + " 文件不存在！";
-                return false;
-            }
-            if (!File.Exists(paths["Antenna"]))
-            {
-                err = "Antenna: " + paths["Antenna"] + " 文件不存在！";
-                return false;
-            }
-            if (!File.Exists(paths["Alarm"]))
-            {
-                err = "Alarm: " + paths["Alarm"] + " 文件不存在！";
-                return false;
-            }
-            if (!File.Exists(paths["RruInfo"]))
-            {
-                err = "RruInfo: " + paths["RruInfo"] + " 文件不存在！";
-                return false;
-            }
-            if (!File.Exists(paths["Reclist"]))
-            {
-                err = "Reclist: " + paths["Reclist"] + " 文件不存在！";
-                return false;
-            }
-            if (!File.Exists(paths["SelfDef"]))
-            {
-                err = "SelfDef: " + paths["SelfDef"] + " 文件不存在！";
-                return false;
-            }
-            if (!Directory.Exists(paths["OutDir"]))//文件夹
-            {
-                //Directory.Delete(paths["OutDir"], true);//删除文件夹以及文件夹中的子目录，文件    
-                //Directory.CreateDirectory(paths["OutDir"]);//如果不存在就创建file文件夹
-                err = "OutDir: " + paths["OutDir"] + " 文件夹不存在！";
-                return false;
-            }
-            return true;
-        }
-        /// <summary>
-        /// 主要生成整体的数据结构
-        /// </summary>
-        /// <param name="paths"></param>
-        bool CreatCfg_public(BinaryWriter bw, Dictionary<string, string> paths)
-        {
-            bool re = true;
-            //public-1. RRU信息
-            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing rru({0})...\n", paths["RruInfo"]).ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing rru({0})...\n", paths["RruInfo"]));
-            try {
-                m_rruExcel = new CfgParseRruExcel();
-                if (false == m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表"))
-                    return false;
-            }
-            catch {
-                re = false;
-                bw.Write(String.Format("CreatCfg 5G [public info]: Parsed rru Death.\n").ToArray());
-                return re;
-            }
-            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed rru end.\n").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed rru end.\n"));
-
-            //public-2. 告警信息
-            //在CreateCfgFile中就解析了
-            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing alarm({0})..\n", paths["Alarm"]).ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing alarm({0})..\n", paths["Alarm"]));
-            m_alarmExcel = new CfgParseAlarmExecl();
-            m_alarmExcel.ParseExcel(paths["Alarm"]);
-            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed alarm end.\n").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed alarm end.\n"));
-
-            //public-3. 天线信息
-            m_antennaExcel = new CfgParseAntennaExcel();
-
-            //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
-            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing Create public file body....\n").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing Create public file body....\n"));
-            if (false == CreateCfgFile(bw, paths))
-            {
-                re = false;
-                bw.Write(String.Format("CreatCfg 5G [public info]: Err parsing Create public file body err, stop.\n").ToArray());
-                Console.WriteLine(String.Format("CreatCfg 5G [public info]: Err parsing Create public file body err, stop.\n"));
-                return false;
-            }
-            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed Create public file end.\n").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed Create public file end.\n"));
-            return re;
-        }
-        /// <summary>
-        /// 根据init_cfg特性, 对表和实例进行修改
-        /// </summary>
-        /// <param name="paths"></param>
-        bool CreatCfg_init_cfg(BinaryWriter bw, Dictionary<string, string> paths)
-        {
-            //init-1. 自定义 (init)
-            bw.Write(String.Format("CreatCfg 5G [init info] : parsing selfDef-init({0}) start...\n", paths["SelfDef"]).ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [init info] : parsing selfDef-init({0}) start...\n", paths["SelfDef"]));
-            m_selfExcel = new CfgParseSelfExcel();
-            m_selfExcel.ProcessingExcel(bw ,paths["SelfDef"], paths["DataMdb"], "init", this);
-            bw.Write(String.Format("CreatCfg 5G [init info] : parsed selfDef-init.\n").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [init info] : parsed selfDef-init.\n"));
-
-            //init-2. 生成 init.cfg 文件
-            bw.Write(String.Format("CreatCfg 5G [init info] : write init.cfg({0}) start...\n", paths["OutDir"] + "init.cfg").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [init info] : write init.cfg({0}) start...\n", paths["OutDir"] + "init.cfg"));
-            SaveFile_eNB(paths["OutDir"] + "init.cfg");
-            bw.Write(String.Format("CreatCfg 5G [init info] : write init.cfg end.\n").ToArray());
-            Console.WriteLine(String.Format("CreatCfg 5G [init info] : write init.cfg end.\n"));
-            return true;
-        }
-        /// <summary>
-        /// 根据patch_ex特性, 对表和实例进行修改
-        /// </summary>
-        /// <param name="paths"></param>
-        bool CreatCfg_patch_ex_cfg(BinaryWriter bw, Dictionary<string, string> paths)
-        {
-            //patch-1. lm.mdb 以每行为单位加载, reclist使用 
-            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
-            if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
-            {
-                bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.").ToArray());
-                return false;
-            }
-
-            //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
-            m_reclistExcel = new CfgParseReclistExcel();
-            if (false == m_reclistExcel.ProcessingExcel_5G(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
-            {
-            }
-            //patch-3. 自定义 (patch)
-            m_selfExcel.ProcessingExcel(bw, paths["SelfDef"], paths["DataMdb"], "patch", this);
-
-            //7. 开始生成 init.cfg, patch_ex.cfg
-            //patch-4. 创建patch_ex.cfg
-            CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
-            SaveFilePdg_eNB(paths["OutDir"] + "patch_ex.cfg");
-            return true;
-        }
-        /// <summary>
-        /// log : lm.mdb : Mib Tree
-        /// </summary>
-        void LogPrintByM_mibTreeMem()
-        {
-            // 打印 m_mibTreeMem 叶子名
-            FileStream fs2 = new FileStream("Log_m_mibTreeMem.txt", FileMode.OpenOrCreate);
-            BinaryWriter bw_2 = new BinaryWriter(fs2, Encoding.Default, true);
-            foreach (string name in m_mibTreeMem.pMapMibNodeByName.Keys)
-            {
-                var node = m_mibTreeMem.pMapMibNodeByName[name];
-                bw_2.Write(String.Format("m_mibTreeMem : key ({0}), table ({1}).\n", name, node.strTableName).ToArray());
-            }
-            bw_2.Flush();//清空缓冲区
-            bw_2.Close();//关闭流
-            fs2.Close();
-        }
-        /// <summary>
-        /// CfgFileOp : m_mapTableInfo
-        /// </summary>
-        void LogPrintByM_mapTableInfo()
-        {
-            // 打印 m_mapTableInfo 表名
-            FileStream fs2 = new FileStream("Log_m_mapTableInfo.txt", FileMode.OpenOrCreate);
-            BinaryWriter bw_2 = new BinaryWriter(fs2, Encoding.Default, true);
-            foreach (string tableName in m_mapTableInfo.Keys)
-            {
-                bw_2.Write(String.Format("m_mapTableInfo : key ({0}).\n", tableName).ToArray());
-            }
-            bw_2.Flush();//清空缓冲区
-            bw_2.Close();//关闭流
-            fs2.Close();
-        }
-
-        
         /// <summary>
         /// lm.mdb 更新加载数据，整理成表和表实例的结构
         /// </summary>
@@ -616,6 +433,458 @@ namespace CfgFileOperation
             }
             CfgWriteFile(newFilePath, allBuff.ToArray(), 0);
             return true;
+        }
+        /// <summary>
+        /// 重要的数据填写函数
+        /// </summary>
+        /// <param name="byteArray"></param>
+        /// <param name="value"></param>
+        /// <param name="bytePosL"></param>
+        /// <param name="OMType"></param>
+        /// <param name="strLen"></param>
+        /// <param name="strValList"></param>
+        /// <param name="strAsnType"></param>
+        /// <returns></returns>
+        public bool WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
+        {
+            bool re = true;
+            int posStartF = bytePosL[0];
+            try
+            {
+                if (null == byteArray)
+                    return false;
+                else if (String.Empty == value.Trim(' '))
+                {
+                    SetValueToByteArray(byteArray, bytePosL, (uint)0);
+                    return true;
+                }
+                if (OMType == "s32" || (OMType == "u32"))    //s32,u32
+                {
+                    uint omValue = 0;// 返回类型已经确定
+                    if (String.Compare(strAsnType, "Bits", true) == 0)
+                    {
+                        if (value.Contains("×") != false)
+                            omValue = (uint)0;
+                        else
+                        {
+                            if (!GetBitsTypeValueFromValue(value, strValList, out omValue))
+                            {
+                                re = false;
+                            }
+                        }
+                    }
+                    else if ((String.Compare(strAsnType, "Integer32", true) == 0) && value.IndexOf(":") > 0)
+                    {
+                        omValue = (uint)getEnumValue(value);
+                    }
+                    else if ((String.Compare(strAsnType, "INTEGER", true) == 0) && value.IndexOf(":") > 0)
+                    {
+                        omValue = (uint)getEnumValue(value);
+                    }
+                    else
+                    {
+                        if (value.Contains("0x") != false)
+                            omValue = (uint)Convert.ToInt32(value, 16);
+                        else if (value.Contains("×") != false)
+                            omValue = (uint)0;
+                        else
+                        {
+                            omValue = (uint)long.Parse(value);//4294967295 必须用long.Parse
+                        }
+                    }
+                    if (OMType == "s32")
+                        SetValueToByteArray(byteArray, bytePosL, (int)omValue);
+                    else if (OMType == "u32")
+                        SetValueToByteArray(byteArray, bytePosL, (uint)omValue);
+                }
+                else if (OMType == "u32[]")
+                {
+                    int posStart = bytePosL[0];
+                    if (value.Contains("×") != false)
+                    {
+                        value = "0";
+                        //bytePosL[0] += strLen;
+                    }
+                    //else松懈
+                    getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
+                    if (bytePosL[0] - posStart < strLen)
+                        bytePosL[0] = posStart + strLen;
+                }
+                else if (OMType == "enum")   //enum,转换成u32
+                {
+                    if (("×" == value))
+                        value = "0";
+                    SetValueToByteArray(byteArray, bytePosL, (uint)getEnumValue(value));
+                }
+                else if (OMType == "s32[]")   //Oid
+                {
+                    if (("×" == value))
+                        value = "0";
+                    OM_OBJ_ID_T tmpOID = new OM_OBJ_ID_T(value);// OM_OBJ_ID_T(value);
+                    SetValueToByteArray(byteArray, bytePosL, tmpOID.StruToByteArray());
+                }
+                else if (OMType == "s8[]")   //char *
+                {
+                    value = value.Replace("\"", "");//value = value.Trim("\"");
+                    if (("×" == value))
+                        value = "";
+                    sbyte[] sbArray = (sbyte[])((Array)System.Text.Encoding.Default.GetBytes(value));
+                    //byte[] mybyte = Encoding.Unicode.GetBytes(value);
+                    byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
+                    //string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
+                    SetValueToByteArray(byteArray, bytePosL, sbArray);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
+                    if (mybyte2.Length < strLen)
+                        bytePosL[0] += strLen - mybyte2.Length;
+
+                }
+                else if (OMType == "s8")   //char *
+                {
+                    int omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (int)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (int)int.Parse(value);
+                    byte[] TypeToByteArr = BitConverter.GetBytes((int)omValue);
+                    SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
+                }
+                else if (OMType == "u8")
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (uint)int.Parse(value);
+                    byte[] TypeToByteArr = BitConverter.GetBytes((ushort)omValue);
+                    SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
+                }
+                else if (OMType == "u8[]")
+                {
+                    if (0 == String.Compare("IpAddress", strAsnType, true))//sizeof(ipv4addr)
+                    {
+                        uint IPAddr = getIPAddr(value);
+                        SetValueToByteArray(byteArray, bytePosL, IPAddr);
+                    }
+                    else if (String.Compare(strAsnType, "InetAddress", true) == 0)
+                    {
+                        int posStart = bytePosL[0];
+                        value = value.Replace("\"", ""); //value.Trim("\"");
+                        GetInetAddressValue(byteArray, bytePosL, value);
+                        if (bytePosL[0] - posStart < strLen)
+                            bytePosL[0] = posStart + strLen;
+                    }
+                    else if (String.Compare(strAsnType, "MacAddress", true) == 0)
+                    {
+                        getMacAddr(byteArray, bytePosL, value);
+                    }
+                    else if (String.Compare(strAsnType, "MncMccType", true) == 0)
+                    {
+                        GetMncMccTypeValue(byteArray, bytePosL, value);
+                    }
+                    else     //其他的u8[] 2009-12-21
+                    {
+                        value = value.Replace("\"", "");
+                        if (("×" == value))
+                            value = "0";
+                        if (String.Compare(strAsnType, "DateAndTime", true) == 0)
+                            GetDateAndTimeTypeValue(byteArray, bytePosL, value);
+                        else
+                            SetValueToByteArray(byteArray, bytePosL, value);
+                    }
+                }
+                else if (OMType == "u16")   //u16,s16
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (uint)int.Parse(value);
+                    SetValueToByteArray(byteArray, bytePosL, (ushort)omValue);
+                }
+                else if (OMType == "s16")   //u16,s16
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else if (("×" == value))
+                        omValue = 0;
+                    else
+                        omValue = (uint)int.Parse(value);
+                    SetValueToByteArray(byteArray, bytePosL, (short)omValue);
+                }
+                else
+                {
+                    uint omValue = 0;
+                    if (value.Contains("0x") != false)
+                        omValue = (uint)Convert.ToInt32(value, 16);
+                    else
+                        omValue = (uint)int.Parse(value);
+                    SetValueToByteArray(byteArray, bytePosL, omValue);
+                }
+
+                if (bytePosL[0] - posStartF < strLen)
+                    bytePosL[0] = posStartF + strLen;
+            }
+            catch
+            {
+                re = false;
+                Console.WriteLine(String.Format("Err Death : WriteToBuffer: OMType({0}) value({1}), valList({2}).\n", OMType, value, strValList).ToArray());
+            }
+            //finally {
+            //    re = false;
+            //}
+
+            return re;
+        }
+        /// <summary>
+        /// 写文件
+        /// </summary>
+        /// <param name="filepath"></param>
+        /// <param name="data">写入的数据</param>
+        /// <param name="offset">写入的偏移位置</param>
+        public void CfgWriteFile(string filepath, byte[] data, int offset)
+        {
+            FileStream fs = new FileStream(filepath, FileMode.Create);
+            fs.Seek(offset, SeekOrigin.End);// 偏移的位置
+            fs.Write(data, 0, data.Length);
+            fs.Flush();
+            fs.Close();
+        }
+        /// <summary>
+        /// 读文件
+        /// </summary>
+        /// <param name="filePath">文件地址</param>
+        /// <param name="readFromOffset">开始位置</param>
+        /// <param name="readCount">读取长度</param>
+        /// <returns></returns>
+        public byte[] CfgReadFile(string filePath, long readFromOffset, int readCount)
+        {
+            //byte[] byData = new byte[100];
+            //char[] charData = new char[1000];
+            byte[] byData = new byte[readCount];
+            char[] charData = new char[readCount];
+            try
+            {
+                //FileStream sFile = new FileStream("文件路径", FileMode.Open);
+                FileStream sFile = new FileStream(filePath, FileMode.Open);
+                //sFile.Seek(55, SeekOrigin.Begin);
+                //sFile.Read(byData, 0, 100);
+                sFile.Seek(readFromOffset, SeekOrigin.Begin);
+                sFile.Read(byData, 0, readCount);//第一个参数是被传进来的字节数组,用以接受FileStream对象中的数据,第2个参数是字节数组中开始写入数据的位置,它通常是0,表示从数组的开端文件中向数组写数据,最后一个参数规定从文件读多少字符.
+
+                sFile.Close();
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("An IO exception has been thrown!");
+                Console.WriteLine(e.ToString());
+                Console.ReadLine();
+                return null;
+            }
+            Decoder d = Encoding.UTF8.GetDecoder();
+            d.GetChars(byData, 0, byData.Length, charData, 0);
+            //Console.WriteLine(charData);
+            //Console.ReadLine();
+            return byData;
+        }
+        #endregion
+
+        #region 私有功能函数
+        /// <summary>
+        /// 验证每个文件是否存在
+        /// </summary>
+        /// <param name="paths"></param>
+        /// <returns></returns>
+        bool IsAllPathValid(Dictionary<string, string> paths, out string err)
+        {
+            err = "";
+            //string filePath = paths["DataMdb"];
+            if (!File.Exists(paths["DataMdb"]))
+            {
+                err = "DataMdb: " + paths["DataMdb"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["Antenna"]))
+            {
+                err = "Antenna: " + paths["Antenna"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["Alarm"]))
+            {
+                err = "Alarm: " + paths["Alarm"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["RruInfo"]))
+            {
+                err = "RruInfo: " + paths["RruInfo"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["Reclist"]))
+            {
+                err = "Reclist: " + paths["Reclist"] + " 文件不存在！";
+                return false;
+            }
+            if (!File.Exists(paths["SelfDef"]))
+            {
+                err = "SelfDef: " + paths["SelfDef"] + " 文件不存在！";
+                return false;
+            }
+            if (!Directory.Exists(paths["OutDir"]))//文件夹
+            {
+                //Directory.Delete(paths["OutDir"], true);//删除文件夹以及文件夹中的子目录，文件    
+                //Directory.CreateDirectory(paths["OutDir"]);//如果不存在就创建file文件夹
+                err = "OutDir: " + paths["OutDir"] + " 文件夹不存在！";
+                return false;
+            }
+            return true;
+        }
+        void PrintInputPar(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            foreach (var key in paths.Keys)
+            {
+                bw.Write(String.Format("Input:{0}:{1}.\n", key, paths[key]).ToArray());
+                bw.Flush();
+
+            }
+        }
+        /// <summary>
+        /// 主要生成整体的数据结构
+        /// </summary>
+        /// <param name="paths"></param>
+        bool CreatCfg_public(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            bool re = true;
+            //public-1. RRU信息
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing rru({0})...\n", paths["RruInfo"]).ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing rru({0})...\n", paths["RruInfo"]));
+            try
+            {
+                m_rruExcel = new CfgParseRruExcel();
+                if (false == m_rruExcel.ProcessingExcel(bw, paths["RruInfo"], "RRU基本信息表"))
+                    return false;
+            }
+            catch
+            {
+                re = false;
+                bw.Write(String.Format("CreatCfg 5G [public info]: Parsed rru Death.\n").ToArray());
+                return re;
+            }
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed rru end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed rru end.\n"));
+
+            //public-2. 告警信息
+            //在CreateCfgFile中就解析了
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing alarm({0})..\n", paths["Alarm"]).ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing alarm({0})..\n", paths["Alarm"]));
+            m_alarmExcel = new CfgParseAlarmExecl();
+            m_alarmExcel.ParseExcel(paths["Alarm"]);
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed alarm end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed alarm end.\n"));
+
+            //public-3. 天线信息
+            m_antennaExcel = new CfgParseAntennaExcel();
+
+            //public-4. lm.mdb 更新加载数据，整理成表和表实例的结构
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsing Create public file body....\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsing Create public file body....\n"));
+            if (false == CreateCfgFile(bw, paths))
+            {
+                re = false;
+                bw.Write(String.Format("CreatCfg 5G [public info]: Err parsing Create public file body err, stop.\n").ToArray());
+                Console.WriteLine(String.Format("CreatCfg 5G [public info]: Err parsing Create public file body err, stop.\n"));
+                return false;
+            }
+            bw.Write(String.Format("CreatCfg 5G [public info]: Parsed Create public file end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [public info]: Parsed Create public file end.\n"));
+            return re;
+        }
+        /// <summary>
+        /// 根据init_cfg特性, 对表和实例进行修改
+        /// </summary>
+        /// <param name="paths"></param>
+        bool CreatCfg_init_cfg(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            //init-1. 自定义 (init)
+            bw.Write(String.Format("CreatCfg 5G [init info] : parsing selfDef-init({0}) start...\n", paths["SelfDef"]).ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : parsing selfDef-init({0}) start...\n", paths["SelfDef"]));
+            m_selfExcel = new CfgParseSelfExcel();
+            m_selfExcel.ProcessingExcel(bw, paths["SelfDef"], paths["DataMdb"], "init", this);
+            bw.Write(String.Format("CreatCfg 5G [init info] : parsed selfDef-init.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : parsed selfDef-init.\n"));
+
+            //init-2. 生成 init.cfg 文件
+            bw.Write(String.Format("CreatCfg 5G [init info] : write init.cfg({0}) start...\n", paths["OutDir"] + "init.cfg").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : write init.cfg({0}) start...\n", paths["OutDir"] + "init.cfg"));
+            SaveFile_eNB(paths["OutDir"] + "init.cfg");
+            bw.Write(String.Format("CreatCfg 5G [init info] : write init.cfg end.\n").ToArray());
+            Console.WriteLine(String.Format("CreatCfg 5G [init info] : write init.cfg end.\n"));
+            return true;
+        }
+        /// <summary>
+        /// 根据patch_ex特性, 对表和实例进行修改
+        /// </summary>
+        /// <param name="paths"></param>
+        bool CreatCfg_patch_ex_cfg(BinaryWriter bw, Dictionary<string, string> paths)
+        {
+            //patch-1. lm.mdb 以每行为单位加载, reclist使用 
+            m_mibTreeMem = new CfgParseDBMibTreeToMemory();
+            if (false == m_mibTreeMem.ReadMibTreeToMemory(bw, paths["DataMdb"]))
+            {
+                bw.Write(String.Format("Err CreatCfg_patch_ex_cfg ReadMibTreeToMemory.").ToArray());
+                return false;
+            }
+
+            //patch-2. 4G : reclist; 5G : NSA无线网络和业务参数标定手册;
+            m_reclistExcel = new CfgParseReclistExcel();
+            if (false == m_reclistExcel.ProcessingExcel_5G(bw, paths["Reclist"], paths["DataMdb"], "3:华为", this))
+            {
+            }
+            //patch-3. 自定义 (patch)
+            m_selfExcel.ProcessingExcel(bw, paths["SelfDef"], paths["DataMdb"], "patch", this);
+
+            //7. 开始生成 init.cfg, patch_ex.cfg
+            //patch-4. 创建patch_ex.cfg
+            CreateFilePdg_eNB("patch_ex.cfg", paths["DataMdb"]);
+            SaveFilePdg_eNB(paths["OutDir"] + "patch_ex.cfg");
+            return true;
+        }
+        /// <summary>
+        /// log : lm.mdb : Mib Tree
+        /// </summary>
+        void LogPrintByM_mibTreeMem()
+        {
+            // 打印 m_mibTreeMem 叶子名
+            FileStream fs2 = new FileStream("Log_m_mibTreeMem.txt", FileMode.OpenOrCreate);
+            BinaryWriter bw_2 = new BinaryWriter(fs2, Encoding.Default, true);
+            foreach (string name in m_mibTreeMem.pMapMibNodeByName.Keys)
+            {
+                var node = m_mibTreeMem.pMapMibNodeByName[name];
+                bw_2.Write(String.Format("m_mibTreeMem : key ({0}), table ({1}).\n", name, node.strTableName).ToArray());
+            }
+            bw_2.Flush();//清空缓冲区
+            bw_2.Close();//关闭流
+            fs2.Close();
+        }
+        /// <summary>
+        /// CfgFileOp : m_mapTableInfo
+        /// </summary>
+        void LogPrintByM_mapTableInfo()
+        {
+            // 打印 m_mapTableInfo 表名
+            FileStream fs2 = new FileStream("Log_m_mapTableInfo.txt", FileMode.OpenOrCreate);
+            BinaryWriter bw_2 = new BinaryWriter(fs2, Encoding.Default, true);
+            foreach (string tableName in m_mapTableInfo.Keys)
+            {
+                bw_2.Write(String.Format("m_mapTableInfo : key ({0}).\n", tableName).ToArray());
+            }
+            bw_2.Flush();//清空缓冲区
+            bw_2.Close();//关闭流
+            fs2.Close();
         }
         /// <summary>
         /// 文件头
@@ -887,8 +1156,7 @@ namespace CfgFileOperation
             TableOffset += (uint)Marshal.SizeOf(new StruCfgFileTblInfo("init"));
             TableOffset += (uint)((uint)Marshal.SizeOf(new StruCfgFileFieldInfo()) * (uint)tableOp.m_LeafNodes.Count);
             return TableOffset;
-        }
-        
+        }       
         /// <summary>
         /// 计算表的偏移位置 patch
         /// </summary>
@@ -1202,7 +1470,6 @@ namespace CfgFileOperation
             SetBuffersInfoForAlarmCauseMdb(tableRow, AlarmdateSet, tableOp, leafNum);
             new CfgAccessDBManager().Close(AlarmdateSet);
         }
-
         private void CreateSpecialTalbeAlarmCauseEntryByExcel(DataRow tableRow, CfgTableOp tableOp, string strFileToDirectory, int leafNum)
         {
             //CfgParseAlarmExecl alarmEx = new CfgParseAlarmExecl();
@@ -2119,7 +2386,7 @@ namespace CfgFileOperation
             }
         }
         /// <summary>
-        /// 重要的数据填写函数
+        /// 重要的数据填写函数-原来版本
         /// </summary>
         /// <param name="byteArray"></param>
         /// <param name="value"></param>
@@ -2128,7 +2395,7 @@ namespace CfgFileOperation
         /// <param name="strLen"></param>
         /// <param name="strValList"></param>
         /// <param name="strAsnType"></param>
-        public void WriteToBufferOld(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
+        private void WriteToBufferOld(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
         {
             int posStartF = bytePosL[0];
             if (null == byteArray)
@@ -2304,200 +2571,6 @@ namespace CfgFileOperation
 
             if (bytePosL[0] - posStartF < strLen)
                 bytePosL[0] = posStartF + strLen;
-        }
-        public bool WriteToBuffer(List<byte[]> byteArray, string value, List<int> bytePosL, string OMType, int strLen, string strValList, string strAsnType)
-        {
-            bool re = true;
-            int posStartF = bytePosL[0];
-            try {
-                if (null == byteArray)
-                    return false;
-                else if (String.Empty == value.Trim(' '))
-                {
-                    SetValueToByteArray(byteArray, bytePosL, (uint)0);
-                    return true;
-                }
-                if (OMType == "s32" || (OMType == "u32"))    //s32,u32
-                {
-                    uint omValue = 0;// 返回类型已经确定
-                    if (String.Compare(strAsnType, "Bits", true) == 0)
-                    {
-                        if (value.Contains("×") != false)
-                            omValue = (uint)0;
-                        else
-                        {
-                            if (!GetBitsTypeValueFromValue(value, strValList, out omValue))
-                            {
-                                re = false;
-                            }
-                        }
-                    }
-                    else if ((String.Compare(strAsnType, "Integer32", true) == 0) && value.IndexOf(":") > 0)
-                    {
-                        omValue = (uint)getEnumValue(value);
-                    }
-                    else if ((String.Compare(strAsnType, "INTEGER", true) == 0) && value.IndexOf(":") > 0)
-                    {
-                        omValue = (uint)getEnumValue(value);
-                    }
-                    else
-                    {
-                        if (value.Contains("0x") != false)
-                            omValue = (uint)Convert.ToInt32(value, 16);
-                        else if (value.Contains("×") != false)
-                            omValue = (uint)0;
-                        else
-                        {
-                            omValue = (uint)long.Parse(value);//4294967295 必须用long.Parse
-                        }
-                    }
-                    if (OMType == "s32")
-                        SetValueToByteArray(byteArray, bytePosL, (int)omValue);
-                    else if (OMType == "u32")
-                        SetValueToByteArray(byteArray, bytePosL, (uint)omValue);
-                }
-                else if (OMType == "u32[]")
-                {
-                    int posStart = bytePosL[0];
-                    if (value.Contains("×") != false)
-                    {
-                        value = "0";
-                        //bytePosL[0] += strLen;
-                    }
-                    //else松懈
-                    getInt32Array(byteArray, bytePosL, value);//分级调用 SetValueToByteArray
-                    if (bytePosL[0] - posStart < strLen)
-                        bytePosL[0] = posStart + strLen;
-                }
-                else if (OMType == "enum")   //enum,转换成u32
-                {
-                    if (("×" == value))
-                        value = "0";
-                    SetValueToByteArray(byteArray, bytePosL, (uint)getEnumValue(value));
-                }
-                else if (OMType == "s32[]")   //Oid
-                {
-                    if (("×" == value))
-                        value = "0";
-                    OM_OBJ_ID_T tmpOID = new OM_OBJ_ID_T(value);// OM_OBJ_ID_T(value);
-                    SetValueToByteArray(byteArray, bytePosL, tmpOID.StruToByteArray());
-                }
-                else if (OMType == "s8[]")   //char *
-                {
-                    value = value.Replace("\"", "");//value = value.Trim("\"");
-                    if (("×" == value))
-                        value = "";
-                    sbyte[] sbArray = (sbyte[])((Array)System.Text.Encoding.Default.GetBytes(value));
-                    //byte[] mybyte = Encoding.Unicode.GetBytes(value);
-                    byte[] mybyte2 = Encoding.UTF8.GetBytes(value);
-                    //string valuess = Encoding.GetEncoding("GB2312").GetString(mybyte2).TrimEnd('\0');
-                    SetValueToByteArray(byteArray, bytePosL, sbArray);//ASSERT(strLen >= strTmp.GetLength());char* test = (char*)(memcpy(pBuff + pos, strTmp.GetBuffer(), strTmp.GetLength()));
-                    if (mybyte2.Length < strLen)
-                        bytePosL[0] += strLen - mybyte2.Length;
-
-                }
-                else if (OMType == "s8")   //char *
-                {
-                    int omValue = 0;
-                    if (value.Contains("0x") != false)
-                        omValue = (int)Convert.ToInt32(value, 16);
-                    else if (("×" == value))
-                        omValue = 0;
-                    else
-                        omValue = (int)int.Parse(value);
-                    byte[] TypeToByteArr = BitConverter.GetBytes((int)omValue);
-                    SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
-                }
-                else if (OMType == "u8")
-                {
-                    uint omValue = 0;
-                    if (value.Contains("0x") != false)
-                        omValue = (uint)Convert.ToInt32(value, 16);
-                    else if (("×" == value))
-                        omValue = 0;
-                    else
-                        omValue = (uint)int.Parse(value);
-                    byte[] TypeToByteArr = BitConverter.GetBytes((ushort)omValue);
-                    SetValueToByteArray(byteArray, bytePosL, TypeToByteArr[0]);
-                }
-                else if (OMType == "u8[]")
-                {
-                    if (0 == String.Compare("IpAddress", strAsnType, true))//sizeof(ipv4addr)
-                    {
-                        uint IPAddr = getIPAddr(value);
-                        SetValueToByteArray(byteArray, bytePosL, IPAddr);
-                    }
-                    else if (String.Compare(strAsnType, "InetAddress", true) == 0)
-                    {
-                        int posStart = bytePosL[0];
-                        value = value.Replace("\"", ""); //value.Trim("\"");
-                        GetInetAddressValue(byteArray, bytePosL, value);
-                        if (bytePosL[0] - posStart < strLen)
-                            bytePosL[0] = posStart + strLen;
-                    }
-                    else if (String.Compare(strAsnType, "MacAddress", true) == 0)
-                    {
-                        getMacAddr(byteArray, bytePosL, value);
-                    }
-                    else if (String.Compare(strAsnType, "MncMccType", true) == 0)
-                    {
-                        GetMncMccTypeValue(byteArray, bytePosL, value);
-                    }
-                    else     //其他的u8[] 2009-12-21
-                    {
-                        value = value.Replace("\"", "");
-                        if (("×" == value))
-                            value = "0";
-                        if (String.Compare(strAsnType, "DateAndTime", true) == 0)
-                            GetDateAndTimeTypeValue(byteArray, bytePosL, value);
-                        else
-                            SetValueToByteArray(byteArray, bytePosL, value);
-                    }
-                }
-                else if (OMType == "u16")   //u16,s16
-                {
-                    uint omValue = 0;
-                    if (value.Contains("0x") != false)
-                        omValue = (uint)Convert.ToInt32(value, 16);
-                    else if (("×" == value))
-                        omValue = 0;
-                    else
-                        omValue = (uint)int.Parse(value);
-                    SetValueToByteArray(byteArray, bytePosL, (ushort)omValue);
-                }
-                else if (OMType == "s16")   //u16,s16
-                {
-                    uint omValue = 0;
-                    if (value.Contains("0x") != false)
-                        omValue = (uint)Convert.ToInt32(value, 16);
-                    else if (("×" == value))
-                        omValue = 0;
-                    else
-                        omValue = (uint)int.Parse(value);
-                    SetValueToByteArray(byteArray, bytePosL, (short)omValue);
-                }
-                else
-                {
-                    uint omValue = 0;
-                    if (value.Contains("0x") != false)
-                        omValue = (uint)Convert.ToInt32(value, 16);
-                    else
-                        omValue = (uint)int.Parse(value);
-                    SetValueToByteArray(byteArray, bytePosL, omValue);
-                }
-
-                if (bytePosL[0] - posStartF < strLen)
-                    bytePosL[0] = posStartF + strLen;
-            }
-            catch {
-                re = false;
-                Console.WriteLine(String.Format("Err Death : WriteToBuffer: OMType({0}) value({1}), valList({2}).\n", OMType, value, strValList).ToArray());
-            }
-            //finally {
-            //    re = false;
-            //}
-            
-            return re;
         }
         /// <summary>
         /// 类型转换为byte[]
@@ -2864,20 +2937,20 @@ namespace CfgFileOperation
             int s = int.Parse(second);
             return h >= 0 && h <= 23 && m >= 0 && m <= 59 && s >= 0 && s <= 59;
         }
-        public bool TestSaveFile_eNB(string newFilePath = "", string oldFilePath = "", bool NewCfgFile = false)
+        private bool TestSaveFile_eNB(string newFilePath = "", string oldFilePath = "", bool NewCfgFile = false)
         {
             FileStream fs = new FileStream(newFilePath, FileMode.Create, FileAccess.Write);//找到文件如果文件不存在则创建文件如果存在则覆盖文件
             fs.SetLength(0);   //清空文件
             return true;
         }
-        public void TestsaveFileTest(string newFilePath)
+        private void TestsaveFileTest(string newFilePath)
         {
             WriteHeaderVersionInfo("");
             Console.WriteLine(System.Runtime.InteropServices.Marshal.SizeOf(m_cfgFile_Header));
             byte[] byteList = m_cfgFile_Header.StruToByteArray();
             TestWriteFile(newFilePath, byteList, 0);
         }
-        public void TestWriteFile(string filepath, byte[] data, int offset)
+        private void TestWriteFile(string filepath, byte[] data, int offset)
         {
             FileStream fs = new FileStream(filepath, FileMode.Create);
             fs.Seek(offset, SeekOrigin.End);// 偏移的位置
@@ -2885,46 +2958,7 @@ namespace CfgFileOperation
             fs.Flush();
             fs.Close();
         }
-
-        public void CfgWriteFile(string filepath, byte[] data, int offset)
-        {
-            FileStream fs = new FileStream(filepath, FileMode.Create);
-            fs.Seek(offset, SeekOrigin.End);// 偏移的位置
-            fs.Write(data, 0, data.Length);
-            fs.Flush();
-            fs.Close();
-        }
-        public byte[] CfgReadFile(string filePath, long readFromOffset, int readCount)
-        {
-            //byte[] byData = new byte[100];
-            //char[] charData = new char[1000];
-            byte[] byData = new byte[readCount];
-            char[] charData = new char[readCount];
-            try
-            {
-                //FileStream sFile = new FileStream("文件路径", FileMode.Open);
-                FileStream sFile = new FileStream(filePath, FileMode.Open);
-                //sFile.Seek(55, SeekOrigin.Begin);
-                //sFile.Read(byData, 0, 100);
-                sFile.Seek(readFromOffset, SeekOrigin.Begin);
-                sFile.Read(byData, 0, readCount);//第一个参数是被传进来的字节数组,用以接受FileStream对象中的数据,第2个参数是字节数组中开始写入数据的位置,它通常是0,表示从数组的开端文件中向数组写数据,最后一个参数规定从文件读多少字符.
-
-                sFile.Close();
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine("An IO exception has been thrown!");
-                Console.WriteLine(e.ToString());
-                Console.ReadLine();
-                return null;
-            }
-            Decoder d = Encoding.UTF8.GetDecoder();
-            d.GetChars(byData, 0, byData.Length, charData, 0);
-            //Console.WriteLine(charData);
-            //Console.ReadLine();
-            return byData;
-        }
-        public void TestsetCfgFile_Header()
+        private void TestsetCfgFile_Header()
         {
             StruCfgFileHeader a = new StruCfgFileHeader("init");
             a.u32IcFileVer = 12;
@@ -2936,7 +2970,7 @@ namespace CfgFileOperation
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public static T DeepCopy<T>(T obj)
+        private static T DeepCopy<T>(T obj)
         {
             object retval;
             using (MemoryStream ms = new MemoryStream())
@@ -2950,6 +2984,7 @@ namespace CfgFileOperation
             return (T)retval;
         }
 
+        #endregion
 
     }
 }
