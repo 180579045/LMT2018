@@ -528,7 +528,15 @@ namespace SCMTMainWindow.View
 
                 //添加 ant 的时候需要给基站下发，然后获取设备信息
 				var param = new AddAntParameters(antInfo.antArrayNotMibVendorName, antInfo.antArrayModelName);
-				// todo @马毅 如果有波束扫描信息，需要注意设置param中的数据
+                if(dlg.simpleData != null)
+                {
+                    param.horBeamScanCount = dlg.simpleData.horBeamScanCount;
+                    param.horBeamScanAngle = dlg.simpleData.horBeamScanAngle;
+                    param.verBeamScanCount = dlg.simpleData.verBeamScanCount;
+                    param.verBeamScanAngle = dlg.simpleData.verBeamScanAngle;
+                    param.lossFlag = dlg.simpleData.lossFlag;
+                }
+                // todo @马毅 如果有波束扫描信息，需要注意设置param中的数据
                 var devRRUInfo = MibInfoMgr.GetInstance().AddNewAnt(nAntennaNo, param);
                 if (devRRUInfo == null)
                 {

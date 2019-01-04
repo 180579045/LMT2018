@@ -21,7 +21,7 @@ namespace CfgFileOperation
     /// 4. 数据存在问题？
     /// 因为只处理标识为0，1，2的，保存表和要处理的节点的相关信息
     /// </summary>
-    class CfgParseReclistExcel5G
+    public class CfgParseReclistExcel5G
     {
         /// <summary>
         /// 写文件句柄
@@ -1316,7 +1316,7 @@ namespace CfgFileOperation
         }
     }
 
-    class ReclistTable
+    public class ReclistTable
     {
         /// <summary>
         /// 表名

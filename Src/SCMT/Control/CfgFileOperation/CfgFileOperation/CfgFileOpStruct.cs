@@ -1051,7 +1051,7 @@ namespace CfgFileOpStruct
     ///  pack 4 字节按4对齐
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    struct StruDataHead
+    public struct StruDataHead
     {
         /// <summary>
         /// 文件头的校验字段
@@ -1335,7 +1335,7 @@ namespace CfgFileOpStruct
     /// zizeof : 44 
     /// </summary>
     [StructLayout(LayoutKind.Sequential, Pack = 4)]
-    struct StruCfgFileTblInfo
+    public struct StruCfgFileTblInfo
     {
         /// <summary>
         /// 数据文件版本（即数据更新次数）
@@ -1792,7 +1792,7 @@ namespace CfgFileOpStruct
     /// <summary>
     /// 告警相关结构体题
     /// </summary>
-    struct StruAlarmInfo
+    public struct StruAlarmInfo
     {
         public string alarmCauseNo;
         public string alarmCauseRowStatus;
@@ -2094,7 +2094,7 @@ namespace CfgFileOpStruct
     /// <summary>
     /// 
     /// </summary>
-    struct RRuTypeTabStru
+    public struct RRuTypeTabStru
     {
         public RRuTypeTabStru(string s)
         {
@@ -2276,7 +2276,7 @@ namespace CfgFileOpStruct
     /// <summary>
     /// 
     /// </summary>
-    struct RRuTypePortTabStru
+    public struct RRuTypePortTabStru
     {
         public string rruTypePortManufacturerIndex;
         public string rruTypePortIndex;
@@ -2496,7 +2496,7 @@ namespace CfgFileOpStruct
         }
     }
 
-    struct AntArrayBfScanAntWeightTabStru
+    public struct AntArrayBfScanAntWeightTabStru
     {
         //public AntArrayBfScanAntWeightTabStru(string s)
         //{

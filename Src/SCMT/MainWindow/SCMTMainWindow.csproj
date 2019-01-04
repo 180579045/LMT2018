@@ -656,6 +656,10 @@
       <Project>{8c99c928-f64f-4a49-9018-abddabc73a1a}</Project>
       <Name>BaseStationConInfo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Control\CfgFileOperation\CfgFileOperation\CfgFileOperation.csproj">
+      <Project>{ff797d07-6274-4615-8534-7de60990876a}</Project>
+      <Name>CfgFileOperation</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Control\DataBaseUtil\DataBaseUtil.csproj">
       <Project>{45fbffcf-17f9-4649-bffd-8894acd01aff}</Project>
       <Name>DataBaseUtil</Name>

@@ -157,6 +157,9 @@ namespace NetPlan
 
 		/// <summary>
 		/// 在ant中填入天线阵的信息
+		/// todo netAntArrayPosition数据来源不明，未设置
+		/// todo GetTDSInheritNetAntennaArray命令不被支持，天线阵器件库信息无需设置
+		/// todo antennaWeightMultAntBeamDirection 表项数据来源不明，未设置
 		/// </summary>
 		/// <param name="ant"></param>
 		/// <param name="at"></param>
@@ -212,7 +215,7 @@ namespace NetPlan
 				return false;
 			}
 
-			var mibName = "antennaBfScanWeightHorizonNum";
+			var mibName = "netAntArrayHorBeamScanning";
 			if (ant.IsExistField(mibName))
 			{
 				if (!ant.SetFieldOlValue(mibName, parameters.horBeamScanCount))
@@ -222,7 +225,7 @@ namespace NetPlan
 				}
 			}
 
-			mibName = "antennaBfScanWeightHorizonDowntiltAngle";
+			mibName = "netAntArrayHorDowntiltAngle";
 			if (ant.IsExistField(mibName))
 			{
 				if (!ant.SetFieldOlValue(mibName, parameters.horBeamScanAngle))
@@ -232,7 +235,7 @@ namespace NetPlan
 				}
 			}
 
-			mibName = "antennaBfScanWeightVerticalNum";
+			mibName = "netAntArrayVerBeamScanning";
 			if (ant.IsExistField(mibName))
 			{
 				if (!ant.SetFieldOlValue(mibName, parameters.verBeamScanCount))
@@ -242,7 +245,7 @@ namespace NetPlan
 				}
 			}
 
-			mibName = "antennaBfScanWeightVerticalDowntiltAngle";
+			mibName = "netAntArrayVerDowntiltAngle";
 			if (ant.IsExistField(mibName))
 			{
 				if (!ant.SetFieldOlValue(mibName, parameters.verBeamScanAngle))
@@ -252,7 +255,7 @@ namespace NetPlan
 				}
 			}
 
-			mibName = "antennaBfScanWeightIsLossFlag";
+			mibName = "netAntArrayLossFlag";
 			if (ant.IsExistField(mibName))
 			{
 				if (!ant.SetFieldOlValue(mibName, parameters.lossFlag))
@@ -261,6 +264,17 @@ namespace NetPlan
 					return false;
 				}
 			}
+
+			// 天线阵信息
+			//var staticInfo = NPEAntHelper.GetInstance().GetAntTypeByVendorAndTypeIdx(strVendorNo, strAntTypeNo);
+			//if (null != staticInfo)
+			//{
+			//	if (!SetAntTypeInfo(ant, staticInfo))
+			//	{
+			//		strErrMsg = "设置天线阵器件库信息失败";
+			//		return false;
+			//	}
+			//}
 
 			strErrMsg = null;
 			return true;
@@ -411,11 +425,21 @@ namespace NetPlan
 			else
 			{
 				Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵耦合系数信息失败");
-				return 0;   // 只有部分天线阵才有耦合系数
+				//return 0;   // 只有部分天线阵才有耦合系数
 			}
 
-			// todo 波束宽度扫描信息后续添加
+			// 波束宽度扫描信息
+			if (NPEAntHelper.GetInstance().IsExistBfsData(vi, ti))
+			{
+				var bfsdList = FilterBfsData(ant, vi, ti);
+				if (null == bfsdList || bfsdList.Count == 0)
+				{
+					Log.Error($"根据厂家编号{vi}和类型索引{ti}获取天线阵波束扫描信息失败");
+					return 0;
+				}
 
+				GenerateAntBfsData(bfsdList, strAntNo);
+			}
 
 			return 0;
 		}
@@ -508,21 +532,117 @@ namespace NetPlan
 			}
 		}
 
-		private bool SaveWcbDev(EnumDevType type, DevAttributeBase dev)
+		private void GenerateAntBfsData(IReadOnlyList<BfScanData> bfsDatas, string strAntNo)
+		{
+			foreach (var item in bfsDatas)
+			{
+				var vi = item.antArrayBfScanAntWeightVendorIndex;
+				var ti = item.antArrayBfScanAntWeightTypeIndex;
+				var wi = item.antArrayBfScanAntWeightIndex;
+				var bgn = item.antennaBfScanWeightBFScanGrpNo;		// 波束扫描组号
+				var agn = item.antArrayBfScanAntWeightAntGrpNo;		// 天线组号
+				var idx = $".{vi}.{ti}.{wi}.{bgn}.{agn}";
+
+				var dev = new DevAttributeInfo(EnumDevType.antBfScan, idx);
+				if (dev.m_mapAttributes.Count == 0)
+				{
+					continue;
+				}
+
+				dynamic amplitudeValue;
+				dynamic phaseValue;
+
+				for (var i = 0; i < 8; i++)
+				{
+					var amp = $"antennaBfScanWeightAmplitude{i}";
+					var pha = $"antennaBfScanWeightPhase{i}";
+					if (!UtilityHelper.GetFieldValueOfType<BfScanData>(item, amp, out amplitudeValue) ||
+						!UtilityHelper.GetFieldValueOfType<BfScanData>(item, pha, out phaseValue))
+					{
+						break;
+					}
+
+					dev.SetFieldLatestValue(amp, amplitudeValue.ToString());
+					dev.SetFieldLatestValue(pha, phaseValue.ToString());
+				}
+
+				var hc = item.antennaBfScanWeightHorizonNum;
+				var ha = item.antennaBfScanWeightHorizonDowntiltAngle;
+				var vc = item.antennaBfScanWeightVerticalNum;
+				var va = item.antennaBfScanWeightVerticalDowntiltAngle;
+				var lf = item.antennaBfScanWeightIsLossFlag;
+
+				dev.SetFieldLatestValue("antennaBfScanWeightHorizonNum", hc);
+				dev.SetFieldLatestValue("antennaBfScanWeightHorizonDowntiltAngle", ha);
+				dev.SetFieldLatestValue("antennaBfScanWeightVerticalNum", vc);
+				dev.SetFieldLatestValue("antennaBfScanWeightVerticalDowntiltAngle", va);
+				dev.SetFieldLatestValue("antennaBfScanWeightIsLossFlag", lf);
+
+				SaveWcbDev(EnumDevType.antBfScan, dev);
+			}
+		}
+
+		private List<BfScanData> FilterBfsData(DevAttributeBase ant, string vi, string ti)
+		{
+			var horCnt = ant.GetFieldLatestValue("netAntArrayHorBeamScanning");
+			var horAng = ant.GetFieldLatestValue("netAntArrayHorDowntiltAngle");
+			var verCnt = ant.GetFieldLatestValue("netAntArrayVerBeamScanning");
+			var verAng = ant.GetFieldLatestValue("netAntArrayVerDowntiltAngle");
+			var lossFlag = ant.GetFieldLatestValue("netAntArrayLossFlag");
+			if (string.IsNullOrEmpty(horCnt) || string.IsNullOrEmpty(horAng) ||
+				string.IsNullOrEmpty(verCnt) || string.IsNullOrEmpty(verAng) ||
+				string.IsNullOrEmpty(lossFlag))
+			{
+				Log.Error("MIB版本不支持波束扫描相关字段");
+				return null;
+			}
+
+			var sendBfsDataList = new List<BfScanData>();
+			var bfsDataAll = NPEAntHelper.GetInstance().GetAntBfsDataByVendorTypeIdx(vi, ti);
+			// 根据上面的5个参数过滤哪些要下发
+			foreach (var item in bfsDataAll)
+			{
+				if (item.antennaBfScanWeightHorizonNum == horCnt &&
+				    item.antennaBfScanWeightHorizonDowntiltAngle == horAng &&
+				    item.antennaBfScanWeightVerticalNum == verCnt &&
+				    item.antennaBfScanWeightVerticalDowntiltAngle == verAng &&
+				    item.antennaBfScanWeightIsLossFlag == lossFlag)
+				{
+					sendBfsDataList.Add(item);
+				}
+			}
+
+			return sendBfsDataList;
+		}
+
+		private void SaveWcbDev(EnumDevType type, DevAttributeBase dev)
 		{
 			List<DevAttributeBase> refList = null;
 			switch (type)
 			{
 				case EnumDevType.antWeight:
-					refList = m_antWeightList ?? new List<DevAttributeBase>();
+					if (null == m_antWeightList)
+					{
+						m_antWeightList = new List<DevAttributeBase>();
+					}
+
+					refList = m_antWeightList;
 					break;
 
 				case EnumDevType.antCoup:
-					refList = m_antCouplingList ?? new List<DevAttributeBase>();
+					if (null == m_antCouplingList)
+					{
+						m_antCouplingList = new List<DevAttributeBase>();
+					}
+					refList = m_antCouplingList;
 					break;
 
 				case EnumDevType.antBfScan:
-					refList = m_antBfScanList ?? new List<DevAttributeBase>();
+					if (null == m_antBfScanList)
+					{
+						m_antBfScanList = new List<DevAttributeBase>();
+					}
+					refList = m_antBfScanList;
 					break;
 
 				default:
@@ -530,8 +650,6 @@ namespace NetPlan
 			}
 
 			refList.Add(dev);
-
-			return true;
 		}
 
 		/// <summary>
@@ -548,27 +666,36 @@ namespace NetPlan
 				return false;
 			}
 
-			foreach (var item in m_antWeightList)
+			if (null != m_antWeightList)
 			{
-				if (!base.DistributeToEnb(item))
+				foreach (var item in m_antWeightList)
 				{
-					return false;
+					if (!base.DistributeToEnb(item))
+					{
+						return false;
+					}
 				}
 			}
 
-			foreach (var item in m_antCouplingList)
+			if (null != m_antCouplingList)
 			{
-				if (!base.DistributeToEnb(item))
+				foreach (var item in m_antCouplingList)
 				{
-					return false;
+					if (!base.DistributeToEnb(item))
+					{
+						return false;
+					}
 				}
 			}
 
-			foreach (var item in m_antBfScanList)
+			if (null != m_antBfScanList)
 			{
-				if (!base.DistributeToEnb(item))
+				foreach (var item in m_antBfScanList)
 				{
-					return false;
+					if (!base.DistributeToEnb(item))
+					{
+						return false;
+					}
 				}
 			}
 

@@ -63,6 +63,7 @@
                     <Metro:MetroMenuItem Header="关于我们" Icon="Resources/titleMuenIcon.png" Click="AboutUsMenu_Click" />
                     <Metro:MetroMenuItem Header="使用帮助" Icon="Resources/titleMuenIcon.png"/>
                     <Metro:MetroMenuItem Header="反馈问题" Icon="Resources/titleMuenIcon.png"/>
+                    <Metro:MetroMenuItem Header="配置文件解析" Icon="Resources/titleMuenIcon.png" Click="MetroMenuItem_Click"/>
                 </Metro:MetroMenuItem>
             </Metro:MetroTitleMenuItem>
 
