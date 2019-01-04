@@ -34,7 +34,7 @@
         <TextBox Grid.Row="3" Width="100" Height="30" Margin="80,0,70,0" Name="txtAntennaNumber" TextChanged="txtAntennaNumber_TextChanged"></TextBox>
 
         <!--Antenna 类型描述-->
-        <ScrollViewer Grid.Row="4">
+        <ScrollViewer Grid.Row="4" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
             <Label  VerticalAlignment="Center"  Margin="20,0,0,0" Name="txtRRUdescription"></Label>
         </ScrollViewer>
 

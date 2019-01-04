@@ -310,11 +310,15 @@
                                             </Grid>
 
                                             <Grid>
-                                                <Metro:MetroGroupBox Header="工具二">
+                                                <Metro:MetroGroupBox Header="初始化参数配置">
                                                     <Grid>
                                                         <StackPanel>
-                                                            <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                            <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            <Metro:MetroTextBlock Text="在系统初始化时进行参数配置" Opacity="0.65" />
+                                                            <Button Background="White" Name="btnInitConfigSet" Click="btnInitConfigSet_Click">
+                                                                <Button.Content>
+                                                                    <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                                </Button.Content>
+                                                            </Button>
                                                         </StackPanel>
                                                     </Grid>
                                                 </Metro:MetroGroupBox>

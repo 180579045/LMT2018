@@ -35,6 +35,27 @@ namespace SCMTOperationCore.Control
 
 		#region 公共接口
 
+        public Dictionary<string, string> GetAllConnectedGNB()
+        {
+            var ret = new Dictionary<string, string>();
+
+            lock (lockObj)
+            {
+                if (mapElements.Count > 0)
+                {
+                    foreach (var item in mapElements)
+                    {
+                        var nodeb = item.Value as NodeB;
+
+                            if (nodeb != null && nodeb.HasConnected())
+                                ret.Add(item.Key, item.Value.FriendlyName);
+                    }
+                }
+            }
+
+            return ret;
+        }
+
 		/// <summary>
 		/// 初始化已存在的节点信息
 		/// </summary>
