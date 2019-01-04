@@ -614,11 +614,6 @@ namespace SCMTMainWindow
 			menuItem.IsEnabled = false;
 			menu.Items.Add(menuItem);
 
-			menuItem = new MetroMenuItem { Header = "复位基站" };
-			menuItem.Click += GNBRest_Click; ;
-			menuItem.IsEnabled = false;
-			menu.Items.Add(menuItem);
-
 			menu.Items.Add(new Separator());
 
 			menuItem = new MetroMenuItem { Header = "数据同步" };
@@ -628,63 +623,7 @@ namespace SCMTMainWindow
 
 			return menu;
 		}
-
-		/// <summary>
-		/// gnb复位按钮
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void GNBRest_Click(object sender, RoutedEventArgs e)
-		{
-			MessageBoxResult ret = MessageBox.Show("是否生成动态配置文件？", "提示", MessageBoxButton.YesNoCancel);
-			if (ret == MessageBoxResult.Cancel)
-			{
-				return;
-			}
-			else if (ret == MessageBoxResult.Yes)
-			{
-				string strCMDName = "ResetEquip";
-				Dictionary<string, string> m_dir = new dict_d_string();
-				m_dir.Add("equipResetTrigger", "1");
-
-				string strIP = CSEnbHelper.GetCurEnbAddr();
-				if (strIP != null && strIP != string.Empty)
-				{
-					int nRet = CDTCmdExecuteMgr.CmdSetSync(strCMDName, m_dir, ".0", strIP);
-					if (nRet == 0)
-					{
-						MessageBox.Show("复位成功");
-					}
-					else
-					{
-						MessageBox.Show("复位失败");
-					}
-				}
-			}
-			else
-			{
-				var header = new SiMsgHead();
-				header.u16MsgType = 0x50;
-				header.u16MsgLength = 4;
-
-				string strIP = CSEnbHelper.GetCurEnbAddr();
-				if (strIP != null && strIP != string.Empty)
-				{
-					byte[] buffer = new byte[header.u16MsgLength];
-					header.SerializeToBytes(ref buffer, 0);
-
-					if (NodeBControl.SendSiMsg(strIP, buffer))
-					{
-						MessageBox.Show("复位成功");
-					}
-					else
-					{
-						MessageBox.Show("复位失败");
-					}
-				}
-			}
-		}
-
+        
 		/// <summary>
 		/// 基站节点  点击事件，获取被点击的IP地址，保存到全局变量
 		/// </summary>
@@ -1718,7 +1657,6 @@ namespace SCMTMainWindow
 			EnableMenu(ip, "连接基站", false);
 			EnableMenu(ip, "断开连接");
 			EnableMenu(ip, "数据同步");
-			EnableMenu(ip, "复位基站");
 			EnableMenu(ip, "修改友好名", false);
 			EnableMenu(ip, "修改IP地址", false);
 
@@ -1759,7 +1697,6 @@ namespace SCMTMainWindow
 			EnableMenu(ip, "连接基站");
 			EnableMenu(ip, "断开连接", false);
 			EnableMenu(ip, "数据同步", false);
-			EnableMenu(ip, "复位基站", false);
 			EnableMenu(ip, "修改友好名");
 			EnableMenu(ip, "修改IP地址");
 
@@ -1984,6 +1921,17 @@ namespace SCMTMainWindow
             View.ConfigFileOperate dlgConfigFile = new View.ConfigFileOperate();
             dlgConfigFile.ShowDialog();
 
+        }
+
+        /// <summary>
+        /// 初始化参数信息按钮
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnInitConfigSet_Click(object sender, RoutedEventArgs e)
+        {
+            InitConfigSetting dlg = new InitConfigSetting();
+            dlg.ShowDialog();
         }
     }
 }

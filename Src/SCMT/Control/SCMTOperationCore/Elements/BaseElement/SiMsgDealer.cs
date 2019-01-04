@@ -112,6 +112,15 @@ namespace SCMTOperationCore.Elements.BaseElement
 				case SiMacroDef.O_OMLMT_GET_SIPORTVERSION_RSP:
 					topic = TopicHelper.QuerySiPortVerRsp;
 					break;
+                case SiMacroDef.O_OMLMT_SI_GET_UEINFO_RSP:
+                    topic = TopicHelper.QueryUeinfoRsp;
+                    break;
+                case SiMacroDef.O_OMLMT_SI_GET_UEMEASINFO_RSP:
+                    topic = TopicHelper.QueryUemeasRsp;
+                    break;
+                case SiMacroDef.O_OMLMT_SI_GET_UEIPINFO_RSP:
+                    topic = TopicHelper.QueryUeIpRsp;
+                    break;
 				default:
 					break;
 			}
