@@ -63,7 +63,15 @@ namespace DataSync
             for (int loop = 0; loop < vbCount; loop++)
             {
                 var cDTLmtbVb = lmtPdu.GetVbByIndexEx(loop);
-
+                string oid = cDTLmtbVb.Oid;
+                string vbValue = cDTLmtbVb.Value;
+                var snmpSyntax = cDTLmtbVb.SnmpSyntax;
+                //转换bit类型的显示
+                if (snmpSyntax == SNMP_SYNTAX_TYPE.SNMP_SYNTAX_BITS)
+                {
+                    string strDesVal = null;
+                    //SnmpMibUtil.GenerateBitsTypeDesc(vbValue, , out strDesVal);
+                }
             }
             return true;
         }

@@ -1188,6 +1188,10 @@ namespace NetPlan
             }
             foreach (var name in whereNameList)
             {
+                if (name.Equals("it.netLcRowStatus"))
+                {
+                    Console.WriteLine(name);
+                }
                 if (name.StartsWith("it."))
                 {
                     string[] split = name.Split('.');
@@ -1207,7 +1211,11 @@ namespace NetPlan
                         //取叶子节点
                         string leafName = realFatherName + "." + split[1];
                         string leafValue;
-                        return GetMibParaValue(record, leafName, out leafValue);
+                        EnumResultType res = GetMibParaValue(record, leafName, out leafValue);
+                        if (EnumResultType.success_true != res)
+                        {
+                            return res;
+                        }
 
                     }
                     //2.针对器件库参数lib.
@@ -1218,7 +1226,8 @@ namespace NetPlan
                         int index = CommCheckRuleDeal.GetIndex(name, ".", out length);
                         if (index == -1)
                         {
-                            return EnumResultType.success_true;
+                            Log.Warn(fromName + " convert realFatherName " + realFatherName + " is invalid");
+                            return EnumResultType.fail;
                         }
                         string leafName = name.Substring(index + length);
                         //特殊处理
@@ -1228,7 +1237,10 @@ namespace NetPlan
                         }
                         object objResult;
                         EnumResultType convertRes = MapLibQueryOfDataType(fromName, fromValue, leafName, out objResult);
-                        return convertRes;
+                        if (EnumResultType.success_true != convertRes)
+                        {
+                            return convertRes;
+                        }
                     }
 
                 }
@@ -1638,6 +1650,7 @@ namespace NetPlan
                 }
                 else
                 {
+                    Log.Warn("rule is invalid type : " + round.rules);
                     return EnumResultType.fail;
                 }
             }
@@ -1692,6 +1705,10 @@ namespace NetPlan
                 {
                     foreach (var oneCheck in whoRule)
                     {
+                        if (oneCheck.desc.Equals("校验本地小区标识1的带宽、压缩属性"))
+                        {
+                           Console.WriteLine(oneCheck.desc);
+                        }
                         //先判断条件是否满足校验的必要条件：property属性
                         EnumResultType result = GetPropertyConditionValue(oneCheck.property, dataSrc);
                         if (result == EnumResultType.fail)

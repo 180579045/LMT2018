@@ -974,7 +974,7 @@
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1016,12 +1016,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1063,12 +1063,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1110,12 +1110,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1157,12 +1157,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1214,12 +1214,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId2 && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1271,12 +1271,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId3 && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
@@ -1328,12 +1328,12 @@
           {
               "round":"1",
               "rules":"from it in this.nrNetLocalCellEntry 
-                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 && it.netLcRowStatus == 行有效
+                       where it.nrNetLocalCellId == cur.netRRUAntennaSettingEntry.netSetRRUPortSubtoLocalCellId4 && it.nrNetLocalCellRowStatus == 行有效
                        select it",
               "outvar":"query1"
           },{
               "round":"2",
-              "rules":"query1.Count == 1",
+              "rules":"where query1.Count == 1",
               "outvar":""
           },{
               "round":"3",
