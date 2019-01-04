@@ -11,7 +11,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 把 lm.mdb中mibtree 数据读入内存时用每行的MIB的数据结构
     /// </summary>
-    class CfgParseDBMibTreeStrLineMib
+    public class CfgParseDBMibTreeStrLineMib
     {
         public StruMibNode pTempNode = new StruMibNode();
         public string strTableName = "";
@@ -444,7 +444,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 
     /// </summary>
-    enum ENUM_MIBVALUETYPE
+    public enum ENUM_MIBVALUETYPE
     {
         MIBVALUETYPE_UNKNOWN = -1,
         MIBVALUETYPE_LONG,
@@ -476,7 +476,7 @@ namespace CfgFileOperation
         //end of wangshengfu
     };
 
-    enum MibNodeType
+    public enum MibNodeType
     {
         Unknown = -1,
         IndexNode,
@@ -485,7 +485,7 @@ namespace CfgFileOperation
     };
 
     //用户权限, 与LMTPrivilege表的'PrivilegeID'字段一一对应
-    enum USERPRIVILEGE
+    public enum USERPRIVILEGE
     {
         USERPRIVILEGE_MODULE_DEVELOPER = 1,//模块权限上的开发人员权限
         USERPRIVILEGE_MODULE_TEST = 2,//模块权限上的测试权限

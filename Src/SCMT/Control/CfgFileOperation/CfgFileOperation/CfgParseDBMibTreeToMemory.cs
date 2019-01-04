@@ -12,7 +12,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 把 lm.mdb 中的mibtree 数据，读入内存
     /// </summary>
-    class CfgParseDBMibTreeToMemory
+    public class CfgParseDBMibTreeToMemory
     {
         public Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByName = null;// MIBName ,CfgReadDBStructMibNode
         public Dictionary<string, CfgParseDBMibTreeStrLineMib> pMapMibNodeByOID = null;// OID ,CfgReadDBStructMibNode

@@ -43,7 +43,7 @@ namespace CfgFileOperation
                 TestCfgForInitAndPatch initPath = new TestCfgForInitAndPatch();
                 initPath.BeyondCompareInitCfgMain(args);
             }
-            // 命令行生成init
+            // 命令行生成init和patch
             else if (string.Equals(strVal, "Cmdline"))
             {
                 //Console.OutputEncoding = Encoding.ASCII;

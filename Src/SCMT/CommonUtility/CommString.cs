@@ -55,6 +55,9 @@ namespace CommonUtility
 		public const string DIS_MRO_EVENT_TYPE = "MRO事件类型: ";
 		public const string DIS_MRO_NOTI_CELL_ID = "小区索引: ";
 		public const string DIS_FC_EVENT_TYPE = "FC事件类型: ";
-
+	    public const string IDS_ALTERATION_TYPE_CREATION = "新建";
+	    public const string IDS_ALTERATION_TYPE_DELETE = "删除";
+	    public const string IDS_ALTERATION_TYPE_CHANGED = "修改";
+	    public const string IDS_ALTERATION_INSTANCE = "实例";
 	}
 }

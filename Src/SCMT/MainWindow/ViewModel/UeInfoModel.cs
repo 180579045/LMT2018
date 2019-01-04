@@ -7,14 +7,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-
+using UEData;
+using System.Data;
 namespace SCMTMainWindow.ViewModel
 {
-    public class UeInfoModel:DependencyObject, INotifyPropertyChanged
+    public class UeInfoModel : DependencyObject, INotifyPropertyChanged
     {
-        private ObservableCollection<UeInformation> ueInfos = new ObservableCollection<UeInformation>();
-
-        public  UeInfoModel() {
+        private ObservableCollection<UeInformation> ueInfos = GlobalData.strUeInfo;
+        private ObservableCollection<UeMeasCfInfo> ueMeasInfos = GlobalData.strUeMeasInfo;
+        private ObservableCollection<UeipCellInfo> ueIpCellInfos = GlobalData.strUeIpCellInfo;
+        private ObservableCollection<UeipInfo> ueIpInfos = GlobalData.strUeIpInfo;
+        public UeInfoModel()
+        {
             this.Inital();
         }
 
@@ -32,32 +36,48 @@ namespace SCMTMainWindow.ViewModel
                 this.NotifyPropertyChange("UeInfos");
             }
         }
-        private void Inital() {
-            ObservableCollection<ChildrenUeInfo> al = new ObservableCollection<ChildrenUeInfo>();
-            ChildrenUeInfo c1 = new ChildrenUeInfo();
-            ChildrenUeInfo c2 = new ChildrenUeInfo();
-            c2.UeInfoChildren = "3333333333";
-            c1.UeInfoChildren = "22222222222";
-            c1.Children.Add(c2);
-            c1.Children.Add(c2);
-            c1.Children.Add(c2);
-            c1.Children.Add(c2);
-            c1.Children.Add(c2);
-            al.Add(c1);
-            al.Add(c1);
-            al.Add(c1);
-            al.Add(c1);
-            al.Add(c1);
-            for (int i = 0; i < 10; i++)
+        public ObservableCollection<UeMeasCfInfo> UeMeasInfos
+        {
+            get
             {
-                UeInformation ue = new UeInformation();
-                ue.Num = i;
-                ue.Info1 = "rrrrrr";
-                ue.Info2 = "tttttt";
-                ue.Info3 = "yyyy";
-                ue.Info4 = al;
-                ueInfos.Add(ue);
+                return ueMeasInfos;
             }
+
+            set
+            {
+                ueMeasInfos = value;
+                this.NotifyPropertyChange("UeMeasInfos");
+            }
+        }
+        public ObservableCollection<UeipCellInfo> UeIpCellInfos
+        {
+            get
+            {
+                return ueIpCellInfos;
+            }
+
+            set
+            {
+                ueIpCellInfos = value;
+                this.NotifyPropertyChange("UeIpCellInfos");
+            }
+        }
+        public ObservableCollection<UeipInfo> UeIpInfos
+        {
+            get
+            {
+                return ueIpInfos;
+            }
+
+            set
+            {
+                ueIpInfos = value;
+                this.NotifyPropertyChange("UeIpInfos");
+            }
+        }
+        private void Inital()
+        {
+
 
         }
         private void NotifyPropertyChange(string propertyName)

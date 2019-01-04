@@ -34,7 +34,9 @@ namespace MsgQueue
 		public const string EnbPhaseMsg = "handle_enbphase_msg";
 		public const string QuerySiPortVerRsp = "handle_si_port_ver_rsp";
 		public const string QueryEnbCapacityRsp = "handle_enb_capacity_rsp";
-
+        public const string QueryUeinfoRsp = "handle_ueinfo_rsp";
+        public const string QueryUemeasRsp = "handle_uemeainfo_rsp";
+        public const string QueryUeIpRsp = "handle_ueipinfo_rsp";
 		#endregion
 
 		#region SNMP相关消息

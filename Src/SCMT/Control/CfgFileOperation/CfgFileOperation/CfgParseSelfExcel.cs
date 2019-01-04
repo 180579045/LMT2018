@@ -11,7 +11,7 @@ namespace CfgFileOperation
     /// <summary>
     /// 自定义_初配数据文件
     /// </summary>
-    class CfgParseSelfExcel
+    public class CfgParseSelfExcel
     {
 
         Dictionary<string, string> SheetCellCol = null;
@@ -195,10 +195,10 @@ namespace CfgFileOperation
                 string NodeName = GetCellValue(ColVals, currentLine, "NodeName");     // 叶子名
                 string NodeValue = GetCellValue(ColVals, currentLine, "NodeValue");   // 叶子值
                 strCurTableName = SetCurTableName(TableName, strCurTableName);        // 更新表名
-                if (String.Equals("logFileConfigurationEntry", strCurTableName))
-                {
-                    Console.WriteLine("==");
-                }
+                //if (String.Equals("logFileConfigurationEntry", strCurTableName))
+                //{
+                //    Console.WriteLine("==");
+                //}
                 if (!bIsSpecialScenc(strCurTableName,  strUeType)) { continue; }      // 特殊处理
 
                 // 标记 表名和实例信息

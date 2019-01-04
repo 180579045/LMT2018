@@ -129,6 +129,18 @@ namespace NetPlan
 			return _netPlanBoardInfo?.rHubEquipment;
 		}
 
+		public RHUBEquipment GetRhubEquipmentByUIFriendlyName(string strVer)
+		{
+			var rhubList = _netPlanBoardInfo?.rHubEquipment;
+			return rhubList?.FirstOrDefault(item => item.friendlyUIName == strVer);
+		}
+
+		public RHUBEquipment GetRhubEquipmentByType(string strType)
+		{
+			var rhubList = _netPlanBoardInfo?.rHubEquipment;
+			return rhubList?.FirstOrDefault(item => item.rHubType == strType);
+		}
+
 		/// <summary>
 		/// 获取rhub设备的工作模式
 		/// </summary>

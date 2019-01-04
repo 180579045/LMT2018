@@ -25,9 +25,9 @@ namespace MIBDataParser
 			// 结果回调
 			dataHandle.resultInitData = new ResultInitData(ResultInitData);
 
-			// 初始化
-			dataHandle.initDatabase(connectIp);
-		}
+            // 初始化
+            dataHandle.initDatabase(connectIp);
+        }
 
 		/// <summary>
 		/// 测试数据库代码

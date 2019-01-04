@@ -34,6 +34,30 @@ namespace SCMTOperationCore.Message.SI
 		public const ushort O_OMLMT_GET_SIPORTVERSION_RSP = 0xF1;	/*基站版本响应*/
 
 		public const ushort O_SILMTENB_NBPHASE_REP = 0x80;		/*NODE B所处阶段上报消息*/
+        /// <summary>
+        /// 查询UE信息请求
+        /// </summary>
+        public const ushort O_LMTOM_SI_GET_UEINFO_REQ = 0xF2;
+        /// <summary>
+        /// 查询UE信息响应
+        /// </summary>
+        public const ushort O_OMLMT_SI_GET_UEINFO_RSP = 0xF3;
+        /// <summary>
+        /// UE测量信息显示请求
+        /// </summary>
+        public const ushort O_LMTOM_SI_GET_UEMEASINFO_REQ = 0xF4;
+        /// <summary>
+        /// UE测量信息显示响应
+        /// </summary>
+        public const ushort O_OMLMT_SI_GET_UEMEASINFO_RSP = 0xF5;
+        /// <summary>
+        /// UE IP信息查询请求
+        /// </summary>
+        public const ushort O_LMTOM_SI_GET_UEIPINFO_REQ = 0xF7;
+        /// <summary>
+        /// UE IP信息查询响应
+        /// </summary>
+        public const ushort O_OMLMT_SI_GET_UEIPINFO_RSP = 0xF8;
 	}
 
 	//SI消息头
