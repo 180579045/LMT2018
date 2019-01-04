@@ -34,6 +34,7 @@ namespace DataSync
 			byte[] bytes = SerializeHelper.Serialize2Binary(lmtPdu);
 			PublishHelper.PublishMsg(TopicHelper.SnmpMsgDispose_CfgChgTrap, bytes);
 
+            //数据变更不再保存到数据库
 			return true;
 		}
 	}
