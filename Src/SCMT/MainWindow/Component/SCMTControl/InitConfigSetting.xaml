@@ -1,0 +1,27 @@
+﻿<Window x:Class="SCMTMainWindow.Component.SCMTControl.InitConfigSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SCMTMainWindow.Component.SCMTControl"
+             mc:Ignorable="d" 
+             Height="200" Width="370" Title="命令下发" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <WrapPanel Orientation="Horizontal">
+            <CheckBox VerticalAlignment="Center" Margin="20,20,0,0" Checked="CheckBox_Checked" Name="chbgNB" Unchecked="chbgNB_Unchecked">gNB复位</CheckBox>
+            <CheckBox VerticalAlignment="Center" Margin="20,20,0,0" Name="chbNoClock">无时钟源启动</CheckBox>
+            <CheckBox VerticalAlignment="Center" Margin="20,20,0,0" Name="chbNomme">无mme</CheckBox>
+        </WrapPanel>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="1">
+            <WrapPanel Name="stackForIP" Grid.Row="1" Orientation="Horizontal"></WrapPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="2" Width="75" Height="25" Click="Button_Click" Margin="180,0,0,0">命令下发</Button>
+    </Grid>
+</Window>

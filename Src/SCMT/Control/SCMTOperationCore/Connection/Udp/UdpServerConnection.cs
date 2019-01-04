@@ -83,7 +83,7 @@ namespace SCMTOperationCore.Connection.Udp
             //Invoke event outide lock if need be
             if (invoke)
             {
-                InvokeDisconnected(e);
+                //InvokeDisconnected(e);
 
                 Dispose();
             }

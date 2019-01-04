@@ -38,6 +38,8 @@ namespace SCMTOperationCore.Elements
 
 			dealer = new SiMsgDealer(neIp.ToString());
 			_cancelConnectFlag = false;
+
+			_reconnectFlag = true;
 		}
 
 		~SiElement()
@@ -140,8 +142,15 @@ namespace SCMTOperationCore.Elements
 			PublishHelper.PublishMsg(TopicHelper.EnbOfflineMsg, NeAddress.ToString());
 
 			// 断开连接了，但不是手动取消的，应该是非自然断开
-			if (!IsCancelConnect())
+			if (null != e && e.BreakReason == BreakLinkReason.LinkReallyBreak)
 			{
+				if (null != e.Exception)
+				{
+					var sexp = e.Exception as SocketException;
+					if (sexp?.ErrorCode != null)
+						Log.Error($"基站:{NeAddress.ToString()}连接断开，错误码：{(SocketError) sexp.ErrorCode}");
+				}
+
 				PublishHelper.PublishMsg(TopicHelper.ReconnectGnb, NeAddress.ToString());
 			}
 		}
@@ -181,6 +190,8 @@ namespace SCMTOperationCore.Elements
 		private NetworkEndPoint _targetPoint;
 		private bool _cancelConnectFlag;
 		private static object _lockObj = new object();
+		private bool _reconnectFlag;
+
 
 		#endregion 私有成员、属性
 	}
