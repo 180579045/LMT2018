@@ -105,6 +105,18 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommonServiceLocator">
+      <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\Lib\log4net.dll</HintPath>
     </Reference>
@@ -126,6 +138,9 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -220,6 +235,9 @@
     </Compile>
     <Compile Include="Pages\ModifyFriendlyName.xaml.cs">
       <DependentUpon>ModifyFriendlyName.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\NodeBControlPage.xaml.cs">
+      <DependentUpon>NodeBControlPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
@@ -362,6 +380,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\ModifyFriendlyName.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\NodeBControlPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

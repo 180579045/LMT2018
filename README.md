@@ -1,21 +1,32 @@
-# LMT2018
----
-## 概览
-老版本LMT已运行10年，长时间的维护周期使得LMT的维护成本越来越高，新版本LMT的迭代旨在优化老版本LMT存在的一些不足，优化软件架构，使得其更加便于维护和使用
+# SCMT多站连接分支修改说明
+撤退之前，最后一个负责修改的特性，以下是所有涉及到的修改内容和一些详细的说明，请负责归并的同学关注
 
-## 运行环境与第三方框架
-- **IDE**：Visual Studio 2015
-- **.NET Framework:** 4.6.2
-- **SNMP：** SnmpSharpNet
-- **UML：** Enterprise Architect
+## 新增依赖：
+- ChromeTabs<br>
+多站连接的核心，以标签页的形式呈现在程序的最上边，与Chrome浏览器的呈现形式一致，故起名ChromeTabs，该依赖通过工程方式放在了解决方案之中，**在路径：UI/ChrmoeTabs 中**
+- MvvmLight<br>
+一个轻量级MVVM框架，解耦和View层即XAML与后端处理逻辑，方便团队成员内部的协作，具体使用到的版本为：<br>
+    - CommonServiceLocator.2.0.2
+    - MvvmLight.5.4.1.1
+    - MvvmLightLibs.5.4.1.1
+
+用到的dll分别为
+- packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll
+- packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll
+- packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll
+- packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll
+- packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll
+
+## 主要修改内容
+
+### 将之前主窗口中的所有
 
 
-## 文档结构
-- Doc（文档）
-	- 参考文档：（老版本LMT设计文档）
-	- 分析与设计文档：（新版本LMT设计文档与UML设计源文件）
-	- 需求分析阶段调研文档：（先期调研需求使用，思维导图）
-- Experiment（架构团队调研用）
-	- Snmp：（Snmp底层接口的实验小程序）
-	- 原型设计：（软件外观设计与交互原型）
-- ThirdParty（第三方框架）
+
+
+
+
+
+
+
+
