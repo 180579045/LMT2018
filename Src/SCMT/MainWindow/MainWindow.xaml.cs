@@ -533,10 +533,10 @@ namespace SCMTMainWindow
 
 		private void AddeNB(object sender, EventArgs e)
 		{
-			var nodebDlg = AddNodeB.NewInstance(this);
-			nodebDlg.Closed += AddNB_Closed;
-			nodebDlg.Owner = this;
-			nodebDlg.ShowDialog();
+			//var nodebDlg = AddNodeB.NewInstance(this);
+			//nodebDlg.Closed += AddNB_Closed;
+			//nodebDlg.Owner = this;
+			//nodebDlg.ShowDialog();
 		}
 
 		/// <summary>

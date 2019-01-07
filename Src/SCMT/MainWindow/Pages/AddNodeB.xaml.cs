@@ -49,7 +49,13 @@ namespace SCMTMainWindow
 			InitializeComponent();
 		}
 
-		public static AddNodeB NewInstance(MainWindow obj)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        /// <Modify>Guoliang3：修改多基站页签，将入参改为页签，而不是之前的MainWindow</Modify>
+		public static AddNodeB NewInstance(NodeBControlPage obj)
 		{
 			if(m_AddNB == null)
 			{

@@ -239,6 +239,9 @@
     <Compile Include="Pages\NodeBControlPage.xaml.cs">
       <DependentUpon>NodeBControlPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SCMTSettingPage.xaml.cs">
+      <DependentUpon>SCMTSettingPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Property\DynamicObject.cs" />
     <Compile Include="Property\Propertyies.cs" />
     <Compile Include="UeInfo\ChildrenUeInfo.cs" />
@@ -384,6 +387,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\NodeBControlPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SCMTSettingPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
