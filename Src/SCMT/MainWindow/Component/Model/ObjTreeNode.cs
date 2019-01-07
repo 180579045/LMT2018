@@ -65,7 +65,9 @@ namespace SCMTMainWindow
 
 		protected ObservableCollection<DyDataGrid_MIBModel> contentlist { get; set; }            // 用来保存内容;
 
-		public static MainWindow main { get; set; }                    // 保存与之对应的主窗口;
+		public static MainWindow main { get; set; }                    // （废弃）之前保存与之对应的主窗口，只适合单站;
+
+        public NodeBControlPage MainPage { get; set; }                 // 保存这个对象树节点所对应的界面;
 
 		public static NodeB nodeb { get; set; }                        // 对应的基站;
 
@@ -258,7 +260,9 @@ namespace SCMTMainWindow
 		{
 			var abc = e.Source as MetroExpander;
 			Console.WriteLine("111" + (abc.obj_type as ObjNode).ObjName);
-			MainWindow.m_strNodeName = (abc.obj_type as ObjNode).ObjName;
+
+            // TODO By Guoliang:其他元素和主界面关联;
+			//MainWindow.m_strNodeName = (abc.obj_type as ObjNode).ObjName;
 		}
 
 		/// <summary>
@@ -403,8 +407,9 @@ namespace SCMTMainWindow
 			}
 
 			// 清除DataGrid表格数据
-			main.Main_Dynamic_DataGrid.DynamicDataGrid.Columns.Clear();
-			main.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+            // TODO by Guoliang:其他元素与主界面关联,点击对象树节点时，清空这个页签对应的DataGrid;
+			MainPage.Main_Dynamic_DataGrid.DynamicDataGrid.Columns.Clear();
+			MainPage.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
 
 			var items = sender as MetroExpander;
             ObjNode node;
@@ -642,7 +647,10 @@ namespace SCMTMainWindow
 			// 组装GentNext 的Oid列表
 			List<string> getNextOidList = new List<string>();
             int i = 0;
-            main.ShowProgressBar(0, Visibility.Visible);
+
+            // TODO by Guoliang:其他元素与主界面关联;
+            MainPage.ShowProgressBar(0, Visibility.Visible);
+
             // 无论是标量还是矢量表，每个GetCmd执行一次GetNext
             foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
@@ -696,7 +704,9 @@ namespace SCMTMainWindow
 				}
 
                 double proBarValue = (i / (double)cmdMibInfoList.Count) * 100;
-                main.ShowProgressBar(proBarValue, Visibility.Visible);
+
+                // TODO by Guoliang:其他元素与主界面关联,点击对象树节点时;
+                MainPage.ShowProgressBar(proBarValue, Visibility.Visible);
             }
 
             // 更新DataGrid数据
@@ -714,7 +724,7 @@ namespace SCMTMainWindow
 		private void UpdataDataGrid(Dictionary<string, Dictionary<string, string>> getNextList, Dictionary<string, string> oid2cn
 			, Dictionary<string, string>  oid2en, string objParentOID, MibTable nodeMibTable)
 		{
-			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
+			MainPage.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
 		}
 
 	}
@@ -746,9 +756,10 @@ namespace SCMTMainWindow
 			}
 
 			contentlist.Clear();
-			// 清理DataGrid表格数据
-			main.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
-			main.Main_Dynamic_DataGrid.DynamicDataGrid.Columns.Clear();
+            // 清理DataGrid表格数据
+            // TODO by Guoliang:其他元素与主界面关联,点击对象树节点时，清空这个页签对应的DataGrid;
+            MainPage.Main_Dynamic_DataGrid.DynamicDataGrid.DataContext = null;
+			MainPage.Main_Dynamic_DataGrid.DynamicDataGrid.Columns.Clear();
 
 			var item = sender as MetroExpander;
 			var node = item.obj_type as ObjNode;
@@ -932,7 +943,10 @@ namespace SCMTMainWindow
 			// 组装GentNext 的Oid列表
 			List<string> getNextOidList = new List<string>();
             int i = 0;
-            main.ShowProgressBar(0, Visibility.Visible);
+
+            // TODO by Guoliang:其他元素与主界面关联,点击对象树节点时;
+            MainPage.ShowProgressBar(0, Visibility.Visible);
+
             // 无论是标量还是矢量表，每个GetCmd执行一次GetNext
             foreach (CmdMibInfo cmdItem in cmdMibInfoList)
 			{
@@ -986,7 +1000,8 @@ namespace SCMTMainWindow
 					}
 				}
                 double proBarValue = (i / (double)cmdMibInfoList.Count) * 100;
-                main.ShowProgressBar(proBarValue, Visibility.Visible);
+                // TODO by Guoliang:其他元素与主界面关联,点击对象树节点时;
+                MainPage.ShowProgressBar(proBarValue, Visibility.Visible);
             }
 
 			// 更新DataGrid数据
@@ -1004,7 +1019,7 @@ namespace SCMTMainWindow
 		private void UpdataDataGrid(Dictionary<string, Dictionary<string, string>> getNextList, Dictionary<string, string> oid2cn
 			, Dictionary<string, string> oid2en, string objParentOID, MibTable nodeMibTable)
 		{
-			main.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
+			MainPage.UpdateAllMibDataGrid(getNextList, oid2cn, oid2en, contentlist, objParentOID, IndexCount, nodeMibTable);
 		}
 
 		public override void Add(ObjNode obj)

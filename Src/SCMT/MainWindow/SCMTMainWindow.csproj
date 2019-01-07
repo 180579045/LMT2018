@@ -230,6 +230,9 @@
     <Compile Include="MainWindowVM.cs" />
     <Compile Include="Component\Model\ObjTreeNode.cs" />
     <Compile Include="Controls\ObjTreeNode_Control.cs" />
+    <Compile Include="Pages\ENBListManager.xaml.cs">
+      <DependentUpon>ENBListManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ModifyIPAddr.xaml.cs">
       <DependentUpon>ModifyIPAddr.xaml</DependentUpon>
     </Compile>
@@ -247,9 +250,14 @@
     <Compile Include="UeInfo\ChildrenUeInfo.cs" />
     <Compile Include="UeInfo\UeInfo.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
+    <Compile Include="ViewModel\PagesVM\ENodeBMainVM.cs" />
+    <Compile Include="ViewModel\PagesVM\MainWindowVM.cs" />
+    <Compile Include="ViewModel\TabsVM\ENodeBTab.cs" />
     <Compile Include="ViewModel\LogUploadMgrModel.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
+    <Compile Include="ViewModel\TabsVM\TabBase.cs" />
     <Compile Include="ViewModel\UeInfoModel.cs" />
+    <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\AddBoardWindow.xaml.cs">
       <DependentUpon>AddBoardWindow.xaml</DependentUpon>
     </Compile>
@@ -375,6 +383,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Pages\AddNodeB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\ENBListManager.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -746,6 +758,10 @@
     <ProjectReference Include="..\ParseMessage\SuperLMT.Utils\SuperLMT.Utils.csproj">
       <Project>{24D21FC0-59B8-4208-AA1D-1B30D3F3C101}</Project>
       <Name>SuperLMT.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\UI\ChromeTabs\ChromeTabs.csproj">
+      <Project>{0208352a-d75a-44b1-9c21-aa54d64d24b6}</Project>
+      <Name>ChromeTabs</Name>
     </ProjectReference>
     <ProjectReference Include="..\UI\DataGrid\Xceed.Wpf.DataGrid\Xceed.Wpf.DataGrid.csproj">
       <Project>{63648392-6ce9-4a60-96d4-f9fd718d29b0}</Project>

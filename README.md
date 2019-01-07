@@ -20,7 +20,8 @@
 ## 主要修改内容
 
 ### 主窗口界面
-1. 将主窗口界面抽象成了一个UserControl，并在App.xaml中应用为了DataTemplate，以便后续所有页签的使用<br>
+1. 将主窗口界面抽象成了一个UserControl，并在App.xaml中应用为了DataTemplate，以便后续所有页签的使用
+    - 将所有全局资源，包括基站信息、网络规划、UE信息等的DataTemplate全部移到了App.xaml中
 
 
 

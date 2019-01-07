@@ -64,32 +64,26 @@ namespace SCMTMainWindow
     /// </summary>
     public partial class NodeBControlPage : UserControl
     {
-        #region 私有属性
-
         private bool m_bIsSingleMachineDebug = false; // add by lyb 增加单机调试时，连接备用数据库
         private bool m_bIsRepeat;
         private bool is4GConn = true; // 是否连接4G基站，测试多站连接用
 
         private List<LayoutAnchorable> listAvalon = new List<LayoutAnchorable>();
-
-        #endregion 私有属性
-
-        #region 公有属性
+        
 
         public static string m_strNodeName;
         //public NodeB node;                         // 当前项目暂时先只连接一个基站;TODO 改为支持多基站，废除此变量
-
-        #endregion 公有属性
+        
 
         //private List<string> CollectList = new List<string>();
         //ObservableCollection<DyDataGrid_MIBModel> content_list                // 用来存储MIBDataGrid中存放的值;
         //	= new ObservableCollection<DyDataGrid_MIBModel>();
 
         #region 构造、析构
-
         public NodeBControlPage()
         {
             InitializeComponent();
+
             var uri = new Uri("/PresentationFramework.AeroLite, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35;component/themes/AeroLite.NormalColor.xaml", UriKind.Relative);
             var resourceDictionary = Application.LoadComponent(uri) as ResourceDictionary;
             this.Resources.MergedDictionaries.Add(resourceDictionary);
@@ -99,7 +93,7 @@ namespace SCMTMainWindow
 
             TabControlEnable(false);
 
-            // 启动线程，后台处理一些初始化功能
+            // 启动线程，后台处理一些初始化功能;
             Task.Factory.StartNew(new Action(() =>
             {
                 deleteTempFile();
@@ -133,17 +127,14 @@ namespace SCMTMainWindow
         /// </summary>
         private void InitView()
         {
-            // 			MibDataGrid.MouseMove += MibDataGrid_MouseMove;
-            // 			MibDataGrid.PreviewMouseMove += MibDataGrid_PreviewMouseMove;
-            // 			MibDataGrid.GotMouseCapture += MibDataGrid_GotMouseCapture;
-            this.FileManagerTabItem.GotFocus += FileManagerTabItem_GotFocus;
+            this.FileManagerTabItem.GotFocus += FileManagerTabItem_GotFocus;   // 当点击文件管理页签时;
 
-            // 解析保存的基站节点信息
-            var nodeList = NodeBControl.GetInstance().GetNodebInfo();
-            foreach (var item in nodeList)
-            {
-                AddNodeLabel(item.Key, item.Value);
-            }
+            // 解析保存的基站节点信息;
+            //var nodeList = NodeBControl.GetInstance().GetNodebInfo();
+            //foreach (var item in nodeList)
+            //{
+            //    AddNodeLabel(item.Key, item.Value);
+            //}
         }
 
         /// <summary>
@@ -154,10 +145,11 @@ namespace SCMTMainWindow
             try
             {
                 // 注册Trap监听
-                if (LmtTrapMgr.GetInstance().StartLmtTrap() == false)
-                {
-                    Log.Error("Trap监听启动错误！");
-                }
+                // TODO By Guoliang3，由于当前分支没有Agent，先暂时注销Trap监听;
+                //if (LmtTrapMgr.GetInstance().StartLmtTrap() == false)
+                //{
+                //    Log.Error("Trap监听启动错误！");
+                //}
             }
             catch (SocketException e)
             {
@@ -558,22 +550,22 @@ namespace SCMTMainWindow
             //AddNodeLabel(nodeB.FriendlyName, nodeB.NeAddress.ToString());
         }
 
-        private void AddNodeLabel(string friendlyName, string Ip)
-        {
-            var nodeLabel = new MetroExpander
-            {
-                Header = friendlyName,
-                IsExpanded = true
-            };
+        //private void AddNodeLabel(string friendlyName, string Ip)
+        //{
+        //    var nodeLabel = new MetroExpander
+        //    {
+        //        Header = friendlyName,
+        //        IsExpanded = true
+        //    };
 
-            nodeLabel.Click += NodeLabel_Click;
-            //nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
+        //    nodeLabel.Click += NodeLabel_Click;
+        //    //nodeLabel.Icon = new Uri("Resources / NetPLanB.png");
 
-            var menu = CreateNodebMenu();   // 每个基站创建一个右键菜单，都有自己的状态
+        //    var menu = CreateNodebMenu();   // 每个基站创建一个右键菜单，都有自己的状态
 
-            nodeLabel.ContextMenu = menu;
-            ExistedNodebList.Children.Add(nodeLabel);
-        }
+        //    nodeLabel.ContextMenu = menu;
+        //    ExistedNodebList.Children.Add(nodeLabel);
+        //}
 
         // 创建基站右键菜单
         private MetroContextMenu CreateNodebMenu()
@@ -681,35 +673,35 @@ namespace SCMTMainWindow
         /// <summary>
         /// 基站节点  点击事件，获取被点击的IP地址，保存到全局变量
         /// </summary>
-        private void NodeLabel_Click(object sender, EventArgs e)
-        {
-            var target = sender as MetroExpander;
-            if (null != target)
-            {
-                var nodeB = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
+        //private void NodeLabel_Click(object sender, EventArgs e)
+        //{
+        //    var target = sender as MetroExpander;
+        //    if (null != target)
+        //    {
+        //        var nodeB = NodeBControl.GetInstance().GetNodeByFName(target.Header) as NodeB;
 
-                // 只有已经连接的基站进行点击切换时，才修改当前基站的IP
-                if (nodeB.HasConnected())
-                {
-                    CSEnbHelper.SetCurEnbAddr(nodeB.NeAddress.ToString());
-                }
+        //        // 只有已经连接的基站进行点击切换时，才修改当前基站的IP
+        //        if (nodeB.HasConnected())
+        //        {
+        //            CSEnbHelper.SetCurEnbAddr(nodeB.NeAddress.ToString());
+        //        }
 
-                //改变被点击的 node，还原之前的 node
-                var Children = ExistedNodebList.Children;
-                for (int i = 0; i < ExistedNodebList.Children.Count; i++)
-                {
-                    var Item = ExistedNodebList.Children[i] as MetroExpander;
-                    Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                }
-                target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
-                //target.Background.Opacity = 50;
-                //target.Opacity = 50;
-                if (m_bIsSingleMachineDebug)
-                {
-                    InitDataBase(nodeB.NeAddress.ToString());
-                }
-            }
-        }
+        //        //改变被点击的 node，还原之前的 node
+        //        var Children = ExistedNodebList.Children;
+        //        for (int i = 0; i < ExistedNodebList.Children.Count; i++)
+        //        {
+        //            var Item = ExistedNodebList.Children[i] as MetroExpander;
+        //            Item.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+        //        }
+        //        target.Background = new SolidColorBrush(Color.FromRgb(208, 227, 252));
+        //        //target.Background.Opacity = 50;
+        //        //target.Opacity = 50;
+        //        if (m_bIsSingleMachineDebug)
+        //        {
+        //            InitDataBase(nodeB.NeAddress.ToString());
+        //        }
+        //    }
+        //}
 
         private void EnableMenu(ContextMenu menuRoot, string header, bool bEnable = true)
         {
@@ -721,30 +713,30 @@ namespace SCMTMainWindow
         }
 
         // 根据ip找到对应的控件，然后根据menuDesc也就是header，找到menu，然后设置menu的状态
-        private void EnableMenu(string targetIp, string menuDesc, bool bEnable = true)
-        {
-            if (String.IsNullOrEmpty(targetIp) || String.IsNullOrEmpty(menuDesc))
-                return;
+        //private void EnableMenu(string targetIp, string menuDesc, bool bEnable = true)
+        //{
+        //    if (String.IsNullOrEmpty(targetIp) || String.IsNullOrEmpty(menuDesc))
+        //        return;
 
-            var header = NodeBControl.GetInstance().GetFriendlyNameByIp(targetIp);
+        //    var header = NodeBControl.GetInstance().GetFriendlyNameByIp(targetIp);
 
-            ExistedNodebList.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                var children = ExistedNodebList.Children;
-                if (null == children) return;
+        //    ExistedNodebList.Dispatcher.BeginInvoke(new Action(() =>
+        //    {
+        //        var children = ExistedNodebList.Children;
+        //        if (null == children) return;
 
-                var count = children.Count;
-                for (var index = 0; index < count; index++)
-                {
-                    var target = children[index] as MetroExpander;
-                    if (target.Header.Equals(header))
-                    {
-                        EnableMenu(target.ContextMenu, menuDesc, bEnable);
-                        break;
-                    }
-                }
-            }));
-        }
+        //        var count = children.Count;
+        //        for (var index = 0; index < count; index++)
+        //        {
+        //            var target = children[index] as MetroExpander;
+        //            if (target.Header.Equals(header))
+        //            {
+        //                EnableMenu(target.ContextMenu, menuDesc, bEnable);
+        //                break;
+        //            }
+        //        }
+        //    }));
+        //}
 
         private MenuItem GetMenuItemByHeader(ContextMenu menuRoot, string header)
         {
@@ -765,73 +757,74 @@ namespace SCMTMainWindow
             return null;
         }
 
-        private MenuItem GetMenuItemByIp(string ip, string menuText)
-        {
-            if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(menuText))
-                return null;
+        //private MenuItem GetMenuItemByIp(string ip, string menuText)
+        //{
+        //    if (string.IsNullOrEmpty(ip) || string.IsNullOrEmpty(menuText))
+        //        return null;
 
-            var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
-            MenuItem retMenu = null;
-            var children = ExistedNodebList.Children;
-            if (null == children) return null;
+        //    var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+        //    MenuItem retMenu = null;
+        //    var children = ExistedNodebList.Children;
+        //    if (null == children) return null;
 
-            ContextMenu contextMenu = null;
-            var count = children.Count;
-            for (var index = 0; index < count; index++)
-            {
-                var target = children[index] as MetroExpander;
-                if (target != null && target.Header.Equals(header))
-                {
-                    contextMenu = target.ContextMenu;
-                    break;
-                }
-            }
-            retMenu = GetMenuItemByHeader(contextMenu, menuText);
-            return retMenu;
-        }
+        //    ContextMenu contextMenu = null;
+        //    var count = children.Count;
+        //    for (var index = 0; index < count; index++)
+        //    {
+        //        var target = children[index] as MetroExpander;
+        //        if (target != null && target.Header.Equals(header))
+        //        {
+        //            contextMenu = target.ContextMenu;
+        //            break;
+        //        }
+        //    }
+        //    retMenu = GetMenuItemByHeader(contextMenu, menuText);
+        //    return retMenu;
+        //}
 
-        private bool ChangeMenuHeaderAsync(string ip, string oldText, string newText)
-        {
-            if (String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(oldText) || String.IsNullOrEmpty(newText))
-                return false;
-            var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
-            ExistedNodebList.Dispatcher.BeginInvoke(new Action(() =>
-            {
-                var children = ExistedNodebList.Children;
-                ContextMenu contextMenu = null;
-                var count = children.Count;
-                for (var index = 0; index < count; index++)
-                {
-                    var target = children[index] as MetroExpander;
-                    if (target != null && target.Header.Equals(header))
-                    {
-                        contextMenu = target.ContextMenu;
-                        break;
-                    }
-                }
-                if (contextMenu == null)
-                    return;
-                var menuItems = contextMenu.Items;
-                foreach (var submenu in menuItems)
-                {
-                    var item = submenu as MenuItem;
-                    if (item != null && oldText.Equals(item.Header))
-                    {
-                        item.Header = newText;
-                    }
-                }
-            }));
-            return true;
-        }
-
-        private bool ChangeMenuHeader(string ip, string oldText, string newText)
-        {
-            var item = GetMenuItemByIp(ip, oldText);
-            if (null == item)
-                return false;
-            item.Header = newText;
-            return true;
-        }
+        //private bool ChangeMenuHeaderAsync(string ip, string oldText, string newText)
+        //{
+        //    if (String.IsNullOrEmpty(ip) || String.IsNullOrEmpty(oldText) || String.IsNullOrEmpty(newText))
+        //        return false;
+        //    var header = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+        //    ExistedNodebList.Dispatcher.BeginInvoke(new Action(() =>
+        //    {
+        //        var children = ExistedNodebList.Children;
+        //        ContextMenu contextMenu = null;
+        //        var count = children.Count;
+        //        for (var index = 0; index < count; index++)
+        //        {
+        //            var target = children[index] as MetroExpander;
+        //            if (target != null && target.Header.Equals(header))
+        //            {
+        //                contextMenu = target.ContextMenu;
+        //                break;
+        //            }
+        //        }
+        //        if (contextMenu == null)
+        //            return;
+        //        var menuItems = contextMenu.Items;
+        //        foreach (var submenu in menuItems)
+        //        {
+        //            var item = submenu as MenuItem;
+        //            if (item != null && oldText.Equals(item.Header))
+        //            {
+        //                item.Header = newText;
+        //            }
+        //        }
+        //    }));
+        //    return true;
+        //}
+        
+        // TODO By Guoliang3, 这个是干什么的？？？？
+        //private bool ChangeMenuHeader(string ip, string oldText, string newText)
+        //{
+        //    var item = GetMenuItemByIp(ip, oldText);
+        //    if (null == item)
+        //        return false;
+        //    item.Header = newText;
+        //    return true;
+        //}
 
         #endregion 添加基站
 
@@ -1662,85 +1655,87 @@ namespace SCMTMainWindow
         }
 
         // 连接成功
+        // TODO By Guoliang, 将连接基站的功能迁移;
         private async void OnConnect(SubscribeMsg msg)
         {
-            var ip = Encoding.UTF8.GetString(msg.Data);
-            if (string.IsNullOrEmpty(ip))
-            {
-                throw new ArgumentNullException();
-            }
+            //var ip = Encoding.UTF8.GetString(msg.Data);
+            //if (string.IsNullOrEmpty(ip))
+            //{
+            //    throw new ArgumentNullException();
+            //}
 
-            var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
-            ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
-            var result = await InitDataBase(ip);      // todo lm.dtz文件不存在时，这里抛出异常
+            //var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+            //ShowLogHelper.Show($"成功连接基站：{fname}-{ip}", $"{ip}");
+            //var result = await InitDataBase(ip);      // todo lm.dtz文件不存在时，这里抛出异常
 
-            ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
-            EnableMenu(ip, "连接基站", false);
-            EnableMenu(ip, "断开连接");
-            EnableMenu(ip, "数据同步");
-            EnableMenu(ip, "复位基站");
-            EnableMenu(ip, "修改友好名", false);
-            EnableMenu(ip, "修改IP地址", false);
+            //ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
+            //EnableMenu(ip, "连接基站", false);
+            //EnableMenu(ip, "断开连接");
+            //EnableMenu(ip, "数据同步");
+            //EnableMenu(ip, "复位基站");
+            //EnableMenu(ip, "修改友好名", false);
+            //EnableMenu(ip, "修改IP地址", false);
 
-            if (!result)
-            {
-                Log.Error("数据库初始化失败，不再查询基站的设备信息");
-                return;
-            }
+            //if (!result)
+            //{
+            //    Log.Error("数据库初始化失败，不再查询基站的设备信息");
+            //    return;
+            //}
 
-            // 查询基站类型是4G还是5G基站
-            var st = EnbTypeEnum.ENB_EMB5116;
-            st = GetEquipType(ip);
-            if (is4GConn == false)
-            {
-                if (st != EnbTypeEnum.ENB_EMB6116)
-                {
-                    ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
-                    NodeBControl.GetInstance().DisConnectNodeb(fname);
-                    return;
-                }
-            }
+            //// 查询基站类型是4G还是5G基站
+            //var st = EnbTypeEnum.ENB_EMB5116;
+            //st = GetEquipType(ip);
+            //if (is4GConn == false)
+            //{
+            //    if (st != EnbTypeEnum.ENB_EMB6116)
+            //    {
+            //        ShowLogHelper.Show($"当前不支持除5G基站外的基站，将断开连接：{fname}-{ip}", $"{ip}");
+            //        NodeBControl.GetInstance().DisConnectNodeb(fname);
+            //        return;
+            //    }
+            //}
 
-            NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
+            //NodeBControl.GetInstance().SetNodebGridByIp(ip, st);
         }
 
         // 断开连接
+        // TODO By Guoliang3,将连接基站的功能迁移
         private void OnDisconnect(SubscribeMsg msg)
         {
-            var ip = Encoding.UTF8.GetString(msg.Data);
-            if (string.IsNullOrEmpty(ip))
-            {
-                throw new ArgumentNullException();
-            }
+            //var ip = Encoding.UTF8.GetString(msg.Data);
+            //if (string.IsNullOrEmpty(ip))
+            //{
+            //    throw new ArgumentNullException();
+            //}
 
-            var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
-            ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
-            ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
-            EnableMenu(ip, "连接基站");
-            EnableMenu(ip, "断开连接", false);
-            EnableMenu(ip, "数据同步", false);
-            EnableMenu(ip, "复位基站", false);
-            EnableMenu(ip, "修改友好名");
-            EnableMenu(ip, "修改IP地址");
+            //var fname = NodeBControl.GetInstance().GetFriendlyNameByIp(ip);
+            //ShowLogHelper.Show($"基站连接断开：{fname}-{ip}", $"{ip}");
+            //ChangeMenuHeaderAsync(ip, "取消连接", "连接基站");
+            //EnableMenu(ip, "连接基站");
+            //EnableMenu(ip, "断开连接", false);
+            //EnableMenu(ip, "数据同步", false);
+            //EnableMenu(ip, "复位基站", false);
+            //EnableMenu(ip, "修改友好名");
+            //EnableMenu(ip, "修改IP地址");
 
-            // 文件管理按钮禁用，文件管理窗口关闭
-            CloseFileMgrDlg(fname);
-            //关闭网规界面
-            NetPlanClose();
+            //// 文件管理按钮禁用，文件管理窗口关闭
+            //CloseFileMgrDlg(fname);
+            ////关闭网规界面
+            //NetPlanClose();
 
-            Dispatcher.Invoke(() =>
-            {
-                ExpanderBaseInfo.IsEnabled = false;
-                ExpanderBaseInfo.IsExpanded = false;
-                TabControlEnable(false);
-                Obj_Root.Children?.Clear();
-                //MibDataGrid.Columns.Clear();
-                MainHorizenTab.SelectedIndex = 0;
-                ShowProgressBar(0, Visibility.Collapsed);
-            });
+            //Dispatcher.Invoke(() =>
+            //{
+            //    ExpanderBaseInfo.IsEnabled = false;
+            //    ExpanderBaseInfo.IsExpanded = false;
+            //    TabControlEnable(false);
+            //    Obj_Root.Children?.Clear();
+            //    //MibDataGrid.Columns.Clear();
+            //    MainHorizenTab.SelectedIndex = 0;
+            //    ShowProgressBar(0, Visibility.Collapsed);
+            //});
 
-            // 断开后，当前已经连接的基站信息清空
-            CSEnbHelper.ClearCurEnbAddr(ip);
+            //// 断开后，当前已经连接的基站信息清空
+            //CSEnbHelper.ClearCurEnbAddr(ip);
         }
 
         /// <summary>
@@ -2014,27 +2009,27 @@ namespace SCMTMainWindow
         }
 
         /// 基站节点右键菜单：删除，响应函数
-        private void DeleteStationMenu_Click(object sender, RoutedEventArgs e)
-        {
-            var target = GetTargetMenu(sender);
-            if (target == null)
-            {
-                return;
-            }
+        //private void DeleteStationMenu_Click(object sender, RoutedEventArgs e)
+        //{
+        //    var target = GetTargetMenu(sender);
+        //    if (target == null)
+        //    {
+        //        return;
+        //    }
 
-            const string tip = "确定要删除该网元及其所有子网元？这将关闭该网元对应的所有窗口。";
-            var dr = MessageBox.Show(tip, "删除网元", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
-            if (MessageBoxResult.Yes != dr)
-            {
-                return;
-            }
+        //    const string tip = "确定要删除该网元及其所有子网元？这将关闭该网元对应的所有窗口。";
+        //    var dr = MessageBox.Show(tip, "删除网元", MessageBoxButton.YesNo, MessageBoxImage.Question | MessageBoxImage.Warning);
+        //    if (MessageBoxResult.Yes != dr)
+        //    {
+        //        return;
+        //    }
 
-            var nodeName = target.Header;
-            NodeBControl.GetInstance().DisConnectNodeb(nodeName);
-            NodeBControl.GetInstance().DelElementByFriendlyName(nodeName);
+        //    var nodeName = target.Header;
+        //    NodeBControl.GetInstance().DisConnectNodeb(nodeName);
+        //    NodeBControl.GetInstance().DelElementByFriendlyName(nodeName);
 
-            ExistedNodebList.Children.Remove(target);
-        }
+        //    ExistedNodebList.Children.Remove(target);
+        //}
 
         /// <summary>
         /// 连接基站右键菜单响应

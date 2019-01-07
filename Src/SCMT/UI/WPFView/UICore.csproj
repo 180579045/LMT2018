@@ -139,6 +139,7 @@
       <DependentUpon>MetroWebBrowser.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Metro\MetroWindow.cs" />
+    <Compile Include="Controls\Metro\Win32.cs" />
     <Compile Include="Controls\Utility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -36,12 +36,12 @@ namespace SCMTOperationCore.Control
 		#region 公共接口
 
 		/// <summary>
-		/// 初始化已存在的节点信息
+		/// 初始化已存在的节点信息;
 		/// </summary>
 		/// <returns>节点的友好名和IP地址。key:友好名，value:连接IP</returns>
 		public Dictionary<string, string> GetNodebInfo()
 		{
-			// 从数据库模块中读取已经添加的节点信息
+			// 从数据库模块中读取已经添加的节点信息;
 			var nodesInfo = new Dictionary<string, string>();
 			if (BSConInfo.GetInstance().getBaseStationConInfo(nodesInfo))
 			{

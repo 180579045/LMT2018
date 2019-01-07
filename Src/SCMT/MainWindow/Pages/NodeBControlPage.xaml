@@ -1,4 +1,14 @@
-﻿<UserControl x:Class="SCMTMainWindow.NodeBControlPage"
+﻿<!--*************************************************************************************
+// Copyright (C) 2017 大唐移动通信设备有限公司 版权所有;
+//
+// 文件名：MainWindow.xaml.cs
+// 文件功能描述：基站详细信息显示页;
+// 创建人：郭亮;
+// 版本：V1.0
+// 创建时间：2019-1-2
+***************************************************************************************-->
+    
+<UserControl x:Class="SCMTMainWindow.NodeBControlPage"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,20 +25,6 @@
              mc:Ignorable="d"     BorderBrush="#0178D0"
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <DataTemplate DataType="{x:Type ViewModel:NetPlanModel}">
-                <View:NetPlan></View:NetPlan>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type ViewModel:UeInfoModel}">
-                <View:UeInfo></View:UeInfo>
-            </DataTemplate>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="View\Resources/Styles/ProgressBar.xaml"/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
     <!-- 绑定VM层 
     <Metro:MetroWindow.DataContext>
         <local:MainWindowVM/>
@@ -38,52 +34,33 @@
     <!-- 软件主界面 -->
     <Grid>
 
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" MaxWidth="250" />
-            <ColumnDefinition Width="5" />
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="50"/>                     <!-- 第一行：用于快速连接基站、工具栏、设置等菜单的入口 -->
+            <RowDefinition Height="*"/>                      <!-- 第二行，包含了以下四列的所有信息 -->
+            <RowDefinition Height="Auto"/>                   <!-- 第三行，基站状态显示 -->
         </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250" MaxWidth="250" />  <!-- 第一列：左侧导航栏,包含各类工具和对象树 -->
+            <ColumnDefinition Width="5" />                   <!-- 第二列：中间那个可拖拽的分隔栏 -->
+            <ColumnDefinition Width="Auto"/>                 <!-- 第三列：叶子节点、搜索结果、收藏节点等多功能显示栏 -->
+            <ColumnDefinition Width="*"/>                    <!-- 第四列：基站详细信息内容显示 -->
+        </Grid.ColumnDefinitions>
+        
 
         <!-- 软件左侧导航菜单(后续还是改成TreeView，应该会比较稳定) -->
         <Metro:MetroScrollViewer Grid.Column="0">
             <Border BorderBrush="#19000000" BorderThickness="0,0,1,0">
                 <StackPanel x:Name="lists">
-
-                    <Metro:MetroExpander Header="基站列表">
-                        <StackPanel Margin="20,0,0,0" Name="ExistedNodebList">
-                            <Metro:MetroExpander Header="添加基站"  Icon="Resources/BaseInfo2.png"  Click="AddeNB"/>
-                        </StackPanel>
-                    </Metro:MetroExpander>
-
-                    <!--分隔线-->
-                    <Grid Height="1" Background="#CCCCCC" ></Grid>
-
-                    <!--
-                    <Metro:MetroExpander Header="一单开站" Icon="Resources/EasyNB.png"/>
                     
-                    <Metro:MetroExpander Header="消息模板" >
-                        <StackPanel Margin="20,0,0,0">
-                            <Metro:MetroExpander Header="文件管理测试按钮" Click="MetroExpander_Click" Icon="Resources/NetPLanB.png">
-                            </Metro:MetroExpander>
-                        </StackPanel>
-                    </Metro:MetroExpander>
-                    -->
-
-                    <!--分隔线-->
-
                     <Metro:MetroExpander Header="窗口图表模板" >
                         <StackPanel Margin="20,0,0,0">
-                            <Metro:MetroExpander Header="基站数据表" Icon="Resources/NetPLanB.png" />
-                            <Metro:MetroExpander Header="基站控制台" Icon="Resources/NetPLanB.png"/>
-                            <Metro:MetroExpander Header="折线图" Click="Show_LineChart" Icon="Resources/NetPLanB.png" />
-                            <Metro:MetroExpander Header="柱状图" Click="Show_BarChart"  Icon="Resources/NetPLanB.png" />
-                            <Metro:MetroExpander Header="流程图" Icon="Resources/NetPLanB.png" Click="ShowFlowChart"/>
-                            <Metro:MetroExpander Header="PRB使用情况" Icon="Resources/NetPLanB.png" Click="Show_HeatMapChart"/>
+                            <Metro:MetroExpander Header="基站数据表" Icon="../Resources/NetPLanB.png" />
+                            <Metro:MetroExpander Header="基站控制台" Icon="../Resources/NetPLanB.png"/>
+                            <Metro:MetroExpander Header="折线图" Click="Show_LineChart" Icon="../Resources/NetPLanB.png" />
+                            <Metro:MetroExpander Header="柱状图" Click="Show_BarChart"  Icon="../Resources/NetPLanB.png" />
+                            <Metro:MetroExpander Header="流程图" Icon="../Resources/NetPLanB.png" Click="ShowFlowChart"/>
+                            <Metro:MetroExpander Header="PRB使用情况" Icon="../Resources/NetPLanB.png" Click="Show_HeatMapChart"/>
                         </StackPanel>
                     </Metro:MetroExpander>
 
@@ -123,13 +100,13 @@
             </GridSplitter.Background>
         </GridSplitter>
 
+        <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
         <Expander Name="ExpanderBaseInfo" Grid.Column="2" ExpandDirection="Right" IsExpanded="False" IsEnabled="False">
-            <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
             <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
                 <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                     <StackPanel>
                         <View:GlobalSearchTextBox Width="200" x:Name="GlobalSearch" Title="" InputHint="对象树与MIB节点..."
-                                                  ButtonTitle="X" PopupHint="搜索结果最多显示50条" Icon="Resources/editIcon.png" />
+                                                  ButtonTitle="X" PopupHint="搜索结果最多显示50条" Icon="../Resources/editIcon.png" />
 
                         <StackPanel x:Name="FavLeaf_Lists"></StackPanel>
                     </StackPanel>
@@ -137,7 +114,7 @@
             </Metro:MetroFavScrollViewer>
         </Expander>
 
-        <!-- 页签的基础控件 -->
+        <!-- 基站详细信息的内容容器，包括MIB信息、网络规划、文件信息等等 -->
         <Grid Grid.Column="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
@@ -269,7 +246,7 @@
                                                     <Grid>
                                                         <StackPanel>
                                                             <Metro:MetroTextBlock Text="说明:显示设备各资源当前的状态" Opacity="0.65" />
-                                                            <Metro:MetroImage Source="Resources/chart.png" Margin="0,5,0,0" Cursor="Hand" MouseLeftButtonDown="MetroImage_MouseLeftButtonDown" />
+                                                            <Metro:MetroImage Source="../Resources/chart.png" Margin="0,5,0,0" Cursor="Hand" MouseLeftButtonDown="MetroImage_MouseLeftButtonDown" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Metro:MetroGroupBox>
@@ -280,7 +257,7 @@
                                                     <Grid>
                                                         <StackPanel>
                                                             <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                            <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            <Metro:MetroImage Source="../Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Metro:MetroGroupBox>
@@ -291,7 +268,7 @@
                                                     <Grid>
                                                         <StackPanel>
                                                             <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                            <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                            <Metro:MetroImage Source="../Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                         </StackPanel>
                                                     </Grid>
                                                 </Metro:MetroGroupBox>
@@ -312,7 +289,7 @@
                                                         <StackPanel>
                                                             <Button x:Name="btnConfigFileOperate" Click="btnConfigFileOperate_Click">
                                                                 <Button.Content>
-                                                                    <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                                    <Metro:MetroImage Source="../Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                                 </Button.Content>
                                                             </Button>
                                                         </StackPanel>
@@ -336,7 +313,7 @@
                                                         <Grid>
                                                             <StackPanel>
                                                                 <Metro:MetroTextBlock Text="可解析基站活跃告警日志、基站历史告警日志、基站异常日志" />
-                                                                <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                                <Metro:MetroImage Source="../Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Metro:MetroGroupBox>
@@ -347,7 +324,7 @@
                                                         <Grid>
                                                             <StackPanel>
                                                                 <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                                <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                                <Metro:MetroImage Source="../Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Metro:MetroGroupBox>
@@ -358,7 +335,7 @@
                                                         <Grid>
                                                             <StackPanel>
                                                                 <Metro:MetroTextBlock Text="工具说明" Opacity="0.65" />
-                                                                <Metro:MetroImage Source="Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
+                                                                <Metro:MetroImage Source="../Resources/ToolBox.png" Margin="0,5,0,0" Cursor="Hand" />
                                                             </StackPanel>
                                                         </Grid>
                                                     </Metro:MetroGroupBox>
