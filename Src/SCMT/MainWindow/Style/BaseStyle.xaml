@@ -3,4 +3,11 @@
 
     <SolidColorBrush x:Key="SampleDefaultBrush">#6d819a</SolidColorBrush>
 
+    <Style x:Key="glyphicon" TargetType="{x:Type Path}">
+        <Setter Property="Width" Value="20"></Setter>
+        <Setter Property="Height" Value="20"></Setter>
+        <Setter Property="Fill" Value="Black"></Setter>
+        <Setter Property="Stretch" Value="Uniform"></Setter>
+    </Style>
+
 </ResourceDictionary>

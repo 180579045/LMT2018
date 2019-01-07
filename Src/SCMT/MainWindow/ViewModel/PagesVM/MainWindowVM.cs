@@ -87,6 +87,9 @@ namespace SCMTMainWindow.ViewModel
             AddTabCommand = new RelayCommand(AddTabCommandAction, () => CanAddTabs);
             CloseTabCommand = new RelayCommand<TabBase>(CloseTabCommandAction);
             CanAddTabs = true;
+
+            ENodeBManagerTab ManagerListTab = new ENodeBManagerTab();
+            ItemCollection.Add(ManagerListTab);
         }
     
         /// <summary>
@@ -168,6 +171,10 @@ namespace SCMTMainWindow.ViewModel
             ItemCollection.Add(CreateENodeBTab());
         }
 
+        /// <summary>
+        /// 添加一个基站页签;
+        /// </summary>
+        /// <returns></returns>
         protected TabBase CreateENodeBTab()
         {
             ENodeBTab tab = new ENodeBTab();

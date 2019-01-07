@@ -24,10 +24,14 @@
             <DataTemplate DataType="{x:Type vm:ENodeBTab}">
                 <local:NodeBControlPage></local:NodeBControlPage>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type vm:ENodeBManagerTab}">
+                <Pages:ENBListManager></Pages:ENBListManager>
+            </DataTemplate>
 
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Style/BaseStyle.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="Style/TabControlStyle.xaml"></ResourceDictionary>
+                <ResourceDictionary Source="Style/BaseStyle.xaml"/>
+                <ResourceDictionary Source="Style/TabControlStyle.xaml"/>
+                <ResourceDictionary Source="Style/IconStyle.xaml"/>
                 <ResourceDictionary Source="View\Resources/Styles/ProgressBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 

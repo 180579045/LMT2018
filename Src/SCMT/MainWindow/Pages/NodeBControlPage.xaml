@@ -35,7 +35,7 @@
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>                     <!-- 第一行：用于快速连接基站、工具栏、设置等菜单的入口 -->
+            <RowDefinition Height="24"/>                     <!-- 第一行：用于快速连接基站、工具栏、设置等菜单的入口 -->
             <RowDefinition Height="*"/>                      <!-- 第二行，包含了以下四列的所有信息 -->
             <RowDefinition Height="Auto"/>                   <!-- 第三行，基站状态显示 -->
         </Grid.RowDefinitions>
@@ -46,10 +46,17 @@
             <ColumnDefinition Width="Auto"/>                 <!-- 第三列：叶子节点、搜索结果、收藏节点等多功能显示栏 -->
             <ColumnDefinition Width="*"/>                    <!-- 第四列：基站详细信息内容显示 -->
         </Grid.ColumnDefinitions>
-        
+
+        <Grid Grid.Row="0" Grid.ColumnSpan="4">
+            <StackPanel Orientation="Horizontal" >
+                <Label>快速连接：</Label>
+                <TextBox Width="500"></TextBox>
+                <Button>连接</Button>
+            </StackPanel>
+        </Grid>
 
         <!-- 软件左侧导航菜单(后续还是改成TreeView，应该会比较稳定) -->
-        <Metro:MetroScrollViewer Grid.Column="0">
+        <Metro:MetroScrollViewer Grid.Column="0" Grid.Row="1">
             <Border BorderBrush="#19000000" BorderThickness="0,0,1,0">
                 <StackPanel x:Name="lists">
                     
@@ -90,7 +97,7 @@
         </Metro:MetroScrollViewer>
 
         <!--拖动分割线-->
-        <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" >
+        <GridSplitter Grid.Column="1" Grid.Row="1" Width="5" HorizontalAlignment="Stretch" >
             <GridSplitter.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FFE8E8E8" Offset="0"/>
@@ -101,7 +108,7 @@
         </GridSplitter>
 
         <!--第二级对象树模型，主要用来显示叶子节点或收藏节点 -->
-        <Expander Name="ExpanderBaseInfo" Grid.Column="2" ExpandDirection="Right" IsExpanded="False" IsEnabled="False">
+        <Expander Name="ExpanderBaseInfo" Grid.Column="2"  Grid.Row="1" ExpandDirection="Right" IsExpanded="False" IsEnabled="False">
             <Metro:MetroFavScrollViewer x:Name="Fav" Grid.Column="2">
                 <Border BorderBrush="#19000000" BorderThickness="0,0,1,0" >
                     <StackPanel>
@@ -115,7 +122,7 @@
         </Expander>
 
         <!-- 基站详细信息的内容容器，包括MIB信息、网络规划、文件信息等等 -->
-        <Grid Grid.Column="3">
+        <Grid Grid.Column="3"  Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="6"></RowDefinition>
@@ -394,7 +401,7 @@
         </Grid>
 
         <!-- 状态栏 -->
-        <StackPanel Name="StatusInfoShow" Orientation="Horizontal" Height="20" Background="LightBlue"  Grid.ColumnSpan="4" Grid.Row="1">
+        <StackPanel Name="StatusInfoShow" Orientation="Horizontal" Height="20" Background="LightBlue"  Grid.ColumnSpan="4" Grid.Row="2">
             <TextBlock Text="连接状态：" Margin="5,0"/>
             <TextBlock Name="tbConnectStatus" Width="50"/>
             <ProgressBar Name="progressBar" Minimum="0" Maximum="100" Visibility="Collapsed" Width="800" Height="15" Style="{StaticResource ProgressBarRes}"/>
