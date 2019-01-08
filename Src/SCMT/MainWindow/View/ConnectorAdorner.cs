@@ -79,11 +79,26 @@ namespace SCMTMainWindow.View
                 srcPoint.devType = sourceConnector.DevType;
                 srcPoint.strDevIndex = sourceConnector.DevIndex;
                 srcPoint.nPortNo = sourceConnector.PortNo;
+                if(sourceConnector.Orientation == ConnectorOrientation.Left)
+                {
+                    srcPoint.udType = IrUpDownClassFy.UpPort;
+                }else if(sourceConnector.Orientation == ConnectorOrientation.Right)
+                {
+                    srcPoint.udType = IrUpDownClassFy.DownPort;
+                }
 
                 LinkEndpoint dstPoint = new LinkEndpoint();
                 dstPoint.devType = sinkConnector.DevType;
                 dstPoint.strDevIndex = sinkConnector.DevIndex;
                 dstPoint.nPortNo = sinkConnector.PortNo;
+                if(sinkConnector.Orientation == ConnectorOrientation.Left)
+                {
+                    dstPoint.udType = IrUpDownClassFy.UpPort;
+                }else if(sinkConnector.Orientation == ConnectorOrientation.Right)
+                {
+                    dstPoint.udType = IrUpDownClassFy.DownPort;
+                }
+
                 if (sourceConnector.PortType == EnumPortType.bbu_to_other)
                 {
                     if(sinkConnector.DevType == EnumDevType.rru)
