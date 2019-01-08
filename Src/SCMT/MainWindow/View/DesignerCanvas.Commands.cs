@@ -991,11 +991,25 @@ namespace SCMTMainWindow.View
             srcPort.devType = connection.Source.DevType;
             srcPort.strDevIndex = connection.Source.DevIndex;
             srcPort.nPortNo = connection.Source.PortNo;
+            if(connection.Source.Orientation == ConnectorOrientation.Left)
+            {
+                srcPort.udType = IrUpDownClassFy.UpPort;
+            }else if(connection.Source.Orientation == ConnectorOrientation.Right)
+            {
+                srcPort.udType = IrUpDownClassFy.DownPort;
+            }
 
             LinkEndpoint dstPort = new LinkEndpoint();
             dstPort.devType = connection.Sink.DevType;
             dstPort.strDevIndex = connection.Sink.DevIndex;
             dstPort.nPortNo = connection.Sink.PortNo;
+            if(connection.Sink.Orientation == ConnectorOrientation.Left)
+            {
+                dstPort.udType = IrUpDownClassFy.UpPort;
+            }else if(connection.Sink.Orientation == ConnectorOrientation.Right)
+            {
+                dstPort.udType = IrUpDownClassFy.DownPort;
+            }
 
             if (srcPort.devType == EnumDevType.board)
             {
