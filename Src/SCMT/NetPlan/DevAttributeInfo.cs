@@ -299,10 +299,20 @@ namespace NetPlan
 		public RHubDevAttri(string strDevIndex, string strDevVersion)
 			: base(EnumDevType.rhub, strDevIndex)
 		{
-			m_strDevVersion = strDevVersion;
+			var rhubStaticInfo = NPEBoardHelper.GetInstance().GetRhubEquipmentByUIFriendlyName(strDevVersion);
+			SetFieldOlValue("netRHUBType", rhubStaticInfo?.rHubType);
 		}
+	}
 
-		public string m_strDevVersion { get; }
+	/// <summary>
+	/// rru和rhub设备的光口左右区分
+	/// 一般认为位于左边的光口作为上联口，右边的光口作为下联口
+	/// 这是逻辑上的区分，物理上没有明确的区分
+	/// </summary>
+	public enum IrUpDownClassFy : byte
+	{
+		UpPort = 0,
+		DownPort,
 	}
 
 	// 连接的源端或者目的端
@@ -312,6 +322,7 @@ namespace NetPlan
 		public string strDevIndex;      // 设备索引
 		public EnumPortType portType;   // 端口类型
 		public int nPortNo;             // 端口号
+		public IrUpDownClassFy udType;	// 上联或者下联端口
 
 		public LinkEndpoint()
 		{
@@ -319,6 +330,7 @@ namespace NetPlan
 			strDevIndex = null;
 			portType = EnumPortType.unknown;
 			nPortNo = -1;
+			udType = IrUpDownClassFy.UpPort;
 		}
 
 		public override string ToString()
@@ -403,18 +415,21 @@ namespace NetPlan
 			var srcDevTypeStr = m_srcEndPoint.devType.ToString();
 			var dstDevTypeStr = m_dstEndPoint.devType.ToString();
 
-			// 判断设备类型是否相同。todo 例外的是，级联的rru和rhub设备
-			if (m_srcEndPoint.devType == m_dstEndPoint.devType && (!bSrcIsRhub && !bSrcIsRru))
+			// 判断设备类型是否相同。例外的是，级联的rru和rhub设备
+			if (m_srcEndPoint.devType == m_dstEndPoint.devType)
 			{
-				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且不是rru和rhub。添加连接失败");
-				return linkType;
-			}
+				if (!bSrcIsRhub && !bSrcIsRru)
+				{
+					Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且不是rru或rhub。添加连接失败");
+					return linkType;
+				}
 
-			// 判断级联的设备索引是否相同。级联的设备索引不能相同，也就是不能自己连接自己
-			if (m_srcEndPoint.devType == m_dstEndPoint.devType && m_srcEndPoint.strDevIndex == m_dstEndPoint.strDevIndex)
-			{
-				Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且源和目的的索引值{m_srcEndPoint.strDevIndex}也相同");
-				return linkType;
+				// 判断级联的设备索引是否相同。级联的设备索引不能相同，也就是不能自己连接自己
+				else if (m_srcEndPoint.strDevIndex == m_dstEndPoint.strDevIndex)
+				{
+					Log.Error($"源设备类型{srcDevTypeStr}和目的设备类型{dstDevTypeStr}相同，且源和目的的索引值{m_srcEndPoint.strDevIndex}也相同");
+					return linkType;
+				}
 			}
 
 			// 判断源和目的是否是有效的组合
@@ -471,6 +486,7 @@ namespace NetPlan
 			{
 				return m_dstEndPoint.strDevIndex;
 			}
+
 			return null;
 		}
 
