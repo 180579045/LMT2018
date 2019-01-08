@@ -12,7 +12,7 @@ namespace SCMTMainWindow.ViewModel
 
             SimpleIoc.Default.Register<MainWindowVM>();          // 主界面VM层;
             SimpleIoc.Default.Register<NodeBListManagerVM>();    // 基站列表管理Page的VM层;
-            SimpleIoc.Default.Register<ENodeBMainVM>();          // 基站详细信息Page的VM层;
+            SimpleIoc.Default.Register<NodeBMainVM>();           // 基站详细信息Page的VM层;
         }
 
         public MainWindowVM ViewModelMainWindow
@@ -31,11 +31,11 @@ namespace SCMTMainWindow.ViewModel
             }
         }
 
-        public ENodeBMainVM ViewModelENodeBMainPage
+        public NodeBMainVM ViewModelENodeBMainPage
         {
             get
             {
-                return ServiceLocator.Current.GetInstance<ENodeBMainVM>();
+                return ServiceLocator.Current.GetInstance<NodeBMainVM>();
             }
         }
     }

@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*----------------------------------------------------------------
+// Copyright (C) 2019 大唐移动通信设备有限公司 版权所有;
+//
+// 文件名：MainWindowVM.cs
+// 文件功能描述：主界面VM类,主要负责管理页签;
+// 创建人：郭亮;
+// 版本：V1.0
+// 创建时间：2019-1-6
+//----------------------------------------------------------------*/
+
+using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -88,7 +98,7 @@ namespace SCMTMainWindow.ViewModel
             CloseTabCommand = new RelayCommand<TabBase>(CloseTabCommandAction);
             CanAddTabs = true;
 
-            ENodeBManagerTab ManagerListTab = new ENodeBManagerTab();
+            NodeBListManagerTabVM ManagerListTab = new NodeBListManagerTabVM();
             ItemCollection.Add(ManagerListTab);
         }
     
@@ -177,7 +187,7 @@ namespace SCMTMainWindow.ViewModel
         /// <returns></returns>
         protected TabBase CreateENodeBTab()
         {
-            ENodeBTab tab = new ENodeBTab();
+            NodeBMainTabVM tab = new NodeBMainTabVM();
             return tab;
         }
     }

@@ -8,43 +8,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SCMTMainWindow.Pages"
+             xmlns:vm="clr-namespace:SCMTMainWindow.ViewModel"
+             xmlns:suc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              DataContext="{Binding Source={StaticResource Locator}, Path=NodeBListManager}">
-    
+
     <UserControl.Resources>
-        <Style BasedOn="{StaticResource glyphicon}" TargetType="{x:Type Path}">
-            <Setter Property="Margin" Value="0,15"></Setter>
-        </Style>
-        <Style x:Key="ItemBorderStyle" TargetType="{x:Type Border}">
-            <Setter Property="Width" Value="105"></Setter>
-            <Setter Property="Height" Value="114"></Setter>
-            <Setter Property="Background" Value="Transparent"></Setter>
-            <Setter Property="BorderThickness" Value="1"></Setter>
-            <Setter Property="Margin" Value="1"></Setter>
-            <Setter Property="Padding" Value="10,0"></Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="BorderBrush" Value="#563D7C"></Setter>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="HorizontalAlignment" Value="Center"></Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid>
-        <ScrollViewer Width="600" Height="400">
+        
+        <!-- 一行总共能够容纳7个基站节点 -->
+        <ScrollViewer Width="780" Height="400">
             <WrapPanel>
-                <Border Style="{StaticResource ItemBorderStyle}">
-                    <StackPanel>
-                        <Path Data="{DynamicResource glyphicon-asterisk}"></Path>
-                        <TextBlock Text="glyphicon"></TextBlock>
-                        <TextBlock TextWrapping="WrapWithOverflow" Text="glyphicon-asterisk"></TextBlock>
-                    </StackPanel>
-                </Border>
-
+                <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
+                <suc:NodeB_ICON ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
             </WrapPanel>
         </ScrollViewer>
 

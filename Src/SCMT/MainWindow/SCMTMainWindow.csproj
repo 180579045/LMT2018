@@ -162,6 +162,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Component\Model\DataGrid\DataGrid_Cell_Model.cs" />
+    <Compile Include="Component\SCMTControl\AddNodeB_ICON.xaml.cs">
+      <DependentUpon>AddNodeB_ICON.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Component\SCMTControl\BarChart.xaml.cs">
       <DependentUpon>BarChart.xaml</DependentUpon>
     </Compile>
@@ -209,6 +212,9 @@
     <Compile Include="Component\SCMTControl\LogInfoShow\OutputWin.xaml.cs">
       <DependentUpon>OutputWin.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Component\SCMTControl\NodeB_ICON.xaml.cs">
+      <DependentUpon>NodeB_ICON.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DataGridCellFactory.cs" />
     <Compile Include="Controls\DataGrid_MIBDataControl.cs" />
     <Compile Include="Component\Model\DataGrid\GridCell.cs" />
@@ -251,11 +257,12 @@
     <Compile Include="UeInfo\UeInfo.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\PagesVM\ENodeBMainVM.cs" />
+    <Compile Include="ViewModel\NodeBIconVM.cs" />
+    <Compile Include="ViewModel\PagesVM\NodeBMainVM.cs" />
     <Compile Include="ViewModel\PagesVM\MainWindowVM.cs" />
     <Compile Include="ViewModel\PagesVM\NodeBListManagerVM.cs" />
-    <Compile Include="ViewModel\TabsVM\ENodeBManagerTab.cs" />
-    <Compile Include="ViewModel\TabsVM\ENodeBTab.cs" />
+    <Compile Include="ViewModel\TabsVM\NodeBListManagerTabVM.cs" />
+    <Compile Include="ViewModel\TabsVM\NodeBMainTabVM.cs" />
     <Compile Include="ViewModel\LogUploadMgrModel.cs" />
     <Compile Include="ViewModel\NetPlanModel.cs" />
     <Compile Include="ViewModel\TabsVM\TabBase.cs" />
@@ -333,6 +340,10 @@
     <Compile Include="View\SelectionService.cs" />
     <Compile Include="View\Toolbox.cs" />
     <Compile Include="View\ToolboxItem.cs" />
+    <Page Include="Component\SCMTControl\AddNodeB_ICON.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Component\SCMTControl\BarChart.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -366,6 +377,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Component\SCMTControl\LinechartContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Component\SCMTControl\NodeB_ICON.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

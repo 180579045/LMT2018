@@ -21,10 +21,10 @@
             <DataTemplate DataType="{x:Type vm:UeInfoModel}">
                 <View:UeInfo></View:UeInfo>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:ENodeBTab}">
+            <DataTemplate DataType="{x:Type vm:NodeBMainTabVM}">
                 <local:NodeBControlPage></local:NodeBControlPage>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type vm:ENodeBManagerTab}">
+            <DataTemplate DataType="{x:Type vm:NodeBListManagerTabVM}">
                 <Pages:ENBListManager></Pages:ENBListManager>
             </DataTemplate>
 
@@ -32,7 +32,7 @@
                 <ResourceDictionary Source="Style/BaseStyle.xaml"/>
                 <ResourceDictionary Source="Style/TabControlStyle.xaml"/>
                 <ResourceDictionary Source="Style/IconStyle.xaml"/>
-                <ResourceDictionary Source="View\Resources/Styles/ProgressBar.xaml"/>
+                <ResourceDictionary Source="View/Resources/Styles/ProgressBar.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
 
