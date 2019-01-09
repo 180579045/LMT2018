@@ -61,9 +61,13 @@ namespace SCMTMainWindow.Component.SCMTControl
         public void NodeB_Icon_MouseDown()
         {
             Console.WriteLine("NodeB ICON Clicked");
-            if (ConnectNodeBCommand != null && ConnectNodeBCommand.CanExecute(1))
+            ConnectNodeBPara para = new ConnectNodeBPara();
+            para.FriendlyName = FName;
+            para.Ipaddress = IPAddress;
+            
+            if (ConnectNodeBCommand != null && ConnectNodeBCommand.CanExecute(para))
             {
-                ConnectNodeBCommand.Execute(1);
+                ConnectNodeBCommand.Execute(para);
             }
         }
     }
@@ -73,6 +77,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         public string Ipaddress { get; set; }
         public string FriendlyName { get; set; }
     }
+
 
     public class NodeBIcnBorder : Border
     {

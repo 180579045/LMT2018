@@ -23,7 +23,7 @@
         <ScrollViewer Width="780" Height="400">
             <WrapPanel>
                 <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
-                <suc:NodeB_ICON ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                <suc:NodeB_ICON x:Name="NodeBIcon" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
             </WrapPanel>
         </ScrollViewer>
 

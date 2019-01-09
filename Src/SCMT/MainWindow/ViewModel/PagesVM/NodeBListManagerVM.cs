@@ -22,6 +22,7 @@ namespace SCMTMainWindow.ViewModel
 {
     /// <summary>
     /// 基站管理列表界面VM;
+    /// ??在VM中没有把实例化对象赋值给依赖属性，为什么啊??
     /// </summary>
     public class NodeBListManagerVM : MainWindowVM
     {
