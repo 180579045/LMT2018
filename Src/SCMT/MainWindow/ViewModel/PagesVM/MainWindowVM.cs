@@ -187,8 +187,8 @@ namespace SCMTMainWindow.ViewModel
         /// <returns></returns>
         protected TabBase CreateENodeBTab()
         {
-            NodeBMainTabVM tab = new NodeBMainTabVM();
-            return tab;
+            NodeBListManagerTabVM ManagerListTab = new NodeBListManagerTabVM();
+            return ManagerListTab;
         }
     }
 }

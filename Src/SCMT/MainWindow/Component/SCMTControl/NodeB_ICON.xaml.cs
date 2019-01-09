@@ -45,21 +45,26 @@ namespace SCMTMainWindow.Component.SCMTControl
         public NodeB_ICON()
         {
             InitializeComponent();
-            this.NodeB_Icon.MouseDown += NodeB_Icon_MouseDown;
+            
+            // 暂时先在这写;
             this.NodeBIP.Text = "172.27.245.92";
             this.NodeBFriendlyName.Text = "友好名";
+            
         }
 
         /// <summary>
-        /// 连接基站;
+        /// 上报连接基站事件;
+        /// （如果让Icon自己处理连接基站的功能，问题是无法直接操作主页面跳转功能）
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NodeB_Icon_MouseDown(object sender, MouseButtonEventArgs e)
+        public void NodeB_Icon_MouseDown()
         {
-            Console.WriteLine("NodeB ICON Clicked" + e);
-            
-
+            Console.WriteLine("NodeB ICON Clicked");
+            if (ConnectNodeBCommand != null && ConnectNodeBCommand.CanExecute(1))
+            {
+                ConnectNodeBCommand.Execute(1);
+            }
         }
     }
 
@@ -67,5 +72,36 @@ namespace SCMTMainWindow.Component.SCMTControl
     {
         public string Ipaddress { get; set; }
         public string FriendlyName { get; set; }
+    }
+
+    public class NodeBIcnBorder : Border
+    {
+        private NodeB_ICON _parent;
+        private NodeB_ICON NbIcon
+        {
+            get
+            {
+                if (_parent == null)
+                {
+                    DependencyObject parent = this;
+                    while (parent != null && !(parent is NodeB_ICON))
+                    {
+                        parent = VisualTreeHelper.GetParent(parent);
+                    }
+                    _parent = parent as NodeB_ICON;
+                }
+                return _parent;
+            }
+        }
+
+        public NodeBIcnBorder()
+        {
+            this.MouseDown += NodeBIcnBorder_MouseDown;
+        }
+
+        private void NodeBIcnBorder_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            NbIcon.NodeB_Icon_MouseDown();
+        }
     }
 }

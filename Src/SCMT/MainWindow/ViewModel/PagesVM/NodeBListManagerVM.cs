@@ -10,6 +10,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +36,12 @@ namespace SCMTMainWindow.ViewModel
         }
 
         /// <summary>
-        /// 连接基站处理函数;
+        /// 保存基站列表;
+        /// </summary>
+        public ObservableCollection<NodeB_ICON> NodeBList { get; set; }
+
+        /// <summary>
+        /// 当一个基站节点被点击，触发连接基站处理函数;
         /// </summary>
         /// <param name="para"></param>
         private void ConnectNodeB(ConnectNodeBPara para)

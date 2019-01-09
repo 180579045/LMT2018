@@ -34,12 +34,12 @@
     </UserControl.Resources>
 
     <Grid>
-        <Border x:Name="NodeB_Icon" Style="{StaticResource ItemBorderStyle}">
+        <local:NodeBIcnBorder x:Name="NodeB_Icon" Style="{StaticResource ItemBorderStyle}">
             <StackPanel>
                 <Path Data="{DynamicResource glyphicon-asterisk}"></Path>
                 <TextBlock x:Name="NodeBIP"></TextBlock>
                 <TextBlock x:Name="NodeBFriendlyName" TextWrapping="WrapWithOverflow"></TextBlock>
             </StackPanel>
-        </Border>
+        </local:NodeBIcnBorder>
     </Grid>
 </UserControl>
