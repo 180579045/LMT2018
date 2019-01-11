@@ -22,13 +22,15 @@ namespace SCMTMainWindow.Pages
     /// </summary>
     public partial class ENBListManager : UserControl
     {
-        public RelayCommand<ConnectNodeBPara> ConnectNodeBCommand;
+        //public RelayCommand<ConnectNodeBPara> ConnectNodeBCommand;
 
         public ENBListManager()
         {
             InitializeComponent();
-            ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);
-            NodeBIcon.ConnectNodeBCommand = ConnectNodeBCommand;
+            //ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);
+
+            // 必须添加这一行代码，才能够让控件的依赖属性不为空;
+            //NodeBIcon.ConnectNodeBCommand = ConnectNodeBCommand;
         }
 
         /// <summary>

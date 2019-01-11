@@ -22,25 +22,26 @@ namespace SCMTMainWindow.ViewModel
 {
     /// <summary>
     /// 基站管理列表界面VM;
-    /// ??在VM中没有把实例化对象赋值给依赖属性，为什么啊??
     /// </summary>
     public class NodeBListManagerVM : MainWindowVM
     {
-        /// <summary>
-        /// 添加基站的依赖命令;
-        /// </summary>
-        public RelayCommand<ConnectNodeBPara> ConnectNodeBCommand;
-
-        public NodeBListManagerVM()
-        {
-            ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);
-        }
-
         /// <summary>
         /// 保存基站列表;
         /// </summary>
         public ObservableCollection<NodeB_ICON> NodeBList { get; set; }
 
+        /// <summary>
+        /// 添加基站的依赖命令;
+        /// </summary>
+        public RelayCommand<ConnectNodeBPara> ConnectNodeBCommand { get; set; }
+
+        public NodeBListManagerVM()
+        {
+            ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);    // 将依赖命令Binding;
+
+            // 在此添加一个;
+        }
+        
         /// <summary>
         /// 当一个基站节点被点击，触发连接基站处理函数;
         /// </summary>
