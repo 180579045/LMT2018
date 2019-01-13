@@ -259,7 +259,6 @@
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\NodeBIconVM.cs" />
     <Compile Include="ViewModel\PagesVM\MainWindowVM.cs" />
-    <Compile Include="ViewModel\PagesVM\NodeBListManagerVM.cs" />
     <Compile Include="ViewModel\TabsVM\NodeBListManagerTabVM.cs" />
     <Compile Include="ViewModel\TabsVM\NodeBMainTabVM.cs" />
     <Compile Include="ViewModel\LogUploadMgrModel.cs" />

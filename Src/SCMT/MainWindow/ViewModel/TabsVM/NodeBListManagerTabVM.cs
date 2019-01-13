@@ -13,6 +13,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using SCMTMainWindow.Component.SCMTControl;
@@ -39,6 +40,10 @@ namespace SCMTMainWindow.ViewModel
         public NodeBListManagerTabVM()
         {
             ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);    // 将依赖命令Binding;
+
+            // 初始化的时候，读取用户已经保存的基站列表，存入NodeBList;
+            NodeB_ICON icon = new NodeB_ICON();
+            icon.ConnectNodeBCommand = ConnectNodeBCommand;
         }
 
         /// <summary>
@@ -53,6 +58,7 @@ namespace SCMTMainWindow.ViewModel
             NodeBMainTabVM node = new NodeBMainTabVM();
             node.TabName = para.FriendlyName;
 
+            // 第二步：通知主界面新增一个基站页签;
             AddNodeBEvtArgs evtArgs = new AddNodeBEvtArgs();
             evtArgs.para = node;
             onConnectNodeBEvt(this, evtArgs);

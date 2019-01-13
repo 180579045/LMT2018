@@ -19,10 +19,22 @@
     <Grid>
         
         <!-- 一行总共能够容纳7个基站节点 -->
-        <ScrollViewer Width="780" Height="400">
+        <ScrollViewer Width="880" Height="400">
             <WrapPanel x:Name="NodeBList">
-                <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
-                <suc:NodeB_ICON x:Name="NodeBIcon" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                <ListBox>
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
+                    <suc:NodeB_ICON x:Name="NodeBIcon" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    <suc:NodeB_ICON x:Name="NodeBIcon2" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    <suc:NodeB_ICON x:Name="NodeBIcon3" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    <suc:NodeB_ICON x:Name="NodeBIcon4" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    <suc:NodeB_ICON x:Name="NodeBIcon5" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    <suc:NodeB_ICON x:Name="NodeBIcon6" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                </ListBox>
             </WrapPanel>
         </ScrollViewer>
 
