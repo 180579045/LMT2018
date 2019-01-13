@@ -27,19 +27,7 @@ namespace SCMTMainWindow.Pages
         public ENBListManager()
         {
             InitializeComponent();
-            //ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);
-
-            // 必须添加这一行代码，才能够让控件的依赖属性不为空;
-            //NodeBIcon.ConnectNodeBCommand = ConnectNodeBCommand;
         }
-
-        /// <summary>
-        /// 当一个基站节点被点击，触发连接基站处理函数;
-        /// </summary>
-        /// <param name="para"></param>
-        private void ConnectNodeB(ConnectNodeBPara para)
-        {
-            Console.WriteLine("Connecting to NodeB" + para.FriendlyName);
-        }
+        
     }
 }

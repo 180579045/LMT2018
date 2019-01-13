@@ -111,7 +111,6 @@ namespace ChromeTabs
         /// <summary>
         /// 添加Tab页的执行命令的依赖属性;
         /// 类型是ICommand，宿主实例为ChromeTabControl;
-        /// 
         /// </summary>
         public static readonly DependencyProperty AddTabCommandProperty =
             DependencyProperty.Register

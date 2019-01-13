@@ -25,30 +25,7 @@ namespace SCMTMainWindow.ViewModel
     /// </summary>
     public class NodeBListManagerVM : MainWindowVM
     {
-        /// <summary>
-        /// 保存基站列表;
-        /// </summary>
-        public ObservableCollection<NodeB_ICON> NodeBList { get; set; }
-
-        /// <summary>
-        /// 添加基站的依赖命令;
-        /// </summary>
-        public RelayCommand<ConnectNodeBPara> ConnectNodeBCommand { get; set; }
-
-        public NodeBListManagerVM()
-        {
-            ConnectNodeBCommand = new RelayCommand<ConnectNodeBPara>(ConnectNodeB);    // 将依赖命令Binding;
-
-            // 在此添加一个;
-        }
         
-        /// <summary>
-        /// 当一个基站节点被点击，触发连接基站处理函数;
-        /// </summary>
-        /// <param name="para"></param>
-        private void ConnectNodeB(ConnectNodeBPara para)
-        {
-            Console.WriteLine("Connecting to NodeB" + para.FriendlyName);
-        }
+
     }
 }

@@ -98,10 +98,19 @@ namespace SCMTMainWindow.ViewModel
             CloseTabCommand = new RelayCommand<TabBase>(CloseTabCommandAction);
             CanAddTabs = true;
 
+            // 当软件启动时，默认开启一个基站管理页的页签;
             NodeBListManagerTabVM ManagerListTab = new NodeBListManagerTabVM();
+            ManagerListTab.TabName = "基站管理";
+            ManagerListTab.onConnectNodeBEvt += ManagerListTab_AddMainWindowTags;
             ItemCollection.Add(ManagerListTab);
+
         }
-    
+
+        private void ManagerListTab_AddMainWindowTags(object sender, AddNodeBEvtArgs e)
+        {
+            ItemCollection.Add((e as AddNodeBEvtArgs).para);
+        }
+
         /// <summary>
         /// Reorder the tabs and refresh collection sorting.
         /// </summary>
@@ -168,6 +177,7 @@ namespace SCMTMainWindow.ViewModel
         /// <param name="vm"></param>
         private void CloseTabCommandAction(TabBase vm)
         {
+            Console.WriteLine("Close Tab!");
             ItemCollection.Remove(vm);
         }
 

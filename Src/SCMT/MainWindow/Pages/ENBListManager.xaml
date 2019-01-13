@@ -11,8 +11,7 @@
              xmlns:vm="clr-namespace:SCMTMainWindow.ViewModel"
              xmlns:suc="clr-namespace:SCMTMainWindow.Component.SCMTControl"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800"
-             DataContext="{Binding Source={StaticResource Locator}, Path=NodeBListManager}">
+             d:DesignHeight="450" d:DesignWidth="800">
 
     <UserControl.Resources>
     </UserControl.Resources>
@@ -21,7 +20,7 @@
         
         <!-- 一行总共能够容纳7个基站节点 -->
         <ScrollViewer Width="780" Height="400">
-            <WrapPanel>
+            <WrapPanel x:Name="NodeBList">
                 <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
                 <suc:NodeB_ICON x:Name="NodeBIcon" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
             </WrapPanel>

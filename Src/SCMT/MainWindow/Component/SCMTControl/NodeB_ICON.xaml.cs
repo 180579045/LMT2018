@@ -49,6 +49,9 @@ namespace SCMTMainWindow.Component.SCMTControl
             // 暂时先在这写;
             this.NodeBIP.Text = "172.27.245.92";
             this.NodeBFriendlyName.Text = "友好名";
+
+            this.IPAddress = "172.27.245.92";
+            this.FName = "友好名";
             
         }
 

@@ -28,7 +28,7 @@ namespace SCMTMainWindow.ViewModel
         }
 
         /// <summary>
-        /// Tab页的名称(后续就是基站名称吧);
+        /// Tab页的名称，如果是基站则为基站名称;
         /// </summary>
         private string _tabName;
         public string TabName

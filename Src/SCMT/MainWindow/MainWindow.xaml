@@ -105,14 +105,14 @@
                         <!-- 右键的菜单 -->
                         <Grid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Close"
-                                          Command="{Binding Path=PlacementTarget.Tag.CloseTabCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                <MenuItem Header="关闭"
+                                          Command="{Binding Path=CloseTabCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           CommandTarget="{Binding Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <MenuItem Header="Close all"
-                                          Command="{Binding Path=PlacementTarget.Tag.CloseAllTabsCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                <MenuItem Header="关闭全部基站"
+                                          Command="{Binding Path=CloseTabCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           CommandTarget="{Binding Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <MenuItem Header="Close other tabs"
-                                          Command="{Binding Path=PlacementTarget.Tag.CloseOtherTabsCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                <MenuItem Header="关闭其他基站"
+                                          Command="{Binding Path=CloseTabCommand, RelativeSource={RelativeSource AncestorType=ContextMenu}}"
                                           CommandTarget="{Binding Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
                                           CommandParameter="{Binding}" />
                             </ContextMenu>
