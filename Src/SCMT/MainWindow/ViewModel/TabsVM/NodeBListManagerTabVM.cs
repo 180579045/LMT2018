@@ -16,7 +16,10 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using MsgQueue;
 using SCMTMainWindow.Component.SCMTControl;
+using SCMTOperationCore.Control;
+using SCMTOperationCore.Elements;
 
 namespace SCMTMainWindow.ViewModel
 {
@@ -54,13 +57,19 @@ namespace SCMTMainWindow.ViewModel
         {
             Console.WriteLine("Connecting to NodeB" + para.FriendlyName);
 
-            // 第一步：连接基站;
-            NodeBMainTabVM node = new NodeBMainTabVM();
-            node.TabName = para.FriendlyName;
+            // 第一步：新建一个基站主页面类，并开始连接基站;
+            NodeBMainTabVM tab = new NodeBMainTabVM();
+            tab.TabName = para.FriendlyName;
+            
+            var tnode = NodeBControl.GetInstance().GetNodeByFName(para.FriendlyName) as NodeB;
 
+            ShowLogHelper.Show($"开始连接基站：{tnode.FriendlyName}-{tnode.NeAddress}", "SCMT");
+            tnode.ConnectAsync();
+            
             // 第二步：通知主界面新增一个基站页签;
             AddNodeBEvtArgs evtArgs = new AddNodeBEvtArgs();
-            evtArgs.para = node;
+            evtArgs.tab = tab;
+            evtArgs.node = tnode;
             onConnectNodeBEvt(this, evtArgs);
         }
 
@@ -68,6 +77,7 @@ namespace SCMTMainWindow.ViewModel
 
     public class AddNodeBEvtArgs : EventArgs
     {
-        public NodeBMainTabVM para;
+        public NodeBMainTabVM tab;
+        public NodeB node;
     }
 }

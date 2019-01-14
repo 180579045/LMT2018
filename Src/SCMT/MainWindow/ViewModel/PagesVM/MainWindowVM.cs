@@ -18,6 +18,8 @@ using System.Windows.Media.Imaging;
 using ChromeTabs;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using SCMTOperationCore.Control;
+using SCMTOperationCore.Elements;
 
 namespace SCMTMainWindow.ViewModel
 {
@@ -101,6 +103,10 @@ namespace SCMTMainWindow.ViewModel
             // 当软件启动时，默认开启一个基站管理页的页签;
             NodeBListManagerTabVM ManagerListTab = new NodeBListManagerTabVM();
             ManagerListTab.TabName = "基站管理";
+            ManagerListTab.IsPinned = true;
+            
+
+            // 连接基站;
             ManagerListTab.onConnectNodeBEvt += ManagerListTab_AddMainWindowTags;
             ItemCollection.Add(ManagerListTab);
 
@@ -113,7 +119,7 @@ namespace SCMTMainWindow.ViewModel
         /// <param name="e"></param>
         private void ManagerListTab_AddMainWindowTags(object sender, AddNodeBEvtArgs e)
         {
-            ItemCollection.Add(e.para);
+            ItemCollection.Add(e.tab);
         }
 
         /// <summary>

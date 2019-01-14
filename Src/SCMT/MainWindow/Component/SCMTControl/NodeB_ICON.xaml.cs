@@ -46,7 +46,7 @@ namespace SCMTMainWindow.Component.SCMTControl
         {
             InitializeComponent();
             
-            // 暂时先在这写;
+            // TODO:暂时先在这写;
             this.NodeBIP.Text = "172.27.245.92";
             this.NodeBFriendlyName.Text = "友好名";
 

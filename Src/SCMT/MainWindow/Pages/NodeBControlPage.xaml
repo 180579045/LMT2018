@@ -35,8 +35,8 @@
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>                      <!-- 第二行，包含了以下四列的所有信息 -->
-            <RowDefinition Height="Auto"/>                   <!-- 第三行，基站状态显示 -->
+            <RowDefinition Height="*"/>                      <!-- 第一行，包含了以下四列的所有信息 -->
+            <RowDefinition Height="Auto"/>                   <!-- 第二行，基站状态显示 -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -163,7 +163,6 @@
 
                 <TabItem Header="修改调试用" Style="{StaticResource TabItemStyle}">
                     <!--此处需要通过Page的方式进行加载，即点击的时候，再执行实例化-->
-
                 </TabItem>
 
                 <TabItem Header="小区规划" Style="{StaticResource TabItemStyle}">

@@ -19,22 +19,36 @@
     <Grid>
         
         <!-- 一行总共能够容纳7个基站节点 -->
-        <ScrollViewer Width="880" Height="400">
+        <ScrollViewer Width="900" Height="400">
             <WrapPanel x:Name="NodeBList">
+                
+                <!-- 实在来不及写了，我的思路是直接重写ListBox，让ListBox具有多行显示的功能，总体结构如下： -->
                 <ListBox>
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
-                    <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
-                    <suc:NodeB_ICON x:Name="NodeBIcon" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
-                    <suc:NodeB_ICON x:Name="NodeBIcon2" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
-                    <suc:NodeB_ICON x:Name="NodeBIcon3" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
-                    <suc:NodeB_ICON x:Name="NodeBIcon4" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
-                    <suc:NodeB_ICON x:Name="NodeBIcon5" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
-                    <suc:NodeB_ICON x:Name="NodeBIcon6" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    <ListBox>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <suc:AddNodeB_ICON></suc:AddNodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon2" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon3" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon4" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon5" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon6" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    </ListBox>
+                    <ListBox>
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <suc:NodeB_ICON x:Name="NodeBIcon7" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                        <suc:NodeB_ICON x:Name="NodeBIcon8" ConnectNodeBCommand="{Binding ConnectNodeBCommand}"></suc:NodeB_ICON>
+                    </ListBox>
                 </ListBox>
+                
             </WrapPanel>
         </ScrollViewer>
 
